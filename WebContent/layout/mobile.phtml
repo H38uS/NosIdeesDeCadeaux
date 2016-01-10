@@ -1,0 +1,167 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+    <head>  
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Idées cadeaux</title>
+        <script type="text/javascript">
+			root2Public = "<?php echo ROOT_TO_PUBLIC; ?>";
+        </script>
+        <script src="<?php echo ROOT_TO_PUBLIC; ?>/js/lib/jquery.js" type="text/javascript"></script>
+        <script src="<?php echo ROOT_TO_PUBLIC; ?>/js/lib/jquery_autocomplete.js" type="text/javascript"></script>
+        <script src="<?php echo ROOT_TO_PUBLIC; ?>/js/idees/mobileajouter.js" type="text/javascript"></script>
+        <script src="<?php echo ROOT_TO_PUBLIC; ?>/js/friendnetwork/ajouterliste.js" type="text/javascript"></script> 
+        <script src="<?php echo ROOT_TO_PUBLIC; ?>/js/global.js" type="text/javascript"></script> 
+        <script src="<?php echo ROOT_TO_PUBLIC; ?>/js/mobileindex.js" type="text/javascript"></script> 
+        <script src="<?php echo ROOT_TO_PUBLIC; ?>/js/loading.js" type="text/javascript"></script> 
+        <link rel="stylesheet" type="text/css" href="<?php echo ROOT_TO_PUBLIC; ?>/css/common.css" /> 
+        <link rel="stylesheet" type="text/css" href="<?php echo ROOT_TO_PUBLIC; ?>/css/mobile/global.css" /> 
+        <link rel="stylesheet" type="text/css" href="<?php echo ROOT_TO_PUBLIC; ?>/css/lib/jquery.autocomplete.css" />            
+    </head> 
+    <body>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                functionReady();
+        <?php if ($this->layout()->owner != null) { ?>
+                $("#afficher_liste option[value=<?php echo $this->layout()->owner; ?>]").attr('selected','selected');                     
+        <?php } else { ?>
+                $("#afficher_liste option:first").attr('selected','selected');            
+        <?php } ?>
+            });
+        </script>
+        <div id="actionTop">
+            <a href="<?php echo $this->url(array('controller' => 'login', 'action' => 'logout'), "", true); ?>"
+               class="img"
+               >
+                <img alt="Se déconnecter"
+                     src="<?php echo ROOT_TO_PUBLIC; ?>/image/logout.png"
+                     title="Se déconnecter"
+                />
+            </a>
+            <a href="<?php echo $this->url(array('controller' => 'friendnetwork', 'action' => 'mobileajouterliste'), "", true); ?>"
+               class="img">
+                <img alt="Ajouter une liste de cadeaux au partage"
+                     src="<?php echo ROOT_TO_PUBLIC; ?>/image/ajouter_liste.png"
+                     title="Ajouter une liste de cadeaux au partage"
+                />
+            </a>
+            <a href="<?php echo $this->url(array('controller' => 'idees', 'action' => 'mobileajouter'), "", true); ?>"
+               class="img">
+                <img alt="Ajouter une idée à..."
+                     src="<?php echo ROOT_TO_PUBLIC; ?>/image/ajouter.png"
+                     title="Ajouter une idée à..."
+                />
+            </a>
+            <?php if ($this->layout()->hasNotifications) { ?>
+            <a href="<?php echo $this->url(array('controller' => 'index', 'action' => 'mobilevoirnotifications'), "", true); ?>"
+                class="img">
+                <img alt="Voir les notifications"
+                        src="<?php echo ROOT_TO_PUBLIC; ?>/image/info.png"
+                        title="Voir les notifications"
+                />
+            </a>
+            <?php } ?> 
+            <a href="<?php echo $this->url(array('controller' => 'login', 
+                                                 'action'     => 'changepwd'), "", true); ?>" 
+                class="img">
+                <img src="<?php echo ROOT_TO_PUBLIC; ?>/image/change_pwd.png" 
+                        alt="Modifier mon mot de passe." 
+                        title="Modifier mon mot de passe" />
+            </a> 
+            <a href="<?php echo $this->url(array('controller' => 'login', 
+                                                 'action'     => 'changeemail'), "", true); ?>" 
+                class="img">
+                <img src="<?php echo ROOT_TO_PUBLIC; ?>/image/change_email.png" 
+                        alt="Modifier mon adresse mail." 
+                        title="Modifier mon adresse mail" />
+            </a> 
+            <div>
+                Afficher la liste de 
+                <select id="afficher_liste">
+                    <?php foreach ($this->layout()->owners as $owner) { ?>
+                        <option value="<?php echo $owner; ?>"><?php echo ucfirst($owner); ?></option>
+                    <?php } ?>  
+                   <option value=""></option>
+                </select>
+            </div>
+        </div>
+        <div id="body">
+            <?php echo $this->layout()->content; ?>
+        </div>
+        <div class="actionDown" id="actionDownSoit" >
+            <img alt="Cacher le menu"
+                 src="<?php echo ROOT_TO_PUBLIC; ?>/image/down.png"
+                 title="Cacher le menu"
+                 class="clickable hideDown"
+            />
+            <a href="<?php echo $this->url(array('controller' => 'idees', 'action' => 'mobilemodifier'), "", true); ?>" 
+               class="img needsIdeaID">
+                <img alt="Modifier"
+                    src="<?php echo ROOT_TO_PUBLIC; ?>/image/modifier.png"
+                    title="Modifier cette idée"
+                />
+            </a>
+            <a href="<?php echo $this->url(array('controller' => 'idees', 'action' => 'mobilesupprimer'), "", true); ?>" 
+               class="img needsIdeaID">
+                <img alt="Supprimer"
+                    src="<?php echo ROOT_TO_PUBLIC; ?>/image/supprimer.png"
+                    title="Supprimer cette idée"
+                />
+            </a>
+        </div>        
+        <div class="actionDown" id="actionDownFreeReservation" >
+            <img alt="Cacher le menu"
+                 src="<?php echo ROOT_TO_PUBLIC; ?>/image/down.png"
+                 title="Cacher le menu"
+                 class="clickable hideDown"
+            />
+			<img id="estToujoursValide"
+				 src="<?php echo ROOT_TO_PUBLIC; ?>/image/est_toujours_valide.png" 
+            	 alt="Signifier non à jour" 
+                 title="Demander si cette idée est toujours d'actualité"
+                 class="clickable"
+            />
+            <img id="reserve"
+                alt="Réserver"
+                src="<?php echo ROOT_TO_PUBLIC; ?>/image/reserver.png"
+                title="Réserver cette idée"
+                class="clickable"
+            />
+            <a href="<?php echo $this->url(array('controller' => 'reservation', 'action' => 'mobileinitgroupe'), "", true); ?>" 
+               class="img needsIdeaID">
+                <img src="<?php echo ROOT_TO_PUBLIC; ?>/image/grouper.png" 
+                    alt="Réserver ce cadeau à plusieurs" 
+                    title="Créer un groupe pour ce cadeau"
+                />
+            </a>
+        </div>   
+        <div class="actionDown" id="actionDownReserverParSoit" >
+            <img alt="Cacher le menu"
+                 src="<?php echo ROOT_TO_PUBLIC; ?>/image/down.png"
+                 title="Cacher le menu"
+                 class="clickable hideDown"
+            />
+            Idée réservée par vous - <span class="clickable" id="dereserve">annuler</span>.
+        </div>
+        <div class="actionDown" id="actionDownReserverParAutre" >
+            <img alt="Cacher le menu"
+                 src="<?php echo ROOT_TO_PUBLIC; ?>/image/down.png"
+                 title="Cacher le menu"
+                 class="clickable hideDown"
+            />
+            Cette idée est déjà réservée par <span class="reservationOwner"></span>.
+        </div>
+        <div class="actionDown" id="actionDownGroupe" >
+            <img alt="Cacher le menu"
+                 src="<?php echo ROOT_TO_PUBLIC; ?>/image/down.png"
+                 title="Cacher le menu"
+                 class="clickable hideDown"
+            />
+            <a href="<?php echo $this->url(array('controller' => 'reservation', 'action' => 'mobiledetailgroupe'), "", true); ?>" 
+               class="img needsIdeaID">
+                Voir les options sur ce groupe.
+            </a>
+        </div>
+        <div id="loading"></div>
+    </body>
+</html>

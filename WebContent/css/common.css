@@ -1,0 +1,156 @@
+/* 
+    Document   : common.css
+    Created on : 7 fÃ©vr. 2014, 07:37:49
+    Author     : Jordan Mosio
+    Description:
+        Common css to mobile and computer layout.
+*/
+
+/* Les liens */
+.clickable {
+    text-decoration: none;
+    color: blue;    
+}
+
+.clickable:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+a:link, a:visited, a:active {
+    outline: none;
+    text-decoration: none;
+    color: blue;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a.img:link, a.img:visited, a.img:active, a.img:hover {
+    text-decoration: none;
+}
+
+img.clickable, a > img {
+    text-decoration: none;
+    border: transparent solid 1px;
+    -webkit-box-shadow: 0 1px 5px transparent;
+    box-shadow: 0 1px 5px transparent;
+    border-radius: 2px;
+    padding: 2px;
+}
+
+img.clickable:hover, a > img:hover {
+    text-decoration: none;
+    border: blue solid 1px;
+    -webkit-box-shadow: 0 1px 5px blue;
+    box-shadow: 0 1px 5px blue;
+    border-radius: 2px;
+}
+
+img.clickable:hover {
+    cursor: pointer;
+}
+
+img.clickable:active, a:active > img:active {
+    border: none;
+    text-decoration: none;
+    border: blue solid 1px;
+    box-shadow: 0 1px 5px blue inset;
+    -webkit-box-shadow: 0 1px 5px blue inset;
+    background-color: #dddddd;
+    border-radius: 2px;
+}
+
+/* Les erreurs... */
+.error, .errors {
+    font-size:80%;
+    font-style:italic;
+    color:red;	
+}
+
+/* Fonction de chargement */
+#loading
+{
+    display:none;
+    padding:9px 5px 5px 5px;
+
+    position:fixed;
+    top:30%;
+    left:50%;
+    margin-left:-170px;
+
+    background-color:#ffffff;
+    border: solid 1px blue;
+    -webkit-box-shadow: 0 1px 10px blue;
+    box-shadow: 0 1px 10px blue;
+    border-radius: 10px;
+    
+    z-index: 500;
+}
+
+#loading > img {
+    border: none;
+    vertical-align: middle;
+}
+
+#loadingtext
+{
+    margin-left: 10px;
+    padding-right: 10px;
+}
+
+/*****************************
+ * *** Partie commune pour ***
+ * ***  toutes les tables  ***
+ * ***    d'information    ***
+ *****************************/
+
+.info_table {
+    margin-top: 10px;
+    padding: 3px;
+    -webkit-box-shadow: 0 1px 3px black;
+    box-shadow: 0 1px 3px black;
+}
+
+/*******************/
+/* *** Réservé *** */
+/*******************/
+
+.reserveparsoit {
+    font-size: 80%;
+}
+
+.reserveparautre {
+    font-size: 80%;
+    color: #b09a9a;
+}
+
+/**********************/
+/* *** Formulaire *** */
+/**********************/
+
+label {
+    display: block;
+    width: 120px;
+    float: left;
+}
+
+.zend_form label {
+    float: none;
+    width: 100%;
+}
+
+.zend_form td {
+    vertical-align: top;
+    padding-right: 5px;
+}
+
+.errors {
+    margin: 0;
+    padding: 0;
+}
+
+.errors li {
+    list-style-type: none;
+}
