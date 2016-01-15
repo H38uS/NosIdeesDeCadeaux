@@ -5,10 +5,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
         <title>Idées cadeaux</title>
 		<base href="${pageContext.request.contextPath}/">
-        <link rel="shortcut icon" href="image/cadeaux.ico"/>
-        <link rel="shortcut icon" href="image/cadeaux.ico"/>
-        <link rel="stylesheet" type="text/css" href="css/common.css" />
-        <link rel="stylesheet" type="text/css" href="css/normal/global.css" />
+        <link rel="shortcut icon" href="public/image/cadeaux.ico"/>
+        <link rel="shortcut icon" href="public/image/cadeaux.ico"/>
+        <link rel="stylesheet" type="text/css" href="public/css/common.css" />
+        <link rel="stylesheet" type="text/css" href="public/css/normal/global.css" />
     </head> 
     <body>
         <jsp:doBody/>

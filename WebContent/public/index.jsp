@@ -4,11 +4,11 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<base href="${pageContext.request.contextPath}/">
-		<link type="text/css" rel="stylesheet" href="css/common.css" />
+		<link type="text/css" rel="stylesheet" href="public/css/common.css" />
 		<title>Insert title here</title>
 	</head>
 	<body>
 		<h1>Hello World !</h1>
-		<a href="Index/index.jsp">Mon lien à la con.</a>
+		<a href="protected/index.jsp">Mon lien à la con.</a>
 	</body>
 </html>

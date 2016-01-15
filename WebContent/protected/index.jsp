@@ -8,5 +8,6 @@
 </head>
 <body>
 	<h1>Hello World from the application !</h1>
+	<p>Pouet.</p>
 </body>
 </html>
