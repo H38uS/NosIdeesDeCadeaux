@@ -6,7 +6,6 @@
         <title>Idées cadeaux</title>
 		<base href="${pageContext.request.contextPath}/">
         <link rel="shortcut icon" href="public/image/cadeaux.ico"/>
-        <link rel="shortcut icon" href="public/image/cadeaux.ico"/>
         <link rel="stylesheet" type="text/css" href="public/css/common.css" />
         <link rel="stylesheet" type="text/css" href="public/css/normal/global.css" />
     </head> 
