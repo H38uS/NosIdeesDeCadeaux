@@ -8,7 +8,44 @@
 		<title>Insert title here</title>
 	</head>
 	<body>
-		<h1>Hello World !</h1>
-		<a href="protected/index.jsp">Mon lien à la con.</a>
+		<h1>Nosidéeskdo, des cadeaux qui font vraiment plaisir !</h1>
+		
+		<ul>
+			<li>
+				<a href="public/todo.jsp">Comment ça marche ?</a>
+			</li>
+			<li>
+				<a href="public/todo.jsp">Créer un compte !</a>
+			</li>
+			<li>
+				<a href="protected/todo.jsp">Créer un groupe !</a>
+			</li>
+			<li>
+				<a href="protected/todo.jsp">Rejoindre un groupe</a>
+			</li>
+			<li>
+				<a href="public/todo.jsp">Démonstration</a>
+			</li>
+		</ul>
+		
+		<div>
+			Du blabla !
+		</div>
+
+		<ul>
+			<li>
+				<a href="protected/todo.jsp">Créer un groupe</a>
+			</li>
+			<li>
+				<a href="protected/todo.jsp">Inviter des personnes !</a>
+			</li>
+			<li>
+				<a href="protected/todo.jsp">Vos envies</a>
+			</li>
+			<li>
+				<a href="protected/todo.jsp">Faites plaisir</a>
+			</li>
+		</ul>
+		
 	</body>
 </html>
