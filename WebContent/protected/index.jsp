@@ -19,7 +19,7 @@
 			Prio.nom : ${row.nom}<br />
 		</c:forEach>
 		<div>
-			Bonjour <c:out value="${pageContext.request.userPrincipal.name}" /> - 
+			Bonjour <c:out value="${username}" /> - 
 			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 		</div>
 </body>

@@ -15,6 +15,9 @@
 				<a href="public/todo.jsp">Comment ça marche ?</a>
 			</li>
 			<li>
+				<a href="protected/index.jsp">Allez voir mes listes partagés</a>
+			</li>
+			<li>
 				<a href="public/todo.jsp">Créer un compte !</a>
 			</li>
 			<li>
