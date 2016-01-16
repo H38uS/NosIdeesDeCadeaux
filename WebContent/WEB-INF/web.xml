@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+<web-app
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
 	<display-name>NosIdeesDeCadeaux</display-name>
 	<welcome-file-list>
 		<welcome-file>public/index.jsp</welcome-file>
@@ -17,6 +20,9 @@
 			<role-name>user</role-name>
 		</auth-constraint>
 	</security-constraint>
+	<security-role>
+		<role-name>user</role-name>
+	</security-role>
 	<login-config>
 		<auth-method>FORM</auth-method>
 		<form-login-config>
@@ -30,4 +36,18 @@
 			<scripting-invalid>true</scripting-invalid>
 		</jsp-property-group>
 	</jsp-config>
+	<resource-ref>
+		<description>DB Connection</description>
+		<res-ref-name>jdbc/web-db</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	<filter>
+		<filter-name>loginHelper</filter-name>
+		<filter-class>com.mosioj.viewhelper.LoginHelper</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>loginHelper</filter-name>
+		<url-pattern>/protected/*</url-pattern>
+	</filter-mapping>
 </web-app>

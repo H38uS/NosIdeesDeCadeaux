@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head>  
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-        <title>Idées cadeaux</title>
+        <title>Nos idées cadeaux</title>
 		<base href="${pageContext.request.contextPath}/">
         <link rel="shortcut icon" href="public/image/cadeaux.ico"/>
         <link rel="stylesheet" type="text/css" href="public/css/common.css" />
