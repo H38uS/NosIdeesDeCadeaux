@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -8,47 +9,30 @@
 		<title>Insert title here</title>
 	</head>
 	<body>
+		<t:menu></t:menu>
 		<h1>Nosidéeskdo, des cadeaux qui font vraiment plaisir !</h1>
+		<img alt="" src="public/image/main.jpg" width="1240px" >
 		
-		<ul>
-			<li>
-				<a href="public/todo.jsp">Comment ça marche ?</a>
-			</li>
-			<li>
-				<a href="protected/index.jsp">Allez voir mes listes partagés</a>
-			</li>
-			<li>
-				<a href="public/todo.jsp">Créer un compte !</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Créer un groupe !</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Rejoindre un groupe</a>
-			</li>
-			<li>
-				<a href="public/todo.jsp">Démonstration</a>
-			</li>
-		</ul>
+		<div>
+			Pas encore membre ? Découvrez l'univers des cadeaux qui font plaisir !
+			<ul>
+				<li>
+					<a href="public/todo.jsp">Comment ça marche ?</a>
+				</li>
+				<li>
+					<a href="public/todo.jsp">Démonstration</a>
+				</li>
+				<li>
+					<a href="public/todo.jsp">Créer un compte !</a>
+				</li>
+			</ul>
+		</div>
 		
 		<div>
 			Du blabla !
 		</div>
 
-		<ul>
-			<li>
-				<a href="protected/todo.jsp">Créer un groupe</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Inviter des personnes !</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Vos envies</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Faites plaisir</a>
-			</li>
-		</ul>
+		<div>Déjà membre ? Accéder <a href="protected/index.jsp">à mon espace.</a></div>
 		
 	</body>
 </html>

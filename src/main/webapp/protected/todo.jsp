@@ -11,3 +11,4 @@
 		</div>
 	</jsp:body>
 </t:normallight>
+<a href="public/index.jsp">Retour à l'accueil.</a>

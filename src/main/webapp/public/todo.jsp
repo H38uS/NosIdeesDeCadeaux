@@ -6,3 +6,4 @@
 		<div>Circulez, travail en cours...</div>
 	</jsp:body>
 </t:normallight>
+<a href="public/index.jsp">Retour à l'accueil.</a>
