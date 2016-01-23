@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<t:normallight>
+<t:normal>
 	<jsp:body>
 		<h2>Veuillez vous identifier pour accéder à cette page.</h2>
-		<div class="zendForm">
+		<div>
 			<form method="POST" action="j_security_check">
-				<table class="zend_form">
+				<table>
 					<tr>						
 						<td id="username-label">
 							<label for="username" class="required">Identifiant</label>
@@ -31,4 +31,4 @@
 			</form>
 		</div>
 	</jsp:body>
-</t:normallight>
+</t:normal>

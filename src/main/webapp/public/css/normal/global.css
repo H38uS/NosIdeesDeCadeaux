@@ -1,356 +1,142 @@
 /******************/
 /* *** Global *** */
 /******************/
-
 html {
-    min-width: 850px;
+	min-width: 850px;
 }
 
-body
-{
-    margin: 0;
-    padding: 0 30px;
-    font-size: 100%;
-    line-height: 1.6;
-    font-family: arial,helvetica,"bitstream vera sans",sans-serif;
-    color: #000000;
-    background-color: #eaf5fc; 
-    min-width: 700px;
+body {
+	margin: 0;
+	padding: 50px 90px 0 90px;
+	font-size: 100%;
+	line-height: 1.6;
+	font-family: arial, helvetica, "bitstream vera sans", sans-serif;
+	color: #000000;
+	background-color: #eaf5fc;
+	min-width: 1100px;
+	height:100%;
 }
 
-#body {
-    margin-top: 125px;
-    margin-bottom: 200px;
-    background-color: #ffffff; 
-}
-
-#title {
-    background-color: #eaf5fc; 
-    padding: 0px 0px 10px 0px;
-}
-
-input:not([type=file]), select {
+input:not ([type=file] ), select {
 	padding: 2px;
 }
 
-input:not([type=file]):focus {
+input:not ([type=file] ):focus {
 	padding: 2px;
-    border: blue inset 2px;
-    -webkit-box-shadow: 0 0px 3px blue;
-    box-shadow: 0 0px 3px blue;
+	border: blue inset 2px;
+	-webkit-box-shadow: 0 0px 3px blue;
+	box-shadow: 0 0px 3px blue;
 }
 
 select:focus {
 	padding: 1px;
-    border: blue inset 2px;
-    -webkit-box-shadow: 0 0px 3px blue;
-    box-shadow: 0 0px 3px blue;
+	border: blue inset 2px;
+	-webkit-box-shadow: 0 0px 3px blue;
+	box-shadow: 0 0px 3px blue;
+}
+
+#container {
+	background-color: #ffffff;
+	padding: 100px;
 }
 
 /*****************/
 /* *** Index *** */
 /*****************/
-
 h1 {
-    text-align: center;
+	text-align: center;
 }
 
 h3 {
-    font-family: 'Comic Sans MS';
-    text-shadow: 2px 2px 2px #b0b0ed;
+	font-family: 'Comic Sans MS';
+	text-shadow: 2px 2px 2px #b0b0ed;
 }
 
 .ideespersonne {
-    padding: 10px;
-    border: #cacaed solid 1px;
-    -webkit-box-shadow: 0 1px 10px #cacaed;
-    box-shadow: 0 1px 10px #cacaed;
+	padding: 10px;
+	border: #cacaed solid 1px;
+	-webkit-box-shadow: 0 1px 10px #cacaed;
+	box-shadow: 0 1px 10px #cacaed;
 }
 
-.ideespersonne:hover {    
-    border: #ed8282 solid 1px;
-    -webkit-box-shadow: 0 1px 10px #ed8282;
-    box-shadow: 0 1px 10px #ed8282;
+.ideespersonne:hover {
+	border: #ed8282 solid 1px;
+	-webkit-box-shadow: 0 1px 10px #ed8282;
+	box-shadow: 0 1px 10px #ed8282;
 }
 
 /*****************/
 /* *** Table *** */
 /*****************/
-
 table.main {
-    margin-left: 2%;
-    border-spacing: 0px;
-    width: 96%;
+	margin-left: 2%;
+	border-spacing: 0px;
+	width: 96%;
 }
 
 .main tr.surprise td:first-child {
-    border-left: #cacaed solid 1px;
+	border-left: #cacaed solid 1px;
 }
 
 .main tr.surprise td:last-child {
-    border-right: #cacaed solid 1px;
+	border-right: #cacaed solid 1px;
 }
 
 .main tr.surprise td {
-    border-top: #cacaed solid 1px;
-    border-bottom: #cacaed solid 1px;
-    background-color: #F7F7FF;
+	border-top: #cacaed solid 1px;
+	border-bottom: #cacaed solid 1px;
+	background-color: #F7F7FF;
 }
 
 .main tr:hover td {
-    border-bottom: #000000 dashed 1px;
-    border-top: #000000 dashed 1px;
+	border-bottom: #000000 dashed 1px;
+	border-top: #000000 dashed 1px;
 }
 
 .main tr:hover td:first-child {
-    border-left: #000000 dashed 1px;
+	border-left: #000000 dashed 1px;
 }
 
 .main tr:hover td:last-child {
-    border-right: #000000 dashed 1px;
+	border-right: #000000 dashed 1px;
 }
 
 .main tr:hover td {
-    background-color: #d4d4d4;
+	background-color: #d4d4d4;
 }
 
 .main tr {
-    height: 41.8px;
+	height: 41.8px;
 }
 
 .main tr td {
-    border: transparent solid 1px;
+	border: transparent solid 1px;
 }
 
 .main td.icone {
-    width: 30px;
+	width: 30px;
 }
 
 .main td.tripple_icone {
-    width: 120px;
+	width: 120px;
 }
 
 .main td:last-child {
-    width: 270px;
+	width: 270px;
 }
 
 .main td {
-    padding: 5px 10px 0 10px;
+	padding: 5px 10px 0 10px;
 }
 
 /* Marge entre chaque pâté d'idées */
-.hr {    
-    padding: 20px 0px;
-    color: black;
-    background-color: #eaf5fc; 
+.hr {
+	padding: 20px 0px;
+	color: black;
+	background-color: #eaf5fc;
 }
 
 .info_table {
-    margin-left: 50px;
-    width: 80%;    
-}
-
-/********************/
-/* *** Imprimer *** */
-/********************/
-
-.imprimer {
-    margin: 0;
-    border-spacing: 0px;
-}
-
-.imprimer tr:first-child td {
-    border-top: #000000 solid 1px;
-}
-
-.imprimer td {
-    border-left: #000000 solid 1px;
-    border-bottom: #000000 solid 1px;
-    padding: 0 5px;
-}
-
-.imprimer td:last-child {
-    width: 180px;
-    border-right: #000000 solid 1px;
-}
-
-/**********************/
-/* *** Formulaire *** */
-/**********************/
-
-#form_add {
-    margin: 50px 5%;
-}
-
-#form_add table {
-    width: 100%;
-}
-
-#form_add .elem {
-    text-align: center;
-}
-
-#form_add #submit {
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-#form_add td:nth-child(1) {
-    vertical-align: top;
-    min-width: 160px;
-}
-
-#form_add label {
-    width:100%;
-}
-
-#form_add td:nth-child(2) {
-    text-align: left;
-}
-
-#submitpwd {
-    margin-top: 10px;
-    margin-left: 150px;
-}
-
-/******************************/
-/* *** Checkbox dans Form *** */
-/******************************/
-
-#checkFormBody {
-    border: #cacaed solid 1px;
-    -webkit-box-shadow: 0 1px 10px #cacaed;
-    box-shadow: 0 1px 10px #cacaed;
-    padding: 10px;
-    margin: 40px;   
-}
-
-#checkForm {
-    margin-left: 10px;
-    height: 100%;
-}
-
-#checkForm form {
-    height: 100%;
-}
-
-#checkForm table {
-    margin: 20px;
-}
-
-#checkForm td {
-    overflow:hidden;
-    white-space:nowrap;
-    padding-right: 18px;
-}
-
-#checkForm label {
-	float: none;
-}
-
-#checkForm .label {
-    vertical-align: 10%;
-    font-size: 120%;
-}
-
-#checkForm .label:hover {
-    cursor: pointer;
-}
-
-#checkForm #submit {
-    position: absolute;
-    bottom: 80px;
-    right: 0px;
-	width: 100%;    
-}
-
-/**************************************************/
-/* *** Bubbles ! Enfin boite de convers' quoi *** */
-/**************************************************/
-
-
-#left_bubble_header {
-	margin-top: 30px;
-	margin-bottom: 30px;
-}
-
-#right_bubble_header {
-	float: right;
-	margin-right: 5%;
-	margin-bottom: 20px;
-	margin-top: -30px;
-}
-
-.right_bubble_container {
+	margin-left: 50px;
 	width: 80%;
-	margin-left: 20%;
-	text-align: right;
-}
-
-.left_bubble_container {
-	width: 80%;
-	margin-right: 20%;
-}
-
-.right_bubble {
-	margin-right: 5%;
-	background: #91FF95;
-	background: -webkit-gradient(linear, 0 0, 0 100%, from(#E8FFE9), to(#91FF95));
-	background: -moz-linear-gradient(#E8FFE9, #91FF95);
-	background: -o-linear-gradient(#E8FFE9, #91FF95);
-	background: linear-gradient(#E8FFE9, #91FF95);
-	border: #91FF95 solid 1px;
-}
-
-.left_bubble {
-	margin-left: 5%;
-	background: #CD75FF;
-	background: -webkit-gradient(linear, 0 0, 0 100%, from(#F0D6FF), to(#CD75FF));
-	background: -moz-linear-gradient(#F0D6FF, #CD75FF);
-	background: -o-linear-gradient(#F0D6FF, #CD75FF);
-	background: linear-gradient(#F0D6FF, #CD75FF);
-	border: #CD75FF solid 1px;
-}
-
-.bubble {
-	display: inline-block;
-	position: relative;
-	padding: 15px;
-	min-width: 60px;
-	margin-bottom: 30px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-}
-
-/* THE TRIANGLE */
-.bubble:after {
-	content: "";
-	position: absolute;
-	bottom: -20px; /* value = - border-top-width - border-bottom-width */
-	left: 50px; /* controls horizontal position */
-	border-style: solid;
-	/* reduce the damage in FF3.0 */
-	display: block;
-	width: 0;
-}
-.right_bubble:after {
-	/* vary these values to change the angle of the vertex */
-	border-width: 20px 0 0 20px;
-	border-color: #91FF95 transparent;
-}
-
-.left_bubble:after {
-	/* vary these values to change the angle of the vertex */
-	border-width: 20px 20px 0 0;
-	border-color: #CD75FF transparent;
-}
-
-/**************************************/
-/* *** Formulaire de commentaires *** */
-/**************************************/
-
-#comment_submit_form {
-	text-align: center;
-	margin: 10px 0;
 }
