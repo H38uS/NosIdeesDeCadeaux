@@ -30,5 +30,8 @@
 				</table>
 			</form>
 		</div>
+		<div>
+			Pas encore de compte ? <a href="public/creation_compte.jsp">Créez en un </a>!
+		</div>
 	</jsp:body>
 </t:normal>

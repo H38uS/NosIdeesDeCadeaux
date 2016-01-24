@@ -18,7 +18,7 @@
 					<a href="public/todo.jsp">Démonstration</a>
 				</li>
 				<li>
-					<a href="public/todo.jsp">Créer un compte !</a>
+					<a href="public/creation_compte.jsp">Créer un compte !</a>
 				</li>
 			</ul>
 		</div>

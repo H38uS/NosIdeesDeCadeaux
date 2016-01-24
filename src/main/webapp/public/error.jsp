@@ -35,5 +35,8 @@
 				L'identifiant ou le mot de passe est incorrect.
 			</p>
 		</div>
+		<div>
+			Pas encore de compte ? <a href="public/creation_compte.jsp">Créez en un </a>!
+		</div>
 	</jsp:body>
 </t:normal>
