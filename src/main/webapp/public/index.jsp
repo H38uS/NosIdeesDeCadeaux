@@ -6,13 +6,13 @@
 <t:normal>
 	<jsp:body>
 		<h1>Nosidéeskdo, des cadeaux qui font vraiment plaisir !</h1>
-		<img alt="" src="public/image/main.jpg" width="1240px" >
+		<img alt="" src="public/image/index/main.jpg" width="1240px" >
 		
 		<div>
-			Pas encore membre ? Découvrez l'univers des cadeaux qui font plaisir !
+			Envie de nous rejoindre ? Découvrez l'univers des cadeaux qui font plaisir !
 			<ul>
 				<li>
-					<a href="public/todo.jsp">Comment ça marche ?</a>
+					<a href="public/comment_ca_marche.jsp">Comment ça marche ?</a>
 				</li>
 				<li>
 					<a href="public/todo.jsp">Démonstration</a>

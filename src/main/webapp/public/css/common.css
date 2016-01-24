@@ -6,6 +6,10 @@
         Common css to mobile and computer layout.
 */
 
+.center {
+	text-align: center;
+}
+
 /* Les liens */
 .clickable {
     text-decoration: none;
