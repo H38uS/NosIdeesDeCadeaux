@@ -80,4 +80,12 @@
 		<filter-name>loginHelper</filter-name>
 		<url-pattern>/protected/*</url-pattern>
 	</filter-mapping>
+	<servlet>
+		<servlet-name>StickyCaptcha</servlet-name>
+		<servlet-class>com.mosioj.controllers.MyStickyCaptchaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>StickyCaptcha</servlet-name>
+		<url-pattern>/stickyImg</url-pattern>
+	</servlet-mapping>
 </web-app>

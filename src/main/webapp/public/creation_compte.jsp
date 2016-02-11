@@ -41,6 +41,19 @@
 						</c:forEach>
 					</c:if>
 					<tr>
+						<td>
+							<img src="stickyImg" />
+						</td>
+						<td>
+							<input name="answer" value="${param.answer}" />
+						</td>
+					</tr>
+					<c:if test="${fn:length(captcha_errors) > 0}">
+							<tr>
+								<td colspan="2" class="error">${captcha_errors}</td>
+							</tr>
+					</c:if>
+					<tr>
 						<td colspan="2" align="center">
 							<input type="submit" name="submit" id="submit" value="Créer !" />
 						</td>

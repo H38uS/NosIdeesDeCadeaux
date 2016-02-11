@@ -12,10 +12,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.mosioj.model.Personnes;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.validators.ParameterValidator;
+
+import nl.captcha.Captcha;
 
 @WebServlet("/creation_compte")
 public class CreationCompte extends HttpServlet {
@@ -29,6 +32,9 @@ public class CreationCompte extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		HttpSession session = request.getSession();
+		Captcha captcha = (Captcha) session.getAttribute(Captcha.NAME);
+
 		// Récupération des paramètres
 		String pwd = ParametersUtils.readIt(request, "pwd");
 		String email = ParametersUtils.readIt(request, "email").trim();
@@ -41,6 +47,13 @@ public class CreationCompte extends HttpServlet {
 		validator = new ParameterValidator(email, "email", "L'");
 		List<String> emailErrors = checkEmail(validator);
 		request.setAttribute("email_errors", emailErrors);
+
+		request.setCharacterEncoding("UTF-8"); // Do this so we can capture non-Latin chars
+		String answer = request.getParameter("answer");
+		boolean captchaOk = captcha.isCorrect(answer);
+		if (!captchaOk) {
+			request.setAttribute("captcha_errors", "Le texte entré ne correspond pas.");
+		}
 
 		// Password hash
 		StringBuffer hashPwd = new StringBuffer();
@@ -56,7 +69,7 @@ public class CreationCompte extends HttpServlet {
 		}
 
 		// Retour au formulaire si un paramètre est incorrect
-		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty()) {
+		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {
 			RequestDispatcher rd = request.getRequestDispatcher("/public/creation_compte.jsp");
 			rd.forward(request, response);
 			return;
