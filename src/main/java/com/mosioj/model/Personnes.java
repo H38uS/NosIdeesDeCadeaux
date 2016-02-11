@@ -47,4 +47,14 @@ public class Personnes {
 		InternalConnection.executeUpdate("insert into user_roles (login, role) values (?, ?)", email, "user");
 	}
 
+	/**
+	 * 
+	 * @param name The identifier of the person (currently the email).
+	 * @return This person's id.
+	 * @throws SQLException
+	 */
+	public int getId(String name) throws SQLException {
+		return InternalConnection.selectInt("select id from personnes where email = ?", name);
+	}
+
 }

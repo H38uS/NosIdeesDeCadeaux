@@ -1,6 +1,7 @@
 package com.mosioj.viewhelper;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,6 +11,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.mosioj.model.Personnes;
 
 /**
  * Provides helper functions to the views. 
@@ -37,6 +41,21 @@ public class LoginHelper implements Filter {
 		if (name != null) {
 			name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 			request.setAttribute("username", name);
+			
+			// Storing the Id if not stored yet
+			HttpSession session = ((HttpServletRequest ) request).getSession();
+			Integer userId = (Integer) session.getAttribute("userid");
+			if (userId == null) {
+				try {
+					// Getting the id
+					userId = Personnes.getInstance().getId(name);
+					// Storing the new one
+					session.setAttribute("userid", userId);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			request.setAttribute("userid", userId);
 		}
 		
 		chain.doFilter(request, response);

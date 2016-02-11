@@ -22,6 +22,7 @@
 			Bonjour <c:out value="${username}" /> - 
 			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 		</div>
+		<div>Id: <c:out value="${userid}" /></div>
 		
 		
 		<ul>
