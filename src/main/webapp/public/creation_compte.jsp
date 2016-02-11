@@ -10,16 +10,16 @@
 		<div>
 			<form method="POST" action="creation_compte">
 				<table>
-					<tr>						
+					<tr>
 						<td>
-							<label for="user" class="required">Identifiant</label>
+							<label for="email" class="required">Adresse email</label>
 						</td>
 						<td>
-							<input type="text" name="user" id="user" value="${param.user}" />
+							<input type="email" name="email" id="email" value="${param.email}" />
 						</td>
 					</tr>
-					<c:if test="${fn:length(user_errors) > 0}">
-						<c:forEach var="error" items="${user_errors}">
+					<c:if test="${fn:length(email_errors) > 0}">
+						<c:forEach var="error" items="${email_errors}">
 							<tr>
 								<td colspan="2" class="error">${error}</td>
 							</tr>
@@ -35,21 +35,6 @@
 					</tr>
 					<c:if test="${fn:length(pwd_errors) > 0}">
 						<c:forEach var="error" items="${pwd_errors}">
-							<tr>
-								<td colspan="2" class="error">${error}</td>
-							</tr>
-						</c:forEach>
-					</c:if>
-					<tr>
-						<td>
-							<label for="email" class="required">Adresse email</label>
-						</td>
-						<td>
-							<input type="email" name="email" id="email" value="${param.email}" />
-						</td>
-					</tr>
-					<c:if test="${fn:length(email_errors) > 0}">
-						<c:forEach var="error" items="${email_errors}">
 							<tr>
 								<td colspan="2" class="error">${error}</td>
 							</tr>

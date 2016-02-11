@@ -22,5 +22,16 @@
 				<td>Réservez des Idées cadeaux sur les listes de vos proches, seul ou à plusieurs pour éviter les doublons</td>
 			</tr>
 		</table>
+		<div>
+			<ul>
+				<li>Choisissez les listes que vous souhaitez voir</li>
+				<li>Choisissez qui peut voir votre liste</li>
+				<li>Choisissez qui peut inviter d’autres membres, (ou validez les demandes  d’autres membres…)</li>
+				<li>Offrez un cadeau  seul ou à plusieurs en créant une cagnotte</li>
+			</ul>
+		</div>
+		<div class="center">Nosidéeskdo à pour but de vous simplifier la recherche d’idées cadeaux pour vos proches, 
+		tout en évitant les doublons et en étant sûr de faire plaisir à chaque fois !
+		Vous gagnez du temps et la surprise est toujours au rendez-vous.</div>
 	</jsp:body>
 </t:normal>

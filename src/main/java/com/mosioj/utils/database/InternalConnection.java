@@ -31,7 +31,7 @@ public class InternalConnection {
 	 */
 	public static int selectInt(String query, Object... parameters) throws SQLException {
 
-		Connection conn = ds.getConnection();
+		Connection conn = getDatasource().getConnection();
 		try {
 
 			PreparedStatement statement = conn.prepareStatement(query);
@@ -63,7 +63,7 @@ public class InternalConnection {
 	 */
 	public static int executeUpdate(String query, Object... parameters) throws SQLException {
 
-		Connection conn = ds.getConnection();
+		Connection conn = getDatasource().getConnection();
 		int retour = 0;
 
 		try {
@@ -83,14 +83,23 @@ public class InternalConnection {
 		}
 	}
 
-	static {
-		try {
-			Context initCtx = new InitialContext();
-			Context envCtx = (Context) initCtx.lookup("java:comp/env");
-			ds = (DataSource) envCtx.lookup("jdbc/web-db");
-		} catch (Exception e) {
-			e.printStackTrace();
+	/**
+	 * 
+	 * @return The data source to use.
+	 */
+	private static DataSource getDatasource() {
+		
+		if (ds == null) {
+			try {
+				Context initCtx = new InitialContext();
+				Context envCtx = (Context) initCtx.lookup("java:comp/env");
+				ds = (DataSource) envCtx.lookup("jdbc/web-db");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+
+		return ds;
 	}
 
 }

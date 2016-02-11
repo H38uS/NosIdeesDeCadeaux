@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Personnes;
+import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 
 @WebServlet("/creation_compte")
@@ -29,16 +30,11 @@ public class CreationCompte extends HttpServlet {
 			throws ServletException, IOException {
 
 		// Récupération des paramètres
-		String user = request.getParameter("user").trim();
-		String pwd = request.getParameter("pwd");
-		String email = request.getParameter("email").trim();
+		String pwd = ParametersUtils.readIt(request, "pwd");
+		String email = ParametersUtils.readIt(request, "email").trim();
 
 		// Validation des paramètres
-		ParameterValidator validator = new ParameterValidator(user, "identifiant", "L'");
-		List<String> userErrors = checkUser(validator);
-		request.setAttribute("user_errors", userErrors);
-
-		validator = new ParameterValidator(pwd, "mot de passe", "Le ");
+		ParameterValidator validator = new ParameterValidator(pwd, "mot de passe", "Le ");
 		List<String> pwdErrors = checkPwd(validator);
 		request.setAttribute("pwd_errors", pwdErrors);
 
@@ -60,7 +56,7 @@ public class CreationCompte extends HttpServlet {
 		}
 
 		// Retour au formulaire si un paramètre est incorrect
-		if (!userErrors.isEmpty() || !pwdErrors.isEmpty() || !emailErrors.isEmpty()) {
+		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty()) {
 			RequestDispatcher rd = request.getRequestDispatcher("/public/creation_compte.jsp");
 			rd.forward(request, response);
 			return;
@@ -69,8 +65,8 @@ public class CreationCompte extends HttpServlet {
 		// Les paramètres sont ok, on s'occupe de la requête
 		Personnes manager = Personnes.getInstance();
 		try {
-			manager.addNewPersonne(user, hashPwd.toString(), email);
-			request.setAttribute("user", user);
+			manager.addNewPersonne(email, hashPwd.toString());
+			request.setAttribute("user", email);
 			RequestDispatcher rd = request.getRequestDispatcher("/public/succes_creation.jsp");
 			rd.forward(request, response);
 		} catch (SQLException e) {
@@ -78,19 +74,6 @@ public class CreationCompte extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("/public/server_error.jsp");
 			rd.forward(request, response);
 		}
-	}
-
-	/**
-	 * Checks the validity of the user parameter.
-	 * 
-	 * @param validator
-	 * @return The list of errors found.
-	 */
-	private List<String> checkUser(ParameterValidator validator) {
-		validator.checkEmpty();
-		validator.checkSize(0, 15);
-		validator.checkIsUnique("select count(*) from personnes where login = ?");
-		return validator.getErrors();
 	}
 
 	/**
