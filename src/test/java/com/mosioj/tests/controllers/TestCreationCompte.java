@@ -27,7 +27,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.mosioj.controllers.CreationCompte;
+import com.mosioj.servlets.CreationCompte;
 import com.mosioj.tests.utils.CaptchaMockFactory;
 import com.mosioj.utils.database.InternalConnection;
 

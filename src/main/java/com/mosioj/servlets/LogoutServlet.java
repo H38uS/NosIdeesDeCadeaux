@@ -1,4 +1,4 @@
-package com.mosioj.controllers;
+package com.mosioj.servlets;
 
 import java.io.IOException;
 
