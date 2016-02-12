@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,8 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.model.Personnes;
+import com.mosioj.model.Users;
 import com.mosioj.utils.ParametersUtils;
+import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 
 import nl.captcha.Captcha;
@@ -70,22 +70,18 @@ public class CreationCompte extends HttpServlet {
 
 		// Retour au formulaire si un paramètre est incorrect
 		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {
-			RequestDispatcher rd = request.getRequestDispatcher("/public/creation_compte.jsp");
-			rd.forward(request, response);
+			RootingsUtils.rootToPage("/public/creation_compte.jsp", request, response);
 			return;
 		}
 
 		// Les paramètres sont ok, on s'occupe de la requête
-		Personnes manager = Personnes.getInstance();
+		Users manager = Users.getInstance();
 		try {
 			manager.addNewPersonne(email, hashPwd.toString());
 			request.setAttribute("user", email);
-			RequestDispatcher rd = request.getRequestDispatcher("/public/succes_creation.jsp");
-			rd.forward(request, response);
+			RootingsUtils.rootToPage("/public/succes_creation.jsp", request, response);
 		} catch (SQLException e) {
-			request.setAttribute("error", e.getMessage());
-			RequestDispatcher rd = request.getRequestDispatcher("/public/server_error.jsp");
-			rd.forward(request, response);
+			RootingsUtils.rootToGenericError(e, request, response);
 		}
 	}
 

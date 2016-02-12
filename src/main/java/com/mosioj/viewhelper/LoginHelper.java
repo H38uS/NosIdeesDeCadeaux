@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.model.Personnes;
+import com.mosioj.model.Users;
 
 /**
  * Provides helper functions to the views. 
@@ -48,7 +48,7 @@ public class LoginHelper implements Filter {
 			if (userId == null) {
 				try {
 					// Getting the id
-					userId = Personnes.getInstance().getId(name);
+					userId = Users.getInstance().getId(name);
 					// Storing the new one
 					session.setAttribute("userid", userId);
 				} catch (SQLException e) {

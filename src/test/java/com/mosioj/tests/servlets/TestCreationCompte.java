@@ -1,24 +1,18 @@
-package com.mosioj.tests.controllers;
+package com.mosioj.tests.servlets;
 
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,30 +29,17 @@ import nl.captcha.Captcha;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(InternalConnection.class)
-public class TestCreationCompte {
+public class TestCreationCompte extends AbstractTestServlet {
 
-	private RequestDispatcherForTest dispatcher;
-	private HttpServletRequest request;
-	private HttpServletResponse response;
-	private HttpSession session;
 	private TestServlet servelet;
 
 	@Before
 	public void before() {
-		
-		request = mock(HttpServletRequest.class);
-		response = mock(HttpServletResponse.class);
-		session = mock(HttpSession.class);
 
-		dispatcher = mock(RequestDispatcherForTest.class);
-		
 		when(request.getRequestDispatcher("/public/creation_compte.jsp")).thenReturn(dispatcher);
 		when(request.getRequestDispatcher("/public/server_error.jsp")).thenReturn(dispatcher);
 		when(request.getRequestDispatcher("/public/succes_creation.jsp")).thenReturn(dispatcher);
-		when(request.getSession()).thenReturn(session);
 
-		assertNotNull(request.getSession());
-		
 		PowerMockito.mockStatic(InternalConnection.class);
 		servelet = new TestServlet();
 	}
@@ -129,16 +110,6 @@ public class TestCreationCompte {
 	}
 
 	// Utils classes
-
-	private class RequestDispatcherForTest implements RequestDispatcher {
-		@Override
-		public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-		}
-
-		@Override
-		public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-		}
-	}
 
 	@SuppressWarnings("serial")
 	private class TestServlet extends CreationCompte {

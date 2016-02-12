@@ -20,6 +20,17 @@
 				<li>
 					<a href="public/creation_compte.jsp">Créer un compte !</a>
 				</li>
+				<li>
+					Pas encore de groupe ?
+					<ul>
+						<li>
+							<a href="protected/todo.jsp">Rejoingez-en un</a> !
+						</li>
+						<li>
+							Ou <a href="protected/creation_groupe">créer</a> le vôtre !
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		<div>

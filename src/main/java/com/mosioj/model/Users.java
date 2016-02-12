@@ -10,17 +10,17 @@ import com.mosioj.utils.database.InternalConnection;
  * @author Jordan Mosio
  *
  */
-public class Personnes {
+public class Users {
 
 	/**
 	 * The singleton instance.
 	 */
-	private static Personnes instance;
+	private static Users instance;
 
 	/**
 	 * Internal constructor.
 	 */
-	private Personnes() {
+	private Users() {
 		// forbidden
 	}
 
@@ -28,9 +28,9 @@ public class Personnes {
 	 * 
 	 * @return The singleton instance.
 	 */
-	public static Personnes getInstance() {
+	public static Users getInstance() {
 		if (instance == null) {
-			instance = new Personnes();
+			instance = new Users();
 		}
 		return instance;
 	}
@@ -43,7 +43,7 @@ public class Personnes {
 	 * @throws SQLException
 	 */
 	public void addNewPersonne(String email, String digestedPwd) throws SQLException {
-		InternalConnection.executeUpdate("insert into personnes (email, password) values (?, ?)", email, digestedPwd);
+		InternalConnection.executeUpdate("insert into users (email, password) values (?, ?)", email, digestedPwd);
 		InternalConnection.executeUpdate("insert into user_roles (login, role) values (?, ?)", email, "user");
 	}
 
@@ -54,7 +54,7 @@ public class Personnes {
 	 * @throws SQLException
 	 */
 	public int getId(String name) throws SQLException {
-		return InternalConnection.selectInt("select id from personnes where email = ?", name);
+		return InternalConnection.selectInt("select id from users where email = ?", name);
 	}
 
 }
