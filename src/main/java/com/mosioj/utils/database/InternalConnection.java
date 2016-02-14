@@ -24,6 +24,15 @@ public class InternalConnection {
 
 	/**
 	 * 
+	 * @return A new connection. Warning : it must be closed.
+	 * @throws SQLException
+	 */
+	public static Connection getAConnection() throws SQLException {
+		return getDatasource().getConnection();
+	}
+
+	/**
+	 * 
 	 * @param query The sql query.
 	 * @param parameters Optional bindable parameters.
 	 * @return The result of the first row on the first column.
@@ -77,7 +86,15 @@ public class InternalConnection {
 		return retour;
 	}
 
-	private static void bindParameters(PreparedStatement statement, Object... parameters) throws SQLException {
+	/**
+	 * Binds the parameters according to their types.
+	 * Supports only String for the moment.
+	 * 
+	 * @param statement
+	 * @param parameters
+	 * @throws SQLException
+	 */
+	public static void bindParameters(PreparedStatement statement, Object... parameters) throws SQLException {
 		for (int i = 0; i < parameters.length; i++) {
 			statement.setString(i + 1, parameters[i].toString());
 		}

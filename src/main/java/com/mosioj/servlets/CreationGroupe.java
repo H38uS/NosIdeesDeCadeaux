@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.Groupes;
+import com.mosioj.model.Groupe;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
@@ -43,7 +43,7 @@ public class CreationGroupe extends HttpServlet {
 		int userId = ParametersUtils.getUserId(request);
 		boolean hasAGroup = false;
 		try {
-			hasAGroup = Groupes.getInstance().hasAGroup(userId);
+			hasAGroup = Groupe.hasAGroup(userId);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericError(e, request, response);
 			return;
@@ -56,7 +56,7 @@ public class CreationGroupe extends HttpServlet {
 		
 		// Création du groupe
 		try {
-			Groupes.getInstance().createGroup(groupeName, userId);
+			Groupe.createGroup(groupeName, userId);
 			RootingsUtils.rootToPage(SUCCESS_URL, request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericError(e, request, response);
@@ -69,7 +69,7 @@ public class CreationGroupe extends HttpServlet {
 		int userId = ParametersUtils.getUserId(req);
 		boolean hasAGroup = false;
 		try {
-			hasAGroup = Groupes.getInstance().hasAGroup(userId);
+			hasAGroup = Groupe.hasAGroup(userId);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericError(e, req, resp);
 			return;

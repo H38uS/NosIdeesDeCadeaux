@@ -30,13 +30,10 @@
 				<a href="protected/todo.jsp">Afficher mes listes partagées</a>
 			</li>
 			<li>
-				<a href="protected/todo.jsp">Créer un groupe !</a>
+				<a href="protected/creation_groupe">Créer un groupe !</a>
 			</li>
 			<li>
-				<a href="protected/todo.jsp">Rejoindre un groupe</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Créer un groupe</a>
+				<a href="protected/rechercher_groupe.jsp">Rejoindre un groupe</a>
 			</li>
 			<li>
 				<a href="protected/todo.jsp">Inviter des personnes !</a>

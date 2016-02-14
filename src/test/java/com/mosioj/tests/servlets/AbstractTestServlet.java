@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.junit.Before;
-
 public abstract class AbstractTestServlet {
 
 	protected RequestDispatcher dispatcher;
@@ -17,8 +15,7 @@ public abstract class AbstractTestServlet {
 	protected HttpServletResponse response;
 	protected HttpSession session;
 	
-	@Before
-	public void before() {
+	public AbstractTestServlet() {
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);
 		session = mock(HttpSession.class);

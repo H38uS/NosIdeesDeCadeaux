@@ -106,7 +106,7 @@ public class CreationCompte extends HttpServlet {
 	private List<String> checkEmail(ParameterValidator validator) {
 		validator.checkEmpty();
 		validator.checkIsEmailValid();
-		validator.checkIsUnique("select count(*) from personnes where email = ?");
+		validator.checkIsUnique("select count(*) from users where email = ?");
 		return validator.getErrors();
 	}
 }

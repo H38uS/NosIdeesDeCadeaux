@@ -22,6 +22,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.mosioj.model.Groupe;
 import com.mosioj.servlets.CreationGroupe;
 import com.mosioj.utils.database.InternalConnection;
 
@@ -82,7 +83,7 @@ public class TestCreationGroupe extends AbstractTestServlet {
 	public void testPostAlreadyExist() throws ServletException, IOException, SQLException {
 
 		when(request.getParameter("name")).thenReturn("Toto à la plage");
-		when(InternalConnection.selectInt("select count(*) from groupes where owner_id = ?", 32)).thenReturn(1);
+		when(InternalConnection.selectInt("select count(*) from " + Groupe.TABLE_NAME + " where owner_id = ?", 32)).thenReturn(1);
 
 		// Should not throw an exception
 		servelet.doTestPost(request, response);
@@ -96,7 +97,7 @@ public class TestCreationGroupe extends AbstractTestServlet {
 	public void testGetAlreadyExist() throws ServletException, IOException, SQLException {
 
 		when(request.getParameter("name")).thenReturn("Toto à la plage");
-		when(InternalConnection.selectInt("select count(*) from groupes where owner_id = ?", 32)).thenReturn(1);
+		when(InternalConnection.selectInt("select count(*) from " + Groupe.TABLE_NAME + " where owner_id = ?", 32)).thenReturn(1);
 
 		// Should not throw an exception
 		servelet.doTestGet(request, response);

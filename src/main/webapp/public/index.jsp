@@ -24,7 +24,7 @@
 					Pas encore de groupe ?
 					<ul>
 						<li>
-							<a href="protected/todo.jsp">Rejoingez-en un</a> !
+							<a href="protected/rechercher_groupe.jsp">Rejoingez-en un</a> !
 						</li>
 						<li>
 							Ou <a href="protected/creation_groupe">créer</a> le vôtre !

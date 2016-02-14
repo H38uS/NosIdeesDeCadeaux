@@ -43,8 +43,8 @@ public class Users {
 	 * @throws SQLException
 	 */
 	public void addNewPersonne(String email, String digestedPwd) throws SQLException {
-		InternalConnection.executeUpdate("insert into users (email, password) values (?, ?)", email, digestedPwd);
-		InternalConnection.executeUpdate("insert into user_roles (login, role) values (?, ?)", email, "user");
+		InternalConnection.executeUpdate("insert into users (email, password, creation_date) values (?, ?, now())", email, digestedPwd);
+		InternalConnection.executeUpdate("insert into user_roles (email, role) values (?, ?)", email, "user");
 	}
 
 	/**
