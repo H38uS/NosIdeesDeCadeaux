@@ -81,7 +81,7 @@ public class CreationCompte extends HttpServlet {
 			request.setAttribute("user", email);
 			RootingsUtils.rootToPage("/public/succes_creation.jsp", request, response);
 		} catch (SQLException e) {
-			RootingsUtils.rootToGenericError(e, request, response);
+			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
 	}
 

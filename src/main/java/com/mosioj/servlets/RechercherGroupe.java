@@ -25,10 +25,10 @@ public class RechercherGroupe extends HttpServlet {
 
 		String groupeName = ParametersUtils.readIt(request, "name").trim();
 		try {
-			request.setAttribute("groupes", Groupe.getGroupe(groupeName));
+			request.setAttribute("groupes", Groupe.getGroupsToJoin(groupeName, ParametersUtils.getUserId(request)));
 			RootingsUtils.rootToPage(FORM_URL, request, response);
 		} catch (SQLException e) {
-			RootingsUtils.rootToGenericError(e, request, response);
+			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
 	}
 

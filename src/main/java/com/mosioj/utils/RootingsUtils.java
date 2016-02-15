@@ -32,7 +32,7 @@ public class RootingsUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void rootToGenericError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setAttribute("error", exception.getMessage());
 		RequestDispatcher rd = req.getRequestDispatcher("/public/server_error.jsp");
 		rd.forward(req, resp);

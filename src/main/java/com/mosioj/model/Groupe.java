@@ -22,14 +22,21 @@ public class Groupe {
 	private final int id;
 	private final String name;
 	private final int nbMembers;
+	private final String status;
 
 	/**
 	 * Internal constructor.
+	 * 
+	 * @param pId
+	 * @param pName
+	 * @param pNbMembers
+	 * @param pStatus
 	 */
-	private Groupe(int pId, String pName, int pNbMembers) {
+	private Groupe(int pId, String pName, int pNbMembers, String pStatus) {
 		id = pId;
 		name = pName;
 		nbMembers = pNbMembers;
+		status = pStatus;
 	}
 
 	/**
@@ -58,11 +65,19 @@ public class Groupe {
 
 	/**
 	 * 
+	 * @return An optional group status.
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * 
 	 * @param nameToMatch
 	 * @return All group names matching the given string.
 	 * @throws SQLException
 	 */
-	public static List<Groupe> getGroupe(String nameToMatch) throws SQLException {
+	public static List<Groupe> getGroupsToJoin(String nameToMatch, int userId) throws SQLException {
 
 		Connection con = InternalConnection.getAConnection();
 
@@ -72,7 +87,7 @@ public class Groupe {
 		nameToMatch = nameToMatch.replaceAll("\\[", "![");
 
 		StringBuilder query = new StringBuilder();
-		query.append("select g.id, g.name, count(*) ");
+		query.append("select g.id, g.name, count(*), ( select 'Vous faites déjà parti de ce groupe !' as status from groupes_members gm2 where gm2.user_id = ? and gm2.groupe_id = g.id ) ");
 		query.append("from " + TABLE_NAME + " g, groupes_members gm ");
 		query.append("where g.id = gm.groupe_id ");
 		query.append("and g.name like ? ESCAPE '!' ");
@@ -81,7 +96,7 @@ public class Groupe {
 		List<Groupe> groupes = new ArrayList<Groupe>();
 		try {
 			PreparedStatement ps = con.prepareStatement(query.toString());
-			InternalConnection.bindParameters(ps, "%" + nameToMatch + "%");
+			InternalConnection.bindParameters(ps, userId, "%" + nameToMatch + "%");
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -89,7 +104,7 @@ public class Groupe {
 
 			ResultSet res = ps.getResultSet();
 			while (res.next()) {
-				groupes.add(new Groupe(res.getInt(1), res.getString(2), res.getInt(3)));
+				groupes.add(new Groupe(res.getInt(1), res.getString(2), res.getInt(3), res.getString(4)));
 			}
 
 		} finally {
@@ -120,8 +135,41 @@ public class Groupe {
 		InternalConnection.executeUpdate("insert into " + TABLE_NAME
 				+ " (name, owner_id, creation_date) values (?, ?, now())", groupeName, userId);
 		int groupeId = InternalConnection.selectInt("Select id from " + TABLE_NAME + " where owner_id = ?", userId);
+		addAssociation(groupeId, userId);
+	}
+
+	/**
+	 * 
+	 * @param groupId
+	 * @param userId
+	 * @return True if and only if userId belongs to groupId.
+	 * @throws SQLException 
+	 */
+	public static boolean associationExists(int groupId, int userId) throws SQLException {
+		return InternalConnection.doesReturnRows("select 1 from groupes_members where user_id = ? and groupe_id = ?", groupId, userId);
+	}
+
+	/**
+	 * Adds a new association between a group and a member.
+	 * 
+	 * @param groupeId
+	 * @param userId
+	 * @throws SQLException
+	 */
+	public static void addAssociation(int groupeId, int userId) throws SQLException {
 		InternalConnection.executeUpdate(	"insert into groupes_members (groupe_id, user_id, join_date) values (?, ?, now())",
 											groupeId,
 											userId);
 	}
+
+	/**
+	 * 
+	 * @param groupId
+	 * @return The group name for this id.
+	 * @throws SQLException
+	 */
+	public static String getName(int groupId) throws SQLException {
+		return InternalConnection.selectString("select name from groupes where id = ?", groupId);
+	}
+
 }

@@ -87,17 +87,31 @@ public class InternalConnection {
 	}
 
 	/**
-	 * Binds the parameters according to their types.
-	 * Supports only String for the moment.
+	 * Binds the parameters according to their types. Supports: - String - Integer - Null
 	 * 
 	 * @param statement
 	 * @param parameters
 	 * @throws SQLException
 	 */
 	public static void bindParameters(PreparedStatement statement, Object... parameters) throws SQLException {
+
 		for (int i = 0; i < parameters.length; i++) {
-			statement.setString(i + 1, parameters[i].toString());
+
+			Object parameter = parameters[i];
+			if (parameter == null) {
+				statement.setString(i + 1, null);
+				continue;
+			}
+
+			if (parameter instanceof Integer) {
+				statement.setInt(i + 1, (Integer) parameter);
+				continue;
+			}
+
+			// Default case - String
+			statement.setString(i + 1, parameter.toString());
 		}
+
 	}
 
 	/**
@@ -105,7 +119,7 @@ public class InternalConnection {
 	 * @return The data source to use.
 	 */
 	private static DataSource getDatasource() {
-		
+
 		if (ds == null) {
 			try {
 				Context initCtx = new InitialContext();
@@ -117,6 +131,65 @@ public class InternalConnection {
 		}
 
 		return ds;
+	}
+
+	/**
+	 * 
+	 * @param query
+	 * @param parameters
+	 * @return True if and only if the query returns at least one row.
+	 * @throws SQLException
+	 */
+	public static boolean doesReturnRows(String query, Object... parameters) throws SQLException {
+
+		Connection con = getAConnection();
+
+		try {
+			query = "select 1 from dual where exists ( " + query + " )";
+			PreparedStatement ps = con.prepareStatement(query);
+			bindParameters(ps, parameters);
+
+			if (!ps.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = ps.getResultSet();
+			return res.first();
+
+		} finally {
+			con.close();
+		}
+	}
+
+	/**
+	 * 
+	 * @param query The sql query.
+	 * @param parameters Optional bindable parameters.
+	 * @return The result of the first row on the first column.
+	 * @throws SQLException
+	 */
+	public static String selectString(String query, Object... parameters) throws SQLException {
+
+		Connection conn = getDatasource().getConnection();
+		try {
+
+			PreparedStatement statement = conn.prepareStatement(query);
+			bindParameters(statement, parameters);
+
+			if (!statement.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = statement.getResultSet();
+			if (!res.first()) {
+				throw new SQLException("No rows retrieved.");
+			}
+
+			return res.getString(1);
+
+		} finally {
+			conn.close();
+		}
 	}
 
 }

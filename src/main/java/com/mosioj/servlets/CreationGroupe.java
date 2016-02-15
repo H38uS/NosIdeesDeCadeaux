@@ -45,7 +45,7 @@ public class CreationGroupe extends HttpServlet {
 		try {
 			hasAGroup = Groupe.hasAGroup(userId);
 		} catch (SQLException e) {
-			RootingsUtils.rootToGenericError(e, request, response);
+			RootingsUtils.rootToGenericSQLError(e, request, response);
 			return;
 		}
 
@@ -59,7 +59,7 @@ public class CreationGroupe extends HttpServlet {
 			Groupe.createGroup(groupeName, userId);
 			RootingsUtils.rootToPage(SUCCESS_URL, request, response);
 		} catch (SQLException e) {
-			RootingsUtils.rootToGenericError(e, request, response);
+			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
 	}
 
@@ -71,7 +71,7 @@ public class CreationGroupe extends HttpServlet {
 		try {
 			hasAGroup = Groupe.hasAGroup(userId);
 		} catch (SQLException e) {
-			RootingsUtils.rootToGenericError(e, req, resp);
+			RootingsUtils.rootToGenericSQLError(e, req, resp);
 			return;
 		}
 

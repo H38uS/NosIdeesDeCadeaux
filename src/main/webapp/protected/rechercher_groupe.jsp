@@ -33,12 +33,22 @@
 						<tr>
 							<th>Nom du groupe</th>
 							<th>Nombre de membres</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 				<c:forEach var="groupe" items="${groupes}">
 					<tr>
 						<td>${groupe.name}</td>
 						<td>${groupe.nbMembers}</td>
+						<td>
+							<c:if test="${fn:length(groupe.status) == 0}">
+								<form method="POST" action="protected/rejoindre_groupe">
+									<input hidden="true" type="text" name="groupe_id" value="${groupe.id}" >
+									<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
+								</form>
+							</c:if>
+							${groupe.status}
+						</td>
 					</tr>
 				</c:forEach>
 				</table>
