@@ -48,7 +48,7 @@ public class LoginHelper implements Filter {
 			if (userId == null) {
 				try {
 					// Getting the id
-					userId = Users.getInstance().getId(name);
+					userId = Users.getId(name);
 					// Storing the new one
 					session.setAttribute("userid", userId);
 				} catch (SQLException e) {

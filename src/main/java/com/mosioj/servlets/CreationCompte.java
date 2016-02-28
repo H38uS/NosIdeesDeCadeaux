@@ -75,9 +75,8 @@ public class CreationCompte extends HttpServlet {
 		}
 
 		// Les paramètres sont ok, on s'occupe de la requête
-		Users manager = Users.getInstance();
 		try {
-			manager.addNewPersonne(email, hashPwd.toString());
+			Users.addNewPersonne(email, hashPwd.toString());
 			request.setAttribute("user", email);
 			RootingsUtils.rootToPage("/public/succes_creation.jsp", request, response);
 		} catch (SQLException e) {

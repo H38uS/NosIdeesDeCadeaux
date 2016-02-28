@@ -143,10 +143,12 @@ public class Groupe {
 	 * @param groupId
 	 * @param userId
 	 * @return True if and only if userId belongs to groupId.
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public static boolean associationExists(int groupId, int userId) throws SQLException {
-		return InternalConnection.doesReturnRows("select 1 from groupes_members where user_id = ? and groupe_id = ?", groupId, userId);
+		return InternalConnection.doesReturnRows(	"select 1 from groupes_members where user_id = ? and groupe_id = ?",
+													groupId,
+													userId);
 	}
 
 	/**
@@ -170,6 +172,47 @@ public class Groupe {
 	 */
 	public static String getName(int groupId) throws SQLException {
 		return InternalConnection.selectString("select name from groupes where id = ?", groupId);
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return The group id for this user, or null if he has no group.
+	 * @throws SQLException
+	 */
+	public static int getGroupId(int userId) throws SQLException {
+		return InternalConnection.selectInt("select id from " + TABLE_NAME + " where owner_id = ?", userId);
+	}
+
+	/**
+	 * 
+	 * @param groupId
+	 * @return All members to the given group.
+	 * @throws SQLException 
+	 */
+	public static List<User> getUsers(int groupId) throws SQLException {
+
+		List<User> users = new ArrayList<User>();
+		Connection con = InternalConnection.getAConnection();
+
+		try {
+			String query = "select gm.user_id from groupes_members gm where gm.groupe_id = ?";
+			PreparedStatement ps = con.prepareStatement(query);
+			InternalConnection.bindParameters(ps, groupId);
+
+			if (!ps.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = ps.getResultSet();
+			while (res.next()) {
+				users.add(new User(res.getInt(1)));
+			}
+
+		} finally {
+			con.close();
+		}
+		return users;
 	}
 
 }
