@@ -28,6 +28,7 @@ public class RejoindreGroupe extends HttpServlet {
 		int groupId = Integer.parseInt(ParametersUtils.readIt(request, "groupe_id"));
 		
 		try {
+			// FIXME : il faut juste envoyer une demande et ensuite que le owner accepte
 			int userId = ParametersUtils.getUserId(request);
 			request.setAttribute("name", Groupe.getName(groupId));
 			
