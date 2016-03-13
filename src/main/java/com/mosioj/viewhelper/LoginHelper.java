@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.model.Users;
+import com.mosioj.model.table.Users;
 
 /**
  * Provides helper functions to the views. 

@@ -1,4 +1,4 @@
-package com.mosioj.servlets;
+package com.mosioj.servlets.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.Groupe;
+import com.mosioj.model.table.Groupes;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -25,7 +25,7 @@ public class RechercherGroupe extends HttpServlet {
 
 		String groupeName = ParametersUtils.readIt(request, "name").trim();
 		try {
-			request.setAttribute("groupes", Groupe.getGroupsToJoin(groupeName, ParametersUtils.getUserId(request)));
+			request.setAttribute("groupes", Groupes.getGroupesManager().getGroupsToJoin(groupeName, ParametersUtils.getUserId(request)));
 			RootingsUtils.rootToPage(FORM_URL, request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);

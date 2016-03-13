@@ -1,4 +1,4 @@
-package com.mosioj.tests.servlets;
+package com.mosioj.tests.servlets.instance;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -11,8 +11,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +19,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.mosioj.servlets.CreationCompte;
+import com.mosioj.servlets.controllers.CreationCompte;
+import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.tests.utils.CaptchaMockFactory;
 import com.mosioj.utils.database.InternalConnection;
 
@@ -31,7 +30,9 @@ import nl.captcha.Captcha;
 @PrepareForTest(InternalConnection.class)
 public class TestCreationCompte extends AbstractTestServlet {
 
-	private TestServlet servelet;
+	public TestCreationCompte() {
+		super(new CreationCompte());
+	}
 
 	@Before
 	public void before() {
@@ -41,7 +42,6 @@ public class TestCreationCompte extends AbstractTestServlet {
 		when(request.getRequestDispatcher("/public/succes_creation.jsp")).thenReturn(dispatcher);
 
 		PowerMockito.mockStatic(InternalConnection.class);
-		servelet = new TestServlet();
 	}
 
 	public void initCaptcha(boolean ok) {
@@ -55,7 +55,7 @@ public class TestCreationCompte extends AbstractTestServlet {
 		initCaptcha(true);
 		
 		// Should not throw an exception
-		servelet.doTestPost(request, response);
+		doTestPost(request, response);
 
 		// Test parameters call
 		verify(request).getParameter(eq("email"));
@@ -83,7 +83,7 @@ public class TestCreationCompte extends AbstractTestServlet {
 		when(request.getParameter("pwd")).thenReturn("mydummypwd");
 
 		// Should not throw an exception
-		servelet.doTestPost(request, response);
+		doTestPost(request, response);
 
 		// Success
 		verify(request).getRequestDispatcher(eq("/public/succes_creation.jsp"));
@@ -100,7 +100,7 @@ public class TestCreationCompte extends AbstractTestServlet {
 		when(request.getParameter("pwd")).thenReturn("mydummypwd");
 
 		// Should not throw an exception
-		servelet.doTestPost(request, response);
+		doTestPost(request, response);
 		
 		// Invalid
 		verify(request).getParameter(eq("answer")); // Captcha
@@ -109,13 +109,4 @@ public class TestCreationCompte extends AbstractTestServlet {
 		verify(request, never()).getRequestDispatcher(eq("/public/succes_creation.jsp"));
 	}
 
-	// Utils classes
-
-	@SuppressWarnings("serial")
-	private class TestServlet extends CreationCompte {
-		protected void doTestPost(HttpServletRequest request, HttpServletResponse response)
-				throws ServletException, IOException {
-			super.doPost(request, response);
-		}
-	}
 }

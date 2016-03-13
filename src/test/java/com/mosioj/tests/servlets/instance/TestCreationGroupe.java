@@ -1,4 +1,4 @@
-package com.mosioj.tests.servlets;
+package com.mosioj.tests.servlets.instance;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,15 +20,18 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.mosioj.model.Groupe;
-import com.mosioj.servlets.CreationGroupe;
+import com.mosioj.model.table.Groupes;
+import com.mosioj.servlets.controllers.CreationGroupe;
+import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.database.InternalConnection;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(InternalConnection.class)
 public class TestCreationGroupe extends AbstractTestServlet {
 
-	private TestServlet servelet;
+	public TestCreationGroupe() {
+		super(new CreationGroupe());
+	}
 
 	@Before
 	public void before() {
@@ -39,17 +40,14 @@ public class TestCreationGroupe extends AbstractTestServlet {
 		when(request.getRequestDispatcher(CreationGroupe.EXISTS_URL)).thenReturn(dispatcher);
 		when(request.getRequestDispatcher(CreationGroupe.FORM_URL)).thenReturn(dispatcher);
 
-		when(session.getAttribute("userid")).thenReturn(32);
-
 		PowerMockito.mockStatic(InternalConnection.class);
-		servelet = new TestServlet();
 	}
 
 	@Test
 	public void testPostEmptyParameters() throws ServletException, IOException {
 
 		// Should not throw an exception
-		servelet.doTestPost(request, response);
+		doTestPost(request, response);
 
 		// Test parameters call
 		verify(request).getParameter(eq("name"));
@@ -71,7 +69,7 @@ public class TestCreationGroupe extends AbstractTestServlet {
 		when(request.getParameter("name")).thenReturn("Toto à la plage");
 
 		// Should not throw an exception
-		servelet.doTestPost(request, response);
+		doTestPost(request, response);
 
 		// Success
 		verify(request).getRequestDispatcher(eq(CreationGroupe.SUCCESS_URL));
@@ -83,10 +81,10 @@ public class TestCreationGroupe extends AbstractTestServlet {
 	public void testPostAlreadyExist() throws ServletException, IOException, SQLException {
 
 		when(request.getParameter("name")).thenReturn("Toto à la plage");
-		when(InternalConnection.selectInt("select count(*) from " + Groupe.TABLE_NAME + " where owner_id = ?", 32)).thenReturn(1);
+		when(InternalConnection.selectInt("select count(*) from " + Groupes.TABLE_NAME + " where owner_id = ?", 32)).thenReturn(1);
 
 		// Should not throw an exception
-		servelet.doTestPost(request, response);
+		doTestPost(request, response);
 
 		verify(request).getRequestDispatcher(eq(CreationGroupe.EXISTS_URL));
 		verify(request, never()).getRequestDispatcher(eq(CreationGroupe.FORM_URL));
@@ -97,10 +95,10 @@ public class TestCreationGroupe extends AbstractTestServlet {
 	public void testGetAlreadyExist() throws ServletException, IOException, SQLException {
 
 		when(request.getParameter("name")).thenReturn("Toto à la plage");
-		when(InternalConnection.selectInt("select count(*) from " + Groupe.TABLE_NAME + " where owner_id = ?", 32)).thenReturn(1);
+		when(InternalConnection.selectInt("select count(*) from " + Groupes.TABLE_NAME + " where owner_id = ?", 32)).thenReturn(1);
 
 		// Should not throw an exception
-		servelet.doTestGet(request, response);
+		doTestGet(request, response);
 
 		verify(request).getRequestDispatcher(eq(CreationGroupe.EXISTS_URL));
 	}
@@ -111,23 +109,9 @@ public class TestCreationGroupe extends AbstractTestServlet {
 		when(request.getParameter("name")).thenReturn("Toto à la plage");
 
 		// Should not throw an exception
-		servelet.doTestGet(request, response);
+		doTestGet(request, response);
 
 		verify(request).getRequestDispatcher(eq(CreationGroupe.FORM_URL));
 	}
 
-	// Utils classes
-
-	@SuppressWarnings("serial")
-	private class TestServlet extends CreationGroupe {
-		protected void doTestPost(HttpServletRequest request, HttpServletResponse response)
-				throws ServletException, IOException {
-			super.doPost(request, response);
-		}
-
-		protected void doTestGet(HttpServletRequest req, HttpServletResponse resp)
-				throws ServletException, IOException {
-			super.doGet(req, resp);
-		}
-	}
 }

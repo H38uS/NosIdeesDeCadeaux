@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 public class RootingsUtils {
 
 	/**
+	 * The common error page.
+	 */
+	public static final String PUBLIC_SERVER_ERROR_JSP = "/public/server_error.jsp";
+
+	/**
 	 * Get the dispatcher and forward the request.
 	 * 
 	 * @param url
@@ -34,7 +39,7 @@ public class RootingsUtils {
 	 */
 	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setAttribute("error", exception.getMessage());
-		RequestDispatcher rd = req.getRequestDispatcher("/public/server_error.jsp");
+		RequestDispatcher rd = req.getRequestDispatcher(PUBLIC_SERVER_ERROR_JSP);
 		rd.forward(req, resp);
 	}
 }

@@ -1,4 +1,4 @@
-package com.mosioj.servlets;
+package com.mosioj.servlets.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -6,17 +6,16 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.Groupe;
+import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 
 @WebServlet("/protected/creation_groupe")
-public class CreationGroupe extends HttpServlet {
+public class CreationGroupe extends IdeesCadeauxServlet {
 
 	public static final String SUCCESS_URL = "/protected/creation_groupe_succes.jsp";
 	public static final String EXISTS_URL = "/protected/existing_groupe.jsp";
@@ -24,7 +23,7 @@ public class CreationGroupe extends HttpServlet {
 	private static final long serialVersionUID = -6329056607731725444L;
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
 		String groupeName = ParametersUtils.readIt(request, "name").trim();
@@ -43,7 +42,7 @@ public class CreationGroupe extends HttpServlet {
 		int userId = ParametersUtils.getUserId(request);
 		boolean hasAGroup = false;
 		try {
-			hasAGroup = Groupe.hasAGroup(userId);
+			hasAGroup = groupes.hasAGroup(userId);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 			return;
@@ -56,7 +55,7 @@ public class CreationGroupe extends HttpServlet {
 		
 		// Création du groupe
 		try {
-			Groupe.createGroup(groupeName, userId);
+			groupes.createGroup(groupeName, userId);
 			RootingsUtils.rootToPage(SUCCESS_URL, request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
@@ -64,12 +63,12 @@ public class CreationGroupe extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		int userId = ParametersUtils.getUserId(req);
 		boolean hasAGroup = false;
 		try {
-			hasAGroup = Groupe.hasAGroup(userId);
+			hasAGroup = groupes.hasAGroup(userId);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 			return;

@@ -1,4 +1,4 @@
-package com.mosioj.servlets;
+package com.mosioj.servlets.controllers;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -8,12 +8,12 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.model.Users;
+import com.mosioj.model.table.Users;
+import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
@@ -21,7 +21,7 @@ import com.mosioj.utils.validators.ParameterValidator;
 import nl.captcha.Captcha;
 
 @WebServlet("/creation_compte")
-public class CreationCompte extends HttpServlet {
+public class CreationCompte extends IdeesCadeauxServlet {
 
 	/**
 	 * 
@@ -29,7 +29,7 @@ public class CreationCompte extends HttpServlet {
 	private static final long serialVersionUID = -101081965549681889L;
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession();
@@ -78,6 +78,7 @@ public class CreationCompte extends HttpServlet {
 		try {
 			Users.addNewPersonne(email, hashPwd.toString());
 			request.setAttribute("user", email);
+			session.invalidate();
 			RootingsUtils.rootToPage("/public/succes_creation.jsp", request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
