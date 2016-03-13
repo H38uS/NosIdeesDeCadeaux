@@ -14,20 +14,13 @@ import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.mosioj.servlets.controllers.CreationCompte;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.tests.utils.CaptchaMockFactory;
-import com.mosioj.utils.database.InternalConnection;
 
 import nl.captcha.Captcha;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(InternalConnection.class)
 public class TestCreationCompte extends AbstractTestServlet {
 
 	public TestCreationCompte() {
@@ -40,8 +33,6 @@ public class TestCreationCompte extends AbstractTestServlet {
 		when(request.getRequestDispatcher("/public/creation_compte.jsp")).thenReturn(dispatcher);
 		when(request.getRequestDispatcher("/public/server_error.jsp")).thenReturn(dispatcher);
 		when(request.getRequestDispatcher("/public/succes_creation.jsp")).thenReturn(dispatcher);
-
-		PowerMockito.mockStatic(InternalConnection.class);
 	}
 
 	public void initCaptcha(boolean ok) {

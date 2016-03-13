@@ -15,7 +15,7 @@ import javax.sql.DataSource;
  * @author Jordan Mosio
  *
  */
-public class InternalConnection {
+public class ConnectionIdKDo {
 
 	/**
 	 * The internal datasource.
@@ -27,7 +27,7 @@ public class InternalConnection {
 	 * @return A new connection. Warning : it must be closed.
 	 * @throws SQLException
 	 */
-	public static Connection getAConnection() throws SQLException {
+	public Connection getAConnection() throws SQLException {
 		return getDatasource().getConnection();
 	}
 
@@ -38,9 +38,9 @@ public class InternalConnection {
 	 * @return The result of the first row on the first column.
 	 * @throws SQLException
 	 */
-	public static int selectInt(String query, Object... parameters) throws SQLException {
+	public int selectInt(String query, Object... parameters) throws SQLException {
 
-		Connection conn = getDatasource().getConnection();
+		Connection conn = getAConnection();
 		try {
 
 			PreparedStatement statement = conn.prepareStatement(query);
@@ -70,9 +70,9 @@ public class InternalConnection {
 	 * @return The number of rows inserted / updated / deleted.
 	 * @throws SQLException
 	 */
-	public static int executeUpdate(String query, Object... parameters) throws SQLException {
+	public int executeUpdate(String query, Object... parameters) throws SQLException {
 
-		Connection conn = getDatasource().getConnection();
+		Connection conn = getAConnection();
 		int retour = 0;
 
 		try {
@@ -93,7 +93,7 @@ public class InternalConnection {
 	 * @param parameters
 	 * @throws SQLException
 	 */
-	public static void bindParameters(PreparedStatement statement, Object... parameters) throws SQLException {
+	public void bindParameters(PreparedStatement statement, Object... parameters) throws SQLException {
 
 		for (int i = 0; i < parameters.length; i++) {
 
@@ -140,7 +140,7 @@ public class InternalConnection {
 	 * @return True if and only if the query returns at least one row.
 	 * @throws SQLException
 	 */
-	public static boolean doesReturnRows(String query, Object... parameters) throws SQLException {
+	public boolean doesReturnRows(String query, Object... parameters) throws SQLException {
 
 		Connection con = getAConnection();
 
@@ -168,9 +168,9 @@ public class InternalConnection {
 	 * @return The result of the first row on the first column.
 	 * @throws SQLException
 	 */
-	public static String selectString(String query, Object... parameters) throws SQLException {
+	public String selectString(String query, Object... parameters) throws SQLException {
 
-		Connection conn = getDatasource().getConnection();
+		Connection conn = getAConnection();
 		try {
 
 			PreparedStatement statement = conn.prepareStatement(query);

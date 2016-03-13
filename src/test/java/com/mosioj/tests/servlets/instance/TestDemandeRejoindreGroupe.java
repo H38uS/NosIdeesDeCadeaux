@@ -3,7 +3,6 @@ package com.mosioj.tests.servlets.instance;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,34 +14,22 @@ import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.mosioj.model.table.GroupeJoinRequests;
-import com.mosioj.model.table.Groupes;
 import com.mosioj.servlets.controllers.DemandeRejoindreGroupe;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.RootingsUtils;
-import com.mosioj.utils.database.InternalConnection;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(InternalConnection.class)
 public class TestDemandeRejoindreGroupe extends AbstractTestServlet {
 
 	public TestDemandeRejoindreGroupe() {
-		super(new DemandeRejoindreGroupe(mock(Groupes.class), mock(GroupeJoinRequests.class)));
+		super(new DemandeRejoindreGroupe());
 	}
 
 	@Before
 	public void before() {
-
 		when(request.getRequestDispatcher(DemandeRejoindreGroupe.SUCCESS_URL)).thenReturn(dispatcher);
 		when(request.getRequestDispatcher(DemandeRejoindreGroupe.ERROR_URL)).thenReturn(dispatcher);
 		when(request.getRequestDispatcher(RootingsUtils.PUBLIC_SERVER_ERROR_JSP)).thenReturn(dispatcher);
-
-		PowerMockito.mockStatic(InternalConnection.class);
 	}
 
 	@Test
@@ -77,7 +64,7 @@ public class TestDemandeRejoindreGroupe extends AbstractTestServlet {
 	public void testAlreadySent() throws ServletException, IOException, SQLException {
 		
 		when(request.getParameter("groupe_id")).thenReturn("1");
-		when(instance.groupesJoinRequest.associationExists(32, 1)).thenReturn(true);
+		when(groupeJoinRequest.associationExists(32, 1)).thenReturn(true);
 		
 		// Should not throw an exception
 		doTestPost(request, response);
@@ -92,7 +79,6 @@ public class TestDemandeRejoindreGroupe extends AbstractTestServlet {
 		
 		when(request.getParameter("groupe_id")).thenReturn("1");
 
-		Groupes groupes = instance.groupes;
 		when(groupes.getName(1)).thenReturn("My group name !!!");
 		when(groupes.associationExists(1, 32)).thenReturn(true);
 		
@@ -106,7 +92,6 @@ public class TestDemandeRejoindreGroupe extends AbstractTestServlet {
 	
 	// TODO : faire un test pour les liens : parser les jsp et vérifier qu'on en a pas des morts
 	// TODO : tester les liens dans les controlleurs
-	// TODO : faire un test générique qui teste une servelet : <T extends servlet>
 	// TODO : faire un test rechercher groupe, et notamment quand on a déjà envoyé une demande
 
 }

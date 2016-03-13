@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.mosioj.model.table.GroupeJoinRequests;
-import com.mosioj.model.table.Groupes;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -26,14 +24,6 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 	private static final Logger logger = Logger.getLogger(AdministrationGroupe.class);
 
 	private static final long serialVersionUID = -8940314241887215166L;
-
-	public AdministrationGroupe() {
-		super();
-	}
-
-	public AdministrationGroupe(Groupes groupesManager, GroupeJoinRequests groupesJoinRequestManager) {
-		super(groupesManager, groupesJoinRequestManager);
-	}
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

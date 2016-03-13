@@ -11,20 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mosioj.model.Demande;
-import com.mosioj.utils.database.InternalConnection;
 
-public class GroupeJoinRequests {
+public class GroupeJoinRequests extends Table {
 
 	public static final String TABLE_NAME = "GROUPE_JOIN_REQUESTS";
-	private static GroupeJoinRequests instance;
 
-	public static GroupeJoinRequests getManager() {
-		if (instance == null) {
-			instance = new GroupeJoinRequests();
-		}
-		return instance;
-	}
-	
 	/**
 	 * Insert a new line.
 	 * 
@@ -40,7 +31,7 @@ public class GroupeJoinRequests {
 		insert.append(" values ");
 		insert.append("(?, ?)");
 
-		InternalConnection.executeUpdate(insert.toString(), joinerId, groupeId);
+		getDb().executeUpdate(insert.toString(), joinerId, groupeId);
 	}
 
 	/**
@@ -57,7 +48,7 @@ public class GroupeJoinRequests {
 		query.append("where " + JOINER_ID + " = ? and ");
 		query.append(GROUPE_ID + " = ?");
 
-		return InternalConnection.doesReturnRows(query.toString(), joinerId, groupeId);
+		return getDb().doesReturnRows(query.toString(), joinerId, groupeId);
 	}
 
 	/**
@@ -74,7 +65,7 @@ public class GroupeJoinRequests {
 		query.append("where " + JOINER_ID + " = ? and ");
 		query.append(GROUPE_ID + " = ?");
 		
-		InternalConnection.executeUpdate(query.toString(), userId, groupId);
+		getDb().executeUpdate(query.toString(), userId, groupId);
 	}
 
 	/**
@@ -86,7 +77,7 @@ public class GroupeJoinRequests {
 	public List<Demande> getDemandes(int groupId) throws SQLException {
 
 		List<Demande> demandes = new ArrayList<Demande>();
-		Connection con = InternalConnection.getAConnection();
+		Connection con = getDb().getAConnection();
 
 		try {
 			StringBuilder query = new StringBuilder();
@@ -96,7 +87,7 @@ public class GroupeJoinRequests {
 			query.append(" where " + GROUPE_ID + " = ?");
 			
 			PreparedStatement ps = con.prepareStatement(query.toString(), groupId);
-			InternalConnection.bindParameters(ps, groupId);
+			getDb().bindParameters(ps, groupId);
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");

@@ -8,8 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.table.GroupeJoinRequests;
-import com.mosioj.model.table.Groupes;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -21,18 +19,9 @@ public class DemandeRejoindreGroupe extends IdeesCadeauxServlet {
 
 	public static final String SUCCESS_URL = "/protected/demande_rejoindre_groupe_succes.jsp";
 	public static final String ERROR_URL = "/protected/demande_rejoindre_groupe_error.jsp";
-	
-	public DemandeRejoindreGroupe(Groupes groupesManager, GroupeJoinRequests groupesJoinRequestManager) {
-		super(groupesManager, groupesJoinRequestManager);
-	}
-	
-	public DemandeRejoindreGroupe() {
-		super();
-	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
 			String group = ParametersUtils.readIt(request, "groupe_id");

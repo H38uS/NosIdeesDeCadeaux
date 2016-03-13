@@ -10,24 +10,11 @@ import java.util.List;
 
 import com.mosioj.model.Groupe;
 import com.mosioj.model.User;
-import com.mosioj.utils.database.InternalConnection;
 
-public class Groupes {
+public class Groupes extends Table {
 
 	public static final String TABLE_NAME = "GROUPES";
-	private static Groupes instance;
-
-	private Groupes() {
-		// Forbidden
-	}
-
-	public static Groupes getGroupesManager() {
-		if (instance == null) {
-			instance = new Groupes();
-		}
-		return instance;
-	}
-
+	
 	/**
 	 * 
 	 * @param nameToMatch
@@ -36,7 +23,7 @@ public class Groupes {
 	 */
 	public List<Groupe> getGroupsToJoin(String nameToMatch, int userId) throws SQLException {
 
-		Connection con = InternalConnection.getAConnection();
+		Connection con = getDb().getAConnection();
 
 		nameToMatch = nameToMatch.replaceAll("!", "!!");
 		nameToMatch = nameToMatch.replaceAll("%", "!%");
@@ -53,7 +40,7 @@ public class Groupes {
 		List<Groupe> groupes = new ArrayList<Groupe>();
 		try {
 			PreparedStatement ps = con.prepareStatement(query.toString());
-			InternalConnection.bindParameters(ps, userId, "%" + nameToMatch + "%");
+			getDb().bindParameters(ps, userId, "%" + nameToMatch + "%");
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -78,19 +65,19 @@ public class Groupes {
 	 * @throws SQLException
 	 */
 	public boolean hasAGroup(int userId) throws SQLException {
-		return InternalConnection.selectInt("select count(*) from " + TABLE_NAME + " where owner_id = ?", userId) > 0;
+		return getDb().selectInt("select count(*) from " + TABLE_NAME + " where owner_id = ?", userId) > 0;
 	}
-	
+
 	/**
 	 * 
 	 * @param userId
 	 * @param groupId
 	 * @return True if and only if the user is the owner of this group.
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public boolean isGroupOwner(int userId, int groupId) throws SQLException {
 		// TODO utiliser des colonnes
-		return InternalConnection.doesReturnRows("select 1 from " + TABLE_NAME + " where owner_id = ? and id = ?", userId, groupId);
+		return getDb().doesReturnRows("select 1 from " + TABLE_NAME + " where owner_id = ? and id = ?", userId, groupId);
 	}
 
 	/**
@@ -101,10 +88,10 @@ public class Groupes {
 	 * @throws SQLException
 	 */
 	public void createGroup(String groupeName, int userId) throws SQLException {
-		InternalConnection.executeUpdate("insert into " + TABLE_NAME
+		getDb().executeUpdate("insert into " + TABLE_NAME
 				+ " (name, owner_id, creation_date) values (?, ?, now())", groupeName, userId);
-		int groupeId = InternalConnection.selectInt("Select id from " + TABLE_NAME + " where owner_id = ?", userId);
-		getGroupesManager().addAssociation(groupeId, userId);
+		int groupeId = getDb().selectInt("Select id from " + TABLE_NAME + " where owner_id = ?", userId);
+		addAssociation(groupeId, userId);
 	}
 
 	/**
@@ -115,9 +102,7 @@ public class Groupes {
 	 * @throws SQLException
 	 */
 	public boolean associationExists(int groupId, int userId) throws SQLException {
-		return InternalConnection.doesReturnRows(	"select 1 from groupes_members where user_id = ? and groupe_id = ?",
-													groupId,
-													userId);
+		return getDb().doesReturnRows("select 1 from groupes_members where user_id = ? and groupe_id = ?", groupId, userId);
 	}
 
 	/**
@@ -128,14 +113,14 @@ public class Groupes {
 	 * @throws SQLException
 	 */
 	public void addAssociation(int groupeId, int userId) throws SQLException {
-		InternalConnection.executeUpdate(	"insert into groupes_members (groupe_id, user_id, join_date) values (?, ?, now())",
-											groupeId,
-											userId);
-		InternalConnection.executeUpdate(MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
-																GroupeJoinRequests.TABLE_NAME,
-																GroupeJoinRequestsColumns.JOINER_ID,
-																GroupeJoinRequestsColumns.GROUPE_ID),
-											userId, groupeId);
+		getDb().executeUpdate(	"insert into groupes_members (groupe_id, user_id, join_date) values (?, ?, now())",
+										groupeId,
+										userId);
+		getDb().executeUpdate(MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
+															GroupeJoinRequests.TABLE_NAME,
+															GroupeJoinRequestsColumns.JOINER_ID,
+															GroupeJoinRequestsColumns.GROUPE_ID),
+										userId, groupeId);
 	}
 
 	/**
@@ -145,7 +130,7 @@ public class Groupes {
 	 * @throws SQLException
 	 */
 	public String getName(int groupId) throws SQLException {
-		return InternalConnection.selectString("select name from groupes where id = ?", groupId);
+		return getDb().selectString("select name from groupes where id = ?", groupId);
 	}
 
 	/**
@@ -155,7 +140,7 @@ public class Groupes {
 	 * @throws SQLException
 	 */
 	public int getGroupId(int userId) throws SQLException {
-		return InternalConnection.selectInt("select id from " + TABLE_NAME + " where owner_id = ?", userId);
+		return getDb().selectInt("select id from " + TABLE_NAME + " where owner_id = ?", userId);
 	}
 
 	/**
@@ -167,12 +152,12 @@ public class Groupes {
 	public List<User> getUsers(int groupId) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
-		Connection con = InternalConnection.getAConnection();
+		Connection con = getDb().getAConnection();
 
 		try {
 			String query = "select gm.user_id from groupes_members gm where gm.groupe_id = ?";
 			PreparedStatement ps = con.prepareStatement(query);
-			InternalConnection.bindParameters(ps, groupId);
+			getDb().bindParameters(ps, groupId);
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -27,7 +26,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -101081965549681889L;
-
+	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -76,7 +75,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 
 		// Les paramètres sont ok, on s'occupe de la requête
 		try {
-			Users.addNewPersonne(email, hashPwd.toString());
+			users.addNewPersonne(email, hashPwd.toString());
 			request.setAttribute("user", email);
 			session.invalidate();
 			RootingsUtils.rootToPage("/public/succes_creation.jsp", request, response);
@@ -106,7 +105,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 	private List<String> checkEmail(ParameterValidator validator) {
 		validator.checkEmpty();
 		validator.checkIsEmailValid();
-		validator.checkIsUnique("select count(*) from users where email = ?");
+		validator.checkIsUnique("select count(*) from users where email = ?", validatorConnection);
 		return validator.getErrors();
 	}
 }

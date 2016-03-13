@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-
+import com.mosioj.model.table.GroupeJoinRequests;
+import com.mosioj.model.table.Groupes;
+import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.tests.TemplateTest;
+import com.mosioj.utils.database.ConnectionIdKDo;
 
-@PowerMockIgnore( {"javax.management.*"}) 
 public abstract class AbstractTestServlet extends TemplateTest {
 
 	protected RequestDispatcher dispatcher;
@@ -24,9 +25,14 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected HttpServletResponse response;
 	protected HttpSession session;
 	
-	protected final IdeesCadeauxServlet instance;
+	// Tables
+	protected ConnectionIdKDo db;
+	protected Users users;
+	protected Groupes groupes;
+	protected GroupeJoinRequests groupeJoinRequest;
+	protected ConnectionIdKDo validator;
 	
-	// TODO tester l'instanciation sans argument de toutes les servlets
+	protected final IdeesCadeauxServlet instance;
 	
 	public AbstractTestServlet(IdeesCadeauxServlet pInstance) {
 		
@@ -35,10 +41,20 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		session = mock(HttpSession.class);
 		dispatcher = mock(RequestDispatcher.class);
 		
+		
 		when(request.getSession()).thenReturn(session);
 		when(session.getAttribute("userid")).thenReturn(32);
 		
+		groupes = mock(Groupes.class);
+		groupeJoinRequest = mock(GroupeJoinRequests.class);
+		validator = mock(ConnectionIdKDo.class);
+		users = mock(Users.class);
 		instance = pInstance;
+		instance.setUsers(users);
+		instance.setGroupes(groupes);
+		instance.setGroupeJoinRequests(groupeJoinRequest);
+		instance.setValidatorConnection(validator);
+		
 	}
 
 	/**

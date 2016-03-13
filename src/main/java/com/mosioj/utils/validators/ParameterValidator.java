@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
-import com.mosioj.utils.database.InternalConnection;
+import com.mosioj.utils.database.ConnectionIdKDo;
 
 /**
  * Permet à l'application de vérifier la pertinence des paramètres.
@@ -95,11 +95,12 @@ public class ParameterValidator {
 	/**
 	 * 
 	 * @param sqlQuery It must be a select, than returns 1 row and 1 integer column with the count of occurrence. The
-	 *            query must also have exactly a string bind parameter for the parameter value. 
+	 *            query must also have exactly a string bind parameter for the parameter value.
+	 * @param db The connection to use.
 	 */
-	public void checkIsUnique(String sqlQuery) {
+	public void checkIsUnique(String sqlQuery, ConnectionIdKDo db) {
 		try {
-			int res = InternalConnection.selectInt(sqlQuery, parameterValue);
+			int res = db.selectInt(sqlQuery, parameterValue);
 			if (res > 0) {
 				errors.add(article + parameterName + " existe déjà.");
 			}

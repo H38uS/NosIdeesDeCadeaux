@@ -23,14 +23,13 @@ public class CreationGroupe extends IdeesCadeauxServlet {
 	private static final long serialVersionUID = -6329056607731725444L;
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		String groupeName = ParametersUtils.readIt(request, "name").trim();
 		ParameterValidator validator = new ParameterValidator(groupeName, "nom du groupe", "Le ");
 		validator.checkEmpty();
 		validator.checkSize(-1, 50);
-		
+
 		List<String> errors = validator.getErrors();
 		if (!errors.isEmpty()) {
 			request.setAttribute("name_errors", errors);
@@ -52,7 +51,7 @@ public class CreationGroupe extends IdeesCadeauxServlet {
 			RootingsUtils.rootToPage(EXISTS_URL, request, response);
 			return;
 		}
-		
+
 		// Création du groupe
 		try {
 			groupes.createGroup(groupeName, userId);
@@ -64,7 +63,7 @@ public class CreationGroupe extends IdeesCadeauxServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
 		int userId = ParametersUtils.getUserId(req);
 		boolean hasAGroup = false;
 		try {
@@ -78,9 +77,9 @@ public class CreationGroupe extends IdeesCadeauxServlet {
 			RootingsUtils.rootToPage(EXISTS_URL, req, resp);
 			return;
 		}
-		
+
 		// On affiche le formulaire
 		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
-	
+
 }

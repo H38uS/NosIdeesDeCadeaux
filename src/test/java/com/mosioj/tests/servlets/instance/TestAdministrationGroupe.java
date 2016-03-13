@@ -3,7 +3,6 @@ package com.mosioj.tests.servlets.instance;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,29 +18,21 @@ import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.mosioj.model.User;
-import com.mosioj.model.table.GroupeJoinRequests;
-import com.mosioj.model.table.Groupes;
 import com.mosioj.servlets.controllers.AdministrationGroupe;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.database.InternalConnection;
 
-@RunWith(PowerMockRunner.class)
 public class TestAdministrationGroupe extends AbstractTestServlet {
 
 	public TestAdministrationGroupe() throws SQLException {
-		super(new AdministrationGroupe(mock(Groupes.class), mock(GroupeJoinRequests.class)));
+		super(new AdministrationGroupe());
 	}
 
 	@Before
 	public void before() throws SQLException {
 		when(request.getRequestDispatcher(AdministrationGroupe.ERROR_URL)).thenReturn(dispatcher);
 		when(request.getRequestDispatcher(AdministrationGroupe.FORM_URL)).thenReturn(dispatcher);
-		PowerMockito.mockStatic(InternalConnection.class);
 	}
 
 	@Test
@@ -78,7 +69,7 @@ public class TestAdministrationGroupe extends AbstractTestServlet {
 	public void testPostSuccess() throws ServletException, IOException, SQLException {
 
 		when(request.getParameter("groupId")).thenReturn("18");
-		when(instance.groupes.isGroupOwner(32, 18)).thenReturn(true);
+		when(groupes.isGroupOwner(32, 18)).thenReturn(true);
 		
 		Map<String, String[]> params = new HashMap<String, String[]>();
 		params.put("choix_7", new String[]{"Accepter"});
@@ -92,8 +83,8 @@ public class TestAdministrationGroupe extends AbstractTestServlet {
 		doTestPost(request, response);
 
 		// Success
-		verify(instance.groupes, times(2)).addAssociation(eq(18), anyInt());
-		verify(instance.groupesJoinRequest, times(3)).cancelRequest(eq(18), anyInt());
+		verify(groupes, times(2)).addAssociation(eq(18), anyInt());
+		verify(groupeJoinRequest, times(3)).cancelRequest(eq(18), anyInt());
 		
 		verify(request, never()).setAttribute(eq("error_message"), anyObject());
 		verify(request).getRequestDispatcher(eq(AdministrationGroupe.FORM_URL));
@@ -103,7 +94,6 @@ public class TestAdministrationGroupe extends AbstractTestServlet {
 	@Test
 	public void testGetSuccess() throws ServletException, IOException, SQLException {
 		
-		Groupes groupes = instance.groupes;
 		when(groupes.getGroupId(32)).thenReturn(3);
 		when(groupes.getUsers(3)).thenReturn(new ArrayList<User>());
 

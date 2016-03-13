@@ -2,7 +2,7 @@ package com.mosioj.model;
 
 import java.sql.SQLException;
 
-import com.mosioj.utils.database.InternalConnection;
+import com.mosioj.utils.database.ConnectionIdKDo;
 
 public class User {
 
@@ -10,7 +10,8 @@ public class User {
 	
 	public User(int i) {
 		try {
-			name = InternalConnection.selectString("select email from users where id = ?", i);
+			ConnectionIdKDo db = new ConnectionIdKDo();
+			name = db.selectString("select email from users where id = ?", i);
 		} catch (SQLException e) {
 			name = "L'identifiant n'existe pas";
 		}
