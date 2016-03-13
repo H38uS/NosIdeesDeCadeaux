@@ -11,6 +11,7 @@ import java.sql.SQLException;
 public class Users extends Table {
 	
 	public static final String TABLE_NAME = "USERS";
+	// TODO utiliser des colonnes
 
 	/**
 	 * Inserts a new person into the database !

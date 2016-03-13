@@ -21,8 +21,8 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 
 	public static final String FORM_URL = "/protected/administration_groupe.jsp";
 	public static final String ERROR_URL = "/protected/administration_groupe_error.jsp";
-	private static final Logger logger = Logger.getLogger(AdministrationGroupe.class);
 
+	private static final Logger logger = Logger.getLogger(AdministrationGroupe.class);
 	private static final long serialVersionUID = -8940314241887215166L;
 
 	@Override

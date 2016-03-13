@@ -1,9 +1,13 @@
 package com.mosioj.tests.servlets;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -54,6 +58,45 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		instance.setGroupes(groupes);
 		instance.setGroupeJoinRequests(groupeJoinRequest);
 		instance.setValidatorConnection(validator);
+		
+		try {
+			validateInstanceLinks();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			fail();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * Tests that all links for the current tested instance exists.
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	private void validateInstanceLinks() throws IllegalArgumentException, IllegalAccessException {
+		
+		Field[] fields = instance.getClass().getFields();
+		boolean hasAURL = false;
+		for (Field field : fields) {
+			
+			String name = field.getName();
+			if (!name.contains("URL")) {
+				continue;
+			}
+
+			hasAURL = true;
+			
+			String path = (String) field.get(null);
+			File root = new File(getClass().getResource("/").getFile()).getParentFile().getParentFile();
+			File web = new File(root, "src/main/webapp");
+			
+			assertTrue(web.exists());			
+			assertTrue(new File(web, path).exists());
+		}
+		
+		assertTrue("No URL static field found - this is really strange !!!", hasAURL);
 		
 	}
 

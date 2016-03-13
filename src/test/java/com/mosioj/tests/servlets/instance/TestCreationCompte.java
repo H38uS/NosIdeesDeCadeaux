@@ -18,6 +18,7 @@ import org.junit.Test;
 import com.mosioj.servlets.controllers.CreationCompte;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.tests.utils.CaptchaMockFactory;
+import com.mosioj.utils.RootingsUtils;
 
 import nl.captcha.Captcha;
 
@@ -30,9 +31,9 @@ public class TestCreationCompte extends AbstractTestServlet {
 	@Before
 	public void before() {
 
-		when(request.getRequestDispatcher("/public/creation_compte.jsp")).thenReturn(dispatcher);
-		when(request.getRequestDispatcher("/public/server_error.jsp")).thenReturn(dispatcher);
-		when(request.getRequestDispatcher("/public/succes_creation.jsp")).thenReturn(dispatcher);
+		when(request.getRequestDispatcher(CreationCompte.FORM_URL)).thenReturn(dispatcher);
+		when(request.getRequestDispatcher(RootingsUtils.PUBLIC_SERVER_ERROR_JSP)).thenReturn(dispatcher);
+		when(request.getRequestDispatcher(CreationCompte.SUCCES_URL)).thenReturn(dispatcher);
 	}
 
 	public void initCaptcha(boolean ok) {
@@ -60,9 +61,9 @@ public class TestCreationCompte extends AbstractTestServlet {
 		verify(request, atMost(2)).setAttribute(anyString(), anyObject());
 
 		// Error in processing
-		verify(request).getRequestDispatcher(eq("/public/creation_compte.jsp"));
-		verify(request, never()).getRequestDispatcher(eq("/public/server_error.jsp"));
-		verify(request, never()).getRequestDispatcher(eq("/public/succes_creation.jsp"));
+		verify(request).getRequestDispatcher(eq(CreationCompte.FORM_URL));
+		verify(request, never()).getRequestDispatcher(eq(RootingsUtils.PUBLIC_SERVER_ERROR_JSP));
+		verify(request, never()).getRequestDispatcher(eq(CreationCompte.SUCCES_URL));
 	}
 
 	@Test
@@ -77,9 +78,9 @@ public class TestCreationCompte extends AbstractTestServlet {
 		doTestPost(request, response);
 
 		// Success
-		verify(request).getRequestDispatcher(eq("/public/succes_creation.jsp"));
-		verify(request, never()).getRequestDispatcher(eq("/public/server_error.jsp"));
-		verify(request, never()).getRequestDispatcher(eq("/public/creation_compte.jsp"));
+		verify(request).getRequestDispatcher(eq(CreationCompte.SUCCES_URL));
+		verify(request, never()).getRequestDispatcher(eq(RootingsUtils.PUBLIC_SERVER_ERROR_JSP));
+		verify(request, never()).getRequestDispatcher(eq(CreationCompte.FORM_URL));
 	}
 
 	@Test
@@ -95,9 +96,9 @@ public class TestCreationCompte extends AbstractTestServlet {
 		
 		// Invalid
 		verify(request).getParameter(eq("answer")); // Captcha
-		verify(request).getRequestDispatcher(eq("/public/creation_compte.jsp"));
-		verify(request, never()).getRequestDispatcher(eq("/public/server_error.jsp"));
-		verify(request, never()).getRequestDispatcher(eq("/public/succes_creation.jsp"));
+		verify(request).getRequestDispatcher(eq(CreationCompte.FORM_URL));
+		verify(request, never()).getRequestDispatcher(eq(RootingsUtils.PUBLIC_SERVER_ERROR_JSP));
+		verify(request, never()).getRequestDispatcher(eq(CreationCompte.SUCCES_URL));
 	}
 
 }

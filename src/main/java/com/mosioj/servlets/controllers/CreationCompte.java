@@ -22,6 +22,9 @@ import nl.captcha.Captcha;
 @WebServlet("/creation_compte")
 public class CreationCompte extends IdeesCadeauxServlet {
 
+	public static final String SUCCES_URL = "/public/succes_creation.jsp";
+	public static final String FORM_URL = "/public/creation_compte.jsp";
+
 	/**
 	 * 
 	 */
@@ -69,7 +72,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 
 		// Retour au formulaire si un paramètre est incorrect
 		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {
-			RootingsUtils.rootToPage("/public/creation_compte.jsp", request, response);
+			RootingsUtils.rootToPage(FORM_URL, request, response);
 			return;
 		}
 
@@ -78,7 +81,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 			users.addNewPersonne(email, hashPwd.toString());
 			request.setAttribute("user", email);
 			session.invalidate();
-			RootingsUtils.rootToPage("/public/succes_creation.jsp", request, response);
+			RootingsUtils.rootToPage(SUCCES_URL, request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
