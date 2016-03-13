@@ -52,7 +52,7 @@ public class InternalConnection {
 
 			ResultSet res = statement.getResultSet();
 			if (!res.first()) {
-				throw new SQLException("No rows retrieved.");
+				throw new SQLException("No rows retrieved."); // TODO : faire une exception différente !!
 			}
 
 			return res.getInt(1);

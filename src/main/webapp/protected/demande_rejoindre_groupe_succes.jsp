@@ -6,7 +6,7 @@
 <t:normal>
 	<jsp:body>
 		<h2>Succès !</h2>
-		<div>Vous venez de rejoindre le groupe ${name}.</div>
+		<div>Une demande pour rejoindre le groupe ${name} vient d'être envoyée.</div>
 		<a href="public/index.jsp">Retour à l'accueil.</a>
 	</jsp:body>
 </t:normal>

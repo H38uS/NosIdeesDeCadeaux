@@ -1,4 +1,4 @@
-package com.mosioj.model;
+package com.mosioj.model.table;
 
 import java.sql.SQLException;
 
@@ -11,6 +11,8 @@ import com.mosioj.utils.database.InternalConnection;
  *
  */
 public class Users {
+	
+	public static final String TABLE_NAME = "USERS";
 
 	/**
 	 * Internal constructor.

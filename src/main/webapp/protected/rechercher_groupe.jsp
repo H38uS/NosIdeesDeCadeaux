@@ -42,7 +42,7 @@
 						<td>${groupe.nbMembers}</td>
 						<td>
 							<c:if test="${fn:length(groupe.status) == 0}">
-								<form method="POST" action="protected/rejoindre_groupe">
+								<form method="POST" action="protected/demande_rejoindre_groupe">
 									<input hidden="true" type="text" name="groupe_id" value="${groupe.id}" >
 									<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
 								</form>
