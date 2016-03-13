@@ -2,12 +2,15 @@ package com.mosioj.servlets.controllers;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 
 import com.mosioj.model.table.GroupeJoinRequests;
 import com.mosioj.model.table.Groupes;
@@ -20,6 +23,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 
 	public static final String FORM_URL = "/protected/administration_groupe.jsp";
 	public static final String ERROR_URL = "/protected/administration_groupe_error.jsp";
+	private static final Logger logger = Logger.getLogger(AdministrationGroupe.class);
 
 	private static final long serialVersionUID = -8940314241887215166L;
 
@@ -41,7 +45,9 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 			id = groupes.getGroupId(userId);
 
 		} catch (SQLException e) {
-			req.setAttribute("error_message", "Vous n'avez pas encore créé un groupe, vous ne pouvez donc pas l'administrer.");
+			logger.error("Impossible de récupérer le groupe depuis le user " + userId + ". Erreur: " + e.getMessage());
+			req.setAttribute(	"error_message",
+								"Vous n'avez pas encore créé un groupe, vous ne pouvez donc pas l'administrer.");
 			RootingsUtils.rootToPage(ERROR_URL, req, resp);
 			return;
 		}
@@ -52,6 +58,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 			req.setAttribute("members", groupes.getUsers(id));
 			RootingsUtils.rootToPage(FORM_URL, req, resp);
 		} catch (SQLException e) {
+			logger.error("Erreur SQL: " + e.getMessage());
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 		}
 	}
@@ -65,6 +72,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		try {
 			groupId = Integer.parseInt(pGroupId);
 		} catch (NumberFormatException e) {
+			logger.error("Groupe incorrect (" + pGroupId + "). Erreur: " + e.getMessage());
 			request.setAttribute("error_message", "Le groupe fourni n'existe pas.");
 			RootingsUtils.rootToPage(ERROR_URL, request, response);
 			return;
@@ -72,31 +80,38 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 
 		try {
 			if (!groupes.isGroupOwner(userId, groupId)) {
+				logger.error(MessageFormat.format(	"Essaie de l''utilisateur {0} d''administrer le groupe {1}.",
+													userId,
+													groupId));
 				request.setAttribute("error_message", "Vous ne pouvez administrer que votre groupe.");
 				RootingsUtils.rootToPage(ERROR_URL, request, response);
 				return;
 			}
-			
+
 			Map<String, String[]> params = request.getParameterMap();
 			for (String key : params.keySet()) {
-				
+
 				if (!key.startsWith("choix")) {
 					continue;
 				}
-				
+
 				String id = key.substring("choix_".length());
 				boolean accept = "Accepter".equals(params.get(key)[0]);
-				
+
 				if (accept) {
+					logger.info(MessageFormat.format(	"Approbation de la demande. Utilisateur {0}, groupe {1}.",
+														id,
+														groupId));
 					groupes.addAssociation(groupId, Integer.parseInt(id));
 				} else {
+					logger.info(MessageFormat.format("Refus de la demande. Utilisateur {0}, groupe {1}.", id, groupId));
 					groupesJoinRequest.cancelRequest(groupId, Integer.parseInt(id));
 				}
 			}
 
 			// Redirection à la page d'administration
 			doGet(request, response);
-			
+
 		} catch (SQLException e) {
 			RootingsUtils.rootToPage(ERROR_URL, request, response);
 			return;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="org.apache.logging.log4j.core" >
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
+		</Console>
+		<File name="File" fileName="testLogs/IdeesDeCadeaux.log" append="true">
+			<PatternLayout
+				pattern="%d{HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
+		</File>
+	</Appenders>
+
+	<Loggers>
+		<logger name="org" level="warn" />
+		<logger name="com.mosioj" level="debug" />
+		<Root>
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="File" />
+		</Root>
+	</Loggers>
+</Configuration>

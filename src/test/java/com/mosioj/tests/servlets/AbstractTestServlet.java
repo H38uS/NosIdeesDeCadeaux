@@ -11,9 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
-public abstract class AbstractTestServlet {
+import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.tests.TemplateTest;
+
+@PowerMockIgnore( {"javax.management.*"}) 
+public abstract class AbstractTestServlet extends TemplateTest {
 
 	protected RequestDispatcher dispatcher;
 	protected HttpServletRequest request;
