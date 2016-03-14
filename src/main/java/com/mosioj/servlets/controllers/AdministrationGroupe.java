@@ -52,6 +52,9 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 		}
 	}
+	
+	
+	// TODO : pouvoir supprimer des membres (enfin pas soit)
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

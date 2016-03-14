@@ -36,5 +36,8 @@ public class RechercherGroupe extends HttpServlet {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
 	}
+	
+	// TODO faire un test
+	// TODO : ne pas afficher le bouton rejoindre groupe si on a déjà envoyé une demande...
 
 }
