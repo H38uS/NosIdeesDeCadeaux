@@ -27,6 +27,7 @@
 							<input type="submit" name="submit" id="submit" value="Se connecter" />
 						</td>
 					</tr>
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				</table>
 			</form>
 		</div>

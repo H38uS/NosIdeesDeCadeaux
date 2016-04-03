@@ -24,6 +24,7 @@
 						</td>
 					</tr>
 				</table>
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</div>
 		<div>
@@ -45,6 +46,7 @@
 								<form method="POST" action="protected/demande_rejoindre_groupe">
 									<input hidden="true" type="text" name="groupe_id" value="${groupe.id}" >
 									<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
+									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 								</form>
 							</c:if>
 							${groupe.status}

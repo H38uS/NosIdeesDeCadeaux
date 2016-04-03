@@ -48,6 +48,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		groupes = new Groupes();
 		groupesJoinRequest = new GroupeJoinRequests();
 		validatorConnection = new ConnectionIdKDo();
+		users = new Users();
 	}
 
 	/**

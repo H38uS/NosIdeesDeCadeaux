@@ -33,6 +33,7 @@
 						</table>
 						<input type="hidden" name="groupId" id="groupId" value="${groupId}" >
 						<input type="submit" id="submit" name="submit" value="Sauvegarder">
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 					</form>
 				</c:when>
 				<c:otherwise>

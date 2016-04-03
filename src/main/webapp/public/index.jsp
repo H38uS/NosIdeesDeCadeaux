@@ -37,5 +37,10 @@
 			Du blabla !
 		</div>
 		<div>Déjà membre ? Accéder <a href="protected/index.jsp">à mon espace.</a></div>
+		
+		<div>
+			Bonjour <c:out value="${username}" /> - 
+			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
+		</div>
 	</jsp:body>
 </t:normal>

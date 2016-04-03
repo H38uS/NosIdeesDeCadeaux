@@ -22,7 +22,7 @@ public class Users extends Table {
 	 */
 	public void addNewPersonne(String email, String digestedPwd) throws SQLException {
 		getDb().executeUpdate("insert into users (email, password, creation_date) values (?, ?, now())", email, digestedPwd);
-		getDb().executeUpdate("insert into user_roles (email, role) values (?, ?)", email, "user");
+		getDb().executeUpdate("insert into user_roles (email, role) values (?, ?)", email, "ROLE_USER");
 	}
 
 	/**

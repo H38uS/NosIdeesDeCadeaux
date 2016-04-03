@@ -25,6 +25,7 @@
 							</tr>
 						</c:forEach>
 					</c:if>
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 					<tr>
 						<td colspan="2" align="center">
 							<input type="submit" name="submit" id="submit" value="Créer !" />

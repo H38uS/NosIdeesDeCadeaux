@@ -1,5 +1,6 @@
 <%@  taglib  uri="http://java.sun.com/jsp/jstl/sql"  prefix="sql"%>
 <%@  taglib  uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
@@ -24,6 +25,12 @@
 		</div>
 		<div>Id: <c:out value="${userid}" /></div>
 		
+		<sec:authorize access="isFullyAuthenticated()">
+			<div>Connecté via un formulaire.</div>
+		</sec:authorize>
+		<sec:authorize access="isRememberMe()">
+			<div>Connecté via remember me.</div>
+		</sec:authorize>
 		
 		<ul>
 			<li>
