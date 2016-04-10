@@ -9,6 +9,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+
 /**
  * Provides some method to access the database.
  * 
@@ -21,6 +23,11 @@ public class ConnectionIdKDo {
 	 * The internal datasource.
 	 */
 	private static DataSource ds;
+	
+	/**
+	 * Class logger.
+	 */
+	private static final Logger logger = Logger.getLogger(ConnectionIdKDo.class);
 
 	/**
 	 * 
@@ -95,9 +102,11 @@ public class ConnectionIdKDo {
 	 */
 	public void bindParameters(PreparedStatement statement, Object... parameters) throws SQLException {
 
+		logger.trace("Binding parameters...");
 		for (int i = 0; i < parameters.length; i++) {
 
 			Object parameter = parameters[i];
+			logger.trace("Binding parameter " + i + " to " + parameter);
 			if (parameter == null) {
 				statement.setString(i + 1, null);
 				continue;

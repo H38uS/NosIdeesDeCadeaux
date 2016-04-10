@@ -1,4 +1,4 @@
-package com.mosioj.model.table;
+package com.mosioj.model.table.columns;
 
 /**
  * The GROUPE_JOIN_REQUESTS table columns.
@@ -6,6 +6,6 @@ package com.mosioj.model.table;
  * @author Jordan Mosio
  *
  */
-enum GroupeJoinRequestsColumns {
+public enum GroupeJoinRequestsColumns {
 	JOINER_ID, GROUPE_ID;
 }

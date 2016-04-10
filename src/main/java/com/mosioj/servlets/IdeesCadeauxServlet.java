@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.table.GroupeJoinRequests;
 import com.mosioj.model.table.Groupes;
+import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Users;
 import com.mosioj.utils.database.ConnectionIdKDo;
 
@@ -42,6 +43,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected ConnectionIdKDo validatorConnection;
 
 	/**
+	 * The connections to the IDEES table.
+	 */
+	protected Idees idees;
+
+	/**
 	 * Class constructor.
 	 */
 	public IdeesCadeauxServlet() {
@@ -49,6 +55,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		groupesJoinRequest = new GroupeJoinRequests();
 		validatorConnection = new ConnectionIdKDo();
 		users = new Users();
+		idees = new Idees();
 	}
 
 	/**
@@ -87,6 +94,15 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		users = pUsers;
 	}
 
+	/**
+	 * For test purposes.
+	 * 
+	 * @param pIdees
+	 */
+	public void setIdees(Idees pIdees) {
+		idees = pIdees;
+	}
+
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		super.doGet(req, resp);
@@ -96,4 +112,5 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.doPost(request, response);
 	}
+
 }

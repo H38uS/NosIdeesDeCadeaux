@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.mosioj.model.Groupe;
 import com.mosioj.model.User;
+import com.mosioj.model.table.columns.GroupeJoinRequestsColumns;
 
 public class Groupes extends Table {
 

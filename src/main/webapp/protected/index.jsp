@@ -34,6 +34,9 @@
 		
 		<ul>
 			<li>
+				<a href="protected/ma_liste">Compléter ma liste</a>
+			</li>
+			<li>
 				<a href="protected/todo.jsp">Afficher mes listes partagées</a>
 			</li>
 			<li>

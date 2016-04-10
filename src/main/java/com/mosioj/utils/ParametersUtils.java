@@ -1,5 +1,7 @@
 package com.mosioj.utils;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -9,11 +11,12 @@ public class ParametersUtils {
 	 * 
 	 * @param request The processing request.
 	 * @param name The parameter name.
-	 * @return The parameter value, or null if not provided.
+	 * @return The parameter value, or empty string if not provided.
+	 * @throws UnsupportedEncodingException 
 	 */
-	public static String readIt(HttpServletRequest request, String name) {
+	public static String readIt(HttpServletRequest request, String name) throws UnsupportedEncodingException {
 		String res = request.getParameter(name);
-		return res == null ? "" : res;
+		return res == null ? "" : new String(res.getBytes("ISO-8859-1"), "UTF-8");
 	}
 
 	/**

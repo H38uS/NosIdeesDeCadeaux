@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import com.mosioj.model.table.GroupeJoinRequests;
 import com.mosioj.model.table.Groupes;
+import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.tests.TemplateTest;
@@ -24,6 +25,8 @@ import com.mosioj.utils.database.ConnectionIdKDo;
 
 public abstract class AbstractTestServlet extends TemplateTest {
 
+	protected static final int _OWNER_ID_ = 32;
+	
 	protected RequestDispatcher dispatcher;
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
@@ -35,6 +38,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected Groupes groupes;
 	protected GroupeJoinRequests groupeJoinRequest;
 	protected ConnectionIdKDo validator;
+	protected Idees idees;
 	
 	protected final IdeesCadeauxServlet instance;
 	
@@ -44,10 +48,11 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		response = mock(HttpServletResponse.class);
 		session = mock(HttpSession.class);
 		dispatcher = mock(RequestDispatcher.class);
+		idees = mock(Idees.class);
 		
 		
 		when(request.getSession()).thenReturn(session);
-		when(session.getAttribute("userid")).thenReturn(32);
+		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
 		
 		groupes = mock(Groupes.class);
 		groupeJoinRequest = mock(GroupeJoinRequests.class);
@@ -58,6 +63,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		instance.setGroupes(groupes);
 		instance.setGroupeJoinRequests(groupeJoinRequest);
 		instance.setValidatorConnection(validator);
+		instance.setIdees(idees);
 		
 		try {
 			validateInstanceLinks();
@@ -93,7 +99,8 @@ public abstract class AbstractTestServlet extends TemplateTest {
 			File web = new File(root, "src/main/webapp");
 			
 			assertTrue(web.exists());			
-			assertTrue(new File(web, path).exists());
+			File file = new File(web, path);
+			assertTrue("La jsp " + file + " n'existe pas.", file.exists());
 		}
 		
 		assertTrue("No URL static field found - this is really strange !!!", hasAURL);

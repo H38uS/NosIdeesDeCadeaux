@@ -10,5 +10,8 @@
 			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 		</div>
 		<a href="public/index.jsp">Retour à l'accueil.</a>
+		<div>
+			<a href="protected/index.jsp">Retour à mon espace.</a>
+		</div>
 	</jsp:body>
 </t:normal>

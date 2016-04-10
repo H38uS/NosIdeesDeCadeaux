@@ -1,7 +1,7 @@
 package com.mosioj.model.table;
 
-import static com.mosioj.model.table.GroupeJoinRequestsColumns.GROUPE_ID;
-import static com.mosioj.model.table.GroupeJoinRequestsColumns.JOINER_ID;
+import static com.mosioj.model.table.columns.GroupeJoinRequestsColumns.GROUPE_ID;
+import static com.mosioj.model.table.columns.GroupeJoinRequestsColumns.JOINER_ID;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
