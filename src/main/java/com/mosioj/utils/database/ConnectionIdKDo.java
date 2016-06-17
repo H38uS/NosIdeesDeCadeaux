@@ -9,7 +9,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Provides some method to access the database.
@@ -27,7 +28,7 @@ public class ConnectionIdKDo {
 	/**
 	 * Class logger.
 	 */
-	private static final Logger logger = Logger.getLogger(ConnectionIdKDo.class);
+	private static final Logger logger = LogManager.getLogger(ConnectionIdKDo.class);
 
 	/**
 	 * 

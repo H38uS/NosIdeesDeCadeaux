@@ -10,7 +10,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
@@ -22,7 +23,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 	public static final String FORM_URL = "/protected/administration_groupe.jsp";
 	public static final String ERROR_URL = "/protected/administration_groupe_error.jsp";
 
-	private static final Logger logger = Logger.getLogger(AdministrationGroupe.class);
+	private static final Logger logger = LogManager.getLogger(AdministrationGroupe.class);
 	private static final long serialVersionUID = -8940314241887215166L;
 
 	@Override
