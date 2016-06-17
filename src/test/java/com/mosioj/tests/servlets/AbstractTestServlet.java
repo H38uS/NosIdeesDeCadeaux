@@ -96,7 +96,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 			
 			String path = (String) field.get(null);
 			File root = new File(getClass().getResource("/").getFile()).getParentFile().getParentFile();
-			File web = new File(root, "src/main/webapp");
+			File web = new File(root, "WebContent");
 			
 			assertTrue(web.exists());			
 			File file = new File(web, path);
