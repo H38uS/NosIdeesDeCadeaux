@@ -4,14 +4,14 @@
 	<jsp:body>
 		<h2>Veuillez vous identifier pour accéder à cette page.</h2>
 		<div>
-			<form method="POST" action="j_security_check">
+			<form method="POST" action="login">
 				<table>
 					<tr>						
 						<td id="username-label">
 							<label for="username" class="required">Identifiant</label>
 						</td>
 						<td>
-							<input type="text" name="j_username" id="username" value="${param.j_username}" />
+							<input type="text" name="j_username" id="username" value="" />
 						</td>
 					</tr>
 					<tr>
@@ -23,12 +23,21 @@
 						</td>
 					</tr>
 					<tr>
+						<td>
+							<label for="remember-me">Maintenir la connexion</label>
+						</td>
+						<td>
+							<input id="remember-me" type="checkbox" name="remember-me" />
+						</td>
+					</tr>
+					<tr>
 						<td colspan="2" align="center">
 							<input type="submit" name="submit" id="submit" value="Se connecter" />
 						</td>
 					</tr>
-					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				</table>
+				
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</div>
 		<div class="error">
