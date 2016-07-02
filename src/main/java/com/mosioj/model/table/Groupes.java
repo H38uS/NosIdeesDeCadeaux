@@ -14,8 +14,9 @@ import com.mosioj.model.table.columns.GroupeJoinRequestsColumns;
 
 public class Groupes extends Table {
 
-	public static final String TABLE_NAME = "GROUPES";
-	
+	public static final String TABLE_NAME = "GROUPES_KDO";
+	public static final String GROUPE_MEMBERS = "GROUPES_KDO_MEMBERS";
+
 	/**
 	 * 
 	 * @param nameToMatch
@@ -32,8 +33,12 @@ public class Groupes extends Table {
 		nameToMatch = nameToMatch.replaceAll("\\[", "![");
 
 		StringBuilder query = new StringBuilder();
-		query.append("select g.id, g.name, count(*), ( select 'Vous faites déjà parti de ce groupe !' as status from groupes_members gm2 where gm2.user_id = ? and gm2.groupe_id = g.id ) ");
-		query.append("from " + TABLE_NAME + " g, groupes_members gm ");
+		query.append("select g.id, g.name, count(*),");
+
+		query.append(" ( select 'Vous faites déjà parti de ce groupe !' as status from ");
+		query.append(GROUPE_MEMBERS + " gm2 where gm2.user_id = ? and gm2.groupe_id = g.id ) ");
+
+		query.append("from " + TABLE_NAME + " g, " + GROUPE_MEMBERS + " gm ");
 		query.append("where g.id = gm.groupe_id ");
 		query.append("and g.name like ? ESCAPE '!' ");
 		query.append("group by g.id");
@@ -78,7 +83,9 @@ public class Groupes extends Table {
 	 */
 	public boolean isGroupOwner(int userId, int groupId) throws SQLException {
 		// TODO utiliser des colonnes
-		return getDb().doesReturnRows("select 1 from " + TABLE_NAME + " where owner_id = ? and id = ?", userId, groupId);
+		return getDb().doesReturnRows(	"select 1 from " + TABLE_NAME + " where owner_id = ? and id = ?",
+										userId,
+										groupId);
 	}
 
 	/**
@@ -89,8 +96,9 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public void createGroup(String groupeName, int userId) throws SQLException {
-		getDb().executeUpdate("insert into " + TABLE_NAME
-				+ " (name, owner_id, creation_date) values (?, ?, now())", groupeName, userId);
+		getDb().executeUpdate(	"insert into " + TABLE_NAME + " (name, owner_id, creation_date) values (?, ?, now())",
+								groupeName,
+								userId);
 		int groupeId = getDb().selectInt("Select id from " + TABLE_NAME + " where owner_id = ?", userId);
 		addAssociation(groupeId, userId);
 	}
@@ -103,7 +111,9 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public boolean associationExists(int groupId, int userId) throws SQLException {
-		return getDb().doesReturnRows("select 1 from groupes_members where user_id = ? and groupe_id = ?", groupId, userId);
+		return getDb().doesReturnRows(	"select 1 from " + GROUPE_MEMBERS + " where user_id = ? and groupe_id = ?",
+										groupId,
+										userId);
 	}
 
 	/**
@@ -114,14 +124,16 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public void addAssociation(int groupeId, int userId) throws SQLException {
-		getDb().executeUpdate(	"insert into groupes_members (groupe_id, user_id, join_date) values (?, ?, now())",
-										groupeId,
-										userId);
-		getDb().executeUpdate(MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
-															GroupeJoinRequests.TABLE_NAME,
-															GroupeJoinRequestsColumns.JOINER_ID,
-															GroupeJoinRequestsColumns.GROUPE_ID),
-										userId, groupeId);
+		getDb().executeUpdate(	"insert into " + GROUPE_MEMBERS
+				+ " (groupe_id, user_id, join_date) values (?, ?, now())",
+								groupeId,
+								userId);
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
+														GroupeJoinRequests.TABLE_NAME,
+														GroupeJoinRequestsColumns.JOINER_ID,
+														GroupeJoinRequestsColumns.GROUPE_ID),
+								userId,
+								groupeId);
 	}
 
 	/**
@@ -156,7 +168,7 @@ public class Groupes extends Table {
 		Connection con = getDb().getAConnection();
 
 		try {
-			String query = "select gm.user_id from groupes_members gm where gm.groupe_id = ?";
+			String query = "select gm.user_id from " + GROUPE_MEMBERS + " gm where gm.groupe_id = ?";
 			PreparedStatement ps = con.prepareStatement(query);
 			getDb().bindParameters(ps, groupId);
 
