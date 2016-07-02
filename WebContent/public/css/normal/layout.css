@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%; /* needed for container min-height */
+}
+
+div#container {
+	position: relative; /* needed for footer positioning*/
+	margin: 0 auto; /* center, not in IE5 */
+	width: 1024px;
+	height: auto !important; /* real browsers */
+	height: 100%; /* IE6: treaded as min-height*/
+	min-height: 100%; /* real browsers */
+	background: url("../../image/fond_index.png") 98% 10px repeat;
+}
+
+header {
+	background: #33D3E2;
+	text-align: center;
+}
+
+footer {
+	position: absolute;
+	width: 100%;
+	bottom: 0; /* stick to bottom */
+	background: #33D3E2;
+	text-align: center;
+	height: 30px;
+	color: white;
+}
+
+div#content {
+	padding: 10px 10px 40px 10px; /* bottom padding for footer */
+}

@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+
+.indexbox {
+	padding-top: 100px;
+	min-height: 200px;
+	text-align: center;
+}
+
+#middleindexbox {
+	text-align: center;
+	background: #33D3E2;
+	padding: 1em;
+	color: white;
+}
+
+.indexaction {
+	border: medium solid #33D3E2;
+	padding: 10px;
+	margin: 10px;
+	border-radius:1em;
+}

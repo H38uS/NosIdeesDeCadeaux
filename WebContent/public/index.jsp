@@ -3,44 +3,32 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<t:normal>
+<t:index>
 	<jsp:body>
-		<h1>Nosidéeskdo, des cadeaux qui font vraiment plaisir !</h1>
-		<img alt="" src="public/image/index/main.jpg" width="1240px" >
-		
-		<div>
+		<div class="indexbox">
+			<span class="indexaction">
+				<a href="protected/index.jsp">Se connecter</a>
+			</span>
+			<span class="indexaction">
+					<a href="public/creation_compte.jsp">Créer un compte</a>
+			</span>
+		</div>
+		<div id="middleindexbox">
 			Envie de nous rejoindre ? Découvrez l'univers des cadeaux qui font plaisir !
-			<ul>
-				<li>
-					<a href="public/comment_ca_marche.jsp">Comment ça marche ?</a>
-				</li>
-				<li>
-					<a href="public/todo.jsp">Démonstration</a>
-				</li>
-				<li>
-					<a href="public/creation_compte.jsp">Créer un compte !</a>
-				</li>
-				<li>
-					Pas encore de groupe ?
-					<ul>
-						<li>
-							<a href="protected/rechercher_groupe.jsp">Rejoingez-en un</a> !
-						</li>
-						<li>
-							Ou <a href="protected/creation_groupe">créer</a> le vôtre !
-						</li>
-					</ul>
-				</li>
-			</ul>
 		</div>
-		<div>
-			Du blabla !
-		</div>
-		<div>Déjà membre ? Accéder <a href="protected/index.jsp">à mon espace.</a></div>
-		
-		<div>
-			Bonjour <c:out value="${username}" /> - 
-			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
+		<div class="indexbox">
+			<span class="indexaction">
+				<a href="protected/creation_groupe">Créer un groupe !</a>
+			</span>
+			<span class="indexaction">
+				<a href="protected/rechercher_groupe.jsp">Rejoindre un groupe</a>
+			</span>
+			<span class="indexaction">
+				<a href="protected/todo.jsp">Afficher mes listes partagées</a>
+			</span>
+			<span class="indexaction">
+				<a href="protected/ma_liste">Compléter ma liste</a>
+			</span>
 		</div>
 	</jsp:body>
-</t:normal>
+</t:index>
