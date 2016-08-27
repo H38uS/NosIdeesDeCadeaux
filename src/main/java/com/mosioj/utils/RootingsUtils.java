@@ -7,12 +7,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class RootingsUtils {
 
 	/**
 	 * The common error page.
 	 */
 	public static final String PUBLIC_SERVER_ERROR_JSP = "/public/server_error.jsp";
+
+	/**
+	 * Class logger.
+	 */
+	private static final Logger logger = LogManager.getLogger(RootingsUtils.class);
 
 	/**
 	 * Get the dispatcher and forward the request.
@@ -38,6 +46,7 @@ public class RootingsUtils {
 	 * @throws IOException
 	 */
 	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		logger.error("An error occured: " + exception.getMessage());
 		req.setAttribute("error", exception.getMessage());
 		RequestDispatcher rd = req.getRequestDispatcher(PUBLIC_SERVER_ERROR_JSP);
 		rd.forward(req, resp);

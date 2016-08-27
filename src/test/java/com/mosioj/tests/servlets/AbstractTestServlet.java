@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.GroupeJoinRequests;
 import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
+import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.tests.TemplateTest;
@@ -39,6 +41,8 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected GroupeJoinRequests groupeJoinRequest;
 	protected ConnectionIdKDo validator;
 	protected Idees idees;
+	protected Categories cat;
+	protected Priorites prio;
 	
 	protected final IdeesCadeauxServlet instance;
 	
@@ -49,6 +53,8 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		session = mock(HttpSession.class);
 		dispatcher = mock(RequestDispatcher.class);
 		idees = mock(Idees.class);
+		cat = mock(Categories.class);
+		prio = mock(Priorites.class);
 		
 		
 		when(request.getSession()).thenReturn(session);
@@ -64,6 +70,8 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		instance.setGroupeJoinRequests(groupeJoinRequest);
 		instance.setValidatorConnection(validator);
 		instance.setIdees(idees);
+		instance.setCat(cat);
+		instance.setPrio(prio);
 		
 		try {
 			validateInstanceLinks();

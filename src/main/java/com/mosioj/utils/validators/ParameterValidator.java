@@ -66,6 +66,17 @@ public class ParameterValidator {
 			errors.add(article + parameterName + " ne peut pas être vide.");
 		}
 	}
+	
+	/**
+	 * Checks that parameter is an integer.
+	 */
+	public void checkIfInteger() {
+		try {
+			Integer.valueOf(parameterValue);
+		} catch (NumberFormatException e) {
+			 errors.add(article + parameterName + " doit être un nombre.");
+		}
+	}
 
 	/**
 	 * Checks that the parameter size is in the given range.

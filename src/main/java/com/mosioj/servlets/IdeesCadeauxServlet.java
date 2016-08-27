@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.GroupeJoinRequests;
 import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
+import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.Users;
 import com.mosioj.utils.database.ConnectionIdKDo;
 
@@ -48,6 +50,16 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected Idees idees;
 
 	/**
+	 * The connections to the CATEGORIES table.
+	 */
+	protected Categories categories;
+
+	/**
+	 * The connections to the PRIORITIES table.
+	 */
+	protected Priorites priorities;
+
+	/**
 	 * Class constructor.
 	 */
 	public IdeesCadeauxServlet() {
@@ -56,6 +68,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		validatorConnection = new ConnectionIdKDo();
 		users = new Users();
 		idees = new Idees();
+		categories = new Categories();
+		priorities = new Priorites();
 	}
 
 	/**
@@ -75,7 +89,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	public void setGroupeJoinRequests(GroupeJoinRequests pGroupeJoinRequests) {
 		groupesJoinRequest = pGroupeJoinRequests;
 	}
-	
+
 	/**
 	 * For test purposes.
 	 * 
@@ -111,6 +125,14 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.doPost(request, response);
+	}
+
+	public void setCat(Categories cat) {
+		categories = cat;
+	}
+
+	public void setPrio(Priorites prio) {
+		priorities = prio;
 	}
 
 }
