@@ -103,7 +103,6 @@ public abstract class AbstractTestServlet extends TemplateTest {
 			hasAURL = true;
 			
 			String path = (String) field.get(null);
-			File root = new File(getClass().getResource("/").getFile()).getParentFile().getParentFile();
 			File web = new File(root, "WebContent");
 			
 			assertTrue(web.exists());			

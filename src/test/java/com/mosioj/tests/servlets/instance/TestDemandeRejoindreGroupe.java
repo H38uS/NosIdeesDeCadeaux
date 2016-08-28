@@ -91,7 +91,6 @@ public class TestDemandeRejoindreGroupe extends AbstractTestServlet {
 	}
 	
 	// TODO : faire un test pour les liens : parser les jsp et vérifier qu'on en a pas des morts
-	// TODO : faire un test pour vérifier qu'on a bien le crf dans chaque formulaire 
 	
 	// TODO : faire un test rechercher groupe, et notamment quand on a déjà envoyé une demande
 

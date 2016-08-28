@@ -60,6 +60,9 @@ public class MaListe extends IdeesCadeauxServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// TODO échapper comme avant (<span, les <br, etc.)
+		// TODO faire un test du post
+		// TODO afficher les icones dans les idées
+		// TODO pouvoir supprimer une idée
 
 		// Reading parameters
 		String text = ParametersUtils.readIt(request, "text").trim();

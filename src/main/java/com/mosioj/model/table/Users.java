@@ -1,6 +1,14 @@
 package com.mosioj.model.table;
 
+import static com.mosioj.model.table.columns.UsersColumns.CREATION_DATE;
+import static com.mosioj.model.table.columns.UsersColumns.EMAIL;
+import static com.mosioj.model.table.columns.UsersColumns.ID;
+import static com.mosioj.model.table.columns.UsersColumns.PASSWORD;
+
 import java.sql.SQLException;
+import java.text.MessageFormat;
+
+import com.mosioj.model.table.columns.UserRolesColumns;
 
 /**
  * Représente la table de personnes.
@@ -9,9 +17,8 @@ import java.sql.SQLException;
  *
  */
 public class Users extends Table {
-	
+
 	public static final String TABLE_NAME = "USERS";
-	// TODO utiliser des colonnes
 
 	/**
 	 * Inserts a new person into the database !
@@ -21,8 +28,18 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public void addNewPersonne(String email, String digestedPwd) throws SQLException {
-		getDb().executeUpdate("insert into users (email, password, creation_date) values (?, ?, now())", email, digestedPwd);
-		getDb().executeUpdate("insert into user_roles (email, role) values (?, ?)", email, "ROLE_USER");
+		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, now())",
+														TABLE_NAME,
+														EMAIL,
+														PASSWORD,
+														CREATION_DATE),
+								email,
+								digestedPwd);
+		getDb().executeUpdate(	MessageFormat.format(	"insert into user_roles ({0},{1}) values (?, ?)",
+														UserRolesColumns.EMAIL,
+														UserRolesColumns.ROLE),
+								email,
+								"ROLE_USER");
 	}
 
 	/**
@@ -32,7 +49,7 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public int getId(String name) throws SQLException {
-		return getDb().selectInt("select id from users where email = ?", name);
+		return getDb().selectInt(MessageFormat.format("select {0} from {1}where {2} = ?", ID, TABLE_NAME, EMAIL), name);
 	}
 
 }
