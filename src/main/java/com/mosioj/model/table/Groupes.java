@@ -11,6 +11,12 @@ import java.util.List;
 import com.mosioj.model.Groupe;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.GroupeJoinRequestsColumns;
+import com.mosioj.model.table.columns.GroupeKDOMembersColumn;
+
+import static com.mosioj.model.table.columns.GroupesKDOColumns.ID;
+import static com.mosioj.model.table.columns.GroupesKDOColumns.NAME;
+import static com.mosioj.model.table.columns.GroupesKDOColumns.OWNER_ID;
+import static com.mosioj.model.table.columns.GroupesKDOColumns.CREATION_DATE;
 
 public class Groupes extends Table {
 
@@ -33,15 +39,19 @@ public class Groupes extends Table {
 		nameToMatch = nameToMatch.replaceAll("\\[", "![");
 
 		StringBuilder query = new StringBuilder();
-		query.append("select g.id, g.name, count(*),");
+		query.append(MessageFormat.format("select g.{0}, g.{1}, count(*),", ID, NAME));
 
 		query.append(" ( select 'Vous faites déjà parti de ce groupe !' as status from ");
-		query.append(GROUPE_MEMBERS + " gm2 where gm2.user_id = ? and gm2.groupe_id = g.id ) ");
+		query.append(MessageFormat.format(	"{0} gm2 where gm2.{1} = ? and gm2.{2} = g.{3} ) ",
+											GROUPE_MEMBERS,
+											GroupeKDOMembersColumn.USER_ID,
+											GroupeKDOMembersColumn.GROUPE_ID,
+											ID));
 
-		query.append("from " + TABLE_NAME + " g, " + GROUPE_MEMBERS + " gm ");
-		query.append("where g.id = gm.groupe_id ");
-		query.append("and g.name like ? ESCAPE '!' ");
-		query.append("group by g.id");
+		query.append(MessageFormat.format("from {0} g, {1} gm ", TABLE_NAME, GROUPE_MEMBERS));
+		query.append(MessageFormat.format("where g.{0} = gm.{1} ", ID, GroupeKDOMembersColumn.GROUPE_ID));
+		query.append(MessageFormat.format("and g.{0} like ? ESCAPE ''!'' ", NAME));
+		query.append(MessageFormat.format("group by g.{0}", ID));
 
 		List<Groupe> groupes = new ArrayList<Groupe>();
 		try {
@@ -71,7 +81,10 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public boolean hasAGroup(int userId) throws SQLException {
-		return getDb().selectInt("select count(*) from " + TABLE_NAME + " where owner_id = ?", userId) > 0;
+		return getDb().selectInt(	MessageFormat.format(	"select count(*) from {0} where {1} = ?",
+															TABLE_NAME,
+															OWNER_ID),
+									userId) > 0;
 	}
 
 	/**
@@ -82,8 +95,10 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public boolean isGroupOwner(int userId, int groupId) throws SQLException {
-		// TODO utiliser des colonnes
-		return getDb().doesReturnRows(	"select 1 from " + TABLE_NAME + " where owner_id = ? and id = ?",
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
+																TABLE_NAME,
+																OWNER_ID,
+																ID),
 										userId,
 										groupId);
 	}
@@ -96,10 +111,18 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public void createGroup(String groupeName, int userId) throws SQLException {
-		getDb().executeUpdate(	"insert into " + TABLE_NAME + " (name, owner_id, creation_date) values (?, ?, now())",
+		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1}, {2}, {3}) values (?, ?, now())",
+														TABLE_NAME,
+														NAME,
+														OWNER_ID,
+														CREATION_DATE),
 								groupeName,
 								userId);
-		int groupeId = getDb().selectInt("Select id from " + TABLE_NAME + " where owner_id = ?", userId);
+		int groupeId = getDb().selectInt(	MessageFormat.format(	"Select {0} from {1} where {2} = ?",
+																	ID,
+																	TABLE_NAME,
+																	OWNER_ID),
+											userId);
 		addAssociation(groupeId, userId);
 	}
 
@@ -111,7 +134,10 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public boolean associationExists(int groupId, int userId) throws SQLException {
-		return getDb().doesReturnRows(	"select 1 from " + GROUPE_MEMBERS + " where user_id = ? and groupe_id = ?",
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
+																GROUPE_MEMBERS,
+																GroupeKDOMembersColumn.USER_ID,
+																GroupeKDOMembersColumn.GROUPE_ID),
 										groupId,
 										userId);
 	}
@@ -124,8 +150,11 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public void addAssociation(int groupeId, int userId) throws SQLException {
-		getDb().executeUpdate(	"insert into " + GROUPE_MEMBERS
-				+ " (groupe_id, user_id, join_date) values (?, ?, now())",
+		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1}, {2}, {3}) values (?, ?, now())",
+														GROUPE_MEMBERS,
+														GroupeKDOMembersColumn.GROUPE_ID,
+														GroupeKDOMembersColumn.USER_ID,
+														GroupeKDOMembersColumn.JOIN_DATE),
 								groupeId,
 								userId);
 		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
@@ -143,7 +172,7 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public String getName(int groupId) throws SQLException {
-		return getDb().selectString("select name from groupes where id = ?", groupId);
+		return getDb().selectString(MessageFormat.format("select {0} from groupes where {1} = ?", NAME, ID), groupId);
 	}
 
 	/**
@@ -153,7 +182,8 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public int getGroupId(int userId) throws SQLException {
-		return getDb().selectInt("select id from " + TABLE_NAME + " where owner_id = ?", userId);
+		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, OWNER_ID),
+									userId);
 	}
 
 	/**
@@ -168,7 +198,10 @@ public class Groupes extends Table {
 		Connection con = getDb().getAConnection();
 
 		try {
-			String query = "select gm.user_id from " + GROUPE_MEMBERS + " gm where gm.groupe_id = ?";
+			String query = MessageFormat.format("select gm.{0} from {1} gm where gm.{2} = ?",
+												GroupeKDOMembersColumn.USER_ID,
+												GROUPE_MEMBERS,
+												GroupeKDOMembersColumn.GROUPE_ID);
 			PreparedStatement ps = con.prepareStatement(query);
 			getDb().bindParameters(ps, groupId);
 
