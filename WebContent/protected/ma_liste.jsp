@@ -65,7 +65,11 @@
 				</thead>
 				<c:forEach var="idee" items="${idees}">
 					<tr>
-						<td>${idee.type}</td>
+						<td>
+							<c:if test="${not empty idee.category}">
+								<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
+							</c:if>
+						</td>
 						<td>${idee.text}</td>
 					</tr>
 				</c:forEach>
