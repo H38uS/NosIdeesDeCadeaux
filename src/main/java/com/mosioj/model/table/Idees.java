@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.table.columns.CategoriesColumns;
 
 public class Idees extends Table {
 
@@ -40,13 +41,22 @@ public class Idees extends Table {
 		List<Idee> ideas = new ArrayList<Idee>();
 
 		Connection con = getDb().getAConnection();
-		PreparedStatement ps = con.prepareStatement("select * from " + TABLE_NAME + " where " + OWNER + " = ?");
-		getDb().bindParameters(ps, ownerId);
-		if (ps.execute()) {
-			ResultSet rs = ps.getResultSet();
-			while (rs.next()) {
-				ideas.add(new Idee(rs.getInt(ID.name()), rs.getString(IDEE.name()), rs.getString(TYPE.name())));
+		try {
+			PreparedStatement ps = con.prepareStatement(MessageFormat.format(	"select i.id, i.idee, i.type, c.image, c.alt, c.title from {0} i left join {1} c on i.type = c.nom where i.{2} = ?",
+																				TABLE_NAME,
+																				Categories.TABLE_NAME,
+																				OWNER));
+			getDb().bindParameters(ps, ownerId);
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				while (rs.next()) {
+					ideas.add(new Idee(rs.getInt(ID.name()), rs.getString(IDEE.name()), rs.getString(TYPE.name()),
+							rs.getString(CategoriesColumns.IMAGE.name()), rs.getString(CategoriesColumns.ALT.name()),
+							rs.getString(CategoriesColumns.TITLE.name())));
+				}
 			}
+		} finally {
+			con.close();
 		}
 
 		return ideas;
@@ -64,7 +74,6 @@ public class Idees extends Table {
 	public void addIdea(int ownerId, String text, String type, String priorite) throws SQLException {
 
 		Connection con = getDb().getAConnection();
-
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
 		insert.append(TABLE_NAME);
@@ -75,10 +84,14 @@ public class Idees extends Table {
 		insert.append(PRIORITE);
 		insert.append(") values (?, ?, ?, ?)");
 
-		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
-		PreparedStatement ps = con.prepareStatement(insert.toString());
-		logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}]", ownerId, text, type, priorite));
-		getDb().bindParameters(ps, ownerId, text, type, priorite);
-		ps.execute();
+		try {
+			logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
+			PreparedStatement ps = con.prepareStatement(insert.toString());
+			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}]", ownerId, text, type, priorite));
+			getDb().bindParameters(ps, ownerId, text, type, priorite);
+			ps.execute();
+		} finally {
+			con.close();
+		}
 	}
 }

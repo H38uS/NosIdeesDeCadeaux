@@ -17,25 +17,29 @@ import com.mosioj.model.Categorie;
 
 public class Categories extends Table {
 
-	private static final String TABLE_NAME = "CATEGORIES";
+	public static final String TABLE_NAME = "CATEGORIES";
 
 	public List<Categorie> getCategories() throws SQLException {
 		List<Categorie> categories = new ArrayList<Categorie>();
 
 		Connection con = getDb().getAConnection();
-		PreparedStatement ps = con.prepareStatement(MessageFormat.format(	"select {0},{1},{2},{3} from {4}",
-																			NOM,
-																			IMAGE,
-																			ALT,
-																			TITLE,
-																			TABLE_NAME));
-		getDb().bindParameters(ps);
-		if (ps.execute()) {
-			ResultSet rs = ps.getResultSet();
-			while (rs.next()) {
-				categories.add(new Categorie(rs.getString(NOM.name()), rs.getString(ALT.name()),
-						rs.getString(IMAGE.name()), rs.getString(TITLE.name())));
+		try {
+			PreparedStatement ps = con.prepareStatement(MessageFormat.format(	"select {0},{1},{2},{3} from {4}",
+			                                                                 	NOM,
+			                                                                 	IMAGE,
+			                                                                 	ALT,
+			                                                                 	TITLE,
+			                                                                 	TABLE_NAME));
+			getDb().bindParameters(ps);
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				while (rs.next()) {
+					categories.add(new Categorie(rs.getString(NOM.name()), rs.getString(ALT.name()),
+					                             rs.getString(IMAGE.name()), rs.getString(TITLE.name())));
+				}
 			}
+		} finally {
+			con.close();
 		}
 
 		return categories;
