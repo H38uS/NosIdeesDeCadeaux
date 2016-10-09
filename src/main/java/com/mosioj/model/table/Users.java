@@ -49,7 +49,7 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public int getId(String name) throws SQLException {
-		return getDb().selectInt(MessageFormat.format("select {0} from {1}where {2} = ?", ID, TABLE_NAME, EMAIL), name);
+		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL), name);
 	}
 
 }

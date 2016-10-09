@@ -1,6 +1,8 @@
 package com.mosioj.tests.servlets.instance;
 
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,13 +33,24 @@ public class TestIdees extends AbstractTestServlet {
 
 	@Test
 	public void testGetSuccess() throws ServletException, IOException, SQLException {
-		
+
 		List<Idee> ideas = new ArrayList<Idee>();
 		when(idees.getOwnerIdeas(_OWNER_ID_)).thenReturn(ideas);
-		
+
 		doTestGet(request, response);
+
+		verify(request).getRequestDispatcher(eq(MaListe.VIEW_PAGE_URL));
+	}
+
+	@Test
+	public void testPostSuccess() throws ServletException, IOException {
+
+		when(request.getParameter("text")).thenReturn("Ma super idée wouhouuuu");
+		when(request.getParameter("priority")).thenReturn("1");
+		doTestPost(request, response);
 		
 		verify(request).getRequestDispatcher(eq(MaListe.VIEW_PAGE_URL));
+		verify(request, never()).setAttribute(eq("errors"), anyObject());
 	}
 
 }

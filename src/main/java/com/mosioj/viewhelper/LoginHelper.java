@@ -13,6 +13,9 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.table.Users;
 
 /**
@@ -23,6 +26,11 @@ import com.mosioj.model.table.Users;
  */
 @WebFilter("/protected/*")
 public class LoginHelper implements Filter {
+
+	/**
+	 * Class logger.
+	 */
+	private static final Logger logger = LogManager.getLogger(LoginHelper.class);
 
 	/**
 	 * 
@@ -37,7 +45,9 @@ public class LoginHelper implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
+		logger.trace("Do Filtering in helper...");
 		String name = ((HttpServletRequest ) request).getRemoteUser();
+		logger.debug("Name: " + name);
 		if (name != null) {
 			name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 			request.setAttribute("username", name);

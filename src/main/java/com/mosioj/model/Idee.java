@@ -8,7 +8,7 @@ public class Idee {
 
 	public Idee(int pId, String pText, String pType) {
 		id = pId;
-		text = pText;
+		text = pText.replaceAll("&lt;br/&gt;", "\n");
 		type = pType;
 	}
 

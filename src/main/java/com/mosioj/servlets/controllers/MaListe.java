@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,13 +60,12 @@ public class MaListe extends IdeesCadeauxServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// TODO échapper comme avant (<span, les <br, etc.)
-		// TODO faire un test du post
-		// TODO afficher les icones dans les idées
 		// TODO pouvoir supprimer une idée
 
 		// Reading parameters
 		String text = ParametersUtils.readIt(request, "text").trim();
+		text = text.replaceAll("\n", "<br/>");
+
 		String type = ParametersUtils.readIt(request, "type").trim();
 		String priority = ParametersUtils.readIt(request, "priority").trim();
 
@@ -84,6 +84,7 @@ public class MaListe extends IdeesCadeauxServlet {
 			request.setAttribute("errors", errors);
 		} else {
 			try {
+				text = StringEscapeUtils.escapeHtml4(text);
 				logger.info(MessageFormat.format(	"Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
 													text,
 													type,
