@@ -94,7 +94,7 @@ public class TestAdministrationGroupe extends AbstractTestServlet {
 	@Test
 	public void testGetSuccess() throws ServletException, IOException, SQLException {
 		
-		when(groupes.getGroupId(32)).thenReturn(3);
+		when(groupes.getOwnerGroupId(32)).thenReturn(3);
 		when(groupes.getUsers(3)).thenReturn(new ArrayList<User>());
 
 		// Should not throw an exception

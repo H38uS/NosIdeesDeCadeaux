@@ -52,8 +52,10 @@ public class LoginHelper implements Filter {
 			name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 			request.setAttribute("username", name);
 			
-			// Storing the Id if not stored yet
 			HttpSession session = ((HttpServletRequest ) request).getSession();
+			session.setAttribute("username", name);
+
+			// Storing the Id if not stored yet
 			Integer userId = (Integer) session.getAttribute("userid");
 			if (userId == null) {
 				try {

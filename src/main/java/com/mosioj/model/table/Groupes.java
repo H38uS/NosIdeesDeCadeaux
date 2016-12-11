@@ -1,5 +1,10 @@
 package com.mosioj.model.table;
 
+import static com.mosioj.model.table.columns.GroupesKDOColumns.CREATION_DATE;
+import static com.mosioj.model.table.columns.GroupesKDOColumns.ID;
+import static com.mosioj.model.table.columns.GroupesKDOColumns.NAME;
+import static com.mosioj.model.table.columns.GroupesKDOColumns.OWNER_ID;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,17 +13,19 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.Groupe;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.GroupeJoinRequestsColumns;
 import com.mosioj.model.table.columns.GroupeKDOMembersColumn;
-
-import static com.mosioj.model.table.columns.GroupesKDOColumns.ID;
-import static com.mosioj.model.table.columns.GroupesKDOColumns.NAME;
-import static com.mosioj.model.table.columns.GroupesKDOColumns.OWNER_ID;
-import static com.mosioj.model.table.columns.GroupesKDOColumns.CREATION_DATE;
+import com.mosioj.model.table.columns.GroupesKDOColumns;
+import com.mosioj.utils.database.ConnectionIdKDo;
 
 public class Groupes extends Table {
+
+	private static final Logger LOGGER = LogManager.getLogger(Groupes.class);
 
 	public static final String TABLE_NAME = "GROUPES_KDO";
 	public static final String GROUPE_MEMBERS = "GROUPES_KDO_MEMBERS";
@@ -55,6 +62,7 @@ public class Groupes extends Table {
 
 		List<Groupe> groupes = new ArrayList<Groupe>();
 		try {
+			// FIXME close le preparestatement, pas la connexion
 			PreparedStatement ps = con.prepareStatement(query.toString());
 			getDb().bindParameters(ps, userId, "%" + nameToMatch + "%");
 
@@ -65,6 +73,50 @@ public class Groupes extends Table {
 			ResultSet res = ps.getResultSet();
 			while (res.next()) {
 				groupes.add(new Groupe(res.getInt(1), res.getString(2), res.getInt(3), res.getString(4)));
+			}
+
+		} finally {
+			con.close();
+		}
+
+		return groupes;
+	}
+
+	/**
+	 * 
+	 * @param userId The user id.
+	 * @return All groups to which the user belongs to.
+	 * @throws SQLException
+	 */
+	public List<Groupe> getGroupsJoined(int userId) throws SQLException {
+
+		ConnectionIdKDo db = getDb();
+		Connection con = db.getAConnection();
+
+		StringBuilder query = new StringBuilder();
+		query.append("select ");
+		query.append(MessageFormat.format("gm.{0}, g.{1}", GroupeKDOMembersColumn.GROUPE_ID, GroupesKDOColumns.NAME));
+		query.append(MessageFormat.format(" from {0}", GROUPE_MEMBERS));
+		query.append(" gm ");
+		query.append(MessageFormat.format(	"left join {0} g on gm.{1} = g.{2}",
+											TABLE_NAME,
+											GroupeKDOMembersColumn.GROUPE_ID,
+											GroupesKDOColumns.ID));
+		query.append(MessageFormat.format(" where {0} = ?", GroupeKDOMembersColumn.USER_ID));
+
+		List<Groupe> groupes = new ArrayList<Groupe>();
+		try {
+			LOGGER.trace("Building query: " + query.toString());
+			PreparedStatement ps = con.prepareStatement(query.toString());
+			db.bindParameters(ps, userId);
+
+			if (!ps.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = ps.getResultSet();
+			while (res.next()) {
+				groupes.add(new Groupe(res.getInt(1), res.getString(2), -1, null));
 			}
 
 		} finally {
@@ -181,7 +233,8 @@ public class Groupes extends Table {
 	 * @return The group id for this user, or null if he has no group.
 	 * @throws SQLException
 	 */
-	public int getGroupId(int userId) throws SQLException {
+	public int getOwnerGroupId(int userId) throws SQLException {
+		// FIXME : ajouter la possibilité d'avoir plusieurs groupes
 		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, OWNER_ID),
 									userId);
 	}
@@ -219,5 +272,4 @@ public class Groupes extends Table {
 		}
 		return users;
 	}
-
 }

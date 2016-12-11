@@ -22,6 +22,16 @@ public class ParametersUtils {
 	/**
 	 * 
 	 * @param request
+	 * @return The current user name, or null if no user is logged in.
+	 */
+	public static String getUserName(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		return (String) session.getAttribute("username");
+	}
+
+	/**
+	 * 
+	 * @param request
 	 * @return The current user id, or null if no user is logged in.
 	 */
 	public static int getUserId(HttpServletRequest request) {

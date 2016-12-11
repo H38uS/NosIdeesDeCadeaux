@@ -33,7 +33,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		int id = 0;
 		try {
 
-			id = groupes.getGroupId(userId);
+			id = groupes.getOwnerGroupId(userId);
 
 		} catch (SQLException e) {
 			logger.error("Impossible de récupérer le groupe depuis le user " + userId + ". Erreur: " + e.getMessage());
@@ -54,8 +54,11 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		}
 	}
 	
-	
+	// FIXME : bug quand l'image du type n'existe pas ?
+	// FIXME : gérer les liens dans les idées
+	// FIXME : pouvoir uploader des images
 	// TODO : pouvoir supprimer des membres (enfin pas soit)
+	// TODO : pouvoir discuter d'une idée avec les membres du groupe, mais pas la personne
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -24,7 +24,7 @@
 				<a href="protected/rechercher_groupe.jsp">Rejoindre un groupe</a>
 			</span>
 			<span class="indexaction">
-				<a href="protected/todo.jsp">Afficher mes listes partagées</a>
+				<a href="protected/mes_listes">Afficher mes listes partagées</a>
 			</span>
 			<span class="indexaction">
 				<a href="protected/ma_liste">Compléter ma liste</a>
