@@ -9,6 +9,7 @@ import com.mosioj.utils.database.ConnectionIdKDo;
 public class User {
 
 	public final int id;
+	private String email;
 	private String name;
 	private final List<Idee> ideas = new ArrayList<Idee>();
 	
@@ -16,11 +17,11 @@ public class User {
 		id = i;
 		try {
 			ConnectionIdKDo db = new ConnectionIdKDo();
-			name = db.selectString("select email from users where id = ?", i);
+			name = db.selectString("select name from users where id = ?", i);
+			email = db.selectString("select email from users where id = ?", i);
 		} catch (SQLException e) {
 			name = "L'identifiant n'existe pas";
 		}
-		// FIXME : différencier nom et email
 	}
 
 	/**
@@ -29,6 +30,14 @@ public class User {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * 
+	 * @return The email of the person.
+	 */
+	public String getEmail() {
+		return email;
 	}
 
 	/**
