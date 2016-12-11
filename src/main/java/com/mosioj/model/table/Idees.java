@@ -1,9 +1,11 @@
 package com.mosioj.model.table;
 
+import static com.mosioj.model.table.columns.IdeeColumns.GROUPE_KDO_ID;
 import static com.mosioj.model.table.columns.IdeeColumns.ID;
 import static com.mosioj.model.table.columns.IdeeColumns.IDEE;
 import static com.mosioj.model.table.columns.IdeeColumns.OWNER;
 import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
+import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
 import static com.mosioj.model.table.columns.IdeeColumns.TYPE;
 
 import java.sql.Connection;
@@ -18,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
 
 public class Idees extends Table {
@@ -42,17 +45,36 @@ public class Idees extends Table {
 
 		Connection con = getDb().getAConnection();
 		try {
-			PreparedStatement ps = con.prepareStatement(MessageFormat.format(	"select i.id, i.idee, i.type, c.image, c.alt, c.title from {0} i left join {1} c on i.type = c.nom where i.{2} = ?",
-																				TABLE_NAME,
-																				Categories.TABLE_NAME,
-																				OWNER));
+			StringBuilder query = new StringBuilder();
+			query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, c.image, c.alt, c.title ",
+												ID,
+												IDEE,
+												TYPE,
+												RESERVE,
+												GROUPE_KDO_ID));
+			query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
+			query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
+			query.append("on i.type = c.nom ");
+			query.append(MessageFormat.format("where i.{0} = ?", OWNER));
+
+			PreparedStatement ps = con.prepareStatement(query.toString());
 			getDb().bindParameters(ps, ownerId);
 			if (ps.execute()) {
 				ResultSet rs = ps.getResultSet();
 				while (rs.next()) {
-					ideas.add(new Idee(rs.getInt(ID.name()), rs.getString(IDEE.name()), rs.getString(TYPE.name()),
-							rs.getString(CategoriesColumns.IMAGE.name()), rs.getString(CategoriesColumns.ALT.name()),
-							rs.getString(CategoriesColumns.TITLE.name())));
+					User bookingOwner = null;
+					if (rs.getString(RESERVE.name()) != null) {
+						int id = rs.getInt(RESERVE.name());
+						bookingOwner = new User(id);
+					}
+					ideas.add(new Idee(	rs.getInt(ID.name()),
+										rs.getString(IDEE.name()),
+										rs.getString(TYPE.name()),
+										bookingOwner,
+										rs.getInt(GROUPE_KDO_ID.name()),
+										rs.getString(CategoriesColumns.IMAGE.name()),
+										rs.getString(CategoriesColumns.ALT.name()),
+										rs.getString(CategoriesColumns.TITLE.name())));
 				}
 			}
 		} finally {
@@ -89,6 +111,32 @@ public class Idees extends Table {
 			PreparedStatement ps = con.prepareStatement(insert.toString());
 			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}]", ownerId, text, type, priorite));
 			getDb().bindParameters(ps, ownerId, text, type, priorite);
+			ps.execute();
+		} finally {
+			con.close();
+		}
+	}
+
+	/**
+	 * Book an idea.
+	 * 
+	 * @param idea
+	 * @param userId
+	 * @throws SQLException
+	 */
+	public void reserver(int idea, int userId) throws SQLException {
+
+		Connection con = getDb().getAConnection();
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format("update {0} ", TABLE_NAME));
+		query.append("set reserve = ? ");
+		query.append("where id = ? ");
+
+		try {
+			logger.trace("Query: " + query.toString());
+			PreparedStatement ps = con.prepareStatement(query.toString());
+			getDb().bindParameters(ps, userId, idea);
 			ps.execute();
 		} finally {
 			con.close();

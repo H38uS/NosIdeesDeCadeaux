@@ -34,9 +34,22 @@ public class MesListes extends IdeesCadeauxServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		String action = ParametersUtils.readIt(req, "action");
+
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
+		LOGGER.info(MessageFormat.format("Action: {0}", action));
+
 		// FIXME : trier les listes, mettre sa liste en haut
 
+		if ("reserver".equals(action)) {
+			int idea = Integer.parseInt(ParametersUtils.readIt(req, "idee"));
+			try {
+				idees.reserver(idea, ParametersUtils.getUserId(req));
+			} catch (SQLException e) {
+				RootingsUtils.rootToGenericSQLError(e, req, resp);
+				return;
+			}
+		}
 		Set<User> ids = new HashSet<User>();
 		try {
 			// Get all user id
