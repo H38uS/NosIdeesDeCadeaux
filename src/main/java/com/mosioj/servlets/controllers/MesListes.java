@@ -39,10 +39,14 @@ public class MesListes extends IdeesCadeauxServlet {
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
 		LOGGER.info(MessageFormat.format("Action: {0}", action));
 
+		// FIXME : notification !!
 		// FIXME : trier les listes, mettre sa liste en haut
 
 		if ("reserver".equals(action)) {
 			int idea = Integer.parseInt(ParametersUtils.readIt(req, "idee"));
+			// FIXME sécurité : vérifier qu'on a le droit de la réserver
+			// FIXME vérifier aussi que l'idée n'est pas déjà réservée + dans un groupe
+			// FIXME implémenter l'annulation de la réservation
 			try {
 				idees.reserver(idea, ParametersUtils.getUserId(req));
 			} catch (SQLException e) {
