@@ -54,7 +54,6 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		}
 	}
 	
-	// FIXME : bug quand l'image du type n'existe pas ?
 	// FIXME : gérer les liens dans les idées
 	// FIXME : pouvoir uploader des images
 	// TODO : pouvoir supprimer des membres (enfin pas soit)
@@ -110,6 +109,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 			doGet(request, response);
 
 		} catch (SQLException e) {
+			e.printStackTrace();
 			RootingsUtils.rootToPage(ERROR_URL, request, response);
 			return;
 		}

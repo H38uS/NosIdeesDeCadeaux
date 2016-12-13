@@ -1,10 +1,10 @@
 package com.mosioj.utils.database;
 
 import java.io.Closeable;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,10 +21,12 @@ public class PreparedStatementIdKdo implements Closeable {
 	@Override
 	public void close() {
 		try {
+			Connection con = ps.getConnection();
 			ps.close();
+			con.close();
 		} catch (SQLException e) {
 			LOGGER.error("Error while closing the statement: " + e.getMessage());
-			LOGGER.error(Arrays.toString(e.getStackTrace()));
+			e.printStackTrace();
 		}
 	}
 

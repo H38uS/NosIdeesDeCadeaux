@@ -47,6 +47,7 @@ public class RootingsUtils {
 	 */
 	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		logger.error("An error occured: " + exception.getMessage());
+		exception.printStackTrace();
 		req.setAttribute("error", exception.getMessage());
 		RequestDispatcher rd = req.getRequestDispatcher(PUBLIC_SERVER_ERROR_JSP);
 		rd.forward(req, resp);

@@ -47,7 +47,7 @@ public class LoginHelper implements Filter {
 		
 		logger.trace("Do Filtering in helper...");
 		String name = ((HttpServletRequest ) request).getRemoteUser();
-		logger.debug("Name: " + name);
+		logger.trace("Name: " + name);
 		if (name != null) {
 			name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 			request.setAttribute("username", name);

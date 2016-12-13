@@ -86,6 +86,7 @@ public class Groupes extends Table {
 	 */
 	public List<Groupe> getGroupsJoined(int userId) throws SQLException {
 
+		LOGGER.debug("Getting all groups that the user belongs to...");
 		DataSourceIdKDo db = getDb();
 
 		StringBuilder query = new StringBuilder();
@@ -197,19 +198,28 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public void addAssociation(int groupeId, int userId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1}, {2}, {3}) values (?, ?, now())",
-														GROUPE_MEMBERS,
-														GroupeKDOMembersColumn.GROUPE_ID,
-														GroupeKDOMembersColumn.USER_ID,
-														GroupeKDOMembersColumn.JOIN_DATE),
-								groupeId,
-								userId);
+		SQLException exception = null;
+		try {
+			getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1}, {2}, {3}) values (?, ?, now())",
+															GROUPE_MEMBERS,
+															GroupeKDOMembersColumn.GROUPE_ID,
+															GroupeKDOMembersColumn.USER_ID,
+															GroupeKDOMembersColumn.JOIN_DATE),
+									groupeId,
+									userId);
+		} catch (SQLException e) {
+			exception = e;
+		}
 		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
 														GroupeJoinRequests.TABLE_NAME,
 														GroupeJoinRequestsColumns.JOINER_ID,
 														GroupeJoinRequestsColumns.GROUPE_ID),
 								userId,
 								groupeId);
+		
+		if (exception != null) {
+			throw exception;
+		}
 	}
 
 	/**
@@ -219,8 +229,11 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public String getName(int groupId) throws SQLException {
-		return getDb().selectString(MessageFormat.format("select {0} from groupes where {1} = ?", NAME, ID), groupId);
+		return getDb().selectString(MessageFormat.format("select {0} from {2} where {1} = ?", NAME, ID, TABLE_NAME),
+									groupId);
 	}
+
+	// FIXME : au moins ajouter sa liste quand on clique sur mes listes
 
 	/**
 	 * 
@@ -229,7 +242,7 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public int getOwnerGroupId(int userId) throws SQLException {
-		// FIXME : ajouter la possibilité d'avoir plusieurs groupes
+		// TODO : ajouter la possibilité d'avoir plusieurs groupes
 		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, OWNER_ID),
 									userId);
 	}
@@ -242,12 +255,13 @@ public class Groupes extends Table {
 	 */
 	public List<User> getUsers(int groupId) throws SQLException {
 
+		LOGGER.debug("Getting the user for the group id " + groupId + ".");
 		List<User> users = new ArrayList<User>();
 
 		String query = MessageFormat.format("select gm.{0} from {1} gm where gm.{2} = ?",
-		                                    GroupeKDOMembersColumn.USER_ID,
-		                                    GROUPE_MEMBERS,
-		                                    GroupeKDOMembersColumn.GROUPE_ID);
+											GroupeKDOMembersColumn.USER_ID,
+											GROUPE_MEMBERS,
+											GroupeKDOMembersColumn.GROUPE_ID);
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query);
 		try {
 			ps.bindParameters(groupId);

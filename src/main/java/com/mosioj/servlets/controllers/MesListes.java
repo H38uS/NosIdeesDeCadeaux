@@ -50,24 +50,24 @@ public class MesListes extends IdeesCadeauxServlet {
 				return;
 			}
 		}
+
 		Set<User> ids = new HashSet<User>();
 		try {
 			// Get all user id
-			LOGGER.debug("Getting all groups that the user belongs to...");
 			for (Groupe group : groupes.getGroupsJoined(ParametersUtils.getUserId(req))) {
 				ids.addAll(groupes.getUsers(group.getId()));
 			}
-			
+
 			LOGGER.debug("Getting all ideas for all users...");
 			for (User user : ids) {
 				user.addIdeas(idees.getOwnerIdeas(user.id));
 			}
-			
+
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 			return;
 		}
-		
+
 		req.setAttribute("users", ids);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
