@@ -52,10 +52,11 @@ public class MesListes extends IdeesCadeauxServlet {
 		}
 
 		Set<User> ids = new HashSet<User>();
+		ids.add(new User(ParametersUtils.getUserId(req)));
 		try {
 			// Get all user id
 			for (Groupe group : groupes.getGroupsJoined(ParametersUtils.getUserId(req))) {
-				ids.addAll(groupes.getUsers(group.getId()));
+				ids.addAll(groupes.getUsers(group.getId())); // TODO voir s'il ne faut pas mutualiser pour éviter les constructions d'utilisateurs inutiles
 			}
 
 			LOGGER.debug("Getting all ideas for all users...");

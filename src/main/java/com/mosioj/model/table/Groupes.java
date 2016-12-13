@@ -233,8 +233,6 @@ public class Groupes extends Table {
 									groupId);
 	}
 
-	// FIXME : au moins ajouter sa liste quand on clique sur mes listes
-
 	/**
 	 * 
 	 * @param userId
