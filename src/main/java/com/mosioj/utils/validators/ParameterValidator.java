@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
-import com.mosioj.utils.database.ConnectionIdKDo;
+import com.mosioj.utils.database.DataSourceIdKDo;
 
 /**
  * Permet à l'application de vérifier la pertinence des paramètres.
@@ -109,7 +109,7 @@ public class ParameterValidator {
 	 *            query must also have exactly a string bind parameter for the parameter value.
 	 * @param db The connection to use.
 	 */
-	public void checkIsUnique(String sqlQuery, ConnectionIdKDo db) {
+	public void checkIsUnique(String sqlQuery, DataSourceIdKDo db) {
 		try {
 			int res = db.selectInt(sqlQuery, parameterValue);
 			if (res > 0) {

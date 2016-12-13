@@ -5,8 +5,6 @@ import static com.mosioj.model.table.columns.GroupesKDOColumns.ID;
 import static com.mosioj.model.table.columns.GroupesKDOColumns.NAME;
 import static com.mosioj.model.table.columns.GroupesKDOColumns.OWNER_ID;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -21,7 +19,8 @@ import com.mosioj.model.User;
 import com.mosioj.model.table.columns.GroupeJoinRequestsColumns;
 import com.mosioj.model.table.columns.GroupeKDOMembersColumn;
 import com.mosioj.model.table.columns.GroupesKDOColumns;
-import com.mosioj.utils.database.ConnectionIdKDo;
+import com.mosioj.utils.database.DataSourceIdKDo;
+import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 public class Groupes extends Table {
 
@@ -37,8 +36,6 @@ public class Groupes extends Table {
 	 * @throws SQLException
 	 */
 	public List<Groupe> getGroupsToJoin(String nameToMatch, int userId) throws SQLException {
-
-		Connection con = getDb().getAConnection();
 
 		nameToMatch = nameToMatch.replaceAll("!", "!!");
 		nameToMatch = nameToMatch.replaceAll("%", "!%");
@@ -61,10 +58,9 @@ public class Groupes extends Table {
 		query.append(MessageFormat.format("group by g.{0}", ID));
 
 		List<Groupe> groupes = new ArrayList<Groupe>();
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
-			// FIXME close le preparestatement, pas la connexion
-			PreparedStatement ps = con.prepareStatement(query.toString());
-			getDb().bindParameters(ps, userId, "%" + nameToMatch + "%");
+			ps.bindParameters(userId, "%" + nameToMatch + "%");
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -76,7 +72,7 @@ public class Groupes extends Table {
 			}
 
 		} finally {
-			con.close();
+			ps.close();
 		}
 
 		return groupes;
@@ -90,8 +86,7 @@ public class Groupes extends Table {
 	 */
 	public List<Groupe> getGroupsJoined(int userId) throws SQLException {
 
-		ConnectionIdKDo db = getDb();
-		Connection con = db.getAConnection();
+		DataSourceIdKDo db = getDb();
 
 		StringBuilder query = new StringBuilder();
 		query.append("select ");
@@ -105,10 +100,10 @@ public class Groupes extends Table {
 		query.append(MessageFormat.format(" where {0} = ?", GroupeKDOMembersColumn.USER_ID));
 
 		List<Groupe> groupes = new ArrayList<Groupe>();
+		LOGGER.trace("Building query: " + query.toString());
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(db, query.toString());
 		try {
-			LOGGER.trace("Building query: " + query.toString());
-			PreparedStatement ps = con.prepareStatement(query.toString());
-			db.bindParameters(ps, userId);
+			ps.bindParameters(userId);
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -120,7 +115,7 @@ public class Groupes extends Table {
 			}
 
 		} finally {
-			con.close();
+			ps.close();
 		}
 
 		return groupes;
@@ -248,15 +243,14 @@ public class Groupes extends Table {
 	public List<User> getUsers(int groupId) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
-		Connection con = getDb().getAConnection();
 
+		String query = MessageFormat.format("select gm.{0} from {1} gm where gm.{2} = ?",
+		                                    GroupeKDOMembersColumn.USER_ID,
+		                                    GROUPE_MEMBERS,
+		                                    GroupeKDOMembersColumn.GROUPE_ID);
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query);
 		try {
-			String query = MessageFormat.format("select gm.{0} from {1} gm where gm.{2} = ?",
-												GroupeKDOMembersColumn.USER_ID,
-												GROUPE_MEMBERS,
-												GroupeKDOMembersColumn.GROUPE_ID);
-			PreparedStatement ps = con.prepareStatement(query);
-			getDb().bindParameters(ps, groupId);
+			ps.bindParameters(groupId);
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -268,7 +262,7 @@ public class Groupes extends Table {
 			}
 
 		} finally {
-			con.close();
+			ps.close();
 		}
 		return users;
 	}

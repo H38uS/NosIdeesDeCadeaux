@@ -3,14 +3,13 @@ package com.mosioj.model.table;
 import static com.mosioj.model.table.columns.GroupeJoinRequestsColumns.GROUPE_ID;
 import static com.mosioj.model.table.columns.GroupeJoinRequestsColumns.JOINER_ID;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mosioj.model.Demande;
+import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 public class GroupeJoinRequests extends Table {
 
@@ -64,7 +63,7 @@ public class GroupeJoinRequests extends Table {
 		query.append("delete from " + TABLE_NAME + " ");
 		query.append("where " + JOINER_ID + " = ? and ");
 		query.append(GROUPE_ID + " = ?");
-		
+
 		getDb().executeUpdate(query.toString(), userId, groupId);
 	}
 
@@ -77,17 +76,16 @@ public class GroupeJoinRequests extends Table {
 	public List<Demande> getDemandes(int groupId) throws SQLException {
 
 		List<Demande> demandes = new ArrayList<Demande>();
-		Connection con = getDb().getAConnection();
 
+		StringBuilder query = new StringBuilder();
+		query.append("select " + JOINER_ID + ", COALESCE(u.name, u.email) as name ");
+		query.append("  from " + TABLE_NAME + " ");
+		query.append(" inner join " + Users.TABLE_NAME + " u on " + JOINER_ID + " = u.id ");
+		query.append(" where " + GROUPE_ID + " = ?");
+
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
-			StringBuilder query = new StringBuilder();
-			query.append("select " + JOINER_ID + ", COALESCE(u.name, u.email) as name ");
-			query.append("  from " + TABLE_NAME + " ");
-			query.append(" inner join " + Users.TABLE_NAME + " u on " + JOINER_ID + " = u.id ");
-			query.append(" where " + GROUPE_ID + " = ?");
-			
-			PreparedStatement ps = con.prepareStatement(query.toString(), groupId);
-			getDb().bindParameters(ps, groupId);
+			ps.bindParameters(groupId);
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -99,7 +97,7 @@ public class GroupeJoinRequests extends Table {
 			}
 
 		} finally {
-			con.close();
+			ps.close();
 		}
 
 		return demandes;

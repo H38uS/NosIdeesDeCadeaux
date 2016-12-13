@@ -1,26 +1,26 @@
 package com.mosioj.model.table;
 
-import com.mosioj.utils.database.ConnectionIdKDo;
+import com.mosioj.utils.database.DataSourceIdKDo;
 
 public abstract class Table {
 
 	/**
 	 * The database specific connection.
 	 */
-	private final ConnectionIdKDo db;
+	private final DataSourceIdKDo db;
 	
 	/**
 	 * Class constructor.
 	 */
 	public Table() {
-		db = new ConnectionIdKDo();
+		db = new DataSourceIdKDo();
 	}
 
 	/**
 	 * 
 	 * @return The DB connection manager to use.
 	 */
-	protected ConnectionIdKDo getDb() {
+	protected DataSourceIdKDo getDb() {
 		return db;
 	}
 	

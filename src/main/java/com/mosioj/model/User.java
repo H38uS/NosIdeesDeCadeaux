@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mosioj.utils.database.ConnectionIdKDo;
+import com.mosioj.utils.database.DataSourceIdKDo;
 
 public class User {
 
@@ -16,7 +16,7 @@ public class User {
 	public User(int i) {
 		id = i;
 		try {
-			ConnectionIdKDo db = new ConnectionIdKDo();
+			DataSourceIdKDo db = new DataSourceIdKDo();
 			name = db.selectString("select name from users where id = ?", i);
 			email = db.selectString("select email from users where id = ?", i);
 		} catch (SQLException e) {

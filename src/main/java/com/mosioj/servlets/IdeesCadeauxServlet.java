@@ -13,7 +13,7 @@ import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.Users;
-import com.mosioj.utils.database.ConnectionIdKDo;
+import com.mosioj.utils.database.DataSourceIdKDo;
 
 /**
  * An intermediate servlet for test purpose. Increase the visibility of tested method.
@@ -42,7 +42,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * The connection to use for parameters.
 	 */
-	protected ConnectionIdKDo validatorConnection;
+	protected DataSourceIdKDo validatorConnection;
 
 	/**
 	 * The connections to the IDEES table.
@@ -65,7 +65,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	public IdeesCadeauxServlet() {
 		groupes = new Groupes();
 		groupesJoinRequest = new GroupeJoinRequests();
-		validatorConnection = new ConnectionIdKDo();
+		validatorConnection = new DataSourceIdKDo();
 		users = new Users();
 		idees = new Idees();
 		categories = new Categories();
@@ -95,7 +95,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * 
 	 * @param manager
 	 */
-	public void setValidatorConnection(ConnectionIdKDo manager) {
+	public void setValidatorConnection(DataSourceIdKDo manager) {
 		validatorConnection = manager;
 	}
 

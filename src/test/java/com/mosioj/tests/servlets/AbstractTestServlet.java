@@ -23,7 +23,7 @@ import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.tests.TemplateTest;
-import com.mosioj.utils.database.ConnectionIdKDo;
+import com.mosioj.utils.database.DataSourceIdKDo;
 
 public abstract class AbstractTestServlet extends TemplateTest {
 
@@ -35,11 +35,11 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected HttpSession session;
 	
 	// Tables
-	protected ConnectionIdKDo db;
+	protected DataSourceIdKDo db;
 	protected Users users;
 	protected Groupes groupes;
 	protected GroupeJoinRequests groupeJoinRequest;
-	protected ConnectionIdKDo validator;
+	protected DataSourceIdKDo validator;
 	protected Idees idees;
 	protected Categories cat;
 	protected Priorites prio;
@@ -62,7 +62,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		
 		groupes = mock(Groupes.class);
 		groupeJoinRequest = mock(GroupeJoinRequests.class);
-		validator = mock(ConnectionIdKDo.class);
+		validator = mock(DataSourceIdKDo.class);
 		users = mock(Users.class);
 		instance = pInstance;
 		instance.setUsers(users);
