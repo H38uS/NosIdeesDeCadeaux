@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
     <Resource  name="jdbc/web-db" auth="Container"  type="javax.sql.DataSource"
-              maxActive="20"  maxIdle="10"  maxWait="100000" removeAbandoned="true"
+              maxActive="20"  maxIdle="10"  maxWait="10000" removeAbandoned="true"
               username="${db.username}"  password="${db.password}"  driverClassName="com.mysql.jdbc.Driver"
               url="${db.url}" validationQuery="select 1" testOnBorrow="true" />
     <Realm className="org.apache.catalina.realm.LockOutRealm">
