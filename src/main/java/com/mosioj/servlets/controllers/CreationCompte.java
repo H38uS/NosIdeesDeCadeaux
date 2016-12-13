@@ -40,6 +40,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 		// Récupération des paramètres
 		String pwd = ParametersUtils.readIt(request, "pwd");
 		String email = ParametersUtils.readIt(request, "email").trim();
+		String name = ParametersUtils.readIt(request, "pseudo").trim();
 
 		// Validation des paramètres
 		ParameterValidator validator = new ParameterValidator(pwd, "mot de passe", "Le ");
@@ -78,7 +79,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 
 		// Les paramètres sont ok, on s'occupe de la requête
 		try {
-			users.addNewPersonne(email, hashPwd.toString());
+			users.addNewPersonne(email, hashPwd.toString(), name);
 			request.setAttribute("user", email);
 			session.invalidate();
 			RootingsUtils.rootToPage(SUCCES_URL, request, response);

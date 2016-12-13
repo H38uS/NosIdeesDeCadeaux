@@ -15,7 +15,7 @@
 							<label for="email" class="required">Adresse email</label>
 						</td>
 						<td>
-							<input type="email" name="email" id="email" value="${param.email}" />
+							<input type="email" name="email" id="email" value="${param.email}" required />
 						</td>
 					</tr>
 					<c:if test="${fn:length(email_errors) > 0}">
@@ -30,7 +30,7 @@
 							<label for="pwd" class="required">Mot de passe</label>
 						</td>
 						<td>
-							<input type="password" name="pwd" id="pwd" value="${param.pwd}" />
+							<input type="password" name="pwd" id="pwd" value="${param.pwd}" required />
 						</td>
 					</tr>
 					<c:if test="${fn:length(pwd_errors) > 0}">
@@ -45,14 +45,20 @@
 							<img src="stickyImg" />
 						</td>
 						<td>
-							<input name="answer" value="${param.answer}" />
+							<input name="answer" value="${param.answer}" required />
 						</td>
 					</tr>
 					<c:if test="${fn:length(captcha_errors) > 0}">
-							<tr>
-								<td colspan="2" class="error">${captcha_errors}</td>
-							</tr>
+						<tr>
+							<td colspan="2" class="error">${captcha_errors}</td>
+						</tr>
 					</c:if>
+					<tr>
+						<td>Pseudo</td>
+						<td>
+							<input name="pseudo" value="${param.pseudo}" required />
+						</td>
+					</tr>
 					<tr>
 						<td colspan="2" align="center">
 							<input type="submit" name="submit" id="submit" value="Créer !" />

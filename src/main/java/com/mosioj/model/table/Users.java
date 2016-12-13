@@ -26,9 +26,10 @@ public class Users extends Table {
 	 * 
 	 * @param email
 	 * @param digestedPwd
+	 * @param name 
 	 * @throws SQLException
 	 */
-	public void addNewPersonne(String email, String digestedPwd) throws SQLException {
+	public void addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
 		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, now(), ?)",
 														TABLE_NAME,
 														EMAIL,
@@ -37,7 +38,8 @@ public class Users extends Table {
 														NAME),
 								email,
 								digestedPwd,
-								email); // FIXME : donner la possibilité d'ajouter un pseudo
+								name);
+		// FIXME faire un écran mon compte ?
 		getDb().executeUpdate(	MessageFormat.format(	"insert into user_roles ({0},{1}) values (?, ?)",
 														UserRolesColumns.EMAIL,
 														UserRolesColumns.ROLE),
