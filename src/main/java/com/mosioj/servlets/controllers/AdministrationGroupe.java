@@ -54,7 +54,6 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		}
 	}
 	
-	// FIXME : gérer les liens dans les idées
 	// FIXME : pouvoir uploader des images
 	// TODO : pouvoir supprimer des membres (enfin pas soit)
 	// TODO : pouvoir discuter d'une idée avec les membres du groupe, mais pas la personne

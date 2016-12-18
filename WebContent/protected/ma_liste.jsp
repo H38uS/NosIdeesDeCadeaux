@@ -70,7 +70,7 @@
 								<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 							</c:if>
 						</td>
-						<td>${idee.text}</td>
+						<td>${idee.html}</td>
 					</tr>
 				</c:forEach>
 			</table>

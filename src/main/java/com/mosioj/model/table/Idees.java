@@ -21,6 +21,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
+import com.mosioj.viewhelper.Escaper;
 
 public class Idees extends Table {
 
@@ -106,6 +107,7 @@ public class Idees extends Table {
 		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), insert.toString());
 		try {
+			text = Escaper.textToHtml(text);
 			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}]", ownerId, text, type, priorite));
 			ps.bindParameters(ownerId, text, type, priorite);
 			ps.execute();

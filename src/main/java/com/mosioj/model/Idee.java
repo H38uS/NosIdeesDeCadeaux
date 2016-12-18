@@ -11,7 +11,7 @@ public class Idee {
 
 	public Idee(int pId, String pText, String pType, User pBookingOwner, int pGroupKDO, String catImage, String catAlt, String catTitle) {
 		id = pId;
-		text = pText.replaceAll("&lt;br/&gt;", "\n");
+		text = pText;
 		type = pType;
 		cat = pType.isEmpty() ? null : new Categorie(pType, catAlt, catImage, catTitle);
 		bookingOwner = pBookingOwner;
@@ -22,7 +22,19 @@ public class Idee {
 		return id;
 	}
 
+	/**
+	 * 
+	 * @return The text displayed in textarea, with \n.
+	 */
 	public String getText() {
+		return text;
+	}
+
+	/**
+	 * 
+	 * @return The idea text stored in DB, that will be presented to the browser.
+	 */
+	public String getHtml() {
 		return text;
 	}
 

@@ -59,12 +59,10 @@ public class MaListe extends IdeesCadeauxServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// TODO pouvoir supprimer une idée
+		// FIXME pouvoir supprimer une idée
+		// FIXME pouvoir modifier ses idées
 
 		// Reading parameters
-		String text = ParametersUtils.readIt(request, "text").trim();
-		text = text.replaceAll("\n", "<br/>");
-
 		String text = ParametersUtils.readAndEscape(request, "text").trim();
 		String type = ParametersUtils.readAndEscape(request, "type").trim();
 		String priority = ParametersUtils.readAndEscape(request, "priority").trim();
