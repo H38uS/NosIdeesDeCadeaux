@@ -21,7 +21,7 @@ public class RechercherGroupe extends IdeesCadeauxServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String groupeName = ParametersUtils.readIt(request, "name").trim();
+		String groupeName = ParametersUtils.readAndEscape(request, "name").trim();
 		try {
 			request.setAttribute("groupes", groupes.getGroupsToJoin(groupeName, ParametersUtils.getUserId(request)));
 			RootingsUtils.rootToPage(FORM_URL, request, response);

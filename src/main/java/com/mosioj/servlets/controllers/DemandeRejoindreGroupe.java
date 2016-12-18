@@ -24,7 +24,7 @@ public class DemandeRejoindreGroupe extends IdeesCadeauxServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
-			String group = ParametersUtils.readIt(request, "groupe_id");
+			String group = ParametersUtils.readAndEscape(request, "groupe_id");
 			if (group.isEmpty()) {
 				throw new SQLException("Aucun groupe spécifié !");
 			}

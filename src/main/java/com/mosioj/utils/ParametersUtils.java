@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 public class ParametersUtils {
 
 	/**
@@ -17,6 +19,18 @@ public class ParametersUtils {
 	public static String readIt(HttpServletRequest request, String name) throws UnsupportedEncodingException {
 		String res = request.getParameter(name);
 		return res == null ? "" : new String(res.getBytes("ISO-8859-1"), "UTF-8");
+	}
+
+	/**
+	 * Reads and escape HTML4 caracters.
+	 * 
+	 * @param request
+	 * @param name
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String readAndEscape(HttpServletRequest request, String name) throws UnsupportedEncodingException {
+		return StringEscapeUtils.escapeHtml4(readIt(request, name));
 	}
 
 	/**

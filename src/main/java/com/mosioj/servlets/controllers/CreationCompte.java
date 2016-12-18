@@ -39,8 +39,8 @@ public class CreationCompte extends IdeesCadeauxServlet {
 
 		// Récupération des paramètres
 		String pwd = ParametersUtils.readIt(request, "pwd");
-		String email = ParametersUtils.readIt(request, "email").trim();
-		String name = ParametersUtils.readIt(request, "pseudo").trim();
+		String email = ParametersUtils.readAndEscape(request, "email").trim();
+		String name = ParametersUtils.readAndEscape(request, "pseudo").trim();
 
 		// Validation des paramètres
 		ParameterValidator validator = new ParameterValidator(pwd, "mot de passe", "Le ");

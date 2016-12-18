@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,8 +65,9 @@ public class MaListe extends IdeesCadeauxServlet {
 		String text = ParametersUtils.readIt(request, "text").trim();
 		text = text.replaceAll("\n", "<br/>");
 
-		String type = ParametersUtils.readIt(request, "type").trim();
-		String priority = ParametersUtils.readIt(request, "priority").trim();
+		String text = ParametersUtils.readAndEscape(request, "text").trim();
+		String type = ParametersUtils.readAndEscape(request, "type").trim();
+		String priority = ParametersUtils.readAndEscape(request, "priority").trim();
 
 		ParameterValidator valText = new ParameterValidator(text, "text", "Le ");
 		valText.checkEmpty();
@@ -84,7 +84,6 @@ public class MaListe extends IdeesCadeauxServlet {
 			request.setAttribute("errors", errors);
 		} else {
 			try {
-				text = StringEscapeUtils.escapeHtml4(text);
 				logger.info(MessageFormat.format(	"Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
 													text,
 													type,

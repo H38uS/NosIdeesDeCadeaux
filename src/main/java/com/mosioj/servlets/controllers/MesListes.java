@@ -34,7 +34,7 @@ public class MesListes extends IdeesCadeauxServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		String action = ParametersUtils.readIt(req, "action");
+		String action = ParametersUtils.readAndEscape(req, "action");
 
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
 		LOGGER.info(MessageFormat.format("Action: {0}", action));
@@ -43,7 +43,7 @@ public class MesListes extends IdeesCadeauxServlet {
 		// FIXME : trier les listes, mettre sa liste en haut
 
 		if ("reserver".equals(action)) {
-			int idea = Integer.parseInt(ParametersUtils.readIt(req, "idee"));
+			int idea = Integer.parseInt(ParametersUtils.readAndEscape(req, "idee"));
 			// FIXME sécurité : vérifier qu'on a le droit de la réserver
 			// FIXME vérifier aussi que l'idée n'est pas déjà réservée + dans un groupe
 			// FIXME implémenter l'annulation de la réservation

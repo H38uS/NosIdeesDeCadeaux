@@ -25,7 +25,7 @@ public class CreationGroupe extends IdeesCadeauxServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String groupeName = ParametersUtils.readIt(request, "name").trim();
+		String groupeName = ParametersUtils.readAndEscape(request, "name").trim();
 		ParameterValidator validator = new ParameterValidator(groupeName, "nom du groupe", "Le ");
 		validator.checkEmpty();
 		validator.checkSize(-1, 50);
