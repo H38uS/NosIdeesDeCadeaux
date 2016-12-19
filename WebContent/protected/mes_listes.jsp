@@ -55,7 +55,12 @@
 								<td>${idee.html}</td>
 								<td>
 									<c:if test="${not empty idee.bookingOwner}">
-										Réservée par ${idee.bookingOwner.name}
+										<c:if test="${userid == idee.bookingOwner.id}">
+											Réservée par vous - <a href="protected/mes_listes?action=dereserver&idee=${idee.id}">Annuler</a> !
+										</c:if>
+										<c:if test="${userid != idee.bookingOwner.id}">
+											Réservée par ${idee.bookingOwner.name}
+										</c:if>
 									</c:if>
 									<c:if test="${empty idee.bookingOwner}">
 										L'idée n'a pas encore été réservée. <a href="protected/mes_listes?action=reserver&idee=${idee.id}">Je veux la réserver !</a>

@@ -42,13 +42,10 @@ public class MesListes extends IdeesCadeauxServlet {
 		// FIXME : notification !!
 		// FIXME : trier les listes, mettre sa liste en haut
 
-		if ("reserver".equals(action)) {
-			int idea = Integer.parseInt(ParametersUtils.readAndEscape(req, "idee"));
-			// FIXME sécurité : vérifier qu'on a le droit de la réserver
-			// FIXME vérifier aussi que l'idée n'est pas déjà réservée + dans un groupe
-			// FIXME implémenter l'annulation de la réservation
+		int userId = ParametersUtils.getUserId(req);
+		if (!action.isEmpty()) {
 			try {
-				idees.reserver(idea, ParametersUtils.getUserId(req));
+				handleAction(action, req, userId);
 			} catch (SQLException e) {
 				RootingsUtils.rootToGenericSQLError(e, req, resp);
 				return;
@@ -56,11 +53,12 @@ public class MesListes extends IdeesCadeauxServlet {
 		}
 
 		Set<User> ids = new HashSet<User>();
-		ids.add(new User(ParametersUtils.getUserId(req)));
+		ids.add(new User(userId));
 		try {
 			// Get all user id
-			for (Groupe group : groupes.getGroupsJoined(ParametersUtils.getUserId(req))) {
-				ids.addAll(groupes.getUsers(group.getId())); // TODO voir s'il ne faut pas mutualiser pour éviter les constructions d'utilisateurs inutiles
+			for (Groupe group : groupes.getGroupsJoined(userId)) {
+				ids.addAll(groupes.getUsers(group.getId())); // TODO voir s'il ne faut pas mutualiser pour éviter les
+																// constructions d'utilisateurs inutiles
 			}
 
 			LOGGER.debug("Getting all ideas for all users...");
@@ -75,6 +73,48 @@ public class MesListes extends IdeesCadeauxServlet {
 
 		req.setAttribute("users", ids);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+	}
+
+	private void handleAction(String action, HttpServletRequest req, int userId)
+			throws SQLException {
+
+		String ideaParam = ParametersUtils.readAndEscape(req, "idee");
+		Integer idea = ideaParam.isEmpty() ? null : Integer.parseInt(ideaParam);
+		
+		if (!hasRightOnIdea(idea, userId)) {
+			return;
+		}
+
+		if ("reserver".equals(action) ) {
+			if (idees.canBook(idea, userId)) {
+				idees.reserver(idea, userId);
+			}
+		}
+
+		if ("dereserver".equals(action)) {
+			idees.dereserver(idea, userId);
+		}
+	}
+
+	/**
+	 * TODO peut être à bouger dans le modèle pour être utiliser par d'autres
+	 * 
+	 * @param idea
+	 * @param userId
+	 * @return True if we can interact with this idea.
+	 * @throws SQLException 
+	 */
+	private boolean hasRightOnIdea(Integer idea, int userId) throws SQLException {
+		
+		if (idea == null) {
+			return false;
+		}
+		
+		if (!idees.isInScope(userId, idea)) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override

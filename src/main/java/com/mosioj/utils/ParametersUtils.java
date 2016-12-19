@@ -16,9 +16,14 @@ public class ParametersUtils {
 	 * @return The parameter value, or empty string if not provided.
 	 * @throws UnsupportedEncodingException 
 	 */
-	public static String readIt(HttpServletRequest request, String name) throws UnsupportedEncodingException {
+	public static String readIt(HttpServletRequest request, String name) {
 		String res = request.getParameter(name);
-		return res == null ? "" : new String(res.getBytes("ISO-8859-1"), "UTF-8");
+		try {
+			return res == null ? "" : new String(res.getBytes("ISO-8859-1"), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -29,7 +34,7 @@ public class ParametersUtils {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String readAndEscape(HttpServletRequest request, String name) throws UnsupportedEncodingException {
+	public static String readAndEscape(HttpServletRequest request, String name) {
 		return StringEscapeUtils.escapeHtml4(readIt(request, name));
 	}
 
