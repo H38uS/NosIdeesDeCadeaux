@@ -53,7 +53,7 @@ public class TestCreationCompte extends AbstractTestServlet {
 		verify(request).getParameter(eq("email"));
 		verify(request).getParameter(eq("pwd"));
 		verify(request).getParameter(eq("answer")); // Captcha
-		verify(request, atMost(3)).getParameter(anyString());
+		verify(request, atMost(4)).getParameter(anyString());
 
 		// Parameters were invalid
 		verify(request).setAttribute(eq("email_errors"), anyObject());
