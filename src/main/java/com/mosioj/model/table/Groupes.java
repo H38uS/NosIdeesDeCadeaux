@@ -289,4 +289,12 @@ public class Groupes extends Table {
 		}
 		return users;
 	}
+
+	/**
+	 * 
+	 * @return The query to check whether there are multiple groups or not
+	 */
+	public String getExistQuery() {
+		return MessageFormat.format("select count(*) from {0} where upper({1}) = upper(?)", TABLE_NAME, NAME);
+	}
 }

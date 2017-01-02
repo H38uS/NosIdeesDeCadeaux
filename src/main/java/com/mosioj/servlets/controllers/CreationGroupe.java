@@ -29,6 +29,7 @@ public class CreationGroupe extends IdeesCadeauxServlet {
 		ParameterValidator validator = new ParameterValidator(groupeName, "nom du groupe", "Le ");
 		validator.checkEmpty();
 		validator.checkSize(-1, 50);
+		validator.checkIsUnique(groupes.getExistQuery(), validatorConnection);
 
 		List<String> errors = validator.getErrors();
 		if (!errors.isEmpty()) {
