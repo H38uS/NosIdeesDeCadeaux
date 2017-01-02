@@ -33,7 +33,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
-	// FIXME : mettre le jour dans le logger
 	// FIXME : faire une option "Mon Compte" pour modifier:
 	//				- Affichage des groupes
 	//				- Gérer son (ses ?) groupes

@@ -4,7 +4,7 @@
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout
-				pattern="%d{HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
+				pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
 		</Console>
 		<File name="File" fileName="${log_location}/IdeesDeCadeaux.log" append="true">
 			<PatternLayout
