@@ -24,7 +24,6 @@ import com.mosioj.utils.database.DataSourceIdKDo;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
-	// FIXME : Compléter le gdoc avec les modifications faites
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 	// FIXME : tester les caractères spéciaux
 	// FIXME : envoyer une notification quand on supprime une idée que A a réservé; Envoyer la notification à A
@@ -35,7 +34,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
 	// FIXME : mettre le jour dans le logger
-	// FIXME : ajouter le menu en haut tout le temps : protected/public, avec l'accueil etc
 	// FIXME : faire une option "Mon Compte" pour modifier:
 	//				- Affichage des groupes
 	//				- Gérer son (ses ?) groupes
@@ -46,8 +44,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : ne pas pouvoir créer deux groupes avec le même nom
 	// TODO : pouvoir créer plusieurs groupes (3 max pour le moment)
 	// FIXME : quand on rentre dans un groupe, pouvoir dire "ne pas être vu de bidule"
-	// FIXME : après rechercher groupe, mettre un lien vers les listes du groupe en question (quand on en fait parti)
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
+	// FIXME : ZCompléter le gdoc avec les modifications faites
 
 	/**
 	 * L'interface vers la table GROUPES.

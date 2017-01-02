@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.model.Groupe;
+import com.mosioj.model.Group;
 import com.mosioj.servlets.controllers.RechercherGroupe;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
@@ -33,7 +33,7 @@ public class TestRechercheGroup extends AbstractTestServlet {
 	@Test
 	public void testPost() throws ServletException, IOException, SQLException {
 
-		List<Groupe> groups = new ArrayList<Groupe>();
+		List<Group> groups = new ArrayList<Group>();
 		
 		when(request.getParameter("name")).thenReturn("monGroupe");
 		when(groupes.getGroupsToJoin("monGroupe", _OWNER_ID_)).thenReturn(groups);

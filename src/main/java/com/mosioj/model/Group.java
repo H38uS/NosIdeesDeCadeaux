@@ -6,7 +6,7 @@ package com.mosioj.model;
  * @author Jordan Mosio
  *
  */
-public class Groupe {
+public class Group {
 
 	private final int id;
 	private final String name;
@@ -21,7 +21,7 @@ public class Groupe {
 	 * @param pNbMembers
 	 * @param pStatus
 	 */
-	public Groupe(int pId, String pName, int pNbMembers, String pStatus) {
+	public Group(int pId, String pName, int pNbMembers, String pStatus) {
 		id = pId;
 		name = pName;
 		nbMembers = pNbMembers;

@@ -14,7 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.Groupe;
+import com.mosioj.model.Group;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.GroupeJoinRequestsColumns;
 import com.mosioj.model.table.columns.GroupeKDOMembersColumn;
@@ -29,13 +29,15 @@ public class Groupes extends Table {
 	public static final String TABLE_NAME = "GROUPES_KDO";
 	public static final String GROUPE_MEMBERS = "GROUPES_KDO_MEMBERS";
 
+	private static final String ALREADY_IN = "CONCAT('Vous faites déjà parti de ce groupe ! <a href=\"protected/mes_listes?group=',g.ID,'\" >Voir les idées de ce groupe.</a>')";
+
 	/**
 	 * 
 	 * @param nameToMatch
 	 * @return All group names matching the given string.
 	 * @throws SQLException
 	 */
-	public List<Groupe> getGroupsToJoin(String nameToMatch, int userId) throws SQLException {
+	public List<Group> getGroupsToJoin(String nameToMatch, int userId) throws SQLException {
 
 		nameToMatch = nameToMatch.replaceAll("!", "!!");
 		nameToMatch = nameToMatch.replaceAll("%", "!%");
@@ -45,7 +47,7 @@ public class Groupes extends Table {
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select g.{0}, g.{1}, count(*),", ID, NAME));
 
-		query.append(" ( select 'Vous faites déjà parti de ce groupe !' as status from ");
+		query.append(" ( select ").append(ALREADY_IN).append(" as status from ");
 		query.append(MessageFormat.format(	"{0} gm2 where gm2.{1} = ? and gm2.{2} = g.{3} ) ",
 											GROUPE_MEMBERS,
 											GroupeKDOMembersColumn.USER_ID,
@@ -57,7 +59,8 @@ public class Groupes extends Table {
 		query.append(MessageFormat.format("and g.{0} like ? ESCAPE ''!'' ", NAME));
 		query.append(MessageFormat.format("group by g.{0}", ID));
 
-		List<Groupe> groupes = new ArrayList<Groupe>();
+		List<Group> groupes = new ArrayList<Group>();
+		LOGGER.debug(query);
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
 			ps.bindParameters(userId, "%" + nameToMatch + "%");
@@ -68,7 +71,7 @@ public class Groupes extends Table {
 
 			ResultSet res = ps.getResultSet();
 			while (res.next()) {
-				groupes.add(new Groupe(res.getInt(1), res.getString(2), res.getInt(3), res.getString(4)));
+				groupes.add(new Group(res.getInt(1), res.getString(2), res.getInt(3), res.getString(4)));
 			}
 
 		} finally {
@@ -84,7 +87,7 @@ public class Groupes extends Table {
 	 * @return All groups to which the user belongs to.
 	 * @throws SQLException
 	 */
-	public List<Groupe> getGroupsJoined(int userId) throws SQLException {
+	public List<Group> getGroupsJoined(int userId, int groupId) throws SQLException {
 
 		LOGGER.debug("Getting all groups that the user belongs to...");
 		DataSourceIdKDo db = getDb();
@@ -98,13 +101,21 @@ public class Groupes extends Table {
 											TABLE_NAME,
 											GroupeKDOMembersColumn.GROUPE_ID,
 											GroupesKDOColumns.ID));
-		query.append(MessageFormat.format(" where {0} = ?", GroupeKDOMembersColumn.USER_ID));
+		query.append(MessageFormat.format(" where {0} = ? ", GroupeKDOMembersColumn.USER_ID));
 
-		List<Groupe> groupes = new ArrayList<Groupe>();
+		if (groupId > 0) {
+			query.append(MessageFormat.format(" and gm.{0} = ? ", GroupeKDOMembersColumn.GROUPE_ID));
+		}
+
+		List<Group> groupes = new ArrayList<Group>();
 		LOGGER.trace("Building query: " + query.toString());
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(db, query.toString());
 		try {
-			ps.bindParameters(userId);
+			if (groupId > 0) {
+				ps.bindParameters(userId, groupId);
+			} else {
+				ps.bindParameters(userId);
+			}
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -112,7 +123,7 @@ public class Groupes extends Table {
 
 			ResultSet res = ps.getResultSet();
 			while (res.next()) {
-				groupes.add(new Groupe(res.getInt(1), res.getString(2), -1, null));
+				groupes.add(new Group(res.getInt(1), res.getString(2), -1, null));
 			}
 
 		} finally {
@@ -216,7 +227,7 @@ public class Groupes extends Table {
 														GroupeJoinRequestsColumns.GROUPE_ID),
 								userId,
 								groupeId);
-		
+
 		if (exception != null) {
 			throw exception;
 		}

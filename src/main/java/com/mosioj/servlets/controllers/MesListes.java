@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.Groupe;
+import com.mosioj.model.Group;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
@@ -41,6 +41,16 @@ public class MesListes extends IdeesCadeauxServlet {
 
 		// FIXME : notification !!
 		// FIXME : trier les listes, mettre sa liste en haut
+		
+		String displayThisGroup = ParametersUtils.readIt(req, "group");
+		int groupIdToDisplay = -1;
+		if (displayThisGroup != null) {
+			try {
+				groupIdToDisplay = Integer .parseInt(displayThisGroup);
+				LOGGER.info(MessageFormat.format("Display only group: {0}", displayThisGroup));
+			} catch (NumberFormatException e) {
+			}
+		}
 
 		int userId = ParametersUtils.getUserId(req);
 		if (!action.isEmpty()) {
@@ -56,7 +66,7 @@ public class MesListes extends IdeesCadeauxServlet {
 		ids.add(new User(userId));
 		try {
 			// Get all user id
-			for (Groupe group : groupes.getGroupsJoined(userId)) {
+			for (Group group : groupes.getGroupsJoined(userId, groupIdToDisplay)) {
 				ids.addAll(groupes.getUsers(group.getId())); // TODO voir s'il ne faut pas mutualiser pour éviter les
 																// constructions d'utilisateurs inutiles
 			}
