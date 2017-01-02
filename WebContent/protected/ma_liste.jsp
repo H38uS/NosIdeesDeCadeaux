@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<t:normal>
+<t:normal_proctected>
 		<jsp:body>
 		<h2>Ajouter une nouvelle idée</h2>
 		<div>
@@ -77,4 +77,4 @@
 		</c:if>
 		<a href="public/index.jsp">Retour à l'accueil</a> ou <a href="protected/index.jsp">Retour à votre espace</a>.
 	</jsp:body>
-</t:normal>
+</t:normal_proctected>

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<t:normal>
+<t:normal_public>
 	<jsp:body>
 		<h2>Veuillez vous identifier pour accéder à cette page.</h2>
 		<div>
@@ -49,4 +49,4 @@
 			Pas encore de compte ? <a href="public/creation_compte.jsp">Créez en un </a>!
 		</div>
 	</jsp:body>
-</t:normal>
+</t:normal_public>

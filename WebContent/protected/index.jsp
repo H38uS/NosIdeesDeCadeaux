@@ -8,7 +8,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<t:normal>
+<t:normal_proctected>
 	<jsp:body>
 		<h1>Hello World from the application !</h1>
 		<p>Pouet.</p>
@@ -56,4 +56,4 @@
 			</li>
 		</ul>
 	</jsp:body>
-</t:normal>
+</t:normal_proctected>

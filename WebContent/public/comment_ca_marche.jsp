@@ -3,7 +3,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<t:normal>
+<t:normal_public>
 	<jsp:body>
 		<h1>C’est très simple ! Et c’est gratuit !</h1>
 		<table>
@@ -34,4 +34,4 @@
 		tout en évitant les doublons et en étant sûr de faire plaisir à chaque fois !
 		Vous gagnez du temps et la surprise est toujours au rendez-vous.</div>
 	</jsp:body>
-</t:normal>
+</t:normal_public>
