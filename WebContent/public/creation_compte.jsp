@@ -56,7 +56,7 @@
 					<tr>
 						<td>Pseudo</td>
 						<td>
-							<input name="pseudo" value="${param.pseudo}" required />
+							<input name="pseudo" value="${param.pseudo}" />
 						</td>
 					</tr>
 					<tr>

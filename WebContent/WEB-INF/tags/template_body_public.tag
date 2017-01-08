@@ -4,6 +4,7 @@
     	<header>
     		<img src="public/image/header_index.png" ></img>
     		<ul class="menu">
+    			<li><a href="public/index.jsp">Acceuil</a></li>
     			<li><a href="protected/index.jsp">Se connecter</a></li>
     			<li><a href="public/creation_compte.jsp">Créer un compte</a></li>
     			<li><a href="public/comment_ca_marche.jsp">Comment ça marche ?</a></li>

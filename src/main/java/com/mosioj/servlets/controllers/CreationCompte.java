@@ -12,10 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.notifications.NotificationManager;
+import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
+import com.mosioj.viewhelper.EmptyFilter;
+import com.mosioj.viewhelper.LoginHelper;
 
 import nl.captcha.Captcha;
 
@@ -80,9 +84,13 @@ public class CreationCompte extends IdeesCadeauxServlet {
 		// Les paramètres sont ok, on s'occupe de la requête
 		try {
 			users.addNewPersonne(email, hashPwd.toString(), name);
-			request.setAttribute("user", email);
 			session.invalidate();
+			request.login(email, pwd);
+			request.setAttribute("user", email);
+			new LoginHelper().doFilter(request, response, new EmptyFilter());
+			NotificationManager.addNotification(ParametersUtils.getUserId(request), new NotifNoIdea());
 			RootingsUtils.rootToPage(SUCCES_URL, request, response);
+			// FIXME notification pas d'idée quand on supprime la dernière
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}

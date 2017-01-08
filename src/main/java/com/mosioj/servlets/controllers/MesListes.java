@@ -39,7 +39,6 @@ public class MesListes extends IdeesCadeauxServlet {
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
 		LOGGER.info(MessageFormat.format("Action: {0}", action));
 
-		// FIXME : notification !!
 		// FIXME : trier les listes, mettre sa liste en haut
 		
 		String displayThisGroup = ParametersUtils.readIt(req, "group");
