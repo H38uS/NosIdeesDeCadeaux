@@ -15,9 +15,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Group;
+import com.mosioj.model.GroupAdmin;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.GroupeJoinRequestsColumns;
 import com.mosioj.model.table.columns.GroupeKDOMembersColumn;
+import com.mosioj.model.table.columns.GroupesAdminColumns;
 import com.mosioj.model.table.columns.GroupesKDOColumns;
 import com.mosioj.utils.database.DataSourceIdKDo;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
@@ -28,6 +30,7 @@ public class Groupes extends Table {
 
 	public static final String TABLE_NAME = "GROUPES_KDO";
 	public static final String GROUPE_MEMBERS = "GROUPES_KDO_MEMBERS";
+	public static final String GROUPES_ADMIN = "GROUPES_ADMIN";
 
 	private static final String ALREADY_IN = "CONCAT('Vous faites déjà parti de ce groupe ! <a href=\"protected/mes_listes?group=',g.ID,'\" >Voir les idées de ce groupe.</a>')";
 
@@ -183,6 +186,7 @@ public class Groupes extends Table {
 																	OWNER_ID),
 											userId);
 		addAssociation(groupeId, userId);
+		addAdmin(groupeId, userId);
 	}
 
 	/**
@@ -195,10 +199,26 @@ public class Groupes extends Table {
 	public boolean associationExists(int groupId, int userId) throws SQLException {
 		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
 																GROUPE_MEMBERS,
-																GroupeKDOMembersColumn.USER_ID,
-																GroupeKDOMembersColumn.GROUPE_ID),
+																GroupeKDOMembersColumn.GROUPE_ID,
+																GroupeKDOMembersColumn.USER_ID),
 										groupId,
 										userId);
+	}
+
+	/**
+	 * 
+	 * @param groupId
+	 * @param userId
+	 * @return True if and only if userId is an admin of group groupId.
+	 * @throws SQLException
+	 */
+	public boolean isAdminOf(int groupId, int userId) throws SQLException {
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
+		                              	                     	GROUPES_ADMIN,
+		                              	                     	GroupesAdminColumns.GROUPE_ID,
+		                              	                     	GroupesAdminColumns.ADMIN),
+		                              	groupId,
+		                              	userId);
 	}
 
 	/**
@@ -296,5 +316,54 @@ public class Groupes extends Table {
 	 */
 	public String getExistQuery() {
 		return MessageFormat.format("select count(*) from {0} where upper({1}) = upper(?)", TABLE_NAME, NAME);
+	}
+
+	/**
+	 * Adds a new administrator to this group.
+	 * 
+	 * @param groupId The group ID.
+	 * @param userId The new admin to add.
+	 * @throws SQLException
+	 */
+	public void addAdmin(int groupId, int userId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1}, {2}) values (?, ?)",
+														GROUPES_ADMIN,
+														GroupesAdminColumns.GROUPE_ID,
+														GroupesAdminColumns.ADMIN),
+								groupId,
+								userId);
+	}
+
+	/**
+	 * 
+	 * @return The list of administrator of this group.
+	 * @throws SQLException
+	 */
+	public List<GroupAdmin> getAdmins(int groupId) throws SQLException {
+
+		List<GroupAdmin> admins = new ArrayList<GroupAdmin>();
+		StringBuilder query = new StringBuilder();
+		query.append(" select g.id, a.admin, if(a.admin=g.owner_id,'T','F') ");
+		query.append(" from groupes_kdo g, groupes_admin a ");
+		query.append(" where g.id = a.groupe_id");
+		query.append("   and g.id = ?");
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+
+		try {
+			ps.bindParameters(groupId);
+
+			if (!ps.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = ps.getResultSet();
+			while (res.next()) {
+				admins.add(new GroupAdmin(res.getInt(1), res.getInt(2), "T".equals(res.getString(3))));
+			}
+
+		} finally {
+			ps.close();
+		}
+		return admins;
 	}
 }

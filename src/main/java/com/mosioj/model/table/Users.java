@@ -49,12 +49,12 @@ public class Users extends Table {
 
 	/**
 	 * 
-	 * @param name The identifier of the person (currently the email).
+	 * @param email The identifier of the person (currently the email).
 	 * @return This person's id.
 	 * @throws SQLException
 	 */
-	public int getId(String name) throws SQLException {
-		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL), name);
+	public int getId(String email) throws SQLException {
+		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL), email);
 	}
 
 }

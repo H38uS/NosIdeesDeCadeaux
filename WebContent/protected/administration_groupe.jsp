@@ -1,11 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_proctected>
-	<jsp:body>
+		<jsp:body>
+		<h1>Groupe : ${groupName}</h1>
 		<h2>Demandes reçues</h2>
 		<div>
 			<c:choose>
@@ -31,7 +30,7 @@
 								</tr>
 							</c:forEach>
 						</table>
-						<input type="hidden" name="groupId" id="groupId" value="${groupId}" >
+						<input type="hidden" name="groupId" id="groupId" value="${groupId}">
 						<input type="submit" id="submit" name="submit" value="Sauvegarder">
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 					</form>
@@ -41,7 +40,7 @@
 				</c:otherwise>
 			</c:choose>			
 		</div>
-		<h2>Membres de votre groupe</h2>
+		<h2>Membres du groupe</h2>
 		<div>
 			<table>
 				<thead>
@@ -56,5 +55,32 @@
 			</c:forEach>
 			</table>
 		</div>
+		<h2>Administrateurs du groupe</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>Nom du membre</th>
+						<th>Créateur du groupe</th>
+					</tr>
+				</thead>
+			<c:forEach var="admin" items="${admins}">
+				<tr>
+					<td>${admin.user.name}</td>
+					<td>
+						<c:if test="${admin.isOwner}">X</c:if>  
+					</td>
+				</tr>
+			</c:forEach>
+			</table>
+			<div>
+				<c:if test="${isOwner}">
+					<form method="POST" action="protected/add_admin_groupe">
+						<input type="hidden" name="groupId" id="groupId" value="${groupId}">
+						<input type="text" name="admin" required />
+						<input type="submit" id="submit" name="submit" value="Ajouter">
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+					</form>
+				</c:if>			
+			</div>
 	</jsp:body>
 </t:normal_proctected>

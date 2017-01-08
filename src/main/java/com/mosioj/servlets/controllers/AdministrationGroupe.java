@@ -46,7 +46,10 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		try {
 			req.setAttribute("demandes", groupesJoinRequest.getDemandes(id));
 			req.setAttribute("groupId", id);
+			req.setAttribute("isOwner", groupes.isGroupOwner(userId, id));
+			req.setAttribute("groupName", groupes.getName(id));
 			req.setAttribute("members", groupes.getUsers(id));
+			req.setAttribute("admins", groupes.getAdmins(id));
 			RootingsUtils.rootToPage(FORM_URL, req, resp);
 		} catch (SQLException e) {
 			logger.error("Erreur SQL: " + e.getMessage());
