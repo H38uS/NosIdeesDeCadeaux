@@ -45,7 +45,6 @@ public class Users extends Table {
 								email,
 								digestedPwd,
 								name);
-		// FIXME faire un écran mon compte ?
 		getDb().executeUpdate(	MessageFormat.format(	"insert into user_roles ({0},{1}) values (?, ?)",
 														UserRolesColumns.EMAIL,
 														UserRolesColumns.ROLE),
