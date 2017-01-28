@@ -32,11 +32,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
-	// FIXME : faire une option "Mon Compte" pour modifier:
-	//				- Affichage des groupes
-	//				- Gérer son (ses ?) groupes
-	//				- Gérer les paramètres de notification (mail vs dans le site)
-	//				- Changer ses infos (pseudo, date de naissance, etc)
 	// TODO : envoyer des notifications en fonction de la date de naissance à ceux qui suivent la personne
 	// FIXME : ne pas pouvoir créer deux groupes avec le même nom
 	// TODO : pouvoir créer plusieurs groupes (3 max pour le moment)

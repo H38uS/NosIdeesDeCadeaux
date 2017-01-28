@@ -7,6 +7,7 @@
     		<img src="public/image/header_index.png" ></img>
     		<div id="header_id_message">
 	    		Bonjour, <c:out value="${username}" /> - <a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
+	    		Accéder à <a href="protected/mon_compte">mon compte.</a>
     		</div>
     		<ul class="menu">
 				<li>

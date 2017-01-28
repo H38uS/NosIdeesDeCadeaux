@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.servlets.controllers.CreationCompte;
+import com.mosioj.servlets.controllers.compte.CreationCompte;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.tests.utils.CaptchaMockFactory;
 import com.mosioj.utils.RootingsUtils;

@@ -87,6 +87,7 @@ public class Groupes extends Table {
 	/**
 	 * 
 	 * @param userId The user id.
+	 * @param groupId The group ID to filter, if positive.
 	 * @return All groups to which the user belongs to.
 	 * @throws SQLException
 	 */

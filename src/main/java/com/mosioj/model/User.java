@@ -9,8 +9,8 @@ import com.mosioj.utils.database.DataSourceIdKDo;
 public class User {
 
 	public final int id;
-	private String email;
-	private String name;
+	public String email;
+	public String name;
 	private final List<Idee> ideas = new ArrayList<Idee>();
 	
 	public User(int i) {

@@ -50,7 +50,7 @@ public class DataSourceIdKDo {
 
 			ResultSet res = statement.getResultSet();
 			if (!res.first()) {
-				throw new SQLException("No rows retrieved."); // TODO : faire une exception différente !!
+				throw new NoRowsException();
 			}
 
 			return res.getInt(1);

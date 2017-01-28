@@ -9,6 +9,7 @@ import static com.mosioj.model.table.columns.UsersColumns.NAME;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.columns.UserRolesColumns;
 
 /**
@@ -26,7 +27,7 @@ public class Users extends Table {
 	 * 
 	 * @param email
 	 * @param digestedPwd
-	 * @param name 
+	 * @param name
 	 * @throws SQLException
 	 */
 	public void addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
@@ -54,7 +55,25 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public int getId(String email) throws SQLException {
-		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL), email);
+		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL),
+									email);
+	}
+
+	/**
+	 * Persists the user configuration in DB.
+	 * 
+	 * @param user
+	 * @throws SQLException
+	 */
+	public void update(User user) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ? where {3} = ?",
+														TABLE_NAME,
+														EMAIL,
+														NAME,
+														ID),
+								user.email,
+								user.name,
+								user.id);
 	}
 
 }

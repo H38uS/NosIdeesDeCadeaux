@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers;
+package com.mosioj.servlets.controllers.compte;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -13,17 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mosioj.notifications.instance.NotifNoIdea;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
-import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.viewhelper.EmptyFilter;
 import com.mosioj.viewhelper.LoginHelper;
 
 import nl.captcha.Captcha;
 
 @WebServlet("/creation_compte")
-public class CreationCompte extends IdeesCadeauxServlet {
+public class CreationCompte extends DefaultCompte {
 
 	public static final String SUCCES_URL = "/public/succes_creation.jsp";
 	public static final String FORM_URL = "/public/creation_compte.jsp";
@@ -46,12 +44,10 @@ public class CreationCompte extends IdeesCadeauxServlet {
 		String name = ParametersUtils.readAndEscape(request, "pseudo").trim();
 
 		// Validation des paramètres
-		ParameterValidator validator = new ParameterValidator(pwd, "mot de passe", "Le ");
-		List<String> pwdErrors = checkPwd(validator);
+		List<String> pwdErrors = checkPwd(getValidatorPwd(pwd));
 		request.setAttribute("pwd_errors", pwdErrors);
 
-		validator = new ParameterValidator(email, "email", "L'");
-		List<String> emailErrors = checkEmail(validator);
+		List<String> emailErrors = checkEmail(getValidatorEmail(email), -1); // The user does not exist yet
 		request.setAttribute("email_errors", emailErrors);
 
 		request.setCharacterEncoding("UTF-8"); // Do this so we can capture non-Latin chars
@@ -93,30 +89,5 @@ public class CreationCompte extends IdeesCadeauxServlet {
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
-	}
-
-	/**
-	 * Checks the validity of the pwd parameter.
-	 * 
-	 * @param validator
-	 * @return The list of errors found.
-	 */
-	private List<String> checkPwd(ParameterValidator validator) {
-		validator.checkEmpty();
-		validator.checkSize(8, 30);
-		return validator.getErrors();
-	}
-
-	/**
-	 * Checks the validity of the email parameter.
-	 * 
-	 * @param validator
-	 * @return The list of errors found.
-	 */
-	private List<String> checkEmail(ParameterValidator validator) {
-		validator.checkEmpty();
-		validator.checkIsEmailValid();
-		validator.checkIsUnique("select count(*) from users where email = ?", validatorConnection);
-		return validator.getErrors();
 	}
 }
