@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers;
+package com.mosioj.servlets.controllers.groups;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,12 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/administration_groupe")
-public class AdministrationGroupe extends IdeesCadeauxServlet {
+public class AdministrationGroupe extends DefaultGroupServlet {
 
 	public static final String FORM_URL = "/protected/administration_groupe.jsp";
 	public static final String ERROR_URL = "/protected/administration_groupe_error.jsp";
@@ -85,12 +84,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		}
 
 		try {
-			if (!groupes.isAdminOf(groupId, userId)) {
-				logger.error(MessageFormat.format(	"Essaie de l''utilisateur {0} d''administrer le groupe {1}.",
-													userId,
-													groupId));
-				request.setAttribute("error_message", "Vous ne pouvez administrer que votre groupe.");
-				RootingsUtils.rootToPage(ERROR_URL, request, response);
+			if (!isAdminOf(request, response, groupId, userId)) {
 				return;
 			}
 

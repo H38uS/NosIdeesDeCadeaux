@@ -69,6 +69,16 @@
 					<td>
 						<c:if test="${admin.isOwner}">X</c:if>  
 					</td>
+					<c:if test="${isOwner and !admin.isOwner}">
+					<td>
+						<form method="POST" action="protected/remove_admin_groupe">
+							<input type="hidden" name="groupId" id="groupId" value="${groupId}">
+							<input type="hidden" name="admin" value="${admin.user.email}" />
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<input type="submit" id="submit" name="submit" value="Supprimer des administrateurs">
+						</form>
+					</td>
+					</c:if>
 				</tr>
 			</c:forEach>
 			</table>

@@ -1,11 +1,9 @@
-package com.mosioj.servlets.controllers;
+package com.mosioj.servlets.controllers.groups;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,12 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/add_admin_groupe")
-public class AddAdminUserToGroup extends IdeesCadeauxServlet {
+public class AddAdminUserToGroup extends DefaultGroupServlet {
 
 	private static final Logger logger = LogManager.getLogger(AddAdminUserToGroup.class);
 	private static final long serialVersionUID = -8940314241887215166L;
@@ -49,14 +46,7 @@ public class AddAdminUserToGroup extends IdeesCadeauxServlet {
 
 		try {
 			// Est-ce qu'on peut administrer le groupe ?
-			// FIXME faire une gestion de droit centraliser
-			if (!groupes.isGroupOwner(userId, groupId)) {
-				logger.error(MessageFormat.format(	"Essai de l''utilisateur {0} d''administrer le groupe {1}.",
-													userId,
-													groupId));
-				request.setAttribute(	"error_message",
-				                     	"Vous ne pouvez administrer que vos groupes.");
-				RootingsUtils.rootToPage(AdministrationGroupe.ERROR_URL, request, response);
+			if (!isGroupOwner(request, response, groupId, userId)) {
 				return;
 			}
 
@@ -105,12 +95,4 @@ public class AddAdminUserToGroup extends IdeesCadeauxServlet {
 			return;
 		}
 	}
-
-	private void redirectToAdminPage(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		ServletContext context = getServletContext();
-		RequestDispatcher rd = context.getRequestDispatcher("/protected/administration_groupe");
-		rd.forward(request, response);
-	}
-
 }

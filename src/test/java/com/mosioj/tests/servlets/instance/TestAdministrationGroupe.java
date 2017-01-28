@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.controllers.AdministrationGroupe;
+import com.mosioj.servlets.controllers.groups.AdministrationGroupe;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestAdministrationGroupe extends AbstractTestServlet {

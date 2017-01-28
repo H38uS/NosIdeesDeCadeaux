@@ -369,6 +369,22 @@ public class Groupes extends Table {
 	}
 
 	/**
+	 * Removes an administrator from this group.
+	 * 
+	 * @param groupId The group ID.
+	 * @param userId The former admin to remove.
+	 * @throws SQLException
+	 */
+	public void removeAdmin(int groupId, int userId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
+		                      	                     	GROUPES_ADMIN,
+		                      	                     	GroupesAdminColumns.GROUPE_ID,
+		                      	                     	GroupesAdminColumns.ADMIN),
+		                      	groupId,
+		                      	userId);
+	}
+
+	/**
 	 * 
 	 * @return The list of administrator of this group.
 	 * @throws SQLException
