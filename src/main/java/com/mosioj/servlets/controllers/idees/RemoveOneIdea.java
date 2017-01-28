@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifBookedRemove;
+import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -32,7 +33,6 @@ public class RemoveOneIdea extends IdeesCadeauxServlet {
 		}
 
 		try {
-
 			Idee idea = idees.getIdea(id);
 			if (idea != null) {
 				User booker = idea.getBookingOwner();
@@ -44,6 +44,11 @@ public class RemoveOneIdea extends IdeesCadeauxServlet {
 
 			int userId = ParametersUtils.getUserId(request);
 			idees.remove(userId, id);
+			
+			if (!idees.hasIdeas(userId)) {
+				notif.addNotification(userId, new NotifNoIdea());
+			}
+			
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 			return;

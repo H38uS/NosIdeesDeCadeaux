@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Categorie;
 import com.mosioj.model.Idee;
 import com.mosioj.model.Priorite;
+import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -91,7 +92,9 @@ public class MaListe extends IdeesCadeauxServlet {
 													text,
 													type,
 													priority));
-				idees.addIdea(ParametersUtils.getUserId(request), text, type, priority);
+				int userId = ParametersUtils.getUserId(request);
+				idees.addIdea(userId, text, type, priority);
+				notif.remove(userId, new NotifNoIdea());
 			} catch (SQLException e) {
 				RootingsUtils.rootToGenericSQLError(e, request, response);
 				return;

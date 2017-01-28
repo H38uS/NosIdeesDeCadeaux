@@ -85,7 +85,6 @@ public class CreationCompte extends DefaultCompte {
 			new LoginHelper().doFilter(request, response, new EmptyFilter());
 			notif.addNotification(ParametersUtils.getUserId(request), new NotifNoIdea());
 			RootingsUtils.rootToPage(SUCCES_URL, request, response);
-			// FIXME notification pas d'idée quand on supprime la dernière
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}

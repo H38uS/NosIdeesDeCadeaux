@@ -285,4 +285,17 @@ public class Idees extends Table {
 								userId,
 								id);
 	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return True if the user has at least one idea.
+	 * @throws SQLException
+	 */
+	public boolean hasIdeas(int userId) throws SQLException {
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? limit 1",
+																TABLE_NAME,
+																OWNER),
+										userId);
+	}
 }

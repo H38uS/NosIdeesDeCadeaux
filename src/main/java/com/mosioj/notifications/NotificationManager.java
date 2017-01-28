@@ -49,4 +49,16 @@ public class NotificationManager {
 		notif.sendEmail(""); // TODO récupérer l'email
 	}
 
+	public void remove(int userId, Notification notif) {
+
+		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notif.getType(), userId));
+
+		try {
+			DB.executeUpdate("delete from NOTIFICATIONS where owner = ? and type = ?", userId, notif.getType());
+		} catch (SQLException e) {
+			logger.error("Error while deleting " + notif.getClass() + " : " + e.getMessage());
+		}
+
+	}
+
 }
