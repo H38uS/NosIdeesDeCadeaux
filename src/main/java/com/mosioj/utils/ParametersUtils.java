@@ -14,7 +14,7 @@ public class ParametersUtils {
 	 * @param request The processing request.
 	 * @param name The parameter name.
 	 * @return The parameter value, or empty string if not provided.
-	 * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException
 	 */
 	public static String readIt(HttpServletRequest request, String name) {
 		String res = request.getParameter(name);
@@ -24,6 +24,22 @@ public class ParametersUtils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param name
+	 * @return The parameter, as an integer. If it is not possible, returns null.
+	 */
+	public static Integer readInt(HttpServletRequest request, String name) {
+		int param = -1;
+		try {
+			param = Integer.parseInt(readIt(request, name));
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		return param;
 	}
 
 	/**

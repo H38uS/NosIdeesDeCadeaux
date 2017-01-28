@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers;
+package com.mosioj.servlets.controllers.idees;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -59,13 +59,18 @@ public class MaListe extends IdeesCadeauxServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// FIXME pouvoir supprimer une idée
 		// FIXME pouvoir modifier ses idées
 
 		// Reading parameters
 		String text = ParametersUtils.readAndEscape(request, "text").trim();
 		String type = ParametersUtils.readAndEscape(request, "type").trim();
 		String priority = ParametersUtils.readAndEscape(request, "priority").trim();
+		
+		if (text.isEmpty() && type.isEmpty() && priority.isEmpty()) {
+			// We can assume we wanted to do a get
+			doGet(request, response);
+			return;
+		}
 
 		ParameterValidator valText = new ParameterValidator(text, "text", "Le ");
 		valText.checkEmpty();

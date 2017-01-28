@@ -208,4 +208,20 @@ public class Idees extends Table {
 															GROUPE_KDO_ID),
 									idea) > 0;
 	}
+
+	/**
+	 * Drops this id (only if the user is the owner).
+	 * 
+	 * @param userId
+	 * @param id
+	 * @throws SQLException
+	 */
+	public void remove(int userId, Integer id) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ? ",
+														TABLE_NAME,
+														OWNER,
+														ID),
+								userId,
+								id);
+	}
 }

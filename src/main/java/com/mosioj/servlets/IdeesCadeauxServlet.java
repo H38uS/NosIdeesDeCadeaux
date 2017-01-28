@@ -25,7 +25,6 @@ import com.mosioj.utils.database.DataSourceIdKDo;
 public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
-	// FIXME : tester les caractères spéciaux
 	// FIXME : envoyer une notification quand on supprime une idée que A a réservé; Envoyer la notification à A
 	// TODO : faire une notification "oui c'est à jour" / "non je regarde" quand on demande si c'est à jour
 	// TODO : upload / edit d'image
@@ -39,7 +38,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	//				- Gérer les paramètres de notification (mail vs dans le site)
 	//				- Changer ses infos (pseudo, date de naissance, etc)
 	// TODO : envoyer des notifications en fonction de la date de naissance à ceux qui suivent la personne
-	// FIXME : Droit de gérer le groupe : par défaut l'administrateur (A). Puis A peut dire qui a les droits, et les enlever / les supprimer.
 	// FIXME : ne pas pouvoir créer deux groupes avec le même nom
 	// TODO : pouvoir créer plusieurs groupes (3 max pour le moment)
 	// FIXME : quand on rentre dans un groupe, pouvoir dire "ne pas être vu de bidule"

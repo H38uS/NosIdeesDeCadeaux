@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mosioj.model.Idee;
-import com.mosioj.servlets.controllers.MaListe;
+import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestIdees extends AbstractTestServlet {
