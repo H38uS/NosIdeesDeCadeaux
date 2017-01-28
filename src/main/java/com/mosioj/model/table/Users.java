@@ -3,14 +3,19 @@ package com.mosioj.model.table;
 import static com.mosioj.model.table.columns.UsersColumns.CREATION_DATE;
 import static com.mosioj.model.table.columns.UsersColumns.EMAIL;
 import static com.mosioj.model.table.columns.UsersColumns.ID;
-import static com.mosioj.model.table.columns.UsersColumns.PASSWORD;
 import static com.mosioj.model.table.columns.UsersColumns.NAME;
+import static com.mosioj.model.table.columns.UsersColumns.PASSWORD;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mosioj.model.User;
+import com.mosioj.model.table.columns.GroupesAdminColumns;
 import com.mosioj.model.table.columns.UserRolesColumns;
+import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 /**
  * Représente la table de personnes.
@@ -74,6 +79,41 @@ public class Users extends Table {
 								user.email,
 								user.name,
 								user.id);
+	}
+
+	/**
+	 * 
+	 * @param name_to_search
+	 * @return The list of users that have this name.
+	 * @throws SQLException
+	 */
+	public List<User> getUsersToAdmin(String name_to_search, int groupId) throws SQLException {
+		List<User> user = new ArrayList<User>();
+
+		String query = MessageFormat.format("select {0},{1} from {2} where {3} = ? and {4} not in (select {5} from groupes_admin where {6} = ?)",
+											ID,
+											EMAIL,
+											TABLE_NAME,
+											NAME,
+											ID,
+											GroupesAdminColumns.ADMIN,
+											GroupesAdminColumns.GROUPE_ID);
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+		try {
+			ps.bindParameters(name_to_search, groupId);
+
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					user.add(new User(res.getInt(1), name_to_search, res.getString(2)));
+				}
+			}
+
+		} finally {
+			ps.close();
+		}
+
+		return user;
 	}
 
 }

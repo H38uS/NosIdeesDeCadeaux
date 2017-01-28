@@ -5,6 +5,5 @@
 	<jsp:body>
 		<h2>Une erreur est survenue...</h2>
 		<div>${error_message}</div>
-		<a href="public/index.jsp">Retour à l'accueil</a> ou accéder à la <a href="/protected/creation_groupe">page de création</a> pour créer votre groupe. 
 	</jsp:body>
 </t:normal_proctected>

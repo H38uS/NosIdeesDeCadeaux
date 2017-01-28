@@ -70,27 +70,42 @@
 						<c:if test="${admin.isOwner}">X</c:if>  
 					</td>
 					<c:if test="${isOwner and !admin.isOwner}">
-					<td>
-						<form method="POST" action="protected/remove_admin_groupe">
-							<input type="hidden" name="groupId" id="groupId" value="${groupId}">
-							<input type="hidden" name="admin" value="${admin.user.email}" />
-							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							<input type="submit" id="submit" name="submit" value="Supprimer des administrateurs">
-						</form>
-					</td>
+						<td>
+							<form method="POST" action="protected/remove_admin_groupe">
+								<input type="hidden" name="groupId" id="groupId" value="${groupId}">
+								<input type="hidden" name="admin" value="${admin.user.email}" />
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<input type="submit" id="submit" name="submit" value="Supprimer des administrateurs">
+							</form>
+						</td>
 					</c:if>
 				</tr>
 			</c:forEach>
 			</table>
 			<div>
 				<c:if test="${isOwner}">
-					<form method="POST" action="protected/add_admin_groupe">
-						<input type="hidden" name="groupId" id="groupId" value="${groupId}">
-						<input type="text" name="admin" required />
-						<input type="submit" id="submit" name="submit" value="Ajouter">
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-					</form>
+					<div>
+						<form method="POST" action="protected/add_admin_groupe">
+							<input type="hidden" name="groupId" id="groupId" value="${groupId}">
+							<input type="text" name="admin" required />
+							<input type="submit" id="submit" name="submit" value="Ajouter">
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+						</form>
+					</div>
 				</c:if>			
+				<c:if test="${not empty potential_emails}">
+					<p>
+						<c:if test="${fn:length(potential_emails) > 0}">
+							<div class="error">Plusieurs personnes correspondent à ${potential_name}. Veuillez utiliser une des adresses suivantes:
+								<ul>
+									<c:forEach var="user" items="${potential_emails}">
+										<li>${user.email}</li>
+									</c:forEach>
+								</ul>
+							</div>
+						</c:if>
+					</p>
+				</c:if>
 			</div>
 	</jsp:body>
 </t:normal_proctected>
