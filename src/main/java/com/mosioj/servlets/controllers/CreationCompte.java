@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.notifications.NotificationManager;
 import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
@@ -88,7 +87,7 @@ public class CreationCompte extends IdeesCadeauxServlet {
 			request.login(email, pwd);
 			request.setAttribute("user", email);
 			new LoginHelper().doFilter(request, response, new EmptyFilter());
-			NotificationManager.addNotification(ParametersUtils.getUserId(request), new NotifNoIdea());
+			notif.addNotification(ParametersUtils.getUserId(request), new NotifNoIdea());
 			RootingsUtils.rootToPage(SUCCES_URL, request, response);
 			// FIXME notification pas d'idée quand on supprime la dernière
 		} catch (SQLException e) {

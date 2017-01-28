@@ -69,7 +69,7 @@ public class TestAdministrationGroupe extends AbstractTestServlet {
 	public void testPostSuccess() throws ServletException, IOException, SQLException {
 
 		when(request.getParameter("groupId")).thenReturn("18");
-		when(groupes.isGroupOwner(32, 18)).thenReturn(true);
+		when(groupes.isAdminOf(18, 32)).thenReturn(true);
 		
 		Map<String, String[]> params = new HashMap<String, String[]>();
 		params.put("choix_7", new String[]{"Accepter"});

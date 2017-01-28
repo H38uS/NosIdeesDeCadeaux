@@ -21,6 +21,7 @@ import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.Users;
+import com.mosioj.notifications.NotificationManager;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.tests.TemplateTest;
 import com.mosioj.utils.database.DataSourceIdKDo;
@@ -43,6 +44,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected Idees idees;
 	protected Categories cat;
 	protected Priorites prio;
+	protected NotificationManager notif;
 	
 	protected final IdeesCadeauxServlet instance;
 	
@@ -55,7 +57,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		idees = mock(Idees.class);
 		cat = mock(Categories.class);
 		prio = mock(Priorites.class);
-		
+		notif = mock(NotificationManager.class);
 		
 		when(request.getSession()).thenReturn(session);
 		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
@@ -72,6 +74,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		instance.setIdees(idees);
 		instance.setCat(cat);
 		instance.setPrio(prio);
+		instance.setNotificationManager(notif);
 		
 		try {
 			validateInstanceLinks();

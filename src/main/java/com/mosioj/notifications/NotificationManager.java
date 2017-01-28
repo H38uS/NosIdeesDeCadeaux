@@ -11,16 +11,12 @@ import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 public class NotificationManager {
 
-	private static final DataSourceIdKDo db = new DataSourceIdKDo();
+	private static final DataSourceIdKDo DB = new DataSourceIdKDo();
 
 	/**
 	 * Class logger.
 	 */
-	private static final Logger logger = LogManager.getLogger(NotificationManager.class);
-
-	private NotificationManager() {
-		// Forbidden
-	}
+	private final Logger logger = LogManager.getLogger(NotificationManager.class);
 
 	/**
 	 * Save and send a notification.
@@ -29,7 +25,7 @@ public class NotificationManager {
 	 * @param notif The notification.
 	 * @throws SQLException
 	 */
-	public static void addNotification(int userId, Notification notif) {
+	public void addNotification(int userId, Notification notif) {
 
 		logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
 
@@ -37,7 +33,7 @@ public class NotificationManager {
 		// TODO récupérer si on doit le faire
 		PreparedStatementIdKdo ps = null;
 		try {
-			ps = new PreparedStatementIdKdo(db, "insert into notifications (owner, text, type) values (?, ?, ?)");
+			ps = new PreparedStatementIdKdo(DB, "insert into notifications (owner, text, type) values (?, ?, ?)");
 			ps.bindParameters(userId, notif.getText(), notif.getType());
 			ps.execute();
 		} catch (SQLException e) {

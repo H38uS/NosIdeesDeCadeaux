@@ -13,6 +13,7 @@ import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.Users;
+import com.mosioj.notifications.NotificationManager;
 import com.mosioj.utils.database.DataSourceIdKDo;
 
 /**
@@ -79,6 +80,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected Priorites priorities;
 
 	/**
+	 * The connections to the NOTIFICATION table.
+	 */
+	protected NotificationManager notif;
+
+	/**
 	 * Class constructor.
 	 */
 	public IdeesCadeauxServlet() {
@@ -89,6 +95,16 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		idees = new Idees();
 		categories = new Categories();
 		priorities = new Priorites();
+		notif = new NotificationManager();
+	}
+
+	/**
+	 * For test purposes.
+	 * 
+	 * @param manager
+	 */
+	public void setNotificationManager(NotificationManager manager) {
+		notif = manager;
 	}
 
 	/**
