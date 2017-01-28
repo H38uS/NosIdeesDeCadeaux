@@ -214,11 +214,11 @@ public class Groupes extends Table {
 	 */
 	public boolean isAdminOf(int groupId, int userId) throws SQLException {
 		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
-		                              	                     	GROUPES_ADMIN,
-		                              	                     	GroupesAdminColumns.GROUPE_ID,
-		                              	                     	GroupesAdminColumns.ADMIN),
-		                              	groupId,
-		                              	userId);
+																GROUPES_ADMIN,
+																GroupesAdminColumns.GROUPE_ID,
+																GroupesAdminColumns.ADMIN),
+										groupId,
+										userId);
 	}
 
 	/**
@@ -274,6 +274,40 @@ public class Groupes extends Table {
 		// TODO : ajouter la possibilité d'avoir plusieurs groupes
 		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, OWNER_ID),
 									userId);
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return Groups that the user can administriate. Does not include its original group.
+	 */
+	public List<Integer> getGroupsToAdmin(int userId) {
+
+		List<Integer> groups = new ArrayList<Integer>();
+
+		String query = MessageFormat.format("select {0} from {1} where {2} = ?",
+											GroupesAdminColumns.GROUPE_ID,
+											GROUPES_ADMIN,
+											GroupesAdminColumns.ADMIN);
+
+		PreparedStatementIdKdo ps = null;
+		try {
+			ps = new PreparedStatementIdKdo(getDb(), query);
+			ps.bindParameters(userId);
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					groups.add(res.getInt(1));
+				}
+			}
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+
+		return groups;
 	}
 
 	/**

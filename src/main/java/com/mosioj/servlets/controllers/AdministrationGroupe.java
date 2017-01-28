@@ -3,6 +3,7 @@ package com.mosioj.servlets.controllers;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -30,17 +31,24 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		int userId = ParametersUtils.getUserId(req);
+		
+		List<Integer> groups = groupes.getGroupsToAdmin(userId);
+		
 		int id = 0;
 		try {
 
 			id = groupes.getOwnerGroupId(userId);
 
 		} catch (SQLException e) {
-			logger.error("Impossible de récupérer le groupe depuis le user " + userId + ". Erreur: " + e.getMessage());
-			req.setAttribute(	"error_message",
-								"Vous n'avez pas encore créé un groupe, vous ne pouvez donc pas l'administrer.");
-			RootingsUtils.rootToPage(ERROR_URL, req, resp);
-			return;
+			if (groups.isEmpty()) {
+				logger.error("Impossible de récupérer le groupe depuis le user " + userId + ". Erreur: " + e.getMessage());
+				req.setAttribute(	"error_message",
+						"Vous n'avez pas encore créé un groupe, vous ne pouvez donc pas l'administrer.");
+				RootingsUtils.rootToPage(ERROR_URL, req, resp);
+				return;
+			} else {
+				id = groups.get(0);
+			}
 		}
 
 		try {
@@ -77,7 +85,7 @@ public class AdministrationGroupe extends IdeesCadeauxServlet {
 		}
 
 		try {
-			if (!groupes.isGroupOwner(userId, groupId)) {
+			if (!groupes.isAdminOf(groupId, userId)) {
 				logger.error(MessageFormat.format(	"Essaie de l''utilisateur {0} d''administrer le groupe {1}.",
 													userId,
 													groupId));
