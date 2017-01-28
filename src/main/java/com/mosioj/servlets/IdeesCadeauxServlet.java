@@ -25,7 +25,6 @@ import com.mosioj.utils.database.DataSourceIdKDo;
 public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
-	// FIXME : envoyer une notification quand on supprime une idée que A a réservé; Envoyer la notification à A
 	// TODO : faire une notification "oui c'est à jour" / "non je regarde" quand on demande si c'est à jour
 	// TODO : upload / edit d'image
 	// FIXME : pouvoir éditer une idée

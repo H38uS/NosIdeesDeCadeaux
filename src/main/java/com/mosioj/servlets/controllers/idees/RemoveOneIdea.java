@@ -8,6 +8,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.Idee;
+import com.mosioj.model.User;
+import com.mosioj.notifications.NotificationManager;
+import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -29,6 +33,17 @@ public class RemoveOneIdea extends IdeesCadeauxServlet {
 		}
 
 		try {
+
+			Idee idea = idees.getIdea(id);
+			if (idea != null) {
+				User booker = idea.getBookingOwner();
+				if (booker != null) {
+					NotificationManager.addNotification(booker.id,
+														new NotifBookedRemove(	idea.getText(),
+																				idea.getBookingOwner().getName()));
+				}
+			}
+
 			int userId = ParametersUtils.getUserId(request);
 			idees.remove(userId, id);
 		} catch (SQLException e) {

@@ -85,6 +85,67 @@ public class Idees extends Table {
 	}
 
 	/**
+	 * 
+	 * @param idIdee
+	 * @return All fields for this idea.
+	 * @throws SQLException
+	 */
+	public Idee getIdea(int idIdee) throws SQLException {
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, c.image, c.alt, c.title ",
+											ID,
+											IDEE,
+											TYPE,
+											RESERVE,
+											GROUPE_KDO_ID));
+		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
+		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
+		query.append("on i.type = c.nom ");
+		query.append(MessageFormat.format("where i.{0} = ?", ID));
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+
+		try {
+			ps.bindParameters(idIdee);
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				if (rs.next()) {
+					User bookingOwner = null;
+					if (rs.getString(RESERVE.name()) != null) {
+						int id = rs.getInt(RESERVE.name());
+						bookingOwner = new User(id);
+					}
+					return new Idee(rs.getInt(ID.name()),
+									rs.getString(IDEE.name()),
+									rs.getString(TYPE.name()),
+									bookingOwner,
+									rs.getInt(GROUPE_KDO_ID.name()),
+									rs.getString(CategoriesColumns.IMAGE.name()),
+									rs.getString(CategoriesColumns.ALT.name()),
+									rs.getString(CategoriesColumns.TITLE.name()));
+				}
+			}
+		} finally {
+			ps.close();
+		}
+
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param ideeId
+	 * @return L'utilisateur qui a réservé l'idée, ou null si aucun ne l'a fait.
+	 */
+	public Integer isBookedBy(int ideeId) {
+		try {
+			return getDb().selectInt("select " + RESERVE + " from " + TABLE_NAME + " where " + ID + " = ?", ideeId);
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Add a new idea in the IDEES table.
 	 * 
 	 * @param ownerId
