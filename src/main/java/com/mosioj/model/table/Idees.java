@@ -3,6 +3,7 @@ package com.mosioj.model.table;
 import static com.mosioj.model.table.columns.IdeeColumns.GROUPE_KDO_ID;
 import static com.mosioj.model.table.columns.IdeeColumns.ID;
 import static com.mosioj.model.table.columns.IdeeColumns.IDEE;
+import static com.mosioj.model.table.columns.IdeeColumns.IMAGE;
 import static com.mosioj.model.table.columns.IdeeColumns.OWNER;
 import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
@@ -45,18 +46,20 @@ public class Idees extends Table {
 		List<Idee> ideas = new ArrayList<Idee>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, c.image, c.alt, c.title ",
+		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, c.image, c.alt, c.title ",
 											ID,
 											IDEE,
 											TYPE,
 											RESERVE,
-											GROUPE_KDO_ID));
+											GROUPE_KDO_ID,
+											IMAGE));
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
 		query.append("on i.type = c.nom ");
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+		
 		try {
 			ps.bindParameters(ownerId);
 			if (ps.execute()) {
@@ -72,6 +75,7 @@ public class Idees extends Table {
 										rs.getString(TYPE.name()),
 										bookingOwner,
 										rs.getInt(GROUPE_KDO_ID.name()),
+										rs.getString("id_image"),
 										rs.getString(CategoriesColumns.IMAGE.name()),
 										rs.getString(CategoriesColumns.ALT.name()),
 										rs.getString(CategoriesColumns.TITLE.name())));
@@ -93,12 +97,13 @@ public class Idees extends Table {
 	public Idee getIdea(int idIdee) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, c.image, c.alt, c.title ",
+		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, c.image, c.alt, c.title ",
 											ID,
 											IDEE,
 											TYPE,
 											RESERVE,
-											GROUPE_KDO_ID));
+											GROUPE_KDO_ID,
+											IMAGE));
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
 		query.append("on i.type = c.nom ");
@@ -120,6 +125,7 @@ public class Idees extends Table {
 									rs.getString(TYPE.name()),
 									bookingOwner,
 									rs.getInt(GROUPE_KDO_ID.name()),
+									rs.getString("id_image"),
 									rs.getString(CategoriesColumns.IMAGE.name()),
 									rs.getString(CategoriesColumns.ALT.name()),
 									rs.getString(CategoriesColumns.TITLE.name()));
@@ -154,7 +160,7 @@ public class Idees extends Table {
 	 * @param priorite
 	 * @throws SQLException
 	 */
-	public void addIdea(int ownerId, String text, String type, String priorite) throws SQLException {
+	public void addIdea(int ownerId, String text, String type, String priorite, String image) throws SQLException {
 
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
@@ -163,15 +169,16 @@ public class Idees extends Table {
 		insert.append(OWNER).append(",");
 		insert.append(IDEE).append(",");
 		insert.append(TYPE).append(",");
+		insert.append(IMAGE).append(",");
 		insert.append(PRIORITE);
-		insert.append(") values (?, ?, ?, ?)");
+		insert.append(") values (?, ?, ?, ?, ?)");
 
 		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), insert.toString());
 		try {
 			text = Escaper.textToHtml(text);
-			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}]", ownerId, text, type, priorite));
-			ps.bindParameters(ownerId, text, type, priorite);
+			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}]", ownerId, text, type, image, priorite));
+			ps.bindParameters(ownerId, text, type, image, priorite);
 			ps.execute();
 		} finally {
 			ps.close();

@@ -6,7 +6,10 @@
 		<jsp:body>
 		<h2>Ajouter une nouvelle idée</h2>
 		<div>
-			<form action="protected/ma_liste" method="post">
+			<!--  
+			 <form action="protected/ma_liste?_csrf=${_csrf.token}" method="post" enctype="multipart/form-data">
+			 -->
+			<form action="protected/ma_liste?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 				<table>
 					<tr>
 						<td><label for="text">Le texte de l'idée</label></td>
@@ -36,12 +39,19 @@
 						</td>
 					</tr>
 					<tr>
+						<td>
+							<label for="addImage" >Ajouter une image</label>
+						</td>
+						<td>
+							<input id="addImage" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+						</td>
+					</tr>
+					<tr>
 						<td colspan="2" align="center">
 							<input type="submit" name="submit" id="submit" value="Ajouter" />
 						</td>
 					</tr>
 				</table>
-				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</div>
 		<div class="errors">
@@ -61,6 +71,7 @@
 					<tr>
 						<th>Type</th>
 						<th>Idée</th>
+						<th>Image</th>
 					</tr>
 				</thead>
 				<c:forEach var="idee" items="${idees}">
@@ -71,6 +82,11 @@
 							</c:if>
 						</td>
 						<td>${idee.html}</td>
+						<td>
+							<c:if test="${not empty idee.image}">
+								<img src="public/uploaded_pictures/${idee.image}" width="200" />
+							</c:if>
+						</td>
 						<td>
 							<form method="POST" action="protected/remove_an_idea">
 							<input type="hidden" name="ideeId" value="${idee.id}">

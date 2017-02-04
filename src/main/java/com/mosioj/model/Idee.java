@@ -8,14 +8,16 @@ public class Idee {
 	private final Categorie cat;
 	private final User bookingOwner;
 	private final int group;
+	private final String image;
 
-	public Idee(int pId, String pText, String pType, User pBookingOwner, int pGroupKDO, String catImage, String catAlt, String catTitle) {
+	public Idee(int pId, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage, String catAlt, String catTitle) {
 		id = pId;
 		text = pText;
 		type = pType;
 		cat = pType.isEmpty() ? null : new Categorie(pType, catAlt, catImage, catTitle);
 		bookingOwner = pBookingOwner;
 		group = pGroupKDO;
+		this.image = image;
 	}
 
 	public int getId() {
@@ -40,6 +42,10 @@ public class Idee {
 
 	public String getType() {
 		return type;
+	}
+
+	public String getImage() {
+		return image;
 	}
 
 	public Categorie getCategory() {

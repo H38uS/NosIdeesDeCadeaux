@@ -13,7 +13,7 @@
 			<scripting-invalid>true</scripting-invalid>
 		</jsp-property-group>
 	</jsp-config>
-	
+
 	<resource-ref>
 		<description>DB Connection</description>
 		<res-ref-name>jdbc/web-db</res-ref-name>
