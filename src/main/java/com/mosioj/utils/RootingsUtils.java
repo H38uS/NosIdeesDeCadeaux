@@ -24,6 +24,7 @@ public class RootingsUtils {
 
 	/**
 	 * Get the dispatcher and forward the request.
+	 * Should be used with *.JSP files only !!
 	 * 
 	 * @param url
 	 * @param req
@@ -34,6 +35,20 @@ public class RootingsUtils {
 	public static void rootToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		RequestDispatcher rd = req.getRequestDispatcher(url);
 		rd.forward(req, resp);
+	}
+
+	/**
+	 * Get the dispatcher and forward the request.
+	 * Should be used to get rid of post feature.
+	 * 
+	 * @param url
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public static void redirectToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.sendRedirect(req.getContextPath() + url);
 	}
 	
 	/**

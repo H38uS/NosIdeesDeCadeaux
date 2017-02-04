@@ -28,7 +28,7 @@ public class RemoveOneIdea extends IdeesCadeauxServlet {
 		// Reading parameters
 		Integer id = ParametersUtils.readInt(request, "ideeId");
 		if (id == null) {
-			RootingsUtils.rootToPage(PROTECTED_MA_LISTE, request, response);
+			RootingsUtils.redirectToPage(PROTECTED_MA_LISTE, request, response);
 			return;
 		}
 
@@ -54,7 +54,7 @@ public class RemoveOneIdea extends IdeesCadeauxServlet {
 			return;
 		}
 
-		RootingsUtils.rootToPage(PROTECTED_MA_LISTE, request, response);
+		RootingsUtils.redirectToPage(PROTECTED_MA_LISTE, request, response);
 	}
 
 }

@@ -6,9 +6,6 @@
 		<jsp:body>
 		<h2>Ajouter une nouvelle idée</h2>
 		<div>
-			<!--  
-			 <form action="protected/ma_liste?_csrf=${_csrf.token}" method="post" enctype="multipart/form-data">
-			 -->
 			<form action="protected/ma_liste?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 				<table>
 					<tr>
@@ -84,7 +81,7 @@
 						<td>${idee.html}</td>
 						<td>
 							<c:if test="${not empty idee.image}">
-								<img src="public/uploaded_pictures/${idee.image}" width="200" />
+								<img src="public/uploaded_pictures/small/${idee.image}" width="150" />
 							</c:if>
 						</td>
 						<td>

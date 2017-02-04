@@ -1,5 +1,9 @@
 package com.mosioj.servlets.controllers.idees;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -7,6 +11,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +52,7 @@ public class MaListe extends IdeesCadeauxServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
 		List<Idee> ideas = null;
 		List<Categorie> cat = null;
 		List<Priorite> prio = null;
@@ -61,8 +67,35 @@ public class MaListe extends IdeesCadeauxServlet {
 		req.setAttribute("idees", ideas);
 		req.setAttribute("types", cat);
 		req.setAttribute("priorites", prio);
-		
+
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+	}
+
+	/**
+	 * 
+	 * @param originalImage
+	 * @param type
+	 * @return
+	 */
+	private BufferedImage resizeImage(BufferedImage originalImage, int type) {
+
+		final int maxWidth = 400;
+		int width = originalImage.getWidth();
+		int height = originalImage.getHeight();
+
+		int newWidth = width > maxWidth ? maxWidth : width;
+		int newHeight = (newWidth * height) / width;
+
+		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+		g.dispose();
+		g.setComposite(AlphaComposite.Src);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		return resizedImage;
 	}
 
 	@Override
@@ -72,8 +105,6 @@ public class MaListe extends IdeesCadeauxServlet {
 		// FIXME : supprimer les photos quand on supprime l'idée
 		// FIXME : supprimer les photos quand on modifie la photo d'une idée
 		// FIXME : générer un nom pour la photo
-		// FIXME : cleaner le csrf de la requête
-		// TODO : faire des miniatures et garder les grandes images
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
@@ -100,10 +131,19 @@ public class MaListe extends IdeesCadeauxServlet {
 					if (!fi.isFormField()) {
 						String fileName = fi.getName();
 						if (!fileName.trim().isEmpty() && image.isEmpty()) {
+
 							image = fileName;
-							File file = new File(filePath, fileName);
+							File file = new File(filePath, "large/" + fileName);
 							logger.debug("Uploading file : " + file);
 							fi.write(file);
+
+							// Creation de la vignette
+							BufferedImage originalImage = ImageIO.read(file);
+							int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB
+									: originalImage.getType();
+
+							BufferedImage resizeImageJpg = resizeImage(originalImage, originalType);
+							ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
 						}
 					} else {
 						if ("text".equals(fi.getFieldName())) {
@@ -158,7 +198,7 @@ public class MaListe extends IdeesCadeauxServlet {
 
 		}
 
-		doGet(request, response);
+		RootingsUtils.redirectToPage("/protected/ma_liste", request, response);
 	}
 
 }
