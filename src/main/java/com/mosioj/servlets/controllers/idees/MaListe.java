@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -103,7 +104,6 @@ public class MaListe extends IdeesCadeauxServlet {
 		// FIXME : pouvoir modifier ses idées
 		// FIXME : supprimer les photos quand on supprime l'idée
 		// FIXME : supprimer les photos quand on modifie la photo d'une idée
-		// FIXME : générer un nom pour la photo
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
@@ -131,6 +131,14 @@ public class MaListe extends IdeesCadeauxServlet {
 						String fileName = fi.getName();
 						if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
+							Random r = new Random();
+							int id = r.nextInt();
+							int maxSize = 30;
+							if (fileName.length() > maxSize) {
+								fileName = fileName.substring(0, maxSize - 4) + "_" + id + fileName.substring(fileName.length() - 4);
+							} else {
+								fileName = fileName.substring(0, fileName.length() - 4) + "_" + id + fileName.substring(fileName.length() - 4);
+							}
 							image = fileName;
 							File file = new File(filePath, "large/" + fileName);
 							logger.debug("Uploading file : " + file);
@@ -144,8 +152,10 @@ public class MaListe extends IdeesCadeauxServlet {
 							BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, 400);
 							ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
 
-							resizeImageJpg = resizeImage(originalImage, originalType, 1920);
-							ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
+							if (originalImage.getWidth() > 1920) {
+								resizeImageJpg = resizeImage(originalImage, originalType, 1920);
+								ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
+							}
 						}
 					} else {
 						if ("text".equals(fi.getFieldName())) {
