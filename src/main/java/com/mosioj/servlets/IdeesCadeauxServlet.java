@@ -28,13 +28,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 	// TODO : faire une notification "oui c'est à jour" / "non je regarde" quand on demande si c'est à jour
 	// TODO : upload / edit d'image
-	// FIXME : pouvoir éditer une idée
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
 	// TODO : envoyer des notifications en fonction de la date de naissance à ceux qui suivent la personne
 	// TODO : pouvoir créer plusieurs groupes (3 max pour le moment)
-	// FIXME : quand on rentre dans un groupe, pouvoir dire "ne pas être vu de bidule"
+	// TODO : quand on rentre dans un groupe, pouvoir dire "ne pas être vu de bidule"
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : ZCompléter le gdoc avec les modifications faites
 

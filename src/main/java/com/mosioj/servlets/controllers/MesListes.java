@@ -128,7 +128,7 @@ public class MesListes extends IdeesCadeauxServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response); // Rien de spécifique pour le moment
+		RootingsUtils.redirectToPage("/protected/mes_listes", request, response); // Rien de spécifique pour le moment
 		// FIXME faire la réservation
 		// FIXME gestion des groupes
 		// TODO : pouvoir demander des informations et/ou discuter avec d'autres membres

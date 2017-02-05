@@ -12,23 +12,21 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifNoIdea;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/remove_an_idea")
-public class RemoveOneIdea extends IdeesCadeauxServlet {
+public class RemoveOneIdea extends AbstractIdea {
 
 	private static final long serialVersionUID = -1774633803227715931L;
-	private static final String PROTECTED_MA_LISTE = "/protected/ma_liste";
-
+	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Reading parameters
 		Integer id = ParametersUtils.readInt(request, "ideeId");
 		if (id == null) {
-			RootingsUtils.redirectToPage(PROTECTED_MA_LISTE, request, response);
+			RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, request, response);
 			return;
 		}
 
@@ -40,6 +38,8 @@ public class RemoveOneIdea extends IdeesCadeauxServlet {
 					notif.addNotification(	booker.id,
 											new NotifBookedRemove(idea.getText(), idea.getBookingOwner().getName()));
 				}
+				String image = idea.getImage();
+				removeUploadedImage(image);
 			}
 
 			int userId = ParametersUtils.getUserId(request);
@@ -54,7 +54,6 @@ public class RemoveOneIdea extends IdeesCadeauxServlet {
 			return;
 		}
 
-		RootingsUtils.redirectToPage(PROTECTED_MA_LISTE, request, response);
+		RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, request, response);
 	}
-
 }

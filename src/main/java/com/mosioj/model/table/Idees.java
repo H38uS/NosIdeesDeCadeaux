@@ -46,20 +46,22 @@ public class Idees extends Table {
 		List<Idee> ideas = new ArrayList<Idee>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, c.image, c.alt, c.title ",
+		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title ",
 											ID,
 											IDEE,
 											TYPE,
 											RESERVE,
 											GROUPE_KDO_ID,
-											IMAGE));
+											IMAGE,
+											OWNER,
+											PRIORITE));
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
 		query.append("on i.type = c.nom ");
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
-		
+
 		try {
 			ps.bindParameters(ownerId);
 			if (ps.execute()) {
@@ -71,6 +73,7 @@ public class Idees extends Table {
 						bookingOwner = new User(id);
 					}
 					ideas.add(new Idee(	rs.getInt(ID.name()),
+										rs.getInt(OWNER.name()),
 										rs.getString(IDEE.name()),
 										rs.getString(TYPE.name()),
 										bookingOwner,
@@ -78,7 +81,8 @@ public class Idees extends Table {
 										rs.getString("id_image"),
 										rs.getString(CategoriesColumns.IMAGE.name()),
 										rs.getString(CategoriesColumns.ALT.name()),
-										rs.getString(CategoriesColumns.TITLE.name())));
+										rs.getString(CategoriesColumns.TITLE.name()),
+										rs.getInt(PRIORITE.name())));
 				}
 			}
 		} finally {
@@ -97,13 +101,15 @@ public class Idees extends Table {
 	public Idee getIdea(int idIdee) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, c.image, c.alt, c.title ",
+		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title ",
 											ID,
 											IDEE,
 											TYPE,
 											RESERVE,
 											GROUPE_KDO_ID,
-											IMAGE));
+											IMAGE,
+											OWNER,
+											PRIORITE));
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
 		query.append("on i.type = c.nom ");
@@ -121,6 +127,7 @@ public class Idees extends Table {
 						bookingOwner = new User(id);
 					}
 					return new Idee(rs.getInt(ID.name()),
+									rs.getInt(OWNER.name()),
 									rs.getString(IDEE.name()),
 									rs.getString(TYPE.name()),
 									bookingOwner,
@@ -128,7 +135,8 @@ public class Idees extends Table {
 									rs.getString("id_image"),
 									rs.getString(CategoriesColumns.IMAGE.name()),
 									rs.getString(CategoriesColumns.ALT.name()),
-									rs.getString(CategoriesColumns.TITLE.name()));
+									rs.getString(CategoriesColumns.TITLE.name()),
+									rs.getInt(PRIORITE.name()));
 				}
 			}
 		} finally {
@@ -160,7 +168,7 @@ public class Idees extends Table {
 	 * @param priorite
 	 * @throws SQLException
 	 */
-	public void addIdea(int ownerId, String text, String type, String priorite, String image) throws SQLException {
+	public void addIdea(int ownerId, String text, String type, int priorite, String image) throws SQLException {
 
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
@@ -177,7 +185,12 @@ public class Idees extends Table {
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), insert.toString());
 		try {
 			text = Escaper.textToHtml(text);
-			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}]", ownerId, text, type, image, priorite));
+			logger.info(MessageFormat.format(	"Parameters: [{0}, {1}, {2}, {3}, {4}]",
+												ownerId,
+												text,
+												type,
+												image,
+												priorite));
 			ps.bindParameters(ownerId, text, type, image, priorite);
 			ps.execute();
 		} finally {
@@ -304,5 +317,30 @@ public class Idees extends Table {
 																TABLE_NAME,
 																OWNER),
 										userId);
+	}
+
+	/**
+	 * Modifie les champs suivants d'une idée existante.
+	 * 
+	 * @param id
+	 * @param text
+	 * @param type
+	 * @param priority
+	 * @param image
+	 * @throws SQLException
+	 */
+	public void modifier(int id, String text, String type, String priority, String image) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ? where {5} = ?",
+														TABLE_NAME,
+														IDEE,
+														TYPE,
+														PRIORITE,
+														IMAGE,
+														ID),
+								text,
+								type,
+								priority,
+								image,
+								id);
 	}
 }

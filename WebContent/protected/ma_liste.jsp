@@ -85,11 +85,14 @@
 							</c:if>
 						</td>
 						<td>
+							<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
+						</td>
+						<td>
 							<form method="POST" action="protected/remove_an_idea">
-							<input type="hidden" name="ideeId" value="${idee.id}">
-							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							<input type="submit" name="submit" value="Supprimer">
-						</form>
+								<input type="hidden" name="ideeId" value="${idee.id}">
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<input type="submit" name="submit" value="Supprimer">
+							</form>
 						</td>
 					</tr>
 				</c:forEach>

@@ -64,7 +64,6 @@ public class AdministrationGroupe extends DefaultGroupServlet {
 		}
 	}
 	
-	// FIXME : pouvoir uploader des images
 	// TODO : pouvoir supprimer des membres (enfin pas soit)
 	// TODO : pouvoir discuter d'une idée avec les membres du groupe, mais pas la personne
 
@@ -110,7 +109,7 @@ public class AdministrationGroupe extends DefaultGroupServlet {
 			}
 
 			// Redirection à la page d'administration
-			doGet(request, response);
+			RootingsUtils.redirectToPage("/protected/administration_groupe", request, response);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

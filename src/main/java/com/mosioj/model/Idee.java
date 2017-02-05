@@ -1,7 +1,7 @@
 package com.mosioj.model;
 
 public class Idee {
-
+	
 	private final int id;
 	private final String text;
 	private final String type;
@@ -9,8 +9,10 @@ public class Idee {
 	private final User bookingOwner;
 	private final int group;
 	private final String image;
+	public final int owner;
+	private final int priorite;
 
-	public Idee(int pId, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage, String catAlt, String catTitle) {
+	public Idee(int pId, int owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage, String catAlt, String catTitle, int priorite) {
 		id = pId;
 		text = pText;
 		type = pType;
@@ -18,6 +20,12 @@ public class Idee {
 		bookingOwner = pBookingOwner;
 		group = pGroupKDO;
 		this.image = image;
+		this.owner = owner;
+		this.priorite = priorite;
+	}
+
+	public int getPriorite() {
+		return priorite;
 	}
 
 	public int getId() {
