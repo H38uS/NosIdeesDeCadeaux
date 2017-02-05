@@ -77,9 +77,8 @@ public class MaListe extends IdeesCadeauxServlet {
 	 * @param type
 	 * @return
 	 */
-	private BufferedImage resizeImage(BufferedImage originalImage, int type) {
+	private BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth) {
 
-		final int maxWidth = 400;
 		int width = originalImage.getWidth();
 		int height = originalImage.getHeight();
 
@@ -142,8 +141,11 @@ public class MaListe extends IdeesCadeauxServlet {
 							int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB
 									: originalImage.getType();
 
-							BufferedImage resizeImageJpg = resizeImage(originalImage, originalType);
+							BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, 400);
 							ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
+
+							resizeImageJpg = resizeImage(originalImage, originalType, 1920);
+							ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
 						}
 					} else {
 						if ("text".equals(fi.getFieldName())) {

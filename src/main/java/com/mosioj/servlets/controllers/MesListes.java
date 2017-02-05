@@ -131,7 +131,7 @@ public class MesListes extends IdeesCadeauxServlet {
 		doGet(request, response); // Rien de spécifique pour le moment
 		// FIXME faire la réservation
 		// FIXME gestion des groupes
-		// FIXME : pouvoir demander des informations et/ou discuter avec d'autres membres
+		// TODO : pouvoir demander des informations et/ou discuter avec d'autres membres
 	}
 
 }
