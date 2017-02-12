@@ -13,6 +13,7 @@ import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
+import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/creation_groupe")
 public class CreationGroupe extends IdeesCadeauxServlet {
@@ -26,7 +27,7 @@ public class CreationGroupe extends IdeesCadeauxServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String groupeName = ParametersUtils.readAndEscape(request, "name").trim();
-		ParameterValidator validator = new ParameterValidator(groupeName, "nom du groupe", "Le ");
+		ParameterValidator validator = ValidatorFactory.getMascValidator(groupeName, "nom du groupe");
 		validator.checkEmpty();
 		validator.checkSize(-1, 50);
 		validator.checkIsUnique(groupes.getExistQuery(), validatorConnection);

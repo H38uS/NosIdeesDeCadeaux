@@ -223,6 +223,22 @@ public class Idees extends Table {
 	}
 
 	/**
+	 * Book the idea with a group.
+	 * 
+	 * @param id
+	 * @param groupId
+	 * @throws SQLException
+	 */
+	public void bookByGroup(int id, int groupId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ?",
+														TABLE_NAME,
+														GROUPE_KDO_ID,
+														ID),
+								groupId,
+								id);
+	}
+
+	/**
 	 * Unbook an idea if the booker is the user id.
 	 * 
 	 * @param idea

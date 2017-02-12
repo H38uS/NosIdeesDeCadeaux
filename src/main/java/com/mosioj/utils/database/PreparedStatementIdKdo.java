@@ -18,6 +18,18 @@ public class PreparedStatementIdKdo implements Closeable {
 		ps = ds.getAConnection().prepareStatement(query);
 	}
 
+	/**
+	 * Add another query to the batch.
+	 * 
+	 * @param query
+	 * @param parameters
+	 * @throws SQLException
+	 */
+	public void addBatch(String query, Object... parameters) throws SQLException {
+		ps.addBatch(query);
+		bindParameters(parameters);
+	}
+
 	@Override
 	public void close() {
 		try {
@@ -70,6 +82,10 @@ public class PreparedStatementIdKdo implements Closeable {
 
 	public ResultSet getResultSet() throws SQLException {
 		return ps.getResultSet();
+	}
+
+	public int [] executeBatch() throws SQLException {
+		return ps.executeBatch();
 	}
 
 }

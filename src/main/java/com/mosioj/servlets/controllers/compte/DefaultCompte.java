@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.validators.ParameterValidator;
+import com.mosioj.utils.validators.ValidatorFactory;
 
 public class DefaultCompte extends IdeesCadeauxServlet {
 
@@ -38,13 +39,10 @@ public class DefaultCompte extends IdeesCadeauxServlet {
 	}
 
 	protected ParameterValidator getValidatorEmail(String email) {
-		ParameterValidator validator;
-		validator = new ParameterValidator(email, "email", "L'");
-		return validator;
+		return ValidatorFactory.getNeutralValidator(email, "email");
 	}
 
 	protected ParameterValidator getValidatorPwd(String pwd) {
-		ParameterValidator validator = new ParameterValidator(pwd, "mot de passe", "Le ");
-		return validator;
+		return ValidatorFactory.getMascValidator(pwd, "mot de passe");
 	}
 }

@@ -31,5 +31,6 @@ public class RechercherGroupe extends IdeesCadeauxServlet {
 	}
 
 	// TODO : ne pas afficher le bouton rejoindre groupe si on a déjà envoyé une demande...
+	// TODO limiter le nombre de résultat (à 20 ?)
 
 }

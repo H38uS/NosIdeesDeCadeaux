@@ -23,6 +23,14 @@ public class Idee {
 		this.owner = owner;
 		this.priorite = priorite;
 	}
+	
+	/**
+	 * 
+	 * @return True if the idea is booked (by a owner, or a group)
+	 */
+	public boolean isBooked() {
+		return bookingOwner != null || group > 0;
+	}
 
 	public int getPriorite() {
 		return priorite;

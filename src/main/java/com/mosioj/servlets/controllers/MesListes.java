@@ -29,6 +29,7 @@ public class MesListes extends IdeesCadeauxServlet {
 	private static final Logger LOGGER = LogManager.getLogger(MesListes.class);
 	private static final long serialVersionUID = -1774633803227715931L;
 
+	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
 	public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 
 	@Override
@@ -39,7 +40,7 @@ public class MesListes extends IdeesCadeauxServlet {
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
 		LOGGER.info(MessageFormat.format("Action: {0}", action));
 
-		// FIXME : trier les listes, mettre sa liste en haut
+		// TODO : trier les listes, mettre sa liste en haut
 		
 		String displayThisGroup = ParametersUtils.readIt(req, "group");
 		int groupIdToDisplay = -1;
@@ -128,9 +129,7 @@ public class MesListes extends IdeesCadeauxServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RootingsUtils.redirectToPage("/protected/mes_listes", request, response); // Rien de spécifique pour le moment
-		// FIXME faire la réservation
-		// FIXME gestion des groupes
+		RootingsUtils.redirectToPage(PROTECTED_MES_LISTES, request, response); // Rien de spécifique pour le moment
 		// TODO : pouvoir demander des informations et/ou discuter avec d'autres membres
 	}
 

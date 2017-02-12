@@ -34,7 +34,7 @@ public class ModifyIdea extends AbstractIdea {
 
 		if (id != null) {
 			try {
-				idea = getIdeaWithAccessRight(req, id);
+				idea = getIdeaWithAccessRightForModification(req, id);
 				req.setAttribute("types", categories.getCategories());
 				req.setAttribute("priorites", priorities.getPriorities());
 			} catch (SQLException e) {
@@ -42,19 +42,16 @@ public class ModifyIdea extends AbstractIdea {
 				return;
 			}
 		}
+		
+		// FIXME : utiliser les sessions pour passer les paramètres entre post et get !
+		Object sessionErrors = req.getSession().getAttribute("errors");
+		if (sessionErrors != null) {
+			req.setAttribute("errors", sessionErrors);
+			req.getSession().removeAttribute("errors");
+		}
 
 		req.setAttribute("idea", idea);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
-	}
-
-	private Idee getIdeaWithAccessRight(HttpServletRequest req, Integer id) throws SQLException {
-		Idee idea;
-		idea = idees.getIdea(id);
-		if (idea != null && idea.owner != ParametersUtils.getUserId(req)) {
-			// On essaie de modifier l'idée de quelqu'un d'autre...
-			idea = null;
-		}
-		return idea;
 	}
 
 	@Override
@@ -88,7 +85,7 @@ public class ModifyIdea extends AbstractIdea {
 
 			// Check access
 			try {
-				Idee idea = getIdeaWithAccessRight(request, ideaId);
+				Idee idea = getIdeaWithAccessRightForModification(request, ideaId);
 				if (idea == null) {
 					RootingsUtils.redirectToPage(url, request, response);
 					return;
@@ -99,7 +96,7 @@ public class ModifyIdea extends AbstractIdea {
 			}
 
 			if (!errors.isEmpty()) {
-				request.setAttribute("errors", errors);
+				request.getSession().setAttribute("errors", errors);
 			} else {
 				try {
 					logger.info(MessageFormat.format(	"Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",

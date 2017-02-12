@@ -167,6 +167,25 @@ public class Groupes extends Table {
 	}
 
 	/**
+	 * 
+	 * @param aUser
+	 * @param anotherOne
+	 * @return True if and only if the two users have at least one group in common, and so they shared ideas.
+	 * @throws SQLException
+	 */
+	public boolean haveOneCommonGroup(int aUser, int anotherOne) throws SQLException {
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} g1, {1} g2 where g1.{2} = g2.{3} and g1.{4} = ? and g2.{5} = ?",
+																GROUPE_MEMBERS,
+																GROUPE_MEMBERS,
+																GroupeKDOMembersColumn.GROUPE_ID,
+																GroupeKDOMembersColumn.GROUPE_ID,
+																GroupeKDOMembersColumn.USER_ID,
+																GroupeKDOMembersColumn.USER_ID),
+										aUser,
+										anotherOne);
+	}
+
+	/**
 	 * Crée un groupe.
 	 * 
 	 * @param groupeName
@@ -378,11 +397,11 @@ public class Groupes extends Table {
 	 */
 	public void removeAdmin(int groupId, int userId) throws SQLException {
 		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
-		                      	                     	GROUPES_ADMIN,
-		                      	                     	GroupesAdminColumns.GROUPE_ID,
-		                      	                     	GroupesAdminColumns.ADMIN),
-		                      	groupId,
-		                      	userId);
+														GROUPES_ADMIN,
+														GroupesAdminColumns.GROUPE_ID,
+														GroupesAdminColumns.ADMIN),
+								groupId,
+								userId);
 	}
 
 	/**

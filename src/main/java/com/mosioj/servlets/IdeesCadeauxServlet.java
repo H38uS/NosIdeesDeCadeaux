@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.table.Categories;
+import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.GroupeJoinRequests;
 import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
@@ -78,6 +79,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected NotificationManager notif;
 
 	/**
+	 * The connections to the GROUP_IDEA and GROUP_IDEA_CONTENT tables.
+	 */
+	protected GroupIdea groupForIdea;
+
+	/**
 	 * Class constructor.
 	 */
 	public IdeesCadeauxServlet() {
@@ -89,6 +95,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		categories = new Categories();
 		priorities = new Priorites();
 		notif = new NotificationManager();
+		groupForIdea = new GroupIdea();
 	}
 
 	/**

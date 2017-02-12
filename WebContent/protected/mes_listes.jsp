@@ -54,16 +54,23 @@
 								</td>
 								<td>${idee.html}</td>
 								<td>
-									<c:if test="${not empty idee.bookingOwner}">
-										<c:if test="${userid == idee.bookingOwner.id}">
-											Réservée par vous - <a href="protected/mes_listes?action=dereserver&idee=${idee.id}">Annuler</a> !
+									<c:if test="${idee.isBooked()}">
+										<c:if test="${not empty idee.bookingOwner}">
+											<c:if test="${userid == idee.bookingOwner.id}">
+												Réservée par vous - <a href="protected/mes_listes?action=dereserver&idee=${idee.id}">Annuler</a> !
+											</c:if>
+											<c:if test="${userid != idee.bookingOwner.id}">
+												Réservée par ${idee.bookingOwner.name}
+											</c:if>
 										</c:if>
-										<c:if test="${userid != idee.bookingOwner.id}">
-											Réservée par ${idee.bookingOwner.name}
+										<c:if test="${empty idee.bookingOwner}">
+											L'idée est réservée par un groupe.
+											<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>
 										</c:if>
 									</c:if>
-									<c:if test="${empty idee.bookingOwner}">
-										L'idée n'a pas encore été réservée. <a href="protected/mes_listes?action=reserver&idee=${idee.id}">Je veux la réserver !</a>
+									<c:if test="${not idee.isBooked()}">
+										L'idée n'a pas encore été réservée. <a href="protected/mes_listes?action=reserver&idee=${idee.id}">Je veux la réserver</a>
+										ou <a href="protected/create_a_group?&idee=${idee.id}">Créer un groupe</a>
 									</c:if>
 								</td>
 							</tr>

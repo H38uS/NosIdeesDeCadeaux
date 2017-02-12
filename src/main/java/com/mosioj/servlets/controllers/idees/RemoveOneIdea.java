@@ -31,12 +31,14 @@ public class RemoveOneIdea extends AbstractIdea {
 		}
 
 		try {
+			// FIXME sécurité...
 			Idee idea = idees.getIdea(id);
 			if (idea != null) {
 				User booker = idea.getBookingOwner();
 				if (booker != null) {
 					notif.addNotification(	booker.id,
 											new NotifBookedRemove(idea.getText(), idea.getBookingOwner().getName()));
+					// FIXME : gérer les groupes
 				}
 				String image = idea.getImage();
 				removeUploadedImage(image);
