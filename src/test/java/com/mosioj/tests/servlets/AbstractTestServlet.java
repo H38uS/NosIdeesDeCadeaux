@@ -60,6 +60,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		notif = mock(NotificationManager.class);
 		
 		when(request.getSession()).thenReturn(session);
+		when(request.getContextPath()).thenReturn("");
 		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
 		
 		groupes = mock(Groupes.class);

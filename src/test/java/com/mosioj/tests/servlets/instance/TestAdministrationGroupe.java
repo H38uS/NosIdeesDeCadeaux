@@ -87,7 +87,7 @@ public class TestAdministrationGroupe extends AbstractTestServlet {
 		verify(groupeJoinRequest, times(3)).cancelRequest(eq(18), anyInt());
 		
 		verify(request, never()).setAttribute(eq("error_message"), anyObject());
-		verify(request).getRequestDispatcher(eq(AdministrationGroupe.FORM_URL));
+		verify(response).sendRedirect(eq(AdministrationGroupe.PROTECTED_ADMINISTRATION_GROUPE));
 		verify(request, never()).getRequestDispatcher(eq(AdministrationGroupe.ERROR_URL));
 	}
 

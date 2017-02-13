@@ -20,6 +20,7 @@ import com.mosioj.utils.RootingsUtils;
 @WebServlet("/protected/administration_groupe")
 public class AdministrationGroupe extends DefaultGroupServlet {
 
+	public static final String PROTECTED_ADMINISTRATION_GROUPE = "/protected/administration_groupe";
 	public static final String FORM_URL = "/protected/administration_groupe.jsp";
 	public static final String ERROR_URL = "/protected/administration_groupe_error.jsp";
 
@@ -109,7 +110,7 @@ public class AdministrationGroupe extends DefaultGroupServlet {
 			}
 
 			// Redirection à la page d'administration
-			RootingsUtils.redirectToPage("/protected/administration_groupe", request, response);
+			RootingsUtils.redirectToPage(PROTECTED_ADMINISTRATION_GROUPE, request, response);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

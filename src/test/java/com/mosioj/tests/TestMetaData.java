@@ -51,7 +51,11 @@ public class TestMetaData extends TemplateTest {
 				int endOfForm = content.indexOf("</form>");
 				String form = content.substring(0, endOfForm);
 				assertFalse(form.contains("</form>"));
-				content.substring(endOfForm + 6);
+				content = content.substring(endOfForm + 6);
+				
+				if (form.contains("enctype=\"multipart/form-data\"")) {
+					continue;
+				}
 
 				assertTrue(form.contains("<input type=\"hidden\" name=\"${_csrf.parameterName}\" value=\"${_csrf.token}\" />"));
 			}
