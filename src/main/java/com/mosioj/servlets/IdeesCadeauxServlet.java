@@ -38,7 +38,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : ZCompléter le gdoc avec les modifications faites
 	
-	// FIXME : Supprimer les groupes : relations 1-1
 	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// FIXME : date de naissance pour le rappel
 	// TODO : notification quand un anniversaire approche

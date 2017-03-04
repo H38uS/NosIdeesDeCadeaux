@@ -67,7 +67,7 @@ public class GroupIdea extends Table {
 		q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9} ");
 		q.append("from {3} gi, {4} gic ");
 		q.append("left join {7} u on u.id = gic.{1} ");
-		q.append("where gi.{5} = gic.{6} ");
+		q.append("where gi.{5} = gic.{6} and gi.{5} = ? ");
 
 		String query = MessageFormat.format(q.toString(),
 											NEEDED_PRICE,
@@ -84,6 +84,7 @@ public class GroupIdea extends Table {
 		PreparedStatementIdKdo ps = null;
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), query);
+			ps.bindParameters(groupId);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 
