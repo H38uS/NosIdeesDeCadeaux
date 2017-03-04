@@ -20,6 +20,12 @@
 						<input type="text" name="name" value="${user.name}">
 					</td>
 				</tr>
+				<tr>
+					<td>Date de naissance</td>
+					<td>
+						<input type="date" name="birthday" pattern="yyyy-mm-dd" value="${user.birthday}">
+					</td>
+				</tr>
 			</table>
 			
 			<div class="errors">

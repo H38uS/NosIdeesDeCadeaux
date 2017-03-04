@@ -1,5 +1,6 @@
 package com.mosioj.model;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,26 @@ public class User {
 	public final int id;
 	public String email;
 	public String name;
+	public Date birthday;
+
 	private final List<Idee> ideas = new ArrayList<Idee>();
 	
 	public User(int id, String name, String email) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
+		this.birthday = null;
+	}
+
+	public User(int id, String name, String email, Date birthday) {
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.birthday = birthday;
+	}
+
+	public Date getBirthday() {
+		return birthday;
 	}
 
 	/**

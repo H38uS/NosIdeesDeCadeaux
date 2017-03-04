@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
+import com.mosioj.utils.validators.ParameterValidator;
+import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/mon_compte")
 public class MonCompte extends DefaultCompte {
@@ -67,21 +69,27 @@ public class MonCompte extends DefaultCompte {
 			String name = ParametersUtils.readIt(request, "name").trim();
 
 			int userId = ParametersUtils.getUserId(request);
-			List<String> emailErrors = checkEmail(getValidatorEmail(email), userId);
-			request.setAttribute("errors_info_gen", emailErrors);
+			List<String> errors = checkEmail(getValidatorEmail(email), userId);
+			request.setAttribute("errors_info_gen", errors);
+
+			String birthday = ParametersUtils.readIt(request, "birthday");
+			ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
+			val.checkDateFormat();
+			errors.addAll(val.getErrors());
 
 			try {
 				User user = users.getUser(userId);
 				user.email = email;
 				user.name = name;
+				user.birthday = getAsDate(birthday);
 				request.setAttribute("user", user);
 
-				if (emailErrors.isEmpty()) {
+				if (errors.isEmpty()) {
 					users.update(user);
 				}
 			} catch (SQLException e) {
 				logger.error(e.getMessage());
-				emailErrors.add(e.getMessage());
+				errors.add(e.getMessage());
 				return;
 			}
 		}

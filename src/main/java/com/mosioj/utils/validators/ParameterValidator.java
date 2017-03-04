@@ -2,11 +2,14 @@ package com.mosioj.utils.validators;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.database.DataSourceIdKDo;
 
 /**
@@ -67,7 +70,7 @@ public class ParameterValidator {
 			errors.add(article + parameterName + " ne peut pas être vide.");
 		}
 	}
-	
+
 	/**
 	 * Checks that parameter is an integer.
 	 */
@@ -75,10 +78,10 @@ public class ParameterValidator {
 		try {
 			Integer.valueOf(parameterValue);
 		} catch (NumberFormatException e) {
-			 errors.add(article + parameterName + " doit être un nombre.");
+			errors.add(article + parameterName + " doit être un nombre.");
 		}
 	}
-	
+
 	public void checkIntegerAmount(int min, int max) {
 		try {
 			int val = Integer.valueOf(parameterValue);
@@ -91,7 +94,7 @@ public class ParameterValidator {
 		} catch (NumberFormatException e) {
 		}
 	}
-	
+
 	public void checkIntegerGreaterThan(int min) {
 		try {
 			int val = Integer.valueOf(parameterValue);
@@ -101,7 +104,7 @@ public class ParameterValidator {
 		} catch (NumberFormatException e) {
 		}
 	}
-	
+
 	public void checkIntegerLowerThan(int max) {
 		try {
 			int val = Integer.valueOf(parameterValue);
@@ -152,5 +155,19 @@ public class ParameterValidator {
 		} catch (SQLException e) {
 			errors.add("Erreur lors de la lecture en base, veuillez réessayer plus tard.");
 		}
+	}
+
+	public void checkDateFormat() {
+		SimpleDateFormat sdf = new SimpleDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
+		try {
+			sdf.parse(parameterValue);
+		} catch (ParseException e) {
+			errors.add(MessageFormat.format("{0}{1} ({2}) ne correspond pas au format attendu, qui est : {3}.",
+											article,
+											parameterName,
+											parameterValue,
+											IdeesCadeauxServlet.DATE_FORMAT));
+		}
+
 	}
 }

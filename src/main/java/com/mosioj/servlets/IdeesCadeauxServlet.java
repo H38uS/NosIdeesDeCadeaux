@@ -1,6 +1,9 @@
 package com.mosioj.servlets;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,12 +42,13 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : ZCompléter le gdoc avec les modifications faites
 	
 	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
-	// FIXME : date de naissance pour le rappel
 	// TODO : notification quand un anniversaire approche
 	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
 	// FIXME : mettre la date dans les commentaires des messages
 	
 	// FIXME : faire une passe sécurité pour voir si c'est bien gérer... Faire des classes master dans les packages
+
+	public static final String DATE_FORMAT = "yyyy-mm-dd";
 
 	/**
 	 * L'interface vers la table USER_RELATIONS.
@@ -176,6 +180,18 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	public void setPrio(Priorites prio) {
 		priorities = prio;
+	}
+
+	protected java.sql.Date getAsDate(String date) {
+		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+		Date parsed;
+		try {
+			parsed = format.parse(date);
+		} catch (ParseException e) {
+			return null;
+		}
+		java.sql.Date sql = new java.sql.Date(parsed.getTime());
+		return sql;
 	}
 
 }

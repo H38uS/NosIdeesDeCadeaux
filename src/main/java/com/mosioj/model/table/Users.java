@@ -5,6 +5,7 @@ import static com.mosioj.model.table.columns.UsersColumns.EMAIL;
 import static com.mosioj.model.table.columns.UsersColumns.ID;
 import static com.mosioj.model.table.columns.UsersColumns.NAME;
 import static com.mosioj.model.table.columns.UsersColumns.PASSWORD;
+import static com.mosioj.model.table.columns.UsersColumns.BIRTHDAY;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -64,10 +65,11 @@ public class Users extends Table {
 	public User getUser(int id) throws SQLException {
 
 		User user = null;
-		String query = MessageFormat.format("select {0}, {1}, {2} from {3} where {0} = ?",
+		String query = MessageFormat.format("select {0}, {1}, {2}, {3} from {4} where {0} = ?",
 											ID,
 											NAME,
 											EMAIL,
+											BIRTHDAY,
 											TABLE_NAME);
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query);
 		try {
@@ -75,7 +77,10 @@ public class Users extends Table {
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
-					user = new User(res.getInt(ID.name()), res.getString(NAME.name()), res.getString(EMAIL.name()));
+					user = new User(res.getInt(ID.name()),
+									res.getString(NAME.name()),
+									res.getString(EMAIL.name()),
+									res.getDate(BIRTHDAY.name()));
 				}
 			}
 		} finally {
