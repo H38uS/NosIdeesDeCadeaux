@@ -81,10 +81,6 @@
 					<span>${user.name} n'a pas encore d'idées.</span>
 				</c:if>
 			</c:if>
-
 		</c:forEach>
-		<div>
-			<a href="public/index.jsp">Retour à l'accueil</a> ou <a href="protected/index.jsp">Retour à votre espace</a>.
-		</div>
 	</jsp:body>
 </t:normal_proctected>

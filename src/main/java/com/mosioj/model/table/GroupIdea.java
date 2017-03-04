@@ -14,7 +14,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.mosioj.model.IdeaGroup;
+import com.mosioj.model.User;
 import com.mosioj.model.table.columns.IdeeColumns;
+import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 public class GroupIdea extends Table {
@@ -61,14 +63,23 @@ public class GroupIdea extends Table {
 	public IdeaGroup getGroupDetails(int groupId) throws SQLException {
 
 		IdeaGroup group = null;
-		String query = MessageFormat.format("select gi.{0}, gic.{1}, gic.{2} from {3} gi, {4} gic where gi.{5} = gic.{6}",
+		StringBuilder q = new StringBuilder();
+		q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9} ");
+		q.append("from {3} gi, {4} gic ");
+		q.append("left join {7} u on u.id = gic.{1} ");
+		q.append("where gi.{5} = gic.{6} ");
+
+		String query = MessageFormat.format(q.toString(),
 											NEEDED_PRICE,
 											USER_ID,
 											PRICE,
 											TABLE_NAME,
 											TABLE_NAME_CONTENT,
 											ID,
-											GROUP_ID);
+											GROUP_ID,
+											Users.TABLE_NAME,
+											UsersColumns.NAME,
+											UsersColumns.EMAIL);
 
 		PreparedStatementIdKdo ps = null;
 		try {
@@ -78,11 +89,17 @@ public class GroupIdea extends Table {
 
 				if (res.next()) {
 					group = new IdeaGroup(groupId, res.getInt(NEEDED_PRICE.name()));
-					group.addUser(res.getInt(USER_ID.name()), res.getInt(PRICE.name()));
+					group.addUser(	new User(	res.getInt(USER_ID.name()),
+												res.getString(UsersColumns.NAME.name()),
+												res.getString(UsersColumns.EMAIL.name())),
+									res.getInt(PRICE.name()));
 				}
 
 				while (res.next()) {
-					group.addUser(res.getInt(USER_ID.name()), res.getInt(PRICE.name()));
+					group.addUser(	new User(	res.getInt(USER_ID.name()),
+												res.getString(UsersColumns.NAME.name()),
+												res.getString(UsersColumns.EMAIL.name())),
+									res.getInt(PRICE.name()));
 				}
 			}
 		} finally {

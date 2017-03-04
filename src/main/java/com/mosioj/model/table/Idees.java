@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
-import com.mosioj.model.table.columns.GroupeKDOMembersColumn;
+import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 import com.mosioj.viewhelper.Escaper;
 
@@ -46,7 +46,7 @@ public class Idees extends Table {
 		List<Idee> ideas = new ArrayList<Idee>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title ",
+		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title, u.id as userId, u.name as userName, u.email ",
 											ID,
 											IDEE,
 											TYPE,
@@ -58,6 +58,8 @@ public class Idees extends Table {
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
 		query.append("on i.type = c.nom ");
+		query.append(MessageFormat.format("left join {0} u ", Users.TABLE_NAME));
+		query.append(MessageFormat.format("on u.id = i.{0} ", RESERVE));
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
@@ -69,8 +71,7 @@ public class Idees extends Table {
 				while (rs.next()) {
 					User bookingOwner = null;
 					if (rs.getString(RESERVE.name()) != null) {
-						int id = rs.getInt(RESERVE.name());
-						bookingOwner = new User(id);
+						bookingOwner = new User(rs.getInt("userId"), rs.getString("userName"), rs.getString(UsersColumns.EMAIL.name()));
 					}
 					ideas.add(new Idee(	rs.getInt(ID.name()),
 										rs.getInt(OWNER.name()),
@@ -101,7 +102,7 @@ public class Idees extends Table {
 	public Idee getIdea(int idIdee) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title ",
+		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title, u.id as userId, u.name as userName, u.email ",
 											ID,
 											IDEE,
 											TYPE,
@@ -113,6 +114,8 @@ public class Idees extends Table {
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
 		query.append("on i.type = c.nom ");
+		query.append(MessageFormat.format("left join {0} u ", Users.TABLE_NAME));
+		query.append(MessageFormat.format("on u.id = i.{0} ", RESERVE));
 		query.append(MessageFormat.format("where i.{0} = ?", ID));
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 
@@ -123,8 +126,7 @@ public class Idees extends Table {
 				if (rs.next()) {
 					User bookingOwner = null;
 					if (rs.getString(RESERVE.name()) != null) {
-						int id = rs.getInt(RESERVE.name());
-						bookingOwner = new User(id);
+						bookingOwner = new User(rs.getInt("userId"), rs.getString("userName"), rs.getString(UsersColumns.EMAIL.name()));
 					}
 					return new Idee(rs.getInt(ID.name()),
 									rs.getInt(OWNER.name()),
@@ -260,35 +262,6 @@ public class Idees extends Table {
 		} finally {
 			ps.close();
 		}
-	}
-
-	/**
-	 * 
-	 * @param userId
-	 * @param idea
-	 * @return True if and only if the user belongs to a group in which the owner of this idea belongs to.
-	 * @throws SQLException
-	 */
-	public boolean isInScope(int userId, int idea) throws SQLException {
-
-		StringBuilder query = new StringBuilder();
-
-		query.append(MessageFormat.format(	"select count(*) from {0} where {1} in (",
-											Groupes.GROUPE_MEMBERS,
-											GroupeKDOMembersColumn.GROUPE_ID));
-
-		// Donne tous les groupes auquel le owner l'idée appartient
-		query.append(MessageFormat.format(	"select {0} from {1}, {2} where {3} = {4} and {5} = ?",
-											GroupeKDOMembersColumn.GROUPE_ID,
-											Groupes.GROUPE_MEMBERS,
-											TABLE_NAME,
-											GroupeKDOMembersColumn.USER_ID,
-											OWNER,
-											ID));
-
-		query.append(MessageFormat.format(") and {0} = ?", GroupeKDOMembersColumn.USER_ID));
-
-		return getDb().selectInt(query.toString(), idea, userId) > 0;
 	}
 
 	/**

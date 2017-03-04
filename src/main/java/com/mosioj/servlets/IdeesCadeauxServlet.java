@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.GroupIdea;
-import com.mosioj.model.table.GroupeJoinRequests;
-import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Priorites;
+import com.mosioj.model.table.UserRelationRequests;
+import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
 import com.mosioj.notifications.NotificationManager;
 import com.mosioj.utils.database.DataSourceIdKDo;
@@ -37,16 +37,25 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : quand on rentre dans un groupe, pouvoir dire "ne pas être vu de bidule"
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : ZCompléter le gdoc avec les modifications faites
+	
+	// FIXME : Supprimer les groupes : relations 1-1
+	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
+	// FIXME : date de naissance pour le rappel
+	// TODO : notification quand un anniversaire approche
+	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
+	// FIXME : mettre la date dans les commentaires des messages
+	
+	// FIXME : faire une passe sécurité pour voir si c'est bien gérer... Faire des classes master dans les packages
 
 	/**
-	 * L'interface vers la table GROUPES.
+	 * L'interface vers la table USER_RELATIONS.
 	 */
-	protected Groupes groupes;
+	protected UserRelations userRelations;
 
 	/**
-	 * Interface vers la table GROUPE_JOIN_REQUESTS.
+	 * Interface vers la table USER_RELATION_REQUESTS.
 	 */
-	protected GroupeJoinRequests groupesJoinRequest;
+	protected UserRelationRequests userRelationRequests;
 
 	/**
 	 * Interface vers la table USERS.
@@ -87,8 +96,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * Class constructor.
 	 */
 	public IdeesCadeauxServlet() {
-		groupes = new Groupes();
-		groupesJoinRequest = new GroupeJoinRequests();
+		userRelationRequests = new UserRelationRequests();
+		userRelations = new UserRelations();
 		validatorConnection = new DataSourceIdKDo();
 		users = new Users();
 		idees = new Idees();
@@ -110,19 +119,19 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * For test purposes.
 	 * 
-	 * @param pGroupes
+	 * @param pUserRelations
 	 */
-	public void setGroupes(Groupes pGroupes) {
-		groupes = pGroupes;
+	public void setUserRelations(UserRelations pUserRelations) {
+		userRelations = pUserRelations;
 	}
 
 	/**
 	 * For test purposes.
 	 * 
-	 * @param pGroupeJoinRequests
+	 * @param pUserRelationRequests
 	 */
-	public void setGroupeJoinRequests(GroupeJoinRequests pGroupeJoinRequests) {
-		groupesJoinRequest = pGroupeJoinRequests;
+	public void setUserRelationRequests(UserRelationRequests pUserRelationRequests) {
+		userRelationRequests = pUserRelationRequests;
 	}
 
 	/**

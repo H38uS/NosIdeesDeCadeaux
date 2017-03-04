@@ -16,10 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mosioj.model.table.Categories;
-import com.mosioj.model.table.GroupeJoinRequests;
-import com.mosioj.model.table.Groupes;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Priorites;
+import com.mosioj.model.table.UserRelationRequests;
+import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
 import com.mosioj.notifications.NotificationManager;
 import com.mosioj.servlets.IdeesCadeauxServlet;
@@ -38,8 +38,8 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	// Tables
 	protected DataSourceIdKDo db;
 	protected Users users;
-	protected Groupes groupes;
-	protected GroupeJoinRequests groupeJoinRequest;
+	protected UserRelations userRelations;
+	protected UserRelationRequests userRelationRequests;
 	protected DataSourceIdKDo validator;
 	protected Idees idees;
 	protected Categories cat;
@@ -63,14 +63,14 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(request.getContextPath()).thenReturn("");
 		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
 		
-		groupes = mock(Groupes.class);
-		groupeJoinRequest = mock(GroupeJoinRequests.class);
+		userRelations = mock(UserRelations.class);
+		userRelationRequests = mock(UserRelationRequests.class);
 		validator = mock(DataSourceIdKDo.class);
 		users = mock(Users.class);
 		instance = pInstance;
 		instance.setUsers(users);
-		instance.setGroupes(groupes);
-		instance.setGroupeJoinRequests(groupeJoinRequest);
+		instance.setUserRelations(userRelations);
+		instance.setUserRelationRequests(userRelationRequests);
 		instance.setValidatorConnection(validator);
 		instance.setIdees(idees);
 		instance.setCat(cat);

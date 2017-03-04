@@ -12,11 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.Group;
 import com.mosioj.model.User;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
-import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/mon_compte")
 public class MonCompte extends DefaultCompte {
@@ -29,27 +27,33 @@ public class MonCompte extends DefaultCompte {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		int userId = ParametersUtils.getUserId(req);
-		User current = new User(userId);
-		req.setAttribute("user", current);
-
 		try {
-			List<Group> joined = groupes.getGroupsJoined(userId, -1);
-			req.setAttribute("joined", joined);
-
-			Group owned = null;
-			try {
-				int groupId = groupes.getOwnerGroupId(userId);
-				owned = new Group(groupId, groupes.getName(groupId), -1, null);
-			} catch (NoRowsException e) {
-				// No groups created
-			}
-			req.setAttribute("owned", owned);
-
+			User current = users.getUser(userId);
+			req.setAttribute("user", current);
 		} catch (SQLException e) {
-			e.printStackTrace();
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 			return;
 		}
+
+		// FIXME afficher les relations
+		// try {
+		// List<Group> joined = groupes.getGroupsJoined(userId, -1);
+		// req.setAttribute("joined", joined);
+		//
+		// Group owned = null;
+		// try {
+		// int groupId = groupes.getOwnerGroupId(userId);
+		// owned = new Group(groupId, groupes.getName(groupId), -1, null);
+		// } catch (NoRowsException e) {
+		// // No groups created
+		// }
+		// req.setAttribute("owned", owned);
+		//
+		// } catch (SQLException e) {
+		// e.printStackTrace();
+		// RootingsUtils.rootToGenericSQLError(e, req, resp);
+		// return;
+		// }
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
@@ -66,19 +70,19 @@ public class MonCompte extends DefaultCompte {
 			List<String> emailErrors = checkEmail(getValidatorEmail(email), userId);
 			request.setAttribute("errors_info_gen", emailErrors);
 
-			User user = new User(userId);
-			user.email = email;
-			user.name = name;
-			request.setAttribute("user", user);
+			try {
+				User user = users.getUser(userId);
+				user.email = email;
+				user.name = name;
+				request.setAttribute("user", user);
 
-			if (emailErrors.isEmpty()) {
-				try {
+				if (emailErrors.isEmpty()) {
 					users.update(user);
-				} catch (SQLException e) {
-					logger.error(e.getMessage());
-					emailErrors.add(e.getMessage());
-					return;
 				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage());
+				emailErrors.add(e.getMessage());
+				return;
 			}
 		}
 

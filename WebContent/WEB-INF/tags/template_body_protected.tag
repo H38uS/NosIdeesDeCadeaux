@@ -20,13 +20,10 @@
 					<a href="protected/mes_listes">Afficher mes listes partagées</a>
 				</li>
 				<li>
-					<a href="protected/creation_groupe">Créer un groupe</a>
+					<a href="protected/afficher_reseau?id=${userid}">Mon réseau</a>
 				</li>
 				<li>
-					<a href="protected/administration_groupe">Administrer vos groupes</a>
-				</li>
-				<li>
-					<a href="protected/rechercher_groupe.jsp">Rejoindre un groupe</a>
+					<a href="protected/rechercher_personne.jsp">Ajouter un ami</a>
 				</li>
     		</ul>
     	</header>

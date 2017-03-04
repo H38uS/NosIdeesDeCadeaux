@@ -192,7 +192,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	protected Idee getIdeaWithAccessRightToInteract(HttpServletRequest req, Integer id) throws SQLException {
 		Idee idea;
 		idea = idees.getIdea(id);
-		if (idea != null && !groupes.haveOneCommonGroup(idea.owner, ParametersUtils.getUserId(req))) {
+		if (idea != null && !userRelations.associationExists(idea.owner, ParametersUtils.getUserId(req))) {
 			// On essaie de modifier l'idée de quelqu'un d'autre...
 			idea = null;
 		}

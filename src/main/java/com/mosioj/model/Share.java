@@ -5,8 +5,8 @@ public class Share {
 	private final User user;
 	private final int amount;
 	
-	public Share(int userId, int amount) {
-		user = new User(userId);
+	public Share(User user, int amount) {
+		this.user = user;
 		this.amount = amount;
 	}
 

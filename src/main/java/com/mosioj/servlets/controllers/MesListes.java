@@ -3,8 +3,8 @@ package com.mosioj.servlets.controllers;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.Group;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.ParametersUtils;
@@ -40,18 +39,6 @@ public class MesListes extends IdeesCadeauxServlet {
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
 		LOGGER.info(MessageFormat.format("Action: {0}", action));
 
-		// TODO : trier les listes, mettre sa liste en haut
-		
-		String displayThisGroup = ParametersUtils.readIt(req, "group");
-		int groupIdToDisplay = -1;
-		if (displayThisGroup != null) {
-			try {
-				groupIdToDisplay = Integer .parseInt(displayThisGroup);
-				LOGGER.info(MessageFormat.format("Display only group: {0}", displayThisGroup));
-			} catch (NumberFormatException e) {
-			}
-		}
-
 		int userId = ParametersUtils.getUserId(req);
 		if (!action.isEmpty()) {
 			try {
@@ -62,26 +49,20 @@ public class MesListes extends IdeesCadeauxServlet {
 			}
 		}
 
-		Set<User> ids = new HashSet<User>();
-		ids.add(new User(userId));
 		try {
-			// Get all user id
-			for (Group group : groupes.getGroupsJoined(userId, groupIdToDisplay)) {
-				ids.addAll(groupes.getUsers(group.getId())); // TODO voir s'il ne faut pas mutualiser pour éviter les
-																// constructions d'utilisateurs inutiles
-			}
-
+			List<User> ids = new ArrayList<User>();
+			ids.add(users.getUser(userId));
+			ids.addAll(userRelations.getAllUsersInRelation(userId));
 			LOGGER.debug("Getting all ideas for all users...");
 			for (User user : ids) {
 				user.addIdeas(idees.getOwnerIdeas(user.id));
 			}
-
+			req.setAttribute("users", ids);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 			return;
 		}
 
-		req.setAttribute("users", ids);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
@@ -120,7 +101,7 @@ public class MesListes extends IdeesCadeauxServlet {
 			return false;
 		}
 		
-		if (!idees.isInScope(userId, idea)) {
+		if (!userRelations.associationExists(userId, idees.getIdea(idea).owner)) {
 			return false;
 		}
 		

@@ -6,13 +6,13 @@
 
 <t:normal_proctected>
 	<jsp:body>
-		<h2>Rechercher un groupe</h2>
+		<h2>Rechercher une personne pour l'ajouter</h2>
 		<div>
-			<form method="POST" action="protected/rechercher_groupe">
+			<form method="POST" action="protected/rechercher_personne">
 				<table>
 					<tr>
 						<td>
-							<label for="name" class="required">Nom du groupe</label>
+							<label for="name" class="required">Nom / Email de la personne</label>
 						</td>
 						<td>
 							<input type="text" name="name" id="name" value="${param.name}" />
@@ -28,28 +28,25 @@
 			</form>
 		</div>
 		<div>
-			<c:if test="${fn:length(groupes) > 0}">
+			<c:if test="${not empty users}">
 				<table>
 					<thead>
 						<tr>
-							<th>Nom du groupe</th>
-							<th>Nombre de membres</th>
+							<th>Nom de la personne</th>
+							<th>Email</th>
 							<th>Action</th>
 						</tr>
 					</thead>
-				<c:forEach var="groupe" items="${groupes}">
+				<c:forEach var="user" items="${users}">
 					<tr>
-						<td>${groupe.name}</td>
-						<td>${groupe.nbMembers}</td>
+						<td>${user.name}</td>
+						<td>${user.email}</td>
 						<td>
-							<c:if test="${fn:length(groupe.status) == 0}">
-								<form method="POST" action="protected/demande_rejoindre_groupe">
-									<input hidden="true" type="text" name="groupe_id" value="${groupe.id}" >
-									<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
-									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-								</form>
-							</c:if>
-							${groupe.status}
+							<form method="POST" action="protected/demande_rejoindre_reseau">
+								<input hidden="true" type="text" name="user_id" value="${user.id}" >
+								<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							</form>
 						</td>
 					</tr>
 				</c:forEach>

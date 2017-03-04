@@ -12,8 +12,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
-import com.mosioj.model.table.columns.GroupesAdminColumns;
 import com.mosioj.model.table.columns.UserRolesColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 
@@ -26,6 +28,7 @@ import com.mosioj.utils.database.PreparedStatementIdKdo;
 public class Users extends Table {
 
 	public static final String TABLE_NAME = "USERS";
+	private static final Logger LOGGER = LogManager.getLogger(Users.class);
 
 	/**
 	 * Inserts a new person into the database !
@@ -50,6 +53,36 @@ public class Users extends Table {
 														UserRolesColumns.ROLE),
 								email,
 								"ROLE_USER");
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return The user corresponding to this ID or null if not found.
+	 * @throws SQLException
+	 */
+	public User getUser(int id) throws SQLException {
+
+		User user = null;
+		String query = MessageFormat.format("select {0}, {1}, {2} from {3} where {0} = ?",
+											ID,
+											NAME,
+											EMAIL,
+											TABLE_NAME);
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query);
+		try {
+			ps.bindParameters(id);
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					user = new User(res.getInt(ID.name()), res.getString(NAME.name()), res.getString(EMAIL.name()));
+				}
+			}
+		} finally {
+			ps.close();
+		}
+
+		return user;
 	}
 
 	/**
@@ -80,39 +113,42 @@ public class Users extends Table {
 								user.id);
 	}
 
-	/**
-	 * 
-	 * @param name_to_search
-	 * @return The list of users that have this name.
-	 * @throws SQLException
-	 */
-	public List<User> getUsersToAdmin(String name_to_search, int groupId) throws SQLException {
-		List<User> user = new ArrayList<User>();
+	public List<User> getUsers(String nameToMatch) throws SQLException {
 
-		String query = MessageFormat.format("select {0},{1} from {2} where {3} = ? and {4} not in (select {5} from groupes_admin where {6} = ?)",
+		List<User> users = new ArrayList<User>();
+		LOGGER.debug("Getting users from search token: '" + nameToMatch + "'.");
+
+		nameToMatch = nameToMatch.replaceAll("!", "!!");
+		nameToMatch = nameToMatch.replaceAll("%", "!%");
+		nameToMatch = nameToMatch.replaceAll("_", "!_");
+		nameToMatch = nameToMatch.replaceAll("\\[", "![");
+
+		String query = MessageFormat.format("select {0},{1},{2} from {3} where {4} like ? ESCAPE ''!'' or {5} like ? ESCAPE ''!''",
 											ID,
+											NAME,
 											EMAIL,
 											TABLE_NAME,
 											NAME,
-											ID,
-											GroupesAdminColumns.ADMIN,
-											GroupesAdminColumns.GROUPE_ID);
+											EMAIL);
+
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
-			ps.bindParameters(name_to_search, groupId);
+			ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%");
 
-			if (ps.execute()) {
-				ResultSet res = ps.getResultSet();
-				while (res.next()) {
-					user.add(new User(res.getInt(1), name_to_search, res.getString(2)));
-				}
+			if (!ps.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = ps.getResultSet();
+			while (res.next()) {
+				users.add(new User(res.getInt(ID.name()), res.getString(NAME.name()), res.getString(EMAIL.name())));
 			}
 
 		} finally {
 			ps.close();
 		}
 
-		return user;
+		return users;
 	}
 
 }

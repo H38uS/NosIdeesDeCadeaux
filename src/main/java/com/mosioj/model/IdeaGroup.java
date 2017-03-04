@@ -26,8 +26,8 @@ public class IdeaGroup {
 		return shares;
 	}
 
-	public void addUser(int userId, int amount) {
-		shares.add(new Share(userId, amount));
+	public void addUser(User user, int amount) {
+		shares.add(new Share(user, amount));
 	}
 	
 }

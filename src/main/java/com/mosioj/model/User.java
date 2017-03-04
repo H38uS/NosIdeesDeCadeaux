@@ -1,10 +1,7 @@
 package com.mosioj.model;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mosioj.utils.database.DataSourceIdKDo;
 
 public class User {
 
@@ -13,17 +10,6 @@ public class User {
 	public String name;
 	private final List<Idee> ideas = new ArrayList<Idee>();
 	
-	public User(int i) {
-		id = i;
-		try {
-			DataSourceIdKDo db = new DataSourceIdKDo();
-			name = db.selectString("select name from users where id = ?", i);
-			email = db.selectString("select email from users where id = ?", i);
-		} catch (SQLException e) {
-			name = "L'identifiant n'existe pas";
-		}
-	}
-
 	public User(int id, String name, String email) {
 		this.id = id;
 		this.name = name;

@@ -6,40 +6,33 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.model.Group;
-import com.mosioj.servlets.controllers.RechercherGroupe;
+import com.mosioj.servlets.controllers.relations.RechercherPersonne;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
-public class TestRechercheGroup extends AbstractTestServlet {
+public class TestRecherchePersonne extends AbstractTestServlet {
 
-	public TestRechercheGroup() {
-		super(new RechercherGroupe());
+	public TestRecherchePersonne() {
+		super(new RechercherPersonne());
 	}
 	
 
 	@Before
 	public void before() {
-		when(request.getRequestDispatcher(RechercherGroupe.FORM_URL)).thenReturn(dispatcher);
+		when(request.getRequestDispatcher(RechercherPersonne.FORM_URL)).thenReturn(dispatcher);
 	}
 
 	@Test
 	public void testPost() throws ServletException, IOException, SQLException {
-
-		List<Group> groups = new ArrayList<Group>();
-		
+		when(session.getAttribute("userid")).thenReturn(-1);
 		when(request.getParameter("name")).thenReturn("monGroupe");
-		when(groupes.getGroupsToJoin("monGroupe", _OWNER_ID_)).thenReturn(groups);
 		instance.doPost(request, response);
-
-		verify(request).getRequestDispatcher(eq(RechercherGroupe.FORM_URL));
+		verify(request).getRequestDispatcher(eq(RechercherPersonne.FORM_URL));
 	}
 
 }
