@@ -38,13 +38,14 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		}
 
 		try {
-			if (!userRelations.associationExists(user, ParametersUtils.getUserId(req))) {
+			int userId = ParametersUtils.getUserId(req);
+			if (user != userId && !userRelations.associationExists(user, userId)) {
 				req.setAttribute("error_message", "Vous ne pouvez voir que le réseau de vos amis.");
 				RootingsUtils.rootToPage(ERROR_URL, req, resp);
 				return;
 			}
 
-			req.setAttribute("demandes", userRelationRequests.getRequests(ParametersUtils.getUserId(req)));
+			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
 			req.setAttribute("relations", userRelations.getRelations(user));
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, req, resp);

@@ -15,7 +15,20 @@
 							<label for="name" class="required">Nom / Email de la personne</label>
 						</td>
 						<td>
-							<input type="text" name="name" id="name" value="${param.name}" />
+							<input type="text" name="name" id="name" value="${name}" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="only_non-friend">Afficher uniquement les non-amis</label>
+						</td>
+						<td>
+							<c:if test="${onlyNonFriend}">
+								<input type="checkbox" name="only_non-friend" id="only_non-friend" checked="checked" />
+							</c:if>
+							<c:if test="${not onlyNonFriend}">
+								<input type="checkbox" name="only_non-friend" id="only_non-friend" />
+							</c:if>
 						</td>
 					</tr>
 					<tr>

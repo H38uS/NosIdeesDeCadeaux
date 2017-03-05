@@ -20,7 +20,7 @@
 					<a href="protected/mes_listes">Afficher mes listes partagées</a>
 				</li>
 				<li>
-					<a href="protected/afficher_reseau?id=${userid}">Mon réseau</a>
+					<a href="protected/afficher_reseau?id=${userid}">Mes amis</a>
 				</li>
 				<li>
 					<a href="protected/rechercher_personne.jsp">Ajouter un ami</a>

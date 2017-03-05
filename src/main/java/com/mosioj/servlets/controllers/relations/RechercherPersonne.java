@@ -23,11 +23,23 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		// FIXME voir quand utiliser le read and escape
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
+		boolean onlyNonFriend = "on".equals(ParametersUtils.readAndEscape(request, "only_non-friend").trim());
+		
 		try {
 			List<User> foundUsers = users.getUsers(userNameOrEmail);
-			foundUsers.remove(users.getUser(ParametersUtils.getUserId(request)));
+			int userId = ParametersUtils.getUserId(request);
+			foundUsers.remove(users.getUser(userId));
+			if (onlyNonFriend) {
+				List<User> friends = userRelations.getAllUsersInRelation(userId);
+				foundUsers.removeAll(friends);
+			}
+			
 			request.setAttribute("users", foundUsers);
+			request.setAttribute("name", userNameOrEmail);
+			request.setAttribute("onlyNonFriend", onlyNonFriend);
+			
 			RootingsUtils.rootToPage(FORM_URL, request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
@@ -35,7 +47,6 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 	}
 
 	// FIXME : ne pas afficher le bouton si on est déjà amis
-	// FIXME : faire une checkbox pour n'afficher que les personnes avec qui on est pas amis
 
 	// TODO : ne pas afficher le bouton rejoindre personne si on a déjà envoyé une demande...
 	// TODO limiter le nombre de résultat (à 20 ?)
