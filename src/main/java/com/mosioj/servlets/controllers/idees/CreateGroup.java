@@ -31,7 +31,7 @@ public class CreateGroup extends AbstractIdea {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Integer id = ParametersUtils.readInt(req, "idee");
-		Idee idea = null;
+		Idee idea = null; // FIXME : pas de sécurité ici -- mais uniquement dans le idea.canBook
 
 		if (id != null) {
 			try {
@@ -50,7 +50,7 @@ public class CreateGroup extends AbstractIdea {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Integer id = ParametersUtils.readInt(request, "idee");
-		Idee idea = null;
+		Idee idea = null; // FIXME : pas de sécurité ici -- mais uniquement dans le idea.canBook
 
 		if (id != null) {
 			try {
@@ -89,13 +89,12 @@ public class CreateGroup extends AbstractIdea {
 
 		Integer amount = ParametersUtils.readInt(request, "amount");
 
-		// FIXME : ne pas pouvoir créer de group sur ses idées...
-		// FIXME : ne pas pouvoir créer de group si c'est déjà réservé...
-		// FIXME : idem pour la résa
-		
 		try {
-			int groupId = groupForIdea.createAGroup(total, amount, ParametersUtils.getUserId(request));
-			idees.bookByGroup(id, groupId);
+			int userId = ParametersUtils.getUserId(request);
+			if (idees.canBook(idea.getId(), userId)) {
+				int groupId = groupForIdea.createAGroup(total, amount, userId);
+				idees.bookByGroup(id, groupId);
+			}
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 			return;

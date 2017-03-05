@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
+import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 import com.mosioj.viewhelper.Escaper;
@@ -71,7 +72,9 @@ public class Idees extends Table {
 				while (rs.next()) {
 					User bookingOwner = null;
 					if (rs.getString(RESERVE.name()) != null) {
-						bookingOwner = new User(rs.getInt("userId"), rs.getString("userName"), rs.getString(UsersColumns.EMAIL.name()));
+						bookingOwner = new User(rs.getInt("userId"),
+												rs.getString("userName"),
+												rs.getString(UsersColumns.EMAIL.name()));
 					}
 					ideas.add(new Idee(	rs.getInt(ID.name()),
 										rs.getInt(OWNER.name()),
@@ -126,7 +129,9 @@ public class Idees extends Table {
 				if (rs.next()) {
 					User bookingOwner = null;
 					if (rs.getString(RESERVE.name()) != null) {
-						bookingOwner = new User(rs.getInt("userId"), rs.getString("userName"), rs.getString(UsersColumns.EMAIL.name()));
+						bookingOwner = new User(rs.getInt("userId"),
+												rs.getString("userName"),
+												rs.getString(UsersColumns.EMAIL.name()));
 					}
 					return new Idee(rs.getInt(ID.name()),
 									rs.getInt(OWNER.name()),
@@ -265,6 +270,12 @@ public class Idees extends Table {
 	}
 
 	/**
+	 * False if :
+	 * <ul>
+	 * <li>The idea belongs to the user</li>
+	 * <li>The idea is not in the user relationship</li>
+	 * <li>The idea is already booked (by a group or a person)</li>
+	 * </ul>
 	 * 
 	 * @param idea
 	 * @param userId
@@ -272,11 +283,26 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public boolean canBook(int idea, int userId) throws SQLException {
-		return getDb().selectInt(	MessageFormat.format(	"select count(*) from {0} where id = ? and {1} is null and {2} is null",
+
+		StringBuilder query = new StringBuilder();
+		query.append("select count(*) ");
+		query.append("from {0} i ");
+		query.append("inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) ");
+		query.append("where id = ? and {1} is null and {2} is null and {3} <> ?");
+
+		return getDb().selectInt(	MessageFormat.format(	query.toString(),
 															TABLE_NAME,
 															RESERVE,
-															GROUPE_KDO_ID),
-									idea) > 0;
+															GROUPE_KDO_ID,
+															UsersColumns.ID,
+															UserRelations.TABLE_NAME,
+															OWNER,
+															UserRelationsColumns.FIRST_USER,
+															UserRelationsColumns.SECOND_USER),
+									userId,
+									userId,
+									idea,
+									userId) > 0;
 	}
 
 	/**

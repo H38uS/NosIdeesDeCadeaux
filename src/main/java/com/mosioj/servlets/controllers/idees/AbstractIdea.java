@@ -194,6 +194,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 		idea = idees.getIdea(id);
 		if (idea != null && !userRelations.associationExists(idea.owner, ParametersUtils.getUserId(req))) {
 			// On essaie de modifier l'idée de quelqu'un d'autre...
+			// FIXME : fusionner avec MesListes
 			idea = null;
 		}
 		return idea;
