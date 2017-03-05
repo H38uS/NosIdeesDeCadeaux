@@ -3,7 +3,7 @@
 
 <t:normal_proctected>
 	<jsp:body>
-		<h2>Impossible d'envoyer une demande à ${name}...</h2>
+		<h2>Une erreur est survenue...</h2>
 		<div>${error_message}</div>
 	</jsp:body>
 </t:normal_proctected>

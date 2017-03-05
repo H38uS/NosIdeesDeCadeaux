@@ -25,18 +25,25 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 
 	private static final String GET_URL = "/protected/afficher_reseau?id=";
 	private static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
+	private static final String ERROR_URL = "/protected/afficher_reseau_error.jsp";
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		Integer user = ParametersUtils.readInt(req, "id");
 		if (user == null) {
-			// FIXME : faire la gestion d'erreur
-			// FIXME : regarder si on a les droits de voir le réseau
+			req.setAttribute("error_message", "Aucun réseau trouvé en paramètre...");
+			RootingsUtils.rootToPage(ERROR_URL, req, resp);
 			return;
 		}
 
 		try {
+			if (!userRelations.associationExists(user, ParametersUtils.getUserId(req))) {
+				req.setAttribute("error_message", "Vous ne pouvez voir que le réseau de vos amis.");
+				RootingsUtils.rootToPage(ERROR_URL, req, resp);
+				return;
+			}
+
 			req.setAttribute("demandes", userRelationRequests.getRequests(ParametersUtils.getUserId(req)));
 			req.setAttribute("relations", userRelations.getRelations(user));
 		} catch (SQLException e) {
