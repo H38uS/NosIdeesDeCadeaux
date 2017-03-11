@@ -101,7 +101,7 @@ public class MesListes extends IdeesCadeauxServlet {
 			return false;
 		}
 		
-		if (!userRelations.associationExists(userId, idees.getIdea(idea).owner)) {
+		if (!userRelations.associationExists(userId, idees.getIdea(idea).owner.id)) {
 			return false;
 		}
 		

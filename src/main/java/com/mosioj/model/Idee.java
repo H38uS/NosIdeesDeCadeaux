@@ -9,10 +9,10 @@ public class Idee {
 	private final User bookingOwner;
 	private final int group;
 	private final String image;
-	public final int owner;
+	public final User owner;
 	private final int priorite;
 
-	public Idee(int pId, int owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage, String catAlt, String catTitle, int priorite) {
+	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage, String catAlt, String catTitle, int priorite) {
 		id = pId;
 		text = pText;
 		type = pType;
@@ -68,6 +68,14 @@ public class Idee {
 		return cat;
 	}
 
+	/**
+	 * 
+	 * @return The person's idea.
+	 */
+	public User getOwner() {
+		return owner;
+	}
+	
 	/**
 	 * 
 	 * @return The person who booked this idea. Null if nobodies books it, or it a group did it.

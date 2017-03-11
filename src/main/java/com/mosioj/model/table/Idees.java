@@ -36,6 +36,71 @@ public class Idees extends Table {
 	private static final Logger logger = LogManager.getLogger(Idees.class);
 
 	/**
+	 * Fills the idea structure from a result set query. /!\ The result set must be valid, and have a row available.
+	 * 
+	 * @param rs
+	 * @return The new idea.
+	 * @throws SQLException
+	 */
+	private Idee createIdeaFromQuery(ResultSet rs) throws SQLException {
+		User bookingOwner = null;
+		if (rs.getString(RESERVE.name()) != null) {
+			bookingOwner = new User(rs.getInt("userId"),
+									rs.getString("userName"),
+									rs.getString(UsersColumns.EMAIL.name()));
+		}
+		User owner = new User(rs.getInt("ownerId"), rs.getString("ownerName"), rs.getString("ownerEmail"));
+		Idee idea = new Idee(	rs.getInt(ID.name()),
+								owner,
+								rs.getString(IDEE.name()),
+								rs.getString(TYPE.name()),
+								bookingOwner,
+								rs.getInt(GROUPE_KDO_ID.name()),
+								rs.getString("id_image"),
+								rs.getString(CategoriesColumns.IMAGE.name()),
+								rs.getString(CategoriesColumns.ALT.name()),
+								rs.getString(CategoriesColumns.TITLE.name()),
+								rs.getInt(PRIORITE.name()));
+		return idea;
+	}
+
+	/**
+	 * 
+	 * @return The SQL select/joins to select ideas.
+	 */
+	private StringBuilder getIdeaBasedSelect() {
+
+		String cTableName = Categories.TABLE_NAME;
+		CategoriesColumns cNom = CategoriesColumns.NOM;
+
+		StringBuilder columns = new StringBuilder();
+		columns.append(MessageFormat.format("select i.{0}, ", ID));
+		columns.append(MessageFormat.format("       i.{0}, ", IDEE));
+		columns.append(MessageFormat.format("       i.{0}, ", TYPE));
+		columns.append(MessageFormat.format("       i.{0}, ", RESERVE));
+		columns.append(MessageFormat.format("       i.{0}, ", GROUPE_KDO_ID));
+		columns.append(MessageFormat.format("       i.{0} as id_image, ", IMAGE));
+		columns.append(MessageFormat.format("       i.{0}, ", PRIORITE));
+		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.IMAGE));
+		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.ALT));
+		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.TITLE));
+		columns.append(MessageFormat.format("       u.{0} as userId, ", UsersColumns.ID));
+		columns.append(MessageFormat.format("       u.{0} as userName, ", UsersColumns.NAME));
+		columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.EMAIL));
+		columns.append(MessageFormat.format("       u1.{0} as ownerId, ", UsersColumns.ID));
+		columns.append(MessageFormat.format("       u1.{0} as ownerName, ", UsersColumns.NAME));
+		columns.append(MessageFormat.format("       u1.{0} as ownerEmail ", UsersColumns.EMAIL));
+
+		StringBuilder query = new StringBuilder(columns);
+		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
+		query.append(MessageFormat.format(	"left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
+		query.append(MessageFormat.format("left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
+		query.append(MessageFormat.format("left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
+
+		return query;
+	}
+
+	/**
 	 * Retrieves all ideas of a person.
 	 * 
 	 * @param ownerId
@@ -46,21 +111,7 @@ public class Idees extends Table {
 
 		List<Idee> ideas = new ArrayList<Idee>();
 
-		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title, u.id as userId, u.name as userName, u.email ",
-											ID,
-											IDEE,
-											TYPE,
-											RESERVE,
-											GROUPE_KDO_ID,
-											IMAGE,
-											OWNER,
-											PRIORITE));
-		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
-		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
-		query.append("on i.type = c.nom ");
-		query.append(MessageFormat.format("left join {0} u ", Users.TABLE_NAME));
-		query.append(MessageFormat.format("on u.id = i.{0} ", RESERVE));
+		StringBuilder query = getIdeaBasedSelect();
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
@@ -70,23 +121,7 @@ public class Idees extends Table {
 			if (ps.execute()) {
 				ResultSet rs = ps.getResultSet();
 				while (rs.next()) {
-					User bookingOwner = null;
-					if (rs.getString(RESERVE.name()) != null) {
-						bookingOwner = new User(rs.getInt("userId"),
-												rs.getString("userName"),
-												rs.getString(UsersColumns.EMAIL.name()));
-					}
-					ideas.add(new Idee(	rs.getInt(ID.name()),
-										rs.getInt(OWNER.name()),
-										rs.getString(IDEE.name()),
-										rs.getString(TYPE.name()),
-										bookingOwner,
-										rs.getInt(GROUPE_KDO_ID.name()),
-										rs.getString("id_image"),
-										rs.getString(CategoriesColumns.IMAGE.name()),
-										rs.getString(CategoriesColumns.ALT.name()),
-										rs.getString(CategoriesColumns.TITLE.name()),
-										rs.getInt(PRIORITE.name())));
+					ideas.add(createIdeaFromQuery(rs));
 				}
 			}
 		} finally {
@@ -104,21 +139,7 @@ public class Idees extends Table {
 	 */
 	public Idee getIdea(int idIdee) throws SQLException {
 
-		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select i.{0}, i.{1}, i.{2}, i.{3}, i.{4}, i.{5} as id_image, i.{6}, i.{7}, c.image, c.alt, c.title, u.id as userId, u.name as userName, u.email ",
-											ID,
-											IDEE,
-											TYPE,
-											RESERVE,
-											GROUPE_KDO_ID,
-											IMAGE,
-											OWNER,
-											PRIORITE));
-		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
-		query.append(MessageFormat.format("left join {0} c ", Categories.TABLE_NAME));
-		query.append("on i.type = c.nom ");
-		query.append(MessageFormat.format("left join {0} u ", Users.TABLE_NAME));
-		query.append(MessageFormat.format("on u.id = i.{0} ", RESERVE));
+		StringBuilder query = getIdeaBasedSelect();
 		query.append(MessageFormat.format("where i.{0} = ?", ID));
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 
@@ -127,23 +148,7 @@ public class Idees extends Table {
 			if (ps.execute()) {
 				ResultSet rs = ps.getResultSet();
 				if (rs.next()) {
-					User bookingOwner = null;
-					if (rs.getString(RESERVE.name()) != null) {
-						bookingOwner = new User(rs.getInt("userId"),
-												rs.getString("userName"),
-												rs.getString(UsersColumns.EMAIL.name()));
-					}
-					return new Idee(rs.getInt(ID.name()),
-									rs.getInt(OWNER.name()),
-									rs.getString(IDEE.name()),
-									rs.getString(TYPE.name()),
-									bookingOwner,
-									rs.getInt(GROUPE_KDO_ID.name()),
-									rs.getString("id_image"),
-									rs.getString(CategoriesColumns.IMAGE.name()),
-									rs.getString(CategoriesColumns.ALT.name()),
-									rs.getString(CategoriesColumns.TITLE.name()),
-									rs.getInt(PRIORITE.name()));
+					return createIdeaFromQuery(rs);
 				}
 			}
 		} finally {
