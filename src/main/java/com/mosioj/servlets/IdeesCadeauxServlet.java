@@ -18,6 +18,7 @@ import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
 import com.mosioj.notifications.NotificationManager;
+import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.database.DataSourceIdKDo;
 
 /**
@@ -28,7 +29,7 @@ import com.mosioj.utils.database.DataSourceIdKDo;
  */
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet extends HttpServlet {
-	
+
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 	// TODO : faire une notification "oui c'est à jour" / "non je regarde" quand on demande si c'est à jour
 	// TODO : upload / edit d'image
@@ -40,12 +41,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : quand on rentre dans un groupe, pouvoir dire "ne pas être vu de bidule"
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : ZCompléter le gdoc avec les modifications faites
-	
+
 	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
 	// FIXME : mettre la date dans les commentaires des messages
-	
+
 	// FIXME : faire une passe sécurité pour voir si c'est bien gérer... Faire des classes master dans les packages
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -53,7 +54,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * L'interface vers la table USER_RELATIONS.
 	 */
-	protected UserRelations userRelations;
+	protected static UserRelations userRelations = new UserRelations();
 
 	/**
 	 * Interface vers la table USER_RELATION_REQUESTS.
@@ -73,7 +74,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * The connections to the IDEES table.
 	 */
-	protected Idees idees;
+	protected static Idees idees = new Idees();
 
 	/**
 	 * The connections to the CATEGORIES table.
@@ -96,18 +97,24 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected GroupIdea groupForIdea;
 
 	/**
-	 * Class constructor.
+	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
-	public IdeesCadeauxServlet() {
+	private final SecurityPolicy policy;
+	
+	/**
+	 * Class constructor.
+	 * 
+	 * @param policy The security policy defining whether we can interact with the parameters, etc.
+	 */
+	public IdeesCadeauxServlet(SecurityPolicy policy) {
 		userRelationRequests = new UserRelationRequests();
-		userRelations = new UserRelations();
 		validatorConnection = new DataSourceIdKDo();
 		users = new Users();
-		idees = new Idees();
 		categories = new Categories();
 		priorities = new Priorites();
 		notif = new NotificationManager();
 		groupForIdea = new GroupIdea();
+		this.policy = policy;
 	}
 
 	/**
@@ -164,14 +171,60 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		idees = pIdees;
 	}
 
+	/**
+	 * Internal class for GET processing, post security checks.
+	 * 
+	 * @param req
+	 * @param resp
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public abstract void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException;
+
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		super.doGet(req, resp);
+
+		if (!policy.isGetRequestAllowed()) {
+			super.doGet(req, resp);
+			return;
+		}
+
+		if (!policy.hasRightToInteractInGetRequest(req, resp)) {
+			// FIXME faire une erreur générique
+			return;
+		}
+
+		// Security has passed, perform the logic
+		ideesKDoGET(req, resp);
 	};
+
+	/**
+	 * Internal class for POST processing, post security checks.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		super.doPost(request, response);
+
+		if (!policy.isGetRequestAllowed()) {
+			super.doGet(request, response);
+			return;
+		}
+
+		if (!policy.hasRightToInteractInPostRequest(request, response)) {
+			// FIXME faire une erreur générique
+			return;
+		}
+
+		// Security has passed, perform the logic
+		ideesKDoPOST(request, response);
 	}
 
 	public void setCat(Categories cat) {

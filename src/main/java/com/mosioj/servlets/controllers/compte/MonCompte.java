@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
+import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
@@ -25,8 +26,12 @@ public class MonCompte extends DefaultCompte {
 	public static final String VIEW_PAGE_URL = "/protected/mon_compte.jsp";
 	private static final Logger logger = LogManager.getLogger(MonCompte.class);
 
+	public MonCompte() {
+		super(new AllAccessToPostAndGet());
+	}
+
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		int userId = ParametersUtils.getUserId(req);
 		try {
@@ -61,7 +66,8 @@ public class MonCompte extends DefaultCompte {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		String info = ParametersUtils.readIt(request, "modif_info_gen");
 		if ("true".equals(info)) {

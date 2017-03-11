@@ -93,7 +93,7 @@ public class Idees extends Table {
 
 		StringBuilder query = new StringBuilder(columns);
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
-		query.append(MessageFormat.format(	"left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
+		query.append(MessageFormat.format("left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
 		query.append(MessageFormat.format("left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
 		query.append(MessageFormat.format("left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
 
@@ -156,6 +156,46 @@ public class Idees extends Table {
 		}
 
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param groupId
+	 * @return The owner of the idea booked by this group, or null if it does not exist.
+	 * @throws SQLException
+	 */
+	public User getIdeaOwnerFromGroup(int groupId) throws SQLException {
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format(	"select u.{0}, u.{1}, u.{2} ",
+											UsersColumns.ID,
+											UsersColumns.NAME,
+											UsersColumns.EMAIL));
+		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
+		query.append(MessageFormat.format(	"inner join {0} u on i.{1} = u.{2} ",
+											Users.TABLE_NAME,
+											OWNER,
+											UsersColumns.ID));
+		query.append(MessageFormat.format(" where i.{0} = ?", GROUPE_KDO_ID));
+
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+
+		try {
+			ps.bindParameters(groupId);
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				if (rs.next()) {
+					return new User(rs.getInt(UsersColumns.ID.name()),
+									rs.getString(UsersColumns.NAME.name()),
+									rs.getString(UsersColumns.EMAIL.name()));
+				}
+			}
+		} finally {
+			ps.close();
+		}
+
+		return null;
+
 	}
 
 	/**

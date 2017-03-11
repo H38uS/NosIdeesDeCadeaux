@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -20,8 +21,15 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 	private static final long serialVersionUID = 9147880158497428623L;
 	public static final String FORM_URL = "/protected/rechercher_personne.jsp";
 
+	/**
+	 * Class constructor.
+	 */
+	public RechercherPersonne() {
+		super(new AllAccessToPostAndGet());
+	}
+
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// FIXME voir quand utiliser le read and escape
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
@@ -44,6 +52,11 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
+	}
+
+	@Override
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// Nothing to do
 	}
 
 	// FIXME : ne pas afficher le bouton si on est déjà amis

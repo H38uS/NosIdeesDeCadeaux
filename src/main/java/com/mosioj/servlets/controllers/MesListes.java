@@ -16,12 +16,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_listes")
 public class MesListes extends IdeesCadeauxServlet {
-
 	/**
 	 * Class logger.
 	 */
@@ -31,8 +31,17 @@ public class MesListes extends IdeesCadeauxServlet {
 	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
 	public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 
+	/**
+	 * Class constructor.
+	 * 
+	 */
+	public MesListes() {
+		super(new AllAccessToPostAndGet());
+	}
+
+
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String action = ParametersUtils.readAndEscape(req, "action");
 
@@ -65,6 +74,8 @@ public class MesListes extends IdeesCadeauxServlet {
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
+	
+	// FIXME : découper en plusieurs servlet
 
 	private void handleAction(String action, HttpServletRequest req, int userId)
 			throws SQLException {
@@ -72,7 +83,7 @@ public class MesListes extends IdeesCadeauxServlet {
 		String ideaParam = ParametersUtils.readAndEscape(req, "idee");
 		Integer idea = ideaParam.isEmpty() ? null : Integer.parseInt(ideaParam);
 		
-		if (!hasRightOnIdea(idea, userId)) {
+		if (idea == null) {
 			return;
 		}
 
@@ -87,29 +98,8 @@ public class MesListes extends IdeesCadeauxServlet {
 		}
 	}
 
-	/**
-	 * TODO peut être à bouger dans le modèle pour être utiliser par d'autres
-	 * 
-	 * @param idea
-	 * @param userId
-	 * @return True if we can interact with this idea.
-	 * @throws SQLException 
-	 */
-	private boolean hasRightOnIdea(Integer idea, int userId) throws SQLException {
-		
-		if (idea == null) {
-			return false;
-		}
-		
-		if (!userRelations.associationExists(userId, idees.getIdea(idea).owner.id)) {
-			return false;
-		}
-		
-		return true;
-	}
-
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RootingsUtils.redirectToPage(PROTECTED_MES_LISTES, request, response); // Rien de spécifique pour le moment
 		// TODO : pouvoir demander des informations et/ou discuter avec d'autres membres
 	}

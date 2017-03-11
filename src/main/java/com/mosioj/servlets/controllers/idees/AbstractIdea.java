@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +21,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.Idee;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.utils.ParametersUtils;
+import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
@@ -43,6 +41,14 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	protected List<String> errors = new ArrayList<String>();
 	protected Map<String, String> parameters;
 
+	/**
+	 * 
+	 * @param policy The security policy defining whether we can interact with the parameters, etc.
+	 */
+	public AbstractIdea(SecurityPolicy policy) {
+		super(policy);
+	}
+	
 	/**
 	 * 
 	 * @param originalImage
@@ -161,55 +167,6 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 			File large = new File(path, "large/" + image);
 			large.delete();
 		}
-	}
-
-	/**
-	 * Checks whether we can modify this idea : we owned it.
-	 * 
-	 * @param req
-	 * @param id
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Idee getIdeaWithAccessRightForModification(HttpServletRequest req, Integer id) throws SQLException {
-		Idee idea;
-		idea = idees.getIdea(id);
-		if (idea != null && idea.owner.id != ParametersUtils.getUserId(req)) {
-			// On essaie de modifier l'idée de quelqu'un d'autre...
-			idea = null;
-		}
-		return idea;
-	}
-
-	/**
-	 * Checks whether we can interact with this idea: book it, etc. 
-	 * 
-	 * @param req
-	 * @param id
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Idee getIdeaWithAccessRightToInteract(HttpServletRequest req, Integer id) throws SQLException {
-		Idee idea;
-		idea = idees.getIdea(id);
-		if (idea != null && !userRelations.associationExists(idea.owner.id, ParametersUtils.getUserId(req))) {
-			// On essaie de modifier l'idée de quelqu'un d'autre...
-			// FIXME : fusionner avec MesListes
-			idea = null;
-		}
-		return idea;
-	}
-	
-	/**
-	 * 
-	 * @param userId
-	 * @param groupId
-	 * @return True if and only if the user can see the details of this group.
-	 * @throws SQLException
-	 */
-	protected boolean hasRightToSeeThisGroup(int userId, int groupId) throws SQLException {
-		// FIXME implémenter...
-		return true;
 	}
 
 }

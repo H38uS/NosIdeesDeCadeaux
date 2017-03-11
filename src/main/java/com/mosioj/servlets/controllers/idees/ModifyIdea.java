@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -23,26 +24,32 @@ public class ModifyIdea extends AbstractIdea {
 	private static final Logger logger = LogManager.getLogger(ModifyIdea.class);
 	private static final long serialVersionUID = -1774633803227715931L;
 
+	private static final String IDEE_ID_PARAM = "id";
 	public static final String VIEW_PAGE_URL = "/protected/modify_idea.jsp";
 	public static final String PROTECTED_MODIFIER_IDEE = "/protected/modifier_idee";
 
+	/**
+	 * Class constructor.
+	 */
+	public ModifyIdea() {
+		super(new IdeaModification(idees, IDEE_ID_PARAM));
+	}
+
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Integer id = ParametersUtils.readInt(req, "id");
-		Idee idea = null;
+		Integer id = ParametersUtils.readInt(req, IDEE_ID_PARAM);
 
-		if (id != null) {
-			try {
-				idea = getIdeaWithAccessRightForModification(req, id);
-				req.setAttribute("types", categories.getCategories());
-				req.setAttribute("priorites", priorities.getPriorities());
-			} catch (SQLException e) {
-				RootingsUtils.rootToGenericSQLError(e, req, resp);
-				return;
-			}
+		try {
+			Idee idea = idees.getIdea(id);
+			req.setAttribute("types", categories.getCategories());
+			req.setAttribute("priorites", priorities.getPriorities());
+			req.setAttribute("idea", idea);
+		} catch (SQLException e) {
+			RootingsUtils.rootToGenericSQLError(e, req, resp);
+			return;
 		}
-		
+
 		// FIXME : utiliser les sessions pour passer les paramètres entre post et get !
 		Object sessionErrors = req.getSession().getAttribute("errors");
 		if (sessionErrors != null) {
@@ -50,26 +57,15 @@ public class ModifyIdea extends AbstractIdea {
 			req.getSession().removeAttribute("errors");
 		}
 
-		req.setAttribute("idea", idea);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String url = PROTECTED_MODIFIER_IDEE;
 
-		String id = request.getParameter("id");
-		int ideaId = -1;
-		try {
-			if (id == null || id.isEmpty()) {
-				throw new NumberFormatException();
-			}
-			ideaId = Integer.parseInt(id);
-		} catch (NumberFormatException nfe) {
-			RootingsUtils.redirectToPage(url, request, response);
-			return;
-		}
+		Integer ideaId = ParametersUtils.readInt(request, IDEE_ID_PARAM);
 		url = url + "?id=" + ideaId;
 
 		// Check that we have a file upload request
@@ -78,19 +74,6 @@ public class ModifyIdea extends AbstractIdea {
 			try {
 				fillIdeaOrErrors(request, response, url);
 			} catch (Exception e) {
-				RootingsUtils.rootToGenericSQLError(e, request, response);
-				return;
-			}
-
-
-			// Check access
-			try {
-				Idee idea = getIdeaWithAccessRightForModification(request, ideaId);
-				if (idea == null) {
-					RootingsUtils.redirectToPage(url, request, response);
-					return;
-				}
-			} catch (SQLException e) {
 				RootingsUtils.rootToGenericSQLError(e, request, response);
 				return;
 			}
@@ -115,11 +98,7 @@ public class ModifyIdea extends AbstractIdea {
 						logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 					}
 
-					idees.modifier(	ideaId,
-									parameters.get("text"),
-									parameters.get("type"),
-									parameters.get("priority"),
-									image);
+					idees.modifier(ideaId, parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
 
 				} catch (SQLException e) {
 					RootingsUtils.rootToGenericSQLError(e, request, response);

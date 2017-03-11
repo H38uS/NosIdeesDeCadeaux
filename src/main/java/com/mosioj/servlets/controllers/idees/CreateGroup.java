@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.MesListes;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
@@ -25,81 +26,78 @@ public class CreateGroup extends AbstractIdea {
 	private static final long serialVersionUID = -1774633803227715931L;
 	private static final Logger logger = LogManager.getLogger(CreateGroup.class);
 
+	private static final String IDEE_FIELD_PARAMETER = "idee";
 	public static final String VIEW_PAGE_URL = "/protected/create_a_group.jsp";
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		Integer id = ParametersUtils.readInt(req, "idee");
-		Idee idea = null; // FIXME : pas de sécurité ici -- mais uniquement dans le idea.canBook
-
-		if (id != null) {
-			try {
-				idea = getIdeaWithAccessRightToInteract(req, id);
-			} catch (SQLException e) {
-				RootingsUtils.rootToGenericSQLError(e, req, resp);
-				return;
-			}
-		} // FIXME faire une class abstraite qui gère cela... Et tous les niveaux de sécurité
-
-		req.setAttribute("idea", idea);
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+	/**
+	 * Class contructor
+	 */
+	public CreateGroup() {
+		super(new IdeaInteraction(userRelations, idees, IDEE_FIELD_PARAMETER));
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Integer id = ParametersUtils.readInt(request, "idee");
-		Idee idea = null; // FIXME : pas de sécurité ici -- mais uniquement dans le idea.canBook
-
-		if (id != null) {
-			try {
-				idea = getIdeaWithAccessRightToInteract(request, id);
-			} catch (SQLException e) {
-				RootingsUtils.rootToGenericSQLError(e, request, response);
-				return;
-			}
-		}
-
-		logger.debug("Create a new group for idea : " + idea.getId());
-
-		ParameterValidator valTot = ValidatorFactory.getMascValidator(	ParametersUtils.readIt(request, "total"),
-																		"total");
-		valTot.checkEmpty();
-		valTot.checkIfInteger();
-		valTot.checkIntegerGreaterThan(-1);
-
-		ParameterValidator valAmount = ValidatorFactory.getFemValidator(ParametersUtils.readIt(request, "amount"),
-																		"participation");
-		valAmount.checkEmpty();
-		valAmount.checkIfInteger();
-
-		Integer total = ParametersUtils.readInt(request, "total");
-		valAmount.checkIntegerAmount(0, total == null ? 0 : total);
-
-		List<String> errors = valTot.getErrors();
-		errors.addAll(valAmount.getErrors());
-
-		if (!errors.isEmpty()) {
-			request.setAttribute("errors", errors);
-			request.setAttribute("idea", idea);
-			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-			return;
-		}
-
-		Integer amount = ParametersUtils.readInt(request, "amount");
+		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER);
 
 		try {
+			Idee idea = idees.getIdea(id); // forcément valide grace au check de securite
+			req.setAttribute("idea", idea);
+			RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+		} catch (SQLException e) {
+			RootingsUtils.rootToGenericSQLError(e, req, resp);
+			return;
+		}
+	}
+
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		try {
+			Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
+			Idee idea = idees.getIdea(id); // forcément valide grace au check de securite
+
+			logger.debug("Create a new group for idea : " + idea.getId());
+
+			ParameterValidator valTot = ValidatorFactory.getMascValidator(	ParametersUtils.readIt(request, "total"),
+																			"total");
+			valTot.checkEmpty();
+			valTot.checkIfInteger();
+			valTot.checkIntegerGreaterThan(-1);
+
+			ParameterValidator valAmount = ValidatorFactory.getFemValidator(ParametersUtils.readIt(request, "amount"),
+																			"participation");
+			valAmount.checkEmpty();
+			valAmount.checkIfInteger();
+
+			Integer total = ParametersUtils.readInt(request, "total");
+			valAmount.checkIntegerAmount(0, total == null ? 0 : total);
+
+			List<String> errors = valTot.getErrors();
+			errors.addAll(valAmount.getErrors());
+
+			if (!errors.isEmpty()) {
+				request.setAttribute("errors", errors);
+				request.setAttribute("idea", idea);
+				RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
+				return;
+			}
+
+			Integer amount = ParametersUtils.readInt(request, "amount");
+
 			int userId = ParametersUtils.getUserId(request);
 			if (idees.canBook(idea.getId(), userId)) {
 				int groupId = groupForIdea.createAGroup(total, amount, userId);
 				idees.bookByGroup(id, groupId);
 			}
+
+			RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
+
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 			return;
 		}
-
-		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
 	}
 }

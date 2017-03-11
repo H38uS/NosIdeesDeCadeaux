@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.viewhelper.EmptyFilter;
@@ -27,12 +28,24 @@ public class CreationCompte extends DefaultCompte {
 	public static final String FORM_URL = "/public/creation_compte.jsp";
 
 	/**
+	 * Class contructor.
+	 */
+	public CreationCompte() {
+		super(new AllAccessToPostAndGet());
+	}
+
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -101081965549681889L;
-	
+
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// Nothing to do
+	}
+
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession();

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.servlets.controllers.MesListes;
+import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
@@ -25,50 +26,51 @@ public class GroupIdeaDetails extends AbstractIdea {
 	private static final long serialVersionUID = -2188278918134412556L;
 	private static final Logger logger = LogManager.getLogger(GroupIdeaDetails.class);
 
+	private static final String GROUP_ID_PARAM = "groupid";
+
 	public static final String VIEW_PAGE_URL = "/protected/detail_du_groupe.jsp";
 	public static final String GET_PAGE_URL = "/protected/detail_du_groupe?groupid=";
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	/**
+	 * Class constructor.
+	 */
+	public GroupIdeaDetails() {
+		super(new BookingGroupInteraction(userRelations, idees, GROUP_ID_PARAM));
+	}
 
-		Integer id = ParametersUtils.readInt(req, "groupid");
-		IdeaGroup group = null;
+	@Override
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		Integer id = ParametersUtils.readInt(req, GROUP_ID_PARAM);
 		try {
+
 			logger.debug("Getting details for idea group " + id + "...");
-			if (id != null && hasRightToSeeThisGroup(ParametersUtils.getUserId(req), id)) {
-				group = groupForIdea.getGroupDetails(id);
+			IdeaGroup group = groupForIdea.getGroupDetails(id);
+
+			Object sessionErrors = req.getSession().getAttribute("errors");
+			if (sessionErrors != null) {
+				req.setAttribute("errors", sessionErrors);
+				req.getSession().removeAttribute("errors");
 			}
+
+			req.setAttribute("group", group);
+			RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 			return;
 		}
 
-		Object sessionErrors = req.getSession().getAttribute("errors");
-		if (sessionErrors != null) {
-			req.setAttribute("errors", sessionErrors);
-			req.getSession().removeAttribute("errors");
-		}
-
-		req.setAttribute("group", group);
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		int userId = ParametersUtils.getUserId(request);
-		Integer groupId = ParametersUtils.readInt(request, "groupid");
-		try {
-			if (groupId == null || !hasRightToSeeThisGroup(userId, groupId)) {
-				RootingsUtils.redirectToPage("/public/index.jsp", request, response);
-				return;
-			}
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, request, response);
-			return;
-		}
-
+		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		String amount = ParametersUtils.readIt(request, "amount");
+
 		try {
 			if ("annulation".equals(amount)) {
 				groupForIdea.removeUserFromGroup(userId, groupId);
@@ -100,4 +102,5 @@ public class GroupIdeaDetails extends AbstractIdea {
 
 		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);
 	}
+
 }

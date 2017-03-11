@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.securitypolicy.NetworkGetAndAccessToPost;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -23,28 +24,24 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 	private static final long serialVersionUID = 9147880158497428623L;
 	private static final Logger logger = LogManager.getLogger(AfficherReseau.class);
 
+	private static final String USER_ID_PARAM = "id";
 	private static final String GET_URL = "/protected/afficher_reseau?id=";
 	private static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
-	private static final String ERROR_URL = "/protected/afficher_reseau_error.jsp";
+
+	/**
+	 * Class constructor.
+	 */
+	public AfficherReseau() {
+		super(new NetworkGetAndAccessToPost(userRelations, USER_ID_PARAM));
+	}
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		Integer user = ParametersUtils.readInt(req, "id");
-		if (user == null) {
-			req.setAttribute("error_message", "Aucun réseau trouvé en paramètre...");
-			RootingsUtils.rootToPage(ERROR_URL, req, resp);
-			return;
-		}
+		Integer user = ParametersUtils.readInt(req, USER_ID_PARAM);
 
 		try {
 			int userId = ParametersUtils.getUserId(req);
-			if (user != userId && !userRelations.associationExists(user, userId)) {
-				req.setAttribute("error_message", "Vous ne pouvez voir que le réseau de vos amis.");
-				RootingsUtils.rootToPage(ERROR_URL, req, resp);
-				return;
-			}
-
 			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
 			req.setAttribute("relations", userRelations.getRelations(user));
 		} catch (SQLException e) {
@@ -56,10 +53,10 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		int userId = ParametersUtils.getUserId(request);
-		
+
 		// FIXME sécurité : ne pas pouvoir ajouter si pas de demandes
 
 		try {
@@ -74,15 +71,11 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 				boolean accept = "Accepter".equals(params.get(key)[0]);
 
 				if (accept) {
-					logger.info(MessageFormat.format(	"Approbation de la demande par {0}. Utilisateur {1}.",
-														userId,
-														fromUserId));
+					logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.", userId, fromUserId));
 					userRelations.addAssociation(Integer.parseInt(fromUserId), userId);
 					userRelationRequests.cancelRequest(Integer.parseInt(fromUserId), userId);
 				} else {
-					logger.info(MessageFormat.format(	"Refus de la demande par {0}. Utilisateur {1}.",
-														userId,
-														fromUserId));
+					logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", userId, fromUserId));
 					userRelationRequests.cancelRequest(Integer.parseInt(fromUserId), userId);
 				}
 			}

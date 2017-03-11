@@ -18,6 +18,7 @@ import com.mosioj.model.Categorie;
 import com.mosioj.model.Idee;
 import com.mosioj.model.Priorite;
 import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -33,8 +34,16 @@ public class MaListe extends AbstractIdea {
 	public static final String VIEW_PAGE_URL = "/protected/ma_liste.jsp";
 	public static final String PROTECTED_MA_LISTE = "/protected/ma_liste";
 
+	/**
+	 * Class constructor.
+	 */
+	public MaListe() {
+		// No security : we will see only our content.
+		super(new AllAccessToPostAndGet());
+	}
+
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		List<Idee> ideas = null;
 		List<Categorie> cat = null;
@@ -55,7 +64,7 @@ public class MaListe extends AbstractIdea {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {

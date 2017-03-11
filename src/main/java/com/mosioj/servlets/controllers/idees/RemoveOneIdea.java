@@ -14,26 +14,28 @@ import com.mosioj.model.Share;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/remove_an_idea")
 public class RemoveOneIdea extends AbstractIdea {
 
+	private static final String IDEE_ID_PARAM = "ideeId";
+
+	public RemoveOneIdea() {
+		super(new IdeaModification(idees, IDEE_ID_PARAM));
+	}
+
 	private static final long serialVersionUID = -1774633803227715931L;
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Reading parameters
-		Integer id = ParametersUtils.readInt(request, "ideeId");
-		if (id == null) {
-			RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, request, response);
-			return;
-		}
+		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
 
 		try {
-			// FIXME sécurité...
 			Idee idea = idees.getIdea(id);
 			if (idea != null && idea.isBooked()) {
 				User owner = idea.owner;
@@ -65,5 +67,10 @@ public class RemoveOneIdea extends AbstractIdea {
 		}
 
 		RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, request, response);
+	}
+
+	@Override
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// Nothing to do.
 	}
 }

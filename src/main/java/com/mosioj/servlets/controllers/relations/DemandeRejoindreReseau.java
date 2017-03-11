@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -21,8 +22,15 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 	public static final String SUCCESS_URL = "/protected/demande_rejoindre_reseau_succes.jsp";
 	public static final String ERROR_URL = "/protected/demande_rejoindre_reseau_error.jsp";
 
+	/**
+	 * Class constructor.
+	 */
+	public DemandeRejoindreReseau() {
+		super(new AllAccessToPostAndGet());
+	}
+
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
 			String user = ParametersUtils.readAndEscape(request, "user_id");
@@ -56,6 +64,11 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
+	}
+
+	@Override
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// Nothing to do
 	}
 
 }
