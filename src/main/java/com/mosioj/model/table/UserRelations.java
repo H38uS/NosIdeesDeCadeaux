@@ -64,8 +64,6 @@ public class UserRelations extends Table {
 				ps.close();
 			}
 		}
-
-		// FIXME : retester la totale avant de commiter !!!
 		
 		return relations;
 	}

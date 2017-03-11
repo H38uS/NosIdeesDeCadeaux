@@ -48,7 +48,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// FIXME : faire une passe sécurité pour voir si c'est bien gérer... Faire des classes master dans les packages
 
-	public static final String DATE_FORMAT = "yyyy-mm-dd";
+	public static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	/**
 	 * L'interface vers la table USER_RELATIONS.

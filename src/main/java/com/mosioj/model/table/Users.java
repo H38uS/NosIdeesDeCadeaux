@@ -108,13 +108,15 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public void update(User user) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ? where {3} = ?",
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ?, {3} = ? where {4} = ?",
 														TABLE_NAME,
 														EMAIL,
 														NAME,
+														BIRTHDAY,
 														ID),
 								user.email,
 								user.name,
+								user.birthday,
 								user.id);
 	}
 
