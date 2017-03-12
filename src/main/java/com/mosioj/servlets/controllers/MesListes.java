@@ -43,26 +43,15 @@ public class MesListes extends IdeesCadeauxServlet {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		String action = ParametersUtils.readAndEscape(req, "action");
-
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
-		LOGGER.info(MessageFormat.format("Action: {0}", action));
 
 		int userId = ParametersUtils.getUserId(req);
-		if (!action.isEmpty()) {
-			try {
-				handleAction(action, req, userId);
-			} catch (SQLException e) {
-				RootingsUtils.rootToGenericSQLError(e, req, resp);
-				return;
-			}
-		}
 
 		try {
 			List<User> ids = new ArrayList<User>();
 			ids.add(users.getUser(userId));
 			ids.addAll(userRelations.getAllUsersInRelation(userId));
-			LOGGER.debug("Getting all ideas for all users...");
+			LOGGER.trace("Getting all ideas for all users...");
 			for (User user : ids) {
 				user.addIdeas(idees.getOwnerIdeas(user.id));
 			}
@@ -75,29 +64,6 @@ public class MesListes extends IdeesCadeauxServlet {
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 	
-	// FIXME : découper en plusieurs servlet
-
-	private void handleAction(String action, HttpServletRequest req, int userId)
-			throws SQLException {
-
-		String ideaParam = ParametersUtils.readAndEscape(req, "idee");
-		Integer idea = ideaParam.isEmpty() ? null : Integer.parseInt(ideaParam);
-		
-		if (idea == null) {
-			return;
-		}
-
-		if ("reserver".equals(action) ) {
-			if (idees.canBook(idea, userId)) {
-				idees.reserver(idea, userId);
-			}
-		}
-
-		if ("dereserver".equals(action)) {
-			idees.dereserver(idea, userId);
-		}
-	}
-
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RootingsUtils.redirectToPage(PROTECTED_MES_LISTES, request, response); // Rien de spécifique pour le moment

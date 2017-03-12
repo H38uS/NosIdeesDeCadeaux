@@ -51,7 +51,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
-	// FIXME : mettre la date dans les commentaires des messages
+
+	// TODO : pouvoir commenter une idée
+	// TODO : mettre la date dans les commentaires des messages
+	
+	// TODO : pouvoir ajouter des idées à d'autres personnes
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);

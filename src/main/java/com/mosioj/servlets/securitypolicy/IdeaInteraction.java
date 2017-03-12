@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.Idee;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.ParametersUtils;
@@ -48,8 +49,8 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 	 */
 	private boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) {
 
-		Integer idea = ParametersUtils.readInt(request, ideaParameter);
-		if (idea == null) {
+		Integer ideaId = ParametersUtils.readInt(request, ideaParameter);
+		if (ideaId == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
 		}
@@ -58,7 +59,13 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 
 		try {
 
-			boolean res = userRelations.associationExists(userId, idees.getIdea(idea).owner.id);
+			Idee idea = idees.getIdea(ideaId);
+			if (idea == null) {
+				lastReason = "Aucune idée trouvée en paramètre.";
+				return false;
+			}
+			
+			boolean res = userRelations.associationExists(userId, idea.owner.id);
 			if (!res) {
 				lastReason = "Vous n'avez pas accès aux idées de cette personne.";
 			}

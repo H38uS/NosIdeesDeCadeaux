@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.ParametersUtils;
@@ -58,7 +59,13 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet implements Se
 
 		try {
 
-			boolean res = userRelations.associationExists(userId, idees.getIdeaOwnerFromGroup(groupId).id);
+			User ideaOwner = idees.getIdeaOwnerFromGroup(groupId);
+			if (ideaOwner == null) {
+				lastReason = "Ce groupe appartient à personne.";
+				return false;
+			}
+			
+			boolean res = userRelations.associationExists(userId, ideaOwner.id);
 			if (!res) {
 				lastReason = "Vous n'avez pas accès aux idées de cette personne.";
 			}
