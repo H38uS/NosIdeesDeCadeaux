@@ -1,6 +1,7 @@
 package com.mosioj.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,7 +55,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : pouvoir commenter une idée
 	// TODO : mettre la date dans les commentaires des messages
-	
+
 	// TODO : pouvoir ajouter des idées à d'autres personnes
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -188,7 +189,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public abstract void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException;
+	public abstract void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException;
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -198,17 +199,23 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			return;
 		}
 
-		if (!policy.hasRightToInteractInGetRequest(req, resp)) {
-			req.setAttribute("error_message", policy.getLastReason());
-			logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0}. Reason: {1}",
-												ParametersUtils.getUserId(req),
-												policy.getLastReason()));
-			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", req, resp);
-			return;
-		}
+		try {
 
-		// Security has passed, perform the logic
-		ideesKDoGET(req, resp);
+			if (!policy.hasRightToInteractInGetRequest(req, resp)) {
+				req.setAttribute("error_message", policy.getLastReason());
+				logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0}. Reason: {1}",
+													ParametersUtils.getUserId(req),
+													policy.getLastReason()));
+				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", req, resp);
+				return;
+			}
+
+			// Security has passed, perform the logic
+			ideesKDoGET(req, resp);
+		} catch (SQLException e) {
+			// Default error management
+			RootingsUtils.rootToGenericSQLError(e, req, resp);
+		}
 	};
 
 	/**
@@ -219,7 +226,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+	public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -229,17 +236,23 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			return;
 		}
 
-		if (!policy.hasRightToInteractInPostRequest(request, response)) {
-			request.setAttribute("error_message", policy.getLastReason());
-			logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0}. Reason: {1}",
-												ParametersUtils.getUserId(request),
-												policy.getLastReason()));
-			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
-			return;
-		}
+		try {
 
-		// Security has passed, perform the logic
-		ideesKDoPOST(request, response);
+			if (!policy.hasRightToInteractInPostRequest(request, response)) {
+				request.setAttribute("error_message", policy.getLastReason());
+				logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0}. Reason: {1}",
+													ParametersUtils.getUserId(request),
+													policy.getLastReason()));
+				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
+				return;
+			}
+
+			// Security has passed, perform the logic
+			ideesKDoPOST(request, response);
+
+		} catch (SQLException e) {
+			RootingsUtils.rootToGenericSQLError(e, request, response);
+		}
 	}
 
 	public void setCat(Categories cat) {

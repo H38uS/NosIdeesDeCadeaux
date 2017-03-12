@@ -32,9 +32,13 @@ public class RootingsUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void rootToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public static void rootToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		RequestDispatcher rd = req.getRequestDispatcher(url);
-		rd.forward(req, resp);
+		try {
+			rd.forward(req, resp);
+		} catch (IOException e) {
+			throw new ServletException(e.getMessage());
+		}
 	}
 
 	/**
@@ -47,8 +51,12 @@ public class RootingsUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void redirectToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.sendRedirect(req.getContextPath() + url);
+	public static void redirectToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+		try {
+			resp.sendRedirect(req.getContextPath() + url);
+		} catch (IOException e) {
+			throw new ServletException(e.getMessage());
+		}
 	}
 	
 	/**
@@ -60,11 +68,15 @@ public class RootingsUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		logger.error("An error occured: " + exception.getMessage());
 		exception.printStackTrace();
 		req.setAttribute("error", exception.getMessage());
 		RequestDispatcher rd = req.getRequestDispatcher(PUBLIC_SERVER_ERROR_JSP);
-		rd.forward(req, resp);
+		try {
+			rd.forward(req, resp);
+		} catch (IOException e) {
+			throw new ServletException(e.getMessage());
+		}
 	}
 }

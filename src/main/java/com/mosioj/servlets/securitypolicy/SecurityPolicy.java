@@ -1,5 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,8 +12,9 @@ public interface SecurityPolicy {
 	 * @param request
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
+	 * @throws SQLException 
 	 */
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException;
 
 	/**
 	 * 
@@ -24,8 +27,9 @@ public interface SecurityPolicy {
 	 * @param request
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
+	 * @throws SQLException 
 	 */
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException;
 
 	/**
 	 * 

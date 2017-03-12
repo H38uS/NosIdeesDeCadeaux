@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.relations;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,37 +28,33 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		// FIXME voir quand utiliser le read and escape
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		boolean onlyNonFriend = "on".equals(ParametersUtils.readAndEscape(request, "only_non-friend").trim());
-		
-		try {
-			List<User> foundUsers = users.getUsers(userNameOrEmail);
-			int userId = ParametersUtils.getUserId(request);
-			foundUsers.remove(users.getUser(userId));
-			List<User> friends = userRelations.getAllUsersInRelation(userId);
-			if (onlyNonFriend) {
-				foundUsers.removeAll(friends);
-			} else {
-				for (User user : foundUsers) {
-					user.isInMyNetwork = friends.contains(user);
-				}
+
+		List<User> foundUsers = users.getUsers(userNameOrEmail);
+		int userId = ParametersUtils.getUserId(request);
+		foundUsers.remove(users.getUser(userId));
+		List<User> friends = userRelations.getAllUsersInRelation(userId);
+		if (onlyNonFriend) {
+			foundUsers.removeAll(friends);
+		} else {
+			for (User user : foundUsers) {
+				user.isInMyNetwork = friends.contains(user);
 			}
-			
-			request.setAttribute("users", foundUsers);
-			request.setAttribute("name", userNameOrEmail);
-			request.setAttribute("onlyNonFriend", onlyNonFriend);
-			
-			RootingsUtils.rootToPage(FORM_URL, request, response);
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}
+
+		request.setAttribute("users", foundUsers);
+		request.setAttribute("name", userNameOrEmail);
+		request.setAttribute("onlyNonFriend", onlyNonFriend);
+
+		RootingsUtils.rootToPage(FORM_URL, request, response);
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
 

@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.idees;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
@@ -36,19 +35,14 @@ public class ModifyIdea extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Integer id = ParametersUtils.readInt(req, IDEE_ID_PARAM);
 
-		try {
-			Idee idea = idees.getIdea(id);
-			req.setAttribute("types", categories.getCategories());
-			req.setAttribute("priorites", priorities.getPriorities());
-			req.setAttribute("idea", idea);
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
-			return;
-		}
+		Idee idea = idees.getIdea(id);
+		req.setAttribute("types", categories.getCategories());
+		req.setAttribute("priorites", priorities.getPriorities());
+		req.setAttribute("idea", idea);
 
 		// FIXME : utiliser les sessions pour passer les paramètres entre post et get !
 		Object sessionErrors = req.getSession().getAttribute("errors");
@@ -61,7 +55,7 @@ public class ModifyIdea extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		String url = PROTECTED_MODIFIER_IDEE;
 
@@ -71,39 +65,28 @@ public class ModifyIdea extends AbstractIdea {
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
 
-			try {
-				fillIdeaOrErrors(request, response, url);
-			} catch (Exception e) {
-				RootingsUtils.rootToGenericSQLError(e, request, response);
-				return;
-			}
+			fillIdeaOrErrors(request, response, url);
 
 			if (!errors.isEmpty()) {
 				request.getSession().setAttribute("errors", errors);
 			} else {
-				try {
-					logger.info(MessageFormat.format(	"Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",
-														parameters.get("text"),
-														parameters.get("type"),
-														parameters.get("priority")));
+				logger.info(MessageFormat.format(	"Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",
+													parameters.get("text"),
+													parameters.get("type"),
+													parameters.get("priority")));
 
-					String image = parameters.get("image");
-					String old = parameters.get("old_picture");
-					if (image == null || image.isEmpty()) {
-						image = old;
-					} else {
-						// Modification de l'image
-						// On supprime la précédente
-						removeUploadedImage(old);
-						logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
-					}
-
-					idees.modifier(ideaId, parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
-
-				} catch (SQLException e) {
-					RootingsUtils.rootToGenericSQLError(e, request, response);
-					return;
+				String image = parameters.get("image");
+				String old = parameters.get("old_picture");
+				if (image == null || image.isEmpty()) {
+					image = old;
+				} else {
+					// Modification de l'image
+					// On supprime la précédente
+					removeUploadedImage(old);
+					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
+
+				idees.modifier(ideaId, parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
 			}
 
 		}

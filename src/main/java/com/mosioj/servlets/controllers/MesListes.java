@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -39,33 +38,27 @@ public class MesListes extends IdeesCadeauxServlet {
 		super(new AllAccessToPostAndGet());
 	}
 
-
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
 
 		int userId = ParametersUtils.getUserId(req);
 
-		try {
-			List<User> ids = new ArrayList<User>();
-			ids.add(users.getUser(userId));
-			ids.addAll(userRelations.getAllUsersInRelation(userId));
-			LOGGER.trace("Getting all ideas for all users...");
-			for (User user : ids) {
-				user.addIdeas(idees.getOwnerIdeas(user.id));
-			}
-			req.setAttribute("users", ids);
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
-			return;
+		List<User> ids = new ArrayList<User>();
+		ids.add(users.getUser(userId));
+		ids.addAll(userRelations.getAllUsersInRelation(userId));
+		LOGGER.trace("Getting all ideas for all users...");
+		for (User user : ids) {
+			user.addIdeas(idees.getOwnerIdeas(user.id));
 		}
+		req.setAttribute("users", ids);
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
-	
+
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		RootingsUtils.redirectToPage(PROTECTED_MES_LISTES, request, response); // Rien de spécifique pour le moment
 		// TODO : pouvoir demander des informations et/ou discuter avec d'autres membres
 	}

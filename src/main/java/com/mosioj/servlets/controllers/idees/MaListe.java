@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.idees;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -43,19 +42,12 @@ public class MaListe extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		List<Idee> ideas = null;
-		List<Categorie> cat = null;
-		List<Priorite> prio = null;
-		try {
-			ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(req));
-			cat = categories.getCategories();
-			prio = priorities.getPriorities();
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
-			return;
-		}
+		List<Idee> ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(req));
+		List<Categorie> cat = categories.getCategories();
+		List<Priorite> prio = priorities.getPriorities();
+
 		req.setAttribute("idees", ideas);
 		req.setAttribute("types", cat);
 		req.setAttribute("priorites", prio);
@@ -64,37 +56,27 @@ public class MaListe extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
 
-			try {
-				fillIdeaOrErrors(request, response, PROTECTED_MA_LISTE);
-			} catch (Exception e1) {
-				RootingsUtils.rootToGenericSQLError(e1, request, response);
-				return;
-			}
+			fillIdeaOrErrors(request, response, PROTECTED_MA_LISTE);
 
 			if (!errors.isEmpty()) {
 				request.setAttribute("errors", errors);
 			} else {
-				try {
-					logger.info(MessageFormat.format(	"Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
-														parameters.get("text"),
-														parameters.get("type"),
-														parameters.get("priority")));
-					int userId = ParametersUtils.getUserId(request);
-					idees.addIdea(	userId,
-									parameters.get("text"),
-									parameters.get("type"),
-									Integer.parseInt(parameters.get("priority")),
-									parameters.get("image"));
-					notif.remove(userId, new NotifNoIdea());
-				} catch (SQLException e) {
-					RootingsUtils.rootToGenericSQLError(e, request, response);
-					return;
-				}
+				logger.info(MessageFormat.format(	"Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
+													parameters.get("text"),
+													parameters.get("type"),
+													parameters.get("priority")));
+				int userId = ParametersUtils.getUserId(request);
+				idees.addIdea(	userId,
+								parameters.get("text"),
+								parameters.get("type"),
+								Integer.parseInt(parameters.get("priority")),
+								parameters.get("image"));
+				notif.remove(userId, new NotifNoIdea());
 			}
 
 		}

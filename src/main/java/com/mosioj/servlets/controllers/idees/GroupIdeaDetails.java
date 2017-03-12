@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.idees;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -39,46 +38,34 @@ public class GroupIdeaDetails extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Integer id = ParametersUtils.readInt(req, GROUP_ID_PARAM);
-		try {
 
-			logger.debug("Getting details for idea group " + id + "...");
-			IdeaGroup group = groupForIdea.getGroupDetails(id);
+		logger.debug("Getting details for idea group " + id + "...");
+		IdeaGroup group = groupForIdea.getGroupDetails(id);
 
-			Object sessionErrors = req.getSession().getAttribute("errors");
-			if (sessionErrors != null) {
-				req.setAttribute("errors", sessionErrors);
-				req.getSession().removeAttribute("errors");
-			}
-
-			req.setAttribute("group", group);
-			RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
-
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
-			return;
+		Object sessionErrors = req.getSession().getAttribute("errors");
+		if (sessionErrors != null) {
+			req.setAttribute("errors", sessionErrors);
+			req.getSession().removeAttribute("errors");
 		}
+
+		req.setAttribute("group", group);
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		int userId = ParametersUtils.getUserId(request);
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		String amount = ParametersUtils.readIt(request, "amount");
 
-		try {
-			if ("annulation".equals(amount)) {
-				groupForIdea.removeUserFromGroup(userId, groupId);
-				RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
-				return;
-			}
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, request, response);
+		if ("annulation".equals(amount)) {
+			groupForIdea.removeUserFromGroup(userId, groupId);
+			RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
 			return;
 		}
 
@@ -91,13 +78,8 @@ public class GroupIdeaDetails extends AbstractIdea {
 		if (!errorsAmount.isEmpty()) {
 			request.getSession().setAttribute("errors", errorsAmount);
 		} else {
-			try {
-				// Modification de la participation
-				groupForIdea.updateAmount(groupId, userId, Integer.parseInt(amount));
-			} catch (SQLException e) {
-				RootingsUtils.rootToGenericSQLError(e, request, response);
-				return;
-			}
+			// Modification de la participation
+			groupForIdea.updateAmount(groupId, userId, Integer.parseInt(amount));
 		}
 
 		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);

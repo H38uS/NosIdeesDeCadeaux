@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -75,8 +76,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 		return resizedImage;
 	}
 
-	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response, String getURL)
-			throws Exception {
+	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response, String getURL) throws ServletException {
 
 		File filePath = new File(getServletContext().getRealPath("/public/uploaded_pictures"));
 
@@ -97,44 +97,48 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 		parameters = new HashMap<String, String>();
 
 		// Parse the request to get file items.
-		for (FileItem fi : upload.parseRequest(request)) {
-			if (!fi.isFormField()) {
-				String fileName = fi.getName() == null ? "" : new String(fi.getName().getBytes("ISO-8859-1"), "UTF-8");
-				if (!fileName.trim().isEmpty() && image.isEmpty()) {
+		try {
+			for (FileItem fi : upload.parseRequest(request)) {
+				if (!fi.isFormField()) {
+					String fileName = fi.getName() == null ? "" : new String(fi.getName().getBytes("ISO-8859-1"), "UTF-8");
+					if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
-					Random r = new Random();
-					int id = r.nextInt();
-					int maxSize = 30;
-					if (fileName.length() > maxSize) {
-						fileName = fileName.substring(0, maxSize - 4) + "_" + id
-								+ fileName.substring(fileName.length() - 4);
-					} else {
-						fileName = fileName.substring(0, fileName.length() - 4) + "_" + id
-								+ fileName.substring(fileName.length() - 4);
+						Random r = new Random();
+						int id = r.nextInt();
+						int maxSize = 30;
+						if (fileName.length() > maxSize) {
+							fileName = fileName.substring(0, maxSize - 4) + "_" + id
+									+ fileName.substring(fileName.length() - 4);
+						} else {
+							fileName = fileName.substring(0, fileName.length() - 4) + "_" + id
+									+ fileName.substring(fileName.length() - 4);
+						}
+						image = fileName;
+						File file = new File(filePath, "large/" + fileName);
+						logger.debug("Uploading file : " + file);
+						fi.write(file);
+
+						// Creation de la vignette
+						BufferedImage originalImage = ImageIO.read(file);
+						int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB
+								: originalImage.getType();
+
+						BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, 400);
+						ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
+
+						if (originalImage.getWidth() > 1920) {
+							resizeImageJpg = resizeImage(originalImage, originalType, 1920);
+							ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
+						}
+
+						parameters.put("image", image);
 					}
-					image = fileName;
-					File file = new File(filePath, "large/" + fileName);
-					logger.debug("Uploading file : " + file);
-					fi.write(file);
-
-					// Creation de la vignette
-					BufferedImage originalImage = ImageIO.read(file);
-					int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB
-							: originalImage.getType();
-
-					BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, 400);
-					ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
-
-					if (originalImage.getWidth() > 1920) {
-						resizeImageJpg = resizeImage(originalImage, originalType, 1920);
-						ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
-					}
-
-					parameters.put("image", image);
+				} else {
+					parameters.put(fi.getFieldName(), fi.getString() == null ? "" : new String(fi.getString().getBytes("ISO-8859-1"), "UTF-8"));
 				}
-			} else {
-				parameters.put(fi.getFieldName(), fi.getString() == null ? "" : new String(fi.getString().getBytes("ISO-8859-1"), "UTF-8"));
 			}
+		} catch (Exception e) {
+			throw new ServletException(e.getMessage());
 		}
 
 		text = parameters.get("text");

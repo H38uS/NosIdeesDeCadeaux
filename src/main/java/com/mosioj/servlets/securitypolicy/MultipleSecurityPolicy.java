@@ -1,5 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +20,7 @@ public class MultipleSecurityPolicy implements SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		for (SecurityPolicy policy : policies) {
 			if (!policy.hasRightToInteractInGetRequest(request, response)) {
 				return false;
@@ -38,7 +40,7 @@ public class MultipleSecurityPolicy implements SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		for (SecurityPolicy policy : policies) {
 			if (!policy.hasRightToInteractInPostRequest(request, response)) {
 				return false;

@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.compte;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -8,9 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
@@ -24,32 +20,25 @@ public class MonCompte extends DefaultCompte {
 
 	private static final long serialVersionUID = -101081965549681889L;
 	public static final String VIEW_PAGE_URL = "/protected/mon_compte.jsp";
-	private static final Logger logger = LogManager.getLogger(MonCompte.class);
 
 	public MonCompte() {
 		super(new AllAccessToPostAndGet());
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		int userId = ParametersUtils.getUserId(req);
-		try {
-			User current = users.getUser(userId);
-			req.setAttribute("user", current);
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
-			return;
-		}
+		User current = users.getUser(userId);
+		req.setAttribute("user", current);
 
 		// TODO pouvoir décider pour chaque notification si on l'active où non
-		
+
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		String info = ParametersUtils.readIt(request, "modif_info_gen");
 		if ("true".equals(info)) {
@@ -65,20 +54,14 @@ public class MonCompte extends DefaultCompte {
 			val.checkDateFormat();
 			errors.addAll(val.getErrors());
 
-			try {
-				User user = users.getUser(userId);
-				user.email = email;
-				user.name = name;
-				user.birthday = getAsDate(birthday);
-				request.setAttribute("user", user);
+			User user = users.getUser(userId);
+			user.email = email;
+			user.name = name;
+			user.birthday = getAsDate(birthday);
+			request.setAttribute("user", user);
 
-				if (errors.isEmpty()) {
-					users.update(user);
-				}
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-				errors.add(e.getMessage());
-				return;
+			if (errors.isEmpty()) {
+				users.update(user);
 			}
 		}
 

@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.idees;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -28,23 +27,18 @@ public class DereserverIdee extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Integer idea = ParametersUtils.readInt(req, IDEA_ID_PARAM);
 		int userId = ParametersUtils.getUserId(req);
 
-		try {
-			idees.dereserver(idea, userId);
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
-			return;
-		}
+		idees.dereserver(idea, userId);
 
 		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, req, resp);
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
 	}
 

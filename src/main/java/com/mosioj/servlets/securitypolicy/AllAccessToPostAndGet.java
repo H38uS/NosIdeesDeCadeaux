@@ -1,5 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,7 +15,7 @@ public class AllAccessToPostAndGet implements SecurityPolicy {
 	protected String lastReason = "";
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return true;
 	}
 
@@ -23,7 +25,7 @@ public class AllAccessToPostAndGet implements SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return true;
 	}
 

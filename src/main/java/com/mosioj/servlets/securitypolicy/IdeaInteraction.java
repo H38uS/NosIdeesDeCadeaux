@@ -1,9 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,7 +9,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.ParametersUtils;
-import com.mosioj.utils.RootingsUtils;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -46,51 +43,41 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 	 * @param request
 	 * @param response
 	 * @return True if the current user can interact with the idea.
+	 * @throws SQLException
 	 */
-	private boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) {
+	private boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
 		Integer ideaId = ParametersUtils.readInt(request, ideaParameter);
 		if (ideaId == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
 		}
-		
+
 		int userId = ParametersUtils.getUserId(request);
 
-		try {
-
-			Idee idea = idees.getIdea(ideaId);
-			if (idea == null) {
-				lastReason = "Aucune idée trouvée en paramètre.";
-				return false;
-			}
-			
-			boolean res = userRelations.associationExists(userId, idea.owner.id);
-			if (!res) {
-				lastReason = "Vous n'avez pas accès aux idées de cette personne.";
-			}
-			return res;
-
-		} catch (SQLException e) {
-			try {
-				RootingsUtils.rootToGenericSQLError(e, request, response);
-			} catch (ServletException | IOException e1) {
-				// Nothing to do
-			}
-			lastReason = "Une erreur est survenue pendant votre demande. Veuillez réessayer.";
+		Idee idea = idees.getIdea(ideaId);
+		if (idea == null) {
+			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
 		}
+
+		boolean res = userRelations.associationExists(userId, idea.owner.id);
+		if (!res) {
+			lastReason = "Vous n'avez pas accès aux idées de cette personne.";
+		}
+		return res;
+
 	}
 
 	// TODO : pouvoir directement accéder à l'idée
-	
+
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return canInteractWithIdea(request, response);
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return canInteractWithIdea(request, response);
 	}
 

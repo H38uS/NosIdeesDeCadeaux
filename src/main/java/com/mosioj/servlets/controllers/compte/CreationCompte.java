@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.compte;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -40,13 +41,12 @@ public class CreationCompte extends DefaultCompte {
 	private static final long serialVersionUID = -101081965549681889L;
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		HttpSession session = request.getSession();
 		Captcha captcha = (Captcha) session.getAttribute(Captcha.NAME);
@@ -63,7 +63,13 @@ public class CreationCompte extends DefaultCompte {
 		List<String> emailErrors = checkEmail(getValidatorEmail(email), -1); // The user does not exist yet
 		request.setAttribute("email_errors", emailErrors);
 
-		request.setCharacterEncoding("UTF-8"); // Do this so we can capture non-Latin chars
+		try {
+			// Do this so we can capture non-Latin chars
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			throw new ServletException(e1.getMessage());
+		}
+
 		String answer = request.getParameter("answer");
 		boolean captchaOk = captcha.isCorrect(answer);
 		if (!captchaOk) {
@@ -90,16 +96,17 @@ public class CreationCompte extends DefaultCompte {
 		}
 
 		// Les paramètres sont ok, on s'occupe de la requête
+		users.addNewPersonne(email, hashPwd.toString(), name);
+		session.invalidate();
+		request.login(email, pwd);
+		request.setAttribute("user", email);
 		try {
-			users.addNewPersonne(email, hashPwd.toString(), name);
-			session.invalidate();
-			request.login(email, pwd);
-			request.setAttribute("user", email);
 			new LoginHelper().doFilter(request, response, new EmptyFilter());
-			notif.addNotification(ParametersUtils.getUserId(request), new NotifNoIdea());
-			RootingsUtils.rootToPage(SUCCES_URL, request, response);
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, request, response);
+		} catch (IOException e) {
+			throw new ServletException(e.getMessage());
 		}
+
+		notif.addNotification(ParametersUtils.getUserId(request), new NotifNoIdea());
+		RootingsUtils.rootToPage(SUCCES_URL, request, response);
 	}
 }

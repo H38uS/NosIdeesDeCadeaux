@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.relations;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -36,60 +35,54 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Integer user = ParametersUtils.readInt(req, USER_ID_PARAM);
 
-		try {
-			int userId = ParametersUtils.getUserId(req);
-			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
-			req.setAttribute("relations", userRelations.getRelations(user));
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
-			return;
-		}
+		int userId = ParametersUtils.getUserId(req);
+		req.setAttribute("demandes", userRelationRequests.getRequests(userId));
+		req.setAttribute("relations", userRelations.getRelations(user));
 
 		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		int userId = ParametersUtils.getUserId(request);
 
-		try {
-			Map<String, String[]> params = request.getParameterMap();
-			for (String key : params.keySet()) {
+		Map<String, String[]> params = request.getParameterMap();
+		for (String key : params.keySet()) {
 
-				if (!key.startsWith("choix")) {
-					continue;
-				}
-
-				int fromUserId = Integer.parseInt(key.substring("choix_".length()));
-				if (!userRelationRequests.associationExists(fromUserId, userId)) {
-					// On ne traite que les demandes réellement envoyées...
-					continue;
-				}
-				
-				boolean accept = "Accepter".equals(params.get(key)[0]);
-
-				if (accept) {
-					logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.", userId, key.substring("choix_".length())));
-					userRelations.addAssociation(fromUserId, userId);
-					userRelationRequests.cancelRequest(fromUserId, userId);
-				} else {
-					logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", userId, key.substring("choix_".length())));
-					userRelationRequests.cancelRequest(fromUserId, userId);
-				}
+			if (!key.startsWith("choix")) {
+				continue;
 			}
 
-			// Redirection à la page d'administration
-			RootingsUtils.redirectToPage(GET_URL + userId, request, response);
+			int fromUserId = Integer.parseInt(key.substring("choix_".length()));
+			if (!userRelationRequests.associationExists(fromUserId, userId)) {
+				// On ne traite que les demandes réellement envoyées...
+				continue;
+			}
 
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, request, response);
-			return;
+			boolean accept = "Accepter".equals(params.get(key)[0]);
+
+			if (accept) {
+				logger.info(MessageFormat.format(	"Approbation de la demande par {0} de l'utilisateur {1}.",
+													userId,
+													key.substring("choix_".length())));
+				userRelations.addAssociation(fromUserId, userId);
+				userRelationRequests.cancelRequest(fromUserId, userId);
+			} else {
+				logger.info(MessageFormat.format(	"Refus de la demande par {0} de l'utilisateur {1}.",
+													userId,
+													key.substring("choix_".length())));
+				userRelationRequests.cancelRequest(fromUserId, userId);
+			}
 		}
+
+		// Redirection à la page d'administration
+		RootingsUtils.redirectToPage(GET_URL + userId, request, response);
+
 	}
 
 }

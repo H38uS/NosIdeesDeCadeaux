@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.idees;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -30,47 +29,41 @@ public class RemoveOneIdea extends AbstractIdea {
 	private static final long serialVersionUID = -1774633803227715931L;
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		// Reading parameters
 		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
 
-		try {
-			Idee idea = idees.getIdea(id);
-			if (idea != null && idea.isBooked()) {
-				User owner = idea.owner;
-				User booker = idea.getBookingOwner();
-				if (booker != null) {
-					notif.addNotification(booker.id, new NotifBookedRemove(idea.getText(), owner.getName()));
-				} else {
-					// Il s'agit d'un groupe
-					IdeaGroup group = groupForIdea.getGroupDetails(idea.getGroupKDO());
-					for (Share share : group.getShares()) {
-						User groupUser = share.getUser();
-						notif.addNotification(groupUser.id, new NotifBookedRemove(idea.getText(), owner.getName()));
-					}
+		Idee idea = idees.getIdea(id);
+		if (idea != null && idea.isBooked()) {
+			User owner = idea.owner;
+			User booker = idea.getBookingOwner();
+			if (booker != null) {
+				notif.addNotification(booker.id, new NotifBookedRemove(idea.getText(), owner.getName()));
+			} else {
+				// Il s'agit d'un groupe
+				IdeaGroup group = groupForIdea.getGroupDetails(idea.getGroupKDO());
+				for (Share share : group.getShares()) {
+					User groupUser = share.getUser();
+					notif.addNotification(groupUser.id, new NotifBookedRemove(idea.getText(), owner.getName()));
 				}
-				String image = idea.getImage();
-				removeUploadedImage(image);
 			}
+			String image = idea.getImage();
+			removeUploadedImage(image);
+		}
 
-			int userId = ParametersUtils.getUserId(request);
-			idees.remove(userId, id);
+		int userId = ParametersUtils.getUserId(request);
+		idees.remove(userId, id);
 
-			if (!idees.hasIdeas(userId)) {
-				notif.addNotification(userId, new NotifNoIdea());
-			}
-
-		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, request, response);
-			return;
+		if (!idees.hasIdeas(userId)) {
+			notif.addNotification(userId, new NotifNoIdea());
 		}
 
 		RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, request, response);
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, req, resp);
 	}
 }
