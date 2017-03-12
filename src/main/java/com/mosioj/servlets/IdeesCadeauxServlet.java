@@ -1,6 +1,7 @@
 package com.mosioj.servlets;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +10,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.GroupIdea;
@@ -19,6 +23,8 @@ import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
 import com.mosioj.notifications.NotificationManager;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.utils.ParametersUtils;
+import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.DataSourceIdKDo;
 
 /**
@@ -50,6 +56,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : faire une passe sécurité pour voir si c'est bien gérer... Faire des classes master dans les packages
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
+	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
 	/**
 	 * L'interface vers la table USER_RELATIONS.
@@ -100,7 +107,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
 	private final SecurityPolicy policy;
-	
+
 	/**
 	 * Class constructor.
 	 * 
@@ -179,8 +186,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public abstract void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException;
+	public abstract void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException;
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -191,7 +197,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 
 		if (!policy.hasRightToInteractInGetRequest(req, resp)) {
-			// FIXME faire une erreur générique
+			req.setAttribute("error_message", policy.getLastReason());
+			logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0}. Reason: {1}",
+												ParametersUtils.getUserId(req),
+												policy.getLastReason()));
+			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", req, resp);
 			return;
 		}
 
@@ -207,8 +217,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException;
+	public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -219,7 +228,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 
 		if (!policy.hasRightToInteractInPostRequest(request, response)) {
-			// FIXME faire une erreur générique
+			request.setAttribute("error_message", policy.getLastReason());
+			logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0}. Reason: {1}",
+												ParametersUtils.getUserId(request),
+												policy.getLastReason()));
+			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
 			return;
 		}
 

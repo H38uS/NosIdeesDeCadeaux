@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class AllAccessToPostAndGet implements SecurityPolicy {
+	
+	protected String lastReason = "";
 
 	@Override
 	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -28,6 +30,11 @@ public class AllAccessToPostAndGet implements SecurityPolicy {
 	@Override
 	public boolean isPostRequestAllowed() {
 		return true;
+	}
+
+	@Override
+	public String getLastReason() {
+		return lastReason;
 	}
 
 }

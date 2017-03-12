@@ -18,7 +18,7 @@ import com.mosioj.utils.RootingsUtils;
  * @author Jordan Mosio
  *
  */
-public class BookingGroupInteraction implements SecurityPolicy {
+public class BookingGroupInteraction extends AllAccessToPostAndGet implements SecurityPolicy {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
@@ -50,6 +50,7 @@ public class BookingGroupInteraction implements SecurityPolicy {
 
 		Integer groupId = ParametersUtils.readInt(request, groupParameter);
 		if (groupId == null) {
+			lastReason = "Aucun groupe trouvé en paramètre.";
 			return false;
 		}
 		
@@ -57,7 +58,11 @@ public class BookingGroupInteraction implements SecurityPolicy {
 
 		try {
 
-			return userRelations.associationExists(userId, idees.getIdeaOwnerFromGroup(groupId).id);
+			boolean res = userRelations.associationExists(userId, idees.getIdeaOwnerFromGroup(groupId).id);
+			if (!res) {
+				lastReason = "Vous n'avez pas accès aux idées de cette personne.";
+			}
+			return res;
 
 		} catch (SQLException e) {
 			try {
@@ -65,6 +70,7 @@ public class BookingGroupInteraction implements SecurityPolicy {
 			} catch (ServletException | IOException e1) {
 				// Nothing to do
 			}
+			lastReason = "Une erreur est survenue pendant votre demande. Veuillez réessayer.";
 			return false;
 		}
 	}
@@ -75,18 +81,8 @@ public class BookingGroupInteraction implements SecurityPolicy {
 	}
 
 	@Override
-	public boolean isGetRequestAllowed() {
-		return true;
-	}
-
-	@Override
 	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
 		return canInteractWithGroup(request, response);
-	}
-
-	@Override
-	public boolean isPostRequestAllowed() {
-		return true;
 	}
 
 }

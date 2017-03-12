@@ -57,4 +57,15 @@ public class MultipleSecurityPolicy implements SecurityPolicy {
 		return true;
 	}
 
+	@Override
+	public String getLastReason() {
+		for (SecurityPolicy policy : policies) {
+			String lastReason = policy.getLastReason();
+			if (lastReason != null && !lastReason.isEmpty()) {
+				return lastReason;
+			}
+		}
+		return "";
+	}
+
 }

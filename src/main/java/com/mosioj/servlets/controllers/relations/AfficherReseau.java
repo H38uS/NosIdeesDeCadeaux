@@ -57,8 +57,6 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 
 		int userId = ParametersUtils.getUserId(request);
 
-		// FIXME sécurité : ne pas pouvoir ajouter si pas de demandes
-
 		try {
 			Map<String, String[]> params = request.getParameterMap();
 			for (String key : params.keySet()) {
@@ -67,16 +65,21 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 					continue;
 				}
 
-				String fromUserId = key.substring("choix_".length());
+				int fromUserId = Integer.parseInt(key.substring("choix_".length()));
+				if (!userRelationRequests.associationExists(fromUserId, userId)) {
+					// On ne traite que les demandes réellement envoyées...
+					continue;
+				}
+				
 				boolean accept = "Accepter".equals(params.get(key)[0]);
 
 				if (accept) {
-					logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.", userId, fromUserId));
-					userRelations.addAssociation(Integer.parseInt(fromUserId), userId);
-					userRelationRequests.cancelRequest(Integer.parseInt(fromUserId), userId);
+					logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.", userId, key.substring("choix_".length())));
+					userRelations.addAssociation(fromUserId, userId);
+					userRelationRequests.cancelRequest(fromUserId, userId);
 				} else {
-					logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", userId, fromUserId));
-					userRelationRequests.cancelRequest(Integer.parseInt(fromUserId), userId);
+					logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", userId, key.substring("choix_".length())));
+					userRelationRequests.cancelRequest(fromUserId, userId);
 				}
 			}
 

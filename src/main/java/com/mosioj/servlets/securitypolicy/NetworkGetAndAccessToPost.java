@@ -11,7 +11,7 @@ import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
-public class NetworkGetAndAccessToPost implements SecurityPolicy {
+public class NetworkGetAndAccessToPost extends AllAccessToPostAndGet implements SecurityPolicy {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -35,39 +35,26 @@ public class NetworkGetAndAccessToPost implements SecurityPolicy {
 
 		Integer user = ParametersUtils.readInt(request, userParameter);
 		if (user == null) {
+			lastReason = "Aucun utilisateur trouvé en paramètre.";
 			return false;
 		}
 
 		try {
 			int userId = ParametersUtils.getUserId(request);
-			if (user != userId && !userRelations.associationExists(user, userId)) {
-				return false;
+			boolean res = user != userId && !userRelations.associationExists(user, userId);
+			if (!res) {
+				lastReason = "Vous n'avez pas accès au réseau de cette personne.";
 			}
+			return res;
 		} catch (SQLException e) {
 			try {
 				RootingsUtils.rootToGenericSQLError(e, request, response);
 			} catch (ServletException | IOException e1) {
 				// Nothing to do
 			}
+			lastReason = "Une erreur est survenue pendant votre demande. Veuillez réessayer.";
 			return false;
 		}
-
-		return true;
-	}
-
-	@Override
-	public boolean isGetRequestAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
-		return true;
-	}
-
-	@Override
-	public boolean isPostRequestAllowed() {
-		return true;
 	}
 
 }

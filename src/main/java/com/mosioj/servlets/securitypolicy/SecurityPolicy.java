@@ -32,4 +32,10 @@ public interface SecurityPolicy {
 	 * @return True if and only if POST are allowed on this context.
 	 */
 	public boolean isPostRequestAllowed();
+
+	/**
+	 * 
+	 * @return The last reason for a forbidden access.
+	 */
+	public String getLastReason();
 }

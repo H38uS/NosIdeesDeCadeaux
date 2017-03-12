@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.Idee;
 import com.mosioj.model.table.Idees;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -17,7 +18,7 @@ import com.mosioj.utils.RootingsUtils;
  * @author Jordan Mosio
  *
  */
-public class IdeaModification implements SecurityPolicy {
+public class IdeaModification extends AllAccessToPostAndGet implements SecurityPolicy {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
@@ -44,8 +45,9 @@ public class IdeaModification implements SecurityPolicy {
 	 */
 	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) {
 
-		Integer idea = ParametersUtils.readInt(request, ideaParameter);
-		if (idea == null) {
+		Integer ideaId = ParametersUtils.readInt(request, ideaParameter);
+		if (ideaId == null) {
+			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
 		}
 		
@@ -53,7 +55,17 @@ public class IdeaModification implements SecurityPolicy {
 
 		try {
 
-			return userId == idees.getIdea(idea).owner.id;
+			Idee idea = idees.getIdea(ideaId);
+			if (idea == null) {
+				lastReason = "Aucune idée trouvée en paramètre.";
+				return false;
+			}
+			
+			boolean res = userId == idea.owner.id;
+			if (!res) {
+				lastReason = "Vous ne pouvez modifier que vos idées.";
+			}
+			return res;
 
 		} catch (SQLException e) {
 			try {
@@ -61,6 +73,7 @@ public class IdeaModification implements SecurityPolicy {
 			} catch (ServletException | IOException e1) {
 				// Nothing to do
 			}
+			lastReason = "Une erreur est survenue pendant votre demande. Veuillez réessayer.";
 			return false;
 		}
 	}
@@ -73,18 +86,8 @@ public class IdeaModification implements SecurityPolicy {
 	}
 
 	@Override
-	public boolean isGetRequestAllowed() {
-		return true;
-	}
-
-	@Override
 	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
 		return canModifyIdea(request, response);
-	}
-
-	@Override
-	public boolean isPostRequestAllowed() {
-		return true;
 	}
 
 }
