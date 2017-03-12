@@ -41,7 +41,7 @@ public class CreationCompte extends DefaultCompte {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// Nothing to do
+		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
 
 	@Override

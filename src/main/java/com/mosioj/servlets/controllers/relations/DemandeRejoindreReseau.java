@@ -68,7 +68,8 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// Nothing to do
+		req.setAttribute("error_message", "Aucun utilisateur spécifié !");
+		RootingsUtils.rootToPage(ERROR_URL, req, resp);
 	}
 
 }

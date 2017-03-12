@@ -53,8 +53,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
 	// FIXME : mettre la date dans les commentaires des messages
 
-	// FIXME : faire une passe sécurité pour voir si c'est bien gérer... Faire des classes master dans les packages
-
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 

@@ -39,9 +39,13 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 			List<User> foundUsers = users.getUsers(userNameOrEmail);
 			int userId = ParametersUtils.getUserId(request);
 			foundUsers.remove(users.getUser(userId));
+			List<User> friends = userRelations.getAllUsersInRelation(userId);
 			if (onlyNonFriend) {
-				List<User> friends = userRelations.getAllUsersInRelation(userId);
 				foundUsers.removeAll(friends);
+			} else {
+				for (User user : foundUsers) {
+					user.isInMyNetwork = friends.contains(user);
+				}
 			}
 			
 			request.setAttribute("users", foundUsers);
@@ -56,10 +60,8 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// Nothing to do
+		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
-
-	// FIXME : ne pas afficher le bouton si on est déjà amis
 
 	// TODO : ne pas afficher le bouton rejoindre personne si on a déjà envoyé une demande...
 	// TODO limiter le nombre de résultat (à 20 ?)

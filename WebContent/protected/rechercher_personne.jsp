@@ -55,11 +55,18 @@
 						<td>${user.name}</td>
 						<td>${user.email}</td>
 						<td>
-							<form method="POST" action="protected/demande_rejoindre_reseau">
-								<input hidden="true" type="text" name="user_id" value="${user.id}" >
-								<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							</form>
+							<c:choose>
+								<c:when test="${user.isInMyNetwork}">
+									${user.name} fait déjà parti de vos amis.
+								</c:when>
+								<c:otherwise>
+									<form method="POST" action="protected/demande_rejoindre_reseau">
+										<input hidden="true" type="text" name="user_id" value="${user.id}" >
+										<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+									</form>
+								</c:otherwise>
+							</c:choose>
 						</td>
 					</tr>
 				</c:forEach>

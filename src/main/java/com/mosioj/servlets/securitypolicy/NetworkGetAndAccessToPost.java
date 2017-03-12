@@ -41,7 +41,7 @@ public class NetworkGetAndAccessToPost extends AllAccessToPostAndGet implements 
 
 		try {
 			int userId = ParametersUtils.getUserId(request);
-			boolean res = user != userId && !userRelations.associationExists(user, userId);
+			boolean res = user != userId || !userRelations.associationExists(user, userId);
 			if (!res) {
 				lastReason = "Vous n'avez pas accès au réseau de cette personne.";
 			}

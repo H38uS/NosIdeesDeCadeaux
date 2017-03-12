@@ -44,22 +44,6 @@
 			<input type="submit" name="submit" value="Sauvegarder">
 		</form>
 		
-		<h2>Mes groupes créés</h2>
-		<c:if test="${not empty owned}">
-			<div>${owned.name}</div>
-		</c:if>
-
-		<h2>Mes groupes partagés</h2>
-		<c:if test="${fn:length(joined) > 0}">
-			<table>
-				<c:forEach var="group" items="${joined}">
-					<tr>
-						<td>${group.name}</td>
-					</tr>
-				</c:forEach>
-			</table>
-		</c:if>
-		
 		<h2>Notifications</h2>
 		
 	</jsp:body>

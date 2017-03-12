@@ -42,26 +42,8 @@ public class MonCompte extends DefaultCompte {
 			return;
 		}
 
-		// FIXME afficher les relations
-		// try {
-		// List<Group> joined = groupes.getGroupsJoined(userId, -1);
-		// req.setAttribute("joined", joined);
-		//
-		// Group owned = null;
-		// try {
-		// int groupId = groupes.getOwnerGroupId(userId);
-		// owned = new Group(groupId, groupes.getName(groupId), -1, null);
-		// } catch (NoRowsException e) {
-		// // No groups created
-		// }
-		// req.setAttribute("owned", owned);
-		//
-		// } catch (SQLException e) {
-		// e.printStackTrace();
-		// RootingsUtils.rootToGenericSQLError(e, req, resp);
-		// return;
-		// }
-
+		// TODO pouvoir décider pour chaque notification si on l'active où non
+		
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 

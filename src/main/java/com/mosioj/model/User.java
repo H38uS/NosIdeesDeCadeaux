@@ -10,6 +10,7 @@ public class User {
 	public String email;
 	public String name;
 	public Date birthday;
+	public boolean isInMyNetwork;
 
 	private final List<Idee> ideas = new ArrayList<Idee>();
 	
@@ -25,6 +26,10 @@ public class User {
 		this.name = name;
 		this.email = email;
 		this.birthday = birthday;
+	}
+
+	public boolean getIsInMyNetwork() {
+		return isInMyNetwork;
 	}
 
 	public Date getBirthday() {

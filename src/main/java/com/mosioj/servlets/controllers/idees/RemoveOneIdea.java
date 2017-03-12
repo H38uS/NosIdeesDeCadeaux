@@ -71,6 +71,6 @@ public class RemoveOneIdea extends AbstractIdea {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// Nothing to do.
+		RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, req, resp);
 	}
 }
