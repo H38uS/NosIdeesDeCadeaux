@@ -1,9 +1,9 @@
 package com.mosioj.notifications.instance;
 
-import com.mosioj.notifications.Notification;
+import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
 
-public class NotifBookedRemove extends Notification {
+public class NotifBookedRemove extends AbstractNotification {
 
 	private String text;
 	private String owner;

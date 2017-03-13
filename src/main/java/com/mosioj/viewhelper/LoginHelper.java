@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Users;
 
 /**
@@ -69,6 +70,14 @@ public class LoginHelper implements Filter {
 				}
 			}
 			request.setAttribute("userid", userId);
+			
+			Notifications notif = new Notifications();
+			try {
+				int count = notif.getUserNotificationCount(userId);
+				request.setAttribute("notif_count", count);
+			} catch (SQLException e) {
+				// Osef
+			}
 		}
 		
 		chain.doFilter(request, response);

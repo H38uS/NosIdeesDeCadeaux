@@ -1,13 +1,13 @@
 package com.mosioj.notifications;
 
-public abstract class Notification {
+public abstract class AbstractNotification {
 
 	/**
 	 * The notification type.
 	 */
 	private final NotificationType type;
 
-	public Notification(NotificationType type) {
+	public AbstractNotification(NotificationType type) {
 		this.type = type;
 	}
 

@@ -17,11 +17,11 @@ import javax.servlet.http.HttpSession;
 
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.Idees;
+import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
-import com.mosioj.notifications.NotificationManager;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.tests.TemplateTest;
 import com.mosioj.utils.database.DataSourceIdKDo;
@@ -44,7 +44,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected Idees idees;
 	protected Categories cat;
 	protected Priorites prio;
-	protected NotificationManager notif;
+	protected Notifications notif;
 	
 	protected final IdeesCadeauxServlet instance;
 	
@@ -57,7 +57,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		idees = mock(Idees.class);
 		cat = mock(Categories.class);
 		prio = mock(Priorites.class);
-		notif = mock(NotificationManager.class);
+		notif = mock(Notifications.class);
 		
 		when(request.getSession()).thenReturn(session);
 		when(request.getContextPath()).thenReturn("");

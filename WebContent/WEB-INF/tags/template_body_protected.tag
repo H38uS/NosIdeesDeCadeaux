@@ -8,6 +8,9 @@
     		<div id="header_id_message">
 	    		Bonjour, <c:out value="${username}" /> - <a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 	    		Accéder à <a href="protected/mon_compte">mon compte.</a>
+	    		<c:if test="${notif_count > 0}">
+	    			<br/>Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !
+	    		</c:if>
     		</div>
     		<ul class="menu">
 				<li>

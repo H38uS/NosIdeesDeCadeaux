@@ -18,11 +18,11 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
+import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
-import com.mosioj.notifications.NotificationManager;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -99,7 +99,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * The connections to the NOTIFICATION table.
 	 */
-	protected NotificationManager notif;
+	protected Notifications notif;
 
 	/**
 	 * The connections to the GROUP_IDEA and GROUP_IDEA_CONTENT tables.
@@ -122,7 +122,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		users = new Users();
 		categories = new Categories();
 		priorities = new Priorites();
-		notif = new NotificationManager();
+		notif = new Notifications();
 		groupForIdea = new GroupIdea();
 		this.policy = policy;
 	}
@@ -132,7 +132,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * 
 	 * @param manager
 	 */
-	public void setNotificationManager(NotificationManager manager) {
+	public void setNotificationManager(Notifications manager) {
 		notif = manager;
 	}
 

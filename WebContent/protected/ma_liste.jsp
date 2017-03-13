@@ -98,6 +98,5 @@
 				</c:forEach>
 			</table>
 		</c:if>
-		<a href="public/index.jsp">Retour à l'accueil</a> ou <a href="protected/index.jsp">Retour à votre espace</a>.
 	</jsp:body>
 </t:normal_proctected>
