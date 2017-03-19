@@ -10,50 +10,32 @@
 
 <t:normal_proctected>
 	<jsp:body>
-		<h1>Hello World from the application !</h1>
-		<p>Pouet.</p>
-		<sql:query var="rs" dataSource="jdbc/web-db">
-			select id, nom from priorites
-		</sql:query>
-		<c:forEach var="row" items="${rs.rows}">
-			Prio.id  : ${row.id}<br />
-			Prio.nom : ${row.nom}<br />
-		</c:forEach>
-		<div>
-			Bonjour <c:out value="${username}" /> - 
-			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
-		</div>
-		<div>Id: <c:out value="${userid}" /></div>
-		
-		<sec:authorize access="isFullyAuthenticated()">
-			<div>Connecté via un formulaire.</div>
-		</sec:authorize>
-		<sec:authorize access="isRememberMe()">
-			<div>Connecté via remember me.</div>
-		</sec:authorize>
-		
-		<ul>
-			<li>
-				<a href="protected/ma_liste">Compléter ma liste</a>
-			</li>
-			<li>
-				<a href="protected/mes_listes">Afficher mes listes partagées</a>
-			</li>
-			<li>
-				<a href="protected/creation_groupe">Créer un groupe !</a>
-			</li>
-			<li>
-				<a href="protected/rechercher_groupe.jsp">Rejoindre un groupe</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Inviter des personnes !</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Vos envies</a>
-			</li>
-			<li>
-				<a href="protected/todo.jsp">Faites plaisir</a>
-			</li>
-		</ul>
+		<h1>Prochain anniversaire</h1>
+		<c:choose>
+			<c:when test="${not empty userBirthday}">
+				<table>
+					<c:forEach var="user" items="${userBirthday}" >
+					<tr>
+						<td>
+							<c:choose>
+								<c:when test="${user.nbDaysBeforeBirthday == 0}">
+									C'est l'anniversaire de ${user.name} aujourd'hui !
+								</c:when>
+								<c:when test="${user.nbDaysBeforeBirthday == 1}">
+									L'anniversaire de ${user.name} est demain !
+								</c:when>
+								<c:otherwise>
+									L'anniversaire de ${user.name} arrive dans ${user.nbDaysBeforeBirthday} jours !
+								</c:otherwise>
+							</c:choose>
+						</td>
+					</tr>
+					</c:forEach>
+				</table>
+			</c:when>
+			<c:otherwise>
+				Aucun anniversaire dans peu de temps... C'est le bon moment pour récupérer des repas !
+			</c:otherwise>
+		</c:choose>
 	</jsp:body>
 </t:normal_proctected>

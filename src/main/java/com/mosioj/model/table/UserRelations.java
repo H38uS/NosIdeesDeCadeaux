@@ -10,6 +10,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.Relation;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.UsersColumns;
@@ -18,6 +21,7 @@ import com.mosioj.utils.database.PreparedStatementIdKdo;
 public class UserRelations extends Table {
 
 	public static final String TABLE_NAME = "USER_RELATIONS";
+	private static final Logger logger = LogManager.getLogger(UserRelations.class);
 
 	/**
 	 * 
@@ -38,15 +42,16 @@ public class UserRelations extends Table {
 		query.append("where {3} = ? or {4} = ? ");
 
 		try {
-			ps = new PreparedStatementIdKdo(getDb(), MessageFormat.format(	query.toString(),
-																			FIRST_USER.name(),
-																			SECOND_USER.name(),
-																			TABLE_NAME,
-																			FIRST_USER,
-																			SECOND_USER,
-																			Users.TABLE_NAME,
-																			UsersColumns.NAME,
-																			UsersColumns.EMAIL));
+			ps = new PreparedStatementIdKdo(getDb(),
+											MessageFormat.format(	query.toString(),
+																	FIRST_USER.name(),
+																	SECOND_USER.name(),
+																	TABLE_NAME,
+																	FIRST_USER,
+																	SECOND_USER,
+																	Users.TABLE_NAME,
+																	UsersColumns.NAME,
+																	UsersColumns.EMAIL));
 			ps.bindParameters(user, user);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
@@ -64,8 +69,75 @@ public class UserRelations extends Table {
 				ps.close();
 			}
 		}
-		
+
 		return relations;
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param inNbDaysMax
+	 * @return The list of users with birthday coming (less than 30 days).
+	 * @throws SQLException
+	 */
+	public List<User> getCloseBirthday(int userId, int inNbDaysMax) throws SQLException {
+
+		List<User> users = new ArrayList<User>();
+		PreparedStatementIdKdo ps = null;
+
+		StringBuilder query = new StringBuilder();
+		query.append("select b.{0}, b.{1}, b.{2}, b.{3}, b.days_before_next_year_birthday, b.days_before_birthday ");
+		query.append("from ( ");
+		
+		query.append("select a.{0}, a.{1}, a.{2}, a.{3}, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()) +1, ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_next_year_birthday, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()), ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_birthday ");
+		query.append("from ( ");
+		query.append("select u.{0}, u.{1}, u.{2}, u.{3}  ");
+		query.append("from {4} urr ");
+		query.append("left join {5} u on u.{0} = urr.{6} ");
+		query.append("where {7} = ? ");
+		query.append("union ");
+		query.append("select u.{0}, u.{1}, u.{2}, u.{3} ");
+		query.append("from {4} urr ");
+		query.append("left join {5} u on u.{0} = urr.{7} ");
+		query.append("where {6} = ? ");
+		query.append(") a ");
+		
+		query.append(") b ");
+		query.append("where (b.days_before_birthday >= 0 and b.days_before_birthday < ?) or b.days_before_next_year_birthday < ? ");
+		query.append("order by b.days_before_next_year_birthday ");
+
+		try {
+			String realQuery = MessageFormat.format(query.toString(),
+													UsersColumns.ID,
+													UsersColumns.NAME,
+													UsersColumns.EMAIL,
+													UsersColumns.BIRTHDAY,
+													TABLE_NAME,
+													Users.TABLE_NAME,
+													FIRST_USER,
+													SECOND_USER);
+			logger.trace(realQuery);
+			ps = new PreparedStatementIdKdo(getDb(), realQuery);
+			ps.bindParameters(userId, userId, inNbDaysMax, inNbDaysMax);
+
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					users.add(new User(	res.getInt(UsersColumns.ID.name()),
+										res.getString(UsersColumns.NAME.name()),
+										res.getString(UsersColumns.EMAIL.name()),
+										res.getDate(UsersColumns.BIRTHDAY.name()),
+										res.getInt("days_before_birthday") < 0 ? res.getInt("days_before_next_year_birthday")
+												: res.getInt("days_before_birthday")));
+				}
+			}
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+		}
+
+		return users;
 	}
 
 	/**

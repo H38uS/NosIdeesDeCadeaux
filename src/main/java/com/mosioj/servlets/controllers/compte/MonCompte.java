@@ -1,12 +1,16 @@
 package com.mosioj.servlets.controllers.compte;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
@@ -19,6 +23,8 @@ import com.mosioj.utils.validators.ValidatorFactory;
 public class MonCompte extends DefaultCompte {
 
 	private static final long serialVersionUID = -101081965549681889L;
+	private static final Logger logger = LogManager.getLogger(MonCompte.class);
+	
 	public static final String VIEW_PAGE_URL = "/protected/mon_compte.jsp";
 
 	public MonCompte() {
@@ -50,6 +56,7 @@ public class MonCompte extends DefaultCompte {
 			request.setAttribute("errors_info_gen", errors);
 
 			String birthday = ParametersUtils.readIt(request, "birthday");
+			logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
 			ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
 			val.checkDateFormat();
 			errors.addAll(val.getErrors());

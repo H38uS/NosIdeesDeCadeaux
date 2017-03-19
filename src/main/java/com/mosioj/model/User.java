@@ -11,6 +11,7 @@ public class User {
 	public String name;
 	public Date birthday;
 	public boolean isInMyNetwork;
+	public int nbDaysBeforeBirthday;
 
 	private final List<Idee> ideas = new ArrayList<Idee>();
 	
@@ -28,6 +29,11 @@ public class User {
 		this.birthday = birthday;
 	}
 
+	public User(int id, String name, String email, Date birthday, int nbDaysBeforeBirthday) {
+		this(id, name, email, birthday);
+		this.nbDaysBeforeBirthday = nbDaysBeforeBirthday;
+	}
+
 	public boolean getIsInMyNetwork() {
 		return isInMyNetwork;
 	}
@@ -36,6 +42,10 @@ public class User {
 		return birthday;
 	}
 
+	public int getNbDaysBeforeBirthday() {
+		return nbDaysBeforeBirthday;
+	}
+	
 	/**
 	 * 
 	 * @return The id of the person.

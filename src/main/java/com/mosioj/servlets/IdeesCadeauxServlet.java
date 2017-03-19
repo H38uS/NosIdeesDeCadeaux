@@ -50,6 +50,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : ZCompléter le gdoc avec les modifications faites
 
 	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
+	// FIXME : ajouter la date de réservation et la date de création de groupe (ou dernière modification ?)
 	// TODO : notification quand un anniversaire approche
 	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
 

@@ -14,7 +14,7 @@
     		</div>
     		<ul class="menu">
 				<li>
-					<a href="protected/index.jsp">Accueil</a>
+					<a href="protected/index">Accueil</a>
 				</li>
 				<li>
 					<a href="protected/ma_liste">Compléter ma liste</a>

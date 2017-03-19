@@ -23,7 +23,7 @@
 				<tr>
 					<td>Date de naissance</td>
 					<td>
-						<input type="date" name="birthday" pattern="yyyy-mm-dd" value="${user.birthday}">
+						<input type="date" name="birthday" placeholder="aaaa-mm-jj" value="${user.birthday}" title="Utilisez le format suivant: aaaa-mm-jj (année sur 4 chiffres, tiret, mois sur 2 chiffres, tiret, jour sur deux chiffres)" >
 					</td>
 				</tr>
 			</table>
