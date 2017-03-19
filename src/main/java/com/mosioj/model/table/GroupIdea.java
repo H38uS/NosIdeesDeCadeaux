@@ -38,17 +38,18 @@ public class GroupIdea extends Table {
 
 		MUTEX.lock();
 		try {
-			getDb().executeUpdate(	MessageFormat.format("insert into {0} ({1}) values (?)", TABLE_NAME, NEEDED_PRICE),
-									total);
-			getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (LAST_INSERT_ID(), ?, ?, now())",
+			getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}) values (?)", TABLE_NAME, NEEDED_PRICE), total);
+			int id = getDb().selectInt("select max(" + ID + ") from " + TABLE_NAME);
+			getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
 															TABLE_NAME_CONTENT,
 															GROUP_ID,
 															USER_ID,
 															PRICE,
 															JOIN_DATE),
+									id,
 									userId,
 									amount);
-			return getDb().selectInt("select max(" + ID + ") from " + TABLE_NAME);
+			return id;
 		} finally {
 			MUTEX.lock();
 		}
@@ -142,15 +143,12 @@ public class GroupIdea extends Table {
 														GROUP_ID),
 								userId,
 								groupId);
-		if (!getDb().doesReturnRows(MessageFormat.format(	"select 1 from {0} where {1} = ? ",
-															TABLE_NAME_CONTENT,
-															GROUP_ID),
-									groupId)) {
+		if (!getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? ", TABLE_NAME_CONTENT, GROUP_ID), groupId)) {
 			getDb().executeUpdate("delete from " + TABLE_NAME + " where " + ID + " = ?", groupId);
-			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = null where {2} = ?",
+			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = null, {2} = null where {1} = ?",
 															Idees.TABLE_NAME,
 															IdeeColumns.GROUPE_KDO_ID,
-															IdeeColumns.GROUPE_KDO_ID),
+															IdeeColumns.RESERVE_LE),
 									groupId);
 		}
 	}

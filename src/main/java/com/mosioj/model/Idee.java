@@ -1,7 +1,12 @@
 package com.mosioj.model;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
+import com.mosioj.servlets.IdeesCadeauxServlet;
+
 public class Idee {
-	
+
 	private final int id;
 	private final String text;
 	private final String type;
@@ -11,8 +16,11 @@ public class Idee {
 	private final String image;
 	public final User owner;
 	private final int priorite;
+	private final Timestamp bookedOn;
+	private final Timestamp lastModified;
 
-	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage, String catAlt, String catTitle, int priorite) {
+	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage,
+			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified) {
 		id = pId;
 		text = pText;
 		type = pType;
@@ -22,8 +30,10 @@ public class Idee {
 		this.image = image;
 		this.owner = owner;
 		this.priorite = priorite;
+		this.bookedOn = bookedOn;
+		this.lastModified = lastModified;
 	}
-	
+
 	/**
 	 * 
 	 * @return True if the idea is booked (by a owner, or a group)
@@ -38,6 +48,18 @@ public class Idee {
 
 	public int getId() {
 		return id;
+	}
+	
+	public String getBookingDate() {
+		if (bookedOn == null)
+			return null;
+		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(bookedOn);
+	}
+
+	public String getModificationDate() {
+		if (lastModified == null)
+			return null;
+		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(lastModified);
 	}
 
 	/**
@@ -75,7 +97,7 @@ public class Idee {
 	public User getOwner() {
 		return owner;
 	}
-	
+
 	/**
 	 * 
 	 * @return The person who booked this idea. Null if nobodies books it, or it a group did it.

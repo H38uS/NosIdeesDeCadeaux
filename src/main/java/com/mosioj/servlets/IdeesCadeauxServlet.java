@@ -56,10 +56,14 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : pouvoir commenter une idée
 	// TODO : mettre la date dans les commentaires des messages
+	
+	// FIXME : champs perdu dans le formulaire de création de groupe
 
 	// TODO : pouvoir ajouter des idées à d'autres personnes
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
+	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
+
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
 	/**

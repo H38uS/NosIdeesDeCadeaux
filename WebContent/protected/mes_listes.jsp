@@ -57,14 +57,14 @@
 									<c:if test="${idee.isBooked()}">
 										<c:if test="${not empty idee.bookingOwner}">
 											<c:if test="${userid == idee.bookingOwner.id}">
-												Réservée par vous - <a href="protected/dereserver?&idee=${idee.id}">Annuler</a> !
+												Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?&idee=${idee.id}">Annuler</a> !
 											</c:if>
 											<c:if test="${userid != idee.bookingOwner.id}">
-												Réservée par ${idee.bookingOwner.name}
+												Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}
 											</c:if>
 										</c:if>
 										<c:if test="${empty idee.bookingOwner}">
-											L'idée est réservée par un groupe.
+											L'idée est réservée par un groupe (créé le ${idee.bookingDate}).
 											<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>
 										</c:if>
 									</c:if>

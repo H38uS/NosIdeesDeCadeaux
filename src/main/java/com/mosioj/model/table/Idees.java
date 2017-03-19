@@ -8,6 +8,8 @@ import static com.mosioj.model.table.columns.IdeeColumns.OWNER;
 import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
 import static com.mosioj.model.table.columns.IdeeColumns.TYPE;
+import static com.mosioj.model.table.columns.IdeeColumns.MODIFICATION_DATE;
+import static com.mosioj.model.table.columns.IdeeColumns.RESERVE_LE;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
+import com.mosioj.model.table.columns.GroupIdeaColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
@@ -45,11 +48,10 @@ public class Idees extends Table {
 	private Idee createIdeaFromQuery(ResultSet rs) throws SQLException {
 		User bookingOwner = null;
 		if (rs.getString(RESERVE.name()) != null) {
-			bookingOwner = new User(rs.getInt("userId"),
-									rs.getString("userName"),
-									rs.getString(UsersColumns.EMAIL.name()));
+			bookingOwner = new User(rs.getInt("userId"), rs.getString("userName"), rs.getString(UsersColumns.EMAIL.name()));
 		}
 		User owner = new User(rs.getInt("ownerId"), rs.getString("ownerName"), rs.getString("ownerEmail"));
+		
 		Idee idea = new Idee(	rs.getInt(ID.name()),
 								owner,
 								rs.getString(IDEE.name()),
@@ -60,7 +62,9 @@ public class Idees extends Table {
 								rs.getString(CategoriesColumns.IMAGE.name()),
 								rs.getString(CategoriesColumns.ALT.name()),
 								rs.getString(CategoriesColumns.TITLE.name()),
-								rs.getInt(PRIORITE.name()));
+								rs.getInt(PRIORITE.name()),
+								rs.getTimestamp(RESERVE_LE.name()), rs.getTimestamp(MODIFICATION_DATE.name())
+								);
 		return idea;
 	}
 
@@ -81,6 +85,8 @@ public class Idees extends Table {
 		columns.append(MessageFormat.format("       i.{0}, ", GROUPE_KDO_ID));
 		columns.append(MessageFormat.format("       i.{0} as id_image, ", IMAGE));
 		columns.append(MessageFormat.format("       i.{0}, ", PRIORITE));
+		columns.append(MessageFormat.format("       i.{0}, ", RESERVE_LE));
+		columns.append(MessageFormat.format("       i.{0}, ", MODIFICATION_DATE));
 		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.IMAGE));
 		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.ALT));
 		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.TITLE));
@@ -96,6 +102,8 @@ public class Idees extends Table {
 		query.append(MessageFormat.format("left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
 		query.append(MessageFormat.format("left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
 		query.append(MessageFormat.format("left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
+		
+		logger.trace(query);
 
 		return query;
 	}
@@ -167,15 +175,9 @@ public class Idees extends Table {
 	public User getIdeaOwnerFromGroup(int groupId) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select u.{0}, u.{1}, u.{2} ",
-											UsersColumns.ID,
-											UsersColumns.NAME,
-											UsersColumns.EMAIL));
+		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
-		query.append(MessageFormat.format(	"inner join {0} u on i.{1} = u.{2} ",
-											Users.TABLE_NAME,
-											OWNER,
-											UsersColumns.ID));
+		query.append(MessageFormat.format("inner join {0} u on i.{1} = u.{2} ", Users.TABLE_NAME, OWNER, UsersColumns.ID));
 		query.append(MessageFormat.format(" where i.{0} = ?", GROUPE_KDO_ID));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
@@ -230,19 +232,15 @@ public class Idees extends Table {
 		insert.append(IDEE).append(",");
 		insert.append(TYPE).append(",");
 		insert.append(IMAGE).append(",");
+		insert.append(MODIFICATION_DATE).append(",");
 		insert.append(PRIORITE);
-		insert.append(") values (?, ?, ?, ?, ?)");
+		insert.append(") values (?, ?, ?, ?, now(), ?)");
 
 		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), insert.toString());
 		try {
 			text = Escaper.textToHtml(text);
-			logger.info(MessageFormat.format(	"Parameters: [{0}, {1}, {2}, {3}, {4}]",
-												ownerId,
-												text,
-												type,
-												image,
-												priorite));
+			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}]", ownerId, text, type, image, priorite));
 			ps.bindParameters(ownerId, text, type, image, priorite);
 			ps.execute();
 		} finally {
@@ -261,7 +259,7 @@ public class Idees extends Table {
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("update {0} ", TABLE_NAME));
-		query.append("set reserve = ? ");
+		query.append("set reserve = ?, reserve_le = now() ");
 		query.append("where id = ? ");
 
 		logger.trace("Query: " + query.toString());
@@ -282,10 +280,7 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void bookByGroup(int id, int groupId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ?",
-														TABLE_NAME,
-														GROUPE_KDO_ID,
-														ID),
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ?", TABLE_NAME, GROUPE_KDO_ID, RESERVE_LE, ID),
 								groupId,
 								id);
 	}
@@ -301,7 +296,7 @@ public class Idees extends Table {
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("update {0} ", TABLE_NAME));
-		query.append("set reserve = null ");
+		query.append("set reserve = null, reserve_le = null ");
 		query.append("where id = ? and reserve = ?");
 
 		logger.trace("Query: " + query.toString());
@@ -358,12 +353,14 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void remove(int userId, Integer id) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ? ",
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = (select {2} from {3} where {4} = ?)",
+														GroupIdea.TABLE_NAME,
+														GroupIdeaColumns.ID,
+														GROUPE_KDO_ID,
 														TABLE_NAME,
-														OWNER,
 														ID),
-								userId,
 								id);
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ? ", TABLE_NAME, OWNER, ID), userId, id);
 	}
 
 	/**
@@ -373,10 +370,7 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public boolean hasIdeas(int userId) throws SQLException {
-		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? limit 1",
-																TABLE_NAME,
-																OWNER),
-										userId);
+		return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? limit 1", TABLE_NAME, OWNER), userId);
 	}
 
 	/**
@@ -390,12 +384,13 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void modifier(int id, String text, String type, String priority, String image) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ? where {5} = ?",
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
 														TABLE_NAME,
 														IDEE,
 														TYPE,
 														PRIORITE,
 														IMAGE,
+														MODIFICATION_DATE,
 														ID),
 								text,
 								type,
