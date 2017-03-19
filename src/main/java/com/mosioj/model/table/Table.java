@@ -24,6 +24,4 @@ public abstract class Table {
 		return db;
 	}
 	
-	// TODO faire le prepare statement ici, et le logger en débug
-	
 }

@@ -24,6 +24,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
 import com.mosioj.model.table.columns.GroupIdeaColumns;
+import com.mosioj.model.table.columns.GroupIdeaContentColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
@@ -51,7 +52,7 @@ public class Idees extends Table {
 			bookingOwner = new User(rs.getInt("userId"), rs.getString("userName"), rs.getString(UsersColumns.EMAIL.name()));
 		}
 		User owner = new User(rs.getInt("ownerId"), rs.getString("ownerName"), rs.getString("ownerEmail"));
-		
+
 		Idee idea = new Idee(	rs.getInt(ID.name()),
 								owner,
 								rs.getString(IDEE.name()),
@@ -63,8 +64,8 @@ public class Idees extends Table {
 								rs.getString(CategoriesColumns.ALT.name()),
 								rs.getString(CategoriesColumns.TITLE.name()),
 								rs.getInt(PRIORITE.name()),
-								rs.getTimestamp(RESERVE_LE.name()), rs.getTimestamp(MODIFICATION_DATE.name())
-								);
+								rs.getTimestamp(RESERVE_LE.name()),
+								rs.getTimestamp(MODIFICATION_DATE.name()));
 		return idea;
 	}
 
@@ -102,7 +103,7 @@ public class Idees extends Table {
 		query.append(MessageFormat.format("left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
 		query.append(MessageFormat.format("left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
 		query.append(MessageFormat.format("left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
-		
+
 		logger.trace(query);
 
 		return query;
@@ -280,7 +281,11 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void bookByGroup(int id, int groupId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ?", TABLE_NAME, GROUPE_KDO_ID, RESERVE_LE, ID),
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = now() where {3} = ?",
+														TABLE_NAME,
+														GROUPE_KDO_ID,
+														RESERVE_LE,
+														ID),
 								groupId,
 								id);
 	}
@@ -353,13 +358,13 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void remove(int userId, Integer id) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = (select {2} from {3} where {4} = ?)",
-														GroupIdea.TABLE_NAME,
-														GroupIdeaColumns.ID,
-														GROUPE_KDO_ID,
-														TABLE_NAME,
-														ID),
-								id);
+		int groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?", id);
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
+														GroupIdea.TABLE_NAME_CONTENT,
+														GroupIdeaContentColumns.GROUP_ID),
+								groupId);
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
+								groupId);
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ? ", TABLE_NAME, OWNER, ID), userId, id);
 	}
 
