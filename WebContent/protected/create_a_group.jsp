@@ -13,11 +13,11 @@
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 						<tr>
 							<td><label for="total">Montant minimum (environ) pour ce cadeau, en incluant ta participation</label></td>
-							<td><input id="total" name="total" type="text" required="required" /></td>
+							<td><input id="total" name="total" type="text" value="${total}" required="required" /></td>
 						</tr>
 						<tr>
 							<td><label for="amount">Ta participation</label></td>
-							<td><input id="amount" name="amount" type="text" required="required" /></td>
+							<td><input id="amount" name="amount" type="text" value="${amount}" required="required" /></td>
 						</tr>
 						<tr>
 							<td colspan="2" align="center">

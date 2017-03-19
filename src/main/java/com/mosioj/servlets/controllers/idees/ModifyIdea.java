@@ -44,7 +44,6 @@ public class ModifyIdea extends AbstractIdea {
 		req.setAttribute("priorites", priorities.getPriorities());
 		req.setAttribute("idea", idea);
 
-		// FIXME : utiliser les sessions pour passer les paramètres entre post et get !
 		Object sessionErrors = req.getSession().getAttribute("errors");
 		if (sessionErrors != null) {
 			req.setAttribute("errors", sessionErrors);

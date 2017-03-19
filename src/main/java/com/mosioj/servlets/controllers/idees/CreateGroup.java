@@ -58,7 +58,8 @@ public class CreateGroup extends AbstractIdea {
 		valTot.checkIfInteger();
 		valTot.checkIntegerGreaterThan(-1);
 
-		ParameterValidator valAmount = ValidatorFactory.getFemValidator(ParametersUtils.readIt(request, "amount"), "participation");
+		String amountString = ParametersUtils.readIt(request, "amount");
+		ParameterValidator valAmount = ValidatorFactory.getFemValidator(amountString, "participation");
 		valAmount.checkEmpty();
 		valAmount.checkIfInteger();
 
@@ -71,6 +72,8 @@ public class CreateGroup extends AbstractIdea {
 		if (!errors.isEmpty()) {
 			request.setAttribute("errors", errors);
 			request.setAttribute("idea", idea);
+			request.setAttribute("total", total);
+			request.setAttribute("amount", amountString);
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 			return;
 		}

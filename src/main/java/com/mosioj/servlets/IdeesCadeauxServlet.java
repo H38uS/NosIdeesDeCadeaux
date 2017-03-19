@@ -50,15 +50,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : ZCompléter le gdoc avec les modifications faites
 
 	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
-	// FIXME : ajouter la date de réservation et la date de création de groupe (ou dernière modification ?)
 	// TODO : notification quand un anniversaire approche
 	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
 
 	// TODO : pouvoir commenter une idée
 	// TODO : mettre la date dans les commentaires des messages
 	
-	// FIXME : champs perdu dans le formulaire de création de groupe
-
 	// TODO : pouvoir ajouter des idées à d'autres personnes
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
