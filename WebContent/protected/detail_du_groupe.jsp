@@ -64,5 +64,7 @@
 				</ul>
 			</c:if>
 		</div>
+		<h3>Suggérer ce groupe à quelqu'un</h3>
+		Il manque un peu... N'hésitez plus, <a href="protected/suggerer_groupe_idee?groupid=${group.id}">suggérer</a> ce groupe à d'autres personnes !
 	</jsp:body>
 </t:normal_proctected>

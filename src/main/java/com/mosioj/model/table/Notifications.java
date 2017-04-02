@@ -54,7 +54,7 @@ public class Notifications extends Table {
 		notif.sendEmail(""); // TODO récupérer l'email
 	}
 
-	public void remove(int userId, AbstractNotification notif) {
+	public void remove(int userId, AbstractNotification notif) { // FIXME : peut en supprimer plusieurs
 
 		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notif.getType(), userId));
 
@@ -107,5 +107,23 @@ public class Notifications extends Table {
 	 */
 	public int getUserNotificationCount(int userId) throws SQLException {
 		return getDb().selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, OWNER), userId);
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param notif
+	 * @return True if and only if the user has already receive this notification.
+	 * @throws SQLException
+	 */
+	public boolean hasNotification(int userId, AbstractNotification notif) throws SQLException {
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ? and {3} = ?",
+																TABLE_NAME,
+																TYPE,
+																OWNER,
+																TEXT),
+										notif.getType(),
+										userId,
+										notif.getText());
 	}
 }

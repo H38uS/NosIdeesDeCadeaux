@@ -170,6 +170,16 @@ public class Idees extends Table {
 	/**
 	 * 
 	 * @param groupId
+	 * @return The idea id of the idea booked by this group.
+	 * @throws SQLException
+	 */
+	public int getIdeaId(int groupId) throws SQLException {
+		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, GROUPE_KDO_ID), groupId);
+	}
+
+	/**
+	 * 
+	 * @param groupId
 	 * @return The owner of the idea booked by this group, or null if it does not exist.
 	 * @throws SQLException
 	 */
@@ -199,6 +209,59 @@ public class Idees extends Table {
 
 		return null;
 
+	}
+
+	/**
+	 * 
+	 * @param groupId
+	 * @param userId
+	 * @return The list of users that can contribute to this group. They must also belongs to the user relationship.
+	 * @throws SQLException 
+	 */
+	public List<User> getPotentialGroupUser(int groupId, int userId) throws SQLException {
+
+		List<User> users = new ArrayList<User>();
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format("from {0} ur ", UserRelations.TABLE_NAME));
+		query.append(MessageFormat.format(	"inner join {0} u on u.{1} = ur.{2} ",
+											Users.TABLE_NAME,
+											UsersColumns.ID,
+											UserRelationsColumns.SECOND_USER));
+		query.append(MessageFormat.format(	"inner join {0} g on g.{1} = ? ",
+											GroupIdea.TABLE_NAME_CONTENT,
+											GroupIdeaContentColumns.GROUP_ID));
+		query.append(MessageFormat.format("inner join {0} i on i.{1} = ? ", TABLE_NAME, GROUPE_KDO_ID));
+		query.append(MessageFormat.format("inner join {0} ur2 ", UserRelations.TABLE_NAME));
+		query.append(MessageFormat.format("on ur2.{0} = i.{1} ", UserRelationsColumns.FIRST_USER, OWNER));
+		query.append(MessageFormat.format(	" and ur2.{0} = ur.{1} ",
+											UserRelationsColumns.SECOND_USER,
+											UserRelationsColumns.SECOND_USER));
+		query.append(MessageFormat.format(	"where ur.{0} <> g.{1} ",
+											UserRelationsColumns.SECOND_USER,
+											GroupIdeaContentColumns.USER_ID));
+		query.append(MessageFormat.format("  and ur.{0} <> i.{1} ", UserRelationsColumns.SECOND_USER, OWNER));
+		query.append(MessageFormat.format("  and ur.{0} = ? ", UserRelationsColumns.FIRST_USER));
+
+		logger.trace(query);
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+
+		try {
+			ps.bindParameters(groupId, groupId, userId);
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				if (rs.next()) {
+					users.add(new User(	rs.getInt(UsersColumns.ID.name()),
+										rs.getString(UsersColumns.NAME.name()),
+										rs.getString(UsersColumns.EMAIL.name())));
+				}
+			}
+		} finally {
+			ps.close();
+		}
+
+		return users;
 	}
 
 	/**

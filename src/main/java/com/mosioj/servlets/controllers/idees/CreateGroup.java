@@ -81,12 +81,19 @@ public class CreateGroup extends AbstractIdea {
 		Integer amount = ParametersUtils.readInt(request, "amount");
 
 		int userId = ParametersUtils.getUserId(request);
+		Integer groupId = null;
 		if (idees.canBook(idea.getId(), userId)) {
-			int groupId = groupForIdea.createAGroup(total, amount, userId);
+			groupId = groupForIdea.createAGroup(total, amount, userId);
 			idees.bookByGroup(id, groupId);
 		}
 
-		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
+		if (groupId == null) {
+			RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
+			return;
+		}
 
+		RootingsUtils.redirectToPage(	SuggestGroupIdea.VIEW_URL + "?" + SuggestGroupIdea.GROUP_ID_PARAM + "=" + groupId,
+										request,
+										response);
 	}
 }

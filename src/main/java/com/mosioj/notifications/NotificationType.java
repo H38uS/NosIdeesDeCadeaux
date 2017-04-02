@@ -8,5 +8,5 @@ package com.mosioj.notifications;
  */
 public enum NotificationType {
 
-	NO_IDEA, BOOKED_REMOVE;
+	NO_IDEA, BOOKED_REMOVE, GROUP_IDEA_SUGGESTION;
 }
