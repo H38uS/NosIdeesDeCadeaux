@@ -30,7 +30,7 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		// FIXME voir quand utiliser le read and escape
+		// FIXME voir quand utiliser le read and escape : uniquement dans les insert/update ?
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		boolean onlyNonFriend = "on".equals(ParametersUtils.readAndEscape(request, "only_non-friend").trim());
 

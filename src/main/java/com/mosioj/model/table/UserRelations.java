@@ -39,7 +39,7 @@ public class UserRelations extends Table {
 		query.append("from {2} urr ");
 		query.append("left join {5} u1 on u1.id = urr.{0} ");
 		query.append("left join {5} u2 on u2.id = urr.{1} ");
-		query.append("where {3} = ? or {4} = ? ");
+		query.append("where {3} = ? ");
 
 		try {
 			ps = new PreparedStatementIdKdo(getDb(),
@@ -52,7 +52,7 @@ public class UserRelations extends Table {
 																	Users.TABLE_NAME,
 																	UsersColumns.NAME,
 																	UsersColumns.EMAIL));
-			ps.bindParameters(user, user);
+			ps.bindParameters(user);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
@@ -88,20 +88,15 @@ public class UserRelations extends Table {
 		StringBuilder query = new StringBuilder();
 		query.append("select b.{0}, b.{1}, b.{2}, b.{3}, b.days_before_next_year_birthday, b.days_before_birthday ");
 		query.append("from ( ");
-		
+
 		query.append("select a.{0}, a.{1}, a.{2}, a.{3}, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()) +1, ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_next_year_birthday, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()), ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_birthday ");
 		query.append("from ( ");
-		query.append("select u.{0}, u.{1}, u.{2}, u.{3}  ");
-		query.append("from {4} urr ");
-		query.append("left join {5} u on u.{0} = urr.{6} ");
-		query.append("where {7} = ? ");
-		query.append("union ");
 		query.append("select u.{0}, u.{1}, u.{2}, u.{3} ");
 		query.append("from {4} urr ");
 		query.append("left join {5} u on u.{0} = urr.{7} ");
 		query.append("where {6} = ? ");
 		query.append(") a ");
-		
+
 		query.append(") b ");
 		query.append("where (b.days_before_birthday >= 0 and b.days_before_birthday < ?) or b.days_before_next_year_birthday < ? ");
 		query.append("order by b.days_before_next_year_birthday ");
@@ -118,7 +113,7 @@ public class UserRelations extends Table {
 													SECOND_USER);
 			logger.trace(realQuery);
 			ps = new PreparedStatementIdKdo(getDb(), realQuery);
-			ps.bindParameters(userId, userId, inNbDaysMax, inNbDaysMax);
+			ps.bindParameters(userId, inNbDaysMax, inNbDaysMax);
 
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
@@ -148,16 +143,12 @@ public class UserRelations extends Table {
 	 * @throws SQLException
 	 */
 	public boolean associationExists(int first, int second) throws SQLException {
-		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where ({1} = ? and {2} = ? ) or ({3} = ? and {4} = ?)",
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
 																TABLE_NAME,
-																FIRST_USER,
-																SECOND_USER,
 																FIRST_USER,
 																SECOND_USER),
 										first,
-										second,
-										second,
-										first);
+										second);
 	}
 
 	/**
@@ -175,6 +166,13 @@ public class UserRelations extends Table {
 														RELATION_DATE),
 								userThatSendTheRequest,
 								userThatReceiveTheRequest);
+		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
+														TABLE_NAME,
+														FIRST_USER,
+														SECOND_USER,
+														RELATION_DATE),
+								userThatReceiveTheRequest,
+								userThatSendTheRequest);
 	}
 
 	public List<User> getAllUsersInRelation(int userId) throws SQLException {
@@ -185,7 +183,7 @@ public class UserRelations extends Table {
 		StringBuilder query = new StringBuilder();
 		query.append("select u.{0}, u.{1}, u.{2} ");
 		query.append("from {3} u, {4} r ");
-		query.append("where (u.{0} = r.{5} and r.{6} = ?) or (u.{0} = r.{6} and r.{5} = ?) ");
+		query.append("where u.{0} = r.{6} and r.{5} = ? ");
 		query.append("order by {1}, {2}, {0}");
 
 		try {
@@ -198,7 +196,7 @@ public class UserRelations extends Table {
 																	TABLE_NAME,
 																	FIRST_USER,
 																	SECOND_USER));
-			ps.bindParameters(userId, userId);
+			ps.bindParameters(userId);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {

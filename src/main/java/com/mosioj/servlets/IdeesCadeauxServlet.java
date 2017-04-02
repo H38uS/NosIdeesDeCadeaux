@@ -38,7 +38,10 @@ import com.mosioj.utils.database.DataSourceIdKDo;
 public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
+	
 	// TODO : faire une notification "oui c'est à jour" / "non je regarde" quand on demande si c'est à jour
+	// TODO : puis si on répond oui, mettre à jour la date
+	
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
@@ -46,14 +49,22 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : ZCompléter le gdoc avec les modifications faites
 
-	// FIXME : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
+	
+	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
-	// FIXME : quand on crée un groupe sur un cadeau, faire une option suggérer à
 
 	// TODO : pouvoir commenter une idée
 	// TODO : mettre la date dans les commentaires des messages
 	
 	// TODO : pouvoir ajouter des idées à d'autres personnes
+	// TODO : controle parental
+	// TODO : auto logout en javascript
+	
+	// TODO : catcher quand la session a expiré, pour faire une joli page
+	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
+	
+	// TODO : pouvoir suggérer des relations à quelqu'un 
+	// TODO : quand on accepte une relation, pouvoir lui en suggérer d'autres 
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
