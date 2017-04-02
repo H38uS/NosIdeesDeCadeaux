@@ -41,17 +41,21 @@ public class UserRelations extends Table {
 		query.append("left join {5} u2 on u2.id = urr.{1} ");
 		query.append("where {3} = ? ");
 
+		String formatedQuery = MessageFormat.format(	query.toString(),
+		                                            	FIRST_USER.name(),
+		                                            	SECOND_USER.name(),
+		                                            	TABLE_NAME,
+		                                            	FIRST_USER,
+		                                            	SECOND_USER,
+		                                            	Users.TABLE_NAME,
+		                                            	UsersColumns.NAME,
+		                                            	UsersColumns.EMAIL);
+		logger.debug(formatedQuery);
+
 		try {
+
 			ps = new PreparedStatementIdKdo(getDb(),
-											MessageFormat.format(	query.toString(),
-																	FIRST_USER.name(),
-																	SECOND_USER.name(),
-																	TABLE_NAME,
-																	FIRST_USER,
-																	SECOND_USER,
-																	Users.TABLE_NAME,
-																	UsersColumns.NAME,
-																	UsersColumns.EMAIL));
+											formatedQuery);
 			ps.bindParameters(user);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();

@@ -42,6 +42,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		int userId = ParametersUtils.getUserId(req);
 		req.setAttribute("demandes", userRelationRequests.getRequests(userId));
 		req.setAttribute("relations", userRelations.getRelations(user));
+		req.setAttribute("name", users.getUser(user).name);
 
 		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
 	}

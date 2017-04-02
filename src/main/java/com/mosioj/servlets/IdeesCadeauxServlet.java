@@ -49,7 +49,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : ZCompléter le gdoc avec les modifications faites
 
-	
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
@@ -63,6 +62,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : catcher quand la session a expiré, pour faire une joli page
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 	
+	// FIXME : cross site scripting attack
 	// TODO : pouvoir suggérer des relations à quelqu'un 
 	// TODO : quand on accepte une relation, pouvoir lui en suggérer d'autres 
 

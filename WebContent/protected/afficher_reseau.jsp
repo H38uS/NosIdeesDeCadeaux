@@ -31,7 +31,7 @@
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</c:if>
-		<h2>Mon réseau</h2>
+		<h2>Réseau de ${name}</h2>
 		<c:choose>
 			<c:when test="${empty relations}">
 				Vous n'avez aucune relation pour le moment. <a href="./protected/rechercher_personne.jsp" >Rechercher</a> des personnes à ajouter !
@@ -46,15 +46,7 @@
 					<c:forEach var="relation" items="${relations}">
 						<tr>
 							<td>
-								<c:choose>
-									<c:when test="${relation.first.id == userid}">
-										<c:out value="${relation.second.name}" />
-									</c:when>
-									<c:otherwise>
-										<c:out value="${relation.first.name}" />
-									</c:otherwise>
-								</c:choose>
-							</td>
+								<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a></td>
 						</tr>
 					</c:forEach>
 				</table>
