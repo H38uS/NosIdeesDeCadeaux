@@ -40,19 +40,32 @@ public class GroupIdea extends Table {
 		try {
 			getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}) values (?)", TABLE_NAME, NEEDED_PRICE), total);
 			int id = getDb().selectInt("select max(" + ID + ") from " + TABLE_NAME);
-			getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
-															TABLE_NAME_CONTENT,
-															GROUP_ID,
-															USER_ID,
-															PRICE,
-															JOIN_DATE),
-									id,
-									userId,
-									amount);
+			addNewAmount(amount, userId, id);
 			return id;
 		} finally {
 			MUTEX.lock();
 		}
+	}
+
+	/**
+	 * Adds a new participation.
+	 * 
+	 * @param amount
+	 * @param userId
+	 * @param groupId
+	 * @return
+	 * @throws SQLException
+	 */
+	private int addNewAmount(int amount, int userId, int groupId) throws SQLException {
+		return getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
+														TABLE_NAME_CONTENT,
+														GROUP_ID,
+														USER_ID,
+														PRICE,
+														JOIN_DATE),
+								groupId,
+								userId,
+								amount);
 	}
 
 	/**
@@ -120,6 +133,10 @@ public class GroupIdea extends Table {
 	 * @throws SQLException
 	 */
 	public void updateAmount(Integer groupId, int userId, int newAmount) throws SQLException {
+		try {
+			addNewAmount(newAmount, userId, groupId);
+		} catch (SQLException e) {
+		}
 		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? and {3} = ?",
 														TABLE_NAME_CONTENT,
 														PRICE,
@@ -151,6 +168,22 @@ public class GroupIdea extends Table {
 															IdeeColumns.RESERVE_LE),
 									groupId);
 		}
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param groupId
+	 * @return True if and only if this user belongs to this group.
+	 * @throws SQLException
+	 */
+	public boolean belongsToGroup(int userId, int groupId) throws SQLException {
+		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
+																TABLE_NAME_CONTENT,
+																USER_ID,
+																GROUP_ID),
+										userId,
+										groupId);
 	}
 
 }

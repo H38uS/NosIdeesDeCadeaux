@@ -40,17 +40,18 @@ public class GroupIdeaDetails extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(req, GROUP_ID_PARAM);
+		int groupId = ParametersUtils.readInt(req, GROUP_ID_PARAM);
 
-		logger.debug("Getting details for idea group " + id + "...");
-		IdeaGroup group = groupForIdea.getGroupDetails(id);
+		logger.debug("Getting details for idea group " + groupId + "...");
+		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
 
 		Object sessionErrors = req.getSession().getAttribute("errors");
 		if (sessionErrors != null) {
 			req.setAttribute("errors", sessionErrors);
 			req.getSession().removeAttribute("errors");
 		}
-
+		
+		req.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(req), groupId));
 		req.setAttribute("group", group);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 
@@ -81,7 +82,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 			// Modification de la participation
 			groupForIdea.updateAmount(groupId, userId, Integer.parseInt(amount));
 		}
-
+		
 		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);
 	}
 

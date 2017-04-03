@@ -49,6 +49,18 @@
 						</table>
 					</c:otherwise>
 				</c:choose>
+				<c:if test="${not is_in_group}">
+					<div>
+						Vous ne participez pas encore à ce groupe !
+						Ajouter un montant : 
+						<form method="POST" action="protected/detail_du_groupe">
+							<input name="amount" value="${share.amount}" />
+							<input type="hidden" name="groupid" value="${group.id}" />
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<input type="submit" name="submit" id="submit" value="Participer !" />
+						</form>
+					</div>
+				</c:if>
 			</c:if>
 			<c:if test="${empty group}">
 				Le groupe n'existe pas ou vous ne pouvez pas intéragir avec.
