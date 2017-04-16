@@ -43,6 +43,7 @@
 								<th>Type</th>
 								<th>Idée</th>
 								<th>Réservation</th>
+								<th>Action</th>
 							</tr>
 						</thead>
 						<c:forEach var="idee" items="${user.ideas}">
@@ -72,6 +73,9 @@
 										L'idée n'a pas encore été réservée. <a href="protected/reserver?idee=${idee.id}">Je veux la réserver</a>
 										ou <a href="protected/create_a_group?&idee=${idee.id}">Créer un groupe</a>
 									</c:if>
+								</td>
+								<td>
+									<a href="protected/est_a_jour?&idee=${idee.id}">Demander</a>  si c'est à jour.
 								</td>
 							</tr>
 						</c:forEach>

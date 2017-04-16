@@ -5,11 +5,18 @@ import static com.mosioj.model.table.columns.NotificationsColumns.OWNER;
 import static com.mosioj.model.table.columns.NotificationsColumns.TEXT;
 import static com.mosioj.model.table.columns.NotificationsColumns.TYPE;
 
+import static com.mosioj.model.table.columns.NotificationParametersColumns.NOTIFICATION_ID;
+import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_NAME;
+import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_VALUE;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +28,11 @@ import com.mosioj.utils.database.PreparedStatementIdKdo;
 public class Notifications extends Table {
 
 	public static final String TABLE_NAME = "NOTIFICATIONS";
+	public static final String TABLE_PARAMS = "NOTIFICATION_PARAMETERS";
+
 	private final Logger logger = LogManager.getLogger(Notifications.class);
+
+	private final static Lock MUTEX = new ReentrantLock(true);
 
 	/**
 	 * Save and send a notification.
@@ -33,14 +44,19 @@ public class Notifications extends Table {
 	public void addNotification(int userId, AbstractNotification notif) {
 
 		logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
+		int id = -1;
 
 		// Insertion en base
 		// TODO récupérer si on doit le faire
+		MUTEX.lock();
 		PreparedStatementIdKdo ps = null;
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), "insert into notifications (owner, text, type) values (?, ?, ?)");
 			ps.bindParameters(userId, notif.getText(), notif.getType());
 			ps.execute();
+
+			id = getDb().selectInt("select max(" + ID + ") from " + TABLE_NAME + " where " + OWNER + " = ?", userId);
+
 		} catch (SQLException e) {
 			logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
 		} finally {
@@ -49,17 +65,50 @@ public class Notifications extends Table {
 			}
 		}
 
+		if (id > 0) {
+			Map<String, String> notifParams = notif.getParameters();
+			for (String key : notifParams.keySet()) {
+				try {
+					ps = new PreparedStatementIdKdo(getDb(),
+													MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, ?)",
+																			TABLE_PARAMS,
+																			NOTIFICATION_ID,
+																			PARAMETER_NAME,
+																			PARAMETER_VALUE));
+					ps.bindParameters(id, key, notifParams.get(key));
+					ps.execute();
+
+				} catch (SQLException e) {
+					logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
+				} finally {
+					if (ps != null) {
+						ps.close();
+					}
+				}
+			}
+		}
+		MUTEX.unlock();
+
 		// Envoie de la notification par email si besoin
 		// TODO récupérer si on doit le faire
 		notif.sendEmail(""); // TODO récupérer l'email
 	}
 
-	public void remove(int userId, AbstractNotification notif) { // FIXME : peut en supprimer plusieurs
+	/**
+	 * 
+	 * @param userId
+	 * @param notif
+	 */
+	public void removeAllType(int userId, AbstractNotification notif) {
 
 		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notif.getType(), userId));
 
 		try {
 			getDb().executeUpdate("delete from NOTIFICATIONS where owner = ? and type = ?", userId, notif.getType());
+			getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
+														NOTIFICATION_ID,
+														ID,
+														TABLE_NAME));
 		} catch (SQLException e) {
 			logger.error("Error while deleting " + notif.getClass() + " : " + e.getMessage());
 		}
@@ -117,13 +166,35 @@ public class Notifications extends Table {
 	 * @throws SQLException
 	 */
 	public boolean hasNotification(int userId, AbstractNotification notif) throws SQLException {
-		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ? and {3} = ?",
-																TABLE_NAME,
-																TYPE,
-																OWNER,
-																TEXT),
-										notif.getType(),
-										userId,
-										notif.getText());
+
+		Map<String, String> parameters = notif.getParameters();
+
+		StringBuilder query = new StringBuilder();
+		query.append("select 1 ");
+		query.append(MessageFormat.format("from {0} n ", TABLE_NAME));
+
+
+		Object[] queryParameters = new Object[parameters.keySet().size() * 2 + 2];
+		int i = 0;
+		
+		for (String key : parameters.keySet()) {
+			query.append(MessageFormat.format("inner join {0} p{1} ", TABLE_PARAMS, i));
+			query.append(MessageFormat.format("on n.{0} = p{2}.{1} ", ID, NOTIFICATION_ID, i));
+			query.append(MessageFormat.format("and p{0}.{1} = ? ", i, PARAMETER_NAME));
+			query.append(MessageFormat.format("and p{0}.{1} = ? ", i, PARAMETER_VALUE));
+
+			queryParameters[i++] = key;
+			queryParameters[i++] = parameters.get(key);
+		}
+
+		query.append(MessageFormat.format("where n.{0} = ? ", TYPE));
+		query.append(MessageFormat.format("  and n.{0} = ? ", OWNER));
+		
+		queryParameters[i++] = notif.getType();
+		queryParameters[i++] = userId;
+
+		logger.trace(query);
+
+		return getDb().doesReturnRows(query.toString(), queryParameters);
 	}
 }

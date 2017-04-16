@@ -72,6 +72,21 @@ public class Idee {
 
 	/**
 	 * 
+	 * @param maxLength
+	 * @return The idea text, with a maximum of maxLength caracters.
+	 */
+	public String getText(int maxLength) {
+
+		String initial = getText();
+		if (initial.length() > maxLength) {
+			return initial.substring(0, maxLength - 3) + "...";
+		}
+		
+		return initial;
+	}
+
+	/**
+	 * 
 	 * @return The idea text stored in DB, that will be presented to the browser.
 	 */
 	public String getHtml() {

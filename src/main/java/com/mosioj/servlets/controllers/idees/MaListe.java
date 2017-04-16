@@ -76,7 +76,7 @@ public class MaListe extends AbstractIdea {
 								parameters.get("type"),
 								Integer.parseInt(parameters.get("priority")),
 								parameters.get("image"));
-				notif.remove(userId, new NotifNoIdea());
+				notif.removeAllType(userId, new NotifNoIdea());
 			}
 
 		}

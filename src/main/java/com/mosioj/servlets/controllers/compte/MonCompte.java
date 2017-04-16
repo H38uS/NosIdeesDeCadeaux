@@ -49,13 +49,13 @@ public class MonCompte extends DefaultCompte {
 		String info = ParametersUtils.readIt(request, "modif_info_gen");
 		if ("true".equals(info)) {
 			String email = ParametersUtils.readIt(request, "email").trim();
-			String name = ParametersUtils.readIt(request, "name").trim();
+			String name = ParametersUtils.readAndEscape(request, "name").trim();
 
 			int userId = ParametersUtils.getUserId(request);
 			List<String> errors = checkEmail(getValidatorEmail(email), userId);
 			request.setAttribute("errors_info_gen", errors);
 
-			String birthday = ParametersUtils.readIt(request, "birthday");
+			String birthday = ParametersUtils.readAndEscape(request, "birthday");
 			logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
 			ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
 			val.checkDateFormat();

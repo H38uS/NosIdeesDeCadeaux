@@ -2,6 +2,8 @@ package com.mosioj.notifications.instance;
 
 import java.text.MessageFormat;
 
+import com.mosioj.model.Idee;
+import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
 
@@ -11,12 +13,14 @@ public class NotifGroupSuggestion extends AbstractNotification {
 	private final int groupId;
 	private final String idea;
 
-	public NotifGroupSuggestion(String userName, int groupId, String idea) {
+	public NotifGroupSuggestion(User user, int groupId, Idee idea) {
 		super(NotificationType.GROUP_IDEA_SUGGESTION);
-		this.userName = userName;
+		this.userName = user.name;
 		this.groupId = groupId;
 		int size = 50;
-		this.idea = idea.length() > size ? idea.substring(0, size - 3) + "..." : idea;
+		this.idea = idea.getText(size);
+		params.put("USER_ID", user.id + "");
+		params.put("IDEA_ID", idea.getId() + "");
 	}
 
 	@Override

@@ -48,10 +48,13 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
 		Idee idea = idees.getIdea(idees.getIdeaId(groupId));
 
-		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, ParametersUtils.getUserId(req));
+		int userId = ParametersUtils.getUserId(req);
+		User thisOne = users.getUser(userId);
+		
+		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, userId);
 		List<User> removable = new ArrayList<User>();
 		for (User toRemove : potentialGroupUser) {
-			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(ParametersUtils.getUserName(req), groupId, idea.getText());
+			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, groupId, idea);
 			if (notif.hasNotification(toRemove.id, suggestion)) {
 				removable.add(toRemove);
 			}
@@ -90,12 +93,13 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 			}
 		}
 
+		User thisOne = users.getUser(ParametersUtils.getUserId(request));
 		List<User> successTo = new ArrayList<User>();
 
 		logger.debug("Selected users : " + selectedUsers);
 		for (int userId : selectedUsers) {
 			User user = users.getUser(userId);
-			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(ParametersUtils.getUserName(request), groupId, idea.getText());
+			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, groupId, idea);
 			if (!notif.hasNotification(userId, suggestion)) {
 				notif.addNotification(userId, suggestion);
 			}
