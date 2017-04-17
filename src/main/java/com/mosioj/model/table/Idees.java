@@ -452,6 +452,7 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void modifier(int id, String text, String type, String priority, String image) throws SQLException {
+		text = Escaper.textToHtml(text);
 		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
 														TABLE_NAME,
 														IDEE,

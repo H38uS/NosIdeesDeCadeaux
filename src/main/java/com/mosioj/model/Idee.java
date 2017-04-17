@@ -8,7 +8,7 @@ import com.mosioj.servlets.IdeesCadeauxServlet;
 public class Idee {
 
 	private final int id;
-	private final String text;
+	public String text;
 	private final String type;
 	private final Categorie cat;
 	private final User bookingOwner;
@@ -75,7 +75,7 @@ public class Idee {
 	 * @param maxLength
 	 * @return The idea text, with a maximum of maxLength caracters.
 	 */
-	public String getText(int maxLength) {
+	public String getTextSummary(int maxLength) {
 
 		String initial = getText();
 		if (initial.length() > maxLength) {

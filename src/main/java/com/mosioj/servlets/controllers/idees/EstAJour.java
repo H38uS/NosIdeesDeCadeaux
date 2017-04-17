@@ -39,7 +39,7 @@ public class EstAJour extends AbstractIdea {
 			RootingsUtils.rootToPage(ERROR_PAGE_URL, req, resp);
 		} else {
 			notif.addNotification(idea.owner.id, isUpToDateNotif);
-			req.setAttribute("text", idea.getText(50));
+			req.setAttribute("text", idea.getTextSummary(50));
 			req.setAttribute("user", idea.owner.name);
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 		}

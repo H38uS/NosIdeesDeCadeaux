@@ -18,7 +18,7 @@ public class NotifGroupSuggestion extends AbstractNotification {
 		this.userName = user.name;
 		this.groupId = groupId;
 		int size = 50;
-		this.idea = idea.getText(size);
+		this.idea = idea.getTextSummary(size);
 		params.put("USER_ID", user.id + "");
 		params.put("IDEA_ID", idea.getId() + "");
 	}

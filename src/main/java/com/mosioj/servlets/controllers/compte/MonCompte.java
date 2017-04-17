@@ -48,7 +48,7 @@ public class MonCompte extends DefaultCompte {
 
 		String info = ParametersUtils.readIt(request, "modif_info_gen");
 		if ("true".equals(info)) {
-			String email = ParametersUtils.readIt(request, "email").trim();
+			String email = ParametersUtils.readAndEscape(request, "email").trim();
 			String name = ParametersUtils.readAndEscape(request, "name").trim();
 
 			int userId = ParametersUtils.getUserId(request);

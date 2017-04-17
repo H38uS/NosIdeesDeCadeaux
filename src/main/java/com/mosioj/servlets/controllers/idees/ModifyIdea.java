@@ -16,6 +16,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
+import com.mosioj.viewhelper.Escaper;
 
 @WebServlet("/protected/modifier_idee")
 public class ModifyIdea extends AbstractIdea {
@@ -40,6 +41,8 @@ public class ModifyIdea extends AbstractIdea {
 		Integer id = ParametersUtils.readInt(req, IDEE_ID_PARAM);
 
 		Idee idea = idees.getIdea(id);
+		idea.text = Escaper.htmlToText(idea.text);
+		
 		req.setAttribute("types", categories.getCategories());
 		req.setAttribute("priorites", priorities.getPriorities());
 		req.setAttribute("idea", idea);

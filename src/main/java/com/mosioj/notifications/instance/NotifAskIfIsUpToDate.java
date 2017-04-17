@@ -20,7 +20,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification {
 	public NotifAskIfIsUpToDate(User askedUser, Idee idea) {
 		super(NotificationType.IS_IDEA_UP_TO_DATE);
 		this.askedUser = askedUser;
-		this.ideaText = idea.getText(50);
+		this.ideaText = idea.getTextSummary(50);
 		params.put("USER_ID", askedUser.id + "");
 		params.put("IDEA_ID", idea.getId() + "");
 	}

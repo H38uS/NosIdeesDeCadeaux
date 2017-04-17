@@ -21,7 +21,7 @@ public class Escaper {
 	 * @return The text equivalent of this html string.
 	 */
 	public static String htmlToText(String html) {
-		return html.replaceAll("<br/>", "\n");
+		return html.replaceAll("<br/>", "\n").replaceAll("<a href=[^\\s]*>([^\\s]*)</a>", "$1");
 	}
 
 }

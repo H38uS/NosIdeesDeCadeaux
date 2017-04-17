@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -103,6 +104,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 					String fileName = fi.getName() == null ? "" : new String(fi.getName().getBytes("ISO-8859-1"), "UTF-8");
 					if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
+						fileName = StringEscapeUtils.escapeHtml4(fileName);
 						Random r = new Random();
 						int id = r.nextInt();
 						int maxSize = 30;
@@ -134,7 +136,8 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 						parameters.put("image", image);
 					}
 				} else {
-					parameters.put(fi.getFieldName(), fi.getString() == null ? "" : new String(fi.getString().getBytes("ISO-8859-1"), "UTF-8"));
+					String val = fi.getString() == null ? "" : new String(fi.getString().getBytes("ISO-8859-1"), "UTF-8");
+					parameters.put(fi.getFieldName(), StringEscapeUtils.escapeHtml4(val));
 				}
 			}
 		} catch (Exception e) {
