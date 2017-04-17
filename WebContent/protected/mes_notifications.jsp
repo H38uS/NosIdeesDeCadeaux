@@ -11,12 +11,16 @@
 					<tr>
 						<th>Type</th>
 						<th>Text</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<c:forEach var="notif" items="${notifications}">
 					<tr>
 						<td>${notif.type}</td>
 						<td>${notif.text}</td>
+						<td>
+							<a href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
+						</td>
 					</tr>
 				</c:forEach>
 			</table>

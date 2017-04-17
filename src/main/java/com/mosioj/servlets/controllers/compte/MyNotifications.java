@@ -18,7 +18,7 @@ import com.mosioj.utils.RootingsUtils;
 public class MyNotifications extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = -5988235378202921870L;
-	private static final String URL = "/protected/mes_notifications";
+	public static final String URL = "/protected/mes_notifications";
 	private static final String VIEW_URL = "/protected/mes_notifications.jsp";
 
 	public MyNotifications() {

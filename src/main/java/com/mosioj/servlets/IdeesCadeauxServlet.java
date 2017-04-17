@@ -63,8 +63,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : catcher quand la session a expiré, pour faire une joli page
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 	
-	// FIXME : pouvoir supprimer ses notifications
-	
 	// FIXME : pouvoir suggérer des relations à quelqu'un 
 	// FIXME : quand on accepte une relation, pouvoir lui en suggérer d'autres 
 
@@ -111,7 +109,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * The connections to the NOTIFICATION table.
 	 */
-	protected Notifications notif;
+	protected static Notifications notif = new Notifications();
 
 	/**
 	 * The connections to the GROUP_IDEA and GROUP_IDEA_CONTENT tables.
@@ -134,7 +132,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		users = new Users();
 		categories = new Categories();
 		priorities = new Priorites();
-		notif = new Notifications();
 		groupForIdea = new GroupIdea();
 		this.policy = policy;
 	}

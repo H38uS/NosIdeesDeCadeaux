@@ -112,7 +112,11 @@ public class Notifications extends Table {
 		} catch (SQLException e) {
 			logger.error("Error while deleting " + notif.getClass() + " : " + e.getMessage());
 		}
+	}
 
+	public void remove(int notificationId) throws SQLException {
+		logger.debug(MessageFormat.format("Suppression de la notification {0}", notificationId));
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, ID), notificationId);
 	}
 
 	/**
@@ -122,20 +126,32 @@ public class Notifications extends Table {
 	 * @throws SQLException
 	 */
 	public List<Notification> getUserNotifications(int userId) throws SQLException {
+		String query = MessageFormat.format("select {0}, {1}, {2}, {4} from {3} where {4} = ? ", ID, TEXT, TYPE, TABLE_NAME, OWNER);
+		return getNotificationFromQuery(query, userId);
+	}
 
-		List<Notification> notifications = new ArrayList<Notification>();
+	/**
+	 * Technical method.
+	 * 
+	 * @param query
+	 * @param userId
+	 * @param parameters
+	 * @return
+	 * @throws SQLException
+	 */
+	private List<Notification> getNotificationFromQuery(String query, Object... parameters) throws SQLException {
 
 		PreparedStatementIdKdo ps = null;
-		String query = MessageFormat.format("select {0}, {1}, {2} from {3} where {4} = ? ", ID, TEXT, TYPE, TABLE_NAME, OWNER);
+		List<Notification> notifications = new ArrayList<Notification>();
 
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), query);
-			ps.bindParameters(userId);
+			ps.bindParameters(parameters);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
 					notifications.add(new com.mosioj.model.Notification(res.getInt(ID.name()),
-																		userId,
+																		res.getInt(OWNER.name()),
 																		res.getString(TYPE.name()),
 																		res.getString(TEXT.name())));
 				}
@@ -173,10 +189,9 @@ public class Notifications extends Table {
 		query.append("select 1 ");
 		query.append(MessageFormat.format("from {0} n ", TABLE_NAME));
 
-
 		Object[] queryParameters = new Object[parameters.keySet().size() * 2 + 2];
 		int i = 0;
-		
+
 		for (String key : parameters.keySet()) {
 			query.append(MessageFormat.format("inner join {0} p{1} ", TABLE_PARAMS, i));
 			query.append(MessageFormat.format("on n.{0} = p{2}.{1} ", ID, NOTIFICATION_ID, i));
@@ -189,12 +204,24 @@ public class Notifications extends Table {
 
 		query.append(MessageFormat.format("where n.{0} = ? ", TYPE));
 		query.append(MessageFormat.format("  and n.{0} = ? ", OWNER));
-		
+
 		queryParameters[i++] = notif.getType();
 		queryParameters[i++] = userId;
 
 		logger.trace(query);
 
 		return getDb().doesReturnRows(query.toString(), queryParameters);
+	}
+
+	/**
+	 * 
+	 * @param notifId
+	 * @return The notification corresponding to this id.
+	 * @throws SQLException
+	 */
+	public Notification getNotification(int notifId) throws SQLException {
+		String query = MessageFormat.format("select {0}, {1}, {2}, {4} from {3} where {0} = ? ", ID, TEXT, TYPE, TABLE_NAME, OWNER);
+		List<Notification> notifs = getNotificationFromQuery(query, notifId);
+		return notifs.size() == 0 ? null : notifs.get(0);
 	}
 }
