@@ -2,6 +2,7 @@ package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +14,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.Notification;
+import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
+import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -42,7 +47,7 @@ public class ModifyIdea extends AbstractIdea {
 
 		Idee idea = idees.getIdea(id);
 		idea.text = Escaper.htmlToText(idea.text);
-		
+
 		req.setAttribute("types", categories.getCategories());
 		req.setAttribute("priorites", priorities.getPriorities());
 		req.setAttribute("idea", idea);
@@ -89,6 +94,16 @@ public class ModifyIdea extends AbstractIdea {
 				}
 
 				idees.modifier(ideaId, parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
+
+				List<Notification> notifications = notif.getNotification(ParameterName.IDEA_ID, ideaId);
+				for (Notification notification : notifications) {
+					if (NotificationType.IS_IDEA_UP_TO_DATE.name().equals(notification.getType())) {
+						notif.addNotification(	Integer.parseInt(notif.getParameterValue(notification.id, ParameterName.USER_ID)),
+												new NotifConfirmedUpToDate(	users.getUser(ParametersUtils.getUserId(request)),
+																			idees.getIdea(ideaId)));
+						notif.remove(notification.id);
+					}
+				}
 			}
 
 		}

@@ -6,6 +6,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.servlets.controllers.idees.ConfirmationEstAJour;
 import com.mosioj.servlets.controllers.idees.ModifyIdea;
 import com.mosioj.servlets.controllers.idees.RemoveOneIdea;
@@ -26,8 +27,8 @@ public class NotifAskIfIsUpToDate extends AbstractNotification {
 		this.askedUser = askedUser;
 		this.ideaText = idea.getTextSummary(50);
 		this.ideaId = idea.getId();
-		params.put("USER_ID", askedUser.id + "");
-		params.put("IDEA_ID", idea.getId() + "");
+		params.put(ParameterName.USER_ID, askedUser.id + "");
+		params.put(ParameterName.IDEA_ID, idea.getId() + "");
 	}
 
 	@Override

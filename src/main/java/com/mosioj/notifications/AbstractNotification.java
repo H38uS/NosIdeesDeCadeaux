@@ -10,7 +10,7 @@ public abstract class AbstractNotification {
 	 */
 	private final NotificationType type;
 
-	protected Map<String, String> params = new HashMap<String, String>();
+	protected Map<ParameterName, String> params = new HashMap<ParameterName, String>();
 
 	public AbstractNotification(NotificationType type) {
 		this.type = type;
@@ -41,7 +41,7 @@ public abstract class AbstractNotification {
 	 * 
 	 * @return The parameter list of this notification.
 	 */
-	public Map<String, String> getParameters() {
+	public Map<ParameterName, String> getParameters() {
 		return params;
 	}
 

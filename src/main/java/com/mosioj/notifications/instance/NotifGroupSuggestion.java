@@ -6,6 +6,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
 
 public class NotifGroupSuggestion extends AbstractNotification {
 
@@ -19,8 +20,8 @@ public class NotifGroupSuggestion extends AbstractNotification {
 		this.groupId = groupId;
 		int size = 50;
 		this.idea = idea.getTextSummary(size);
-		params.put("USER_ID", user.id + "");
-		params.put("IDEA_ID", idea.getId() + "");
+		params.put(ParameterName.USER_ID, user.id + "");
+		params.put(ParameterName.IDEA_ID, idea.getId() + "");
 	}
 
 	@Override

@@ -1,13 +1,12 @@
 package com.mosioj.model.table;
 
+import static com.mosioj.model.table.columns.NotificationParametersColumns.NOTIFICATION_ID;
+import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_NAME;
+import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_VALUE;
 import static com.mosioj.model.table.columns.NotificationsColumns.ID;
 import static com.mosioj.model.table.columns.NotificationsColumns.OWNER;
 import static com.mosioj.model.table.columns.NotificationsColumns.TEXT;
 import static com.mosioj.model.table.columns.NotificationsColumns.TYPE;
-
-import static com.mosioj.model.table.columns.NotificationParametersColumns.NOTIFICATION_ID;
-import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_NAME;
-import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_VALUE;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Notification;
 import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 public class Notifications extends Table {
@@ -51,7 +51,8 @@ public class Notifications extends Table {
 		MUTEX.lock();
 		PreparedStatementIdKdo ps = null;
 		try {
-			ps = new PreparedStatementIdKdo(getDb(), "insert into notifications (owner, text, type) values (?, ?, ?)");
+			ps = new PreparedStatementIdKdo(getDb(),
+											"insert into notifications (owner, text, type, creation_date) values (?, ?, ?, now())");
 			ps.bindParameters(userId, notif.getText(), notif.getType());
 			ps.execute();
 
@@ -66,8 +67,8 @@ public class Notifications extends Table {
 		}
 
 		if (id > 0) {
-			Map<String, String> notifParams = notif.getParameters();
-			for (String key : notifParams.keySet()) {
+			Map<ParameterName, String> notifParams = notif.getParameters();
+			for (ParameterName key : notifParams.keySet()) {
 				try {
 					ps = new PreparedStatementIdKdo(getDb(),
 													MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, ?)",
@@ -176,6 +177,45 @@ public class Notifications extends Table {
 
 	/**
 	 * 
+	 * @param notificationId
+	 * @param parameterName
+	 * @return The parameter value.
+	 * @throws SQLException
+	 */
+	public String getParameterValue(int notificationId, ParameterName parameterName) throws SQLException {
+		// FIXME : 5 n'aura plus de sens quand on aura fusionné notificatio et abstractNotif
+		return getDb().selectString(MessageFormat.format(	"select {0} from {1} where {2} = ? and {3} = ? ",
+															PARAMETER_VALUE,
+															TABLE_PARAMS,
+															NOTIFICATION_ID,
+															PARAMETER_NAME),
+									notificationId,
+									parameterName);
+	}
+
+	/**
+	 * 
+	 * @param parameterName
+	 * @param parameterValue
+	 * @return The list of notification having the given parameter name equals to this value.
+	 * @throws SQLException
+	 */
+	public List<Notification> getNotification(ParameterName parameterName, Object parameterValue) throws SQLException {
+		String query = MessageFormat.format("select {0}, {1}, {2}, {4} from {3} inner join {5} on {0} = {6} where {7} = ? and {8} = ? ",
+											ID,
+											TEXT,
+											TYPE,
+											TABLE_NAME,
+											OWNER,
+											TABLE_PARAMS,
+											NOTIFICATION_ID,
+											PARAMETER_NAME,
+											PARAMETER_VALUE);
+		return getNotificationFromQuery(query, parameterName, parameterValue);
+	}
+
+	/**
+	 * 
 	 * @param userId
 	 * @param notif
 	 * @return True if and only if the user has already receive this notification.
@@ -183,7 +223,7 @@ public class Notifications extends Table {
 	 */
 	public boolean hasNotification(int userId, AbstractNotification notif) throws SQLException {
 
-		Map<String, String> parameters = notif.getParameters();
+		Map<ParameterName, String> parameters = notif.getParameters();
 
 		StringBuilder query = new StringBuilder();
 		query.append("select 1 ");
@@ -192,7 +232,7 @@ public class Notifications extends Table {
 		Object[] queryParameters = new Object[parameters.keySet().size() * 2 + 2];
 		int i = 0;
 
-		for (String key : parameters.keySet()) {
+		for (ParameterName key : parameters.keySet()) {
 			query.append(MessageFormat.format("inner join {0} p{1} ", TABLE_PARAMS, i));
 			query.append(MessageFormat.format("on n.{0} = p{2}.{1} ", ID, NOTIFICATION_ID, i));
 			query.append(MessageFormat.format("and p{0}.{1} = ? ", i, PARAMETER_NAME));
