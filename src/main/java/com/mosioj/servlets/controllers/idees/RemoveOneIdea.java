@@ -20,7 +20,7 @@ import com.mosioj.utils.RootingsUtils;
 @WebServlet("/protected/remove_an_idea")
 public class RemoveOneIdea extends AbstractIdea {
 
-	private static final String IDEE_ID_PARAM = "ideeId";
+	public static final String IDEE_ID_PARAM = "ideeId";
 
 	public RemoveOneIdea() {
 		super(new IdeaModification(idees, IDEE_ID_PARAM));
@@ -30,6 +30,15 @@ public class RemoveOneIdea extends AbstractIdea {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		removeIt(request, response);
+	}
+
+	@Override
+	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+		removeIt(req, resp);
+	}
+
+	private void removeIt(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException {
 
 		// Reading parameters
 		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
@@ -59,11 +68,12 @@ public class RemoveOneIdea extends AbstractIdea {
 			notif.addNotification(userId, new NotifNoIdea());
 		}
 
-		RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, request, response);
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-		RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, req, resp);
+		// FIXME : 3 le mettre dans RootingUtils
+		String rootTo = MaListe.PROTECTED_MA_LISTE;
+		String caller = request.getHeader("Referer");
+		if (caller != null && caller.contains("NosIdeesDeCadeaux")) {
+			rootTo = caller.substring(caller.indexOf("NosIdeesDeCadeaux") + "NosIdeesDeCadeaux".length());
+		}
+		RootingsUtils.redirectToPage(rootTo, request, response);
 	}
 }

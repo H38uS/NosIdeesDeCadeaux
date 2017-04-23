@@ -39,9 +39,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 	
-	// FIXME : puis si on répond oui, mettre à jour la date - Et envoyer une notification en retour
-	// FIXME : quand on modifie/supprime une idée, supprimer les notifications qui ont demandé des infos dessus
-	// FIXME : supprimer les notifications participation au groupe quand on y participe
+	// FIXME : 1 puis si on répond oui, mettre à jour la date - Et envoyer une notification en retour
+	// FIXME : 0 quand on modifie/supprime une idée, supprimer les notifications qui ont demandé des infos dessus
+	// FIXME : 2 supprimer les notifications participation au groupe quand on y participe
 	
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations

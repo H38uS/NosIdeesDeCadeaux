@@ -24,7 +24,7 @@ public class ModifyIdea extends AbstractIdea {
 	private static final Logger logger = LogManager.getLogger(ModifyIdea.class);
 	private static final long serialVersionUID = -1774633803227715931L;
 
-	private static final String IDEE_ID_PARAM = "id";
+	public static final String IDEE_ID_PARAM = "id";
 	public static final String VIEW_PAGE_URL = "/protected/modify_idea.jsp";
 	public static final String PROTECTED_MODIFIER_IDEE = "/protected/modifier_idee";
 

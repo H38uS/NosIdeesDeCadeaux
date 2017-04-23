@@ -216,7 +216,7 @@ public class Idees extends Table {
 	 * @param groupId
 	 * @param userId
 	 * @return The list of users that can contribute to this group. They must also belongs to the user relationship.
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public List<User> getPotentialGroupUser(int groupId, int userId) throws SQLException {
 
@@ -439,6 +439,16 @@ public class Idees extends Table {
 	 */
 	public boolean hasIdeas(int userId) throws SQLException {
 		return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? limit 1", TABLE_NAME, OWNER), userId);
+	}
+
+	/**
+	 * Touch the idea to say it is up to date.
+	 * 
+	 * @param ideaId
+	 * @throws SQLException
+	 */
+	public void touch(int ideaId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = now() where {2} = ?", TABLE_NAME, MODIFICATION_DATE, ID), ideaId);
 	}
 
 	/**
