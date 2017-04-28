@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,8 +12,11 @@ import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.Idee;
 import com.mosioj.model.Share;
 import com.mosioj.model.User;
+import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -48,17 +52,26 @@ public class RemoveOneIdea extends AbstractIdea {
 			User owner = idea.owner;
 			User booker = idea.getBookingOwner();
 			if (booker != null) {
-				notif.addNotification(booker.id, new NotifBookedRemove(idea.getText(), owner.getName()));
+				notif.addNotification(booker.id, new NotifBookedRemove(idea, owner.getName()));
 			} else {
 				// Il s'agit d'un groupe
 				IdeaGroup group = groupForIdea.getGroupDetails(idea.getGroupKDO());
 				for (Share share : group.getShares()) {
 					User groupUser = share.getUser();
-					notif.addNotification(groupUser.id, new NotifBookedRemove(idea.getText(), owner.getName()));
+					notif.addNotification(groupUser.id, new NotifBookedRemove(idea, owner.getName()));
 				}
 			}
 			String image = idea.getImage();
 			removeUploadedImage(image);
+		}
+
+		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
+		for (AbstractNotification notification : notifications) {
+			if (notification instanceof NotifUserIdParam) {
+				NotifUserIdParam notifUserId = (NotifUserIdParam) notification;
+				notif.addNotification(notifUserId.getUserIdParam(), new NotifBookedRemove(idea, ParametersUtils.getUserName(request)));
+			}
+			notif.remove(notification.id);
 		}
 
 		int userId = ParametersUtils.getUserId(request);
@@ -68,7 +81,7 @@ public class RemoveOneIdea extends AbstractIdea {
 			notif.addNotification(userId, new NotifNoIdea());
 		}
 
-		// FIXME : 3 le mettre dans RootingUtils
+		// FIXME : 3 le mettre dans RootingUtils ou dans la servlet de base ?
 		String rootTo = MaListe.PROTECTED_MA_LISTE;
 		String caller = request.getHeader("Referer");
 		if (caller != null && caller.contains("NosIdeesDeCadeaux")) {

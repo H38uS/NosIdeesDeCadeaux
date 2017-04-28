@@ -130,21 +130,24 @@ public class GroupIdea extends Table {
 	 * @param groupId
 	 * @param userId
 	 * @param newAmount
+	 * @return True if and only if the user is a new participant.
 	 * @throws SQLException
 	 */
-	public void updateAmount(Integer groupId, int userId, int newAmount) throws SQLException {
+	public boolean updateAmount(Integer groupId, int userId, int newAmount) throws SQLException {
 		try {
 			addNewAmount(newAmount, userId, groupId);
+			return true;
 		} catch (SQLException e) {
+			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? and {3} = ?",
+			                      	                     	TABLE_NAME_CONTENT,
+			                      	                     	PRICE,
+			                      	                     	USER_ID,
+			                      	                     	GROUP_ID),
+			                      	newAmount,
+			                      	userId,
+			                      	groupId);
+			return false;
 		}
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? and {3} = ?",
-														TABLE_NAME_CONTENT,
-														PRICE,
-														USER_ID,
-														GROUP_ID),
-								newAmount,
-								userId,
-								groupId);
 	}
 
 	/**

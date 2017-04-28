@@ -1,38 +1,51 @@
 package com.mosioj.notifications.instance;
 
 import java.text.MessageFormat;
+import java.util.Map;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
+import com.mosioj.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.servlets.controllers.idees.ConfirmationEstAJour;
 import com.mosioj.servlets.controllers.idees.ModifyIdea;
 import com.mosioj.servlets.controllers.idees.RemoveOneIdea;
 
-public class NotifAskIfIsUpToDate extends AbstractNotification {
+public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifUserIdParam {
 
-	private final User askedUser;
-	private final String ideaText;
-	private final int ideaId;
+	private User askedUser;
+	private String ideaText;
+	private int ideaId;
 
 	/**
 	 * 
 	 * @param askedUser
-	 * @param ideaId
+	 * @param idea
 	 */
 	public NotifAskIfIsUpToDate(User askedUser, Idee idea) {
 		super(NotificationType.IS_IDEA_UP_TO_DATE);
 		this.askedUser = askedUser;
 		this.ideaText = idea.getTextSummary(50);
 		this.ideaId = idea.getId();
-		params.put(ParameterName.USER_ID, askedUser.id + "");
-		params.put(ParameterName.IDEA_ID, idea.getId() + "");
+		params.put(ParameterName.USER_ID, askedUser.id);
+		params.put(ParameterName.IDEA_ID, idea.getId());
+	}
+
+	/**
+	 * 
+	 * @param id The internal database ID.
+	 * @param owner The notification owner.
+	 * @param text The notification text.
+	 * @param parameters The notification parameters.
+	 */
+	public NotifAskIfIsUpToDate(int id, int owner, String text, Map<ParameterName, Object> parameters) {
+		super(NotificationType.IS_IDEA_UP_TO_DATE, id, owner, text, parameters);
 	}
 
 	@Override
-	public String getText() {
+	public String getTextToInsert() {
 
 		String oui = MessageFormat.format(	"<li><a href=\"protected/confirmation_est_a_jour?{0}={1}\">Oui !</a></li>",
 											ConfirmationEstAJour.IDEE_FIELD_PARAMETER,
@@ -50,6 +63,11 @@ public class NotifAskIfIsUpToDate extends AbstractNotification {
 									oui,
 									nonSupr,
 									nonModif);
+	}
+
+	@Override
+	public int getUserIdParam() {
+		return Integer.parseInt(params.get(ParameterName.USER_ID).toString());
 	}
 
 }

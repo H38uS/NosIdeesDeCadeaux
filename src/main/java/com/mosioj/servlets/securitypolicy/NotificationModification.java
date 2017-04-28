@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.Notification;
 import com.mosioj.model.table.Notifications;
+import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.utils.ParametersUtils;
 
 /**
@@ -51,7 +51,7 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 
 		int userId = ParametersUtils.getUserId(request);
 
-		Notification notification = notif.getNotification(notifId);
+		AbstractNotification notification = notif.getNotification(notifId);
 		if (notification == null) {
 			lastReason = "Aucune notification trouvée en paramètre.";
 			return false;

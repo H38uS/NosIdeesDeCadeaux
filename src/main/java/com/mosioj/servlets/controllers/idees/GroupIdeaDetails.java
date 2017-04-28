@@ -12,6 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.IdeaGroup;
+import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.servlets.controllers.MesListes;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
@@ -80,7 +83,15 @@ public class GroupIdeaDetails extends AbstractIdea {
 			request.getSession().setAttribute("errors", errorsAmount);
 		} else {
 			// Modification de la participation
-			groupForIdea.updateAmount(groupId, userId, Integer.parseInt(amount));
+			boolean newMember = groupForIdea.updateAmount(groupId, userId, Integer.parseInt(amount));
+			if (newMember) {
+				List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
+				for (AbstractNotification notification : notifications) {
+					if (NotificationType.GROUP_IDEA_SUGGESTION.name().equals(notification.getType()) && notification.owner == userId) {
+						notif.remove(notification.id);
+					}
+				}
+			}
 		}
 		
 		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);

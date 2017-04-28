@@ -4,19 +4,44 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractNotification {
+	
+	// FIXME : 2bis regarder tous les appels pour voir ce qu'on peut améliorer
 
 	/**
-	 * The notification type.
+	 * The notification type, useful for database insertion.
 	 */
-	private final NotificationType type;
+	private NotificationType type;
 
-	protected Map<ParameterName, String> params = new HashMap<ParameterName, String>();
+	public int id;
+	public int owner;
+	public String text; // FIXME : 0 pas nécessaire ?
+	protected Map<ParameterName, Object> params = new HashMap<ParameterName, Object>();
 
+	/**
+	 * Default constructor for insertion.
+	 */
 	public AbstractNotification(NotificationType type) {
 		this.type = type;
 	}
-
+	
 	/**
+	 * 
+	 * @param type The notification type, useful for database insertion.
+	 * @param id The internal database ID.
+	 * @param owner The notification owner.
+	 * @param text The notification text.
+	 * @param parameters The notification parameters.
+	 */
+	public AbstractNotification(NotificationType type, int id, int owner, String text, Map<ParameterName, Object> parameters) {
+		this.type = type;
+		this.id = id;
+		this.owner = owner;
+		this.text = text;
+		this.params = parameters;
+	}
+	
+	/**
+	 * Used in database insertion.
 	 * 
 	 * @return The notification type.
 	 */
@@ -24,11 +49,6 @@ public abstract class AbstractNotification {
 		return type.name();
 	}
 
-	/**
-	 * 
-	 * @return The notification text.
-	 */
-	public abstract String getText();
 
 	/**
 	 * Send the notification by email.
@@ -39,10 +59,32 @@ public abstract class AbstractNotification {
 
 	/**
 	 * 
+	 * @return The notification text.
+	 */
+	public abstract String getTextToInsert();
+
+	/**
+	 * 
+	 * @return The notification text.
+	 */
+	public String getText() {
+		return text;
+	}
+	
+	/**
+	 * 
 	 * @return The parameter list of this notification.
 	 */
-	public Map<ParameterName, String> getParameters() {
+	public Map<ParameterName, Object> getParameters() {
 		return params;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public int getOwner() {
+		return owner;
 	}
 
 }

@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.Notification;
+import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -27,7 +27,7 @@ public class MyNotifications extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		List<Notification> notifications = notif.getUserNotifications(ParametersUtils.getUserId(req));
+		List<AbstractNotification> notifications = notif.getUserNotifications(ParametersUtils.getUserId(req));
 		req.setAttribute("notifications", notifications);
 		RootingsUtils.rootToPage(VIEW_URL, req, resp);
 	}

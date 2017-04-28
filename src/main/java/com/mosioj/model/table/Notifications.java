@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -20,8 +21,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.Notification;
 import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.NotificationFactory;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 
@@ -53,7 +54,7 @@ public class Notifications extends Table {
 		try {
 			ps = new PreparedStatementIdKdo(getDb(),
 											"insert into notifications (owner, text, type, creation_date) values (?, ?, ?, now())");
-			ps.bindParameters(userId, notif.getText(), notif.getType());
+			ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
 			ps.execute();
 
 			id = getDb().selectInt("select max(" + ID + ") from " + TABLE_NAME + " where " + OWNER + " = ?", userId);
@@ -67,7 +68,8 @@ public class Notifications extends Table {
 		}
 
 		if (id > 0) {
-			Map<ParameterName, String> notifParams = notif.getParameters();
+			logger.debug(MessageFormat.format("Creating parameters for notification {0}", id));
+			Map<ParameterName, Object> notifParams = notif.getParameters();
 			for (ParameterName key : notifParams.keySet()) {
 				try {
 					ps = new PreparedStatementIdKdo(getDb(),
@@ -76,7 +78,7 @@ public class Notifications extends Table {
 																			NOTIFICATION_ID,
 																			PARAMETER_NAME,
 																			PARAMETER_VALUE));
-					ps.bindParameters(id, key, notifParams.get(key));
+					ps.bindParameters(id, key, notifParams.get(key).toString());
 					ps.execute();
 
 				} catch (SQLException e) {
@@ -118,52 +120,7 @@ public class Notifications extends Table {
 	public void remove(int notificationId) throws SQLException {
 		logger.debug(MessageFormat.format("Suppression de la notification {0}", notificationId));
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, ID), notificationId);
-	}
-
-	/**
-	 * 
-	 * @param userId
-	 * @return All notifications for this user.
-	 * @throws SQLException
-	 */
-	public List<Notification> getUserNotifications(int userId) throws SQLException {
-		String query = MessageFormat.format("select {0}, {1}, {2}, {4} from {3} where {4} = ? ", ID, TEXT, TYPE, TABLE_NAME, OWNER);
-		return getNotificationFromQuery(query, userId);
-	}
-
-	/**
-	 * Technical method.
-	 * 
-	 * @param query
-	 * @param userId
-	 * @param parameters
-	 * @return
-	 * @throws SQLException
-	 */
-	private List<Notification> getNotificationFromQuery(String query, Object... parameters) throws SQLException {
-
-		PreparedStatementIdKdo ps = null;
-		List<Notification> notifications = new ArrayList<Notification>();
-
-		try {
-			ps = new PreparedStatementIdKdo(getDb(), query);
-			ps.bindParameters(parameters);
-			if (ps.execute()) {
-				ResultSet res = ps.getResultSet();
-				while (res.next()) {
-					notifications.add(new com.mosioj.model.Notification(res.getInt(ID.name()),
-																		res.getInt(OWNER.name()),
-																		res.getString(TYPE.name()),
-																		res.getString(TEXT.name())));
-				}
-			}
-		} finally {
-			if (ps != null) {
-				ps.close();
-			}
-		}
-
-		return notifications;
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_PARAMS, NOTIFICATION_ID), notificationId);
 	}
 
 	/**
@@ -177,45 +134,6 @@ public class Notifications extends Table {
 
 	/**
 	 * 
-	 * @param notificationId
-	 * @param parameterName
-	 * @return The parameter value.
-	 * @throws SQLException
-	 */
-	public String getParameterValue(int notificationId, ParameterName parameterName) throws SQLException {
-		// FIXME : 5 n'aura plus de sens quand on aura fusionné notificatio et abstractNotif
-		return getDb().selectString(MessageFormat.format(	"select {0} from {1} where {2} = ? and {3} = ? ",
-															PARAMETER_VALUE,
-															TABLE_PARAMS,
-															NOTIFICATION_ID,
-															PARAMETER_NAME),
-									notificationId,
-									parameterName);
-	}
-
-	/**
-	 * 
-	 * @param parameterName
-	 * @param parameterValue
-	 * @return The list of notification having the given parameter name equals to this value.
-	 * @throws SQLException
-	 */
-	public List<Notification> getNotification(ParameterName parameterName, Object parameterValue) throws SQLException {
-		String query = MessageFormat.format("select {0}, {1}, {2}, {4} from {3} inner join {5} on {0} = {6} where {7} = ? and {8} = ? ",
-											ID,
-											TEXT,
-											TYPE,
-											TABLE_NAME,
-											OWNER,
-											TABLE_PARAMS,
-											NOTIFICATION_ID,
-											PARAMETER_NAME,
-											PARAMETER_VALUE);
-		return getNotificationFromQuery(query, parameterName, parameterValue);
-	}
-
-	/**
-	 * 
 	 * @param userId
 	 * @param notif
 	 * @return True if and only if the user has already receive this notification.
@@ -223,7 +141,7 @@ public class Notifications extends Table {
 	 */
 	public boolean hasNotification(int userId, AbstractNotification notif) throws SQLException {
 
-		Map<ParameterName, String> parameters = notif.getParameters();
+		Map<ParameterName, Object> parameters = notif.getParameters();
 
 		StringBuilder query = new StringBuilder();
 		query.append("select 1 ");
@@ -254,14 +172,139 @@ public class Notifications extends Table {
 	}
 
 	/**
+	 * Technical method.
+	 * 
+	 * @param query
+	 * @param userId
+	 * @param parameters
+	 * @return
+	 * @throws SQLException
+	 */
+	private List<AbstractNotification> getNotificationFromQuery(String query, Object... parameters) throws SQLException {
+
+		PreparedStatementIdKdo ps = null;
+		List<AbstractNotification> notifications = new ArrayList<AbstractNotification>();
+
+		try {
+			ps = new PreparedStatementIdKdo(getDb(), query);
+			ps.bindParameters(parameters);
+			if (ps.execute()) {
+
+				ResultSet res = ps.getResultSet();
+				int currentId = -1;
+				int owner = -1;
+				String type = "";
+				String text = "";
+				Map<ParameterName, Object> notifParams = new HashMap<ParameterName, Object>();
+
+				while (res.next()) {
+
+					int id = res.getInt(ID.name());
+					if (currentId == -1) {
+						currentId = id;
+						owner = res.getInt(OWNER.name());
+						type = res.getString(TYPE.name());
+						text = res.getString(TEXT.name());
+					}
+
+					if (id == currentId) {
+						// reading parameters
+						String name = res.getString(PARAMETER_NAME.name());
+						if (name != null && !name.isEmpty()) {
+							notifParams.put(ParameterName.valueOf(name), res.getString(PARAMETER_VALUE.name()));
+						}
+						continue;
+					}
+
+					// New id detected, saving the notification
+					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, notifParams));
+
+					// Initialization for the next notification
+					currentId = id;
+					owner = res.getInt(OWNER.name());
+					type = res.getString(TYPE.name());
+					text = res.getString(TEXT.name());
+					notifParams = new HashMap<ParameterName, Object>();
+				}
+
+				if (currentId != -1) {
+					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, notifParams));
+				}
+
+			}
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+		}
+
+		return notifications;
+	}
+
+	/**
+	 * 
+	 * @param whereClause
+	 * @param parameters
+	 * 
+	 * @return The notifications matched by this where clause or all.
+	 * @throws SQLException
+	 */
+	private List<AbstractNotification> getNotificationWithWhereClause(String whereClause, Object... parameters) throws SQLException {
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format(	"select {0}, {1}, {2}, {3}, {4}, {5} ",
+											ID,
+											TEXT,
+											TYPE,
+											OWNER,
+											PARAMETER_NAME,
+											PARAMETER_VALUE));
+		query.append(MessageFormat.format("  from {0} ", TABLE_NAME));
+		query.append(MessageFormat.format("  left join {0} ", TABLE_PARAMS));
+		query.append(MessageFormat.format("    on {0} = {1} ", ID, NOTIFICATION_ID));
+
+		if (whereClause != null && !whereClause.isEmpty()) {
+			query.append(MessageFormat.format(" where {0}", whereClause));
+		}
+
+		return getNotificationFromQuery(query.toString(), parameters);
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return All notifications for this user.
+	 * @throws SQLException
+	 */
+	public List<AbstractNotification> getUserNotifications(int userId) throws SQLException {
+		return getNotificationWithWhereClause(MessageFormat.format("{0} = ?", OWNER), userId);
+	}
+
+	/**
+	 * 
+	 * @param parameterName
+	 * @param parameterValue
+	 * @return The list of notification having the given parameter name equals to this value.
+	 * @throws SQLException
+	 */
+	public List<AbstractNotification> getNotification(ParameterName parameterName, Object parameterValue) throws SQLException {
+		String whereClause = MessageFormat.format(	" exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?)",
+													TABLE_PARAMS,
+													NOTIFICATION_ID,
+													ID,
+													PARAMETER_NAME,
+													PARAMETER_VALUE);
+		return getNotificationWithWhereClause(whereClause, parameterName, parameterValue);
+	}
+
+	/**
 	 * 
 	 * @param notifId
 	 * @return The notification corresponding to this id.
 	 * @throws SQLException
 	 */
-	public Notification getNotification(int notifId) throws SQLException {
-		String query = MessageFormat.format("select {0}, {1}, {2}, {4} from {3} where {0} = ? ", ID, TEXT, TYPE, TABLE_NAME, OWNER);
-		List<Notification> notifs = getNotificationFromQuery(query, notifId);
+	public AbstractNotification getNotification(int notifId) throws SQLException {
+		List<AbstractNotification> notifs = getNotificationWithWhereClause(MessageFormat.format("{0} = ?", ID), notifId);
 		return notifs.size() == 0 ? null : notifs.get(0);
 	}
 }

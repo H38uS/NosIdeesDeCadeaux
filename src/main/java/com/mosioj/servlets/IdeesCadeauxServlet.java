@@ -39,10 +39,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 	
-	// FIXME : 1 puis si on répond oui, mettre à jour la date - Et envoyer une notification en retour
-	// FIXME : 0 quand on modifie/supprime une idée, supprimer les notifications qui ont demandé des infos dessus
-	// FIXME : 2 supprimer les notifications participation au groupe quand on y participe
-	
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
@@ -212,8 +208,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			if (!policy.hasRightToInteractInGetRequest(req, resp)) {
 				req.setAttribute("error_message", policy.getLastReason());
-				logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0}. Reason: {1}",
+				logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0} on {1}. Reason: {2}",
 													ParametersUtils.getUserId(req),
+													req.getRequestURL(),
 													policy.getLastReason()));
 				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", req, resp);
 				return;
@@ -249,8 +246,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			if (!policy.hasRightToInteractInPostRequest(request, response)) {
 				request.setAttribute("error_message", policy.getLastReason());
-				logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0}. Reason: {1}",
+				logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0} on {1}. Reason: {2}",
 													ParametersUtils.getUserId(request),
+													request.getRequestURL(),
 													policy.getLastReason()));
 				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
 				return;
