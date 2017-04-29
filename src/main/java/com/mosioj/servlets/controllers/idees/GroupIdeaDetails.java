@@ -13,8 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.notifications.AbstractNotification;
-import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
+import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.controllers.MesListes;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
@@ -53,7 +53,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 			req.setAttribute("errors", sessionErrors);
 			req.getSession().removeAttribute("errors");
 		}
-		
+
 		req.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(req), groupId));
 		req.setAttribute("group", group);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
@@ -87,13 +87,13 @@ public class GroupIdeaDetails extends AbstractIdea {
 			if (newMember) {
 				List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
 				for (AbstractNotification notification : notifications) {
-					if (NotificationType.GROUP_IDEA_SUGGESTION.name().equals(notification.getType()) && notification.owner == userId) {
+					if (notification instanceof NotifGroupSuggestion && notification.owner == userId) {
 						notif.remove(notification.id);
 					}
 				}
 			}
 		}
-		
+
 		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);
 	}
 

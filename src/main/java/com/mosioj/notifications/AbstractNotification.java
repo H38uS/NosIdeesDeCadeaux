@@ -5,8 +5,6 @@ import java.util.Map;
 
 public abstract class AbstractNotification {
 	
-	// FIXME : 2bis regarder tous les appels pour voir ce qu'on peut améliorer
-
 	/**
 	 * The notification type, useful for database insertion.
 	 */
@@ -14,7 +12,7 @@ public abstract class AbstractNotification {
 
 	public int id;
 	public int owner;
-	public String text; // FIXME : 0 pas nécessaire ?
+	public String text;
 	protected Map<ParameterName, Object> params = new HashMap<ParameterName, Object>();
 
 	/**
