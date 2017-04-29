@@ -38,7 +38,7 @@ import com.mosioj.utils.database.DataSourceIdKDo;
 public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
-	
+
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
@@ -51,16 +51,16 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// FIXME : pouvoir commenter une idée
 	// FIXME : mettre la date dans les commentaires des messages
-	
+
 	// FIXME : pouvoir ajouter des idées à d'autres personnes
 	// TODO : controle parental
 	// TODO : auto logout en javascript
-	
+
 	// TODO : catcher quand la session a expiré, pour faire une joli page
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
-	
-	// FIXME : pouvoir suggérer des relations à quelqu'un 
-	// FIXME : quand on accepte une relation, pouvoir lui en suggérer d'autres 
+
+	// FIXME : pouvoir suggérer des relations à quelqu'un
+	// FIXME : quand on accepte une relation, pouvoir lui en suggérer d'autres
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
@@ -280,6 +280,24 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 		java.sql.Date sql = new java.sql.Date(parsed.getTime());
 		return sql;
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param defaultURL The default URL to redirect to if we cannot find the caller.
+	 * @return The URL to redirect to.
+	 */
+	protected String getURLCalling(HttpServletRequest request, String defaultURL) {
+
+		String basePath = "NosIdeesDeCadeaux";
+		String rootTo = defaultURL;
+		String caller = request.getHeader("Referer");
+
+		if (caller != null && caller.contains(basePath)) {
+			rootTo = caller.substring(caller.indexOf(basePath) + basePath.length());
+		}
+		return rootTo;
 	}
 
 }

@@ -81,12 +81,6 @@ public class RemoveOneIdea extends AbstractIdea {
 			notif.addNotification(userId, new NotifNoIdea());
 		}
 
-		// FIXME : 3 le mettre dans RootingUtils ou dans la servlet de base ?
-		String rootTo = MaListe.PROTECTED_MA_LISTE;
-		String caller = request.getHeader("Referer");
-		if (caller != null && caller.contains("NosIdeesDeCadeaux")) {
-			rootTo = caller.substring(caller.indexOf("NosIdeesDeCadeaux") + "NosIdeesDeCadeaux".length());
-		}
-		RootingsUtils.redirectToPage(rootTo, request, response);
+		RootingsUtils.redirectToPage(getURLCalling(request, MaListe.PROTECTED_MA_LISTE), request, response);
 	}
 }
