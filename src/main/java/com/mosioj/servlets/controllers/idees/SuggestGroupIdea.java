@@ -65,12 +65,6 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		req.setAttribute("idea", idea);
 		req.setAttribute("group", group);
 
-		Object sessionSentTo = req.getSession().getAttribute("sent_to_users");
-		if (sessionSentTo != null) {
-			req.setAttribute("sent_to_users", sessionSentTo);
-			req.getSession().removeAttribute("sent_to_users");
-		}
-
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 

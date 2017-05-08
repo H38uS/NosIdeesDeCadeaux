@@ -5,12 +5,16 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +32,8 @@ import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.DataSourceIdKDo;
+
+import nl.captcha.Captcha;
 
 /**
  * An intermediate servlet for test purpose. Increase the visibility of tested method.
@@ -65,6 +71,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
+	private static final List<String> sessionNamesToKeep = new ArrayList<String>();
 
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
@@ -223,9 +230,27 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 				return;
 			}
 
+			// Converting session parameters to attributes
+			HttpSession session = req.getSession();
+			Enumeration<String> names = session.getAttributeNames();
+			
+			while (names.hasMoreElements()) {
+
+				String name = names.nextElement();
+				if (sessionNamesToKeep.contains(name)) {
+					continue;
+				}
+
+				Object value = session.getAttribute(name);
+				req.setAttribute(name, value);
+				session.removeAttribute(name);
+			}
+
 			// Security has passed, perform the logic
 			ideesKDoGET(req, resp);
-		} catch (SQLException e) {
+		} catch (
+
+		SQLException e) {
 			// Default error management
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 		}
@@ -305,6 +330,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			rootTo = caller.substring(caller.indexOf(basePath) + basePath.length());
 		}
 		return rootTo;
+	}
+	
+	static {
+		sessionNamesToKeep.add("username");
+		sessionNamesToKeep.add("userid");
+		sessionNamesToKeep.add(Captcha.NAME);
 	}
 
 }

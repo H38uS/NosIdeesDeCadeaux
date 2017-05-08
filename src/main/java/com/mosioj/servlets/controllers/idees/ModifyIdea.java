@@ -52,12 +52,6 @@ public class ModifyIdea extends AbstractIdea {
 		req.setAttribute("priorites", priorities.getPriorities());
 		req.setAttribute("idea", idea);
 
-		Object sessionErrors = req.getSession().getAttribute("errors");
-		if (sessionErrors != null) {
-			req.setAttribute("errors", sessionErrors);
-			req.getSession().removeAttribute("errors");
-		}
-
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 

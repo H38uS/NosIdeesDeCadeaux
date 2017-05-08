@@ -48,12 +48,6 @@ public class GroupIdeaDetails extends AbstractIdea {
 		logger.debug("Getting details for idea group " + groupId + "...");
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
 
-		Object sessionErrors = req.getSession().getAttribute("errors");
-		if (sessionErrors != null) {
-			req.setAttribute("errors", sessionErrors);
-			req.getSession().removeAttribute("errors");
-		}
-
 		req.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(req), groupId));
 		req.setAttribute("group", group);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);

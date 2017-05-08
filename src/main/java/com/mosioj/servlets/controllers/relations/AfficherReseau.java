@@ -50,14 +50,6 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 			req.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
 
-		// FIXME : transformer les attributs de session en attribut dans ideecadoserlvet
-		// 		  attention à ceux à conserver 
-		Object acceptedList = req.getSession().getAttribute("accepted");
-		if (acceptedList != null) {
-			req.setAttribute("accepted", acceptedList);
-			req.getSession().removeAttribute("accepted");
-		}
-		
 		req.setAttribute("relations", userRelations.getRelations(user));
 		req.setAttribute("name", users.getUser(user).name);
 
