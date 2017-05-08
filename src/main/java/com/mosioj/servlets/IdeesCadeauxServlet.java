@@ -61,7 +61,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : catcher quand la session a expiré, pour faire une joli page
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
-	// FIXME : 1 quand on accepte une relation, pouvoir lui en suggérer d'autres
+	// TODO : notification quand on envoie une demande d'amis
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";

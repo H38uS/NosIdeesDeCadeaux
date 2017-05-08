@@ -4,6 +4,18 @@
 
 <t:normal_proctected>
 	<jsp:body>
+		<c:if test="${not empty accepted}">
+			<h2>Succès</h2>
+			Les demandes suivantes ont été accepté avec succès.
+			<ul>
+				<c:forEach var="accept" items="${accepted}">
+					<li>
+						${accept.name} :
+						<a href="protected/suggerer_relations?id=${accept.id}">Suggérer</a> des relations
+					</li>
+				</c:forEach>
+			</ul>
+		</c:if>
 		<c:if test="${not empty demandes}">
 			<h2>Demandes reçues</h2>
 			<form method="POST" action="protected/afficher_reseau">

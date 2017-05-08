@@ -2,6 +2,8 @@ package com.mosioj.servlets.controllers.relations;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.NetworkGetAndAccessToPost;
 import com.mosioj.utils.ParametersUtils;
@@ -46,6 +49,14 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
 			req.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
+
+		// FIXME : transformer les attributs de session en attribut dans ideecadoserlvet
+		// 		  attention à ceux à conserver 
+		Object acceptedList = req.getSession().getAttribute("accepted");
+		if (acceptedList != null) {
+			req.setAttribute("accepted", acceptedList);
+			req.getSession().removeAttribute("accepted");
+		}
 		
 		req.setAttribute("relations", userRelations.getRelations(user));
 		req.setAttribute("name", users.getUser(user).name);
@@ -58,6 +69,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 
 		int userId = ParametersUtils.getUserId(request);
 
+		List<User> accepted = new ArrayList<User>();
 		Map<String, String[]> params = request.getParameterMap();
 		for (String key : params.keySet()) {
 
@@ -79,6 +91,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 													key.substring("choix_".length())));
 				userRelations.addAssociation(fromUserId, userId);
 				userRelationRequests.cancelRequest(fromUserId, userId);
+				accepted.add(users.getUser(fromUserId));
 			} else {
 				logger.info(MessageFormat.format(	"Refus de la demande par {0} de l'utilisateur {1}.",
 													userId,
@@ -88,6 +101,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		}
 
 		// Redirection à la page d'administration
+		request.getSession().setAttribute("accepted", accepted);
 		RootingsUtils.redirectToPage(GET_URL + userId, request, response);
 
 	}
