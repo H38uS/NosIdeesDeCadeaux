@@ -22,6 +22,7 @@ import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
+import com.mosioj.model.table.UserRelationsSuggestion;
 import com.mosioj.model.table.Users;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.ParametersUtils;
@@ -44,23 +45,23 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : bootstrap pour le CSS ??
 	// TODO : envoyer des notifications en fonction de la date de naissance à ceux qui suivent la personne
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
-	// FIXME : ZCompléter le gdoc avec les modifications faites
+	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
 
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
-	// FIXME : pouvoir commenter une idée
-	// FIXME : mettre la date dans les commentaires des messages
+	// FIXME : 2 pouvoir commenter une idée
+	// FIXME : 3 mettre la date dans les commentaires des messages
 
-	// FIXME : pouvoir ajouter des idées à d'autres personnes
+	// FIXME : 4 pouvoir ajouter des idées à d'autres personnes
+	// TODO : pouvoir ajouter des surprises
 	// TODO : controle parental
 	// TODO : auto logout en javascript
 
 	// TODO : catcher quand la session a expiré, pour faire une joli page
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
-	// FIXME : pouvoir suggérer des relations à quelqu'un
-	// FIXME : quand on accepte une relation, pouvoir lui en suggérer d'autres
+	// FIXME : 1 quand on accepte une relation, pouvoir lui en suggérer d'autres
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
@@ -113,6 +114,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected GroupIdea groupForIdea;
 
 	/**
+	 * The connections to the USER_RELATIONS_SUGGESTION table.
+	 */
+	protected UserRelationsSuggestion userRelationsSuggestion;
+
+	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
 	private final SecurityPolicy policy;
@@ -129,6 +135,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		categories = new Categories();
 		priorities = new Priorites();
 		groupForIdea = new GroupIdea();
+		userRelationsSuggestion = new UserRelationsSuggestion();
 		this.policy = policy;
 	}
 

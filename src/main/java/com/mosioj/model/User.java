@@ -12,7 +12,8 @@ public class User {
 	public Date birthday;
 	public boolean isInMyNetwork;
 	public int nbDaysBeforeBirthday;
-
+	public String freeComment;
+	
 	private final List<Idee> ideas = new ArrayList<Idee>();
 	
 	public User(int id, String name, String email) {
@@ -76,6 +77,10 @@ public class User {
 	
 	public List<Idee> getIdeas() {
 		return ideas;
+	}
+
+	public String getFreeComment() {
+		return freeComment;
 	}
 
 	@Override

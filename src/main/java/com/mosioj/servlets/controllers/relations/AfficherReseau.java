@@ -40,7 +40,13 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		Integer user = ParametersUtils.readInt(req, USER_ID_PARAM);
 
 		int userId = ParametersUtils.getUserId(req);
-		req.setAttribute("demandes", userRelationRequests.getRequests(userId));
+		
+		if (userId == user) {
+			// Uniquement sur notre compte
+			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
+			req.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
+		}
+		
 		req.setAttribute("relations", userRelations.getRelations(user));
 		req.setAttribute("name", users.getUser(user).name);
 

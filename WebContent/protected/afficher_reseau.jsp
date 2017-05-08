@@ -31,6 +31,9 @@
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</c:if>
+		<c:if test="${not empty suggestions && suggestions}">
+			Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
+		</c:if>
 		<h2>Réseau de ${name}</h2>
 		<c:choose>
 			<c:when test="${empty relations}">
@@ -41,12 +44,17 @@
 					<thead>
 						<tr>
 							<th>Nom de la personne</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<c:forEach var="relation" items="${relations}">
 						<tr>
 							<td>
-								<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a></td>
+								<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a>
+							</td>
+							<td>
+								<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations
+							</td>
 						</tr>
 					</c:forEach>
 				</table>

@@ -6,6 +6,7 @@ import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.notifications.instance.NotifNoIdea;
 
 public class NotificationFactory {
@@ -41,6 +42,9 @@ public class NotificationFactory {
 
 		case NO_IDEA:
 			return new NotifNoIdea(id, owner, text, params);
+
+		case NEW_RELATION_SUGGESTION:
+			return new NotifNewRelationSuggestion(id, owner, text, params);
 
 		default:
 			return null;
