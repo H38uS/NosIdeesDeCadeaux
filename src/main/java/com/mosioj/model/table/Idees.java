@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
+import com.mosioj.model.table.columns.CommentsColumns;
 import com.mosioj.model.table.columns.GroupIdeaColumns;
 import com.mosioj.model.table.columns.GroupIdeaContentColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
@@ -428,6 +429,7 @@ public class Idees extends Table {
 								groupId);
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
 								groupId);
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", Comments.TABLE_NAME, CommentsColumns.IDEA_ID), id);
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ? ", TABLE_NAME, OWNER, ID), userId, id);
 	}
 

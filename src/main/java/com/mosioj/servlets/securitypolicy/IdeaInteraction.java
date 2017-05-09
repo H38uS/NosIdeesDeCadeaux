@@ -11,7 +11,7 @@ import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.ParametersUtils;
 
 /**
- * A policy to make sure we can interact with an idea.
+ * A policy to make sure we can interact with an idea : forbids the owner of the idea.
  * 
  * @author Jordan Mosio
  *

@@ -143,7 +143,7 @@ public class UserRelations extends Table {
 	 * 
 	 * @param first
 	 * @param second
-	 * @return True if and only if the two guys are friends.
+	 * @return True if and only if the two guys are friends. False for the owner.
 	 * @throws SQLException
 	 */
 	public boolean associationExists(int first, int second) throws SQLException {

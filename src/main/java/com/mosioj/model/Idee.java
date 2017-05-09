@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
 
@@ -77,7 +78,7 @@ public class Idee {
 	 */
 	public String getTextSummary(int maxLength) {
 
-		String initial = getText();
+		String initial = Escaper.htmlToText(getText());
 		if (initial.length() > maxLength) {
 			return initial.substring(0, maxLength - 3) + "...";
 		}

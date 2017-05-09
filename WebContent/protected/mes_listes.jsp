@@ -71,11 +71,12 @@
 									</c:if>
 									<c:if test="${not idee.isBooked()}">
 										L'idée n'a pas encore été réservée. <a href="protected/reserver?idee=${idee.id}">Je veux la réserver</a>
-										ou <a href="protected/create_a_group?&idee=${idee.id}">Créer un groupe</a>
+										ou <a href="protected/create_a_group?idee=${idee.id}">Créer un groupe</a>
 									</c:if>
 								</td>
 								<td>
-									<a href="protected/est_a_jour?&idee=${idee.id}">Demander</a>  si c'est à jour.
+									<a href="protected/est_a_jour?idee=${idee.id}">Demander</a> si c'est à jour.<br/>
+									<a href="protected/idee_commentaires?idee=${idee.id}">Ajouter un commentaire / voir les existant</a>.
 								</td>
 							</tr>
 						</c:forEach>

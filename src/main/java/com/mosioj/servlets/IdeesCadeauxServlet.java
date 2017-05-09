@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.table.Categories;
+import com.mosioj.model.table.Comments;
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
@@ -56,8 +57,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
-	// FIXME : 2 pouvoir commenter une idée
-	// FIXME : 3 mettre la date dans les commentaires des messages
+	// FIXME : 3 mettre la date dans les commentaires des messages et ordonnancer par date
+	// FIXME : 3 pouvoir supprimer ses commentaires
 
 	// FIXME : 4 pouvoir ajouter des idées à d'autres personnes
 	// TODO : pouvoir ajouter des surprises
@@ -126,6 +127,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected UserRelationsSuggestion userRelationsSuggestion;
 
 	/**
+	 * The connections to the COMMENTS table.
+	 */
+	protected Comments comments;
+
+	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
 	private final SecurityPolicy policy;
@@ -143,6 +149,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		priorities = new Priorites();
 		groupForIdea = new GroupIdea();
 		userRelationsSuggestion = new UserRelationsSuggestion();
+		comments = new Comments();
 		this.policy = policy;
 	}
 
