@@ -93,9 +93,8 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		}
 
 		// Redirection à la page d'administration
-		request.getSession().setAttribute("accepted", accepted);
+		request.setAttribute("accepted", accepted);
 		RootingsUtils.rootToPage(GET_URL + userId, request, response);
-
 	}
 
 }

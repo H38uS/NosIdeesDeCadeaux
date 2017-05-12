@@ -69,7 +69,7 @@ public class ModifyIdea extends AbstractIdea {
 			fillIdeaOrErrors(request, response, url);
 
 			if (!errors.isEmpty()) {
-				request.getSession().setAttribute("errors", errors);
+				request.setAttribute("errors", errors);
 			} else {
 				logger.info(MessageFormat.format(	"Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",
 													parameters.get("text"),

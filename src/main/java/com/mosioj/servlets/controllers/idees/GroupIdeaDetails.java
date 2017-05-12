@@ -78,7 +78,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 		List<String> errorsAmount = val.getErrors();
 
 		if (!errorsAmount.isEmpty()) {
-			request.getSession().setAttribute("errors", errorsAmount);
+			request.setAttribute("errors", errorsAmount);
 		} else {
 			// Modification de la participation
 			boolean newMember = groupForIdea.updateAmount(groupId, userId, Integer.parseInt(amount));
