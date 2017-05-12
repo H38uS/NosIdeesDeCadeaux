@@ -4,6 +4,7 @@ import static com.mosioj.model.table.columns.CommentsColumns.ID;
 import static com.mosioj.model.table.columns.CommentsColumns.IDEA_ID;
 import static com.mosioj.model.table.columns.CommentsColumns.TEXT;
 import static com.mosioj.model.table.columns.CommentsColumns.WRITTEN_BY;
+import static com.mosioj.model.table.columns.CommentsColumns.WRITTEN_ON;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,11 +29,12 @@ public class Comments extends Table {
 	 * @throws SQLException
 	 */
 	public void saveComment(int userId, Integer ideaId, String text) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,?)",
+		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
 														TABLE_NAME,
 														IDEA_ID,
 														TEXT,
-														WRITTEN_BY),
+														WRITTEN_BY,
+														WRITTEN_ON),
 								ideaId,
 								text,
 								userId);
@@ -49,13 +51,14 @@ public class Comments extends Table {
 		List<Comment> comments = new ArrayList<Comment>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId ",
+		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6} ",
 											ID,
 											IDEA_ID,
 											TEXT,
 											UsersColumns.NAME,
 											UsersColumns.EMAIL,
-											UsersColumns.ID));
+											UsersColumns.ID,
+											WRITTEN_ON));
 		query.append(MessageFormat.format("  from {0} c ", TABLE_NAME));
 		query.append(MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ", Users.TABLE_NAME, UsersColumns.ID, WRITTEN_BY));
 		query.append(MessageFormat.format(" where c.{0} = ? ", IDEA_ID));
@@ -71,7 +74,8 @@ public class Comments extends Table {
 												new User(	res.getInt("userId"),
 															res.getString(UsersColumns.NAME.name()),
 															res.getString(UsersColumns.EMAIL.name())),
-												res.getInt(IDEA_ID.name())));
+												res.getInt(IDEA_ID.name()),
+												res.getTimestamp(WRITTEN_ON.name())));
 				}
 			}
 		} finally {
@@ -90,13 +94,14 @@ public class Comments extends Table {
 	public Comment getComment(Integer commentId) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId ",
+		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6} ",
 											ID,
 											IDEA_ID,
 											TEXT,
 											UsersColumns.NAME,
 											UsersColumns.EMAIL,
-											UsersColumns.ID));
+											UsersColumns.ID,
+											WRITTEN_ON));
 		query.append(MessageFormat.format("  from {0} c ", TABLE_NAME));
 		query.append(MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ", Users.TABLE_NAME, UsersColumns.ID, WRITTEN_BY));
 		query.append(MessageFormat.format(" where c.{0} = ? ", ID));
@@ -113,7 +118,8 @@ public class Comments extends Table {
 										new User(	res.getInt("userId"),
 													res.getString(UsersColumns.NAME.name()),
 													res.getString(UsersColumns.EMAIL.name())),
-										res.getInt(IDEA_ID.name()));
+										res.getInt(IDEA_ID.name()),
+										res.getTimestamp(WRITTEN_ON.name()));
 				}
 			}
 		} finally {
