@@ -57,9 +57,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
-	// FIXME : 3 mettre la date dans les commentaires des messages et ordonnancer par date
-	// FIXME : 3 pouvoir supprimer ses commentaires
-
 	// FIXME : 4 pouvoir ajouter des idées à d'autres personnes
 	// TODO : pouvoir ajouter des surprises
 	// TODO : controle parental
@@ -69,6 +66,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
 	// TODO : notification quand on envoie une demande d'amis
+	
+	// TODO : notification quand un nouveau commentaire est posté sur une idée où on participe
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
@@ -320,24 +319,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		return sql;
 	}
 
-	/**
-	 * 
-	 * @param request
-	 * @param defaultURL The default URL to redirect to if we cannot find the caller.
-	 * @return The URL to redirect to.
-	 */
-	protected String getURLCalling(HttpServletRequest request, String defaultURL) {
-
-		String basePath = "NosIdeesDeCadeaux";
-		String rootTo = defaultURL;
-		String caller = request.getHeader("Referer");
-
-		if (caller != null && caller.contains(basePath)) {
-			rootTo = caller.substring(caller.indexOf(basePath) + basePath.length());
-		}
-		return rootTo;
-	}
-	
 	static {
 		sessionNamesToKeep.add("username");
 		sessionNamesToKeep.add("userid");

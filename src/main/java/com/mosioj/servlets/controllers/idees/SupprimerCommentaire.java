@@ -31,7 +31,7 @@ public class SupprimerCommentaire extends IdeesCadeauxServlet {
 		Comment comment = comments.getComment(id);
 		comments.delete(id);
 
-		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
+		RootingsUtils.rootToPage(	MessageFormat.format(	"{0}?{1}={2}",
 																IdeaComments.URL,
 																IdeaComments.IDEA_ID_PARAM,
 																comment.getIdea()),

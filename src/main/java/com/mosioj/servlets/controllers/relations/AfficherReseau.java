@@ -94,7 +94,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 
 		// Redirection à la page d'administration
 		request.getSession().setAttribute("accepted", accepted);
-		RootingsUtils.redirectToPage(GET_URL + userId, request, response);
+		RootingsUtils.rootToPage(GET_URL + userId, request, response);
 
 	}
 

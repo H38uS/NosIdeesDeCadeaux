@@ -44,7 +44,8 @@ public class RootingsUtils {
 	/**
 	 * Get the dispatcher and forward the request.
 	 * Should be used to get rid of post feature.
-	 * <b>*** Warning : the landing page should NOT require csrf tokens. ***</b>
+	 * <b>*** Warning : the landing page should NOT require csrf tokens. ***</b></br>
+	 * Use it only when redirecting from a wrong URL.
 	 * 
 	 * @param url
 	 * @param req
@@ -54,7 +55,7 @@ public class RootingsUtils {
 	 */
 	public static void redirectToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		try {
-			resp.sendRedirect(req.getContextPath() + url); // FIXME : vérifier qu'on utilise pas avec des posts derrière
+			resp.sendRedirect(req.getContextPath() + url);
 		} catch (IOException e) {
 			throw new ServletException(e.getMessage());
 		}

@@ -100,8 +100,8 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 			successTo.add(user);
 		}
 
-		request.getSession().setAttribute("sent_to_users", successTo);
-		RootingsUtils.redirectToPage(VIEW_URL + "?groupid=" + groupId, request, response);
+		request.setAttribute("sent_to_users", successTo);
+		ideesKDoGET(request, response);
 	}
 
 }

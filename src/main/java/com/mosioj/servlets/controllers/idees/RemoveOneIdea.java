@@ -81,6 +81,6 @@ public class RemoveOneIdea extends AbstractIdea {
 			notif.addNotification(userId, new NotifNoIdea());
 		}
 
-		RootingsUtils.redirectToPage(getURLCalling(request, MaListe.PROTECTED_MA_LISTE), request, response);
+		RootingsUtils.rootToPage(MaListe.PROTECTED_MA_LISTE, request, response);
 	}
 }

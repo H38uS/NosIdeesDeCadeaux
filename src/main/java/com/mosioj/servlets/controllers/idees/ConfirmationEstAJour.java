@@ -45,7 +45,7 @@ public class ConfirmationEstAJour extends AbstractIdea {
 			}
 		}
 
-		RootingsUtils.redirectToPage(MyNotifications.URL, req, resp);
+		RootingsUtils.rootToPage(MyNotifications.URL, req, resp);
 	}
 
 	@Override

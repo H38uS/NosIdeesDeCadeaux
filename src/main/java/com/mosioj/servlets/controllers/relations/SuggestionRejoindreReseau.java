@@ -31,7 +31,7 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage("/protected", req, resp);
+		RootingsUtils.rootToPage("/protected", req, resp);
 	}
 
 	@Override

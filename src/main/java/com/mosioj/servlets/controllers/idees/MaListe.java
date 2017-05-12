@@ -81,7 +81,7 @@ public class MaListe extends AbstractIdea {
 
 		}
 
-		RootingsUtils.redirectToPage(PROTECTED_MA_LISTE, request, response);
+		ideesKDoGET(request, response);
 	}
 
 }

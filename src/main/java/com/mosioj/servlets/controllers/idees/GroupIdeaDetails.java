@@ -63,6 +63,10 @@ public class GroupIdeaDetails extends AbstractIdea {
 
 		if ("annulation".equals(amount)) {
 			groupForIdea.removeUserFromGroup(userId, groupId);
+			List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
+			for (AbstractNotification notification : notifications) {
+				notif.remove(notification.id);
+			}
 			RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
 			return;
 		}
@@ -88,7 +92,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 			}
 		}
 
-		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);
+		ideesKDoGET(request, response);
 	}
 
 }

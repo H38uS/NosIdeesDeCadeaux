@@ -43,7 +43,7 @@ public class GroupIdea extends Table {
 			addNewAmount(amount, userId, id);
 			return id;
 		} finally {
-			MUTEX.lock();
+			MUTEX.unlock();
 		}
 	}
 

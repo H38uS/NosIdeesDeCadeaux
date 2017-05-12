@@ -151,7 +151,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 		if (text.isEmpty() && type.isEmpty() && priority == -1) {
 			logger.debug("All parameters are empty.");
 			// We can assume we wanted to do a get
-			RootingsUtils.redirectToPage(getURL, request, response);
+			RootingsUtils.rootToPage(getURL, request, response);
 			return;
 		}
 

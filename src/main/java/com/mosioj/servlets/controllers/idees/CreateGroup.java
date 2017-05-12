@@ -92,8 +92,6 @@ public class CreateGroup extends AbstractIdea {
 			return;
 		}
 
-		RootingsUtils.redirectToPage(	SuggestGroupIdea.VIEW_URL + "?" + SuggestGroupIdea.GROUP_ID_PARAM + "=" + groupId,
-										request,
-										response);
+		RootingsUtils.rootToPage(SuggestGroupIdea.VIEW_URL + "?" + SuggestGroupIdea.GROUP_ID_PARAM + "=" + groupId, request, response);
 	}
 }

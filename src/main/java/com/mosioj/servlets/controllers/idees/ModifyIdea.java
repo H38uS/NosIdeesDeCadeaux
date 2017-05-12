@@ -103,7 +103,7 @@ public class ModifyIdea extends AbstractIdea {
 
 		}
 
-		RootingsUtils.redirectToPage(url, request, response);
+		ideesKDoGET(request, response);
 	}
 
 }

@@ -36,7 +36,7 @@ public class ReserverIdee extends IdeesCadeauxServlet {
 			idees.reserver(idea, userId);
 		}
 
-		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, req, resp);
+		RootingsUtils.rootToPage(MesListes.PROTECTED_MES_LISTES, req, resp);
 	}
 
 	@Override

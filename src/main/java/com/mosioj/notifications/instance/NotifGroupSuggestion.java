@@ -30,6 +30,7 @@ public class NotifGroupSuggestion extends AbstractNotification implements NotifU
 		this.idea = idea.getTextSummary(size);
 		params.put(ParameterName.USER_ID, user.id);
 		params.put(ParameterName.IDEA_ID, idea.getId());
+		params.put(ParameterName.GROUP_ID, groupId);
 	}
 
 	/**

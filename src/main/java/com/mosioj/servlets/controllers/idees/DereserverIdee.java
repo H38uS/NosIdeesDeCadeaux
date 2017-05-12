@@ -34,7 +34,7 @@ public class DereserverIdee extends IdeesCadeauxServlet {
 
 		idees.dereserver(idea, userId);
 
-		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, req, resp);
+		RootingsUtils.rootToPage(MesListes.PROTECTED_MES_LISTES, req, resp);
 	}
 
 	@Override
