@@ -31,7 +31,7 @@
 					<c:forEach var="comment" items="${comments}" >
 						<c:choose>
 							<c:when test="${userid == comment.writtenBy.id}">
-								<div>Posté par vous</div>
+								<div>Posté par vous - le <a href="protected/supprimer_commentaire?id=${comment.id}">supprimer</a></div>
 							</c:when>
 							<c:otherwise>
 								<div>Posté par ${comment.writtenBy.name}</div>

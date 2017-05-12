@@ -129,7 +129,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * The connections to the COMMENTS table.
 	 */
-	protected Comments comments;
+	protected static Comments comments = new Comments();
 
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
@@ -149,7 +149,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		priorities = new Priorites();
 		groupForIdea = new GroupIdea();
 		userRelationsSuggestion = new UserRelationsSuggestion();
-		comments = new Comments();
 		this.policy = policy;
 	}
 

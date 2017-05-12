@@ -81,4 +81,55 @@ public class Comments extends Table {
 		return comments;
 	}
 
+	/**
+	 * 
+	 * @param commentId
+	 * @return The comment corresponding to this id.
+	 * @throws SQLException
+	 */
+	public Comment getComment(Integer commentId) throws SQLException {
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId ",
+											ID,
+											IDEA_ID,
+											TEXT,
+											UsersColumns.NAME,
+											UsersColumns.EMAIL,
+											UsersColumns.ID));
+		query.append(MessageFormat.format("  from {0} c ", TABLE_NAME));
+		query.append(MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ", Users.TABLE_NAME, UsersColumns.ID, WRITTEN_BY));
+		query.append(MessageFormat.format(" where c.{0} = ? ", ID));
+
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+
+		try {
+			ps.bindParameters(commentId);
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				if (res.next()) {
+					return new Comment(	res.getInt(ID.name()),
+										res.getString(TEXT.name()),
+										new User(	res.getInt("userId"),
+													res.getString(UsersColumns.NAME.name()),
+													res.getString(UsersColumns.EMAIL.name())),
+										res.getInt(IDEA_ID.name()));
+				}
+			}
+		} finally {
+			ps.close();
+		}
+
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param commentId
+	 * @throws SQLException
+	 */
+	public void delete(int commentId) throws SQLException {
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, ID), commentId);
+	}
+
 }
