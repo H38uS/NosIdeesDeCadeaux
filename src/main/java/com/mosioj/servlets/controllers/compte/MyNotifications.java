@@ -34,7 +34,7 @@ public class MyNotifications extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.rootToPage(URL, request, response);
+		ideesKDoGET(request, response);
 	}
 
 }

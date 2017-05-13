@@ -2,7 +2,6 @@ package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,50 +12,40 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.Categorie;
-import com.mosioj.model.Idee;
-import com.mosioj.model.Priorite;
+import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifNoIdea;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
-@WebServlet("/protected/ma_liste")
-public class MaListe extends AbstractIdea {
+@WebServlet("/protected/ajouter_idee_ami")
+public class AjouterIdeeAmi extends AbstractIdea {
 
-	/**
-	 * Class logger.
-	 */
-	private static final Logger logger = LogManager.getLogger(MaListe.class);
-	private static final long serialVersionUID = -1774633803227715931L;
+	private static final long serialVersionUID = -7053283110787519597L;
+	private static final Logger logger = LogManager.getLogger(AjouterIdeeAmi.class);
 
-	public static final String VIEW_PAGE_URL = "/protected/ma_liste.jsp";
-	public static final String PROTECTED_MA_LISTE = "/protected/ma_liste";
+	private static final String USER_PARAMETER = "id";
 
-	/**
-	 * Class constructor.
-	 */
-	public MaListe() {
-		// No security : we will see only our content.
-		super(new AllAccessToPostAndGet());
+	public static final String VIEW_PAGE_URL = "/protected/ajouter_idee_ami.jsp";
+
+	public AjouterIdeeAmi() {
+		super(new NetworkAccess(userRelations, USER_PARAMETER));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		List<Idee> ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(req));
-		List<Categorie> cat = categories.getCategories();
-		List<Priorite> prio = priorities.getPriorities();
+		Integer id = ParametersUtils.readInt(req, USER_PARAMETER);
+		User user = users.getUser(id);
 
-		req.setAttribute("idees", ideas);
-		req.setAttribute("types", cat);
-		req.setAttribute("priorites", prio);
-
+		req.setAttribute("user", user);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+
+		Integer id = ParametersUtils.readInt(request, USER_PARAMETER);
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
@@ -70,18 +59,20 @@ public class MaListe extends AbstractIdea {
 													parameters.get("text"),
 													parameters.get("type"),
 													parameters.get("priority")));
-				int userId = ParametersUtils.getUserId(request);
-				idees.addIdea(	userId,
+				idees.addIdea(	id,
 								parameters.get("text"),
 								parameters.get("type"),
 								Integer.parseInt(parameters.get("priority")),
 								parameters.get("image"));
-				notif.removeAllType(userId, new NotifNoIdea());
+				notif.removeAllType(id, new NotifNoIdea());
 			}
 
 		}
 
-		ideesKDoGET(request, response);
+		User user = users.getUser(id);
+		request.setAttribute("success", true);
+		request.setAttribute("user", user);
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
 }

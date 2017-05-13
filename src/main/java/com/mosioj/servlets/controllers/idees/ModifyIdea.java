@@ -66,7 +66,7 @@ public class ModifyIdea extends AbstractIdea {
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
 
-			fillIdeaOrErrors(request, response, url);
+			fillIdeaOrErrors(request, response);
 
 			if (!errors.isEmpty()) {
 				request.setAttribute("errors", errors);

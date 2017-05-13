@@ -57,7 +57,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
+	// FIXME : 4.5 Faire des avatars et vignettes pour la recherche de personnes
 	// FIXME : 4 pouvoir ajouter des idées à d'autres personnes
+	// FIXME : 4 notification quand on nous a ajouté une idée
 	// TODO : pouvoir ajouter des surprises
 	// TODO : controle parental
 	// TODO : auto logout en javascript

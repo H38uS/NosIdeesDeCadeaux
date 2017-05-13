@@ -19,7 +19,6 @@ public class Index extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = -8386214705432810179L;
 	private static final String VIEW_URL = "/protected/index.jsp";
-	private static final String GET_URL = "/protected/index";
 
 	public Index() {
 		super(new AllAccessToPostAndGet());
@@ -34,7 +33,7 @@ public class Index extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(GET_URL, request, response);
+		ideesKDoGET(request, response);
 	}
 
 }

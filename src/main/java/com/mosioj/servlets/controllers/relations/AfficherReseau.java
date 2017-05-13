@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.NetworkGetAndAccessToPost;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -27,14 +27,13 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 	private static final Logger logger = LogManager.getLogger(AfficherReseau.class);
 
 	private static final String USER_ID_PARAM = "id";
-	private static final String GET_URL = "/protected/afficher_reseau?id=";
 	private static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
 
 	/**
 	 * Class constructor.
 	 */
 	public AfficherReseau() {
-		super(new NetworkGetAndAccessToPost(userRelations, USER_ID_PARAM));
+		super(new NetworkAccess(userRelations, USER_ID_PARAM));
 	}
 
 	@Override
@@ -94,7 +93,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 
 		// Redirection à la page d'administration
 		request.setAttribute("accepted", accepted);
-		RootingsUtils.rootToPage(GET_URL + userId, request, response);
+		ideesKDoGET(request, response);
 	}
 
 }

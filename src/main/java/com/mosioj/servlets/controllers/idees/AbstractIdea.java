@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
-import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
@@ -77,7 +77,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 		return resizedImage;
 	}
 
-	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response, String getURL) throws ServletException {
+	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		File filePath = new File(getServletContext().getRealPath("/public/uploaded_pictures"));
 
@@ -151,7 +151,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 		if (text.isEmpty() && type.isEmpty() && priority == -1) {
 			logger.debug("All parameters are empty.");
 			// We can assume we wanted to do a get
-			RootingsUtils.rootToPage(getURL, request, response);
+			ideesKDoGET(request, response);
 			return;
 		}
 

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.NetworkGetAndAccessToPost;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -23,7 +23,7 @@ public class SuggererRelations extends IdeesCadeauxServlet {
 	private static final String DISPATCH_URL = "/protected/suggerer_relations.jsp";
 
 	public SuggererRelations() {
-		super(new NetworkGetAndAccessToPost(userRelations, USER_PARAMETER));
+		super(new NetworkAccess(userRelations, USER_PARAMETER));
 	}
 
 	@Override

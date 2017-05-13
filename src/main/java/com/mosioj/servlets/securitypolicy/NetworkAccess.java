@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.ParametersUtils;
 
-public class NetworkGetAndAccessToPost extends AllAccessToPostAndGet implements SecurityPolicy {
+public class NetworkAccess extends AllAccessToPostAndGet implements SecurityPolicy {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -22,14 +22,12 @@ public class NetworkGetAndAccessToPost extends AllAccessToPostAndGet implements 
 	 * @param userRelations
 	 * @param userParameter
 	 */
-	public NetworkGetAndAccessToPost(UserRelations userRelations, String userParameter) {
+	public NetworkAccess(UserRelations userRelations, String userParameter) {
 		this.userRelations = userRelations;
 		this.userParameter = userParameter;
 	}
 
-	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
-
+	private boolean hasAccess(HttpServletRequest request) throws SQLException {
 		Integer user = ParametersUtils.readInt(request, userParameter);
 		if (user == null) {
 			lastReason = "Aucun utilisateur trouvé en paramètre.";
@@ -37,11 +35,21 @@ public class NetworkGetAndAccessToPost extends AllAccessToPostAndGet implements 
 		}
 
 		int userId = ParametersUtils.getUserId(request);
-		boolean res = user != userId || !userRelations.associationExists(user, userId);
+		boolean res = user == userId || userRelations.associationExists(user, userId);
 		if (!res) {
 			lastReason = "Vous n'avez pas accès au réseau de cette personne.";
 		}
 		return res;
+	}
+
+	@Override
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		return hasAccess(request);
+	}
+
+	@Override
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		return hasAccess(request);
 	}
 
 }

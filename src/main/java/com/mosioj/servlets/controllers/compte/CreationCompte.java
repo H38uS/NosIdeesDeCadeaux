@@ -96,6 +96,7 @@ public class CreationCompte extends DefaultCompte {
 		}
 
 		// Les paramètres sont ok, on s'occupe de la requête
+		name = name.trim().isEmpty() ? email : name;
 		users.addNewPersonne(email, hashPwd.toString(), name);
 		session.invalidate();
 		request.login(email, pwd);

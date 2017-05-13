@@ -65,7 +65,10 @@
 								<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a>
 							</td>
 							<td>
-								<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations
+								<c:if test="${relation.second.id != userid}">
+									<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations. - 
+									Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.
+								</c:if>
 							</td>
 						</tr>
 					</c:forEach>

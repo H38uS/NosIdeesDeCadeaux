@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.NetworkGetAndAccessToPost;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -26,7 +26,7 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet {
 	private static final String URL_ERROR = "suggerer_relations_error.jsp";
 
 	public SuggestionRejoindreReseau() {
-		super(new NetworkGetAndAccessToPost(userRelations, USER_PARAMETER));
+		super(new NetworkAccess(userRelations, USER_PARAMETER));
 	}
 
 	@Override
