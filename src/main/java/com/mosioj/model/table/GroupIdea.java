@@ -10,8 +10,6 @@ import static com.mosioj.model.table.columns.GroupIdeaContentColumns.USER_ID;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.User;
@@ -23,7 +21,6 @@ public class GroupIdea extends Table {
 
 	public static final String TABLE_NAME = "GROUP_IDEA";
 	public static final String TABLE_NAME_CONTENT = "GROUP_IDEA_CONTENT";
-	private final static Lock MUTEX = new ReentrantLock(true);
 
 	/**
 	 * Creates an initial group for an idea. Does not map it to the idea.
@@ -35,16 +32,10 @@ public class GroupIdea extends Table {
 	 * @throws SQLException
 	 */
 	public int createAGroup(int total, int amount, int userId) throws SQLException {
-
-		MUTEX.lock();
-		try {
-			getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}) values (?)", TABLE_NAME, NEEDED_PRICE), total);
-			int id = getDb().selectInt("select max(" + ID + ") from " + TABLE_NAME);
-			addNewAmount(amount, userId, id);
-			return id;
-		} finally {
-			MUTEX.unlock();
-		}
+		int id = getDb().executeUpdateGeneratedKey(	MessageFormat.format("insert into {0} ({1}) values (?)", TABLE_NAME, NEEDED_PRICE),
+													total);
+		addNewAmount(amount, userId, id);
+		return id;
 	}
 
 	/**
@@ -57,15 +48,15 @@ public class GroupIdea extends Table {
 	 * @throws SQLException
 	 */
 	private int addNewAmount(int amount, int userId, int groupId) throws SQLException {
-		return getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
-														TABLE_NAME_CONTENT,
-														GROUP_ID,
-														USER_ID,
-														PRICE,
-														JOIN_DATE),
-								groupId,
-								userId,
-								amount);
+		return getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
+																			TABLE_NAME_CONTENT,
+																			GROUP_ID,
+																			USER_ID,
+																			PRICE,
+																			JOIN_DATE),
+													groupId,
+													userId,
+													amount);
 	}
 
 	/**
@@ -139,13 +130,13 @@ public class GroupIdea extends Table {
 			return true;
 		} catch (SQLException e) {
 			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? and {3} = ?",
-			                      	                     	TABLE_NAME_CONTENT,
-			                      	                     	PRICE,
-			                      	                     	USER_ID,
-			                      	                     	GROUP_ID),
-			                      	newAmount,
-			                      	userId,
-			                      	groupId);
+															TABLE_NAME_CONTENT,
+															PRICE,
+															USER_ID,
+															GROUP_ID),
+									newAmount,
+									userId,
+									groupId);
 			return false;
 		}
 	}

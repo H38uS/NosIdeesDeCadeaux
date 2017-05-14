@@ -4,12 +4,12 @@ import static com.mosioj.model.table.columns.IdeeColumns.GROUPE_KDO_ID;
 import static com.mosioj.model.table.columns.IdeeColumns.ID;
 import static com.mosioj.model.table.columns.IdeeColumns.IDEE;
 import static com.mosioj.model.table.columns.IdeeColumns.IMAGE;
+import static com.mosioj.model.table.columns.IdeeColumns.MODIFICATION_DATE;
 import static com.mosioj.model.table.columns.IdeeColumns.OWNER;
 import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
-import static com.mosioj.model.table.columns.IdeeColumns.TYPE;
-import static com.mosioj.model.table.columns.IdeeColumns.MODIFICATION_DATE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE_LE;
+import static com.mosioj.model.table.columns.IdeeColumns.TYPE;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,6 +29,7 @@ import com.mosioj.model.table.columns.GroupIdeaContentColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
+import com.mosioj.utils.database.PreparedStatementIdKdoInserter;
 import com.mosioj.viewhelper.Escaper;
 
 public class Idees extends Table {
@@ -287,7 +288,7 @@ public class Idees extends Table {
 	 * @param priorite
 	 * @throws SQLException
 	 */
-	public void addIdea(int ownerId, String text, String type, int priorite, String image) throws SQLException {
+	public int addIdea(int ownerId, String text, String type, int priorite, String image) throws SQLException {
 
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
@@ -302,15 +303,18 @@ public class Idees extends Table {
 		insert.append(") values (?, ?, ?, ?, now(), ?)");
 
 		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
-		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), insert.toString());
+		PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), insert.toString());
 		try {
 			text = Escaper.textToHtml(text);
 			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}]", ownerId, text, type, image, priorite));
 			ps.bindParameters(ownerId, text, type, image, priorite);
-			ps.execute();
+
+			return ps.executeUpdate();
+
 		} finally {
 			ps.close();
 		}
+
 	}
 
 	/**
@@ -429,7 +433,8 @@ public class Idees extends Table {
 								groupId);
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
 								groupId);
-		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", Comments.TABLE_NAME, CommentsColumns.IDEA_ID), id);
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", Comments.TABLE_NAME, CommentsColumns.IDEA_ID),
+								id);
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ? ", TABLE_NAME, OWNER, ID), userId, id);
 	}
 
@@ -450,7 +455,8 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void touch(int ideaId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = now() where {2} = ?", TABLE_NAME, MODIFICATION_DATE, ID), ideaId);
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = now() where {2} = ?", TABLE_NAME, MODIFICATION_DATE, ID),
+								ideaId);
 	}
 
 	/**

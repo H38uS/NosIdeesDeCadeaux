@@ -20,7 +20,7 @@ public class DataSourceIdKDo {
 	 * The internal datasource.
 	 */
 	private static DataSource ds;
-	
+
 	/**
 	 * 
 	 * @return A new connection. Warning : it must be closed.
@@ -29,7 +29,7 @@ public class DataSourceIdKDo {
 	protected Connection getAConnection() throws SQLException {
 		return getDatasource().getConnection();
 	}
-	
+
 	/**
 	 * 
 	 * @param query The sql query.
@@ -81,6 +81,25 @@ public class DataSourceIdKDo {
 		}
 
 		return retour;
+	}
+
+	/**
+	 * Execute a DML statement : insert / update / delete.
+	 * 
+	 * @param query The SQL query.
+	 * @param parameters Optional bindable parameters.
+	 * @return The generated key value.
+	 * @throws SQLException
+	 */
+	public int executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
+
+		PreparedStatementIdKdoInserter statement = new PreparedStatementIdKdoInserter(this, query);
+		try {
+			statement.bindParameters(parameters);
+			return statement.executeUpdate();
+		} finally {
+			statement.close();
+		}
 	}
 
 	/**

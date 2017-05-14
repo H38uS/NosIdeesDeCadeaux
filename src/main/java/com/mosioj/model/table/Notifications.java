@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +23,7 @@ import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationFactory;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
+import com.mosioj.utils.database.PreparedStatementIdKdoInserter;
 
 public class Notifications extends Table {
 
@@ -32,8 +31,6 @@ public class Notifications extends Table {
 	public static final String TABLE_PARAMS = "NOTIFICATION_PARAMETERS";
 
 	private final Logger logger = LogManager.getLogger(Notifications.class);
-
-	private final static Lock MUTEX = new ReentrantLock(true);
 
 	/**
 	 * Save and send a notification.
@@ -49,15 +46,12 @@ public class Notifications extends Table {
 
 		// Insertion en base
 		// TODO récupérer si on doit le faire
-		MUTEX.lock();
-		PreparedStatementIdKdo ps = null;
+		PreparedStatementIdKdoInserter ps = null;
 		try {
-			ps = new PreparedStatementIdKdo(getDb(),
-											"insert into notifications (owner, text, type, creation_date) values (?, ?, ?, now())");
+			ps = new PreparedStatementIdKdoInserter(getDb(),
+													"insert into notifications (owner, text, type, creation_date) values (?, ?, ?, now())");
 			ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
-			ps.execute();
-
-			id = getDb().selectInt("select max(" + ID + ") from " + TABLE_NAME + " where " + OWNER + " = ?", userId);
+			id = ps.executeUpdate();
 
 		} catch (SQLException e) {
 			logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
@@ -72,14 +66,14 @@ public class Notifications extends Table {
 			Map<ParameterName, Object> notifParams = notif.getParameters();
 			for (ParameterName key : notifParams.keySet()) {
 				try {
-					ps = new PreparedStatementIdKdo(getDb(),
+					ps = new PreparedStatementIdKdoInserter(getDb(),
 													MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, ?)",
 																			TABLE_PARAMS,
 																			NOTIFICATION_ID,
 																			PARAMETER_NAME,
 																			PARAMETER_VALUE));
 					ps.bindParameters(id, key, notifParams.get(key).toString());
-					ps.execute();
+					ps.executeUpdate();
 
 				} catch (SQLException e) {
 					logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
@@ -90,7 +84,6 @@ public class Notifications extends Table {
 				}
 			}
 		}
-		MUTEX.unlock();
 
 		// Envoie de la notification par email si besoin
 		// TODO récupérer si on doit le faire

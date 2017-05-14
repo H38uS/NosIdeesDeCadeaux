@@ -40,20 +40,20 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public void addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, now(), ?)",
-														TABLE_NAME,
-														EMAIL,
-														PASSWORD,
-														CREATION_DATE,
-														NAME),
-								email,
-								digestedPwd,
-								name);
-		getDb().executeUpdate(	MessageFormat.format(	"insert into user_roles ({0},{1}) values (?, ?)",
-														UserRolesColumns.EMAIL,
-														UserRolesColumns.ROLE),
-								email,
-								"ROLE_USER");
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, now(), ?)",
+																	TABLE_NAME,
+																	EMAIL,
+																	PASSWORD,
+																	CREATION_DATE,
+																	NAME),
+											email,
+											digestedPwd,
+											name);
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into user_roles ({0},{1}) values (?, ?)",
+																	UserRolesColumns.EMAIL,
+																	UserRolesColumns.ROLE),
+											email,
+											"ROLE_USER");
 	}
 
 	/**
@@ -65,12 +65,7 @@ public class Users extends Table {
 	public User getUser(int id) throws SQLException {
 
 		User user = null;
-		String query = MessageFormat.format("select {0}, {1}, {2}, {3} from {4} where {0} = ?",
-											ID,
-											NAME,
-											EMAIL,
-											BIRTHDAY,
-											TABLE_NAME);
+		String query = MessageFormat.format("select {0}, {1}, {2}, {3} from {4} where {0} = ?", ID, NAME, EMAIL, BIRTHDAY, TABLE_NAME);
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query);
 		try {
 			ps.bindParameters(id);
@@ -97,8 +92,7 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public int getId(String email) throws SQLException {
-		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL),
-									email);
+		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL), email);
 	}
 
 	/**

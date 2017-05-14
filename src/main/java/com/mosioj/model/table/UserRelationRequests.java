@@ -43,7 +43,7 @@ public class UserRelationRequests extends Table {
 	 * @throws SQLException
 	 */
 	public void insert(int sent_by, int sent_to) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
 														TABLE_NAME,
 														SENT_BY_USER,
 														SENT_TO_USER,

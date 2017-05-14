@@ -163,14 +163,14 @@ public class UserRelations extends Table {
 	 * @throws SQLException
 	 */
 	public void addAssociation(int userThatSendTheRequest, int userThatReceiveTheRequest) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
 														TABLE_NAME,
 														FIRST_USER,
 														SECOND_USER,
 														RELATION_DATE),
 								userThatSendTheRequest,
 								userThatReceiveTheRequest);
-		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
 														TABLE_NAME,
 														FIRST_USER,
 														SECOND_USER,

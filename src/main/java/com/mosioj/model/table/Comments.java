@@ -29,15 +29,15 @@ public class Comments extends Table {
 	 * @throws SQLException
 	 */
 	public void saveComment(int userId, Integer ideaId, String text) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
-														TABLE_NAME,
-														IDEA_ID,
-														TEXT,
-														WRITTEN_BY,
-														WRITTEN_ON),
-								ideaId,
-								text,
-								userId);
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
+																	TABLE_NAME,
+																	IDEA_ID,
+																	TEXT,
+																	WRITTEN_BY,
+																	WRITTEN_ON),
+											ideaId,
+											text,
+											userId);
 	}
 
 	/**
