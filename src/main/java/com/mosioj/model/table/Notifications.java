@@ -39,7 +39,7 @@ public class Notifications extends Table {
 	 * @param notif The notification.
 	 * @throws SQLException
 	 */
-	public void addNotification(int userId, AbstractNotification notif) {
+	public void addNotification(int userId, AbstractNotification notif) throws SQLException {
 
 		logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
 		int id = -1;
@@ -67,16 +67,15 @@ public class Notifications extends Table {
 			for (ParameterName key : notifParams.keySet()) {
 				try {
 					ps = new PreparedStatementIdKdoInserter(getDb(),
-													MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, ?)",
-																			TABLE_PARAMS,
-																			NOTIFICATION_ID,
-																			PARAMETER_NAME,
-																			PARAMETER_VALUE));
+															MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, ?)",
+																					TABLE_PARAMS,
+																					NOTIFICATION_ID,
+																					PARAMETER_NAME,
+																					PARAMETER_VALUE));
 					ps.bindParameters(id, key, notifParams.get(key).toString());
 					ps.executeUpdate();
+					ps.close();
 
-				} catch (SQLException e) {
-					logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
 				} finally {
 					if (ps != null) {
 						ps.close();
@@ -94,20 +93,17 @@ public class Notifications extends Table {
 	 * 
 	 * @param userId
 	 * @param notif
+	 * @throws SQLException 
 	 */
-	public void removeAllType(int userId, AbstractNotification notif) {
+	public void removeAllType(int userId, AbstractNotification notif) throws SQLException {
 
 		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notif.getType(), userId));
 
-		try {
-			getDb().executeUpdate("delete from NOTIFICATIONS where owner = ? and type = ?", userId, notif.getType());
-			getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-														NOTIFICATION_ID,
-														ID,
-														TABLE_NAME));
-		} catch (SQLException e) {
-			logger.error("Error while deleting " + notif.getClass() + " : " + e.getMessage());
-		}
+		getDb().executeUpdate("delete from NOTIFICATIONS where owner = ? and type = ?", userId, notif.getType());
+		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
+													NOTIFICATION_ID,
+													ID,
+													TABLE_NAME));
 	}
 
 	public void remove(int notificationId) throws SQLException {

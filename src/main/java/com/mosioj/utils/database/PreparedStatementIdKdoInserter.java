@@ -22,9 +22,11 @@ public class PreparedStatementIdKdoInserter implements Closeable {
 	@Override
 	public void close() {
 		try {
-			Connection con = ps.getConnection();
-			ps.close();
-			con.close();
+			if (!ps.isClosed()) {
+				Connection con = ps.getConnection();
+				ps.close();
+				con.close();
+			}
 		} catch (SQLException e) {
 			LOGGER.error("Error while closing the statement: " + e.getMessage());
 			e.printStackTrace();
