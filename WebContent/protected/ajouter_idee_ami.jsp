@@ -4,8 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_proctected>
 		<jsp:body>
-		<c:if test="${not empty success}">
-			Votre idée a bien été créé.
+		<c:if test="${not empty text}">
+			Votre idée "${text}" a bien été créé.
 		</c:if>
 		<h2>Ajouter une nouvelle idée à ${user.name}</h2>
 		<div>

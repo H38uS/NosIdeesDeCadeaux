@@ -12,7 +12,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
 import com.mosioj.model.User;
+import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
@@ -59,18 +61,21 @@ public class AjouterIdeeAmi extends AbstractIdea {
 													parameters.get("text"),
 													parameters.get("type"),
 													parameters.get("priority")));
-				idees.addIdea(	id,
-								parameters.get("text"),
-								parameters.get("type"),
-								Integer.parseInt(parameters.get("priority")),
-								parameters.get("image"));
+				int ideaId = idees.addIdea(	id,
+											parameters.get("text"),
+											parameters.get("type"),
+											Integer.parseInt(parameters.get("priority")),
+											parameters.get("image"));
+				Idee idea = idees.getIdea(ideaId);
+				request.setAttribute("text", idea.getTextSummary(50));
+				request.setAttribute("idea", idea);
+				notif.addNotification(id, new NotifIdeaAddedByFriend(users.getUser(ParametersUtils.getUserId(request)), idea));
 				notif.removeAllType(id, new NotifNoIdea());
 			}
 
 		}
 
 		User user = users.getUser(id);
-		request.setAttribute("success", true);
 		request.setAttribute("user", user);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
