@@ -1,9 +1,11 @@
 package com.mosioj.model;
 
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
@@ -50,7 +52,7 @@ public class Idee {
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getBookingDate() {
 		if (bookedOn == null)
 			return null;
@@ -82,7 +84,7 @@ public class Idee {
 		if (initial.length() > maxLength) {
 			return initial.substring(0, maxLength - 3) + "...";
 		}
-		
+
 		return initial;
 	}
 
@@ -100,6 +102,14 @@ public class Idee {
 
 	public String getImage() {
 		return image;
+	}
+
+	public String getImageSrcSmall() {
+		return MessageFormat.format("{0}/small/{1}", AbstractIdea.IDEA_PICTURES_PATH.substring(1), image);
+	}
+
+	public String getImageSrcLarge() {
+		return MessageFormat.format("{0}/large/{1}", AbstractIdea.IDEA_PICTURES_PATH.substring(1), image);
 	}
 
 	public Categorie getCategory() {

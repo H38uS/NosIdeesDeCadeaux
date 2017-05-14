@@ -6,7 +6,7 @@
 		<jsp:body>
 		<h2>Informations générales</h2>
 		
-		<form action="protected/mon_compte" method="post">
+		<form action="protected/mon_compte?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 			<table>
 				<tr>
 					<td>Email</td>
@@ -26,6 +26,23 @@
 						<input type="date" name="birthday" placeholder="aaaa-mm-jj" value="${user.birthday}" title="Utilisez le format suivant: aaaa-mm-jj (année sur 4 chiffres, tiret, mois sur 2 chiffres, tiret, jour sur deux chiffres)" >
 					</td>
 				</tr>
+				<c:if test="${not empty user.avatar}">
+					<tr>
+						<td>Avatar actuel</td>
+						<td>
+							<img src="${user.avatarSrcSmall}" width="150" />
+							<input type="hidden" name="old_picture" value="${user.avatar}" />
+						</td>
+					</tr>
+				</c:if>
+				<tr>
+					<td>
+						<label for="addImage">Choisissez un nouvel avatar</label>
+					</td>
+					<td>
+						<input id="addImage" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+					</td>
+				</tr>
 			</table>
 			
 			<div class="errors">
@@ -40,7 +57,6 @@
 			</div>
 			
 			<input type="hidden" name="modif_info_gen" value="true">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			<input type="submit" name="submit" value="Sauvegarder">
 		</form>
 		

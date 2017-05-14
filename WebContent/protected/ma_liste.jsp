@@ -81,7 +81,7 @@
 						<td>${idee.html}</td>
 						<td>
 							<c:if test="${not empty idee.image}">
-								<img src="public/uploaded_pictures/small/${idee.image}" width="150" />
+								<img src="${idee.imageSrcSmall}" width="150" />
 							</c:if>
 						</td>
 						<td>

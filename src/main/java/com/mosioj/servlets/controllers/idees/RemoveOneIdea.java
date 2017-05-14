@@ -1,5 +1,6 @@
 package com.mosioj.servlets.controllers.idees;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class RemoveOneIdea extends AbstractIdea {
 				}
 			}
 			String image = idea.getImage();
-			removeUploadedImage(image);
+			removeUploadedImage(new File(getServletContext().getRealPath(IDEA_PICTURES_PATH)), image);
 		}
 
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);

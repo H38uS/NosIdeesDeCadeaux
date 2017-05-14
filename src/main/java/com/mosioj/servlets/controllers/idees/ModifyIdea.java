@@ -1,5 +1,6 @@
 package com.mosioj.servlets.controllers.idees;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -83,7 +84,8 @@ public class ModifyIdea extends AbstractIdea {
 				} else {
 					// Modification de l'image
 					// On supprime la précédente
-					removeUploadedImage(old);
+					File path = new File(getServletContext().getRealPath(IDEA_PICTURES_PATH));
+					removeUploadedImage(path, old);
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
 

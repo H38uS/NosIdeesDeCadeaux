@@ -1,5 +1,6 @@
 package com.mosioj.servlets.controllers.compte;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,8 +26,11 @@ public class MonCompte extends DefaultCompte {
 
 	private static final long serialVersionUID = -101081965549681889L;
 	private static final Logger logger = LogManager.getLogger(MonCompte.class);
-	
+
+	public static final String AVATARS_PATH = "/public/uploaded_pictures/avatars";
 	public static final String VIEW_PAGE_URL = "/protected/mon_compte.jsp";
+
+	private static File filePath;
 
 	public MonCompte() {
 		super(new AllAccessToPostAndGet());
@@ -38,40 +43,61 @@ public class MonCompte extends DefaultCompte {
 		User current = users.getUser(userId);
 		req.setAttribute("user", current);
 
-		// TODO pouvoir décider pour chaque notification si on l'active où non
-
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		String info = ParametersUtils.readIt(request, "modif_info_gen");
-		if ("true".equals(info)) {
-			String email = ParametersUtils.readAndEscape(request, "email").trim();
-			String name = ParametersUtils.readAndEscape(request, "name").trim();
+		// Check that we have a file upload request
+		if (ServletFileUpload.isMultipartContent(request)) {
 
-			int userId = ParametersUtils.getUserId(request);
-			List<String> errors = checkEmail(getValidatorEmail(email), userId);
-			request.setAttribute("errors_info_gen", errors);
-
-			String birthday = ParametersUtils.readAndEscape(request, "birthday");
-			logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
-			ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
-			val.checkDateFormat();
-			errors.addAll(val.getErrors());
-
-			User user = users.getUser(userId);
-			user.email = email;
-			user.name = name;
-			user.birthday = getAsDate(birthday);
-			request.setAttribute("user", user);
-
-			if (errors.isEmpty()) {
-				users.update(user);
+			if (filePath == null) {
+				filePath = new File(getServletContext().getRealPath(AVATARS_PATH));
+				logger.info(MessageFormat.format("Setting file path to: {0}", filePath.getAbsolutePath()));
+				filePath.mkdirs();
 			}
+
+			readMultiFormParameters(request, filePath);
+			String info = parameters.get("modif_info_gen");
+			if ("true".equals(info)) {
+				String email = parameters.get("email").trim();
+				String name = parameters.get("name").trim();
+
+				int userId = ParametersUtils.getUserId(request);
+				List<String> errors = checkEmail(getValidatorEmail(email), userId);
+				request.setAttribute("errors_info_gen", errors);
+
+				String birthday = parameters.get("birthday");
+				logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
+				ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
+				val.checkDateFormat();
+				errors.addAll(val.getErrors());
+
+				User user = users.getUser(userId);
+				user.email = email;
+				user.name = name;
+				user.birthday = getAsDate(birthday);
+				
+				String image = parameters.get("image");
+				String old = parameters.get("old_picture");
+				if (image == null || image.isEmpty()) {
+					image = old;
+				} else {
+					// Modification de l'image
+					// On supprime la précédente
+					removeUploadedImage(filePath, old);
+					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
+				}
+				user.avatar = image;
+				
+				if (errors.isEmpty()) {
+					users.update(user);
+				}
+			}
+
 		}
 
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
+		ideesKDoGET(request, response);
 	}
 }

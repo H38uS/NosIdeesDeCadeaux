@@ -90,12 +90,12 @@ public class UserRelations extends Table {
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
-		query.append("select b.{0}, b.{1}, b.{2}, b.{3}, b.days_before_next_year_birthday, b.days_before_birthday ");
+		query.append("select b.{0}, b.{1}, b.{2}, b.{3}, b.{8}, b.days_before_next_year_birthday, b.days_before_birthday ");
 		query.append("from ( ");
 
-		query.append("select a.{0}, a.{1}, a.{2}, a.{3}, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()) +1, ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_next_year_birthday, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()), ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_birthday ");
+		query.append("select a.{0}, a.{1}, a.{2}, a.{3}, a.{8}, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()) +1, ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_next_year_birthday, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()), ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_birthday ");
 		query.append("from ( ");
-		query.append("select u.{0}, u.{1}, u.{2}, u.{3} ");
+		query.append("select u.{0}, u.{1}, u.{2}, u.{3}, u.{8} ");
 		query.append("from {4} urr ");
 		query.append("left join {5} u on u.{0} = urr.{7} ");
 		query.append("where {6} = ? ");
@@ -114,7 +114,8 @@ public class UserRelations extends Table {
 													TABLE_NAME,
 													Users.TABLE_NAME,
 													FIRST_USER,
-													SECOND_USER);
+													SECOND_USER,
+													UsersColumns.AVATAR);
 			logger.trace(realQuery);
 			ps = new PreparedStatementIdKdo(getDb(), realQuery);
 			ps.bindParameters(userId, inNbDaysMax, inNbDaysMax);
@@ -126,6 +127,7 @@ public class UserRelations extends Table {
 										res.getString(UsersColumns.NAME.name()),
 										res.getString(UsersColumns.EMAIL.name()),
 										res.getDate(UsersColumns.BIRTHDAY.name()),
+										res.getString(UsersColumns.AVATAR.name()),
 										res.getInt("days_before_birthday") < 0 ? res.getInt("days_before_next_year_birthday")
 												: res.getInt("days_before_birthday")));
 				}

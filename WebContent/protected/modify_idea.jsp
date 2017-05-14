@@ -62,7 +62,7 @@
 							<tr>
 								<td>Image actuelle</td>
 								<td>
-									<img src="public/uploaded_pictures/small/${idea.image}" width="150" />
+									<img src="${idea.imageSrcSmall}" width="150" />
 									<input type="hidden" name="old_picture" value="${idea.image}" />
 								</td>
 							</tr>

@@ -1,8 +1,11 @@
 package com.mosioj.model;
 
 import java.sql.Date;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mosioj.servlets.controllers.compte.MonCompte;
 
 public class User {
 
@@ -13,25 +16,28 @@ public class User {
 	public boolean isInMyNetwork;
 	public int nbDaysBeforeBirthday;
 	public String freeComment;
-	
+	public String avatar;
+
 	private final List<Idee> ideas = new ArrayList<Idee>();
-	
+
 	public User(int id, String name, String email) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.birthday = null;
 	}
 
-	public User(int id, String name, String email, Date birthday) {
-		this.id = id;
-		this.name = name;
-		this.email = email;
+	public User(int id, String name, String email, String avatar) {
+		this(id, name, email);
+		this.avatar = avatar;
+	}
+
+	public User(int id, String name, String email, Date birthday, String avatar) {
+		this(id, name, email, avatar);
 		this.birthday = birthday;
 	}
 
-	public User(int id, String name, String email, Date birthday, int nbDaysBeforeBirthday) {
-		this(id, name, email, birthday);
+	public User(int id, String name, String email, Date birthday, String avatar, int nbDaysBeforeBirthday) {
+		this(id, name, email, birthday, avatar);
 		this.nbDaysBeforeBirthday = nbDaysBeforeBirthday;
 	}
 
@@ -42,11 +48,23 @@ public class User {
 	public Date getBirthday() {
 		return birthday;
 	}
+	
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public String getAvatarSrcSmall() {
+		return MessageFormat.format("{0}/small/{1}", MonCompte.AVATARS_PATH.substring(1), avatar);
+	}
+
+	public String getAvatarSrcLarge() {
+		return MessageFormat.format("{0}/large/{1}", MonCompte.AVATARS_PATH.substring(1), avatar);
+	}
 
 	public int getNbDaysBeforeBirthday() {
 		return nbDaysBeforeBirthday;
 	}
-	
+
 	/**
 	 * 
 	 * @return The id of the person.
@@ -74,7 +92,7 @@ public class User {
 	public void addIdeas(List<Idee> ownerIdeas) {
 		ideas.addAll(ownerIdeas);
 	}
-	
+
 	public List<Idee> getIdeas() {
 		return ideas;
 	}
@@ -101,5 +119,5 @@ public class User {
 			return false;
 		return true;
 	}
-	
+
 }

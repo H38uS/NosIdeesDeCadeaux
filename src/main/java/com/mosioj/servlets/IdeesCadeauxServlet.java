@@ -1,5 +1,10 @@
 package com.mosioj.servlets;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -8,14 +13,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,6 +70,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
+	// FIXME : 4 Pouvoir uploader un avatar, en mettre un par défaut
 	// FIXME : 4.5 Faire des avatars et vignettes pour la recherche de personnes
 	// TODO : pouvoir ajouter des surprises
 	// TODO : controle parental
@@ -66,13 +80,16 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
 	// TODO : notification quand on envoie une demande d'amis
-	
+
 	// TODO : notification quand un nouveau commentaire est posté sur une idée où on participe
 	// TODO : configuration des notifications : ne pas en recevoir, mail + site, mail, site
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
 	private static final List<String> sessionNamesToKeep = new ArrayList<String>();
+
+	// Maximum 10M
+	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
@@ -135,6 +152,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
 	private final SecurityPolicy policy;
+	protected Map<String, String> parameters;
 
 	/**
 	 * Class constructor.
@@ -239,7 +257,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			// Converting session parameters to attributes
 			HttpSession session = req.getSession();
 			Enumeration<String> names = session.getAttributeNames();
-			
+
 			while (names.hasMoreElements()) {
 
 				String name = names.nextElement();
@@ -318,6 +336,100 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 		java.sql.Date sql = new java.sql.Date(parsed.getTime());
 		return sql;
+	}
+
+	/**
+	 * 
+	 * @param originalImage
+	 * @param type
+	 * @return
+	 */
+	protected BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth) {
+
+		int width = originalImage.getWidth();
+		int height = originalImage.getHeight();
+
+		int newWidth = width > maxWidth ? maxWidth : width;
+		int newHeight = (newWidth * height) / width;
+
+		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+		g.dispose();
+		g.setComposite(AlphaComposite.Src);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		return resizedImage;
+	}
+
+	protected void readMultiFormParameters(HttpServletRequest request, File filePath) throws ServletException {
+
+		parameters = new HashMap<String, String>();
+
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		// maximum size that will be stored in memory
+		factory.setSizeThreshold(MAX_MEM_SIZE);
+		factory.setRepository(filePath);
+
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		upload.setSizeMax(MAX_MEM_SIZE);
+
+		String image = "";
+
+		try {
+			for (FileItem fi : upload.parseRequest(request)) {
+				if (!fi.isFormField()) {
+					String fileName = fi.getName() == null ? "" : new String(fi.getName().getBytes("ISO-8859-1"), "UTF-8");
+					if (!fileName.trim().isEmpty() && image.isEmpty()) {
+
+						fileName = StringEscapeUtils.escapeHtml4(fileName);
+						Random r = new Random();
+						int id = r.nextInt();
+						int maxSize = 30;
+						if (fileName.length() > maxSize) {
+							fileName = fileName.substring(0, maxSize - 4) + "_" + id + fileName.substring(fileName.length() - 4);
+						} else {
+							fileName = fileName.substring(0, fileName.length() - 4) + "_" + id
+									+ fileName.substring(fileName.length() - 4);
+						}
+						image = fileName;
+						File file = new File(filePath, "large/" + fileName);
+						logger.debug("Uploading file : " + file);
+						fi.write(file);
+
+						// Creation de la vignette
+						BufferedImage originalImage = ImageIO.read(file);
+						int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+
+						BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, 400); // TODO faire un max height aussi
+						ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
+
+						if (originalImage.getWidth() > 1920) {
+							resizeImageJpg = resizeImage(originalImage, originalType, 1920);
+							ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
+						}
+
+						parameters.put("image", image);
+					}
+				} else {
+					String val = fi.getString() == null ? "" : new String(fi.getString().getBytes("ISO-8859-1"), "UTF-8");
+					parameters.put(fi.getFieldName(), StringEscapeUtils.escapeHtml4(val));
+				}
+			}
+		} catch (Exception e) {
+			throw new ServletException(e.getMessage());
+		}
+	}
+
+	protected void removeUploadedImage(File path, String image) {
+		if (image != null && !image.isEmpty()) {
+			File small = new File(path, "small/" + image);
+			small.delete();
+			File large = new File(path, "large/" + image);
+			large.delete();
+		}
 	}
 
 	static {

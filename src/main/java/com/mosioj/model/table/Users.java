@@ -6,6 +6,7 @@ import static com.mosioj.model.table.columns.UsersColumns.ID;
 import static com.mosioj.model.table.columns.UsersColumns.NAME;
 import static com.mosioj.model.table.columns.UsersColumns.PASSWORD;
 import static com.mosioj.model.table.columns.UsersColumns.BIRTHDAY;
+import static com.mosioj.model.table.columns.UsersColumns.AVATAR;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,7 +66,13 @@ public class Users extends Table {
 	public User getUser(int id) throws SQLException {
 
 		User user = null;
-		String query = MessageFormat.format("select {0}, {1}, {2}, {3} from {4} where {0} = ?", ID, NAME, EMAIL, BIRTHDAY, TABLE_NAME);
+		String query = MessageFormat.format("select {0}, {1}, {2}, {3}, {5} from {4} where {0} = ?",
+											ID,
+											NAME,
+											EMAIL,
+											BIRTHDAY,
+											TABLE_NAME,
+											AVATAR);
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query);
 		try {
 			ps.bindParameters(id);
@@ -75,7 +82,8 @@ public class Users extends Table {
 					user = new User(res.getInt(ID.name()),
 									res.getString(NAME.name()),
 									res.getString(EMAIL.name()),
-									res.getDate(BIRTHDAY.name()));
+									res.getDate(BIRTHDAY.name()),
+									res.getString(AVATAR.name()));
 				}
 			}
 		} finally {
@@ -102,16 +110,15 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public void update(User user) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ?, {3} = ? where {4} = ?",
-														TABLE_NAME,
-														EMAIL,
-														NAME,
-														BIRTHDAY,
-														ID),
-								user.email,
-								user.name,
-								user.birthday,
-								user.id);
+		LOGGER.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
+		String query = MessageFormat.format("update {0} set {1} = ?, {2} = ?, {3} = ?, {5} = ? where {4} = ?",
+											TABLE_NAME,
+											EMAIL,
+											NAME,
+											BIRTHDAY,
+											ID,
+											AVATAR);
+		getDb().executeUpdate(query, user.email, user.name, user.birthday, user.avatar, user.id);
 	}
 
 	public List<User> getUsers(String nameToMatch) throws SQLException {
@@ -124,13 +131,14 @@ public class Users extends Table {
 		nameToMatch = nameToMatch.replaceAll("_", "!_");
 		nameToMatch = nameToMatch.replaceAll("\\[", "![");
 
-		String query = MessageFormat.format("select {0},{1},{2} from {3} where {4} like ? ESCAPE ''!'' or {5} like ? ESCAPE ''!''",
+		String query = MessageFormat.format("select {0},{1},{2},{5} from {3} where {4} like ? ESCAPE ''!'' or {5} like ? ESCAPE ''!''",
 											ID,
 											NAME,
 											EMAIL,
 											TABLE_NAME,
 											NAME,
-											EMAIL);
+											EMAIL,
+											AVATAR);
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
@@ -142,7 +150,10 @@ public class Users extends Table {
 
 			ResultSet res = ps.getResultSet();
 			while (res.next()) {
-				users.add(new User(res.getInt(ID.name()), res.getString(NAME.name()), res.getString(EMAIL.name())));
+				users.add(new User(	res.getInt(ID.name()),
+									res.getString(NAME.name()),
+									res.getString(EMAIL.name()),
+									res.getString(AVATAR.name())));
 			}
 
 		} finally {
