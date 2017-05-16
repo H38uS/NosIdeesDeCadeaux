@@ -131,7 +131,7 @@ public class Users extends Table {
 		nameToMatch = nameToMatch.replaceAll("_", "!_");
 		nameToMatch = nameToMatch.replaceAll("\\[", "![");
 
-		String query = MessageFormat.format("select {0},{1},{2},{5} from {3} where {4} like ? ESCAPE ''!'' or {5} like ? ESCAPE ''!''",
+		String query = MessageFormat.format("select {0},{1},{2},{6} from {3} where {4} like ? ESCAPE ''!'' or {5} like ? ESCAPE ''!''",
 											ID,
 											NAME,
 											EMAIL,

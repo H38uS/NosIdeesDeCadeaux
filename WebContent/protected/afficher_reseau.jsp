@@ -53,24 +53,23 @@
 			</c:when>
 			<c:otherwise>
 				<table>
-					<thead>
-						<tr>
-							<th>Nom de la personne</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
+					<c:set var="count" value="0" scope="page" />
 					<c:forEach var="relation" items="${relations}">
-						<tr>
+						<c:if test="${count % 4 == 0}">
+							<tr>
+						</c:if>
 							<td>
-								<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a>
-							</td>
-							<td>
+								<img src="${relation.second.avatarSrcSmall}"><br/>
+								<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a><br/>
 								<c:if test="${relation.second.id != userid}">
-									<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations. - 
+									<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
 									Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.
 								</c:if>
 							</td>
-						</tr>
+						<c:set var="count" value="${count + 1}" scope="page"/>
+						<c:if test="${count % 4 == 0}">
+							</tr>
+						</c:if>
 					</c:forEach>
 				</table>
 			</c:otherwise>

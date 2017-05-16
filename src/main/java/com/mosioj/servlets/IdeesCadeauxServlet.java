@@ -70,8 +70,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
-	// FIXME : 4 Pouvoir uploader un avatar, en mettre un par défaut
-	// FIXME : 4.5 Faire des avatars et vignettes pour la recherche de personnes
 	// TODO : pouvoir ajouter des surprises
 	// TODO : controle parental
 	// TODO : auto logout en javascript
@@ -84,6 +82,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : notification quand un nouveau commentaire est posté sur une idée où on participe
 	// TODO : configuration des notifications : ne pas en recevoir, mail + site, mail, site
 
+	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
 	private static final List<String> sessionNamesToKeep = new ArrayList<String>();
@@ -344,13 +343,18 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @param type
 	 * @return
 	 */
-	protected BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth) {
+	protected BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth, int maxHeight) {
 
 		int width = originalImage.getWidth();
 		int height = originalImage.getHeight();
 
 		int newWidth = width > maxWidth ? maxWidth : width;
 		int newHeight = (newWidth * height) / width;
+		
+		if (newHeight > maxHeight) {
+			newWidth = (maxHeight * newWidth) / newHeight;
+			newHeight = maxHeight;
+		}
 
 		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, type);
 		Graphics2D g = resizedImage.createGraphics();
@@ -403,11 +407,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 						BufferedImage originalImage = ImageIO.read(file);
 						int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 
-						BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, 400); // TODO faire un max height aussi
+						BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_WIDTH, MAX_WIDTH);
 						ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
 
-						if (originalImage.getWidth() > 1920) {
-							resizeImageJpg = resizeImage(originalImage, originalType, 1920);
+						if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
+							resizeImageJpg = resizeImage(originalImage, originalType, 1920, 1080);
 							ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
 						}
 

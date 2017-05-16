@@ -28,7 +28,7 @@ public class User {
 
 	public User(int id, String name, String email, String avatar) {
 		this(id, name, email);
-		this.avatar = avatar;
+		this.avatar = avatar == null ? "default.png" : avatar;
 	}
 
 	public User(int id, String name, String email, Date birthday, String avatar) {

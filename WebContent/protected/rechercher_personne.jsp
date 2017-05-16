@@ -43,32 +43,32 @@
 		<div>
 			<c:if test="${not empty users}">
 				<table>
-					<thead>
-						<tr>
-							<th>Nom de la personne</th>
-							<th>Email</th>
-							<th>Action</th>
-						</tr>
-					</thead>
+				<c:set var="count" value="0" scope="page" />
 				<c:forEach var="user" items="${users}">
-					<tr>
-						<td>${user.name}</td>
-						<td>${user.email}</td>
-						<td>
-							<c:choose>
-								<c:when test="${user.isInMyNetwork}">
-									${user.name} fait déjà parti de vos amis.
-								</c:when>
-								<c:otherwise>
-									<form method="POST" action="protected/demande_rejoindre_reseau">
-										<input hidden="true" type="text" name="user_id" value="${user.id}" >
-										<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
-										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-									</form>
-								</c:otherwise>
-							</c:choose>
-						</td>
-					</tr>
+					<c:if test="${count % 4 == 0}">
+						<tr>
+					</c:if>
+							<td>
+								<img src="${user.avatarSrcSmall}"><br/>
+								${user.name}<br/>
+								${user.email}<br/>
+								<c:choose>
+									<c:when test="${user.isInMyNetwork}">
+										${user.name} fait déjà parti de vos amis.
+									</c:when>
+									<c:otherwise>
+										<form method="POST" action="protected/demande_rejoindre_reseau">
+											<input hidden="true" type="text" name="user_id" value="${user.id}" >
+											<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
+											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+										</form>
+									</c:otherwise>
+								</c:choose>
+							</td>
+					<c:set var="count" value="${count + 1}" scope="page"/>
+					<c:if test="${count % 4 == 0}">
+						</tr>
+					</c:if>
 				</c:forEach>
 				</table>
 			</c:if>

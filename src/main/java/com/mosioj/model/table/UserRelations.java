@@ -35,7 +35,7 @@ public class UserRelations extends Table {
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
-		query.append("select {0}, {1}, u1.{6} as first_name, u1.{7} as first_email, u2.{6} as second_name, u2.{7} as second_email ");
+		query.append("select {0}, {1}, u1.{6} as first_name, u1.{7} as first_email, u1.{8} as first_avatar, u2.{6} as second_name, u2.{7} as second_email, u2.{8} as second_avatar ");
 		query.append("from {2} urr ");
 		query.append("left join {5} u1 on u1.id = urr.{0} ");
 		query.append("left join {5} u2 on u2.id = urr.{1} ");
@@ -49,7 +49,8 @@ public class UserRelations extends Table {
 		                                            	SECOND_USER,
 		                                            	Users.TABLE_NAME,
 		                                            	UsersColumns.NAME,
-		                                            	UsersColumns.EMAIL);
+		                                            	UsersColumns.EMAIL,
+		                                            	UsersColumns.AVATAR);
 		logger.debug(formatedQuery);
 
 		try {
@@ -62,10 +63,12 @@ public class UserRelations extends Table {
 				while (res.next()) {
 					relations.add(new Relation(	new User(	res.getInt(FIRST_USER.name()),
 															res.getString("first_name"),
-															res.getString("first_email")),
+															res.getString("first_email"),
+															res.getString("first_avatar")),
 												new User(	res.getInt(SECOND_USER.name()),
 															res.getString("second_name"),
-															res.getString("second_email"))));
+															res.getString("second_email"),
+															res.getString("second_avatar"))));
 				}
 			}
 		} finally {
