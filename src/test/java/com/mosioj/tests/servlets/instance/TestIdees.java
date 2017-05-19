@@ -48,8 +48,8 @@ public class TestIdees extends AbstractTestServlet {
 		when(request.getParameter("text")).thenReturn("Ma super idée wouhouuuu");
 		when(request.getParameter("priority")).thenReturn("1");
 		doTestPost(request, response);
-		
-		verify(response).sendRedirect(eq(MaListe.PROTECTED_MA_LISTE));
+
+		verify(request).getRequestDispatcher(eq(MaListe.VIEW_PAGE_URL));
 		verify(request, never()).setAttribute(eq("errors"), anyObject());
 	}
 

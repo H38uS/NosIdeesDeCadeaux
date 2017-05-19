@@ -1,7 +1,9 @@
 package com.mosioj.servlets.controllers.compte;
 
+import java.text.MessageFormat;
 import java.util.List;
 
+import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.validators.ParameterValidator;
@@ -43,7 +45,9 @@ public abstract class DefaultCompte extends IdeesCadeauxServlet {
 	protected List<String> checkEmail(ParameterValidator validator, int userId) {
 		validator.checkEmpty();
 		validator.checkIsEmailValid();
-		validator.checkIsUnique("select count(*) from users where email = ? and id <> " + userId, validatorConnection);
+		validator.checkIsUnique(MessageFormat.format(	"select count(*) from {0} where email = ? and id <> {1}",
+														Users.TABLE_NAME,
+														userId), validatorConnection);
 		return validator.getErrors();
 	}
 

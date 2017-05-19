@@ -18,8 +18,8 @@
 	<authentication-manager>
 		<authentication-provider>
 			<password-encoder hash="sha" />
-			<jdbc-user-service data-source-ref="springDS" users-by-username-query="select email, password, true from users where email = ?"
-				authorities-by-username-query="select email, role from user_roles where email = ? " />
+			<jdbc-user-service data-source-ref="springDS" users-by-username-query="select email, password, true from USERS where email = ?"
+				authorities-by-username-query="select email, role from USER_ROLES where email = ? " />
 		</authentication-provider>
 	</authentication-manager>
 
