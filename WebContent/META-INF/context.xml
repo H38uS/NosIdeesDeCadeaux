@@ -6,7 +6,7 @@
               url="${db.url}" validationQuery="select 1" testOnBorrow="true" />
     <Realm className="org.apache.catalina.realm.LockOutRealm">
     <Realm className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/web-db" digest="SHA"
-               userTable="users" userNameCol="email" userCredCol="password"
-               userRoleTable="user_roles" roleNameCol="role" localDataSource="true" />
+               userTable="USERS" userNameCol="email" userCredCol="password"
+               userRoleTable="USER_ROLES" roleNameCol="role" localDataSource="true" />
     </Realm>
 </Context>

@@ -50,7 +50,7 @@ public class Users extends Table {
 											email,
 											digestedPwd,
 											name);
-		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into user_roles ({0},{1}) values (?, ?)",
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into USER_ROLES ({0},{1}) values (?, ?)",
 																	UserRolesColumns.EMAIL,
 																	UserRolesColumns.ROLE),
 											email,

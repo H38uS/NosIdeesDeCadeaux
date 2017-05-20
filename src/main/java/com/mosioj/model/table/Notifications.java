@@ -49,7 +49,8 @@ public class Notifications extends Table {
 		PreparedStatementIdKdoInserter ps = null;
 		try {
 			ps = new PreparedStatementIdKdoInserter(getDb(),
-													"insert into notifications (owner, text, type, creation_date) values (?, ?, ?, now())");
+													MessageFormat.format(	"insert into {0} (owner, text, type, creation_date) values (?, ?, ?, now())",
+																			TABLE_NAME));
 			ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
 			id = ps.executeUpdate();
 
@@ -93,13 +94,15 @@ public class Notifications extends Table {
 	 * 
 	 * @param userId
 	 * @param notif
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public void removeAllType(int userId, AbstractNotification notif) throws SQLException {
 
 		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notif.getType(), userId));
 
-		getDb().executeUpdate("delete from NOTIFICATIONS where owner = ? and type = ?", userId, notif.getType());
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where owner = ? and type = ?", TABLE_NAME),
+								userId,
+								notif.getType());
 		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
 													NOTIFICATION_ID,
 													ID,
