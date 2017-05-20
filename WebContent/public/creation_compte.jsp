@@ -45,7 +45,7 @@
 							<img src="stickyImg" />
 						</td>
 						<td>
-							<input name="answer" value="${param.answer}" required />
+							<input name="answer" value="${param.answer}" />
 						</td>
 					</tr>
 					<c:if test="${fn:length(captcha_errors) > 0}">

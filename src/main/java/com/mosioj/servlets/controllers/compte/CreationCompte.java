@@ -71,7 +71,7 @@ public class CreationCompte extends DefaultCompte {
 		}
 
 		String answer = request.getParameter("answer");
-		boolean captchaOk = captcha.isCorrect(answer);
+		boolean captchaOk = captcha == null || captcha.isCorrect(answer);
 		if (!captchaOk) {
 			request.setAttribute("captcha_errors", "Le texte entré ne correspond pas.");
 		}
