@@ -49,6 +49,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 			req.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
 
+		req.setAttribute("id", user);
 		req.setAttribute("relations", userRelations.getRelations(user));
 		req.setAttribute("name", users.getUser(user).name);
 

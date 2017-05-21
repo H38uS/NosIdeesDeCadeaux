@@ -40,6 +40,7 @@
 					</c:forEach>
 				</table>
 				<input type="submit" id="submit" name="submit" value="Sauvegarder">
+				<input type="hidden" name="id" value="${id}" />
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</c:if>
