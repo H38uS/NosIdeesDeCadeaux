@@ -3,7 +3,6 @@ package com.mosioj.servlets.controllers.relations;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,21 +38,8 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet {
 
 		int suggestedBy = ParametersUtils.getUserId(request);
 		int suggestTo = ParametersUtils.readInt(request, USER_PARAMETER);
-		String start = "selected_";
 
-		List<Integer> suggestedUsers = new ArrayList<Integer>();
-		Map<String, String[]> params = request.getParameterMap();
-		for (String key : params.keySet()) {
-			// TODO faire une méthode utile pour récupérer cela
-			String[] values = params.get(key);
-			if (values.length == 1 && "on".equals(values[0])) {
-				String id = key.substring(start.length());
-				try {
-					suggestedUsers.add(Integer.parseInt(id));
-				} catch (NumberFormatException nfe) {
-				}
-			}
-		}
+		List<Integer> suggestedUsers = getSelectedChoices(request.getParameterMap(), "selected_");
 
 		// Persist suggestion
 		List<User> sent = new ArrayList<User>();

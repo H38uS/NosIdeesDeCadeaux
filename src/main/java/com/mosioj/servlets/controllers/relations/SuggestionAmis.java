@@ -42,32 +42,8 @@ public class SuggestionAmis extends IdeesCadeauxServlet {
 
 		Map<String, String[]> params = request.getParameterMap();
 
-		String start = "selected_";
-		List<Integer> toBeAsked = new ArrayList<Integer>();
-		for (String key : params.keySet()) {
-			// TODO faire une méthode utile pour récupérer cela
-			String[] values = params.get(key);
-			if (key.startsWith(start) && values.length == 1 && "on".equals(values[0])) {
-				String id = key.substring(start.length());
-				try {
-					toBeAsked.add(Integer.parseInt(id));
-				} catch (NumberFormatException nfe) {
-				}
-			}
-		}
-		start = "reject_";
-		List<Integer> toIgnore = new ArrayList<Integer>();
-		for (String key : params.keySet()) {
-			// TODO faire une méthode utile pour récupérer cela
-			String[] values = params.get(key);
-			if (key.startsWith(start) && values.length == 1 && "on".equals(values[0])) {
-				String id = key.substring(start.length());
-				try {
-					toIgnore.add(Integer.parseInt(id));
-				} catch (NumberFormatException nfe) {
-				}
-			}
-		}
+		List<Integer> toBeAsked = getSelectedChoices(params, "selected_");
+		List<Integer> toIgnore = getSelectedChoices(params, "reject_");
 		
 		List<String> errors = new ArrayList<String>();
 

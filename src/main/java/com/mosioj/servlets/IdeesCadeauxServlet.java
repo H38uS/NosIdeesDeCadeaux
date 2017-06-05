@@ -85,6 +85,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// FIXME : 4 notification quand un nouveau commentaire est posté sur une idée où on participe
 	// FIXME : 3 configuration des notifications : ne pas en recevoir, mail + site, mail, site
+	
+	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -460,6 +462,27 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			File large = new File(path, "large/" + image);
 			large.delete();
 		}
+	}
+
+	/**
+	 * 
+	 * @param params Parameters received in this request.
+	 * @param prefix The prefix to substract to get the id from the key.
+	 * @return The list of selected integers.
+	 */
+	protected List<Integer> getSelectedChoices(Map<String, String[]> params, String prefix) {
+		List<Integer> toBeAsked = new ArrayList<Integer>();
+		for (String key : params.keySet()) {
+			String[] values = params.get(key);
+			if (key.startsWith(prefix) && values.length == 1 && "on".equals(values[0])) {
+				String id = key.substring(prefix.length());
+				try {
+					toBeAsked.add(Integer.parseInt(id));
+				} catch (NumberFormatException nfe) {
+				}
+			}
+		}
+		return toBeAsked;
 	}
 
 	static {
