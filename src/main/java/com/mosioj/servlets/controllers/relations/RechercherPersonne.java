@@ -57,7 +57,7 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
 
-	// TODO : ne pas afficher le bouton rejoindre personne si on a déjà envoyé une demande...
-	// TODO limiter le nombre de résultat (à 20 ?)
+	// FIXME : 1 ne pas afficher le bouton rejoindre personne si on a déjà envoyé une demande...
+	// FIXME : 1 limiter le nombre de résultat (à 20 ?)
 
 }

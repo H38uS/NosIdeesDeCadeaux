@@ -63,7 +63,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
-	// TODO : envoyer des notifications en fonction de la date de naissance à ceux qui suivent la personne
+	// FIXME : 3 envoyer des notifications en fonction de la date de naissance à ceux qui suivent la personne
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
 
@@ -79,8 +79,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : notification quand on envoie une demande d'amis
 
-	// TODO : notification quand un nouveau commentaire est posté sur une idée où on participe
-	// TODO : configuration des notifications : ne pas en recevoir, mail + site, mail, site
+	// FIXME : 4 notification quand un nouveau commentaire est posté sur une idée où on participe
+	// FIXME : 3 configuration des notifications : ne pas en recevoir, mail + site, mail, site
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
