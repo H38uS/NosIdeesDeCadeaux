@@ -37,10 +37,7 @@ public class CreateGroup extends AbstractIdea {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-
-		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER);
-
-		Idee idea = idees.getIdea(id); // forcément valide grace au check de securite
+		Idee idea = getIdeeFromSecurityChecks();
 		req.setAttribute("idea", idea);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
@@ -49,7 +46,7 @@ public class CreateGroup extends AbstractIdea {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
-		Idee idea = idees.getIdea(id); // forcément valide grace au check de securite
+		Idee idea = getIdeeFromSecurityChecks();
 
 		logger.debug("Create a new group for idea : " + idea.getId());
 

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.table.Idees;
+import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.ParametersUtils;
 
 /**
@@ -15,7 +16,7 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class IdeaModification extends AllAccessToPostAndGet implements SecurityPolicy {
+public class IdeaModification extends AllAccessToPostAndGet implements SecurityPolicy, IdeaSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
@@ -23,6 +24,7 @@ public class IdeaModification extends AllAccessToPostAndGet implements SecurityP
 	private final String ideaParameter;
 
 	private final Idees idees;
+	private Idee idea;
 
 	/**
 	 * 
@@ -51,7 +53,7 @@ public class IdeaModification extends AllAccessToPostAndGet implements SecurityP
 
 		int userId = ParametersUtils.getUserId(request);
 
-		Idee idea = idees.getIdea(ideaId);
+		idea = idees.getIdea(ideaId);
 		if (idea == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
@@ -65,8 +67,6 @@ public class IdeaModification extends AllAccessToPostAndGet implements SecurityP
 
 	}
 
-	// TODO : pouvoir directement accéder à l'idée
-
 	@Override
 	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return canModifyIdea(request, response);
@@ -75,6 +75,11 @@ public class IdeaModification extends AllAccessToPostAndGet implements SecurityP
 	@Override
 	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return canModifyIdea(request, response);
+	}
+
+	@Override
+	public Idee getIdea() {
+		return idea;
 	}
 
 }

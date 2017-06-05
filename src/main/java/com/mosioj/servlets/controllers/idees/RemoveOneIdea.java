@@ -48,7 +48,7 @@ public class RemoveOneIdea extends AbstractIdea {
 		// Reading parameters
 		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
 
-		Idee idea = idees.getIdea(id);
+		Idee idea = getIdeeFromSecurityChecks();
 		if (idea != null && idea.isBooked()) {
 			User owner = idea.owner;
 			User booker = idea.getBookingOwner();

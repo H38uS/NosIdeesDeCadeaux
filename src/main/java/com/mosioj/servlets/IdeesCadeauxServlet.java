@@ -32,6 +32,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Comment;
+import com.mosioj.model.Idee;
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.Comments;
 import com.mosioj.model.table.GroupIdea;
@@ -43,6 +45,8 @@ import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.UserRelationsSuggestion;
 import com.mosioj.model.table.Users;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
+import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.DataSourceIdKDo;
@@ -167,6 +171,28 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		groupForIdea = new GroupIdea();
 		userRelationsSuggestion = new UserRelationsSuggestion();
 		this.policy = policy;
+	}
+
+	/**
+	 * 
+	 * @return The idea being checked.
+	 */
+	protected Idee getIdeeFromSecurityChecks() {
+		if (policy instanceof IdeaSecurityChecker) {
+			return ((IdeaSecurityChecker) policy).getIdea();
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return The commnet being checked.
+	 */
+	protected Comment getCommnetFromSecurityChecks() {
+		if (policy instanceof CommentSecurityChecker) {
+			return ((CommentSecurityChecker) policy).getComment();
+		}
+		return null;
 	}
 
 	/**
@@ -350,7 +376,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 		int newWidth = width > maxWidth ? maxWidth : width;
 		int newHeight = (newWidth * height) / width;
-		
+
 		if (newHeight > maxHeight) {
 			newWidth = (maxHeight * newWidth) / newHeight;
 			newHeight = maxHeight;

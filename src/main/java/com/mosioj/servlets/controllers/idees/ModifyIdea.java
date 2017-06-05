@@ -44,9 +44,7 @@ public class ModifyIdea extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(req, IDEE_ID_PARAM);
-
-		Idee idea = idees.getIdea(id);
+		Idee idea = getIdeeFromSecurityChecks();
 		idea.text = Escaper.htmlToText(idea.text);
 
 		req.setAttribute("types", categories.getCategories());

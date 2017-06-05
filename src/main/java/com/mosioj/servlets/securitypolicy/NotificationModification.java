@@ -65,8 +65,6 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 
 	}
 
-	// TODO : pouvoir directement accéder à la notification
-
 	@Override
 	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return canModifyNotification(request, response);

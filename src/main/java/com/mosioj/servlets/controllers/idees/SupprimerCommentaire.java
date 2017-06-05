@@ -28,7 +28,7 @@ public class SupprimerCommentaire extends IdeesCadeauxServlet {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER);
-		Comment comment = comments.getComment(id);
+		Comment comment = getCommnetFromSecurityChecks();
 		comments.delete(id);
 
 		RootingsUtils.rootToPage(	MessageFormat.format(	"{0}?{1}={2}",

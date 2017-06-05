@@ -34,7 +34,7 @@ public class ConfirmationEstAJour extends AbstractIdea {
 		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER);
 		idees.touch(id);
 
-		Idee idea = idees.getIdea(id);
+		Idee idea = getIdeeFromSecurityChecks();
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
 		for (AbstractNotification notification : notifications) {
 			if (notification instanceof NotifAskIfIsUpToDate) {

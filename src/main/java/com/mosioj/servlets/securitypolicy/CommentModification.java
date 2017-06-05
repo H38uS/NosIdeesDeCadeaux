@@ -7,9 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Comment;
 import com.mosioj.model.table.Comments;
+import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.utils.ParametersUtils;
 
-public class CommentModification extends AllAccessToPostAndGet implements SecurityPolicy {
+public class CommentModification extends AllAccessToPostAndGet implements SecurityPolicy, CommentSecurityChecker {
 	
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the comment id.
@@ -17,6 +18,7 @@ public class CommentModification extends AllAccessToPostAndGet implements Securi
 	private final String commentParameter;
 
 	private final Comments comments;
+	private Comment comment;
 
 	/**
 	 * 
@@ -45,7 +47,7 @@ public class CommentModification extends AllAccessToPostAndGet implements Securi
 
 		int userId = ParametersUtils.getUserId(request);
 
-		Comment comment = comments.getComment(commentId);
+		comment = comments.getComment(commentId);
 		if (comment == null) {
 			lastReason = "Aucun commentaire trouvé en paramètre.";
 			return false;
@@ -59,8 +61,6 @@ public class CommentModification extends AllAccessToPostAndGet implements Securi
 
 	}
 
-	// TODO : pouvoir directement accéder au commentaire
-
 	@Override
 	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return canModifyIdea(request, response);
@@ -69,6 +69,11 @@ public class CommentModification extends AllAccessToPostAndGet implements Securi
 	@Override
 	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		return canModifyIdea(request, response);
+	}
+
+	@Override
+	public Comment getComment() {
+		return comment;
 	}
 
 }

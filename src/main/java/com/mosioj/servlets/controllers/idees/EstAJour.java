@@ -29,8 +29,7 @@ public class EstAJour extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER);
-		Idee idea = idees.getIdea(id);
+		Idee idea = getIdeeFromSecurityChecks();
 		
 		NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(users.getUser(ParametersUtils.getUserId(req)), idea);
 		if (notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
