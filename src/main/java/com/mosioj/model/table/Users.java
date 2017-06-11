@@ -121,7 +121,7 @@ public class Users extends Table {
 		getDb().executeUpdate(query, user.email, user.name, user.birthday, user.avatar, user.id);
 	}
 
-	public List<User> getUsers(String nameToMatch) throws SQLException {
+	public List<User> getUsers(String nameToMatch, int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
 		LOGGER.debug("Getting users from search token: '" + nameToMatch + "'.");
@@ -139,6 +139,9 @@ public class Users extends Table {
 											NAME,
 											EMAIL,
 											AVATAR);
+		if (limit > 0) {
+			query += " LIMIT " + limit;
+		}
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {

@@ -33,7 +33,7 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		boolean onlyNonFriend = "on".equals(ParametersUtils.readAndEscape(request, "only_non-friend").trim());
 
-		List<User> foundUsers = users.getUsers(userNameOrEmail);
+		List<User> foundUsers = users.getUsers(userNameOrEmail, 20);
 		int userId = ParametersUtils.getUserId(request);
 		foundUsers.remove(users.getUser(userId));
 		List<User> friends = userRelations.getAllUsersInRelation(userId);
@@ -59,5 +59,6 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 
 	// FIXME : 1 ne pas afficher le bouton rejoindre personne si on a déjà envoyé une demande...
 	// FIXME : 1 limiter le nombre de résultat (à 20 ?)
+	// TODO : pouvoir afficher les pages suivantes
 
 }
