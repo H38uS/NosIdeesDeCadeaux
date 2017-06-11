@@ -26,6 +26,7 @@ import com.mosioj.model.table.columns.CategoriesColumns;
 import com.mosioj.model.table.columns.CommentsColumns;
 import com.mosioj.model.table.columns.GroupIdeaColumns;
 import com.mosioj.model.table.columns.GroupIdeaContentColumns;
+import com.mosioj.model.table.columns.IdeeColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
@@ -397,21 +398,23 @@ public class Idees extends Table {
 	 */
 	public boolean canBook(int idea, int userId) throws SQLException {
 
-		StringBuilder query = new StringBuilder();
-		query.append("select count(*) ");
-		query.append("from {0} i ");
-		query.append("inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) ");
-		query.append("where id = ? and {1} is null and {2} is null and {3} <> ?");
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) ");
+		sb.append("from {0} i ");
+		sb.append("inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) ");
+		sb.append("where i.id = ? and {1} is null and i.{2} is null and {3} <> ?");
 
-		return getDb().selectInt(	MessageFormat.format(	query.toString(),
+		String query = MessageFormat.format(	sb.toString(),
 															TABLE_NAME,
 															RESERVE,
 															GROUPE_KDO_ID,
-															UsersColumns.ID,
+															IdeeColumns.OWNER,
 															UserRelations.TABLE_NAME,
 															OWNER,
 															UserRelationsColumns.FIRST_USER,
-															UserRelationsColumns.SECOND_USER),
+															UserRelationsColumns.SECOND_USER);
+		logger.debug(query);
+		return getDb().selectInt(	query,
 									userId,
 									userId,
 									idea,
