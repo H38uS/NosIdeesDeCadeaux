@@ -56,6 +56,9 @@
 									<c:when test="${user.isInMyNetwork}">
 										${user.name} fait déjà parti de vos amis.
 									</c:when>
+									<c:when test="${not empty user.freeComment}">
+										${user.freeComment}
+									</c:when>
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">
 											<input hidden="true" type="text" name="user_id" value="${user.id}" >

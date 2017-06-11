@@ -44,6 +44,12 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 				user.isInMyNetwork = friends.contains(user);
 			}
 		}
+		
+		for (User user : foundUsers) {
+			if (userRelationRequests.associationExists(userId, user.id)) {
+				user.freeComment = "Vous avez déjà envoyé <br/>une demande à " + user.getName();
+			}
+		}
 
 		request.setAttribute("users", foundUsers);
 		request.setAttribute("name", userNameOrEmail);
@@ -57,8 +63,6 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
 
-	// FIXME : 1 ne pas afficher le bouton rejoindre personne si on a déjà envoyé une demande...
-	// FIXME : 1 limiter le nombre de résultat (à 20 ?)
 	// TODO : pouvoir afficher les pages suivantes
 
 }
