@@ -83,7 +83,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : notification quand on envoie une demande d'amis
 
-	// FIXME : 4 notification quand un nouveau commentaire est posté sur une idée où on participe
 	// FIXME : 3 configuration des notifications : ne pas en recevoir, mail + site, mail, site
 	
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification

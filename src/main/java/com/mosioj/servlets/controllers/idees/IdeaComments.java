@@ -1,6 +1,8 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.Share;
+import com.mosioj.model.User;
+import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
@@ -45,8 +50,31 @@ public class IdeaComments extends IdeesCadeauxServlet {
 		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
 		String text = ParametersUtils.readAndEscape(request, "text");
 		
-		comments.saveComment(ParametersUtils.getUserId(request), id, text);
+		int userId = ParametersUtils.getUserId(request);
+		comments.saveComment(userId, id, text);
+		Idee idea = idees.getIdea(id);
 
+		// If the idea is booked, we notify the bookers
+		if (idea.isBooked()) {
+			User current = users.getUser(userId);
+			List<User> toBeNotified = new ArrayList<User>();
+			User bookingOwner = idea.getBookingOwner();
+			if (bookingOwner != null) {
+				toBeNotified.add(bookingOwner);
+			} else {
+				// Idea is booked by a group
+				int groupId = idea.getGroupKDO();
+				for (Share share : groupForIdea.getGroupDetails(groupId).getShares()) {
+					toBeNotified.add(share.getUser());
+				}
+			}
+			
+			toBeNotified.remove(current);
+			for (User notified : toBeNotified) {
+				notif.addNotification(notified.id, new NotifNewCommentOnIdea(current, idea));
+			}
+		}
+		
 		insertMandatoryParams(request, id);
 		request.setAttribute("success", true);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
