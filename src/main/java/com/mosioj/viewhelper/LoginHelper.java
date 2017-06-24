@@ -15,6 +15,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Users;
@@ -32,6 +36,10 @@ public class LoginHelper implements Filter {
 	 * Class logger.
 	 */
 	private static final Logger logger = LogManager.getLogger(LoginHelper.class);
+	private String sessionAttributeName = DEFAULT_CSRF_TOKEN_ATTR_NAME;
+	private static final String DEFAULT_CSRF_TOKEN_ATTR_NAME = HttpSessionCsrfTokenRepository.class
+			.getName().concat(".CSRF_TOKEN");
+
 
 	/**
 	 * 
@@ -45,6 +53,34 @@ public class LoginHelper implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		
+		MultipartResolver multipartResolver = new StandardServletMultipartResolver();
+		HttpServletRequest processedRequest = (HttpServletRequest) request;
+		if (multipartResolver.isMultipart(processedRequest)) {
+			HttpSession session = processedRequest.getSession(false);
+			CsrfToken token = (CsrfToken) session.getAttribute(this.sessionAttributeName);
+			if (token == null) {
+				final String val = request.getParameter("_csrf");
+				logger.trace("Bug with Spring... Getting manually the CSRF token if found.");
+				if (val != null && !val.isEmpty()) {
+					session.setAttribute(sessionAttributeName, new CsrfToken() {
+						private static final long serialVersionUID = 3849500966021482363L;
+						@Override
+						public String getToken() {
+							return val;
+						}
+						@Override
+						public String getParameterName() {
+							return "_csrf";
+						}
+						@Override
+						public String getHeaderName() {
+							return "X-CSRF-TOKEN";
+						}
+					});
+				}
+			}
+		}
 		
 		logger.trace("Do Filtering in helper...");
 		String name = ((HttpServletRequest ) request).getRemoteUser();

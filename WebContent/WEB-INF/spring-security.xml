@@ -1,6 +1,6 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
 
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
@@ -10,7 +10,7 @@
 		<intercept-url pattern="/administration/**" access="hasRole('ROLE_ADMIN')" />
 		<form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
 			authentication-failure-url="/public/error.jsp" />
-		<csrf />
+		<csrf/>
 		<remember-me remember-me-parameter="remember-me" remember-me-cookie="remember-me" token-validity-seconds="1209600"
 			data-source-ref="springDS" />
 	</http>

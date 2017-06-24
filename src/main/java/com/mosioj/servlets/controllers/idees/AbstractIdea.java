@@ -36,6 +36,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 
 	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
+		errors.clear();
 		File filePath = new File(getServletContext().getRealPath(IDEA_PICTURES_PATH));
 
 		// Reading parameters
