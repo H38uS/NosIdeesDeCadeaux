@@ -15,6 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
+import com.mosioj.model.UserParameter;
+import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -29,6 +31,7 @@ public class MonCompte extends DefaultCompte {
 
 	public static final String AVATARS_PATH = "/public/uploaded_pictures/avatars";
 	public static final String VIEW_PAGE_URL = "/protected/mon_compte.jsp";
+	public static final String URL = "/protected/mon_compte";
 
 	private static File filePath;
 
@@ -43,6 +46,10 @@ public class MonCompte extends DefaultCompte {
 		User current = users.getUser(userId);
 		req.setAttribute("user", current);
 
+		List<UserParameter> userNotificationParameters = userParameters.getUserNotificationParameters(userId);
+		req.setAttribute("notif_types", userNotificationParameters);
+
+		req.setAttribute("possible_values", NotificationActivation.values());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
@@ -78,7 +85,7 @@ public class MonCompte extends DefaultCompte {
 				user.email = email;
 				user.name = name;
 				user.birthday = getAsDate(birthday);
-				
+
 				String image = parameters.get("image");
 				String old = parameters.get("old_picture");
 				if (image == null || image.isEmpty()) {
@@ -90,7 +97,7 @@ public class MonCompte extends DefaultCompte {
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
 				user.avatar = image;
-				
+
 				if (errors.isEmpty()) {
 					users.update(user);
 				}
@@ -98,6 +105,6 @@ public class MonCompte extends DefaultCompte {
 
 		}
 
-		ideesKDoGET(request, response);
+		RootingsUtils.redirectToPage(URL, request, response);
 	}
 }

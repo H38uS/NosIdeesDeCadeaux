@@ -23,7 +23,8 @@
 				<tr>
 					<td>Date de naissance</td>
 					<td>
-						<input type="date" name="birthday" placeholder="aaaa-mm-jj" value="${user.birthday}" title="Utilisez le format suivant: aaaa-mm-jj (année sur 4 chiffres, tiret, mois sur 2 chiffres, tiret, jour sur deux chiffres)" >
+						<input type="date" name="birthday" placeholder="aaaa-mm-jj" value="${user.birthday}"
+												title="Utilisez le format suivant: aaaa-mm-jj (année sur 4 chiffres, tiret, mois sur 2 chiffres, tiret, jour sur deux chiffres)">
 					</td>
 				</tr>
 				<c:if test="${not empty user.avatar}">
@@ -61,6 +62,37 @@
 		</form>
 		
 		<h2>Notifications</h2>
+		<table>
+			<c:forEach var="notif" items="${notif_types}">
+				<form action="protected/update_notification_parameter" method="post" >
+					<tr>
+						<input hidden="true" name="id" value="${notif.id}">
+						<input hidden="true" name="name" value="${notif.parameterName}">
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+						<td width="270px">
+							<label for="${notif.parameterName}_value">${notif.parameterName}</label>
+						</td>
+						<td>
+							<select id="value" name="value">
+								<c:forEach var="value" items="${possible_values}">
+									<c:choose>
+										<c:when test="${value == notif.parameterValue}">
+											<option selected="selected" value="${value}">${value}</option>
+										</c:when>
+										<c:otherwise>
+											<option value="${value}">${value}</option>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</select>
+						</td>
+						<td>
+							<input type="submit" name="submit" value="Sauvegarder">
+						</td>
+					</tr>
+				</form>
+			</c:forEach>
+		</table>
 		
 	</jsp:body>
 </t:normal_proctected>

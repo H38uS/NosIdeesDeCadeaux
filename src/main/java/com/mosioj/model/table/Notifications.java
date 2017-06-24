@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.notifications.NotificationFactory;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
@@ -31,6 +32,7 @@ public class Notifications extends Table {
 	public static final String TABLE_PARAMS = "NOTIFICATION_PARAMETERS";
 
 	private final Logger logger = LogManager.getLogger(Notifications.class);
+	private final UserParameters userParameters = new UserParameters();
 
 	/**
 	 * Save and send a notification.
@@ -42,52 +44,69 @@ public class Notifications extends Table {
 	public void addNotification(int userId, AbstractNotification notif) throws SQLException {
 
 		logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
+		NotificationActivation activation = getActivationType(userId, notif);
 		int id = -1;
 
 		// Insertion en base
-		// TODO récupérer si on doit le faire
-		PreparedStatementIdKdoInserter ps = null;
-		try {
-			ps = new PreparedStatementIdKdoInserter(getDb(),
-													MessageFormat.format(	"insert into {0} (owner, text, type, creation_date) values (?, ?, ?, now())",
-																			TABLE_NAME));
-			ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
-			id = ps.executeUpdate();
+		if (activation == NotificationActivation.SITE || activation == NotificationActivation.EMAIL_SITE) {
+			PreparedStatementIdKdoInserter ps = null;
+			try {
+				ps = new PreparedStatementIdKdoInserter(getDb(),
+														MessageFormat.format(	"insert into {0} (owner, text, type, creation_date) values (?, ?, ?, now())",
+																				TABLE_NAME));
+				ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
+				id = ps.executeUpdate();
 
-		} catch (SQLException e) {
-			logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
-		} finally {
-			if (ps != null) {
-				ps.close();
-			}
-		}
-
-		if (id > 0) {
-			logger.debug(MessageFormat.format("Creating parameters for notification {0}", id));
-			Map<ParameterName, Object> notifParams = notif.getParameters();
-			for (ParameterName key : notifParams.keySet()) {
-				try {
-					ps = new PreparedStatementIdKdoInserter(getDb(),
-															MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, ?)",
-																					TABLE_PARAMS,
-																					NOTIFICATION_ID,
-																					PARAMETER_NAME,
-																					PARAMETER_VALUE));
-					ps.bindParameters(id, key, notifParams.get(key).toString());
-					ps.executeUpdate();
+			} catch (SQLException e) {
+				logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
+			} finally {
+				if (ps != null) {
 					ps.close();
+				}
+			}
 
-				} finally {
-					if (ps != null) {
+			if (id > 0) {
+				logger.debug(MessageFormat.format("Creating parameters for notification {0}", id));
+				Map<ParameterName, Object> notifParams = notif.getParameters();
+				for (ParameterName key : notifParams.keySet()) {
+					try {
+						ps = new PreparedStatementIdKdoInserter(getDb(),
+																MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, ?)",
+																						TABLE_PARAMS,
+																						NOTIFICATION_ID,
+																						PARAMETER_NAME,
+																						PARAMETER_VALUE));
+						ps.bindParameters(id, key, notifParams.get(key).toString());
+						ps.executeUpdate();
 						ps.close();
+
+					} finally {
+						if (ps != null) {
+							ps.close();
+						}
 					}
 				}
 			}
 		}
 
 		// Envoie de la notification par email si besoin
-		// TODO récupérer si on doit le faire
-		notif.sendEmail(""); // TODO récupérer l'email
+		if (activation == NotificationActivation.EMAIL || activation == NotificationActivation.EMAIL_SITE) {
+			notif.sendEmail(""); // TODO récupérer l'email
+		}
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param notif
+	 * @return The activation type. Default is EMAIL_SITE.
+	 */
+	private NotificationActivation getActivationType(int userId, AbstractNotification notif) {
+		try {
+			return NotificationActivation.valueOf(userParameters.getParameter(userId, notif.getType()));
+		} catch (SQLException e) {
+			return NotificationActivation.EMAIL_SITE;
+		}
 	}
 
 	/**

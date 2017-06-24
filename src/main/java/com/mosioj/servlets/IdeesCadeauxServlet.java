@@ -40,6 +40,7 @@ import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Priorites;
+import com.mosioj.model.table.UserParameters;
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.UserRelationsSuggestion;
@@ -151,6 +152,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * The connections to the COMMENTS table.
 	 */
 	protected static Comments comments = new Comments();
+
+	/**
+	 * The connections to the USER_PARAMETERS table.
+	 */
+	protected UserParameters userParameters = new UserParameters();
 
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.

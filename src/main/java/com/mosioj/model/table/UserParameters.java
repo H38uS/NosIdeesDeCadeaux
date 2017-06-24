@@ -87,8 +87,9 @@ public class UserParameters extends Table {
 		query.append(MessageFormat.format("  left join {0} t ", TABLE_NAME));
 		query.append(MessageFormat.format("    on n.{0} = t.{1}", PARAMETER_NAME, PARAMETER_NAME));
 		query.append(MessageFormat.format(" where t.{0} = ? or t.{1} is null ", USER_ID, PARAMETER_NAME));
+		query.append(MessageFormat.format(" order by n.{0}", PARAMETER_NAME));
 
-		logger.debug(query);
+		logger.trace(query);
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
 			ps.bindParameters(userId, userId);
