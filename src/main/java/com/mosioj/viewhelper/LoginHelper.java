@@ -17,14 +17,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.mosioj.model.table.Notifications;
+import com.mosioj.model.table.UserParameters;
 import com.mosioj.model.table.Users;
 
 /**
- * Provides helper functions to the views. 
+ * Provides helper functions to the views.
  * 
  * @author Jordan Mosio
  *
@@ -37,9 +36,7 @@ public class LoginHelper implements Filter {
 	 */
 	private static final Logger logger = LogManager.getLogger(LoginHelper.class);
 	private String sessionAttributeName = DEFAULT_CSRF_TOKEN_ATTR_NAME;
-	private static final String DEFAULT_CSRF_TOKEN_ATTR_NAME = HttpSessionCsrfTokenRepository.class
-			.getName().concat(".CSRF_TOKEN");
-
+	private static final String DEFAULT_CSRF_TOKEN_ATTR_NAME = HttpSessionCsrfTokenRepository.class.getName().concat(".CSRF_TOKEN");
 
 	/**
 	 * 
@@ -51,45 +48,17 @@ public class LoginHelper implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		
-		MultipartResolver multipartResolver = new StandardServletMultipartResolver();
-		HttpServletRequest processedRequest = (HttpServletRequest) request;
-		if (multipartResolver.isMultipart(processedRequest)) {
-			HttpSession session = processedRequest.getSession(false);
-			CsrfToken token = (CsrfToken) session.getAttribute(this.sessionAttributeName);
-			if (token == null) {
-				final String val = request.getParameter("_csrf");
-				logger.trace("Bug with Spring... Getting manually the CSRF token if found.");
-				if (val != null && !val.isEmpty()) {
-					session.setAttribute(sessionAttributeName, new CsrfToken() {
-						private static final long serialVersionUID = 3849500966021482363L;
-						@Override
-						public String getToken() {
-							return val;
-						}
-						@Override
-						public String getParameterName() {
-							return "_csrf";
-						}
-						@Override
-						public String getHeaderName() {
-							return "X-CSRF-TOKEN";
-						}
-					});
-				}
-			}
-		}
-		
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
 		logger.trace("Do Filtering in helper...");
-		String name = ((HttpServletRequest ) request).getRemoteUser();
+
+		HttpSession session = ((HttpServletRequest) request).getSession();
+		String name = ((HttpServletRequest) request).getRemoteUser();
 		logger.trace("Name: " + name);
 		if (name != null) {
+
 			name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 			request.setAttribute("username", name);
-			
-			HttpSession session = ((HttpServletRequest ) request).getSession();
 			session.setAttribute("username", name);
 
 			// Storing the Id if not stored yet
@@ -106,7 +75,7 @@ public class LoginHelper implements Filter {
 				}
 			}
 			request.setAttribute("userid", userId);
-			
+
 			Notifications notif = new Notifications();
 			try {
 				int count = notif.getUserNotificationCount(userId);
@@ -115,7 +84,36 @@ public class LoginHelper implements Filter {
 				// Osef
 			}
 		}
-		
+
+		if (session != null && session.getAttribute("username") != null) {
+			CsrfToken token = (CsrfToken) session.getAttribute(this.sessionAttributeName);
+			if (token == null) {
+				logger.trace("Bug with Spring... Getting manually the CSRF token if found.");
+				logger.trace("BackUpCsrfToken => " + session.getAttribute("BackUpCsrfToken"));
+				UserParameters up = new UserParameters();
+				try {
+					int userId = (int) session.getAttribute("userid");
+					final String tokenValue = up.getParameter(userId, "CSRF");
+					session.setAttribute(sessionAttributeName, new CsrfToken() {
+						private static final long serialVersionUID = 2161348459850900068L;
+						@Override
+						public String getToken() {
+							return tokenValue;
+						}
+						@Override
+						public String getParameterName() {
+							return "_csrf";
+						}
+						@Override
+						public String getHeaderName() {
+							return "X-CSRF-TOKEN";
+						}
+					});
+				} catch (SQLException e) {
+				}
+			}
+		}
+
 		chain.doFilter(request, response);
 	}
 
