@@ -45,7 +45,7 @@ public class NotifIdeaModifiedWhenBirthdayIsSoon extends AbstractNotification {
 
 	@Override
 	public String getTextToInsert() {
-		final String link = "<a href=\"protected/mes_listes\">mes listes</a>";
+		final String link = "<a href=\"protected/voir_liste?id=" + params.get(ParameterName.USER_ID) + "\">sa liste</a>";
 		String action = isNew ? "ajouté une nouvelle" : "modifié son";
 		return MessageFormat.format("{0} a {3} idée \"{1}\". Consulter {2}.",
 									userName,
