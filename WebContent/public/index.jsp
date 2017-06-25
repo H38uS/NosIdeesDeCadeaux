@@ -18,10 +18,10 @@
 		</div>
 		<div class="indexbox">
 			<span class="indexaction">
-				<a href="protected/creation_groupe">Créer un groupe !</a>
+				<a href="protected/index.jsp">Créer un groupe !</a>
 			</span>
 			<span class="indexaction">
-				<a href="protected/rechercher_groupe.jsp">Rejoindre un groupe</a>
+				<a href="protected/index.jsp">Rejoindre un groupe</a>
 			</span>
 			<span class="indexaction">
 				<a href="protected/mes_listes">Afficher mes listes partagées</a>

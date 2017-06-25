@@ -91,7 +91,5 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 		verify(request).getRequestDispatcher(eq(DemandeRejoindreReseau.ERROR_URL));
 		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 	}
-	
-	// FIXME : 1 faire un test pour les liens : parser les jsp et vérifier qu'on en a pas des morts
 
 }

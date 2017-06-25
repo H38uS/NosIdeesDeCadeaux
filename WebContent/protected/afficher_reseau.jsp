@@ -50,7 +50,7 @@
 		<h2>Réseau de ${name}</h2>
 		<c:choose>
 			<c:when test="${empty relations}">
-				Vous n'avez aucune relation pour le moment. <a href="./protected/rechercher_personne.jsp" >Rechercher</a> des personnes à ajouter !
+				Vous n'avez aucune relation pour le moment. <a href="protected/rechercher_personne.jsp" >Rechercher</a> des personnes à ajouter !
 			</c:when>
 			<c:otherwise>
 				<table>
