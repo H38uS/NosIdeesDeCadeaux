@@ -73,13 +73,15 @@ public class MonCompte extends DefaultCompte {
 
 				int userId = ParametersUtils.getUserId(request);
 				List<String> errors = checkEmail(getValidatorEmail(email), userId);
-				request.setAttribute("errors_info_gen", errors);
+				request.getSession().setAttribute("errors_info_gen", errors);
 
 				String birthday = parameters.get("birthday");
-				logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
-				ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
-				val.checkDateFormat();
-				errors.addAll(val.getErrors());
+				if (!birthday.isEmpty()) {
+					logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
+					ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
+					val.checkDateFormat();
+					errors.addAll(val.getErrors());
+				}
 
 				User user = users.getUser(userId);
 				user.email = email;
