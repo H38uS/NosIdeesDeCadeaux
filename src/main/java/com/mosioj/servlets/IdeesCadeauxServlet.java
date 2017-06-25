@@ -68,7 +68,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
-	// FIXME : 3 envoyer des notifications en fonction de la date de naissance à ceux qui suivent la personne
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
 

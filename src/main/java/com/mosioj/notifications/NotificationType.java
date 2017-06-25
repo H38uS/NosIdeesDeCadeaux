@@ -5,6 +5,7 @@ import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.notifications.instance.NotifNoIdea;
@@ -24,6 +25,7 @@ public enum NotificationType {
 	CONFIRMED_UP_TO_DATE(NotifConfirmedUpToDate.class), //
 	NEW_RELATION_SUGGESTION(NotifNewRelationSuggestion.class), //
 	NEW_COMMENT_ON_IDEA(NotifNewCommentOnIdea.class), //
+	IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON(NotifIdeaModifiedWhenBirthdayIsSoon.class), //
 	IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class);
 
 	private final Class<? extends AbstractNotification> notificationClassName;

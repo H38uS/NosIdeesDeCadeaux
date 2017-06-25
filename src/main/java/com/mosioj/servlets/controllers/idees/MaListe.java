@@ -71,11 +71,12 @@ public class MaListe extends AbstractIdea {
 													parameters.get("type"),
 													parameters.get("priority")));
 				int userId = ParametersUtils.getUserId(request);
-				idees.addIdea(	userId,
-								parameters.get("text"),
-								parameters.get("type"),
-								Integer.parseInt(parameters.get("priority")),
-								parameters.get("image"));
+				int ideaId = idees.addIdea(	userId,
+											parameters.get("text"),
+											parameters.get("type"),
+											Integer.parseInt(parameters.get("priority")),
+											parameters.get("image"));
+				addModificationNotification(users.getUser(userId), idees.getIdea(ideaId), true);
 				notif.removeAllType(userId, new NotifNoIdea());
 			}
 

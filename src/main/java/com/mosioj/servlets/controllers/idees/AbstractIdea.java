@@ -3,6 +3,8 @@ package com.mosioj.servlets.controllers.idees;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,7 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
+import com.mosioj.model.User;
+import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.Index;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
@@ -67,6 +73,36 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 
 		errors.addAll(valText.getErrors());
 		errors.addAll(valPrio.getErrors());
+	}
+
+	/**
+	 * Ajoute une notification au amis de la personne si son anniversaire approche.
+	 * 
+	 * @param user
+	 * @param idea
+	 * @param isNew
+	 * @throws SQLException
+	 */
+	protected void addModificationNotification(User user, Idee idea, boolean isNew) throws SQLException {
+		if (user.birthday != null) {
+			Calendar birthday = Calendar.getInstance();
+			birthday.setTime(new Date(user.birthday.getTime()));
+			Calendar today = Calendar.getInstance();
+			today.set(Calendar.HOUR, 0);
+			today.set(Calendar.MINUTE, 0);
+			today.set(Calendar.SECOND, 0);
+			today.set(Calendar.MILLISECOND, 0);
+			birthday.set(Calendar.YEAR, today.get(Calendar.YEAR));
+			if (birthday.before(today)) {
+				birthday.add(Calendar.YEAR, 1);
+			}
+			today.add(Calendar.DAY_OF_YEAR, Index.NB_DAYS_MAX_BEFORE_BIRTHDAY);
+			if (birthday.before(today)) {
+				for (User friend : userRelations.getAllUsersInRelation(user.id)) {
+					notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
+				}
+			}
+		}
 	}
 
 }

@@ -17,6 +17,7 @@ import com.mosioj.utils.RootingsUtils;
 @WebServlet("/protected/index")
 public class Index extends IdeesCadeauxServlet {
 
+	public static final int NB_DAYS_MAX_BEFORE_BIRTHDAY = 20;
 	private static final long serialVersionUID = -8386214705432810179L;
 	private static final String VIEW_URL = "/protected/index.jsp";
 
@@ -26,7 +27,7 @@ public class Index extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		List<User> users = userRelations.getCloseBirthday(ParametersUtils.getUserId(req), 20);
+		List<User> users = userRelations.getCloseBirthday(ParametersUtils.getUserId(req), NB_DAYS_MAX_BEFORE_BIRTHDAY);
 		req.setAttribute("userBirthday", users);
 		RootingsUtils.rootToPage(VIEW_URL, req, resp);
 	}

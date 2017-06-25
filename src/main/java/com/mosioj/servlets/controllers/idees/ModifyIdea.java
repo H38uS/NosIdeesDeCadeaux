@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
@@ -68,7 +69,7 @@ public class ModifyIdea extends AbstractIdea {
 			fillIdeaOrErrors(request, response);
 
 			if (!errors.isEmpty()) {
-				request.setAttribute("errors", errors);
+				request.getSession().setAttribute("errors", errors);
 			} else {
 				logger.info(MessageFormat.format(	"Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",
 													parameters.get("text"),
@@ -88,14 +89,16 @@ public class ModifyIdea extends AbstractIdea {
 				}
 
 				idees.modifier(ideaId, parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
+				User user = users.getUser(ParametersUtils.getUserId(request));
+
+				// Ajout de notification aux amis si l'anniversaire approche
+				addModificationNotification(user, getIdeeFromSecurityChecks(), false);
 
 				List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, ideaId);
 				for (AbstractNotification notification : notifications) {
 					if (notification instanceof NotifAskIfIsUpToDate) {
 						NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
-						notif.addNotification(	isUpToDate.getUserIdParam(),
-												new NotifConfirmedUpToDate(	users.getUser(ParametersUtils.getUserId(request)),
-																			idees.getIdea(ideaId)));
+						notif.addNotification(isUpToDate.getUserIdParam(), new NotifConfirmedUpToDate(user, idees.getIdea(ideaId)));
 						notif.remove(notification.id);
 					}
 				}
@@ -103,7 +106,7 @@ public class ModifyIdea extends AbstractIdea {
 
 		}
 
-		ideesKDoGET(request, response);
+		RootingsUtils.redirectToPage(url, request, response);
 	}
 
 }
