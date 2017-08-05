@@ -70,6 +70,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : bootstrap pour le CSS ??
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
+	
+	// FIXME : 2 pouvoir réinitialiser le mot de pase
 
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
