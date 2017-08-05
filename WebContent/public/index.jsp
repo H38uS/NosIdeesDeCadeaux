@@ -16,19 +16,5 @@
 		<div id="middleindexbox">
 			Envie de nous rejoindre ? Découvrez l'univers des cadeaux qui font plaisir !
 		</div>
-		<div class="indexbox">
-			<span class="indexaction">
-				<a href="protected/index.jsp">Créer un groupe !</a>
-			</span>
-			<span class="indexaction">
-				<a href="protected/index.jsp">Rejoindre un groupe</a>
-			</span>
-			<span class="indexaction">
-				<a href="protected/mes_listes">Afficher mes listes partagées</a>
-			</span>
-			<span class="indexaction">
-				<a href="protected/ma_liste">Compléter ma liste</a>
-			</span>
-		</div>
 	</jsp:body>
 </t:index>

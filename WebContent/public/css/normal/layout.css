@@ -1,31 +1,50 @@
 @CHARSET "UTF-8";
 
+@font-face {
+	font-family: "MyFont";
+	src: url('BAUHS93.TTF');
+}
+
 html, body {
 	margin: 0;
 	padding: 0;
 	height: 100%; /* needed for container min-height */
+	font-family: "MyFont", Georgia, Arial;
+	font-size: 105%;
 }
 
 div#container {
 	position: relative; /* needed for footer positioning*/
 	margin: 0 auto; /* center, not in IE5 */
-	width: 1024px;
+	width: 90%;
+	min-width: 950px;
 	height: auto !important; /* real browsers */
 	height: 100%; /* IE6: treaded as min-height*/
 	min-height: 100%; /* real browsers */
-	background: url("../../image/fond_index.png") 98% 10px repeat;
 }
 
 header {
-	background: #33D3E2;
-	text-align: center;
+	background: #353b43;
+}
+
+header #logo {
+	text-align: left;
+	padding-top: 10px;
+	padding-left: 10%;
+}
+
+header #logo_text {
+	color: white;
+	font-size: 130%;
+	padding: 10px;
+	padding-left: 18%;
 }
 
 footer {
 	position: absolute;
 	width: 100%;
 	bottom: 0; /* stick to bottom */
-	background: #33D3E2;
+	background: #353b43;
 	text-align: center;
 	height: 30px;
 	color: white;
@@ -33,4 +52,38 @@ footer {
 
 div#content {
 	padding: 10px 10px 40px 10px; /* bottom padding for footer */
+}
+
+/**********************/
+/* *** Menu *** */
+/**********************/
+
+ul.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #8a8a8a;
+}
+
+.menu li {
+    float: left;
+}
+
+.menu li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+.menu li a:hover {
+    background-color: #111;
+}
+
+#header_id_message {
+	text-align: right;
+	padding: 5px;
 }

@@ -4,7 +4,12 @@
     <body>
     	<div id="container">
     	<header>
-    		<img src="public/image/header_index.png" ></img>
+    		<div id="logo">
+	    		<img src="public/image/header_index.png" ></img>
+    		</div>
+    		<div id="logo_text">
+    			Créer et partager vos envies de cadeaux avec toute la famille et vos amis
+    		</div>
     		<div id="header_id_message">
 	    		Bonjour, <c:out value="${username}" /> - <a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 	    		Accéder à <a href="protected/mon_compte">mon compte.</a>
