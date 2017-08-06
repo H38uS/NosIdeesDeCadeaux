@@ -3,7 +3,7 @@
 .indexbox {
 	padding-top: 150px;
 	min-height: 300px;
-	text-align: center;
+	//text-align: center;
 }
 
 #middleindexbox {
@@ -13,13 +13,40 @@
 	color: white;
 }
 
-.indexaction {
-	background-color: #8a8a8a;
-	margin: 150px;
-	padding: 2em;
-}
-
 a:link, a:visited, a:active {
 	color: white;
     text-decoration: none;	
+}
+
+/********************************/
+/* *** First letter colored *** */
+/********************************/
+
+.indexbox ul li a span {
+	display: block;
+	float:left;
+	padding: 0 2px;
+    background-color: #8a8a8a;
+}
+
+.indexbox ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.indexbox ul li {
+	margin-left: 20%;
+    float: left;
+    padding: 40px 30px;
+    background-color: #8a8a8a;
+}
+
+.indexbox ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 150%;
 }

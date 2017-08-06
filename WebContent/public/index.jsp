@@ -6,12 +6,14 @@
 <t:index>
 	<jsp:body>
 		<div class="indexbox">
-			<span class="indexaction">
-				<a href="protected/index.jsp">Se connecter</a>
-			</span>
-			<span class="indexaction">
-					<a href="public/creation_compte.jsp">Créer un compte</a>
-			</span>
+			<ul>
+				<li>
+					<a href="protected/index.jsp"><span class="fl_green">Se </span><span class="fl_yellow"> Connecter</span></a>
+				</li>
+				<li>
+					<a href="public/creation_compte.jsp"><span class="fl_blue">Créer un </span><span class="fl_purple">Compte</span></a>
+				</li>
+			</ul>
 		</div>
 		<div id="middleindexbox">
 			Envie de nous rejoindre ? Découvrez l'univers des cadeaux qui font plaisir !

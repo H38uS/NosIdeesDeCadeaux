@@ -87,3 +87,20 @@ ul.menu {
 	text-align: right;
 	padding: 5px;
 }
+
+/********************************/
+/* *** First letter colored *** */
+/********************************/
+
+.fl_yellow::first-letter {
+	color: #f3f0c9;
+}
+.fl_green::first-letter {
+	color: #c9f3d5;
+}
+.fl_blue::first-letter {
+	color: #b0cff8;
+}
+.fl_purple::first-letter {
+	color: #c1b0f8;
+}

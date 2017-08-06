@@ -9,10 +9,10 @@
     			Créer et partager vos envies de cadeaux avec toute la famille et vos amis
     		</div>
     		<ul class="menu">
-    			<li><a href="public/index.jsp">Accueil</a></li>
-    			<li><a href="protected/index.jsp">Se connecter</a></li>
-    			<li><a href="public/creation_compte.jsp">Créer un compte</a></li>
-    			<li><a href="public/comment_ca_marche.jsp">Comment ça marche ?</a></li>
+    			<li><a href="public/index.jsp" class="fl_green">Accueil</a></li>
+    			<li><a href="protected/index.jsp" class="fl_yellow">Se connecter</a></li>
+    			<li><a href="public/creation_compte.jsp" class="fl_blue">Créer un compte</a></li>
+    			<li><a href="public/comment_ca_marche.jsp" class="fl_purple">Comment ça marche ?</a></li>
     		</ul>
     	</header>
     	<div id="content">
