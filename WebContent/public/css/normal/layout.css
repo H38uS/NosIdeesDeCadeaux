@@ -33,6 +33,15 @@ header #logo {
 	padding-left: 10%;
 }
 
+header #logo span {
+	float: right;
+	color: white;
+}
+
+header #logo span a:link, header #logo span a:visited, header #logo span a:active {
+    color: #b0cff8;
+}
+
 header #logo_text {
 	color: white;
 	font-size: 130%;
@@ -81,11 +90,6 @@ ul.menu {
 /* Change the link color to #111 (black) on hover */
 .menu li a:hover {
     background-color: #111;
-}
-
-#header_id_message {
-	text-align: right;
-	padding: 5px;
 }
 
 /********************************/

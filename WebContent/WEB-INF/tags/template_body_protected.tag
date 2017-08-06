@@ -6,32 +6,32 @@
     	<header>
     		<div id="logo">
 	    		<img src="public/image/header_index.png" ></img>
+	    		<span>
+		    		Bonjour, <c:out value="${username}" /> - <a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
+		    		Accéder à <a href="protected/mon_compte">mon compte.</a>
+		    		<c:if test="${notif_count > 0}">
+		    			<br/>Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !
+		    		</c:if>
+	    		</span>
     		</div>
     		<div id="logo_text">
     			Créer et partager vos envies de cadeaux avec toute la famille et vos amis
     		</div>
-    		<div id="header_id_message">
-	    		Bonjour, <c:out value="${username}" /> - <a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
-	    		Accéder à <a href="protected/mon_compte">mon compte.</a>
-	    		<c:if test="${notif_count > 0}">
-	    			<br/>Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !
-	    		</c:if>
-    		</div>
     		<ul class="menu">
 				<li>
-					<a href="protected/index">Accueil</a>
+					<a href="protected/index" class="fl_green">Accueil</a>
 				</li>
 				<li>
-					<a href="protected/ma_liste">Compléter ma liste</a>
+					<a href="protected/ma_liste" class="fl_yellow">Compléter ma liste</a>
 				</li>
 				<li>
-					<a href="protected/mes_listes">Afficher mes listes partagées</a>
+					<a href="protected/mes_listes" class="fl_blue">Afficher mes listes partagées</a>
 				</li>
 				<li>
-					<a href="protected/afficher_reseau?id=${userid}">Mes amis</a>
+					<a href="protected/afficher_reseau?id=${userid}" class="fl_purple">Mes amis</a>
 				</li>
 				<li>
-					<a href="protected/rechercher_personne.jsp">Ajouter un ami</a>
+					<a href="protected/rechercher_personne.jsp" class="fl_purple">Ajouter un ami</a>
 				</li>
     		</ul>
     	</header>
