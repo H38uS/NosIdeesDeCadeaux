@@ -26,7 +26,7 @@ a:link, a:visited, a:active {
 	display: block;
 	float:left;
 	padding: 0 2px;
-    background-color: #8a8a8a;
+    margin-top: -20px;
 }
 
 .indexbox ul {
@@ -39,14 +39,20 @@ a:link, a:visited, a:active {
 .indexbox ul li {
 	margin-left: 20%;
     float: left;
-    padding: 40px 30px;
-    background-color: #8a8a8a;
 }
 
 .indexbox ul li a {
+    padding: 40px 30px;
+    background-color: #8a8a8a;
     display: block;
     color: white;
     text-align: center;
     text-decoration: none;
     font-size: 150%;
+    border: 5px solid white;
+}
+
+.indexbox ul li a:hover {
+    background-color: #353b43;
+    border: 5px solid black;
 }

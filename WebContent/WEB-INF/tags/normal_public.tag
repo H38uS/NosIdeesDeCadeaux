@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <t:template_head_includes>
 	<link rel="stylesheet" type="text/css" href="public/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="public/css/normal/normal.css" />
 </t:template_head_includes>
 <t:template_body_public>
 		<jsp:doBody />
