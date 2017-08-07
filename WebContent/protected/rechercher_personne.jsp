@@ -25,9 +25,11 @@
 						<td>
 							<c:if test="${onlyNonFriend}">
 								<input type="checkbox" name="only_non-friend" id="only_non-friend" checked="checked" />
+								<span class="checkbox"></span>
 							</c:if>
 							<c:if test="${not onlyNonFriend}">
 								<input type="checkbox" name="only_non-friend" id="only_non-friend" />
+								<span class="checkbox"></span>
 							</c:if>
 						</td>
 					</tr>

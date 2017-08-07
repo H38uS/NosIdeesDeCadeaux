@@ -48,6 +48,7 @@
 							<td>
 								<c:if test="${empty suggested_user.freeComment}">
 									<input type="checkbox" name="selected_${suggested_user.id}" id="selected_${suggested_user.id}" />
+									<span class="checkbox"></span>
 								</c:if>
 							</td>
 							<td>

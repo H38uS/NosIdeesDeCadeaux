@@ -22,6 +22,7 @@
 							<tr>
 								<td>
 									<input type="checkbox" id="cb${user.id}" name="${user.id}" />
+									<span class="checkbox"></span>
 								</td>
 								<td><label for="cb${user.id}" >${user.name}</label></td>
 							</tr>

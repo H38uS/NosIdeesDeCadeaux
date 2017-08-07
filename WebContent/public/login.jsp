@@ -29,7 +29,7 @@
 							</td>
 							<td>
 								<input id="remember-me" type="checkbox" name="remember-me" />
-								<span class="checkbox" />
+								<span class="checkbox"></span>
 							</td>
 						</tr>
 						<tr>

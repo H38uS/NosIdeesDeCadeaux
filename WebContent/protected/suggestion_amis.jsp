@@ -37,9 +37,11 @@
 										</td>
 										<td>
 											<input type="checkbox" name="selected_${suggestedUser.id}" id="selected_${suggestedUser.id}" />
+											<span class="checkbox"></span>
 										</td>
 										<td>
 											<input type="checkbox" name="reject_${suggestedUser.id}" id="reject_${suggestedUser.id}" />
+											<span class="checkbox"></span>
 										</td>
 									</tr>
 								</c:forEach>
