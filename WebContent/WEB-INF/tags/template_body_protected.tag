@@ -5,7 +5,7 @@
     	<div id="container">
     	<header>
     		<div id="logo">
-	    		<img src="public/image/header_index.png" ></img>
+	    		<img src="public/image/header_index.png" />
 	    		<span>
 		    		Bonjour, <c:out value="${username}" /> - <a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 		    		Accéder à <a href="protected/mon_compte">mon compte.</a>

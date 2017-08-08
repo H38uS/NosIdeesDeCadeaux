@@ -37,5 +37,39 @@
 				Aucun anniversaire dans peu de temps... C'est le bon moment pour récupérer des repas !
 			</c:otherwise>
 		</c:choose>
+		<table id="indexactions">
+			<tr>
+				<td>
+					<a href="protected/mes_listes">
+						<img class="clickable" alt="Afficher mes listes partagées" title="Afficher mes listes partagées"
+											src="public/image/index/CheckListeOUT.png" onmouseout="this.src='public/image/index/CheckListeOUT.png'"
+											onmouseover="this.src='public/image/index/CheckListeOVER.png'" />
+					</a>
+				</td>
+				<td>
+					<a href="protected/ma_liste">
+						<img class="clickable" alt="Compléter ma liste" title="Compléter ma liste"
+											src="public/image/index/AjouterIdeeOUT.png" onmouseout="this.src='public/image/index/AjouterIdeeOUT.png'"
+											onmouseover="this.src='public/image/index/AjouterIdeeOVER.png'" />
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="protected/afficher_reseau?id=${userid}">
+						<img class="clickable" alt="Mes amis" title="Mes amis" src="public/image/index/CreerGroupeOUT.png"
+											onmouseout="this.src='public/image/index/CreerGroupeOUT.png'"
+											onmouseover="this.src='public/image/index/CreerGroupeOVER.png'" />
+					</a>
+				</td>
+				<td>
+					<a href="protected/rechercher_personne.jsp">
+						<img class="clickable" alt="Ajouter un ami" title="Ajouter un ami" src="public/image/index/RejoindreGroupeOUT.png"
+											onmouseout="this.src='public/image/index/RejoindreGroupeOUT.png'"
+											onmouseover="this.src='public/image/index/RejoindreGroupeOVER.png'" />
+					</a>
+				</td>
+			</tr>
+		</table>
 	</jsp:body>
 </t:normal_proctected>

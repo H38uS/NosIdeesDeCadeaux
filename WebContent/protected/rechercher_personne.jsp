@@ -63,7 +63,7 @@
 									</c:when>
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">
-											<input hidden="true" type="text" name="user_id" value="${user.id}" >
+											<input hidden="true" type="hidden" name="user_id" value="${user.id}" >
 											<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
 											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										</form>

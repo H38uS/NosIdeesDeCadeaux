@@ -46,9 +46,9 @@ img.clickable, a > img {
 
 img.clickable:hover, a > img:hover {
     text-decoration: none;
-    border: blue solid 1px;
-    -webkit-box-shadow: 0 1px 5px blue;
-    box-shadow: 0 1px 5px blue;
+    border: #353b43 solid 1px;
+    -webkit-box-shadow: 0 1px 5px #353b43;
+    box-shadow: 0 1px 5px #353b43;
     border-radius: 2px;
 }
 
@@ -59,9 +59,9 @@ img.clickable:hover {
 img.clickable:active, a:active > img:active {
     border: none;
     text-decoration: none;
-    border: blue solid 1px;
-    box-shadow: 0 1px 5px blue inset;
-    -webkit-box-shadow: 0 1px 5px blue inset;
+    border: #353b43 solid 1px;
+    box-shadow: 0 1px 5px #353b43 inset;
+    -webkit-box-shadow: 0 1px 5px #353b43 inset;
     background-color: #dddddd;
     border-radius: 2px;
 }

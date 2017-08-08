@@ -7,7 +7,7 @@
     background-color: #8a8a8a;
     color: white;
     width: 450px;
-    margin: 100px auto;
+    margin: 70px auto;
     margin-bottom: 0;
     padding: 20px 50px;
 }
@@ -31,4 +31,18 @@
 	background: #353b43;
 	color: white;
     text-decoration: none;
+}
+
+/***************************/
+/* *** Index protected *** */
+/***************************/
+
+#indexactions {
+	width: 70%;
+	margin: 20px auto;
+}
+
+#indexactions tr td {
+	padding: 20px 0;
+	text-align: center;
 }
