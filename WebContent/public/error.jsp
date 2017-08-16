@@ -24,6 +24,12 @@
 							</td>
 						</tr>
 						<tr>
+							<td></td>
+							<td style="text-align:right" >
+								<a href="public/reinitialiser_mot_de_passe">Mot de passe oublié ?</a>
+							</td>
+						</tr>
+						<tr>
 							<td>
 								<label for="remember-me" class="fl_green">Maintenir la connexion</label>
 							</td>

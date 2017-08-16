@@ -157,6 +157,23 @@ public class ParameterValidator {
 		}
 	}
 
+	/**
+	 * 
+	 * @param sqlQuery It must be a select, than returns 1 row and 1 integer column with the count of occurrence. The
+	 *            query must also have exactly a string bind parameter for the parameter value.
+	 * @param db The connection to use.
+	 */
+	public void checkExists(String sqlQuery, DataSourceIdKDo db) {
+		try {
+			int res = db.selectInt(sqlQuery, parameterValue);
+			if (res == 0) {
+				errors.add(article + parameterName + " n'existe pas.");
+			}
+		} catch (SQLException e) {
+			errors.add("Erreur lors de la lecture en base, veuillez réessayer plus tard.");
+		}
+	}
+
 	public void checkDateFormat() {
 		SimpleDateFormat sdf = new SimpleDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
 		try {

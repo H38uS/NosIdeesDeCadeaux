@@ -42,12 +42,18 @@ public abstract class DefaultCompte extends IdeesCadeauxServlet {
 	 * @param userId The user id for who we are checking the email.
 	 * @return The list of errors found.
 	 */
-	protected List<String> checkEmail(ParameterValidator validator, int userId) {
+	protected List<String> checkEmail(ParameterValidator validator, int userId, boolean shouldExist) {
 		validator.checkEmpty();
 		validator.checkIsEmailValid();
-		validator.checkIsUnique(MessageFormat.format(	"select count(*) from {0} where email = ? and id <> {1}",
-														Users.TABLE_NAME,
-														userId), validatorConnection);
+		if (shouldExist) {
+			validator.checkExists(MessageFormat.format(	"select count(*) from {0} where email = ? and id <> {1}",
+			                                             	Users.TABLE_NAME,
+			                                             	userId), validatorConnection);
+		} else {
+			validator.checkIsUnique(MessageFormat.format(	"select count(*) from {0} where email = ?",
+			                                             	Users.TABLE_NAME,
+			                                             	userId), validatorConnection);
+		}
 		return validator.getErrors();
 	}
 

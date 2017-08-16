@@ -24,6 +24,12 @@
 							</td>
 						</tr>
 						<tr>
+							<td></td>
+							<td style="text-align:right" >
+								<a href="public/reinitialiser_mot_de_passe">Mot de passe oublié ?</a>
+							</td>
+						</tr>
+						<tr>
 							<td>
 								<label for="remember-me" class="fl_green">Maintenir la connexion</label>
 							</td>
@@ -44,7 +50,7 @@
 			</div>
 			<div><br/><br/>Ou...</div>
 			<div class="center">
-				<a href="public/creation_compte.jsp"><span class="fl_green">Créez</span> un compte !</a>
+				<a class="button" href="public/creation_compte.jsp"><span class="fl_green">Créez</span> un compte !</a>
 			</div>
 		</div>
 	</jsp:body>

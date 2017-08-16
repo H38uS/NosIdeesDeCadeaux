@@ -72,7 +72,7 @@ public class MonCompte extends DefaultCompte {
 				String name = parameters.get("name").trim();
 
 				int userId = ParametersUtils.getUserId(request);
-				List<String> errors = checkEmail(getValidatorEmail(email), userId);
+				List<String> errors = checkEmail(getValidatorEmail(email), userId, false);
 				request.getSession().setAttribute("errors_info_gen", errors);
 
 				String birthday = parameters.get("birthday");

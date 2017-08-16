@@ -70,7 +70,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : bootstrap pour le CSS ??
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
-	
+
 	// FIXME : 2 pouvoir réinitialiser le mot de pase
 
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
@@ -277,9 +277,17 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		try {
 
 			if (!policy.hasRightToInteractInGetRequest(req, resp)) {
+
+				int userId;
+				try {
+					userId = ParametersUtils.getUserId(req);
+				} catch (Exception e) {
+					userId = -1;
+				}
+
 				req.setAttribute("error_message", policy.getLastReason());
 				logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0} on {1}. Reason: {2}",
-													ParametersUtils.getUserId(req),
+													userId,
 													req.getRequestURL(),
 													policy.getLastReason()));
 				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", req, resp);

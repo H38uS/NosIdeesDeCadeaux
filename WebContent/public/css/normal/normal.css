@@ -16,7 +16,7 @@
 	width: 100%;
 }
 
-.login_form a {
+.login_form a.button {
 	display: block;
     width: 100%;
     background-color: #c0c0c0;
@@ -27,7 +27,7 @@
     border-radius: 4px;
     cursor: pointer;
 }
-.login_form a:hover {
+.login_form a.button:hover {
 	background: #353b43;
 	color: white;
     text-decoration: none;

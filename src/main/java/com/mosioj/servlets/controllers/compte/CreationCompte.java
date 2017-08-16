@@ -60,7 +60,7 @@ public class CreationCompte extends DefaultCompte {
 		List<String> pwdErrors = checkPwd(getValidatorPwd(pwd));
 		request.setAttribute("pwd_errors", pwdErrors);
 
-		List<String> emailErrors = checkEmail(getValidatorEmail(email), -1); // The user does not exist yet
+		List<String> emailErrors = checkEmail(getValidatorEmail(email), -1, false); // The user does not exist yet
 		request.setAttribute("email_errors", emailErrors);
 
 		try {

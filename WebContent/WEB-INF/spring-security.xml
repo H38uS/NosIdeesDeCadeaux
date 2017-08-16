@@ -2,6 +2,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
 
+	<http pattern="/public/reinitialiser_mot_de_passe" create-session="never">
+		<csrf disabled="true" />
+		<form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
+			authentication-failure-url="/public/error.jsp" />
+	</http>
+	
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/public" access="permitAll" />

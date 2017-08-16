@@ -70,7 +70,7 @@ img.clickable:active, a:active > img:active {
 .error, .errors {
     font-size:90%;
     font-style:italic;
-    color:red;	
+    color:#ff6666;	
 }
 
 /* Fonction de chargement */
