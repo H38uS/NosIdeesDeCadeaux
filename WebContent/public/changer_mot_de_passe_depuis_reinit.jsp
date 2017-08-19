@@ -26,7 +26,7 @@
 								<label for="pwd2" class="required fl_blue">Confirmer le mot de passe</label>
 							</td>
 							<td>
-								<input type="text" name="pwd2" id="pwd2" value="" />
+								<input type="password" name="pwd2" id="pwd2" value="" />
 							</td>
 						</tr>
 						<c:if test="${not empty pwd2_error}">
@@ -41,7 +41,7 @@
 						</tr>
 					</table>
 					<input type="hidden" name="userIdParam" value="${userIdParam}" >
-					<input type="hidden" name="userId" value="${tokenId}" >
+					<input type="hidden" name="tokenId" value="${tokenId}" >
 				</form>
 			</div>
 		</div>

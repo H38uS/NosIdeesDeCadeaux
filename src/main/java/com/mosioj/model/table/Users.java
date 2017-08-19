@@ -166,4 +166,17 @@ public class Users extends Table {
 		return users;
 	}
 
+	/**
+	 * Update the user password.
+	 * 
+	 * @param userId
+	 * @param newPwd
+	 * @throws SQLException
+	 */
+	public void updatePassword(int userId, String digestedPwd) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ? where {2} = ?", TABLE_NAME, PASSWORD, ID),
+								digestedPwd,
+								userId);
+	}
+
 }

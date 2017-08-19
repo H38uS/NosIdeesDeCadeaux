@@ -71,8 +71,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
 
-	// FIXME : 2 pouvoir réinitialiser le mot de pase
-
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
 
@@ -341,9 +339,17 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		try {
 
 			if (!policy.hasRightToInteractInPostRequest(request, response)) {
+
+				int userId;
+				try {
+					userId = ParametersUtils.getUserId(request);
+				} catch (Exception e) {
+					userId = -1;
+				}
+
 				request.setAttribute("error_message", policy.getLastReason());
 				logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0} on {1}. Reason: {2}",
-													ParametersUtils.getUserId(request),
+													userId,
 													request.getRequestURL(),
 													policy.getLastReason()));
 				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);

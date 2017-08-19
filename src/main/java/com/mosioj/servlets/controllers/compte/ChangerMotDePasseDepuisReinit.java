@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.table.UserChangePwdRequest;
 import com.mosioj.servlets.securitypolicy.PasswordChangeRequest;
-import com.mosioj.utils.EmailSender;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -22,7 +21,7 @@ public class ChangerMotDePasseDepuisReinit extends DefaultCompte {
 	public static final String tokenParameter = "tokenId";
 	public static final String userIdParameter = "userIdParam";
 	private static final UserChangePwdRequest ucpr = new UserChangePwdRequest();
-	private static final String SUCCES_PAGE_URL = null; // FIXME fill it
+	private static final String SUCCES_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit_succes.jsp";
 
 	public ChangerMotDePasseDepuisReinit() {
 		super(new PasswordChangeRequest(ucpr, tokenParameter, userIdParameter));
@@ -38,7 +37,6 @@ public class ChangerMotDePasseDepuisReinit extends DefaultCompte {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		// FIXME : 0 tester le submit
 		request.setAttribute(tokenParameter, ParametersUtils.readInt(request, tokenParameter));
 		int userId = ParametersUtils.readInt(request, userIdParameter);
 		request.setAttribute(userIdParameter, userId);
@@ -52,6 +50,8 @@ public class ChangerMotDePasseDepuisReinit extends DefaultCompte {
 			pwdErrors2.add("Les deux mots de passe ne correspondent pas.");
 		}
 		
+		String digested = hashPwd(pwd1, pwdErrors1);
+		
 		if (!pwdErrors1.isEmpty() || !pwdErrors2.isEmpty()) {
 			request.setAttribute("pwd1_error", pwdErrors1);
 			request.setAttribute("pwd2_error", pwdErrors2);
@@ -61,7 +61,7 @@ public class ChangerMotDePasseDepuisReinit extends DefaultCompte {
 
 		UserChangePwdRequest changePwdRequest = new UserChangePwdRequest();
 		changePwdRequest.deleteAssociation(userId);
-		// TODO modifier le user
+		users.updatePassword(userId, digested);
 
 		RootingsUtils.rootToPage(SUCCES_PAGE_URL, request, response);
 	}

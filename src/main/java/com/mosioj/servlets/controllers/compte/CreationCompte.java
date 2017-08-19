@@ -2,8 +2,6 @@ package com.mosioj.servlets.controllers.compte;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -77,17 +75,7 @@ public class CreationCompte extends DefaultCompte {
 		}
 
 		// Password hash
-		StringBuffer hashPwd = new StringBuffer();
-		try {
-			MessageDigest md = MessageDigest.getInstance("SHA");
-			md.update(pwd.getBytes());
-			byte[] digest = md.digest();
-			for (byte b : digest) {
-				hashPwd.append(String.format("%02x", b & 0xff));
-			}
-		} catch (NoSuchAlgorithmException e) {
-			pwdErrors.add("Echec du chiffrement du mot de passe. Erreur: " + e.getMessage());
-		}
+		String hashPwd = hashPwd(pwd, pwdErrors);
 
 		// Retour au formulaire si un paramètre est incorrect
 		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {
@@ -97,7 +85,7 @@ public class CreationCompte extends DefaultCompte {
 
 		// Les paramètres sont ok, on s'occupe de la requête
 		name = name.trim().isEmpty() ? email : name;
-		users.addNewPersonne(email, hashPwd.toString(), name);
+		users.addNewPersonne(email, hashPwd, name);
 		session.invalidate();
 		request.login(email, pwd);
 		request.setAttribute("user", email);

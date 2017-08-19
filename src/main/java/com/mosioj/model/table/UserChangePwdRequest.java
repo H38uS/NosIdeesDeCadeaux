@@ -3,6 +3,11 @@ package com.mosioj.model.table;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.mosioj.servlets.controllers.relations.AfficherReseau;
+
 import static com.mosioj.model.table.columns.UserChangePwdRequestColumns.USER_ID;
 import static com.mosioj.model.table.columns.UserChangePwdRequestColumns.EXPIRATION;
 import static com.mosioj.model.table.columns.UserChangePwdRequestColumns.TOKEN_ID;
@@ -11,6 +16,7 @@ public class UserChangePwdRequest extends Table {
 
 	private static final String TABLE_NAME = "USER_CHANGE_PWD_REQUEST";
 	private static final int NB_DAYS_FOR_REINIT = 3;
+	private static final Logger logger = LogManager.getLogger(AfficherReseau.class);
 
 	/**
 	 * 
@@ -20,11 +26,13 @@ public class UserChangePwdRequest extends Table {
 	 * @throws SQLException
 	 */
 	public boolean isAValidCombinaison(int userId, int tokenId) throws SQLException {
-		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ? and TIMESTAMPDIFF(SECOND, NOW(), {3}) > 0",
+		String query = MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ? and TIMESTAMPDIFF(SECOND, NOW(), {3}) > 0",
 																TABLE_NAME,
 																USER_ID,
 																TOKEN_ID,
-																EXPIRATION),
+																EXPIRATION);
+		logger.debug(query);
+		return getDb().doesReturnRows(	query,
 										userId,
 										tokenId);
 	}
