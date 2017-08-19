@@ -20,6 +20,10 @@ import org.junit.Test;
 public class TestMetaData extends TemplateTest {
 
 	private static final Logger logger = LogManager.getLogger(TestMetaData.class);
+	private static String [] excludesCSRF = new String[] {
+			"changer_mot_de_passe_depuis_reinit.jsp",
+			"reinitialiser_mot_de_passe.jsp"
+	};
 
 	@Test
 	public void testAllFormsHaveCRF() throws IOException {
@@ -123,6 +127,18 @@ public class TestMetaData extends TemplateTest {
 		FileFilter filter = new WildcardFileFilter("*.jsp");
 
 		for (File file : folder.listFiles(filter)) {
+
+			boolean excluded = false;
+			for (String exclude : excludesCSRF) {
+				if (file.getName().contains(exclude)) {
+					excluded = true;
+					break;
+				}
+			}
+			if (excluded) {
+				logger.info("Skipping" + file + "...");
+				continue;
+			}
 
 			String content = FileUtils.readFileToString(file);
 			logger.debug("Checking " + file + "...");
