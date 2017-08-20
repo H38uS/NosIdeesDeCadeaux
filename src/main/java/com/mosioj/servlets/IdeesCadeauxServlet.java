@@ -70,9 +70,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : bootstrap pour le CSS ??
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
-	
+
 	// FIXME : 1 revoir l'envoie des notifications par mail
 	// FIXME : 2 repasser sur la page mon compte; demander le mot de passe
+	
+	// FIXME : 3 revoir formulaire pour accepter les demandes + envoyer une notification
 
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire approche
@@ -295,6 +297,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 				return;
 			}
 
+			String fullURL = req.getRequestURL().toString();
+			notif.setURL(fullURL);
+
 			// Converting session parameters to attributes
 			HttpSession session = req.getSession();
 			Enumeration<String> names = session.getAttributeNames();
@@ -358,6 +363,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
 				return;
 			}
+
+			String fullURL = request.getRequestURL().toString();
+			notif.setURL(fullURL);
 
 			// Security has passed, perform the logic
 			ideesKDoPOST(request, response);

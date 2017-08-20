@@ -1,15 +1,28 @@
 package com.mosioj.notifications;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.mosioj.utils.EmailSender;
 
 public abstract class AbstractNotification {
-	
+
+	private static final Logger logger = LogManager.getLogger(AbstractNotification.class);
+
 	/**
 	 * The notification type, useful for database insertion.
 	 */
 	private NotificationType type;
 
+	private final Properties p;
 	public int id;
 	public int owner;
 	public String text;
@@ -20,8 +33,16 @@ public abstract class AbstractNotification {
 	 */
 	public AbstractNotification(NotificationType type) {
 		this.type = type;
+		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("notif.properties");
+		p = new Properties();
+		try {
+			p.load(new InputStreamReader(input, "UTF-8"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error(e);
+		}
 	}
-	
+
 	/**
 	 * 
 	 * @param type The notification type, useful for database insertion.
@@ -31,13 +52,13 @@ public abstract class AbstractNotification {
 	 * @param parameters The notification parameters.
 	 */
 	public AbstractNotification(NotificationType type, int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		this.type = type;
+		this(type);
 		this.id = id;
 		this.owner = owner;
 		this.text = text;
 		this.params = parameters;
 	}
-	
+
 	/**
 	 * Used in database insertion.
 	 * 
@@ -47,12 +68,20 @@ public abstract class AbstractNotification {
 		return type.name();
 	}
 
-
 	/**
 	 * Send the notification by email.
+	 * 
+	 * @param emailAdress
+	 * @param fullURLTillProtected
+	 * 
 	 */
-	public void sendEmail(String emailAdress) {
-		// TODO Auto-generated method stub
+	public void sendEmail(String emailAdress, String fullURLTillProtected) {
+		String notifText = getTextToInsert();
+		notifText = notifText.replaceAll(	"<a href=\"protected/",
+											MessageFormat.format("<a href=\"{0}protected/", fullURLTillProtected));
+		notifText = notifText.replaceAll("<a href=\"public/", MessageFormat.format("<a href=\"{0}public/", fullURLTillProtected));
+		String body = p.get("mail_template").toString().replaceAll("\\$\\$text\\$\\$", notifText);
+		EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Nouvelle notification !", body);
 	}
 
 	/**
@@ -68,7 +97,7 @@ public abstract class AbstractNotification {
 	public String getText() {
 		return text;
 	}
-	
+
 	/**
 	 * 
 	 * @return The parameter list of this notification.

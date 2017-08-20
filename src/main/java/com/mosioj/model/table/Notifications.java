@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.notifications.NotificationFactory;
@@ -33,6 +34,17 @@ public class Notifications extends Table {
 
 	private final Logger logger = LogManager.getLogger(Notifications.class);
 	private final UserParameters userParameters = new UserParameters();
+	
+	private String urlTillProtectedPublic;
+	
+	public void setURL(String fullURL) {
+		if (fullURL.contains("protected")) {
+			urlTillProtectedPublic = fullURL.substring(0, fullURL.indexOf("protected"));
+		}
+		if (fullURL.contains("public")) {
+			urlTillProtectedPublic = fullURL.substring(0, fullURL.indexOf("public"));
+		}
+	}
 
 	/**
 	 * Save and send a notification.
@@ -91,7 +103,12 @@ public class Notifications extends Table {
 
 		// Envoie de la notification par email si besoin
 		if (activation == NotificationActivation.EMAIL || activation == NotificationActivation.EMAIL_SITE) {
-			notif.sendEmail(""); // TODO récupérer l'email
+			String email = getDb().selectString(MessageFormat.format(	"select {0} from {1} where {2} = ?",
+																		UsersColumns.EMAIL,
+																		Users.TABLE_NAME,
+																		UsersColumns.ID),
+												userId);
+			notif.sendEmail(email, urlTillProtectedPublic);
 		}
 	}
 

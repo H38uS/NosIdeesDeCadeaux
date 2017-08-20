@@ -37,8 +37,16 @@ public class EmailSender {
 		}
 	}
 
-	public static void sendEmailReinitializationPwd(String to, int userId, int tokenId) {
+	/**
+	 * Sends out an email.
+	 * 
+	 * @param to The email address where to send the email.
+	 * @param subject The email subject.
+	 * @param htmlText The email body, html formated.
+	 */
+	public static void sendEmail(String to, String subject, String htmlText) {
 
+		logger.info(MessageFormat.format("Sending email to {0}...", to));
 		if (!isInitialized) {
 			initialize();
 		}
@@ -55,18 +63,22 @@ public class EmailSender {
 
 			message.setFrom(new InternetAddress(p.getProperty("from"), "Nos Idées de Cadeaux"));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject("Mot de passe oublié - Nos idées de cadeaux");
-
-			String body = p.get("body_reinitialization").toString();
-			body = body.replaceAll("\\$\\$parameters\\$\\$", MessageFormat.format("userIdParam={0}&tokenId={1}", userId, tokenId + ""));
-			message.setContent(body, "text/html; charset=UTF-8");
+			message.setSubject(subject);
+			message.setContent(htmlText, "text/html; charset=UTF-8");
 
 			Transport.send(message);
-			System.out.println("Sent message successfully....");
+			logger.info("Sent message successfully....");
 
 		} catch (MessagingException | UnsupportedEncodingException mex) {
 			mex.printStackTrace();
+			logger.error(mex.getMessage());
 		}
+	}
+
+	public static void sendEmailReinitializationPwd(String to, int userId, int tokenId) {
+		String body = p.get("body_reinitialization").toString();
+		body = body.replaceAll("\\$\\$parameters\\$\\$", MessageFormat.format("userIdParam={0}&tokenId={1}", userId, tokenId + ""));
+		sendEmail(to, "Mot de passe oublié - Nos idées de cadeaux", body);
 	}
 
 }
