@@ -141,6 +141,7 @@ public class ParameterValidator {
 	}
 
 	/**
+	 * Raises an error if the email already exists (1 or more occurrences).
 	 * 
 	 * @param sqlQuery It must be a select, than returns 1 row and 1 integer column with the count of occurrence. The
 	 *            query must also have exactly a string bind parameter for the parameter value.
@@ -158,6 +159,7 @@ public class ParameterValidator {
 	}
 
 	/**
+	 * Raises an error if the email does not exist (0 occurrence).
 	 * 
 	 * @param sqlQuery It must be a select, than returns 1 row and 1 integer column with the count of occurrence. The
 	 *            query must also have exactly a string bind parameter for the parameter value.

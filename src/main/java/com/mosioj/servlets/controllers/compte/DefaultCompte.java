@@ -48,13 +48,18 @@ public abstract class DefaultCompte extends IdeesCadeauxServlet {
 		validator.checkEmpty();
 		validator.checkIsEmailValid();
 		if (shouldExist) {
-			validator.checkExists(MessageFormat.format(	"select count(*) from {0} where email = ? and id <> {1}",
-			                                             	Users.TABLE_NAME,
-			                                             	userId), validatorConnection);
+			if (userId < 0) {
+				validator.checkExists(	MessageFormat.format("select count(*) from {0} where email = ?", Users.TABLE_NAME),
+										validatorConnection);
+			} else {
+				validator.checkExists(	MessageFormat.format(	"select count(*) from {0} where email = ? and id = {1}",
+																Users.TABLE_NAME,
+																userId),
+										validatorConnection);
+			}
 		} else {
-			validator.checkIsUnique(MessageFormat.format(	"select count(*) from {0} where email = ?",
-			                                             	Users.TABLE_NAME,
-			                                             	userId), validatorConnection);
+			validator.checkIsUnique(MessageFormat.format("select count(*) from {0} where email = ?", Users.TABLE_NAME, userId),
+									validatorConnection);
 		}
 		return validator.getErrors();
 	}
