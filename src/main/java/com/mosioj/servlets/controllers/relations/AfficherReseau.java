@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Relation;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
@@ -27,6 +28,7 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 	private static final Logger logger = LogManager.getLogger(AfficherReseau.class);
 
 	private static final String USER_ID_PARAM = "id";
+	public static final String URL = "/protected/afficher_reseau";
 	private static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
 
 	/**
@@ -42,15 +44,20 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		Integer user = ParametersUtils.readInt(req, USER_ID_PARAM);
 
 		int userId = ParametersUtils.getUserId(req);
-		
+
 		if (userId == user) {
 			// Uniquement sur notre compte
 			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
 			req.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
+		
+		// Ajout du flag network
+		List<Relation> relations = userRelations.getRelations(user);
+		List<Relation> mine = userRelations.getRelations(userId);
+		relations.stream().filter(r -> mine.contains(r)).forEach(r -> r.secondIsInMyNetwork = true);
 
 		req.setAttribute("id", user);
-		req.setAttribute("relations", userRelations.getRelations(user));
+		req.setAttribute("relations", relations);
 		req.setAttribute("name", users.getUser(user).name);
 
 		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);

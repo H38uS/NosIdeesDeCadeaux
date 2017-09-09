@@ -41,22 +41,21 @@ public class UserRelations extends Table {
 		query.append("left join {5} u2 on u2.id = urr.{1} ");
 		query.append("where {3} = ? ");
 
-		String formatedQuery = MessageFormat.format(	query.toString(),
-		                                            	FIRST_USER.name(),
-		                                            	SECOND_USER.name(),
-		                                            	TABLE_NAME,
-		                                            	FIRST_USER,
-		                                            	SECOND_USER,
-		                                            	Users.TABLE_NAME,
-		                                            	UsersColumns.NAME,
-		                                            	UsersColumns.EMAIL,
-		                                            	UsersColumns.AVATAR);
-		logger.debug(formatedQuery);
+		String formatedQuery = MessageFormat.format(query.toString(),
+													FIRST_USER.name(),
+													SECOND_USER.name(),
+													TABLE_NAME,
+													FIRST_USER,
+													SECOND_USER,
+													Users.TABLE_NAME,
+													UsersColumns.NAME,
+													UsersColumns.EMAIL,
+													UsersColumns.AVATAR);
+		logger.trace(formatedQuery);
 
 		try {
 
-			ps = new PreparedStatementIdKdo(getDb(),
-											formatedQuery);
+			ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
 			ps.bindParameters(user);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
@@ -169,47 +168,65 @@ public class UserRelations extends Table {
 	 */
 	public void addAssociation(int userThatSendTheRequest, int userThatReceiveTheRequest) throws SQLException {
 		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
-														TABLE_NAME,
-														FIRST_USER,
-														SECOND_USER,
-														RELATION_DATE),
-								userThatSendTheRequest,
-								userThatReceiveTheRequest);
+																	TABLE_NAME,
+																	FIRST_USER,
+																	SECOND_USER,
+																	RELATION_DATE),
+											userThatSendTheRequest,
+											userThatReceiveTheRequest);
 		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
+																	TABLE_NAME,
+																	FIRST_USER,
+																	SECOND_USER,
+																	RELATION_DATE),
+											userThatReceiveTheRequest,
+											userThatSendTheRequest);
+	}
+
+	/**
+	 * Drops a friendship.
+	 * 
+	 * @param firstUserId
+	 * @param secondUserId
+	 * @throws SQLException
+	 */
+	public void deleteAssociation(int firstUserId, int secondUserId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where ({1} = ? and {2} = ?) or ({1} = ? and {2} = ?)",
 														TABLE_NAME,
 														FIRST_USER,
-														SECOND_USER,
-														RELATION_DATE),
-								userThatReceiveTheRequest,
-								userThatSendTheRequest);
+														SECOND_USER),
+								firstUserId,
+								secondUserId,
+								secondUserId,
+								firstUserId);
 	}
 
 	public List<User> getAllUsersInRelation(int userId, String userNameOrEmail) throws SQLException {
-		
+
 		List<User> users = new ArrayList<User>();
 		PreparedStatementIdKdo ps = null;
-		
+
 		StringBuilder query = new StringBuilder();
 		query.append("select u.{0}, u.{1}, u.{2} ");
 		query.append("from {3} u, {4} r ");
 		query.append("where u.{0} = r.{6} and r.{5} = ? ");
-		
+
 		if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
 			query.append("  and (u.{1} like ? ESCAPE ''!'' or u.{2} like ? ESCAPE ''!'') ");
 		}
 
 		query.append("order by {1}, {2}, {0}");
-		
+
 		try {
 			ps = new PreparedStatementIdKdo(getDb(),
-			                                MessageFormat.format(	query.toString(),
-			                                                     	UsersColumns.ID.name(),
-			                                                     	UsersColumns.NAME.name(),
-			                                                     	UsersColumns.EMAIL.name(),
-			                                                     	Users.TABLE_NAME,
-			                                                     	TABLE_NAME,
-			                                                     	FIRST_USER,
-			                                                     	SECOND_USER));
+											MessageFormat.format(	query.toString(),
+																	UsersColumns.ID.name(),
+																	UsersColumns.NAME.name(),
+																	UsersColumns.EMAIL.name(),
+																	Users.TABLE_NAME,
+																	TABLE_NAME,
+																	FIRST_USER,
+																	SECOND_USER));
 			if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
 				ps.bindParameters(userId, "%" + userNameOrEmail + "%", "%" + userNameOrEmail + "%");
 			} else {
@@ -219,8 +236,8 @@ public class UserRelations extends Table {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
 					users.add(new User(	res.getInt(UsersColumns.ID.name()),
-					                   	res.getString(UsersColumns.NAME.name()),
-					                   	res.getString(UsersColumns.EMAIL.name())));
+										res.getString(UsersColumns.NAME.name()),
+										res.getString(UsersColumns.EMAIL.name())));
 				}
 			}
 		} finally {
@@ -228,7 +245,7 @@ public class UserRelations extends Table {
 				ps.close();
 			}
 		}
-		
+
 		return users;
 	}
 

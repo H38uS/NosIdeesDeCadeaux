@@ -3,6 +3,7 @@ package com.mosioj.notifications;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
@@ -26,6 +27,7 @@ public enum NotificationType {
 	NEW_RELATION_SUGGESTION(NotifNewRelationSuggestion.class), //
 	NEW_COMMENT_ON_IDEA(NotifNewCommentOnIdea.class), //
 	IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON(NotifIdeaModifiedWhenBirthdayIsSoon.class), //
+	FRIENDSHIP_DROPPED(NotifFriendshipDropped.class), //
 	IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class);
 
 	private final Class<? extends AbstractNotification> notificationClassName;

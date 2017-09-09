@@ -61,6 +61,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		notif = mock(Notifications.class);
 		
 		when(request.getSession()).thenReturn(session);
+		when(request.getRequestURL()).thenReturn(new StringBuffer("MyURL"));
 		when(request.getContextPath()).thenReturn("");
 		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
 		when(session.getAttributeNames()).thenReturn(new Enumeration<String>() {

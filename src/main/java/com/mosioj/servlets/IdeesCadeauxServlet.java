@@ -265,7 +265,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public abstract void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException;
+	public abstract void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException;
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
