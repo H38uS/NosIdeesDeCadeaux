@@ -101,7 +101,8 @@ public class UserParameters extends Table {
 					params.add(new UserParameter(	rs.getInt(ID.name()),
 													rs.getInt(USER_ID.name()),
 													rs.getString(PARAMETER_NAME.name()),
-													rs.getString(PARAMETER_VALUE.name())));
+													rs.getString(PARAMETER_VALUE.name()),
+													NotificationType.valueOf(rs.getString(PARAMETER_NAME.name())).getDescription()));
 				}
 			}
 		} finally {

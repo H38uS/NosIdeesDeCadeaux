@@ -16,7 +16,7 @@
 				</thead>
 				<c:forEach var="notif" items="${notifications}">
 					<tr>
-						<td>${notif.type}</td>
+						<td>${notif.description}</td>
 						<td>${notif.text}</td>
 						<td>
 							<a href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>

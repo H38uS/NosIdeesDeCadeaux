@@ -71,7 +71,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
 	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
 
-	// FIXME : 2 repasser sur la page mon compte; demander le mot de passe
 	// FIXME : 3 revoir formulaire pour accepter les demandes d'amis + envoyer une notification
 
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement

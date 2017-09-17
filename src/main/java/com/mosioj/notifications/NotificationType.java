@@ -19,21 +19,23 @@ import com.mosioj.notifications.instance.NotifNoIdea;
  */
 public enum NotificationType {
 
-	NO_IDEA(NotifNoIdea.class), //
-	BOOKED_REMOVE(NotifBookedRemove.class), //
-	GROUP_IDEA_SUGGESTION(NotifGroupSuggestion.class), //
-	IS_IDEA_UP_TO_DATE(NotifAskIfIsUpToDate.class), //
-	CONFIRMED_UP_TO_DATE(NotifConfirmedUpToDate.class), //
-	NEW_RELATION_SUGGESTION(NotifNewRelationSuggestion.class), //
-	NEW_COMMENT_ON_IDEA(NotifNewCommentOnIdea.class), //
-	IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON(NotifIdeaModifiedWhenBirthdayIsSoon.class), //
-	FRIENDSHIP_DROPPED(NotifFriendshipDropped.class), //
-	IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class);
+	NO_IDEA(NotifNoIdea.class, "Lorsque vous n'avez pas d'idées"), //
+	BOOKED_REMOVE(NotifBookedRemove.class, "Un ami a supprimé une idée que vous aviez réservée"), //
+	GROUP_IDEA_SUGGESTION(NotifGroupSuggestion.class, "On vous invite à un groupe sur une idée"), //
+	IS_IDEA_UP_TO_DATE(NotifAskIfIsUpToDate.class, "On vous confirme que l'idée est à jour"), //
+	CONFIRMED_UP_TO_DATE(NotifConfirmedUpToDate.class, "On vous demande si l'idée est à jour"), //
+	NEW_RELATION_SUGGESTION(NotifNewRelationSuggestion.class, "On vous suggère une demande d'ami"), //
+	NEW_COMMENT_ON_IDEA(NotifNewCommentOnIdea.class, "Quelqu'un a posté un nouveau commentaire sur l'idée"), //
+	IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON(NotifIdeaModifiedWhenBirthdayIsSoon.class, "Un ami qui va bientôt fêter son anniversaire a modifié une idée"), //
+	FRIENDSHIP_DROPPED(NotifFriendshipDropped.class, "Quelqu'un a supprimé votre relation"), //
+	IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class, "Un ami vous a ajouté une idée");
 
 	private final Class<? extends AbstractNotification> notificationClassName;
+	private final String description;
 
-	private NotificationType(Class<? extends AbstractNotification> notificationClassName) {
+	private NotificationType(Class<? extends AbstractNotification> notificationClassName, String description) {
 		this.notificationClassName = notificationClassName;
+		this.description = description;
 	}
 
 	/**
@@ -42,5 +44,9 @@ public enum NotificationType {
 	 */
 	public Class<? extends AbstractNotification> getNotificationClassName() {
 		return notificationClassName;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 }

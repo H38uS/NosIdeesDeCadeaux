@@ -16,6 +16,7 @@
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/public" access="permitAll" />
+		<intercept-url pattern="/protected/mon_compte" access="isFullyAuthenticated()" />
 		<intercept-url pattern="/protected/**" access="hasRole('ROLE_USER')" />
 		<intercept-url pattern="/manage/**" access="hasRole('ROLE_MANAGER')" />
 		<intercept-url pattern="/administration/**" access="hasRole('ROLE_ADMIN')" />

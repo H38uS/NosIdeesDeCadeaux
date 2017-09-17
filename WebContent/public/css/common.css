@@ -110,7 +110,7 @@ img.clickable:active, a:active > img:active {
 
 label {
     display: block;
-    width: 120px;
+    min-width: 120px;
     float: left;
 }
 

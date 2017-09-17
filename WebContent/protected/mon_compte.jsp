@@ -70,14 +70,14 @@
 			</form>
 		</div>
 		
-		<h2>Notifications</h2>
+		<h2>Type de notifications</h2>
 		<table>
 			<c:forEach var="notif" items="${notif_types}">
 				<tr>
-					<td width="270px">
-						<label for="${notif.parameterName}_value">${notif.parameterName}</label>
-					</td>
 					<td>
+						<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
+					</td>
+					<td style="padding:0 20px;" >
 						<select id="value" name="value">
 							<c:forEach var="value" items="${possible_values}">
 								<c:choose>

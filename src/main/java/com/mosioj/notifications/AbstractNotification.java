@@ -97,6 +97,14 @@ public abstract class AbstractNotification {
 	public String getText() {
 		return text;
 	}
+	
+	/**
+	 * 
+	 * @return The notification type description.
+	 */
+	public String getDescription() {
+		return type.getDescription();
+	}
 
 	/**
 	 * 
