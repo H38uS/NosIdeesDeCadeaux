@@ -63,6 +63,6 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 		RootingsUtils.rootToPage(FORM_URL, req, resp);
 	}
 
-	// TODO : pouvoir afficher les pages suivantes
+	// FIXME : pouvoir afficher les pages suivantes
 
 }

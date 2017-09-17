@@ -47,3 +47,26 @@
 	padding: 20px 0;
 	text-align: center;
 }
+
+/***********************************/
+/* *** Person with information *** */
+/***********************************/
+
+#person_square_container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 280px);
+	grid-gap: 00px;
+	justify-content: center;
+	align-content: flex-start;
+	list-style: none;
+	padding: 0;
+}
+
+#person_square_container > * {
+	vertical-align: top;
+}
+
+.person_square {
+	margin: 0 20px;
+	text-align: center;
+}

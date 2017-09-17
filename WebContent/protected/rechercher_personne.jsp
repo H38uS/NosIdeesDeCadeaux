@@ -44,16 +44,15 @@
 		</div>
 		<div>
 			<c:if test="${not empty users}">
-				<table>
-				<c:set var="count" value="0" scope="page" />
-				<c:forEach var="user" items="${users}">
-					<c:if test="${count % 4 == 0}">
-						<tr>
-					</c:if>
-							<td>
-								<img src="${user.avatarSrcSmall}"><br/>
-								${user.name}<br/>
-								${user.email}<br/>
+				<ul id="person_square_container">
+					<c:forEach var="user" items="${users}">
+						<li class="person_square">
+							<div>
+								<img src="${user.avatarSrcSmall}">
+							</div>
+							<div>${user.name}</div>
+							<div>${user.email}</div>
+							<div>
 								<c:choose>
 									<c:when test="${user.isInMyNetwork}">
 										${user.name} fait déjà parti de vos amis.
@@ -69,13 +68,10 @@
 										</form>
 									</c:otherwise>
 								</c:choose>
-							</td>
-					<c:set var="count" value="${count + 1}" scope="page"/>
-					<c:if test="${count % 4 == 0}">
-						</tr>
-					</c:if>
-				</c:forEach>
-				</table>
+							</div>
+						</li>
+					</c:forEach>
+				</ul>
 			</c:if>
 		</div>
 	</jsp:body>

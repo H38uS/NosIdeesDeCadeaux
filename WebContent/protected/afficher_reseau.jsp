@@ -53,27 +53,19 @@
 				Vous n'avez aucune relation pour le moment. <a href="protected/rechercher_personne.jsp" >Rechercher</a> des personnes à ajouter !
 			</c:when>
 			<c:otherwise>
-				<table>
-					<c:set var="count" value="0" scope="page" />
+				<ul id="person_square_container">
 					<c:forEach var="relation" items="${relations}">
-						<c:if test="${count % 4 == 0}">
-							<tr>
-						</c:if>
-							<td>
-								<img src="${relation.second.avatarSrcSmall}"><br/>
-								<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a><br/>
-								<c:if test="${relation.second.id != userid && relation.secondIsInMyNetwork}">
-									<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
-									Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
-									<a href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
-								</c:if>
-							</td>
-						<c:set var="count" value="${count + 1}" scope="page"/>
-						<c:if test="${count % 4 == 0}">
-							</tr>
-						</c:if>
+						<li class="person_square">
+							<img src="${relation.second.avatarSrcSmall}"><br/>
+							<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a><br/>
+							<c:if test="${relation.second.id != userid && relation.secondIsInMyNetwork}">
+								<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
+								Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
+								<a href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
+							</c:if>
+						</li>
 					</c:forEach>
-				</table>
+				</ul>
 			</c:otherwise>
 		</c:choose>
 	</jsp:body>
