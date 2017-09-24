@@ -20,10 +20,7 @@ import org.junit.Test;
 public class TestMetaData extends TemplateTest {
 
 	private static final Logger logger = LogManager.getLogger(TestMetaData.class);
-	private static String [] excludesCSRF = new String[] {
-			"changer_mot_de_passe_depuis_reinit.jsp",
-			"reinitialiser_mot_de_passe.jsp"
-	};
+	private static String[] excludesCSRF = new String[] { "changer_mot_de_passe_depuis_reinit.jsp", "reinitialiser_mot_de_passe.jsp" };
 
 	@Test
 	public void testAllFormsHaveCRF() throws IOException {
@@ -48,8 +45,8 @@ public class TestMetaData extends TemplateTest {
 		assertTrue(web.exists());
 
 		Set<String> availableLinks = new HashSet<String>();
-		addJSPToReferences(availableLinks, new File(web, "protected"));
-		addJSPToReferences(availableLinks, new File(web, "public"));
+		addCSSorJSPToReferences(availableLinks, new File(web, "protected"));
+		addCSSorJSPToReferences(availableLinks, new File(web, "public"));
 		addJavaToReference(availableLinks, new File(root, "src/main/java"));
 
 		Set<String> referencedLinks = new HashSet<String>();
@@ -113,13 +110,23 @@ public class TestMetaData extends TemplateTest {
 		}
 	}
 
-	private void addJSPToReferences(Set<String> availableLinks, File folder) {
+	private void addCSSorJSPToReferences(Set<String> availableLinks, File folder, String parent) {
 		assertTrue(folder.exists());
 		for (File file : folder.listFiles()) {
-			if (file.getName().endsWith(".jsp")) {
-				availableLinks.add(folder.getName() + "/" + file.getName());
+			if (file.isDirectory()) {
+				addCSSorJSPToReferences(availableLinks, file, parent + "/" + file.getName());
+				continue;
+			}
+			String name = file.getName();
+			if (name.endsWith(".css") || name.endsWith(".jsp")) {
+				logger.trace(parent + "/" + name);
+				availableLinks.add(parent + "/" + name);
 			}
 		}
+	}
+
+	private void addCSSorJSPToReferences(Set<String> availableLinks, File folder) {
+		addCSSorJSPToReferences(availableLinks, folder, folder.getName());
 	}
 
 	private void checkForms(File folder) throws IOException {
