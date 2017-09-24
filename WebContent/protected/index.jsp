@@ -8,7 +8,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<t:normal_proctected>
+<t:normal_protected>
 	<jsp:body>
 		<h1>Prochain anniversaire</h1>
 		<c:choose>
@@ -72,4 +72,4 @@
 			</tr>
 		</table>
 	</jsp:body>
-</t:normal_proctected>
+</t:normal_protected>

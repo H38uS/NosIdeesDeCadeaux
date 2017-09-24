@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<t:normal_proctected>
+<t:normal_protected>
 		<jsp:body>
 		<c:forEach var="user" items="${users}">
 			<c:if test="${userid == user.id}">
@@ -88,4 +88,4 @@
 			</c:if>
 		</c:forEach>
 	</jsp:body>
-</t:normal_proctected>
+</t:normal_protected>

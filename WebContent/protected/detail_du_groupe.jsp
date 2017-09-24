@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<t:normal_proctected>
+<t:normal_protected>
 		<jsp:body>
 		<h2>Détail du groupe</h2>
 		<div>
@@ -79,4 +79,4 @@
 		<h3>Suggérer ce groupe à quelqu'un</h3>
 		Il manque un peu... N'hésitez plus, <a href="protected/suggerer_groupe_idee?groupid=${group.id}">suggérer</a> ce groupe à d'autres personnes !
 	</jsp:body>
-</t:normal_proctected>
+</t:normal_protected>

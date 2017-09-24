@@ -3,9 +3,9 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<t:normal_proctected>
+<t:normal_protected>
 	<jsp:body>
 		<h2>Succès !</h2>
 		<div>Une demande d'amis à ${name} vient d'être envoyée.</div>
 	</jsp:body>
-</t:normal_proctected>
+</t:normal_protected>

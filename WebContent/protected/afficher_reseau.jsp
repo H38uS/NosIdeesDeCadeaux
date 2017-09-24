@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<t:normal_proctected>
+<t:normal_protected>
 	<jsp:body>
 		<c:if test="${not empty accepted}">
 			<h2>Succès</h2>
@@ -71,4 +71,4 @@
 			</c:otherwise>
 		</c:choose>
 	</jsp:body>
-</t:normal_proctected>
+</t:normal_protected>
