@@ -27,8 +27,6 @@ public class SupprimerRelation extends IdeesCadeauxServlet {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		// FIXME vérifier qu'on est amis pour fournir les actions -- refaire une passe sur le CSS / la présentation
-
 		Integer user = ParametersUtils.readInt(req, USER_PARAMETER);
 		int currentId = ParametersUtils.getUserId(req);
 

@@ -6,7 +6,7 @@
 	<jsp:body>
 		<c:if test="${not empty accepted}">
 			<h2>Succès</h2>
-			Les demandes suivantes ont été accepté avec succès.
+			Les demandes suivantes ont été acceptées avec succès.
 			<ul>
 				<c:forEach var="accept" items="${accepted}">
 					<li>
@@ -17,32 +17,34 @@
 			</ul>
 		</c:if>
 		<c:if test="${not empty demandes}">
-			<h2>Demandes reçues</h2>
-			<form method="POST" action="protected/afficher_reseau">
-				<table>
-					<thead>
-						<tr>
-							<th>Nom du demandeur</th>
-						</tr>
-					</thead>
-					<c:forEach var="demande" items="${demandes}">
-						<tr>
-							<td>${demande.sent_by.name}</td>
-							<td>
-								<label for="acc_choix_${demande.sent_by.id}">Accepter</label>
-								<input type="radio" id="acc_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Accepter">
-							</td>
-							<td>
-								<label for="ref_choix_${demande.sent_by}">Refuser</label>
-								<input type="radio" id="ref_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Refuser">
-							</td>
-						</tr>
-					</c:forEach>
-				</table>
-				<input type="submit" id="submit" name="submit" value="Sauvegarder">
-				<input type="hidden" name="id" value="${id}" />
-				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-			</form>
+			<div class="login_form">
+				<h2>Demandes reçues</h2>
+				<form method="POST" action="protected/afficher_reseau">
+					<table>
+						<thead>
+							<tr>
+								<th>Nom du demandeur</th>
+							</tr>
+						</thead>
+						<c:forEach var="demande" items="${demandes}">
+							<tr>
+								<td>${demande.sent_by.name}</td>
+								<td>
+									<input type="radio" id="acc_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Accepter">
+									<label for="acc_choix_${demande.sent_by.id}">Accepter</label>
+								</td>
+								<td>
+									<input type="radio" id="ref_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Refuser">
+									<label for="ref_choix_${demande.sent_by.id}">Refuser</label>
+								</td>
+							</tr>
+						</c:forEach>
+					</table>
+					<input type="submit" id="submit" name="submit" value="Sauvegarder">
+					<input type="hidden" name="id" value="${id}" />
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				</form>
+			</div>
 		</c:if>
 		<c:if test="${not empty suggestions && suggestions}">
 			Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...

@@ -155,6 +155,36 @@ textarea:focus, input[type=text]:focus, input[type=password]:focus, input[type=e
     box-shadow: 0 0 10px #b0cff8;
 }
 
+/* Radio */
+input[type=radio]{
+    display: none;
+}
+input[type=radio] + label:before {
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin-top: -3px;
+    margin-right: 6px;
+    display: inline-block;
+    vertical-align: middle;
+    content: '';
+    width: 17px;
+    height: 17px;
+}
+input[type=radio]:checked + label:before {
+    background: #b0cff8;
+    border-color: #b0cff8;
+    box-shadow: inset 0px 0px 0px 2px #fff;
+}
+input[type=radio]:checked + label {
+	color: #b0cff8;
+}
+input[type=radio] + label:hover {
+	color: #c9f3d5;
+	cursor: pointer;
+}
+/* End Radio */
+
 .input {
 	margin: 0 6px;
 }

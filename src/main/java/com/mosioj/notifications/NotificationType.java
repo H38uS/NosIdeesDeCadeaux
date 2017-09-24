@@ -3,6 +3,8 @@ package com.mosioj.notifications;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.notifications.instance.NotifDemandeAcceptee;
+import com.mosioj.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
@@ -28,6 +30,8 @@ public enum NotificationType {
 	NEW_COMMENT_ON_IDEA(NotifNewCommentOnIdea.class, "Quelqu'un a posté un nouveau commentaire sur l'idée"), //
 	IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON(NotifIdeaModifiedWhenBirthdayIsSoon.class, "Un ami qui va bientôt fêter son anniversaire a modifié une idée"), //
 	FRIENDSHIP_DROPPED(NotifFriendshipDropped.class, "Quelqu'un a supprimé votre relation"), //
+	ACCEPTED_FRIENDSHIP(NotifDemandeAcceptee.class, "Quelqu'un a accepté votre demande"), //
+	REJECTED_FRIENDSHIP(NotifDemandeRefusee.class, "Quelqu'un a refusé votre demande d'amis"), //
 	IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class, "Un ami vous a ajouté une idée");
 
 	private final Class<? extends AbstractNotification> notificationClassName;
