@@ -4,7 +4,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<t:normal_protected>
+<t:template_head_includes>
+	<link rel="stylesheet" type="text/css" href="public/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="public/css/normal/normal.css" />
+	<script src="public/js/search.js" type="text/javascript"></script>
+</t:template_head_includes>
+<t:template_body_protected>
 	<jsp:body>
 		<h2>Rechercher une personne pour l'ajouter</h2>
 		<div>
@@ -20,16 +25,16 @@
 					</tr>
 					<tr>
 						<td>
-							<label for="only_non-friend">Afficher uniquement les non-amis</label>
+							<label id="label_only_non_friend" for="only_non_friend">Afficher uniquement les non-amis</label>
 						</td>
 						<td>
 							<c:if test="${onlyNonFriend}">
-								<input type="checkbox" name="only_non-friend" id="only_non-friend" checked="checked" />
-								<span class="checkbox"></span>
+								<input type="checkbox" name="only_non_friend" id="only_non_friend" checked="checked" />
+								<span id="span_only_non_friend" class="checkbox"></span>
 							</c:if>
 							<c:if test="${not onlyNonFriend}">
-								<input type="checkbox" name="only_non-friend" id="only_non-friend" />
-								<span class="checkbox"></span>
+								<input type="checkbox" name="only_non_friend" id="only_non_friend" />
+								<span id="span_only_non_friend" class="checkbox"></span>
 							</c:if>
 						</td>
 					</tr>
@@ -42,7 +47,7 @@
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</div>
-		<div>
+		<div id="res">
 			<c:if test="${not empty users}">
 				<ul id="person_square_container">
 					<c:forEach var="user" items="${users}">
@@ -75,4 +80,4 @@
 			</c:if>
 		</div>
 	</jsp:body>
-</t:normal_protected>
+</t:template_body_protected>

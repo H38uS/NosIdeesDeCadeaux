@@ -31,7 +31,7 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
-		boolean onlyNonFriend = "on".equals(ParametersUtils.readAndEscape(request, "only_non-friend").trim());
+		boolean onlyNonFriend = "on".equals(ParametersUtils.readAndEscape(request, "only_non_friend").trim());
 
 		List<User> foundUsers = users.getUsers(userNameOrEmail, 20);
 		int userId = ParametersUtils.getUserId(request);

@@ -13,6 +13,14 @@
 			authentication-failure-url="/public/error.jsp" />
 	</http>
 	
+	<http pattern="/protected/service/**">
+		<csrf disabled="true" />
+		<form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
+			authentication-failure-url="/public/error.jsp" />
+		<remember-me remember-me-parameter="remember-me" remember-me-cookie="remember-me" token-validity-seconds="1209600"
+			data-source-ref="springDS" />
+	</http>
+	
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/public" access="permitAll" />
