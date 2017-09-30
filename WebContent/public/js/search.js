@@ -10,7 +10,7 @@ function doSearch(value, only_non_friend) {
 
 	completed = false;
 	if (only_non_friend) only_non_friend = "on";
-	$("#res li").fadeOut('slow');
+	$("#res").html('<img alt="Chargement..." src="public/image/big_ajax_loader.gif" height="280" width="280" />');
 
 	$.post('/NosIdeesDeCadeaux/protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
 		$("#res").html(data);
