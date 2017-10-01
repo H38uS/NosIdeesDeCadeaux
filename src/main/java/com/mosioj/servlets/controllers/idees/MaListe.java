@@ -32,6 +32,9 @@ public class MaListe extends AbstractIdea {
 
 	public static final String VIEW_PAGE_URL = "/protected/ma_liste.jsp";
 	public static final String PROTECTED_MA_LISTE = "/protected/ma_liste";
+	
+	// FIXME 0: on ne voit pas le fichier sélectionné
+	// FIXME 0: CSS group + fin ma liste / mes listes partagées
 
 	/**
 	 * Class constructor.
