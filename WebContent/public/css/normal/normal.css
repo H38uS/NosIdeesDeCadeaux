@@ -70,3 +70,81 @@
 	margin: 0 20px;
 	text-align: center;
 }
+
+/***********************************/
+/* *** Ideas with information *** */
+/***********************************/
+
+#ideas_square_container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 330px);
+	grid-gap: 00px;
+	justify-content: center;
+	align-content: flex-start;
+	list-style: none;
+	padding: 0;
+}
+
+#ideas_square_container > * {
+	vertical-align: top;
+}
+
+.idea_square {
+	margin: 10px 0 20px 20px;
+	padding: 5px 5px;
+	text-align: center;
+	background-color: #fcf7fb;
+    border: transparent solid 1px;
+    -webkit-box-shadow: 0 1px 5px transparent;
+    box-shadow: 0 1px 5px transparent;
+}
+.idea_square:hover {
+	background-color: #c1b0f8;
+    border: #353b43 solid 1px;
+    -webkit-box-shadow: 0 1px 5px #353b43;
+    box-shadow: 0 1px 5px #353b43;
+}
+
+/*******************/
+/* *** Tooltip *** */
+/*******************/
+
+.top_tooltip {
+    position: relative;
+    display: inline-block;
+    padding-top: 10px;
+}
+
+.top_tooltip .top_tooltiptext {
+    visibility: hidden;
+    width: 450px;
+    background-color: #353b43;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -235px;
+}
+
+.top_tooltip .top_tooltiptext a {
+    color: #b0cff8;
+}
+
+.top_tooltip .top_tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.top_tooltip:hover .top_tooltiptext {
+    visibility: visible;
+}
