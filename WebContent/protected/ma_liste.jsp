@@ -36,11 +36,17 @@
 						</td>
 					</tr>
 					<tr>
+						<td>Fichier Choisi</td>
 						<td>
-							<label for="addImage" >Ajouter une image</label>
+							<span id="newImage" class="input" ></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
 						</td>
 						<td>
-							<input id="addImage" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+							<label for="imageFile" class="custom-file-upload" >Ajouter une image</label>
 						</td>
 					</tr>
 					<tr>
@@ -63,40 +69,29 @@
 		</div>
 		<h2>Ma liste de cadeaux</h2>
 		<c:if test="${fn:length(idees) > 0}">
-			<table>
-				<thead>
-					<tr>
-						<th>Type</th>
-						<th>Idée</th>
-						<th>Image</th>
-					</tr>
-				</thead>
+			<ul id="ideas_square_container">
 				<c:forEach var="idee" items="${idees}">
-					<tr>
-						<td>
-							<c:if test="${not empty idee.category}">
-								<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
-							</c:if>
-						</td>
-						<td>${idee.html}</td>
-						<td>
-							<c:if test="${not empty idee.image}">
-								<img src="${idee.imageSrcSmall}" width="150" />
-							</c:if>
-						</td>
-						<td>
+				<li class="idea_square top_tooltip">
+					<div>
+						<c:if test="${not empty idee.category}">
+							<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
+						</c:if>
+						<span class="top_tooltiptext">
 							<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
-						</td>
-						<td>
-							<form method="POST" action="protected/remove_an_idea">
-								<input type="hidden" name="ideeId" value="${idee.id}">
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-								<input type="submit" name="submit" value="Supprimer">
-							</form>
-						</td>
-					</tr>
+							ou 
+							<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
+							cette idée.
+						</span>
+					</div>
+					${idee.html}
+					<c:if test="${not empty idee.image}">
+						<div>
+							<img src="${idee.imageSrcSmall}" width="150" />
+						</div>
+					</c:if>
+				</li>
 				</c:forEach>
-			</table>
+			</ul>
 		</c:if>
 	</jsp:body>
 </t:normal_protected>
