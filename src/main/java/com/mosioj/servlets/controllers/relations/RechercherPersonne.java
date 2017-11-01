@@ -53,12 +53,15 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 		int userId = ParametersUtils.getUserId(request);
 
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
-		List<User> foundUsers = users.getUsers(userNameOrEmail, userId, firstRow, MAX_NUMBER_OF_RESULT);
+		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
+		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
+
+		List<User> foundUsers = users.getUsers(userNameOrEmail, userId, onlyNonFriend, firstRow, MAX_NUMBER_OF_RESULT);
 
 		int total = foundUsers.size();
 		if (total == MAX_NUMBER_OF_RESULT || pageNumber > 1) {
 			// On regarde si y'en a pas d'autres
-			total = users.getTotalUsers(userNameOrEmail, userId);
+			total = users.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
 			if (total > MAX_NUMBER_OF_RESULT) {
 				int last = 0;
 				List<Page> pages = new ArrayList<Page>();
@@ -78,12 +81,8 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 			}
 		}
 
-		boolean onlyNonFriend = "on".equals(ParametersUtils.readAndEscape(request, "only_non_friend").trim());
 		List<User> friends = userRelations.getAllUsersInRelation(userId);
-
-		if (onlyNonFriend) {
-			foundUsers.removeAll(friends);
-		} else {
+		if (!onlyNonFriend) {
 			for (User user : foundUsers) {
 				user.isInMyNetwork = friends.contains(user);
 			}

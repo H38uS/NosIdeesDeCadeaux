@@ -1,7 +1,6 @@
 package com.mosioj.viewhelper;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -33,7 +32,7 @@ public class CsrfHelper implements Filter {
 				UserParameters up = new UserParameters();
 				try {
 					up.insertUpdateParameter(ParametersUtils.getUserId((HttpServletRequest) request), "CSRF", token.getToken());
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// Nothing to do
 				}
 			}

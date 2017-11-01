@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
+import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UserRolesColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 
@@ -126,12 +127,14 @@ public class Users extends Table {
 	 * 
 	 * @param nameToMatch
 	 * @param userIdToSkip
+	 * @param selectOnlyNonFriends
 	 * @param firstRow
 	 * @param limit
 	 * @return The list of users.
 	 * @throws SQLException
 	 */
-	public List<User> getUsers(String nameToMatch, int userIdToSkip, int firstRow, int limit) throws SQLException {
+	public List<User> getUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends, int firstRow, int limit)
+			throws SQLException {
 
 		List<User> users = new ArrayList<User>();
 		LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.", nameToMatch, userIdToSkip));
@@ -143,16 +146,27 @@ public class Users extends Table {
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select {0},{1},{2},{3} ", ID, NAME, EMAIL, AVATAR));
-		query.append(MessageFormat.format("  from {0}  ", TABLE_NAME));
+		query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
 		query.append(MessageFormat.format(" where ({0} like ? ESCAPE ''!''   ", NAME));
 		query.append(MessageFormat.format("    or  {0} like ? ESCAPE ''!'' ) ", EMAIL));
 		query.append(MessageFormat.format("   and {0} <> ? ", ID));
+		if (selectOnlyNonFriends) {
+			query.append("   and not exists ( ");
+			query.append(MessageFormat.format(" select 1 from {0}  ", UserRelations.TABLE_NAME));
+			query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
+			query.append(MessageFormat.format("    and {0} = u.{1} ", UserRelationsColumns.SECOND_USER, ID));
+			query.append("   ) ");
+		}
 		query.append(MessageFormat.format(" order by {0}, {1}, {2} ", NAME, EMAIL, ID));
 		query.append(" 						LIMIT ?, ? ");
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
-			ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, firstRow, limit);
+			if (selectOnlyNonFriends) {
+				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, userIdToSkip, firstRow, limit);
+			} else {
+				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, firstRow, limit);
+			}
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -178,10 +192,11 @@ public class Users extends Table {
 	 * 
 	 * @param nameToMatch
 	 * @param userIdToSkip
+	 * @param selectOnlyNonFriends
 	 * @return The list of users.
 	 * @throws SQLException
 	 */
-	public int getTotalUsers(String nameToMatch, int userIdToSkip) throws SQLException {
+	public int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) throws SQLException {
 
 		nameToMatch = nameToMatch.replaceAll("!", "!!");
 		nameToMatch = nameToMatch.replaceAll("%", "!%");
@@ -190,14 +205,25 @@ public class Users extends Table {
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select {0} ", "count(*)"));
-		query.append(MessageFormat.format("  from {0}  ", TABLE_NAME));
+		query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
 		query.append(MessageFormat.format(" where ({0} like ? ESCAPE ''!''   ", NAME));
 		query.append(MessageFormat.format("    or  {0} like ? ESCAPE ''!'' ) ", EMAIL));
 		query.append(MessageFormat.format("   and {0} <> ? ", ID));
+		if (selectOnlyNonFriends) {
+			query.append("   and not exists ( ");
+			query.append(MessageFormat.format(" select 1 from {0}  ", UserRelations.TABLE_NAME));
+			query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
+			query.append(MessageFormat.format("    and {0} = u.{1} ", UserRelationsColumns.SECOND_USER, ID));
+			query.append("   ) ");
+		}
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
-			ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip);
+			if (selectOnlyNonFriends) {
+				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, userIdToSkip);
+			} else {
+				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip);
+			}
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
