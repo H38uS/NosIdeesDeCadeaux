@@ -44,6 +44,7 @@
 						</td>
 					</tr>
 				</table>
+				<input type="hidden" name="page" value="1" />
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</div>
@@ -77,6 +78,26 @@
 						</li>
 					</c:forEach>
 				</ul>
+			</c:if>
+			<c:if test="${not empty pages}">
+				<div class="center">
+					<c:if test="${current != 1}">
+						<a href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
+					</c:if>
+					<c:forEach var="page" items="${pages}">
+						<c:choose>
+							<c:when test="${current != page.numero}">
+								<a href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+							</c:when>
+							<c:otherwise>
+								${page.numero}
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+					<c:if test="${current != last}">
+					<a href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
+					</c:if>
+				</div>
 			</c:if>
 		</div>
 	</jsp:body>

@@ -24,7 +24,7 @@ public class TestRecherchePersonne extends AbstractTestServlet {
 
 	@Before
 	public void before() {
-		when(request.getRequestDispatcher(RechercherPersonne.FORM_URL)).thenReturn(dispatcher);
+		when(request.getRequestDispatcher(RechercherPersonne.DEFAULT_FORM_URL)).thenReturn(dispatcher);
 	}
 
 	@Test
@@ -32,7 +32,7 @@ public class TestRecherchePersonne extends AbstractTestServlet {
 		when(session.getAttribute("userid")).thenReturn(-1);
 		when(request.getParameter("name")).thenReturn("monGroupe");
 		instance.doPost(request, response);
-		verify(request).getRequestDispatcher(eq(RechercherPersonne.FORM_URL));
+		verify(request).getRequestDispatcher(eq(RechercherPersonne.DEFAULT_FORM_URL));
 	}
 
 }

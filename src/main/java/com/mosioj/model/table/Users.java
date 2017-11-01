@@ -121,31 +121,38 @@ public class Users extends Table {
 		getDb().executeUpdate(query, user.email, user.name, user.birthday, user.avatar, user.id);
 	}
 
-	public List<User> getUsers(String nameToMatch, int limit) throws SQLException {
+	/**
+	 * Excludes the current user.
+	 * 
+	 * @param nameToMatch
+	 * @param userIdToSkip
+	 * @param firstRow
+	 * @param limit
+	 * @return The list of users.
+	 * @throws SQLException
+	 */
+	public List<User> getUsers(String nameToMatch, int userIdToSkip, int firstRow, int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
-		LOGGER.debug("Getting users from search token: '" + nameToMatch + "'.");
+		LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.", nameToMatch, userIdToSkip));
 
 		nameToMatch = nameToMatch.replaceAll("!", "!!");
 		nameToMatch = nameToMatch.replaceAll("%", "!%");
 		nameToMatch = nameToMatch.replaceAll("_", "!_");
 		nameToMatch = nameToMatch.replaceAll("\\[", "![");
 
-		String query = MessageFormat.format("select {0},{1},{2},{6} from {3} where {4} like ? ESCAPE ''!'' or {5} like ? ESCAPE ''!''",
-											ID,
-											NAME,
-											EMAIL,
-											TABLE_NAME,
-											NAME,
-											EMAIL,
-											AVATAR);
-		if (limit > 0) {
-			query += " LIMIT " + limit;
-		}
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format("select {0},{1},{2},{3} ", ID, NAME, EMAIL, AVATAR));
+		query.append(MessageFormat.format("  from {0}  ", TABLE_NAME));
+		query.append(MessageFormat.format(" where ({0} like ? ESCAPE ''!''   ", NAME));
+		query.append(MessageFormat.format("    or  {0} like ? ESCAPE ''!'' ) ", EMAIL));
+		query.append(MessageFormat.format("   and {0} <> ? ", ID));
+		query.append(MessageFormat.format(" order by {0}, {1}, {2} ", NAME, EMAIL, ID));
+		query.append(" 						LIMIT ?, ? ");
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
-			ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%");
+			ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, firstRow, limit);
 
 			if (!ps.execute()) {
 				throw new SQLException("No result set available.");
@@ -164,6 +171,48 @@ public class Users extends Table {
 		}
 
 		return users;
+	}
+
+	/**
+	 * Excludes the current user.
+	 * 
+	 * @param nameToMatch
+	 * @param userIdToSkip
+	 * @return The list of users.
+	 * @throws SQLException
+	 */
+	public int getTotalUsers(String nameToMatch, int userIdToSkip) throws SQLException {
+
+		nameToMatch = nameToMatch.replaceAll("!", "!!");
+		nameToMatch = nameToMatch.replaceAll("%", "!%");
+		nameToMatch = nameToMatch.replaceAll("_", "!_");
+		nameToMatch = nameToMatch.replaceAll("\\[", "![");
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format("select {0} ", "count(*)"));
+		query.append(MessageFormat.format("  from {0}  ", TABLE_NAME));
+		query.append(MessageFormat.format(" where ({0} like ? ESCAPE ''!''   ", NAME));
+		query.append(MessageFormat.format("    or  {0} like ? ESCAPE ''!'' ) ", EMAIL));
+		query.append(MessageFormat.format("   and {0} <> ? ", ID));
+
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+		try {
+			ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip);
+
+			if (!ps.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = ps.getResultSet();
+			if (res.next()) {
+				return res.getInt(1);
+			}
+
+		} finally {
+			ps.close();
+		}
+
+		return 0;
 	}
 
 	/**
