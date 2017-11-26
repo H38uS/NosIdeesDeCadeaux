@@ -30,7 +30,7 @@
 		<intercept-url pattern="/administration/**" access="hasRole('ROLE_ADMIN')" />
 		<form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
 			authentication-failure-url="/public/error.jsp" />
-		<csrf/>
+		<csrf disabled="true" />
 		<remember-me remember-me-parameter="remember-me" remember-me-cookie="remember-me" token-validity-seconds="1209600"
 			data-source-ref="springDS" />
 	</http>
