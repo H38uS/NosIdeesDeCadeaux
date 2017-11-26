@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.UserParameters;
 import com.mosioj.model.table.Users;
@@ -68,13 +69,26 @@ public class LoginHelper implements Filter {
 					// Getting the id
 					Users user = new Users();
 					userId = user.getId(name);
+					User connected = user.getUser(userId);
 					// Storing the new one
 					session.setAttribute("userid", userId);
+					session.setAttribute("emailorname", connected.getName());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			Object emailorname = session.getAttribute("emailorname");
+			if (emailorname == null) {
+				try {
+					Users user = new Users();
+					User connected = user.getUser(userId);
+					session.setAttribute("emailorname", connected.getName());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 			request.setAttribute("userid", userId);
+			request.setAttribute("emailorname", emailorname);
 
 			Notifications notif = new Notifications();
 			try {
@@ -96,14 +110,17 @@ public class LoginHelper implements Filter {
 					final String tokenValue = up.getParameter(userId, "CSRF");
 					session.setAttribute(sessionAttributeName, new CsrfToken() {
 						private static final long serialVersionUID = 2161348459850900068L;
+
 						@Override
 						public String getToken() {
 							return tokenValue;
 						}
+
 						@Override
 						public String getParameterName() {
 							return "_csrf";
 						}
+
 						@Override
 						public String getHeaderName() {
 							return "X-CSRF-TOKEN";

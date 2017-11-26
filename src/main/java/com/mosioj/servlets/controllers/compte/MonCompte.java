@@ -102,6 +102,7 @@ public class MonCompte extends DefaultCompte {
 
 				if (errors.isEmpty()) {
 					users.update(user);
+					request.getSession().setAttribute("emailorname", name);
 				}
 			}
 

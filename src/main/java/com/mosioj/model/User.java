@@ -86,9 +86,9 @@ public class User {
 	 * @return The name of the person.
 	 */
 	public String getName() {
-		return name;
+		return name != null && !name.trim().isEmpty() ? name : email;
 	}
-
+	
 	public void addIdeas(List<Idee> ownerIdeas) {
 		ideas.addAll(ownerIdeas);
 	}
