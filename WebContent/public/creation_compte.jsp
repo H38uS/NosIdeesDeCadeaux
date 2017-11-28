@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<t:normal_public>
+<t:normal_public_recaptcha>
 	<jsp:body>
 		<div class="login_form">
 			<h2 class="fl_yellow">Création de compte</h2>
@@ -43,10 +43,10 @@
 						</c:if>
 						<tr>
 							<td>
-								<img src="stickyImg" />
+								Cochez la case
 							</td>
-							<td>
-								<input name="answer" type="text" value="${param.answer}" />
+							<td style="padding: 0 7px;" >
+								<span class="g-recaptcha" data-sitekey="6Ld2xDoUAAAAAHsDa75FjuB2v6fL1X67IaZ1l1WB"></span>
 							</td>
 						</tr>
 						<c:if test="${fn:length(captcha_errors) > 0}">
@@ -71,4 +71,4 @@
 			</div>
 		</div>
 	</jsp:body>
-</t:normal_public>
+</t:normal_public_recaptcha>

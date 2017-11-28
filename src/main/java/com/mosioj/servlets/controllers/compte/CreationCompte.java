@@ -11,20 +11,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
+import com.mosioj.viewhelper.CaptchaHandler;
 import com.mosioj.viewhelper.EmptyFilter;
 import com.mosioj.viewhelper.LoginHelper;
-
-import nl.captcha.Captcha;
 
 @WebServlet("/creation_compte")
 public class CreationCompte extends DefaultCompte {
 
+	public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
 	public static final String SUCCES_URL = "/public/succes_creation.jsp";
 	public static final String FORM_URL = "/public/creation_compte.jsp";
+	private static final Logger logger = LogManager.getLogger(CreationCompte.class);
 
 	/**
 	 * Class contructor.
@@ -47,7 +51,6 @@ public class CreationCompte extends DefaultCompte {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		HttpSession session = request.getSession();
-		Captcha captcha = (Captcha) session.getAttribute(Captcha.NAME);
 
 		// Récupération des paramètres
 		String pwd = ParametersUtils.readIt(request, "pwd");
@@ -68,12 +71,14 @@ public class CreationCompte extends DefaultCompte {
 			throw new ServletException(e1.getMessage());
 		}
 
-		String answer = request.getParameter("answer");
-		boolean captchaOk = captcha == null || captcha.isCorrect(answer);
+		String captchaResponse = ParametersUtils.readIt(request, "g-recaptcha-response");
+		String urlCalled = request.getRequestURL().toString();
+		logger.debug(captchaResponse + " / " + request.getRequestURL());
+		boolean captchaOk = urlCalled.startsWith(HTTP_LOCALHOST_8080) || CaptchaHandler.resolveIt(captchaResponse); 
 		if (!captchaOk) {
-			request.setAttribute("captcha_errors", "Le texte entré ne correspond pas.");
+			request.setAttribute("captcha_errors", "Erreur lors de la validation du Captcha.");
 		}
-
+		
 		// Password hash
 		String hashPwd = hashPwd(pwd, pwdErrors);
 

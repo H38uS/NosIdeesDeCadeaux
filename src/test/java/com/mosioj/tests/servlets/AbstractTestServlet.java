@@ -24,6 +24,7 @@ import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.compte.CreationCompte;
 import com.mosioj.tests.TemplateTest;
 import com.mosioj.utils.database.DataSourceIdKDo;
 
@@ -61,7 +62,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		notif = mock(Notifications.class);
 		
 		when(request.getSession()).thenReturn(session);
-		when(request.getRequestURL()).thenReturn(new StringBuffer("MyURL"));
+		when(request.getRequestURL()).thenReturn(new StringBuffer(CreationCompte.HTTP_LOCALHOST_8080));
 		when(request.getContextPath()).thenReturn("");
 		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
 		when(session.getAttributeNames()).thenReturn(new Enumeration<String>() {

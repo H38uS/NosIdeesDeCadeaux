@@ -52,8 +52,6 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.DataSourceIdKDo;
 
-import nl.captcha.Captcha;
-
 /**
  * An intermediate servlet for test purpose. Increase the visibility of tested method.
  * 
@@ -513,7 +511,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	static {
 		sessionNamesToKeep.add("username");
 		sessionNamesToKeep.add("userid");
-		sessionNamesToKeep.add(Captcha.NAME);
+		sessionNamesToKeep.add("emailorname");
 	}
 
 }
