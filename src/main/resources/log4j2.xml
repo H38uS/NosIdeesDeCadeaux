@@ -6,7 +6,7 @@
 			<PatternLayout
 				pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
 		</Console>
-		<File name="File" fileName="${log_location}/IdeesDeCadeaux.log" append="true">
+		<File name="File" fileName="${work_dir}/logs/IdeesDeCadeaux.log" append="true">
 			<PatternLayout
 				pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
 		</File>
