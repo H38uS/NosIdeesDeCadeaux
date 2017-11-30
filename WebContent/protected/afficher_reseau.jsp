@@ -58,7 +58,7 @@
 				<ul id="person_square_container">
 					<c:forEach var="relation" items="${relations}">
 						<li class="person_square">
-							<img src="${relation.second.avatarSrcSmall}"><br/>
+							<img src="${avatars}/${relation.second.avatarSrcSmall}"><br/>
 							<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a><br/>
 							<c:if test="${relation.second.id != userid && relation.secondIsInMyNetwork}">
 								<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>

@@ -33,7 +33,7 @@
 						<tr>
 							<td>Avatar actuel</td>
 							<td>
-								<img src="${user.avatarSrcSmall}" width="150" class="input" />
+								<img src="${avatars}/${user.avatarSrcSmall}" width="150" class="input" />
 								<input type="hidden" name="old_picture" value="${user.avatar}" />
 							</td>
 						</tr>

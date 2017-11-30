@@ -54,7 +54,7 @@
 					<c:forEach var="user" items="${users}">
 						<li class="person_square">
 							<div>
-								<img src="${user.avatarSrcSmall}">
+								<img src="${avatars}/${user.avatarSrcSmall}">
 							</div>
 							<div>${user.name}</div>
 							<div>${user.email}</div>

@@ -63,22 +63,9 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<filter>
-		<filter-name>CsrfHelper</filter-name>
-		<filter-class>com.mosioj.viewhelper.CsrfHelper</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>CsrfHelper</filter-name>
-		<url-pattern>/protected/*</url-pattern>
-	</filter-mapping>
+	<context-param>
+		<param-name>work_dir</param-name>
+		<param-value>${work_dir}</param-value>
+	</context-param>
 	
-	
-	<servlet>
-		<servlet-name>StickyCaptcha</servlet-name>
-		<servlet-class>com.mosioj.servlets.MyStickyCaptchaServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>StickyCaptcha</servlet-name>
-		<url-pattern>/stickyImg</url-pattern>
-	</servlet-mapping>
 </web-app>

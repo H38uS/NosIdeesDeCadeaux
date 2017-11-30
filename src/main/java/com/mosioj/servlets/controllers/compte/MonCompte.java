@@ -29,7 +29,6 @@ public class MonCompte extends DefaultCompte {
 	private static final long serialVersionUID = -101081965549681889L;
 	private static final Logger logger = LogManager.getLogger(MonCompte.class);
 
-	public static final String AVATARS_PATH = "/public/uploaded_pictures/avatars";
 	public static final String VIEW_PAGE_URL = "/protected/mon_compte.jsp";
 	public static final String URL = "/protected/mon_compte";
 
@@ -38,7 +37,7 @@ public class MonCompte extends DefaultCompte {
 	public MonCompte() {
 		super(new AllAccessToPostAndGet());
 	}
-
+	
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
@@ -60,7 +59,7 @@ public class MonCompte extends DefaultCompte {
 		if (ServletFileUpload.isMultipartContent(request)) {
 
 			if (filePath == null) {
-				filePath = new File(getServletContext().getRealPath(AVATARS_PATH));
+				filePath = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/avatars");
 				logger.info(MessageFormat.format("Setting file path to: {0}", filePath.getAbsolutePath()));
 				filePath.mkdirs();
 			}
@@ -95,7 +94,9 @@ public class MonCompte extends DefaultCompte {
 				} else {
 					// Modification de l'image
 					// On supprime la précédente
-					removeUploadedImage(filePath, old);
+					if (!"default.png".equals(old)) {
+						removeUploadedImage(filePath, old);
+					}
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
 				user.avatar = image;
@@ -110,4 +111,5 @@ public class MonCompte extends DefaultCompte {
 
 		RootingsUtils.redirectToPage(URL, request, response);
 	}
+	
 }

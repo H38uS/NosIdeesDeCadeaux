@@ -5,8 +5,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mosioj.servlets.controllers.compte.MonCompte;
-
 public class User {
 
 	public final int id;
@@ -54,11 +52,11 @@ public class User {
 	}
 
 	public String getAvatarSrcSmall() {
-		return MessageFormat.format("{0}/small/{1}", MonCompte.AVATARS_PATH.substring(1), avatar);
+		return MessageFormat.format("small/{0}", avatar);
 	}
 
 	public String getAvatarSrcLarge() {
-		return MessageFormat.format("{0}/large/{1}", MonCompte.AVATARS_PATH.substring(1), avatar);
+		return MessageFormat.format("large/{0}", avatar);
 	}
 
 	public int getNbDaysBeforeBirthday() {

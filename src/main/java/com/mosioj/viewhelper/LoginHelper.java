@@ -1,5 +1,6 @@
 package com.mosioj.viewhelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -13,6 +14,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -87,8 +89,23 @@ public class LoginHelper implements Filter {
 					e.printStackTrace();
 				}
 			}
+			String workDir = session.getServletContext().getInitParameter("work_dir");
+			request.setAttribute("work_dir", workDir);
 			request.setAttribute("userid", userId);
 			request.setAttribute("emailorname", emailorname);
+
+			File work = new File(workDir);
+			if (!work.exists()) {
+				work.mkdirs();
+			}
+			File avatars = new File(work, "uploaded_pictures/avatars");
+			if (!avatars.exists()) {
+				// Création des sous dossiers
+				avatars.mkdirs();
+				FileUtils.copyDirectory(new File(session.getServletContext().getRealPath("/public/uploaded_pictures/avatars")),
+										avatars);
+			}
+			request.setAttribute("avatars", "protected/files/uploaded_pictures/avatars");
 
 			Notifications notif = new Notifications();
 			try {
