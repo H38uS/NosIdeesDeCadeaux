@@ -104,6 +104,15 @@ img.clickable:active, a:active > img:active {
     padding-right: 10px;
 }
 
+.verticalcenter_helper {
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
+.verticalcenter {
+	vertical-align: middle;
+}
+
 /**********************/
 /* *** Formulaire *** */
 /**********************/

@@ -90,7 +90,7 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 
 		for (User user : foundUsers) {
 			if (userRelationRequests.associationExists(userId, user.id)) {
-				user.freeComment = "Vous avez déjà envoyé <br/>une demande à " + user.getName();
+				user.freeComment = "Vous avez déjà envoyé une demande à " + user.getName();
 			}
 		}
 
@@ -111,8 +111,5 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		doTheLogic(req, resp);
 	}
-
-	// FIXME : catcher les erreurs de CRSF - augmenter la durée de la session ???
-	// FIXME : afficher un icone si une demande est déjà envoyé, et mettre une tool tip. Idem pour déjà ami
 
 }

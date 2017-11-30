@@ -58,13 +58,15 @@
 							</div>
 							<div>${user.name}</div>
 							<div>${user.email}</div>
-							<div>
+							<div style="height:70px;">
 								<c:choose>
 									<c:when test="${user.isInMyNetwork}">
-										${user.name} fait déjà parti de vos amis.
+										<span class="verticalcenter_helper"></span>
+										<img class="verticalcenter" alt="${user.name} fait déjà parti de vos amis." title="${user.name} fait déjà parti de vos amis." src="public/image/friend.png">
 									</c:when>
 									<c:when test="${not empty user.freeComment}">
-										${user.freeComment}
+										<span class="verticalcenter_helper"></span>
+										<img class="verticalcenter" alt="${user.freeComment}" title="${user.freeComment}" src="public/image/demande_envoyee.jpg">
 									</c:when>
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">

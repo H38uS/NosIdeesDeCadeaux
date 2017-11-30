@@ -66,11 +66,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
-	// TODO : externaliser les requêtes SQL et les tester ? Au moins les grosses ??
-	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
 
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
-	// TODO : notification quand un anniversaire approche
+	// TODO : notification quand un anniversaire ou les fêtes approchent, pour chaque idée qui a une date de modification très ancienne
+	// TODO : notification followers quand on ajoute des idées, les modifie etc.
 
 	// TODO : pouvoir ajouter des surprises
 	// TODO : controle parental
@@ -83,6 +82,13 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : faire un libellé plus joli pour les notifications dans MonCompte
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
+	
+	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
+	// FIXME : 5 vérifier les TODO
+	// FIXME : 6 CSS grouep
+	// FIXME : 7 css idée ?
+	// FIXME : 8 vérifier les commentaires
+	// FIXME : 9 mettre en ligne
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
