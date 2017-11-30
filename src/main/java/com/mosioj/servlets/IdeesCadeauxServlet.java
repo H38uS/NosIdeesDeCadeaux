@@ -83,8 +83,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : faire un libellé plus joli pour les notifications dans MonCompte
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 	
-	// FIXME : 5 ZCompléter le gdoc avec les modifications faites
-	// FIXME : 5 vérifier les TODO
 	// FIXME : 6 CSS grouep
 	// FIXME : 7 css idée ?
 	// FIXME : 8 vérifier les commentaires
