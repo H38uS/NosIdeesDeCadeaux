@@ -8,8 +8,9 @@
 				<ul id="person_square_container">
 					<c:forEach var="user" items="${users}">
 						<li class="person_square">
-							<div>
-								<img src="${avatars}/${user.avatarSrcSmall}">
+							<div class="vertical_center_div">
+								<span class="verticalcenter_helper"></span>
+								<img class="verticalcenter" src="${avatars}/${user.avatarSrcSmall}">
 							</div>
 							<div>${user.name}</div>
 							<div>${user.email}</div>

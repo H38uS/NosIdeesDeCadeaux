@@ -104,6 +104,9 @@ img.clickable:active, a:active > img:active {
     padding-right: 10px;
 }
 
+.vertical_center_div {
+	height:150px;
+}
 .verticalcenter_helper {
 	display: inline-block;
 	height: 100%;
