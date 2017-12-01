@@ -68,7 +68,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : bootstrap pour le CSS ??
 
 	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
-	// TODO : notification quand un anniversaire ou les fêtes approchent, pour chaque idée qui a une date de modification très ancienne
+	// TODO : notification quand un anniversaire ou les fêtes approchent, pour chaque idée qui a une date de
+	// modification très ancienne
 	// TODO : notification followers quand on ajoute des idées, les modifie etc.
 
 	// TODO : pouvoir ajouter des surprises
@@ -82,7 +83,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : faire un libellé plus joli pour les notifications dans MonCompte
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
-	
+
 	// FIXME : 6 CSS grouep
 	// FIXME : 7 css idée ?
 	// FIXME : 8 vérifier les commentaires
@@ -454,7 +455,17 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 									+ fileName.substring(fileName.length() - 4);
 						}
 						image = fileName;
-						File file = new File(filePath, "large/" + fileName);
+
+						File largeFolder = new File(filePath, "large/");
+						if (!largeFolder.exists()) {
+							largeFolder.mkdirs();
+						}
+						File smallFolder = new File(filePath, "small/");
+						if (!smallFolder.exists()) {
+							smallFolder.mkdirs();
+						}
+
+						File file = new File(largeFolder, fileName);
 						logger.debug("Uploading file : " + file);
 						fi.write(file);
 
@@ -463,11 +474,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 						int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 
 						BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_WIDTH, MAX_WIDTH);
-						ImageIO.write(resizeImageJpg, "png", new File(filePath, "small/" + fileName));
+						ImageIO.write(resizeImageJpg, "png", new File(smallFolder, fileName));
 
 						if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
 							resizeImageJpg = resizeImage(originalImage, originalType, 1920, 1080);
-							ImageIO.write(resizeImageJpg, "png", new File(filePath, "large/" + fileName));
+							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, fileName));
 						}
 
 						parameters.put("image", image);
@@ -478,12 +489,14 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ServletException(e.getMessage());
 		}
 	}
 
 	protected void removeUploadedImage(File path, String image) {
 		if (image != null && !image.isEmpty()) {
+			logger.debug(MessageFormat.format("Deleting pictures in {0} folder...", path));
 			File small = new File(path, "small/" + image);
 			small.delete();
 			File large = new File(path, "large/" + image);

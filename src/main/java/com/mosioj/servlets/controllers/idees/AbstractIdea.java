@@ -27,8 +27,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	private static final Logger logger = LogManager.getLogger(AbstractIdea.class);
-
-	public static final String IDEA_PICTURES_PATH = "/public/uploaded_pictures/ideas";
+	private File ideasPicturePath;
 
 	protected List<String> errors = new ArrayList<String>();
 
@@ -39,11 +38,17 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	public AbstractIdea(SecurityPolicy policy) {
 		super(policy);
 	}
+	
+	protected File getIdeaPicturePath() {
+		if (ideasPicturePath == null) {
+			ideasPicturePath = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas");
+		}
+		return ideasPicturePath;
+	}
 
 	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		errors.clear();
-		File filePath = new File(getServletContext().getRealPath(IDEA_PICTURES_PATH));
 
 		// Reading parameters
 		String text = "";
@@ -51,7 +56,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 		int priority = -1;
 
 		// Parse the request to get file items.
-		readMultiFormParameters(request, filePath);
+		readMultiFormParameters(request, getIdeaPicturePath());
 
 		text = parameters.get("text");
 		type = parameters.get("type");

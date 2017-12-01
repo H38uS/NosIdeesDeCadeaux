@@ -5,7 +5,6 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
@@ -105,11 +104,11 @@ public class Idee {
 	}
 
 	public String getImageSrcSmall() {
-		return MessageFormat.format("{0}/small/{1}", AbstractIdea.IDEA_PICTURES_PATH.substring(1), image);
+		return MessageFormat.format("small/{0}", image);
 	}
 
 	public String getImageSrcLarge() {
-		return MessageFormat.format("{0}/large/{1}", AbstractIdea.IDEA_PICTURES_PATH.substring(1), image);
+		return MessageFormat.format("large/{0}", image);
 	}
 
 	public Categorie getCategory() {

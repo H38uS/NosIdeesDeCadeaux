@@ -106,6 +106,7 @@ public class LoginHelper implements Filter {
 										avatars);
 			}
 			request.setAttribute("avatars", "protected/files/uploaded_pictures/avatars");
+			request.setAttribute("ideas_pictures", "protected/files/uploaded_pictures/ideas");
 
 			Notifications notif = new Notifications();
 			try {

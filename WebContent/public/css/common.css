@@ -269,3 +269,6 @@ input[type="file"] {
 	-ms-transform: scale(1);
 	transform: scale(1);
 }
+.form_img {
+	margin-left: 6px;
+}

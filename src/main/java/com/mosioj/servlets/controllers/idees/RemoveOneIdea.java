@@ -1,13 +1,16 @@
 package com.mosioj.servlets.controllers.idees;
 
-import java.io.File;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.Idee;
@@ -26,6 +29,7 @@ import com.mosioj.utils.RootingsUtils;
 public class RemoveOneIdea extends AbstractIdea {
 
 	public static final String IDEE_ID_PARAM = "ideeId";
+	private static final Logger logger = LogManager.getLogger(RemoveOneIdea.class);
 
 	public RemoveOneIdea() {
 		super(new IdeaModification(idees, IDEE_ID_PARAM));
@@ -62,9 +66,11 @@ public class RemoveOneIdea extends AbstractIdea {
 					notif.addNotification(groupUser.id, new NotifBookedRemove(idea, owner.getName()));
 				}
 			}
-			String image = idea.getImage();
-			removeUploadedImage(new File(getServletContext().getRealPath(IDEA_PICTURES_PATH)), image);
 		}
+
+		String image = idea.getImage();
+		logger.debug(MessageFormat.format("Image: {0}.", image));
+		removeUploadedImage(getIdeaPicturePath(), image);
 
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
 		for (AbstractNotification notification : notifications) {

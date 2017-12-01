@@ -26,7 +26,7 @@
 							${idee.html}
 							<c:if test="${not empty idee.image}">
 								<div>
-									<img src="${idee.imageSrcSmall}" width="150" />
+									<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
 								</div>
 							</c:if>
 						</li>
@@ -104,7 +104,7 @@
 							${idee.html}
 							<c:if test="${not empty idee.image}">
 								<div>
-									<img src="${idee.imageSrcSmall}" width="150" />
+									<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
 								</div>
 							</c:if>
 						</li>

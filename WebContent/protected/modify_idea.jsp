@@ -51,18 +51,24 @@
 							</td>
 						</tr>
 						<tr>
+							<td>Fichier Choisi</td>
 							<td>
-								<label for="addImage">Choisissez une nouvelle image</label>
+								<span id="newImage" class="input" ></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
 							</td>
 							<td>
-								<input id="addImage" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+								<label for="imageFile" class="custom-file-upload" >Choisissez une nouvelle image</label>
 							</td>
 						</tr>
 						<c:if test="${not empty idea.image}">
 							<tr>
 								<td>Image actuelle</td>
 								<td>
-									<img src="${idea.imageSrcSmall}" width="150" />
+									<img class="form_img" src="${ideas_pictures}/${idea.imageSrcSmall}" width="150" />
 									<input type="hidden" name="old_picture" value="${idea.image}" />
 								</td>
 							</tr>
