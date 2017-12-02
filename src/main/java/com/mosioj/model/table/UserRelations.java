@@ -205,7 +205,7 @@ public class UserRelations extends Table {
 			throws SQLException {
 
 		List<String> namesOrEmails = new ArrayList<String>();
-		userNameOrEmail = escapeMySQL(userNameOrEmail);
+		userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
@@ -253,7 +253,7 @@ public class UserRelations extends Table {
 		query.append("where u.{0} = r.{6} and r.{5} = ? ");
 
 		if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
-			query.append("  and (u.{1} like ? ESCAPE ''!'' or u.{2} like ? ESCAPE ''!'') ");
+			query.append("  and (lower(u.{1}) like ? ESCAPE ''!'' or lower(u.{2}) like ? ESCAPE ''!'') ");
 		}
 
 		query.append("order by {1}, {2}, {0}");
@@ -269,7 +269,7 @@ public class UserRelations extends Table {
 																	FIRST_USER,
 																	SECOND_USER));
 			if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
-				userNameOrEmail = escapeMySQL(userNameOrEmail);
+				userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
 				ps.bindParameters(userId, "%" + userNameOrEmail + "%", "%" + userNameOrEmail + "%");
 			} else {
 				ps.bindParameters(userId);

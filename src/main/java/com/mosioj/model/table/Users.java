@@ -139,13 +139,13 @@ public class Users extends Table {
 		List<User> users = new ArrayList<User>();
 		LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.", nameToMatch, userIdToSkip));
 
-		nameToMatch = escapeMySQL(nameToMatch);
+		nameToMatch = escapeMySQL(nameToMatch).toLowerCase();
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select {0},{1},{2},{3} ", ID, NAME, EMAIL, AVATAR));
 		query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
-		query.append(MessageFormat.format(" where ({0} like ? ESCAPE ''!''   ", NAME));
-		query.append(MessageFormat.format("    or  {0} like ? ESCAPE ''!'' ) ", EMAIL));
+		query.append(MessageFormat.format(" where (lower({0}) like ? ESCAPE ''!''   ", NAME));
+		query.append(MessageFormat.format("    or  lower({0}) like ? ESCAPE ''!'' ) ", EMAIL));
 		query.append(MessageFormat.format("   and {0} <> ? ", ID));
 		if (selectOnlyNonFriends) {
 			query.append("   and not exists ( ");
