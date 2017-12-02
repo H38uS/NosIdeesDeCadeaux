@@ -46,7 +46,7 @@ public class User {
 	public Date getBirthday() {
 		return birthday;
 	}
-	
+
 	public String getAvatar() {
 		return avatar;
 	}
@@ -61,6 +61,10 @@ public class User {
 
 	public int getNbDaysBeforeBirthday() {
 		return nbDaysBeforeBirthday;
+	}
+
+	public boolean matchNameOrEmail(String token) {
+		return getName().toLowerCase().contains(token.toLowerCase()) || email.toLowerCase().contains(token.toLowerCase());
 	}
 
 	/**
@@ -86,7 +90,7 @@ public class User {
 	public String getName() {
 		return name != null && !name.trim().isEmpty() ? name : email;
 	}
-	
+
 	public void addIdeas(List<Idee> ownerIdeas) {
 		ideas.addAll(ownerIdeas);
 	}

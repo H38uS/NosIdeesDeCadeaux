@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers;
+package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -19,38 +19,44 @@ import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
-@WebServlet("/protected/mes_listes")
-public class MesListes extends IdeesCadeauxServlet {
+@WebServlet("/protected/afficher_listes")
+public class AfficherListes extends IdeesCadeauxServlet {
+
 	/**
 	 * Class logger.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(MesListes.class);
-	private static final long serialVersionUID = -1774633803227715931L;
+	private static final Logger LOGGER = LogManager.getLogger(AfficherListes.class);
+	private static final long serialVersionUID = 1209953017190072617L;
 
-	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
+	public static final String AFFICHER_LISTES = "/protected/afficher_listes";
 	public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
+
+	private static final String NAME_OR_EMAIL = "name";
 
 	/**
 	 * Class constructor.
 	 * 
 	 */
-	public MesListes() {
+	public AfficherListes() {
 		super(new AllAccessToPostAndGet());
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		LOGGER.info(MessageFormat.format("Gets the lists for {0}", ParametersUtils.getUserName(req)));
-
+		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
 		int userId = ParametersUtils.getUserId(req);
 
+		LOGGER.info(MessageFormat.format("Gets the lists for {0}, with token {1}", ParametersUtils.getUserName(req), nameOrEmail));
+
 		List<User> ids = new ArrayList<User>();
-		ids.add(users.getUser(userId));
-		ids.addAll(userRelations.getAllUsersInRelation(userId));
-		LOGGER.trace("Getting all ideas for all users...");
+		User connected = users.getUser(userId);
+		if (connected.matchNameOrEmail(nameOrEmail)) {
+			ids.add(connected);
+		}
+		ids.addAll(userRelations.getAllUsersInRelation(userId, nameOrEmail));
 		for (User user : ids) {
-			user.addIdeas(idees.getOwnerIdeas(user.id)); // FIXME : faire un système de page / idem pour afficher liste
+			user.addIdeas(idees.getOwnerIdeas(user.id));
 		}
 		req.setAttribute("users", ids);
 
@@ -59,8 +65,12 @@ public class MesListes extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		RootingsUtils.redirectToPage(PROTECTED_MES_LISTES, request, response); // Rien de spécifique pour le moment
-		// TODO : pouvoir demander des informations et/ou discuter avec d'autres membres
+		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
+																AFFICHER_LISTES,
+																NAME_OR_EMAIL,
+																ParametersUtils.readIt(request, NAME_OR_EMAIL)),
+										request,
+										response); // Rien de spécifique pour le moment
 	}
 
 }

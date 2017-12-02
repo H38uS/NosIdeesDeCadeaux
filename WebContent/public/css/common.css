@@ -103,6 +103,9 @@ img.clickable:active, a:active > img:active {
     margin-left: 10px;
     padding-right: 10px;
 }
+.ui-autocomplete-loading {
+	background: white url("../image/ui-anim_basic_16x16.gif") right center no-repeat;
+}
 
 .vertical_center_div {
 	height:150px;

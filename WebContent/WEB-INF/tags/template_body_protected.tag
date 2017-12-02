@@ -12,6 +12,12 @@
 		    		<c:if test="${notif_count > 0}">
 		    			<br/>Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !
 		    		</c:if>
+		    		<div id="right_search_field" class="ui-widget">
+		    			<form id="afficherliste" method="POST" action="protected/afficher_listes">
+		    				<input type="text" name="name" id="name" placeholder="Entrez un nom ou un email" />
+		    				<input type="submit" value="Rechercher !" />
+		    			</form>
+		    		</div>
 	    		</span>
     		</div>
     		<div id="logo_text">
@@ -35,7 +41,20 @@
 				</li>
     		</ul>
     	</header>
-    	<div id="content">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#name").autocomplete({
+					source : "protected/service/name_resolver",
+					minLength : 2,
+					select : function(event, ui) {
+						$("#name").val(ui.item.value);
+						$("#afficherliste").submit();
+						return false;
+					}
+				});
+			});
+		</script>
+		<div id="content">
 	        <jsp:doBody/>
     	</div>
     	<footer>&#9400; 2016 NosIdeesCadeaux - Tous droits réservés - Conditions générales d'utilisation</footer>

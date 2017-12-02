@@ -23,5 +23,13 @@ public abstract class Table {
 	protected DataSourceIdKDo getDb() {
 		return db;
 	}
+
+	protected String escapeMySQL(String nameToMatch) {
+		nameToMatch = nameToMatch.replaceAll("!", "!!");
+		nameToMatch = nameToMatch.replaceAll("%", "!%");
+		nameToMatch = nameToMatch.replaceAll("_", "!_");
+		nameToMatch = nameToMatch.replaceAll("\\[", "![");
+		return nameToMatch;
+	}
 	
 }

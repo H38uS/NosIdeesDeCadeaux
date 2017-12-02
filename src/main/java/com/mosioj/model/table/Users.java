@@ -139,10 +139,7 @@ public class Users extends Table {
 		List<User> users = new ArrayList<User>();
 		LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.", nameToMatch, userIdToSkip));
 
-		nameToMatch = nameToMatch.replaceAll("!", "!!");
-		nameToMatch = nameToMatch.replaceAll("%", "!%");
-		nameToMatch = nameToMatch.replaceAll("_", "!_");
-		nameToMatch = nameToMatch.replaceAll("\\[", "![");
+		nameToMatch = escapeMySQL(nameToMatch);
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select {0},{1},{2},{3} ", ID, NAME, EMAIL, AVATAR));
@@ -198,10 +195,7 @@ public class Users extends Table {
 	 */
 	public int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) throws SQLException {
 
-		nameToMatch = nameToMatch.replaceAll("!", "!!");
-		nameToMatch = nameToMatch.replaceAll("%", "!%");
-		nameToMatch = nameToMatch.replaceAll("_", "!_");
-		nameToMatch = nameToMatch.replaceAll("\\[", "![");
+		nameToMatch = escapeMySQL(nameToMatch);
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select {0} ", "count(*)"));

@@ -201,6 +201,47 @@ public class UserRelations extends Table {
 								firstUserId);
 	}
 
+	public List<String> getAllNamesOrEmailsInRelation(int userId, String userNameOrEmail, int firstRow, int limit)
+			throws SQLException {
+
+		List<String> namesOrEmails = new ArrayList<String>();
+		userNameOrEmail = escapeMySQL(userNameOrEmail);
+		PreparedStatementIdKdo ps = null;
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format("select u.{0} as res ", UsersColumns.NAME));
+		query.append(MessageFormat.format("  from {0} u, {1} r ", Users.TABLE_NAME, TABLE_NAME));
+		query.append(MessageFormat.format(" where u.{0} = r.{1} ", UsersColumns.ID, FIRST_USER));
+		query.append(MessageFormat.format("   and r.{0} = ? ", SECOND_USER));
+		query.append(MessageFormat.format("   and lower(u.{0}) like ? ESCAPE ''!'' ", UsersColumns.NAME));
+		query.append(" union ");
+		query.append(MessageFormat.format("select u.{0} as res ", UsersColumns.EMAIL));
+		query.append(MessageFormat.format("  from {0} u, {1} r ", Users.TABLE_NAME, TABLE_NAME));
+		query.append(MessageFormat.format(" where u.{0} = r.{1} ", UsersColumns.ID, FIRST_USER));
+		query.append(MessageFormat.format("   and r.{0} = ? ", SECOND_USER));
+		query.append(MessageFormat.format("   and lower(u.{0}) like ? ESCAPE ''!'' ", UsersColumns.EMAIL));
+		query.append(" order by 1 ");
+		query.append(" LIMIT ?, ? ");
+
+		try {
+			ps = new PreparedStatementIdKdo(getDb(), query.toString());
+			ps.bindParameters(userId, "%" + userNameOrEmail + "%", userId, "%" + userNameOrEmail + "%", firstRow, limit);
+
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					namesOrEmails.add(res.getString(1));
+				}
+			}
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+		}
+
+		return namesOrEmails;
+	}
+
 	public List<User> getAllUsersInRelation(int userId, String userNameOrEmail) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
@@ -228,6 +269,7 @@ public class UserRelations extends Table {
 																	FIRST_USER,
 																	SECOND_USER));
 			if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
+				userNameOrEmail = escapeMySQL(userNameOrEmail);
 				ps.bindParameters(userId, "%" + userNameOrEmail + "%", "%" + userNameOrEmail + "%");
 			} else {
 				ps.bindParameters(userId);
