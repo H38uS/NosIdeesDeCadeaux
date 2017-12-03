@@ -2,13 +2,13 @@ package com.mosioj.servlets.controllers.relations;
 
 public class Page {
 	
-	public String numero;
+	public Object numero;
 
-	public Page(String numero) {
+	public Page(Object numero) {
 		this.numero = numero;
 	}
 
 	public String getNumero() {
-		return numero;
+		return numero.toString();
 	}
 }

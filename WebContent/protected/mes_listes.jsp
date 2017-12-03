@@ -3,7 +3,27 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
-		<jsp:body>
+	<jsp:body>
+		<c:if test="${not empty pages}">
+			<div class="center">
+				<c:if test="${current != 1}">
+					<a href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
+				</c:if>
+				<c:forEach var="page" items="${pages}">
+					<c:choose>
+						<c:when test="${current != page.numero}">
+							<a href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
+						</c:when>
+						<c:otherwise>
+							${page.numero}
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+				<c:if test="${current != last}">
+					<a href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
+				</c:if>
+			</div>
+		</c:if>
 		<c:forEach var="user" items="${users}">
 			<c:if test="${userid == user.id}">
 				<!-- Début idée de la personne -->
@@ -116,5 +136,25 @@
 				</c:if>
 			</c:if>
 		</c:forEach>
+		<c:if test="${not empty pages}">
+			<div class="center">
+				<c:if test="${current != 1}">
+					<a href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
+				</c:if>
+				<c:forEach var="page" items="${pages}">
+					<c:choose>
+						<c:when test="${current != page.numero}">
+							<a href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
+						</c:when>
+						<c:otherwise>
+							${page.numero}
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+				<c:if test="${current != last}">
+					<a href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
+				</c:if>
+			</div>
+		</c:if>
 	</jsp:body>
 </t:normal_protected>

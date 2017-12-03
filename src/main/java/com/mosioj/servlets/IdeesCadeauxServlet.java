@@ -45,6 +45,7 @@ import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.UserRelationsSuggestion;
 import com.mosioj.model.table.Users;
+import com.mosioj.servlets.controllers.relations.Page;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
@@ -521,6 +522,34 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			}
 		}
 		return toBeAsked;
+	}
+
+	protected int getFirstRow(int pageNumber, final int MAX_NUMBER_OF_RESULT) {
+		int firstRow = (pageNumber - 1) * MAX_NUMBER_OF_RESULT;
+		return firstRow;
+	}
+
+	protected List<Page> getPages(final int MAX_NUMBER_OF_RESULT, int total) {
+		List<Page> pages = new ArrayList<Page>();
+		for (int i = 0; i < total / MAX_NUMBER_OF_RESULT; i++) {
+			pages.add(new Page(i + 1));
+		}
+		if (total % MAX_NUMBER_OF_RESULT != 0) {
+			pages.add(new Page(pages.size() + 1));
+		}
+		return pages;
+	}
+
+	protected int getPageNumber(HttpServletRequest request, String pageArgumentName) {
+		String pageNumberArg = ParametersUtils.readAndEscape(request, pageArgumentName).trim();
+		int pageNumber = 1;
+		try {
+			pageNumber = Integer.parseInt(pageNumberArg);
+		} catch (NumberFormatException e) {
+			// Nothing to do
+		}
+		request.setAttribute("current", pageNumber);
+		return pageNumber;
 	}
 
 	static {

@@ -1,7 +1,6 @@
 package com.mosioj.servlets.controllers.relations;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -18,6 +17,7 @@ import com.mosioj.utils.RootingsUtils;
 @WebServlet("/protected/rechercher_personne")
 public class RechercherPersonne extends IdeesCadeauxServlet {
 
+	private static final String PAGE_ARG = "page";
 	private static final long serialVersionUID = 9147880158497428623L;
 	public static final String DEFAULT_FORM_URL = "/protected/rechercher_personne.jsp";
 	public final String formUrl;
@@ -40,16 +40,10 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 
 	private void doTheLogic(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException {
 
-		String pageNumberArg = ParametersUtils.readAndEscape(request, "page").trim();
-		int pageNumber = 1;
-		try {
-			pageNumber = Integer.parseInt(pageNumberArg);
-		} catch (NumberFormatException e) {
-			// Nothing to do
-		}
-
 		final int MAX_NUMBER_OF_RESULT = 20;
-		int firstRow = (pageNumber - 1) * MAX_NUMBER_OF_RESULT;
+		int pageNumber = getPageNumber(request, PAGE_ARG);
+		int firstRow = getFirstRow(pageNumber, MAX_NUMBER_OF_RESULT);
+
 		int userId = ParametersUtils.getUserId(request);
 
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
@@ -63,21 +57,9 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 			// On regarde si y'en a pas d'autres
 			total = users.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
 			if (total > MAX_NUMBER_OF_RESULT) {
-				int last = 0;
-				List<Page> pages = new ArrayList<Page>();
-				for (int i = 0; i < total / MAX_NUMBER_OF_RESULT; i++) {
-					String num = (i + 1) + "";
-					pages.add(new Page(num));
-					last = i + 1;
-				}
-				if (total % MAX_NUMBER_OF_RESULT != 0) {
-					last = pages.size() + 1;
-					String num = last + "";
-					pages.add(new Page(num));
-				}
-
+				List<Page> pages = getPages(MAX_NUMBER_OF_RESULT, total);
 				request.setAttribute("pages", pages);
-				request.setAttribute("last", last);
+				request.setAttribute("last", pages.size());
 			}
 		}
 

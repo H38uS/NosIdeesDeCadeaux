@@ -10,27 +10,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_listes")
-public class AfficherListes extends IdeesCadeauxServlet {
+public class AfficherListes extends AbstractListes {
 
-	/**
-	 * Class logger.
-	 */
-	private static final Logger LOGGER = LogManager.getLogger(AfficherListes.class);
 	private static final long serialVersionUID = 1209953017190072617L;
 
 	public static final String AFFICHER_LISTES = "/protected/afficher_listes";
-	public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
-
 	private static final String NAME_OR_EMAIL = "name";
 
 	/**
@@ -42,25 +33,28 @@ public class AfficherListes extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-
+	protected List<User> getDisplayedUsers(int userId, int firstRow, HttpServletRequest req) throws SQLException {
 		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
-		int userId = ParametersUtils.getUserId(req);
-
-		LOGGER.info(MessageFormat.format("Gets the lists for {0}, with token {1}", ParametersUtils.getUserName(req), nameOrEmail));
-
 		List<User> ids = new ArrayList<User>();
+		int MAX = MAX_NUMBER_OF_RESULT;
 		User connected = users.getUser(userId);
 		if (connected.matchNameOrEmail(nameOrEmail)) {
 			ids.add(connected);
+			MAX--;
 		}
-		ids.addAll(userRelations.getAllUsersInRelation(userId, nameOrEmail));
-		for (User user : ids) {
-			user.addIdeas(idees.getOwnerIdeas(user.id));
-		}
-		req.setAttribute("users", ids);
+		ids.addAll(userRelations.getAllUsersInRelation(userId, nameOrEmail, firstRow, MAX));
+		return ids;
+	}
 
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+	@Override
+	protected int getTotalNumberOfUsers(int userId, HttpServletRequest req) throws SQLException {
+		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
+		int size = userRelations.getAllUsersInRelation(userId, nameOrEmail).size();
+		User connected = users.getUser(userId);
+		if (connected.matchNameOrEmail(nameOrEmail)) {
+			return size + 1;
+		}
+		return size;
 	}
 
 	@Override
@@ -71,6 +65,16 @@ public class AfficherListes extends IdeesCadeauxServlet {
 																ParametersUtils.readIt(request, NAME_OR_EMAIL)),
 										request,
 										response); // Rien de spécifique pour le moment
+	}
+
+	@Override
+	protected String getCallingURL() {
+		return AFFICHER_LISTES.substring(1);
+	}
+
+	@Override
+	protected String getSpecificParameters(HttpServletRequest req) {
+		return MessageFormat.format("&{0}={1}", NAME_OR_EMAIL, ParametersUtils.readAndEscape(req, NAME_OR_EMAIL));
 	}
 
 }
