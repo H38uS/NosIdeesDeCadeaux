@@ -50,7 +50,7 @@ public class MesListes extends IdeesCadeauxServlet {
 		ids.addAll(userRelations.getAllUsersInRelation(userId));
 		LOGGER.trace("Getting all ideas for all users...");
 		for (User user : ids) {
-			user.addIdeas(idees.getOwnerIdeas(user.id)); // FIXME : faire un système de page / idem pour afficher liste
+			user.addIdeas(idees.getOwnerIdeas(user.id)); // FIXME : 7 faire un système de page / idem pour afficher liste
 		}
 		req.setAttribute("users", ids);
 

@@ -16,7 +16,7 @@
 						<table>
 							<caption>
 								<th>Participant</th>
-								<th>Montant</th>
+								<th colspan="2" >Montant - Actions</th>
 							</caption>
 							<c:forEach var="share" items="${group.shares}">
 								<tr>
@@ -28,7 +28,7 @@
 													<input name="amount" value="${share.amount}" />
 													<input type="hidden" name="groupid" value="${group.id}" />
 													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-													<input type="submit" name="submit" id="submit" value="Modifier !" />
+													<input style="width:130px" type="submit" name="submit" id="submit" value="Modifier !" />
 												</form>
 											</td>
 											<td>

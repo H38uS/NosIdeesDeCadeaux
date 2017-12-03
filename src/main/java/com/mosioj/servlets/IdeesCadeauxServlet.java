@@ -63,11 +63,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 
-	// TODO : réserver une sous partie de l'idée (genre moi je prends le tome XX)
+	// FIXME : 8 réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
 
-	// TODO : pouvoir créer des groupes d'utilisateurs pour les trouver plus facilement
 	// TODO : notification quand un anniversaire ou les fêtes approchent, pour chaque idée qui a une date de
 	// modification très ancienne
 	// TODO : notification followers quand on ajoute des idées, les modifie etc.
@@ -84,7 +83,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : faire un libellé plus joli pour les notifications dans MonCompte
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : 6 CSS grouep
 	// FIXME : 7 css idée ?
 	// FIXME : 8 vérifier les commentaires
 	// FIXME : 9 mettre en ligne

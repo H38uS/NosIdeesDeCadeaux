@@ -20,21 +20,25 @@
 					<table>
 						<c:forEach var="user" items="${candidates}">
 							<tr>
+								<td><label for="cb${user.id}" >${user.name}</label></td>
 								<td>
 									<input type="checkbox" id="cb${user.id}" name="${user.id}" />
 									<span class="checkbox"></span>
 								</td>
-								<td><label for="cb${user.id}" >${user.name}</label></td>
 							</tr>
 						</c:forEach>
+						<tr>
+							<td colspan="2" align="center">
+								<input type="submit" name="submit" id="submit" value="Suggérer !" />
+							</td>
+						</tr>
 					</table>
 					<input type="hidden" name="groupid" value="${group.id}" />
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-					<input type="submit" name="submit" id="submit" value="Suggérer !" />
 				</form>
 			</c:if>
 			<c:if test="${empty candidates}">
-				Vous ne connaissais personne qui serait susceptible de participer à ce cadeau...
+				Vous ne connaissez personne qui serait susceptible de participer à ce cadeau...
 			</c:if>
 			<h3>Rappel de l'idée</h3>
 			<div>${idea.text}</div>
