@@ -1,7 +1,7 @@
 <%@tag description="Index template plage" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <t:template_head_includes>
 	<link rel="stylesheet" type="text/css" href="public/css/common.css" />
 	<link rel="stylesheet" type="text/css" href="public/css/normal/normal.css" />
