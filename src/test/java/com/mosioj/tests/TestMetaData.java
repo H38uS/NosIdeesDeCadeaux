@@ -118,7 +118,7 @@ public class TestMetaData extends TemplateTest {
 				continue;
 			}
 			String name = file.getName();
-			if (name.endsWith(".css") || name.endsWith(".jsp")) {
+			if (name.endsWith(".css") || name.endsWith(".jsp") || name.endsWith(".ico")) {
 				logger.trace(parent + "/" + name);
 				availableLinks.add(parent + "/" + name);
 			}
