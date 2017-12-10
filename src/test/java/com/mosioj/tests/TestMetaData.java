@@ -98,7 +98,7 @@ public class TestMetaData extends TemplateTest {
 					if (url.indexOf("?") > 0) {
 						url = url.substring(0, url.indexOf("?"));
 					}
-					if (url.equals("${pageContext.request.contextPath}/logout")) {
+					if (url.contains("${")) {
 						continue;
 					}
 					referencedLinks.add(url);

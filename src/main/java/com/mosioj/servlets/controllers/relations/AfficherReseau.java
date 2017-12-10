@@ -56,7 +56,11 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		// Ajout du flag network
 		List<Relation> relations = userRelations.getRelations(user);
 		List<Relation> mine = userRelations.getRelations(userId);
-		relations.stream().filter(r -> mine.contains(r)).forEach(r -> r.secondIsInMyNetwork = true);
+		for (Relation r : relations) {
+			if (mine.contains(r)) {
+				r.secondIsInMyNetwork = true;
+			}
+		}
 
 		req.setAttribute("id", user);
 		req.setAttribute("relations", relations);
