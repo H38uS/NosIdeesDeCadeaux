@@ -2,7 +2,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 	<display-name>NosIdeesDeCadeaux</display-name>
-	
+
 	<session-config>
 		<session-timeout>600</session-timeout>
 	</session-config>
@@ -12,6 +12,18 @@
 	</welcome-file-list>
 
 	<jsp-config>
+		<taglib>
+			<taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri>
+			<taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://java.sun.com/jsp/jstl/sql</taglib-uri>
+			<taglib-location>/WEB-INF/tld/sql.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://java.sun.com/jsp/jstl/functions</taglib-uri>
+			<taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
+		</taglib>
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
 			<scripting-invalid>true</scripting-invalid>
@@ -45,7 +57,7 @@
 		<filter-name>loginHelper</filter-name>
 		<url-pattern>/protected/*</url-pattern>
 	</filter-mapping>
-	
+
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -67,5 +79,5 @@
 		<param-name>work_dir</param-name>
 		<param-value>${work_dir}</param-value>
 	</context-param>
-	
+
 </web-app>
