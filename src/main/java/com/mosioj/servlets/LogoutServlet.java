@@ -28,6 +28,6 @@ public class LogoutServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug(MessageFormat.format("Déconnexion de {0}", ParametersUtils.getUserName(request)));
 		request.getSession().invalidate();
-		RootingsUtils.redirectToPage("/public/index.jsp", request, response);
+		RootingsUtils.redirectToPage("/index.jsp", request, response);
 	}
 }

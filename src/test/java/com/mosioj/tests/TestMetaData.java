@@ -45,8 +45,7 @@ public class TestMetaData extends TemplateTest {
 		assertTrue(web.exists());
 
 		Set<String> availableLinks = new HashSet<String>();
-		addCSSorJSPToReferences(availableLinks, new File(web, "protected"));
-		addCSSorJSPToReferences(availableLinks, new File(web, "public"));
+		addCSSorJSPToReferences(availableLinks, web);
 		addJavaToReference(availableLinks, new File(root, "src/main/java"));
 
 		Set<String> referencedLinks = new HashSet<String>();
@@ -113,20 +112,23 @@ public class TestMetaData extends TemplateTest {
 	private void addCSSorJSPToReferences(Set<String> availableLinks, File folder, String parent) {
 		assertTrue(folder.exists());
 		for (File file : folder.listFiles()) {
+
+			String name = file.getName();
+			String newPath = parent == null || parent.isEmpty() ? name : parent + "/" + name;
+
 			if (file.isDirectory()) {
-				addCSSorJSPToReferences(availableLinks, file, parent + "/" + file.getName());
+				addCSSorJSPToReferences(availableLinks, file, newPath);
 				continue;
 			}
-			String name = file.getName();
 			if (name.endsWith(".css") || name.endsWith(".jsp") || name.endsWith(".ico")) {
-				logger.trace(parent + "/" + name);
-				availableLinks.add(parent + "/" + name);
+				logger.debug(newPath);
+				availableLinks.add(newPath);
 			}
 		}
 	}
 
 	private void addCSSorJSPToReferences(Set<String> availableLinks, File folder) {
-		addCSSorJSPToReferences(availableLinks, folder, folder.getName());
+		addCSSorJSPToReferences(availableLinks, folder, "");
 	}
 
 	private void checkForms(File folder) throws IOException {
