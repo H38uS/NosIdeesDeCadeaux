@@ -20,9 +20,10 @@ public class Idee {
 	private final int priorite;
 	private final Timestamp bookedOn;
 	private final Timestamp lastModified;
+	private final boolean isPartiallyBooked;
 
 	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage,
-			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified) {
+			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked) {
 		id = pId;
 		text = pText;
 		type = pType;
@@ -34,6 +35,7 @@ public class Idee {
 		this.priorite = priorite;
 		this.bookedOn = bookedOn;
 		this.lastModified = lastModified;
+		this.isPartiallyBooked = "Y".equals(isPartiallyBooked);
 	}
 
 	/**
@@ -50,6 +52,10 @@ public class Idee {
 
 	public int getId() {
 		return id;
+	}
+	
+	public boolean isPartiallyBooked() {
+		return isPartiallyBooked;
 	}
 
 	public String getBookingDate() {
@@ -75,7 +81,7 @@ public class Idee {
 	/**
 	 * 
 	 * @param maxLength
-	 * @return The idea text, with a maximum of maxLength caracters.
+	 * @return The idea text, with a maximum of maxLength characters.
 	 */
 	public String getTextSummary(int maxLength) {
 

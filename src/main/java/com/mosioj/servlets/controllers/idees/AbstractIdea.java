@@ -20,6 +20,8 @@ import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.Index;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.utils.ParametersUtils;
+import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
@@ -109,5 +111,40 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 			}
 		}
 	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @param userId
+	 * @param idea
+	 * @param landingURL
+	 * @return True in case of success, false otherwise.
+	 * @throws SQLException
+	 * @throws ServletException
+	 */
+	protected boolean sousReserver(HttpServletRequest request, HttpServletResponse response, int userId, Idee idea, String landingURL)
+			throws SQLException, ServletException {
+			
+				List<String> errors = new ArrayList<String>();
+				String comment = ParametersUtils.readAndEscape(request, "comment");
+				if (comment == null || comment.isEmpty()) {
+					errors.add("Le commentaire ne peut pas être vide !");
+				}
+			
+				if (!idees.canSubBook(idea.getId(), userId)) {
+					errors.add("L'idée a déjà été réservée, ou vous en avez déjà réservé une sous partie.");
+				}
+			
+				if (!errors.isEmpty()) {
+					request.setAttribute("errors", errors);
+					RootingsUtils.rootToPage(landingURL, request, response);
+					return false;
+				}
+			
+				idees.sousReserver(idea.getId(), userId, comment);
+				sousReservation.sousReserver(idea.getId(), userId, comment);
+				return true;
+			}
 
 }

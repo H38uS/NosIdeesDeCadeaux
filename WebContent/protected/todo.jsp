@@ -6,7 +6,7 @@
 		<h2>Page en cours de construction...</h2>
 		<div>Circulez, travail en cours...</div>
 		<div>
-			Bonjour <c:out value="${username}" /> - 
+			Bonjour ${username} - 
 			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 		</div>
 		<a href="index.jsp">Retour à l'accueil.</a>

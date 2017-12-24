@@ -114,9 +114,14 @@
 													</c:otherwise>
 												</c:choose>
 										</c:when>
+										<c:when test="${idee.isPartiallyBooked()}">
+											Une sous partie de l'idée est actuellement réservée.
+											<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a>
+										</c:when>
 										<c:otherwise>
 												L'idée n'a pas encore été réservée.<br/>
-												<a href="protected/reserver?idee=${idee.id}">La réserver</a>
+												<a href="protected/reserver?idee=${idee.id}">La réserver</a>,
+												<a href="protected/sous_reserver?idee=${idee.id}"> réserver une sous-partie</a>
 												ou <a href="protected/create_a_group?idee=${idee.id}">créer un groupe</a>
 										</c:otherwise>
 									</c:choose><br/>

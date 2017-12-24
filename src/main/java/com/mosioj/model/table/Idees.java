@@ -1,5 +1,6 @@
 package com.mosioj.model.table;
 
+import static com.mosioj.model.table.columns.IdeeColumns.A_SOUS_RESERVATION;
 import static com.mosioj.model.table.columns.IdeeColumns.GROUPE_KDO_ID;
 import static com.mosioj.model.table.columns.IdeeColumns.ID;
 import static com.mosioj.model.table.columns.IdeeColumns.IDEE;
@@ -27,6 +28,7 @@ import com.mosioj.model.table.columns.CommentsColumns;
 import com.mosioj.model.table.columns.GroupIdeaColumns;
 import com.mosioj.model.table.columns.GroupIdeaContentColumns;
 import com.mosioj.model.table.columns.IdeeColumns;
+import com.mosioj.model.table.columns.SousReservationColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
@@ -68,7 +70,8 @@ public class Idees extends Table {
 								rs.getString(CategoriesColumns.TITLE.name()),
 								rs.getInt(PRIORITE.name()),
 								rs.getTimestamp(RESERVE_LE.name()),
-								rs.getTimestamp(MODIFICATION_DATE.name()));
+								rs.getTimestamp(MODIFICATION_DATE.name()),
+								rs.getString(A_SOUS_RESERVATION.name()));
 		return idea;
 	}
 
@@ -91,6 +94,7 @@ public class Idees extends Table {
 		columns.append(MessageFormat.format("       i.{0}, ", PRIORITE));
 		columns.append(MessageFormat.format("       i.{0}, ", RESERVE_LE));
 		columns.append(MessageFormat.format("       i.{0}, ", MODIFICATION_DATE));
+		columns.append(MessageFormat.format("       i.{0}, ", A_SOUS_RESERVATION));
 		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.IMAGE));
 		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.ALT));
 		columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.TITLE));
@@ -343,6 +347,31 @@ public class Idees extends Table {
 	}
 
 	/**
+	 * Ajoute une sous-réservation à cette idée.
+	 * 
+	 * @param idea
+	 * @param userId
+	 * @param comment
+	 * @throws SQLException
+	 */
+	public void sousReserver(int idea, int userId, String comment) throws SQLException {
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format("update {0} ", TABLE_NAME));
+		query.append("set " + A_SOUS_RESERVATION + " = 'Y', reserve_le = now() ");
+		query.append("where id = ? ");
+
+		logger.trace("Query: " + query.toString());
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+		try {
+			ps.bindParameters(idea);
+			ps.execute();
+		} finally {
+			ps.close();
+		}
+	}
+
+	/**
 	 * Book the idea with a group.
 	 * 
 	 * @param id
@@ -402,23 +431,52 @@ public class Idees extends Table {
 		sb.append("select count(*) ");
 		sb.append("from {0} i ");
 		sb.append("inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) ");
-		sb.append("where i.id = ? and {1} is null and i.{2} is null and {3} <> ?");
+		sb.append("where i.id = ? and {1} is null and i.{2} is null and {3} <> ? and {8} = 'N'");
 
-		String query = MessageFormat.format(	sb.toString(),
-															TABLE_NAME,
-															RESERVE,
-															GROUPE_KDO_ID,
-															IdeeColumns.OWNER,
-															UserRelations.TABLE_NAME,
-															OWNER,
-															UserRelationsColumns.FIRST_USER,
-															UserRelationsColumns.SECOND_USER);
+		String query = MessageFormat.format(sb.toString(),
+											TABLE_NAME,
+											RESERVE,
+											GROUPE_KDO_ID,
+											IdeeColumns.OWNER,
+											UserRelations.TABLE_NAME,
+											OWNER,
+											UserRelationsColumns.FIRST_USER,
+											UserRelationsColumns.SECOND_USER,
+											A_SOUS_RESERVATION);
 		logger.debug(query);
-		return getDb().selectInt(	query,
-									userId,
-									userId,
-									idea,
-									userId) > 0;
+		return getDb().selectInt(query, userId, userId, idea, userId) > 0;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param userId
+	 * @return True if and only if a sub part of the idea can be booked.
+	 * @throws SQLException
+	 */
+	public boolean canSubBook(int idea, int userId) throws SQLException {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) ");
+		sb.append("from {0} i ");
+		sb.append("inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) ");
+		sb.append("where i.id = ? and {1} is null and i.{2} is null and {3} <> ? ");
+		sb.append(MessageFormat.format(	"  and not exists (select 1 from {0} where i.id = {1} and {2} = ?)",
+										SousReservation.TABLE_NAME,
+										SousReservationColumns.IDEE_ID,
+										SousReservationColumns.USER_ID));
+
+		String query = MessageFormat.format(sb.toString(),
+											TABLE_NAME,
+											RESERVE,
+											GROUPE_KDO_ID,
+											IdeeColumns.OWNER,
+											UserRelations.TABLE_NAME,
+											OWNER,
+											UserRelationsColumns.FIRST_USER,
+											UserRelationsColumns.SECOND_USER);
+		logger.debug(query);
+		return getDb().selectInt(query, userId, userId, idea, userId, userId) > 0;
 	}
 
 	/**

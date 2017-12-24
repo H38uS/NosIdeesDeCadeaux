@@ -40,6 +40,7 @@ import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Priorites;
+import com.mosioj.model.table.SousReservation;
 import com.mosioj.model.table.UserParameters;
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
@@ -64,7 +65,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 
-	// FIXME : 8 réserver une sous partie de l'idée (genre moi je prends le tome XX)
+	// FIXME : 8 réserver une sous partie de l'idée (genre moi je prends le tome XX) : attention modification dans voir_liste et mes_listes
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
 
@@ -157,6 +158,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * The connections to the USER_PARAMETERS table.
 	 */
 	protected UserParameters userParameters = new UserParameters();
+
+	/**
+	 * The connections to the SOUS_RESERVATION table.
+	 */
+	protected SousReservation sousReservation = new SousReservation();
 
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
