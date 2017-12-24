@@ -22,8 +22,7 @@ public abstract class AbstractListes extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = 1638868138216657989L;
 	private static final Logger LOGGER = LogManager.getLogger(AbstractListes.class);
-	
-	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
+
 	public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 	private static final String PAGE_ARG = "page";
 	public static final int MAX_NUMBER_OF_RESULT = 20;
@@ -33,8 +32,11 @@ public abstract class AbstractListes extends IdeesCadeauxServlet {
 	}
 
 	protected abstract List<User> getDisplayedUsers(int userId, int firstRow, HttpServletRequest req) throws SQLException;
+
 	protected abstract int getTotalNumberOfUsers(int userId, HttpServletRequest req) throws SQLException;
+
 	protected abstract String getCallingURL();
+
 	protected abstract String getSpecificParameters(HttpServletRequest req);
 
 	@Override
@@ -53,7 +55,7 @@ public abstract class AbstractListes extends IdeesCadeauxServlet {
 			user.addIdeas(idees.getOwnerIdeas(user.id));
 		}
 		req.setAttribute("users", ids);
-		
+
 		int total = ids.size();
 		if (total == MAX_NUMBER_OF_RESULT || pageNumber > 1) {
 			// On regarde si y'en a pas d'autres
@@ -62,10 +64,20 @@ public abstract class AbstractListes extends IdeesCadeauxServlet {
 				List<Page> pages = getPages(MAX_NUMBER_OF_RESULT, total);
 				req.setAttribute("pages", pages);
 				req.setAttribute("last", pages.size());
-				req.setAttribute("call_back", getCallingURL());
-				req.setAttribute("spec_parameters", getSpecificParameters(req));
 			}
 		}
+
+		req.setAttribute("spec_parameters", getSpecificParameters(req));
+		req.setAttribute("call_back", getCallingURL());
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(getCallingURL());
+		sb.append("?");
+		for (String param : req.getParameterMap().keySet()) {
+			sb.append(param + "=" + req.getParameter(param) + "&");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		req.setAttribute("identic_call_back", sb);
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}

@@ -25,9 +25,12 @@
 			</div>
 		</c:if>
 		<c:forEach var="user" items="${users}">
+			<a href="${identic_call_back}#list_${user.id}">${user.name}</a> |
+		</c:forEach>
+		<c:forEach var="user" items="${users}">
 			<c:if test="${userid == user.id}">
 				<!-- Début idée de la personne -->
-				<h2>Mes idées de cadeaux</h2>
+				<h2 id="list_${user.id}">Mes idées de cadeaux</h2>
 				<c:if test="${fn:length(user.ideas) > 0}">
 					<ul id="ideas_square_container">
 						<c:forEach var="idee" items="${user.ideas}">
@@ -60,7 +63,7 @@
 			<!-- Fin idée de la personne -->
 
 			<c:if test="${userid != user.id}">
-				<h2>Liste de cadeaux de ${user.name}</h2>
+				<h2 id="list_${user.id}">Liste de cadeaux de ${user.name}</h2>
 				<div>
 					<ul id="ideas_square_container">
 						<c:forEach var="idee" items="${user.ideas}">

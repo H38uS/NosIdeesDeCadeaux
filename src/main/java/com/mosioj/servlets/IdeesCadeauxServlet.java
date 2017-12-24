@@ -64,7 +64,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 
-	// FIXME : 8 Afficher des racourcis dans mes listes partagées avec des ancres pour allez sur chaque liste
 	// FIXME : 8 réserver une sous partie de l'idée (genre moi je prends le tome XX)
 	// TODO : choisir les pseudos de ses relations
 	// TODO : bootstrap pour le CSS ??
