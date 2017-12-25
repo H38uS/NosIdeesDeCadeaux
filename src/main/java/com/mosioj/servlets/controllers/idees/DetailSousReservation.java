@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.SousReservationEntity;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -31,13 +33,32 @@ public class DetailSousReservation extends AbstractIdea {
 		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
 	}
 
+	// TODO : Pouvoir suggérer de sous réserver cette idée
+
+	private void setupCommon(HttpServletRequest req, Idee idea, int userId) throws SQLException {
+
+		logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
+		req.setAttribute("idea", idea);
+
+		List<SousReservationEntity> reservations = sousReservation.getSousReservation(idea.getId());
+		req.setAttribute("sous_reservation_existantes", reservations);
+		boolean isInThere = false;
+		for (SousReservationEntity entity : reservations) {
+			if (entity.user.id == userId) {
+				isInThere = true;
+				break;
+			}
+		}
+		req.setAttribute("fait_parti_sous_reservation", isInThere);
+	}
+
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Idee idea = getIdeeFromSecurityChecks();
-		req.setAttribute("idea", idea);
+		int userId = ParametersUtils.getUserId(req);
 
-		logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
+		setupCommon(req, idea, userId);
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 
@@ -46,19 +67,13 @@ public class DetailSousReservation extends AbstractIdea {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		// FIXME : 0 fignoler le détail
-		// FIXME : 0 voir quand on annule les réservations
-		// FIXME : 0 pouvoir supprimer sa propre sous partie
-		// FIXME : 0 faire la notification pour proposer à quelqu'un de sous réserver
 		int userId = ParametersUtils.getUserId(request);
 		Idee idea = getIdeeFromSecurityChecks();
-		request.setAttribute("idea", idea);
+
+		setupCommon(request, idea, userId);
 
 		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-			// FIXME faire quelque chose
-			// RootingsUtils.rootToPage(SuggestGroupIdea.VIEW_URL + "?" + SuggestGroupIdea.GROUP_ID_PARAM + "=" + 10,
-			// request, response);
 		}
 	}
 

@@ -41,11 +41,12 @@ public class SousReserverIdee extends AbstractIdea {
 		request.setAttribute("idea", idea);
 
 		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {
-			// FIXME faire quelque chose
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-			// RootingsUtils.rootToPage(SuggestGroupIdea.VIEW_URL + "?" + SuggestGroupIdea.GROUP_ID_PARAM + "=" + 10, request, response);
 		}
 
 	}
+
+	// FIXME : 0 voir quand on annule les réservations
+	// FIXME : 0 pouvoir supprimer sa propre sous partie
 
 }

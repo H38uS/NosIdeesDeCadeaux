@@ -11,29 +11,43 @@
 		</div>
 		<div>
 			<h3>Les sous réservations existantes</h3>
-		Les sous réservations existantes ...
+			<table>
+			<c:forEach items="${sous_reservation_existantes}" var="resa" >
+				<tr>
+					<td>${resa.user.name}</td>
+					<td>${resa.comment}</td>
+				</tr>
+			</c:forEach>
+			</table>
 		</div>
 		<div>
 			<h3>Ajouter la vôtre !</h3>
-			<c:if test="${not empty idea}">
-				<form action="protected/sous_reserver" method="post" >
-					<table>
-						<input type="hidden" name="idee" value="${idea.id}">
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-						<tr>
-							<td><label for="comment">Commentaire de la réservation</label></td>
-							<td>
-								<textarea id="comment" name="comment" required="required" cols="50" rows="5" placeholder="Je prends le tome 42 de la série..." >${comment}</textarea>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" align="center">
-								<input type="submit" name="submit" id="submit" value="Réserver !" />
-							</td>
-						</tr>
-					</table>
-				</form>
-			</c:if>
+			<c:choose>
+				<c:when test="${fait_parti_sous_reservation}">
+					Vous avez déjà reservé une partie de cette idée.
+				</c:when>
+				<c:otherwise>
+					<c:if test="${not empty idea}">
+						<form action="protected/sous_reserver" method="post" >
+							<table>
+								<input type="hidden" name="idee" value="${idea.id}">
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<tr>
+									<td><label for="comment">Commentaire de la réservation</label></td>
+									<td>
+										<textarea id="comment" name="comment" required="required" cols="50" rows="5" placeholder="Je prends le tome 42 de la série..." >${comment}</textarea>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2" align="center">
+										<input type="submit" name="submit" id="submit" value="Réserver !" />
+									</td>
+								</tr>
+							</table>
+						</form>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
 			<c:if test="${empty idea}">
 				L'idée que vous souhaitez réserver n'existe pas, ou vous n'avez pas les droits pour le faire.
 			</c:if>
@@ -48,7 +62,5 @@
 				</ul>
 			</c:if>
 		</div>
-		<h3>Suggérer ce groupe à quelqu'un</h3>
-		Il manque un peu... N'hésitez plus, <a href="protected/suggerer_groupe_idee?groupid=${group.id}">suggérer</a> ce groupe à d'autres personnes !
 	</jsp:body>
 </t:normal_protected>
