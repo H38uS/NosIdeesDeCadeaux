@@ -94,7 +94,7 @@
 	margin: 10px 0 20px 20px;
 	padding: 5px 5px;
 	text-align: center;
-	background-color: #fcf7fb;
+	background-color: #fef4ff;
     border: transparent solid 1px;
     -webkit-box-shadow: 0 1px 5px transparent;
     box-shadow: 0 1px 5px transparent;
@@ -104,6 +104,16 @@
     border: #353b43 solid 1px;
     -webkit-box-shadow: 0 1px 5px #353b43;
     box-shadow: 0 1px 5px #353b43;
+}
+
+.booked_by_me_idea {
+	background-color: #d6ffd7;
+}
+.booked_by_others_idea {
+	background-color: #d6d6d6;
+}
+.shared_booking_idea {
+	background-color: #fffac9;
 }
 
 /*******************/

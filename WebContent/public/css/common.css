@@ -9,6 +9,9 @@
 .center {
 	text-align: center;
 }
+.left {
+	text-align: left;
+}
 
 /* Les liens */
 .clickable {
@@ -140,7 +143,7 @@ form > table label {
 }
 
 input[type=submit] {
-	font-family: "MyFont", Georgia, Arial;
+	font-family: sans-serif, "MyFont", Georgia, Arial;
 	font-size: 105%;
     width: 100%;
     background-color: #c0c0c0;

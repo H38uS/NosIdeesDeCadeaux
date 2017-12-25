@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.relations.Page;
@@ -52,7 +53,27 @@ public abstract class AbstractListes extends IdeesCadeauxServlet {
 		List<User> ids = getDisplayedUsers(userId, firstRow, req);
 		LOGGER.trace("Getting all ideas for all users...");
 		for (User user : ids) {
-			user.addIdeas(idees.getOwnerIdeas(user.id));
+			List<Idee> ownerIdeas = idees.getOwnerIdeas(user.id);
+			for (Idee idee : ownerIdeas) {
+				if (idee.isBooked()) {
+					if (idee.getBookingOwner() != null) {
+						if (idee.getBookingOwner().id == userId) {
+							// Réservé par soit !
+							idee.displayClass = "booked_by_me_idea";
+						} else {
+							// Réservé par un autre
+							idee.displayClass = "booked_by_others_idea";
+						}
+					} else {
+						// Réserver par un groupe
+						idee.displayClass = "shared_booking_idea";
+					}
+				} else if (idee.isPartiallyBooked()) {
+					idee.displayClass = "shared_booking_idea";
+				}
+				// Sinon, on laisse la class par défaut
+			}
+			user.addIdeas(ownerIdeas);
 		}
 		req.setAttribute("users", ids);
 

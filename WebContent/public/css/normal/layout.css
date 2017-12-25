@@ -9,7 +9,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	height: 100%; /* needed for container min-height */
-	font-family: "MyFont", Georgia, Arial;
+	font-family: sans-serif, "MyFont", Georgia, Arial;
 	font-size: 105%;
 }
 

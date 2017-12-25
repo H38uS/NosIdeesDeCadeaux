@@ -21,6 +21,7 @@ public class Idee {
 	private final Timestamp bookedOn;
 	private final Timestamp lastModified;
 	private final boolean isPartiallyBooked;
+	public String displayClass = "";
 
 	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage,
 			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked) {
@@ -48,6 +49,14 @@ public class Idee {
 
 	public int getPriorite() {
 		return priorite;
+	}
+
+	/**
+	 * 
+	 * @return The css class to use for this idea.
+	 */
+	public String getDisplayClass() {
+		return displayClass;
 	}
 
 	public int getId() {

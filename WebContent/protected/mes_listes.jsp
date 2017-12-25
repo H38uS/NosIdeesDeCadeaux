@@ -35,7 +35,7 @@
 					<ul id="ideas_square_container">
 						<c:forEach var="idee" items="${user.ideas}">
 						<li class="idea_square top_tooltip">
-							<div>
+							<div class="left">
 								<c:if test="${not empty idee.category}">
 									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 								</c:if>
@@ -67,8 +67,8 @@
 				<div>
 					<ul id="ideas_square_container">
 						<c:forEach var="idee" items="${user.ideas}">
-						<li class="idea_square top_tooltip">
-							<div>
+						<li class="idea_square top_tooltip ${idee.displayClass}">
+							<div class="left">
 								<c:if test="${not empty idee.category}">
 									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 								</c:if>
