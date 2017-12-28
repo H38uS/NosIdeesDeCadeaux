@@ -431,7 +431,7 @@ public class Idees extends Table {
 		sb.append("select count(*) ");
 		sb.append("from {0} i ");
 		sb.append("inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) ");
-		sb.append("where i.id = ? and {1} is null and i.{2} is null and {3} <> ? and {8} = 'N'");
+		sb.append("where i.id = ? and {1} is null and i.{2} is null and {3} <> ? and {8} = ''N''");
 
 		String query = MessageFormat.format(sb.toString(),
 											TABLE_NAME,
