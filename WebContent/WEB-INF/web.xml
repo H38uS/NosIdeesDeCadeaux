@@ -11,25 +11,6 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 
-	<jsp-config>
-		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri>
-			<taglib-location>/WEB-INF/tld/c.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/sql</taglib-uri>
-			<taglib-location>/WEB-INF/tld/sql.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/functions</taglib-uri>
-			<taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
-		</taglib>
-		<jsp-property-group>
-			<url-pattern>*.jsp</url-pattern>
-			<scripting-invalid>true</scripting-invalid>
-		</jsp-property-group>
-	</jsp-config>
-
 	<resource-ref>
 		<description>DB Connection</description>
 		<res-ref-name>jdbc/web-db</res-ref-name>
