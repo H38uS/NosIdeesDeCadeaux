@@ -9,7 +9,7 @@
 			Bonjour ${username} - 
 			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
 		</div>
-		<a href="index.jsp">Retour à l'accueil.</a>
+		<a href="public/index.jsp">Retour à l'accueil.</a>
 		<div>
 			<a href="protected/index.jsp">Retour à mon espace.</a>
 		</div>
