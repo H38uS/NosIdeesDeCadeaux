@@ -7,7 +7,7 @@
     		<div id="logo">
 	    		<img src="public/image/header_index.png" />
 	    		<span>
-		    		Bonjour, ${emailorname} - <a href="my_logout">me deconnecter.</a>
+		    		Bonjour, ${emailorname} - <a href="<c:url value="/logout" />">me deconnecter.</a>
 		    		Accéder à <a href="protected/mon_compte">mon compte.</a>
 		    		<c:if test="${notif_count > 0}">
 		    			<br/>Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !

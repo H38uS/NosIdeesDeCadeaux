@@ -7,7 +7,7 @@
 		<div>Circulez, travail en cours...</div>
 		<div>
 			Bonjour ${username} - 
-			<a href="${pageContext.request.contextPath}/logout">me deconnecter.</a>
+			<a href="<c:url value="/logout" />">me deconnecter.</a>
 		</div>
 		<a href="public/index.jsp">Retour à l'accueil.</a>
 		<div>

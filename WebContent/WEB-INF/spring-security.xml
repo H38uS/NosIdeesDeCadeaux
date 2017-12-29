@@ -6,11 +6,13 @@
 		<csrf disabled="true" />
 		<form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
 			authentication-failure-url="/public/error.jsp" />
+		<logout logout-success-url="/public/index.jsp" />
 	</http>
 	<http pattern="/public/changer_mot_de_passe_depuis_reinit" create-session="never">
 		<csrf disabled="true" />
 		<form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
 			authentication-failure-url="/public/error.jsp" />
+		<logout logout-success-url="/public/index.jsp" />
 	</http>
 	
 	<http pattern="/protected/service/**">
@@ -19,6 +21,7 @@
 			authentication-failure-url="/public/error.jsp" />
 		<remember-me remember-me-parameter="remember-me" remember-me-cookie="remember-me" token-validity-seconds="1209600"
 			data-source-ref="springDS" />
+		<logout logout-success-url="/public/index.jsp" />
 	</http>
 	
 	<http auto-config="true">
@@ -33,6 +36,7 @@
 		<csrf disabled="true" />
 		<remember-me remember-me-parameter="remember-me" remember-me-cookie="remember-me" token-validity-seconds="1209600"
 			data-source-ref="springDS" />
+		<logout logout-success-url="/public/index.jsp" />
 	</http>
 
 	<authentication-manager>
