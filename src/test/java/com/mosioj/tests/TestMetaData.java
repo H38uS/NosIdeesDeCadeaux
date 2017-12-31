@@ -97,7 +97,7 @@ public class TestMetaData extends TemplateTest {
 					if (url.indexOf("?") > 0) {
 						url = url.substring(0, url.indexOf("?"));
 					}
-					if (url.contains("${")) {
+					if (url.contains("${") || url.contains("<c:url")) {
 						continue;
 					}
 					referencedLinks.add(url);
