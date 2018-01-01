@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,12 +42,8 @@ public class SousReserverIdee extends AbstractIdea {
 		request.setAttribute("idea", idea);
 
 		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {
-			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
+			RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", DetailSousReservation.URL, IDEA_ID_PARAM, idea.getId()), request, response);
 		}
 
 	}
-
-	// FIXME : 0 voir quand on annule les réservations
-	// FIXME : 0 pouvoir supprimer sa propre sous partie
-
 }

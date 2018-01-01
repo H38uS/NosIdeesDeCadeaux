@@ -14,8 +14,23 @@
 			<table>
 			<c:forEach items="${sous_reservation_existantes}" var="resa" >
 				<tr>
-					<td>${resa.user.name}</td>
 					<td>${resa.comment}</td>
+					<td>
+						<c:choose>
+							<c:when test="${resa.user.id == userid}">
+								<strong>(Vous)</strong>
+							</c:when>
+							<c:otherwise>
+								<strong>(${resa.user.name})</strong>
+							</c:otherwise>
+						</c:choose>
+					</td>
+					<td>
+						<form action="protected/annuler_sous_reservation" method="post" >
+							<input type="hidden" name="idee" value="${idea.id}">
+							<input type="submit" name="submit" id="submit" value="Annuler !" />
+						</form>
+					</td>
 				</tr>
 			</c:forEach>
 			</table>

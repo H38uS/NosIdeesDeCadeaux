@@ -25,6 +25,7 @@ public class DetailSousReservation extends AbstractIdea {
 
 	private static final String IDEA_ID_PARAM = "idee";
 	public static final String VIEW_PAGE_URL = "/protected/detail_sous_reservation.jsp";
+	public static final String URL = "/protected/detail_sous_reservation";
 
 	/**
 	 * Class constructor.

@@ -285,6 +285,22 @@ public class Idees extends Table {
 	}
 
 	/**
+	 * 
+	 * @param ideaId
+	 * @param userId
+	 * @return True if and only if the user has sub booked the idea.
+	 * @throws SQLException
+	 */
+	public boolean isSubBookBy(int ideaId, int userId) throws SQLException {
+		return getDb().selectInt(	MessageFormat.format(	"select count(*) from {0} where {1} = ? and {2} = ?",
+															SousReservation.TABLE_NAME,
+															SousReservationColumns.IDEE_ID,
+															SousReservationColumns.USER_ID),
+									ideaId,
+									userId) > 0;
+	}
+
+	/**
 	 * Add a new idea in the IDEES table.
 	 * 
 	 * @param ownerId
@@ -409,6 +425,33 @@ public class Idees extends Table {
 			ps.execute();
 		} finally {
 			ps.close();
+		}
+	}
+
+	/**
+	 * Supprime la sous réservation de la personne.
+	 * 
+	 * @param ideaId
+	 * @param userId
+	 * @throws SQLException
+	 */
+	public void dereserverSousPartie(int ideaId, int userId) throws SQLException {
+		int nb = getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
+																SousReservation.TABLE_NAME,
+																SousReservationColumns.IDEE_ID,
+																SousReservationColumns.USER_ID),
+										ideaId,
+										userId);
+		if (nb > 0 && getDb().selectInt(
+										MessageFormat.format(	"select count(*) from {0} where {1} = ?",
+																SousReservation.TABLE_NAME,
+																SousReservationColumns.IDEE_ID),
+										ideaId) == 0) {
+			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ''N'' where {2} = ?",
+															TABLE_NAME,
+															A_SOUS_RESERVATION,
+															ID),
+									ideaId);
 		}
 	}
 
@@ -546,4 +589,5 @@ public class Idees extends Table {
 								image,
 								id);
 	}
+
 }
