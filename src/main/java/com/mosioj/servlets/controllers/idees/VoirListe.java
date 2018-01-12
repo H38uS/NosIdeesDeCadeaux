@@ -2,6 +2,8 @@ package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +26,7 @@ public class VoirListe extends IdeesCadeauxServlet {
 	private static final long serialVersionUID = -5233551522645668356L;
 	private static final String USER_ID_PARAM = "id";
 	private static final String PROTECTED_VOIR_LIST = "/protected/voir_liste";
-	public static final String VIEW_PAGE_URL = "/protected/voir_liste.jsp";
+	public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 
 	/**
 	 * Class constructor.
@@ -42,7 +44,10 @@ public class VoirListe extends IdeesCadeauxServlet {
 
 		LOGGER.trace("Getting all ideas for this user...");
 		user.addIdeas(idees.getOwnerIdeas(user.id));
-		req.setAttribute("user", user);
+		List<User> users = new ArrayList<User>();
+		users.add(user);
+
+		req.setAttribute("users", users);
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
