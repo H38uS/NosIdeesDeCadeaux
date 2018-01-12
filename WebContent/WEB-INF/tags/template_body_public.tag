@@ -6,7 +6,7 @@
 	    		<img src="public/image/header_index.png" ></img>
     		</div>
     		<div id="logo_text">
-    			Créer et partager vos envies de cadeaux avec toute la famille et vos amis
+    			Créer et partager vos envies de cadeaux avec toute votre famille et vos amis
     		</div>
     		<ul class="menu">
     			<li><a href="public/index.jsp" class="fl_green">Accueil</a></li>

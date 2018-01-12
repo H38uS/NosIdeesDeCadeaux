@@ -93,7 +93,7 @@ public class CreationCompte extends DefaultCompte {
 		users.addNewPersonne(email, hashPwd, name);
 		session.invalidate();
 		request.login(email, pwd);
-		request.setAttribute("user", email);
+		request.setAttribute("user", name);
 		try {
 			new LoginHelper().doFilter(request, response, new EmptyFilter());
 		} catch (IOException e) {

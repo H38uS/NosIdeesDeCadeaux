@@ -65,13 +65,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 
-	// TODO : choisir les pseudos de ses relations
-
 	// TODO : notification quand un anniversaire ou les fêtes approchent, pour chaque idée qui a une date de
 	// modification très ancienne
 	// TODO : notification followers quand on ajoute des idées, les modifie etc.
 
-	// TODO : pouvoir ajouter des surprises
 	// TODO : controle parental
 	// TODO : auto logout en javascript
 
@@ -80,13 +77,22 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : notification quand on envoie une demande d'amis
 
-	// TODO : faire un libellé plus joli pour les notifications dans MonCompte
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : 6 mail Bryan
+	// FIXME : 2 pouvoir demander des infos : commentaires anonyme ??
+	// FIXME : 3 CSS message box pour les commentaires
+	// FIXME : 3 image has comment / has private comment
+	// FIXME : 3 pouvoir agrandir les photos
 	// FIXME : 7 css idée ? - remonter le hover
+	
 	// FIXME : 8 vérifier les commentaires
 	// FIXME : 9 mettre en ligne
+	// FIXME : 91 pouvoir ajouter des surprises
+	
+	// FIXME : 2 dans l'affichage des 'amis' les liens sont bleu.. ,je pense q'une nouvelle ligne avec les nom écrit en blanc sur fond gris serais mieux (comme le menu principal)
+	// FIXME : 2 pouvoir archiver les notifications sans les supprimer
+	// FIXME : 2 lors d'une réservation groupé, quand le montant total est atteint (ou supérieure) il faudrait changer la phrase en dessous (celle qui propose de rameuté un autre groupe)
+	// FIXME : 2 essayer CENTURY GOTHIC
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
