@@ -89,10 +89,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : 9 mettre en ligne
 	// FIXME : 91 pouvoir ajouter des surprises
 	
-	// FIXME : 2 dans l'affichage des 'amis' les liens sont bleu.. ,je pense q'une nouvelle ligne avec les nom écrit en blanc sur fond gris serais mieux (comme le menu principal)
-	// FIXME : 2 pouvoir archiver les notifications sans les supprimer
-	// FIXME : 2 lors d'une réservation groupé, quand le montant total est atteint (ou supérieure) il faudrait changer la phrase en dessous (celle qui propose de rameuté un autre groupe)
-	// FIXME : 2 essayer CENTURY GOTHIC
+	// FIXME : 99 pouvoir archiver les notifications sans les supprimer
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

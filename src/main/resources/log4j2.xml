@@ -20,7 +20,7 @@
 		<logger name="com.mosioj" level="debug" />
 		<Root>
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="File" />
+			<AppenderRef ref="RollingFile" />
 		</Root>
 	</Loggers>
 </Configuration>

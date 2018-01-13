@@ -167,7 +167,7 @@ public class TestMetaData extends TemplateTest {
 					continue;
 				}
 
-				assertTrue(form.contains("<input type=\"hidden\" name=\"${_csrf.parameterName}\" value=\"${_csrf.token}\" />"));
+				assertTrue(file.getName(), form.contains("<input type=\"hidden\" name=\"${_csrf.parameterName}\" value=\"${_csrf.token}\" />"));
 			}
 		}
 	}

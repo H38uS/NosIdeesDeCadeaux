@@ -76,7 +76,9 @@
 				</ul>
 			</c:if>
 		</div>
-		<h3>Suggérer ce groupe à quelqu'un</h3>
-		Il manque un peu... N'hésitez plus, <a href="protected/suggerer_groupe_idee?groupid=${group.id}">suggérer</a> ce groupe à d'autres personnes !
+		<c:if test="${group.total > currentTotal}">
+			<h3>Suggérer ce groupe à quelqu'un</h3>
+			Il manque un peu (${group.total - currentTotal}€ très exactement)... N'hésitez plus, <a href="protected/suggerer_groupe_idee?groupid=${group.id}">suggérer</a> ce groupe à d'autres personnes !
+		</c:if>
 	</jsp:body>
 </t:normal_protected>

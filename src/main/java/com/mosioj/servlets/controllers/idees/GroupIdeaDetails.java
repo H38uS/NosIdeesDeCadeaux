@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.IdeaGroup;
+import com.mosioj.model.Share;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
@@ -47,9 +48,14 @@ public class GroupIdeaDetails extends AbstractIdea {
 
 		logger.debug("Getting details for idea group " + groupId + "...");
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
+		int currentTotal = 0;
+		for (Share share : group.getShares()) {
+			currentTotal += share.getAmount();
+		}
 
 		req.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(req), groupId));
 		req.setAttribute("group", group);
+		req.setAttribute("currentTotal", currentTotal);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 
 	}
@@ -92,7 +98,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 			}
 		}
 
-		ideesKDoGET(request, response);
+		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);
 	}
 
 }
