@@ -63,11 +63,13 @@
 								<img class="verticalcenter" src="${avatars}/${relation.second.avatarSrcSmall}">
 							</div>
 							<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a><br/>
-							<c:if test="${relation.second.id != userid && relation.secondIsInMyNetwork}">
-								<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
-								Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
-								<a href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
-							</c:if>
+							<div class="person_square_action">
+								<c:if test="${relation.second.id != userid && relation.secondIsInMyNetwork}">
+									<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
+									Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
+									<a href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
+								</c:if>
+							</div>
 						</li>
 					</c:forEach>
 				</ul>

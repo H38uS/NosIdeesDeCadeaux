@@ -67,8 +67,18 @@
 }
 
 .person_square {
-	margin: 0 20px;
+	margin: 0 10px;
 	text-align: center;
+}
+
+.person_square_action  {
+	margin: 5px;
+	padding: 8px;
+	background-color: #8a8a8a;
+	color: white;
+}
+.person_square_action a:link, .person_square_action a:visited, .person_square_action a:active {
+    color: #b0cff8;
 }
 
 /***********************************/
