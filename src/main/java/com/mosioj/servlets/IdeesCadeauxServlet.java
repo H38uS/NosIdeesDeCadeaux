@@ -40,6 +40,7 @@ import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Priorites;
+import com.mosioj.model.table.Questions;
 import com.mosioj.model.table.SousReservation;
 import com.mosioj.model.table.UserParameters;
 import com.mosioj.model.table.UserRelationRequests;
@@ -79,13 +80,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : 2 pouvoir demander des infos : commentaires anonyme ??
-	// FIXME : 3 CSS message box pour les commentaires
 	// FIXME : 3 image has comment / has private comment
 	// FIXME : 3 pouvoir agrandir les photos
 	// FIXME : 7 css idée ? - remonter le hover
 	
-	// FIXME : 8 vérifier les commentaires
 	// FIXME : 9 mettre en ligne
 	// FIXME : 91 pouvoir ajouter des surprises
 	
@@ -155,6 +153,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * The connections to the COMMENTS table.
 	 */
 	protected static Comments comments = new Comments();
+	
+	/**
+	 * The connections to the QUESTIONS table.
+	 */
+	protected static Questions questions = new Questions();
 
 	/**
 	 * The connections to the USER_PARAMETERS table.
@@ -201,9 +204,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	/**
 	 * 
-	 * @return The commnet being checked.
+	 * @return The comment being checked.
 	 */
-	protected Comment getCommnetFromSecurityChecks() {
+	protected Comment getCommentFromSecurityChecks() {
 		if (policy instanceof CommentSecurityChecker) {
 			return ((CommentSecurityChecker) policy).getComment();
 		}

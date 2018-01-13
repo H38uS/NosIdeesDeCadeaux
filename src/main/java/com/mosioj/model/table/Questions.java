@@ -18,9 +18,9 @@ import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 import com.mosioj.viewhelper.Escaper;
 
-public class Comments extends Table {
+public class Questions extends Table {
 
-	public static final String TABLE_NAME = "COMMENTS";
+	public static final String TABLE_NAME = "QUESTIONS";
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public class Comments extends Table {
 											Escaper.textToHtml(text),
 											userId);
 	}
-	
+
 	/**
 	 * 
 	 * @param ideaId

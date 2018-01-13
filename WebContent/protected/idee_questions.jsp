@@ -4,7 +4,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
 		<jsp:body>
-		<h2>Commenter une idée</h2>
+		<c:choose>
+			<c:when test="${isOwner}">
+				<h2>Répondez à des questions sur une de vos idées</h2>
+			</c:when>
+			<c:otherwise>
+				<h2>Posez une question sur une idée</h2>
+			</c:otherwise>
+		</c:choose>
 		<div>Rappel de l'idée : ${text}</div>
 
 		<c:if test="${not empty success}">
@@ -12,12 +19,26 @@
 		</c:if>
 	
 		<div>
-			<h3>Ajouter un nouveau commentaire</h3>
-			<form action="protected/idee_commentaires" method="post">
+			<c:choose>
+				<c:when test="${isOwner}">
+					<h3>Répondez aux questions / Laissez un message pour cette idée</h3>
+				</c:when>
+				<c:otherwise>
+					<h3>Posez une question à ${owner.name}</h3>
+				</c:otherwise>
+			</c:choose>
+			<form action="protected/idee_questions" method="post">
 				<table>
 					<tr>
 						<td>
-							<label>Votre message</label>
+							<c:choose>
+								<c:when test="${isOwner}">
+									<label>Votre réponse / commentaire</label>
+								</c:when>
+								<c:otherwise>
+									<label>Votre question</label>
+								</c:otherwise>
+							</c:choose>
 						</td>
 						<td>
 							<textarea id="text" name="text" cols="70" rows="6" required="required">${idea.text}</textarea>
@@ -34,7 +55,7 @@
 			</form>
 		</div>
 
-		<h3>Commentaires existants</h3>
+		<h3>Questions / réponses existantes</h3>
 		<div>
 			<c:choose>
 				<c:when test="${empty comments}">
@@ -45,10 +66,13 @@
 						<div class="comment">
 							<c:choose>
 								<c:when test="${userid == comment.writtenBy.id}">
-									<div class="comment_header_mine">Posté par vous le ${comment.time} - le <a href="protected/supprimer_commentaire?id=${comment.id}">supprimer</a></div>
+									<div class="comment_header_mine">Posté par vous le ${comment.time} - le <a href="protected/supprimer_question?id=${comment.id}">supprimer</a></div>
+								</c:when>
+								<c:when test="${comment.writtenBy.id == owner.id}">
+									<div class="comment_header_owner">Posté par ${owner.name} le ${comment.time}</div>
 								</c:when>
 								<c:otherwise>
-									<div class="comment_header_other">Posté par ${comment.writtenBy.name} le ${comment.time}</div>
+									<div class="comment_header_other">Posté par quelqu'un le ${comment.time}</div>
 								</c:otherwise>
 							</c:choose>
 							<div class="comment_text">${comment.text}</div>

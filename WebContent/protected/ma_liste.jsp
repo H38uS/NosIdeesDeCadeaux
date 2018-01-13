@@ -80,7 +80,8 @@
 							<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
 							ou 
 							<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-							cette idée.
+							cette idée.<br/>
+							<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
 						</span>
 					</div>
 					${idee.html}

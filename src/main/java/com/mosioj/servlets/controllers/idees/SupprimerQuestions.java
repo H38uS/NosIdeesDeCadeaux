@@ -11,29 +11,29 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Comment;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.MesListes;
-import com.mosioj.servlets.securitypolicy.CommentModification;
+import com.mosioj.servlets.securitypolicy.QuestionModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
-@WebServlet("/protected/supprimer_commentaire")
-public class SupprimerCommentaire extends IdeesCadeauxServlet {
+@WebServlet("/protected/supprimer_question")
+public class SupprimerQuestions extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = 7722016569684838786L;
 	private static final String COMMENT_ID_PARAMETER = "id";
 
-	public SupprimerCommentaire() {
-		super(new CommentModification(comments, COMMENT_ID_PARAMETER));
+	public SupprimerQuestions() {
+		super(new QuestionModification(questions, COMMENT_ID_PARAMETER));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER);
 		Comment comment = getCommentFromSecurityChecks();
-		comments.delete(id);
+		questions.delete(id);
 
 		RootingsUtils.rootToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																IdeaComments.URL,
-																IdeaComments.IDEA_ID_PARAM,
+																IdeaQuestion.URL,
+																IdeaQuestion.IDEA_ID_PARAM,
 																comment.getIdea()),
 										req,
 										resp);

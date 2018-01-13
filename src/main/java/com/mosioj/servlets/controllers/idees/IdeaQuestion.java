@@ -15,27 +15,29 @@ import com.mosioj.model.Share;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.securitypolicy.CanAskReplyToQuestions;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
-@WebServlet("/protected/idee_commentaires")
-public class IdeaComments extends IdeesCadeauxServlet {
+@WebServlet("/protected/idee_questions")
+public class IdeaQuestion extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = -433226623397937479L;
 	public static final String IDEA_ID_PARAM = "idee";
-	public static final String VIEW_PAGE_URL = "/protected/idee_commentaires.jsp";
-	public static final String URL = "/protected/idee_commentaires";
+	public static final String VIEW_PAGE_URL = "/protected/idee_questions.jsp";
+	public static final String URL = "/protected/idee_questions";
 
-	public IdeaComments() {
-		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
+	public IdeaQuestion() {
+		super(new CanAskReplyToQuestions(userRelations, idees, IDEA_ID_PARAM));
 	}
 
 	private void insertMandatoryParams(HttpServletRequest req, Integer id) throws SQLException {
 		Idee idea = idees.getIdea(id);
 		req.setAttribute("text", idea.getTextSummary(50));
 		req.setAttribute("idee", id);
-		req.setAttribute("comments", comments.getCommentsOn(id));
+		req.setAttribute("owner", idea.owner);
+		req.setAttribute("isOwner", idea.owner.id == ParametersUtils.getUserId(req));
+		req.setAttribute("comments", questions.getCommentsOn(id));
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class IdeaComments extends IdeesCadeauxServlet {
 		String text = ParametersUtils.readAndEscape(request, "text");
 
 		int userId = ParametersUtils.getUserId(request);
-		comments.saveComment(userId, id, text);
+		questions.saveComment(userId, id, text);
 		Idee idea = idees.getIdea(id);
 
 		Set<User> toBeNotified = new HashSet<User>();
@@ -74,6 +76,9 @@ public class IdeaComments extends IdeesCadeauxServlet {
 
 		// Notifying at least all people in the thread
 		toBeNotified.addAll(questions.getUserListOnComment(idea.getId()));
+		
+		// Faut que le owner soit au courant des questions :)
+		toBeNotified.add(idea.owner);
 		
 		// Removing current user, and notifying others
 		toBeNotified.remove(current);

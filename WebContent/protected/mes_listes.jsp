@@ -43,7 +43,8 @@
 									<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
 									ou 
 									<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-									cette idée.
+									cette idée.<br/>
+									<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
 								</span>
 							</div>
 							${idee.html}
@@ -110,7 +111,7 @@
 													</c:when>
 													<c:otherwise>
 														L'idée est réservée par un groupe (créé le ${idee.bookingDate}).
-														<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>
+														<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
 													</c:otherwise>
 												</c:choose>
 										</c:when>
@@ -126,7 +127,8 @@
 										</c:otherwise>
 									</c:choose><br/>
 									<a href="protected/est_a_jour?idee=${idee.id}">Demander</a> si c'est à jour.<br/>
-									<a href="protected/idee_commentaires?idee=${idee.id}">Ajouter un commentaire / voir les existant</a>.
+									<a href="protected/idee_questions?idee=${idee.id}">Poser une question à ${user.name} / voir les existantes</a>.<br/>
+									<a href="protected/idee_commentaires?idee=${idee.id}">Ajouter un commentaire / voir les existants</a>.
 								</span>
 							</div>
 							${idee.html}

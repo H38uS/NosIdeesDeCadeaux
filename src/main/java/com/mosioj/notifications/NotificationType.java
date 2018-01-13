@@ -10,6 +10,7 @@ import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
+import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.notifications.instance.NotifNoIdea;
 
@@ -27,7 +28,8 @@ public enum NotificationType {
 	IS_IDEA_UP_TO_DATE(NotifAskIfIsUpToDate.class, "On vous confirme que l'idée est à jour"), //
 	CONFIRMED_UP_TO_DATE(NotifConfirmedUpToDate.class, "On vous demande si l'idée est à jour"), //
 	NEW_RELATION_SUGGESTION(NotifNewRelationSuggestion.class, "On vous suggère une demande d'ami"), //
-	NEW_COMMENT_ON_IDEA(NotifNewCommentOnIdea.class, "Quelqu'un a posté un nouveau commentaire sur l'idée"), //
+	NEW_COMMENT_ON_IDEA(NotifNewCommentOnIdea.class, "Quelqu'un a posté un nouveau commentaire sur une idée"), //
+	NEW_QUESTION_ON_IDEA(NotifNewQuestionOnIdea.class, "Quelqu'un a posté une nouvelle question ou nouvelle réponse sur une idée"), //
 	IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON(NotifIdeaModifiedWhenBirthdayIsSoon.class, "Un ami qui va bientôt fêter son anniversaire a modifié une idée"), //
 	FRIENDSHIP_DROPPED(NotifFriendshipDropped.class, "Quelqu'un a supprimé votre relation"), //
 	ACCEPTED_FRIENDSHIP(NotifDemandeAcceptee.class, "Quelqu'un a accepté votre demande"), //

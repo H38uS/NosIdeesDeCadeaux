@@ -169,3 +169,35 @@
 .top_tooltip:hover .top_tooltiptext {
     visibility: visible;
 }
+
+/*************************/
+/* *** Commentaires *** */
+/*************************/
+
+.comment {
+	border: 2px solid #353b43;
+	margin: 0 15px 30px 15px;
+}
+.comment_header_mine {
+	padding: 3px;
+	background: #353b43;
+	color: white;
+}
+.comment_header_mine a:link, .comment_header_mine a:visited, .comment_header_mine a:active {
+    color: #b0cff8;
+}
+.comment_header_other {
+	padding: 3px;
+	background: #353b43;
+	color: white;
+}
+.comment_header_owner {
+	padding: 3px;
+	background: #353b43;
+	color: white;
+}
+.comment_text {
+	padding: 10px;	
+    background-color: #8a8a8a;
+	color: white;
+}
