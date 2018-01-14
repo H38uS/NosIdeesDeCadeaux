@@ -136,14 +136,26 @@
     padding-top: 10px;
 }
 
-.top_tooltip .top_tooltiptext {
+.top_tooltip .outer_top_tooltiptext {
     visibility: hidden;
+    padding: 12px 0;
+}
+
+.top_tooltip .outer_top_tooltiptext {
     width: 450px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -235px;
+}
+.top_tooltip .outer_top_tooltiptext .top_tooltiptext {
     background-color: #353b43;
-    color: #fff;
+    color: #fff;	
     text-align: left;
     border-radius: 6px;
     padding: 10px 10px;
+    width: 450px;
     position: absolute;
     z-index: 1;
     bottom: 100%;
@@ -166,7 +178,7 @@
     border-color: black transparent transparent transparent;
 }
 
-.top_tooltip:hover .top_tooltiptext {
+.top_tooltip:hover .outer_top_tooltiptext {
     visibility: visible;
 }
 

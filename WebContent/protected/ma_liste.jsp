@@ -79,12 +79,14 @@
 						<c:if test="${idee.hasQuestion()}">
 							<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
 						</c:if>
-						<span class="top_tooltiptext">
-							<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
-							ou 
-							<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-							cette idée.<br/>
-							<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
+						<span class="outer_top_tooltiptext">
+							<span class="top_tooltiptext">
+								<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
+								ou 
+								<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
+								cette idée.<br/>
+								<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
+							</span>
 						</span>
 					</div>
 					${idee.html}

@@ -80,14 +80,13 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : 3 image has comment / has private comment
-	// FIXME : 3 pouvoir agrandir les photos
 	// FIXME : 7 css idée ? - remonter le hover
 	
 	// FIXME : 9 mettre en ligne
 	// FIXME : 91 pouvoir ajouter des surprises
 	
 	// FIXME : 99 pouvoir archiver les notifications sans les supprimer
+	// FIXME : 999 pouvoir agrandir les photos
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
