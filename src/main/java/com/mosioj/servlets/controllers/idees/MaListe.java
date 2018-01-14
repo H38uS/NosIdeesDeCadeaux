@@ -45,6 +45,9 @@ public class MaListe extends AbstractIdea {
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		List<Idee> ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(req));
+		for (Idee idee : ideas) {
+			idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
+		}
 		List<Categorie> cat = categories.getCategories();
 		List<Priorite> prio = priorities.getPriorities();
 

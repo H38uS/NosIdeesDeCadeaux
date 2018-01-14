@@ -22,6 +22,8 @@ public class Idee {
 	private final Timestamp lastModified;
 	private final boolean isPartiallyBooked;
 	public String displayClass = "";
+	public boolean hasComment = false;
+	public boolean hasQuestion = false;
 
 	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage,
 			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked) {
@@ -37,6 +39,22 @@ public class Idee {
 		this.bookedOn = bookedOn;
 		this.lastModified = lastModified;
 		this.isPartiallyBooked = "Y".equals(isPartiallyBooked);
+	}
+
+	/**
+	 * 
+	 * @return True if and only if there are some comments on this idea
+	 */
+	public boolean hasComment() {
+		return hasComment;
+	}
+
+	/**
+	 * 
+	 * @return True if and only if there are some questions on this idea
+	 */
+	public boolean hasQuestion() {
+		return hasQuestion;
 	}
 
 	/**

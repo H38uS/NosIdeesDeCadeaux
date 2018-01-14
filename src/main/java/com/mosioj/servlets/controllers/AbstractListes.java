@@ -55,6 +55,10 @@ public abstract class AbstractListes extends IdeesCadeauxServlet {
 		for (User user : ids) {
 			List<Idee> ownerIdeas = idees.getOwnerIdeas(user.id);
 			for (Idee idee : ownerIdeas) {
+				
+				idee.hasComment = comments.getNbComments(idee.getId()) > 0;
+				idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
+				
 				if (idee.isBooked()) {
 					if (idee.getBookingOwner() != null) {
 						if (idee.getBookingOwner().id == userId) {

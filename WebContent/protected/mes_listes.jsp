@@ -39,6 +39,9 @@
 								<c:if test="${not empty idee.category}">
 									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 								</c:if>
+								<c:if test="${idee.hasQuestion()}">
+									<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+								</c:if>
 								<span class="top_tooltiptext">
 									<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
 									ou 
@@ -95,6 +98,12 @@
 										<img src="public/image/non-reserve.png" alt="Idée non réservée" />
 									</c:otherwise>
 								</c:choose>
+								<c:if test="${idee.hasComment()}">
+									<img src="public/image/commentaires.png" title="Il existe des commentaires sur cette idée" />
+								</c:if>
+								<c:if test="${idee.hasQuestion()}">
+									<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+								</c:if>
 								<span class="top_tooltiptext">
 									<c:choose>
 										<c:when test="${idee.isBooked()}">

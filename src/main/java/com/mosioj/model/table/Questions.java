@@ -52,7 +52,10 @@ public class Questions extends Table {
 		List<User> users = new ArrayList<User>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format("select distinct u.{0},u.{1},u.{2} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format(	"select distinct u.{0},u.{1},u.{2} ",
+											UsersColumns.ID,
+											UsersColumns.NAME,
+											UsersColumns.EMAIL));
 		query.append(MessageFormat.format("  from {0} q ", TABLE_NAME));
 		query.append(MessageFormat.format("  join {0} u ", Users.TABLE_NAME));
 		query.append(MessageFormat.format("    on q.{0} = u.{1} ", WRITTEN_BY, UsersColumns.ID));
@@ -74,6 +77,10 @@ public class Questions extends Table {
 		}
 
 		return users;
+	}
+
+	public int getNbQuestions(int ideaId) throws SQLException {
+		return getDb().selectInt("select count(*) from " + TABLE_NAME + " where " + IDEA_ID + " = ?", ideaId);
 	}
 
 	/**
