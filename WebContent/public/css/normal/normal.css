@@ -86,14 +86,9 @@
 /***********************************/
 
 #ideas_square_container {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, 330px);
-	grid-gap: 00px;
-	justify-content: center;
-	align-content: flex-start;
-	list-style: none;
+	display: block;
 	padding: 0;
-	margin: 0 -60px;
+	margin: 0 0;
 }
 
 #ideas_square_container > * {
@@ -101,14 +96,27 @@
 }
 
 .idea_square {
-	margin: 10px 0 20px 20px;
-	padding: 5px 5px;
+	margin: 10px 20px 20px 0px;
+	padding: 20px;
 	text-align: center;
-	background-color: #fef4ff;
-    border: transparent solid 1px;
-    -webkit-box-shadow: 0 1px 5px transparent;
-    box-shadow: 0 1px 5px transparent;
+	background-color: #eafaff;
+	border: transparent solid 1px;
+	-webkit-box-shadow: 0 1px 5px transparent;
+	box-shadow: 0 1px 5px transparent;
+	min-height: 200px;
+	min-width: 200px;
+	
+	-moz-box-shadow: 0px 0px 5px 0px #353b43;
+	-webkit-box-shadow: 0px 0px 5px 0px #353b43;
+	-o-box-shadow: 0px 0px 5px 0px #353b43;
+	box-shadow: 0px 0px 5px 0px #353b43;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=#353b43,
+		Direction=NaN, Strength=5);
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
+
 .idea_square:hover {
 	background-color: #c1b0f8;
     border: #353b43 solid 1px;
