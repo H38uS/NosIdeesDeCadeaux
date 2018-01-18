@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.MesListes;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -23,7 +23,7 @@ public class DereserverIdee extends IdeesCadeauxServlet {
 	 * Class constructor
 	 */
 	public DereserverIdee() {
-		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
 	}
 
 	@Override

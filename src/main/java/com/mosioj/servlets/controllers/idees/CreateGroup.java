@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.MesListes;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
@@ -32,7 +32,7 @@ public class CreateGroup extends AbstractIdea {
 	 * Class contructor
 	 */
 	public CreateGroup() {
-		super(new IdeaInteraction(userRelations, idees, IDEE_FIELD_PARAMETER));
+		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEE_FIELD_PARAMETER));
 	}
 
 	@Override

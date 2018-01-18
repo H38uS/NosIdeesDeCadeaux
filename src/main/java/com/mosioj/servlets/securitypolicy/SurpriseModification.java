@@ -17,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPolicy, IdeaSecurityChecker {
+public class SurpriseModification extends AllAccessToPostAndGet implements SecurityPolicy, IdeaSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
@@ -35,7 +35,7 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 	 * @param idees
 	 * @param ideaParameter Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
-	public IdeaInteraction(UserRelations userRelations, Idees idees, String ideaParameter) {
+	public SurpriseModification(UserRelations userRelations, Idees idees, String ideaParameter) {
 		this.userRelations = userRelations;
 		this.idees = idees;
 		this.ideaParameter = ideaParameter;
@@ -61,6 +61,11 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 		idea = idees.getIdea(ideaId);
 		if (idea == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
+			return false;
+		}
+		
+		if (idea.getSurpriseBy() == null || idea.getSurpriseBy().id != userId) {
+			lastReason = "Vous n'avez pas créer cette surprise.";
 			return false;
 		}
 

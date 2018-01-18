@@ -40,10 +40,25 @@
 					</tr>
 					<tr>
 						<td>
-							<label for="addImage" >Ajouter une image</label>
+							<label for="est_surprise">C'est une surprise</label>
 						</td>
 						<td>
-							<input id="addImage" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+							<input type="checkbox" name="est_surprise" id="est_surprise" />
+							<span id="span_est_surprise" class="checkbox"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>Fichier Choisi</td>
+						<td>
+							<span id="newImage" class="input" ></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+						</td>
+						<td>
+							<label for="imageFile" class="custom-file-upload" >Ajouter une image</label>
 						</td>
 					</tr>
 					<tr>

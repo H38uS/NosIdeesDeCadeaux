@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -27,7 +27,7 @@ public class AnnulerSousReservation extends AbstractIdea {
 	 * Class constructor.
 	 */
 	public AnnulerSousReservation() {
-		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Idee;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.controllers.MesListes;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -23,7 +23,7 @@ public class EstAJour extends AbstractIdea {
 	private static final String ERROR_PAGE_URL = "est_a_jour_error.jsp";
 
 	public EstAJour() {
-		super(new IdeaInteraction(userRelations, idees, IDEE_FIELD_PARAMETER));
+		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEE_FIELD_PARAMETER));
 	}
 
 	@Override

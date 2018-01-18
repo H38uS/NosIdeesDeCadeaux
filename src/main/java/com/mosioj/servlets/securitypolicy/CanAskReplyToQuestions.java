@@ -64,6 +64,11 @@ public class CanAskReplyToQuestions extends AllAccessToPostAndGet implements Sec
 			return false;
 		}
 
+		if (idea.getSurpriseBy() != null) {
+			lastReason = "Vous ne pouvez pas poser de question car il s'agit d'une surprise... ;)";
+			return false;
+		}
+
 		boolean res = userRelations.associationExists(userId, idea.owner.id);
 		if (!res) {
 			lastReason = "Vous n'avez pas accès aux idées de cette personne.";

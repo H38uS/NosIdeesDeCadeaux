@@ -24,9 +24,10 @@ public class Idee {
 	public String displayClass = "";
 	public boolean hasComment = false;
 	public boolean hasQuestion = false;
+	private User surpriseBy;
 
 	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage,
-			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked) {
+			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked, User surpriseBy) {
 		id = pId;
 		text = pText;
 		type = pType;
@@ -39,6 +40,15 @@ public class Idee {
 		this.bookedOn = bookedOn;
 		this.lastModified = lastModified;
 		this.isPartiallyBooked = "Y".equals(isPartiallyBooked);
+		this.surpriseBy = surpriseBy;
+	}
+
+	/**
+	 * 
+	 * @return The owner of the surprise if it exists
+	 */
+	public User getSurpriseBy() {
+		return surpriseBy;
 	}
 
 	/**

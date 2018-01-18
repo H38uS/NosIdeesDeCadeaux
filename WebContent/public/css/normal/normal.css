@@ -116,6 +116,9 @@
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
 }
+.idea_square .left {
+	padding-bottom: 10px;
+}
 
 .idea_square:hover {
 	background-color: #c1b0f8;
@@ -150,12 +153,12 @@
 }
 
 .top_tooltip .outer_top_tooltiptext {
-    width: 450px;
+    width: 360px;
     position: absolute;
     z-index: 1;
     bottom: 100%;
     left: 50%;
-    margin-left: -235px;
+    margin-left: -190px;
 }
 .top_tooltip .outer_top_tooltiptext .top_tooltiptext {
     background-color: #353b43;
@@ -163,12 +166,11 @@
     text-align: left;
     border-radius: 6px;
     padding: 10px 10px;
-    width: 450px;
+    width: 360px;
     position: absolute;
     z-index: 1;
     bottom: 100%;
-    left: 50%;
-    margin-left: -235px;
+    left: 0%;
 }
 
 .top_tooltip .top_tooltiptext a {

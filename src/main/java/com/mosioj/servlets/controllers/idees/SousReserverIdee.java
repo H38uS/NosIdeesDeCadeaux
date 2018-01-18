@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -24,7 +24,7 @@ public class SousReserverIdee extends AbstractIdea {
 	 * Class constructor
 	 */
 	public SousReserverIdee() {
-		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
 	}
 
 	@Override

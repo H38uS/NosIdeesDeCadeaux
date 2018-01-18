@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.SousReservationEntity;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -31,7 +31,7 @@ public class DetailSousReservation extends AbstractIdea {
 	 * Class constructor.
 	 */
 	public DetailSousReservation() {
-		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
 	}
 
 	// TODO : Pouvoir suggérer de sous réserver cette idée

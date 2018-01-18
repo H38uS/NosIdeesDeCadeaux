@@ -34,31 +34,35 @@
 				<c:if test="${fn:length(user.ideas) > 0}">
 					<ul id="ideas_square_container">
 						<c:forEach var="idee" items="${user.ideas}">
-						<li class="idea_square top_tooltip">
-							<div class="left">
-								<c:if test="${not empty idee.category}">
-									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
-								</c:if>
-								<c:if test="${idee.hasQuestion()}">
-									<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
-								</c:if>
-								<span class="outer_top_tooltiptext">
-									<span class="top_tooltiptext">
-										<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
-										ou 
-										<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-										cette idée.<br/>
-										<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
-									</span>
-								</span>
-							</div>
-							${idee.html}
-							<c:if test="${not empty idee.image}">
-								<div>
-									<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
-								</div>
+							<c:if test="${empty idee.surpriseBy}">
+								<li class="idea_square top_tooltip">
+									<div class="left">
+										<c:if test="${not empty idee.category}">
+											<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
+										</c:if>
+										<c:if test="${idee.hasQuestion()}">
+											<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+										</c:if>
+										<span class="outer_top_tooltiptext">
+											<span class="top_tooltiptext">
+												<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
+												ou 
+												<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
+												cette idée.<br/>
+												<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
+											</span>
+										</span>
+									</div>
+									<div class="left">
+										${idee.html}
+									</div>
+									<c:if test="${not empty idee.image}">
+										<div>
+											<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+										</div>
+									</c:if>
+								</li>
 							</c:if>
-						</li>
 						</c:forEach>
 					</ul>
 				</c:if>
@@ -79,6 +83,9 @@
 									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 								</c:if>
 								<c:choose>
+									<c:when test="${not empty idee.surpriseBy}">
+										<img src="public/image/surprise.png" title="Idée surprise" />
+									</c:when>
 									<c:when test="${idee.isBooked()}">
 										<c:choose>
 											<c:when test="${not empty idee.bookingOwner}">
@@ -109,23 +116,33 @@
 								<span class="outer_top_tooltiptext">
 									<span class="top_tooltiptext">
 										<c:choose>
+											<c:when test="${not empty idee.surpriseBy}">
+												<c:choose>
+													<c:when test="${idee.surpriseBy.id == userid}">
+														Idée surprise créée par vous - l'<a href="protected/supprimer_surprise?&idee=${idee.id}">annuler</a>.
+													</c:when>
+													<c:otherwise>
+														Idée surprise créée par ${idee.surpriseBy.name}.
+													</c:otherwise>
+												</c:choose>
+											</c:when>
 											<c:when test="${idee.isBooked()}">
-													<c:choose>
-														<c:when test="${not empty idee.bookingOwner}">
-															<c:choose>
-																<c:when test="${userid == idee.bookingOwner.id}">
-																	Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?&idee=${idee.id}">Annuler</a> !
-																</c:when>
-																<c:otherwise>
-																	Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}
-																</c:otherwise>
-															</c:choose>
-														</c:when>
-														<c:otherwise>
-															L'idée est réservée par un groupe (créé le ${idee.bookingDate}).
-															<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
-														</c:otherwise>
-													</c:choose>
+												<c:choose>
+													<c:when test="${not empty idee.bookingOwner}">
+														<c:choose>
+															<c:when test="${userid == idee.bookingOwner.id}">
+																Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?&idee=${idee.id}">Annuler</a> !
+															</c:when>
+															<c:otherwise>
+																Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}
+															</c:otherwise>
+														</c:choose>
+													</c:when>
+													<c:otherwise>
+														L'idée est réservée par un groupe (créé le ${idee.bookingDate}).
+														<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
+													</c:otherwise>
+												</c:choose>
 											</c:when>
 											<c:when test="${idee.isPartiallyBooked()}">
 												Une sous partie de l'idée est actuellement réservée.
@@ -138,13 +155,17 @@
 													ou <a href="protected/create_a_group?idee=${idee.id}">créer un groupe</a>
 											</c:otherwise>
 										</c:choose><br/>
-										<a href="protected/est_a_jour?idee=${idee.id}">Demander</a> si c'est à jour.<br/>
-										<a href="protected/idee_questions?idee=${idee.id}">Poser une question à ${user.name} / voir les existantes</a>.<br/>
+										<c:if test="${empty idee.surpriseBy}">
+											<a href="protected/est_a_jour?idee=${idee.id}">Demander</a> si c'est à jour.<br/>
+											<a href="protected/idee_questions?idee=${idee.id}">Poser une question à ${user.name} / voir les existantes</a>.<br/>
+										</c:if>
 										<a href="protected/idee_commentaires?idee=${idee.id}">Ajouter un commentaire / voir les existants</a>.
 									</span>
 								</span>
 							</div>
-							${idee.html}
+							<div class="left">
+								${idee.html}
+							</div>
 							<c:if test="${not empty idee.image}">
 								<div>
 									<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />

@@ -3,7 +3,7 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <t:template_head_includes>
 	<link rel="stylesheet" type="text/css" href="public/css/common.css" />
 	<link rel="stylesheet" type="text/css" href="public/css/normal/normal.css" />
@@ -71,7 +71,7 @@
 									</c:when>
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">
-											<input hidden="true" type="hidden" name="user_id" value="${user.id}" >
+											<input type="hidden" name="user_id" value="${user.id}" >
 											<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
 											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										</form>

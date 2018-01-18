@@ -71,31 +71,35 @@
 		<c:if test="${fn:length(idees) > 0}">
 			<ul id="ideas_square_container">
 				<c:forEach var="idee" items="${idees}">
-				<li class="idea_square top_tooltip">
-					<div>
-						<c:if test="${not empty idee.category}">
-							<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
-						</c:if>
-						<c:if test="${idee.hasQuestion()}">
-							<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
-						</c:if>
-						<span class="outer_top_tooltiptext">
-							<span class="top_tooltiptext">
-								<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
-								ou 
-								<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-								cette idée.<br/>
-								<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
-							</span>
-						</span>
-					</div>
-					${idee.html}
-					<c:if test="${not empty idee.image}">
-						<div>
-							<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
-						</div>
+					<c:if test="${empty idee.surpriseBy}">
+						<li class="idea_square top_tooltip">
+							<div class="left">
+								<c:if test="${not empty idee.category}">
+									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
+								</c:if>
+								<c:if test="${idee.hasQuestion()}">
+									<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+								</c:if>
+								<span class="outer_top_tooltiptext">
+									<span class="top_tooltiptext">
+										<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
+										ou 
+										<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
+										cette idée.<br/>
+										<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
+									</span>
+								</span>
+							</div>
+							<div class="left">
+								${idee.html}
+							</div>
+							<c:if test="${not empty idee.image}">
+								<div>
+									<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+								</div>
+							</c:if>
+						</li>
 					</c:if>
-				</li>
 				</c:forEach>
 			</ul>
 		</c:if>

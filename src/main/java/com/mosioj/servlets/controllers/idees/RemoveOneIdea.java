@@ -82,7 +82,7 @@ public class RemoveOneIdea extends AbstractIdea {
 		}
 
 		int userId = ParametersUtils.getUserId(request);
-		idees.remove(userId, id);
+		idees.remove(id);
 
 		if (!idees.hasIdeas(userId)) {
 			notif.addNotification(userId, new NotifNoIdea());

@@ -7,6 +7,7 @@ import static com.mosioj.model.table.columns.IdeeColumns.IDEE;
 import static com.mosioj.model.table.columns.IdeeColumns.IMAGE;
 import static com.mosioj.model.table.columns.IdeeColumns.MODIFICATION_DATE;
 import static com.mosioj.model.table.columns.IdeeColumns.OWNER;
+import static com.mosioj.model.table.columns.IdeeColumns.SURPRISE_PAR;
 import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE_LE;
@@ -58,6 +59,11 @@ public class Idees extends Table {
 		}
 		User owner = new User(rs.getInt("ownerId"), rs.getString("ownerName"), rs.getString("ownerEmail"));
 
+		User surpriseBy = null;
+		if (rs.getString("surpriseName") != null) {
+			surpriseBy = new User(rs.getInt("surpriseId"), rs.getString("surpriseName"), rs.getString("surpriseEmail"));
+		}
+
 		Idee idea = new Idee(	rs.getInt(ID.name()),
 								owner,
 								rs.getString(IDEE.name()),
@@ -71,7 +77,8 @@ public class Idees extends Table {
 								rs.getInt(PRIORITE.name()),
 								rs.getTimestamp(RESERVE_LE.name()),
 								rs.getTimestamp(MODIFICATION_DATE.name()),
-								rs.getString(A_SOUS_RESERVATION.name()));
+								rs.getString(A_SOUS_RESERVATION.name()),
+								surpriseBy);
 		return idea;
 	}
 
@@ -103,15 +110,17 @@ public class Idees extends Table {
 		columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.EMAIL));
 		columns.append(MessageFormat.format("       u1.{0} as ownerId, ", UsersColumns.ID));
 		columns.append(MessageFormat.format("       u1.{0} as ownerName, ", UsersColumns.NAME));
-		columns.append(MessageFormat.format("       u1.{0} as ownerEmail ", UsersColumns.EMAIL));
+		columns.append(MessageFormat.format("       u1.{0} as ownerEmail, ", UsersColumns.EMAIL));
+		columns.append(MessageFormat.format("       u2.{0} as surpriseId, ", UsersColumns.ID));
+		columns.append(MessageFormat.format("       u2.{0} as surpriseName, ", UsersColumns.NAME));
+		columns.append(MessageFormat.format("       u2.{0} as surpriseEmail ", UsersColumns.EMAIL));
 
 		StringBuilder query = new StringBuilder(columns);
-		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
-		query.append(MessageFormat.format("left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
-		query.append(MessageFormat.format("left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
-		query.append(MessageFormat.format("left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
-
-		logger.trace(query);
+		query.append(MessageFormat.format("  from {0} i ", TABLE_NAME));
+		query.append(MessageFormat.format("  left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
+		query.append(MessageFormat.format("  left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
+		query.append(MessageFormat.format("  left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
+		query.append(MessageFormat.format("  left join {0} u2 on u2.id = i.{1} ", Users.TABLE_NAME, SURPRISE_PAR));
 
 		return query;
 	}
@@ -129,6 +138,7 @@ public class Idees extends Table {
 
 		StringBuilder query = getIdeaBasedSelect();
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
+		query.append(MessageFormat.format(" order by {0},{1}", PRIORITE, ID));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 
@@ -307,9 +317,10 @@ public class Idees extends Table {
 	 * @param text
 	 * @param type
 	 * @param priorite
+	 * @param est_surprise
 	 * @throws SQLException
 	 */
-	public int addIdea(int ownerId, String text, String type, int priorite, String image) throws SQLException {
+	public int addIdea(int ownerId, String text, String type, int priorite, String image, User surprisePar) throws SQLException {
 
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
@@ -320,15 +331,22 @@ public class Idees extends Table {
 		insert.append(TYPE).append(",");
 		insert.append(IMAGE).append(",");
 		insert.append(MODIFICATION_DATE).append(",");
+		insert.append(SURPRISE_PAR).append(",");
 		insert.append(PRIORITE);
-		insert.append(") values (?, ?, ?, ?, now(), ?)");
+		insert.append(") values (?, ?, ?, ?, now(), ?, ?)");
 
 		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
 		PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), insert.toString());
 		try {
 			text = Escaper.textToHtml(text);
-			logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}]", ownerId, text, type, image, priorite));
-			ps.bindParameters(ownerId, text, type, image, priorite);
+			logger.info(MessageFormat.format(	"Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
+												ownerId,
+												text,
+												type,
+												image,
+												surprisePar,
+												priorite));
+			ps.bindParameters(ownerId, text, type, image, surprisePar == null ? null : surprisePar.id, priorite);
 
 			return ps.executeUpdate();
 
@@ -523,14 +541,13 @@ public class Idees extends Table {
 	}
 
 	/**
-	 * Drops this id (only if the user is the owner).
+	 * Drops this idea.
 	 * 
-	 * @param userId
-	 * @param id
+	 * @param idea
 	 * @throws SQLException
 	 */
-	public void remove(int userId, Integer id) throws SQLException {
-		int groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?", id);
+	public void remove(Integer idea) throws SQLException {
+		int groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?", idea);
 		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
 														GroupIdea.TABLE_NAME_CONTENT,
 														GroupIdeaContentColumns.GROUP_ID),
@@ -538,8 +555,9 @@ public class Idees extends Table {
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
 								groupId);
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", Comments.TABLE_NAME, CommentsColumns.IDEA_ID),
-								id);
-		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ? ", TABLE_NAME, OWNER, ID), userId, id);
+								idea);
+		logger.debug(MessageFormat.format("Suppression de l''idée: {0}", idea));
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, ID), idea);
 	}
 
 	/**

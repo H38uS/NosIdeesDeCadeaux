@@ -61,16 +61,27 @@ public class AjouterIdeeAmi extends AbstractIdea {
 													parameters.get("text"),
 													parameters.get("type"),
 													parameters.get("priority")));
+				User currentUser = users.getUser(ParametersUtils.getUserId(request));
+				boolean estSurprise = false;
+				if ("on".equals(parameters.get("est_surprise"))) {
+					if (id != currentUser.id) {
+						estSurprise = true;
+					}
+				}
 				int ideaId = idees.addIdea(	id,
 											parameters.get("text"),
 											parameters.get("type"),
 											Integer.parseInt(parameters.get("priority")),
-											parameters.get("image"));
+											parameters.get("image"),
+											estSurprise ? currentUser : null);
 				Idee idea = idees.getIdea(ideaId);
 				request.setAttribute("text", idea.getTextSummary(50));
 				request.setAttribute("idea", idea);
-				notif.addNotification(id, new NotifIdeaAddedByFriend(users.getUser(ParametersUtils.getUserId(request)), idea));
-				notif.removeAllType(id, new NotifNoIdea());
+				
+				if (!estSurprise) {
+					notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));
+					notif.removeAllType(id, new NotifNoIdea());
+				}
 			}
 
 		}
