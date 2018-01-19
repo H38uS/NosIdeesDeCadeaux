@@ -5,6 +5,8 @@
 <t:template_head_includes>
 	<link rel="stylesheet" type="text/css" href="public/css/common.css" />
 	<link rel="stylesheet" type="text/css" href="public/css/normal/normal.css" />
+	<link rel="stylesheet" type="text/css" href="public/css/lib/thickbox.css" />
+	<script src="public/js/lib/thickbox.js" type="text/javascript"></script>
 </t:template_head_includes>
 <t:template_body_protected>
 		<jsp:doBody />

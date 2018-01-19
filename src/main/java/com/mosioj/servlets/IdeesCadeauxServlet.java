@@ -82,7 +82,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// FIXME : 5 CSS suggérer relations
 	// FIXME : 6 CSS check box
-	// FIXME : 8 pouvoir agrandir les photos
 	// FIXME : 9 mettre en ligne
 	
 	// FIXME : 99 pouvoir archiver les notifications sans les supprimer

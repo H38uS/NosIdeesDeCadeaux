@@ -95,7 +95,9 @@
 							</div>
 							<c:if test="${not empty idee.image}">
 								<div>
-									<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+									<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img" >
+										<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+									</a>
 								</div>
 							</c:if>
 						</li>
