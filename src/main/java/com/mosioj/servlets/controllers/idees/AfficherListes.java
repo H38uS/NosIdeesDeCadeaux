@@ -49,7 +49,7 @@ public class AfficherListes extends AbstractListes {
 	@Override
 	protected int getTotalNumberOfUsers(int userId, HttpServletRequest req) throws SQLException {
 		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
-		int size = userRelations.getAllUsersInRelation(userId, nameOrEmail).size();
+		int size = userRelations.getAllUsersInRelationCount(userId, nameOrEmail);
 		User connected = users.getUser(userId);
 		if (connected.matchNameOrEmail(nameOrEmail)) {
 			return size + 1;

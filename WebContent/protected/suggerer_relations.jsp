@@ -38,19 +38,13 @@
 					<table>
 						<thead>
 							<tr>
-								<th></th>
 								<th>Nom de la personne</th>
 								<th>Email</th>
+								<th></th>
 							</tr>
 						</thead>
 					<c:forEach var="suggested_user" items="${users}">
 						<tr>
-							<td>
-								<c:if test="${empty suggested_user.freeComment}">
-									<input type="checkbox" name="selected_${suggested_user.id}" id="selected_${suggested_user.id}" />
-									<span class="checkbox"></span>
-								</c:if>
-							</td>
 							<td>
 								<label for="selected_${suggested_user.id}" >${suggested_user.name}</label>
 							</td>
@@ -58,14 +52,22 @@
 								<label for="selected_${suggested_user.id}" >${suggested_user.email}</label>
 							</td>
 							<td>
+								<c:if test="${empty suggested_user.freeComment}">
+									<input type="checkbox" name="selected_${suggested_user.id}" id="selected_${suggested_user.id}" />
+									<span class="checkbox"></span>
+								</c:if>
 								${suggested_user.freeComment}
 							</td>
 						</tr>
 					</c:forEach>
+						<tr>
+							<td colspan="2" >
+								<input type="submit" name="submit" id="submit" value="Envoyer les suggestions" />
+							</td>
+						</tr>
 					</table>
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 					<input type="hidden" name="userId" value="${user.id}" />
-					<input type="submit" name="submit" id="submit" value="Envoyer les suggestions" />
 				</form>
 			</c:if>
 			<c:if test="${empty users and not empty name}">

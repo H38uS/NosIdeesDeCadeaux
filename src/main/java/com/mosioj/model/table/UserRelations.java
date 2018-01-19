@@ -242,6 +242,78 @@ public class UserRelations extends Table {
 		return namesOrEmails;
 	}
 
+	/**
+	 * 
+	 * @param suggestedBy
+	 * @param suggestedTo
+	 * @param userNameOrEmail
+	 * @param firstRow
+	 * @param limit
+	 * @return All users matching the name/email that are in suggestedBy network, but not in suggestedTo network.
+	 * @throws SQLException
+	 */
+	public List<User> getAllUsersInRelationNotInOtherNetwork(int suggestedBy, int suggestedTo, String userNameOrEmail, int firstRow,
+			int limit) throws SQLException {
+
+		List<User> users = new ArrayList<User>();
+		PreparedStatementIdKdo ps = null;
+		logger.debug(suggestedBy + " / " + suggestedTo + " / " + userNameOrEmail);
+
+		StringBuilder query = new StringBuilder();
+		query.append("select u.{0}, u.{1}, u.{2} ");
+		query.append("  from {3} u, {4} r ");
+		query.append(" where u.{0} = r.{6} and r.{5} = ? ");
+		query.append("   and (lower(u.{1}) like ? ESCAPE ''!'' or lower(u.{2}) like ? ESCAPE ''!'') ");
+		query.append("   and not exists ");
+		query.append("       ( ");
+		query.append("          select 1 ");
+		query.append("            from {4} r2 ");
+		query.append("            join {3} u2 ");
+		query.append("              on u2.{0} = r2.{6} and r2.{5} = ? ");
+		query.append("           where (lower(u2.{1}) like ? ESCAPE ''!'' or lower(u2.{2}) like ? ESCAPE ''!'') ");
+		query.append("             and r.{6} = r2.{6} ");
+		query.append("       ) ");
+		query.append(" order by {1}, {2}, {0} ");
+		query.append(" LIMIT ?, ? ");
+
+		try {
+			String formatedQuery = MessageFormat.format(	query.toString(),
+									UsersColumns.ID.name(),
+									UsersColumns.NAME.name(),
+									UsersColumns.EMAIL.name(),
+									Users.TABLE_NAME,
+									TABLE_NAME,
+									FIRST_USER,
+									SECOND_USER);
+			
+			ps = new PreparedStatementIdKdo(getDb(),
+											formatedQuery);
+			userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
+			ps.bindParameters(	suggestedBy,
+								"%" + userNameOrEmail + "%",
+								"%" + userNameOrEmail + "%",
+								suggestedTo,
+								"%" + userNameOrEmail + "%",
+								"%" + userNameOrEmail + "%",
+								firstRow,
+								limit);
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					users.add(new User(	res.getInt(UsersColumns.ID.name()),
+										res.getString(UsersColumns.NAME.name()),
+										res.getString(UsersColumns.EMAIL.name())));
+				}
+			}
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+		}
+
+		return users;
+	}
+
 	public List<User> getAllUsersInRelation(int userId, String userNameOrEmail, int firstRow, int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
@@ -284,13 +356,17 @@ public class UserRelations extends Table {
 		return users;
 	}
 
-	public List<User> getAllUsersInRelation(int userId, String userNameOrEmail) throws SQLException {
-
-		List<User> users = new ArrayList<User>();
-		PreparedStatementIdKdo ps = null;
+	/**
+	 * 
+	 * @param userId
+	 * @param userNameOrEmail
+	 * @return The number of users belonging to userId network and matching name/email
+	 * @throws SQLException
+	 */
+	public int getAllUsersInRelationCount(int userId, String userNameOrEmail) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append("select u.{0}, u.{1}, u.{2} ");
+		query.append("select count(*) ");
 		query.append("from {3} u, {4} r ");
 		query.append("where u.{0} = r.{6} and r.{5} = ? ");
 
@@ -300,39 +376,22 @@ public class UserRelations extends Table {
 
 		query.append("order by {1}, {2}, {0}");
 
-		try {
-			String formatQuery = MessageFormat.format(	query.toString(),
-									UsersColumns.ID.name(),
-									UsersColumns.NAME.name(),
-									UsersColumns.EMAIL.name(),
-									Users.TABLE_NAME,
-									TABLE_NAME,
-									FIRST_USER,
-									SECOND_USER);
-			logger.trace(formatQuery);
-			ps = new PreparedStatementIdKdo(getDb(),
-											formatQuery);
-			if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
-				userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
-				ps.bindParameters(userId, "%" + userNameOrEmail + "%", "%" + userNameOrEmail + "%");
-			} else {
-				ps.bindParameters(userId);
-			}
-			if (ps.execute()) {
-				ResultSet res = ps.getResultSet();
-				while (res.next()) {
-					users.add(new User(	res.getInt(UsersColumns.ID.name()),
-										res.getString(UsersColumns.NAME.name()),
-										res.getString(UsersColumns.EMAIL.name())));
-				}
-			}
-		} finally {
-			if (ps != null) {
-				ps.close();
-			}
-		}
+		String formatQuery = MessageFormat.format(	query.toString(),
+													UsersColumns.ID.name(),
+													UsersColumns.NAME.name(),
+													UsersColumns.EMAIL.name(),
+													Users.TABLE_NAME,
+													TABLE_NAME,
+													FIRST_USER,
+													SECOND_USER);
+		logger.trace(formatQuery);
 
-		return users;
+		if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
+			userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
+			return getDb().selectInt(formatQuery, userId, "%" + userNameOrEmail + "%", "%" + userNameOrEmail + "%");
+		} else {
+			return getDb().selectInt(formatQuery, userId);
+		}
 	}
 
 	public List<User> getAllUsersInRelation(int userId) throws SQLException {

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.MesListes;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -44,9 +45,11 @@ public class SuggererRelations extends IdeesCadeauxServlet {
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 
 		int suggestedBy = ParametersUtils.getUserId(request);
-		List<User> toBeSuggested = userRelations.getAllUsersInRelation(suggestedBy, userNameOrEmail);
-		// Suppression de ceux qui y sont déjà
-		toBeSuggested.removeAll(userRelations.getAllUsersInRelation(suggestTo, userNameOrEmail));
+		List<User> toBeSuggested = userRelations.getAllUsersInRelationNotInOtherNetwork(suggestedBy,
+																						suggestTo,
+																						userNameOrEmail,
+																						0,
+																						MesListes.MAX_NUMBER_OF_RESULT);
 		toBeSuggested.remove(suggestToUser);
 
 		for (User u : toBeSuggested) {

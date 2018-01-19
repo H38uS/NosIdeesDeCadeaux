@@ -80,7 +80,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : 5 CSS suggérer relations
+	// FIXME : 3 Faire une recherche dans les amis + avec une gestion des pages
 	// FIXME : 6 CSS check box
 	// FIXME : 9 mettre en ligne
 	
