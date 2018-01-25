@@ -81,6 +81,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// FIXME : 3 java.io.NotSerializableException cannot be cast to java.lang.String
 	// FIXME : 4 enlever le debug trace
+	// FIXME : 5 vérifier qu'on a pas des appels sans limite
 	// FIXME : 6 CSS check box
 	// FIXME : 9 mettre en ligne
 	

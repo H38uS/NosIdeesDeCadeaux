@@ -57,7 +57,7 @@ public class RechercherPersonne extends AbstractListes<User> {
 
 	@Override
 	protected String getViewPageURL() {
-		return DEFAULT_FORM_URL;
+		return formUrl;
 	}
 
 	@Override

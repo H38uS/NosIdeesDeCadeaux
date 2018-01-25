@@ -323,7 +323,7 @@ public class UserRelations extends Table {
 
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), query.toString());
-			ps.bindParameters(userId, userNameOrEmail, userNameOrEmail, firstRow, limit);
+			ps.bindParameters(userId, userNameOrEmail, userId, userNameOrEmail, firstRow, limit);
 
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
