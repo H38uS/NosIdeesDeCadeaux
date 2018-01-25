@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Comment;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.controllers.MesListes;
 import com.mosioj.servlets.securitypolicy.CommentModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

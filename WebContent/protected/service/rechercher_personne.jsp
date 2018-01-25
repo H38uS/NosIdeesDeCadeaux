@@ -4,9 +4,29 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-			<c:if test="${not empty users}">
+			<c:if test="${not empty entities}">
+				<c:if test="${not empty pages}">
+					<div class="center">
+						<c:if test="${current != 1}">
+							<a href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
+						</c:if>
+						<c:forEach var="page" items="${pages}">
+							<c:choose>
+								<c:when test="${current != page.numero}">
+									<a href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+								</c:when>
+								<c:otherwise>
+									${page.numero}
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<c:if test="${current != last}">
+						<a href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
+						</c:if>
+					</div>
+				</c:if>
 				<ul id="person_square_container">
-					<c:forEach var="user" items="${users}">
+					<c:forEach var="user" items="${entities}">
 						<li class="person_square">
 							<div class="vertical_center_div">
 								<span class="verticalcenter_helper"></span>

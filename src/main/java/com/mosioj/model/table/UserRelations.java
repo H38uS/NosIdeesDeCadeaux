@@ -26,20 +26,118 @@ public class UserRelations extends Table {
 	/**
 	 * 
 	 * @param user The user.
+	 * @param nameOrEmail
+	 * @param firstRow
+	 * @param maxNumberOfRows
+	 * @return The list of relations this use has that matches the given name/email.
+	 * @throws SQLException
+	 */
+	public List<Relation> getRelations(int user, String nameOrEmail, int firstRow, int maxNumberOfRows) throws SQLException {
+
+		List<Relation> relations = new ArrayList<Relation>();
+		PreparedStatementIdKdo ps = null;
+
+		StringBuilder query = new StringBuilder();
+		query.append("select {0}, {1}, u1.{4} as first_name, u1.{5} as first_email, u1.{6} as first_avatar, u2.{4} as second_name, u2.{5} as second_email, u2.{6} as second_avatar ");
+		query.append("from {2} urr ");
+		query.append("left join {3} u1 on u1.id = urr.{0} ");
+		query.append("left join {3} u2 on u2.id = urr.{1} ");
+		query.append("where {0} = ? ");
+		query.append("  and (lower(u2.{4}) like ? ESCAPE ''!'' or lower(u2.{5}) like ? ESCAPE ''!'') ");
+		query.append(" LIMIT ?, ? ");
+
+		String formatedQuery = MessageFormat.format(query.toString(),
+													FIRST_USER,
+													SECOND_USER,
+													TABLE_NAME,
+													Users.TABLE_NAME,
+													UsersColumns.NAME,
+													UsersColumns.EMAIL,
+													UsersColumns.AVATAR);
+		logger.trace(formatedQuery);
+
+		try {
+
+			ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
+			nameOrEmail = sanitizeSQLLike(nameOrEmail);
+			ps.bindParameters(user, nameOrEmail, nameOrEmail, firstRow, maxNumberOfRows);
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					relations.add(new Relation(	new User(	res.getInt(FIRST_USER.name()),
+															res.getString("first_name"),
+															res.getString("first_email"),
+															res.getString("first_avatar")),
+												new User(	res.getInt(SECOND_USER.name()),
+															res.getString("second_name"),
+															res.getString("second_email"),
+															res.getString("second_avatar"))));
+				}
+			}
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+		}
+
+		return relations;
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param nameOrEmail
+	 * @return The number of user in this user network.
+	 * @throws SQLException
+	 */
+	public int getRelationsCount(int userId, String nameOrEmail) throws SQLException {
+
+		StringBuilder query = new StringBuilder();
+		query.append("select count(*) ");
+		query.append("from {0} urr ");
+		query.append("left join {1} u1 on u1.id = urr.{2} ");
+		query.append("where {3} = ? ");
+		query.append("  and (lower(u1.{4}) like ? ESCAPE ''!'' or lower(u1.{5}) like ? ESCAPE ''!'') ");
+
+		String formatedQuery = MessageFormat.format(query.toString(),
+													TABLE_NAME,
+													Users.TABLE_NAME,
+													SECOND_USER,
+													FIRST_USER,
+													UsersColumns.NAME,
+													UsersColumns.EMAIL);
+
+		return getDb().selectInt(formatedQuery, userId, sanitizeSQLLike(nameOrEmail), sanitizeSQLLike(nameOrEmail));
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return The number of user in this user network.
+	 * @throws SQLException
+	 */
+	public int getRelationsCount(int userId) throws SQLException {
+		return getDb().selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, FIRST_USER), userId);
+	}
+
+	/**
+	 * 
+	 * @param user The user.
 	 * @return The list of relations this use has.
 	 * @throws SQLException
 	 */
-	public List<Relation> getRelations(int user) throws SQLException {
+	public List<Relation> getRelations(int user, int firstRow, int maxNumberOfRows) throws SQLException {
 
 		List<Relation> relations = new ArrayList<Relation>();
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
 		query.append("select {0}, {1}, u1.{6} as first_name, u1.{7} as first_email, u1.{8} as first_avatar, u2.{6} as second_name, u2.{7} as second_email, u2.{8} as second_avatar ");
-		query.append("from {2} urr ");
-		query.append("left join {5} u1 on u1.id = urr.{0} ");
-		query.append("left join {5} u2 on u2.id = urr.{1} ");
-		query.append("where {3} = ? ");
+		query.append("  from {2} urr ");
+		query.append("  left join {5} u1 on u1.id = urr.{0} ");
+		query.append("  left join {5} u2 on u2.id = urr.{1} ");
+		query.append(" where {3} = ? ");
+		query.append(" LIMIT ?, ? ");
 
 		String formatedQuery = MessageFormat.format(query.toString(),
 													FIRST_USER.name(),
@@ -56,7 +154,7 @@ public class UserRelations extends Table {
 		try {
 
 			ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
-			ps.bindParameters(user);
+			ps.bindParameters(user, firstRow, maxNumberOfRows);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
@@ -205,7 +303,7 @@ public class UserRelations extends Table {
 			throws SQLException {
 
 		List<String> namesOrEmails = new ArrayList<String>();
-		userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
+		userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
@@ -225,7 +323,7 @@ public class UserRelations extends Table {
 
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), query.toString());
-			ps.bindParameters(userId, "%" + userNameOrEmail + "%", userId, "%" + userNameOrEmail + "%", firstRow, limit);
+			ps.bindParameters(userId, userNameOrEmail, userNameOrEmail, firstRow, limit);
 
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
@@ -277,24 +375,23 @@ public class UserRelations extends Table {
 		query.append(" LIMIT ?, ? ");
 
 		try {
-			String formatedQuery = MessageFormat.format(	query.toString(),
-									UsersColumns.ID.name(),
-									UsersColumns.NAME.name(),
-									UsersColumns.EMAIL.name(),
-									Users.TABLE_NAME,
-									TABLE_NAME,
-									FIRST_USER,
-									SECOND_USER);
-			
-			ps = new PreparedStatementIdKdo(getDb(),
-											formatedQuery);
-			userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
+			String formatedQuery = MessageFormat.format(query.toString(),
+														UsersColumns.ID.name(),
+														UsersColumns.NAME.name(),
+														UsersColumns.EMAIL.name(),
+														Users.TABLE_NAME,
+														TABLE_NAME,
+														FIRST_USER,
+														SECOND_USER);
+
+			ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
+			userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
 			ps.bindParameters(	suggestedBy,
-								"%" + userNameOrEmail + "%",
-								"%" + userNameOrEmail + "%",
+								userNameOrEmail,
+								userNameOrEmail,
 								suggestedTo,
-								"%" + userNameOrEmail + "%",
-								"%" + userNameOrEmail + "%",
+								userNameOrEmail,
+								userNameOrEmail,
 								firstRow,
 								limit);
 			if (ps.execute()) {
@@ -337,8 +434,8 @@ public class UserRelations extends Table {
 																	TABLE_NAME,
 																	FIRST_USER,
 																	SECOND_USER));
-			userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
-			ps.bindParameters(userId, "%" + userNameOrEmail + "%", "%" + userNameOrEmail + "%", firstRow, limit);
+			userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
+			ps.bindParameters(userId, userNameOrEmail, userNameOrEmail, firstRow, limit);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
@@ -387,8 +484,8 @@ public class UserRelations extends Table {
 		logger.trace(formatQuery);
 
 		if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
-			userNameOrEmail = escapeMySQL(userNameOrEmail).toLowerCase();
-			return getDb().selectInt(formatQuery, userId, "%" + userNameOrEmail + "%", "%" + userNameOrEmail + "%");
+			userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
+			return getDb().selectInt(formatQuery, userId, userNameOrEmail, userNameOrEmail);
 		} else {
 			return getDb().selectInt(formatQuery, userId);
 		}

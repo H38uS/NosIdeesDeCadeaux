@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers.idees;
+package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

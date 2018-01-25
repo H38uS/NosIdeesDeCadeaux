@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers.idees;
+package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

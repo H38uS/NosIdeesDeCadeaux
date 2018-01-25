@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers.idees;
+package com.mosioj.servlets.controllers.idees.modification;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -21,6 +21,8 @@ import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifBookedRemove;
 import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.notifications.instance.param.NotifUserIdParam;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

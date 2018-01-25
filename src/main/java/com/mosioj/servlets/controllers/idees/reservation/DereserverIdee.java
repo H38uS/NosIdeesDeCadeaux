@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers.idees;
+package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
 
@@ -8,21 +8,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.controllers.MesListes;
+import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
-@WebServlet("/protected/reserver")
-public class ReserverIdee extends IdeesCadeauxServlet {
+@WebServlet("/protected/dereserver")
+public class DereserverIdee extends IdeesCadeauxServlet {
 
-	private static final long serialVersionUID = 7349100644264613480L;
+	private static final long serialVersionUID = -8244829899125982644L;
 	private static final String IDEA_ID_PARAM = "idee";
 
 	/**
 	 * Class constructor
 	 */
-	public ReserverIdee() {
+	public DereserverIdee() {
 		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
 	}
 
@@ -32,9 +32,7 @@ public class ReserverIdee extends IdeesCadeauxServlet {
 		Integer idea = ParametersUtils.readInt(req, IDEA_ID_PARAM);
 		int userId = ParametersUtils.getUserId(req);
 
-		if (idees.canBook(idea, userId)) {
-			idees.reserver(idea, userId);
-		}
+		idees.dereserver(idea, userId);
 
 		RootingsUtils.rootToPage(MesListes.PROTECTED_MES_LISTES, req, resp);
 	}

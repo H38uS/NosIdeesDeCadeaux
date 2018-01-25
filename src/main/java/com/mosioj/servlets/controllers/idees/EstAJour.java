@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.servlets.controllers.MesListes;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

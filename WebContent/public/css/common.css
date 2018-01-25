@@ -160,7 +160,7 @@ input[type=submit]:hover, .custom-file-upload:hover {
 }
 
 textarea, input[type=text], input[type=password], input[type=email], input[type=date], select {
-    width: 100%;
+    width: 97%;
     padding: 10px 14px;
     margin: 4px 6px;
     display: inline-block;

@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.relations;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,15 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
-import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/rechercher_personne")
-public class RechercherPersonne extends IdeesCadeauxServlet {
+public class RechercherPersonne extends AbstractListes<User> {
 
-	private static final String PAGE_ARG = "page";
 	private static final long serialVersionUID = 9147880158497428623L;
 	public static final String DEFAULT_FORM_URL = "/protected/rechercher_personne.jsp";
 	public final String formUrl;
@@ -38,30 +37,61 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 		formUrl = dispatchURL;
 	}
 
-	private void doTheLogic(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException {
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		ideesKDoGET(request, response);
+	}
 
-		final int MAX_NUMBER_OF_RESULT = 20;
-		int pageNumber = getPageNumber(request, PAGE_ARG);
-		int firstRow = getFirstRow(pageNumber, MAX_NUMBER_OF_RESULT);
+	@Override
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+
+		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
+		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
+		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
+
+		request.setAttribute("name", userNameOrEmail);
+		request.setAttribute("onlyNonFriend", onlyNonFriend);
+
+		super.ideesKDoGET(request, response);
+	}
+
+	@Override
+	protected String getViewPageURL() {
+		return DEFAULT_FORM_URL;
+	}
+
+	@Override
+	protected String getCallingURL() {
+		return "protected/rechercher_personne";
+	}
+
+	@Override
+	protected String getSpecificParameters(HttpServletRequest request) {
+		return MessageFormat.format("&{0}={1}&{2}={3}",
+									"name",
+									ParametersUtils.readAndEscape(request, "name").trim(),
+									"only_non_friend",
+									ParametersUtils.readAndEscape(request, "only_non_friend").trim());
+	}
+
+	@Override
+	protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException {
+		int userId = ParametersUtils.getUserId(request);
+		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
+		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
+		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
+		return users.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
+	}
+
+	@Override
+	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException {
 
 		int userId = ParametersUtils.getUserId(request);
 
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
 		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
-
-		List<User> foundUsers = users.getUsers(userNameOrEmail, userId, onlyNonFriend, firstRow, MAX_NUMBER_OF_RESULT);
-
-		int total = foundUsers.size();
-		if (total == MAX_NUMBER_OF_RESULT || pageNumber > 1) {
-			// On regarde si y'en a pas d'autres
-			total = users.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
-			if (total > MAX_NUMBER_OF_RESULT) {
-				List<Page> pages = getPages(MAX_NUMBER_OF_RESULT, total);
-				request.setAttribute("pages", pages);
-				request.setAttribute("last", pages.size());
-			}
-		}
+		List<User> foundUsers = users.getUsers(userNameOrEmail, userId, onlyNonFriend, firstRow, maxNumberOfResults);
 
 		List<User> friends = userRelations.getAllUsersInRelation(userId);
 		if (!onlyNonFriend) {
@@ -76,22 +106,7 @@ public class RechercherPersonne extends IdeesCadeauxServlet {
 			}
 		}
 
-		request.setAttribute("current", pageNumber);
-		request.setAttribute("users", foundUsers);
-		request.setAttribute("name", userNameOrEmail);
-		request.setAttribute("onlyNonFriend", onlyNonFriend);
-
-		RootingsUtils.rootToPage(formUrl, request, response);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		doTheLogic(request, response);
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		doTheLogic(req, resp);
+		return foundUsers;
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers.idees;
+package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.SousReservationEntity;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

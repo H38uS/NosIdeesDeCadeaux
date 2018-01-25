@@ -10,8 +10,8 @@ import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.servlets.controllers.idees.ConfirmationEstAJour;
-import com.mosioj.servlets.controllers.idees.ModifyIdea;
-import com.mosioj.servlets.controllers.idees.RemoveOneIdea;
+import com.mosioj.servlets.controllers.idees.modification.ModifyIdea;
+import com.mosioj.servlets.controllers.idees.modification.RemoveOneIdea;
 
 public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifUserIdParam {
 

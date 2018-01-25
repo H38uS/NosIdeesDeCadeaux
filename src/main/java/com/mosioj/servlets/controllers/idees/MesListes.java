@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers;
+package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_listes")
-public class MesListes extends AbstractListes {
+public class MesListes extends AbstractUserListes {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
@@ -28,19 +29,22 @@ public class MesListes extends AbstractListes {
 	}
 
 	@Override
-	protected List<User> getDisplayedUsers(int userId, int firstRow, HttpServletRequest req) throws SQLException {
+	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+		int userId = ParametersUtils.getUserId(req);
 		List<User> ids = new ArrayList<User>();
-		int MAX = MAX_NUMBER_OF_RESULT;
+		int MAX = maxNumberOfResults;
 		if (firstRow == 0) {
 			ids.add(users.getUser(userId));
 			MAX--;
 		}
 		ids.addAll(userRelations.getAllUsersInRelation(userId, firstRow, MAX));
+		fillsUserIdeas(userId, ids);
 		return ids;
 	}
 
 	@Override
-	protected int getTotalNumberOfUsers(int userId, HttpServletRequest req) throws SQLException {
+	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+		int userId = ParametersUtils.getUserId(req);
 		return userRelations.getAllUsersInRelation(userId).size() + 1; // On se compte
 	}
 

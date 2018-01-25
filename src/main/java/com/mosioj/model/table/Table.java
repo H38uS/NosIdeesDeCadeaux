@@ -1,5 +1,7 @@
 package com.mosioj.model.table;
 
+import java.text.MessageFormat;
+
 import com.mosioj.utils.database.DataSourceIdKDo;
 
 public abstract class Table {
@@ -30,6 +32,15 @@ public abstract class Table {
 		nameToMatch = nameToMatch.replaceAll("_", "!_");
 		nameToMatch = nameToMatch.replaceAll("\\[", "![");
 		return nameToMatch;
+	}
+
+	/**
+	 * 
+	 * @param parameter The initial parameter
+	 * @return Appends % to the prefix and the suffix and sanitize the data.
+	 */
+	protected String sanitizeSQLLike(String parameter) {
+		return MessageFormat.format("%{0}%", escapeMySQL(parameter).toLowerCase());
 	}
 	
 }

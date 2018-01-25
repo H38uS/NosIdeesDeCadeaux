@@ -139,7 +139,7 @@ public class Users extends Table {
 		List<User> users = new ArrayList<User>();
 		LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.", nameToMatch, userIdToSkip));
 
-		nameToMatch = escapeMySQL(nameToMatch).toLowerCase();
+		nameToMatch = sanitizeSQLLike(nameToMatch);
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select {0},{1},{2},{3} ", ID, NAME, EMAIL, AVATAR));
@@ -160,9 +160,9 @@ public class Users extends Table {
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
 			if (selectOnlyNonFriends) {
-				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, userIdToSkip, firstRow, limit);
+				ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip, userIdToSkip, firstRow, limit);
 			} else {
-				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, firstRow, limit);
+				ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip, firstRow, limit);
 			}
 
 			if (!ps.execute()) {
@@ -195,7 +195,7 @@ public class Users extends Table {
 	 */
 	public int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) throws SQLException {
 
-		nameToMatch = escapeMySQL(nameToMatch);
+		nameToMatch = sanitizeSQLLike(nameToMatch);
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format("select {0} ", "count(*)"));
@@ -214,9 +214,9 @@ public class Users extends Table {
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
 			if (selectOnlyNonFriends) {
-				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip, userIdToSkip);
+				ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip, userIdToSkip);
 			} else {
-				ps.bindParameters("%" + nameToMatch + "%", "%" + nameToMatch + "%", userIdToSkip);
+				ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip);
 			}
 
 			if (!ps.execute()) {

@@ -1,4 +1,4 @@
-package com.mosioj.servlets.controllers.idees;
+package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +16,8 @@ import com.mosioj.model.Share;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.servlets.controllers.MesListes;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

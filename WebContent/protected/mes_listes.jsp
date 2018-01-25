@@ -24,10 +24,10 @@
 				</c:if>
 			</div>
 		</c:if>
-		<c:forEach var="user" items="${users}">
+		<c:forEach var="user" items="${entities}">
 			<a href="${identic_call_back}#list_${user.id}">${user.name}</a> |
 		</c:forEach>
-		<c:forEach var="user" items="${users}">
+		<c:forEach var="user" items="${entities}">
 			<c:if test="${userid == user.id}">
 				<!-- Début idée de la personne -->
 				<h2 id="list_${user.id}">Mes idées de cadeaux</h2>

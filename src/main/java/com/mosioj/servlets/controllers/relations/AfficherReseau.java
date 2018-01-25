@@ -18,20 +18,19 @@ import com.mosioj.model.Relation;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.notifications.instance.NotifDemandeRefusee;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
-import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_reseau")
-public class AfficherReseau extends IdeesCadeauxServlet {
+public class AfficherReseau extends AbstractListes<Relation> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	private static final Logger logger = LogManager.getLogger(AfficherReseau.class);
 
 	private static final String USER_ID_PARAM = "id";
 	public static final String URL = "/protected/afficher_reseau";
-	private static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
+	public static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
 
 	/**
 	 * Class constructor.
@@ -44,7 +43,6 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Integer user = ParametersUtils.readInt(req, USER_ID_PARAM);
-
 		int userId = ParametersUtils.getUserId(req);
 
 		if (userId == user) {
@@ -52,21 +50,11 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
 			req.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
-		
-		// Ajout du flag network
-		List<Relation> relations = userRelations.getRelations(user);
-		List<Relation> mine = userRelations.getRelations(userId);
-		for (Relation r : relations) {
-			if (mine.contains(r)) {
-				r.secondIsInMyNetwork = true;
-			}
-		}
 
 		req.setAttribute("id", user);
-		req.setAttribute("relations", relations);
 		req.setAttribute("name", users.getUser(user).name);
 
-		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
+		super.ideesKDoGET(req, resp);
 	}
 
 	@Override
@@ -111,6 +99,50 @@ public class AfficherReseau extends IdeesCadeauxServlet {
 		// Redirection à la page d'administration
 		request.setAttribute("accepted", accepted);
 		ideesKDoGET(request, response);
+	}
+
+	@Override
+	protected String getViewPageURL() {
+		return DISPATCH_URL;
+	}
+
+	@Override
+	protected String getCallingURL() {
+		return URL.substring(1);
+	}
+
+	@Override
+	protected String getSpecificParameters(HttpServletRequest req) {
+		return MessageFormat.format("&{0}={1}", USER_ID_PARAM, ParametersUtils.readInt(req, USER_ID_PARAM));
+	}
+
+	@Override
+	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+		return userRelations.getRelationsCount(ParametersUtils.readInt(req, USER_ID_PARAM));
+	}
+
+	@Override
+	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+
+		int userId = ParametersUtils.getUserId(req);
+		List<Relation> relations = userRelations.getRelations(	ParametersUtils.readInt(req, USER_ID_PARAM),
+																firstRow,
+																maxNumberOfResults);
+
+		// Ajout du flag network
+		// TODO : tout faire en SQL ?
+		for (Relation r : relations) {
+			if (userRelations.associationExists(r.getSecond().id, userId)) {
+				r.secondIsInMyNetwork = true;
+			} else {
+				User other = r.getSecond();
+				if (userRelationRequests.associationExists(userId, other.id)) {
+					other.freeComment = "Vous avez déjà envoyé une demande à " + other.getName();
+				}
+			}
+		}
+
+		return relations;
 	}
 
 }
