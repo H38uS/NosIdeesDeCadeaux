@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -36,8 +37,8 @@ public class NotifConfirmedUpToDate extends AbstractNotification implements Noti
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifConfirmedUpToDate(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.CONFIRMED_UP_TO_DATE, id, owner, text, parameters);
+	public NotifConfirmedUpToDate(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
+		super(NotificationType.CONFIRMED_UP_TO_DATE, id, owner, text, parameters, creationTime);
 	}
 
 	@Override

@@ -7,9 +7,11 @@ import static com.mosioj.model.table.columns.NotificationsColumns.ID;
 import static com.mosioj.model.table.columns.NotificationsColumns.OWNER;
 import static com.mosioj.model.table.columns.NotificationsColumns.TEXT;
 import static com.mosioj.model.table.columns.NotificationsColumns.TYPE;
+import static com.mosioj.model.table.columns.NotificationsColumns.CREATION_DATE;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.notifications.NotificationFactory;
+import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 import com.mosioj.utils.database.PreparedStatementIdKdoInserter;
@@ -132,13 +135,13 @@ public class Notifications extends Table {
 	 * @param notif
 	 * @throws SQLException
 	 */
-	public void removeAllType(int userId, AbstractNotification notif) throws SQLException {
+	public void removeAllType(int userId, NotificationType notifType) throws SQLException {
 
-		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notif.getType(), userId));
+		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notifType.name(), userId));
 
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where owner = ? and type = ?", TABLE_NAME),
 								userId,
-								notif.getType());
+								notifType.name());
 		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
 													NOTIFICATION_ID,
 													ID,
@@ -223,6 +226,7 @@ public class Notifications extends Table {
 				int owner = -1;
 				String type = "";
 				String text = "";
+				Timestamp creation = null;
 				Map<ParameterName, Object> notifParams = new HashMap<ParameterName, Object>();
 
 				while (res.next()) {
@@ -233,6 +237,7 @@ public class Notifications extends Table {
 						owner = res.getInt(OWNER.name());
 						type = res.getString(TYPE.name());
 						text = res.getString(TEXT.name());
+						creation = res.getTimestamp(CREATION_DATE.name());
 					}
 
 					if (id == currentId) {
@@ -245,18 +250,19 @@ public class Notifications extends Table {
 					}
 
 					// New id detected, saving the notification
-					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, notifParams));
+					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, creation, notifParams));
 
 					// Initialization for the next notification
 					currentId = id;
 					owner = res.getInt(OWNER.name());
 					type = res.getString(TYPE.name());
 					text = res.getString(TEXT.name());
+					creation = res.getTimestamp(CREATION_DATE.name());
 					notifParams = new HashMap<ParameterName, Object>();
 				}
 
 				if (currentId != -1) {
-					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, notifParams));
+					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, creation, notifParams));
 				}
 
 			}
@@ -280,13 +286,14 @@ public class Notifications extends Table {
 	private List<AbstractNotification> getNotificationWithWhereClause(String whereClause, Object... parameters) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select {0}, {1}, {2}, {3}, {4}, {5} ",
+		query.append(MessageFormat.format(	"select {0}, {1}, {2}, {3}, {4}, {5}, {6} ",
 											ID,
 											TEXT,
 											TYPE,
 											OWNER,
 											PARAMETER_NAME,
-											PARAMETER_VALUE));
+											PARAMETER_VALUE,
+											CREATION_DATE));
 		query.append(MessageFormat.format("  from {0} ", TABLE_NAME));
 		query.append(MessageFormat.format("  left join {0} ", TABLE_PARAMS));
 		query.append(MessageFormat.format("    on {0} = {1} ", ID, NOTIFICATION_ID));
@@ -294,6 +301,7 @@ public class Notifications extends Table {
 		if (whereClause != null && !whereClause.isEmpty()) {
 			query.append(MessageFormat.format(" where {0}", whereClause));
 		}
+		query.append(MessageFormat.format(" order by {0} desc", CREATION_DATE));
 
 		return getNotificationFromQuery(query.toString(), parameters);
 	}

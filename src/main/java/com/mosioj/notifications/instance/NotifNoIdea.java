@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import com.mosioj.notifications.AbstractNotification;
@@ -22,8 +23,8 @@ public class NotifNoIdea extends AbstractNotification {
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifNoIdea(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.NO_IDEA, id, owner, text, parameters);
+	public NotifNoIdea(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
+		super(NotificationType.NO_IDEA, id, owner, text, parameters, creationTime);
 	}
 
 	@Override

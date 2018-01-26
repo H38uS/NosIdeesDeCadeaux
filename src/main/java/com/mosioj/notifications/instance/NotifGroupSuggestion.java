@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -40,8 +41,8 @@ public class NotifGroupSuggestion extends AbstractNotification implements NotifU
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifGroupSuggestion(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.GROUP_IDEA_SUGGESTION, id, owner, text, parameters);
+	public NotifGroupSuggestion(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
+		super(NotificationType.GROUP_IDEA_SUGGESTION, id, owner, text, parameters, creationTime);
 	}
 
 	@Override

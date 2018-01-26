@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Categorie;
 import com.mosioj.model.Idee;
 import com.mosioj.model.Priorite;
-import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -81,7 +81,7 @@ public class MaListe extends AbstractIdea {
 											parameters.get("image"),
 											null);
 				addModificationNotification(users.getUser(userId), idees.getIdea(ideaId), true);
-				notif.removeAllType(userId, new NotifNoIdea());
+				notif.removeAllType(userId, NotificationType.NO_IDEA);
 			}
 
 		}

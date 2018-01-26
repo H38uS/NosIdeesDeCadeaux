@@ -102,8 +102,6 @@ public class TestMetaData extends TemplateTest {
 					}
 					referencedLinks.add(url);
 					referenceMap.put(url, file.getName());
-
-					// TODO : Test add URL in form
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -37,8 +38,8 @@ public class NotifIdeaAddedByFriend extends AbstractNotification implements Noti
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifIdeaAddedByFriend(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.IDEA_ADDED_BY_FRIEND, id, owner, text, parameters);
+	public NotifIdeaAddedByFriend(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
+		super(NotificationType.IDEA_ADDED_BY_FRIEND, id, owner, text, parameters, creationTime);
 	}
 
 	@Override

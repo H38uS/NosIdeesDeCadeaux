@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import com.mosioj.notifications.AbstractNotification;
@@ -26,8 +27,8 @@ public class NotifFriendshipDropped extends AbstractNotification {
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifFriendshipDropped(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.FRIENDSHIP_DROPPED, id, owner, text, parameters);
+	public NotifFriendshipDropped(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
+		super(NotificationType.FRIENDSHIP_DROPPED, id, owner, text, parameters, creationTime);
 	}
 
 	@Override

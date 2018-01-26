@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class NotifIdeaModifiedWhenBirthdayIsSoon extends AbstractNotification {
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifIdeaModifiedWhenBirthdayIsSoon(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON, id, owner, text, parameters);
+	public NotifIdeaModifiedWhenBirthdayIsSoon(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
+		super(NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON, id, owner, text, parameters, creationTime);
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class NotifIdeaModifiedWhenBirthdayIsSoon extends AbstractNotification {
 									userName,
 									idea,
 									link,
-									action); // TODO : pouvoir afficher uniquement sa liste
+									action);
 	}
 
 }

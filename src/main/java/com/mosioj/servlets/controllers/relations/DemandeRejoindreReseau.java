@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
+import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -38,9 +39,17 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 			return;
 		}
 
-		User userToSendInvitation = users.getUser(Integer.parseInt(user));
-		int userId = ParametersUtils.getUserId(request);
+		int parseInt = 0;
+		try {
+			parseInt = Integer.parseInt(user);
+		} catch (NumberFormatException nfe) {
+			request.setAttribute("error_message", "Le paramètre est incorrect.");
+			RootingsUtils.rootToPage(ERROR_URL, request, response);
+			return;
+		}
 
+		User userToSendInvitation = users.getUser(parseInt);
+		int userId = ParametersUtils.getUserId(request);
 		request.setAttribute("name", userToSendInvitation.name);
 
 		if (userToSendInvitation.id == userId || userRelations.associationExists(userToSendInvitation.id, userId)) {
@@ -57,6 +66,8 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 
 		// On ajoute l'association
 		userRelationRequests.insert(userId, userToSendInvitation.id);
+		notif.addNotification(	userToSendInvitation.id,
+								new NotifNouvelleDemandeAmi(userId, userToSendInvitation.id, users.getUser(userId).name));
 		RootingsUtils.rootToPage(SUCCESS_URL, request, response);
 
 	}

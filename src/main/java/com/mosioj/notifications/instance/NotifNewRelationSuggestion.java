@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import com.mosioj.notifications.AbstractNotification;
@@ -17,8 +18,8 @@ public class NotifNewRelationSuggestion extends AbstractNotification implements 
 		params.put(ParameterName.USER_ID, fromUser);
 	}
 
-	public NotifNewRelationSuggestion(int id, int owner, String text, Map<ParameterName, Object> params) {
-		super(NotificationType.NEW_RELATION_SUGGESTION, id, owner, text, params);
+	public NotifNewRelationSuggestion(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> params) {
+		super(NotificationType.NEW_RELATION_SUGGESTION, id, owner, text, params, creationTime);
 	}
 
 	@Override

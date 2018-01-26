@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -26,6 +27,9 @@ public class MesListes extends AbstractUserListes {
 	 */
 	public MesListes() {
 		super(new AllAccessToPostAndGet());
+	}
+	public MesListes(SecurityPolicy policy) {
+		super(policy);
 	}
 
 	@Override

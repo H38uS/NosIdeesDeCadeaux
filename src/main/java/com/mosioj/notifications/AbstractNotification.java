@@ -3,7 +3,9 @@ package com.mosioj.notifications;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -11,6 +13,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.EmailSender;
 
 public abstract class AbstractNotification {
@@ -26,6 +29,7 @@ public abstract class AbstractNotification {
 	public int id;
 	public int owner;
 	public String text;
+	private Timestamp creationTime;
 	protected Map<ParameterName, Object> params = new HashMap<ParameterName, Object>();
 
 	/**
@@ -50,12 +54,20 @@ public abstract class AbstractNotification {
 	 * @param owner The notification owner.
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
+	 * @param creationDate The notification creation timestamp.
+	 * @param creationTime When the notification has been created.
 	 */
-	public AbstractNotification(NotificationType type, int id, int owner, String text, Map<ParameterName, Object> parameters) {
+	public AbstractNotification(NotificationType type,
+								int id,
+								int owner,
+								String text,
+								Map<ParameterName, Object> parameters,
+								Timestamp creationTime) {
 		this(type);
 		this.id = id;
 		this.owner = owner;
 		this.text = text;
+		this.creationTime = creationTime;
 		this.params = parameters;
 	}
 
@@ -97,7 +109,7 @@ public abstract class AbstractNotification {
 	public String getText() {
 		return text;
 	}
-	
+
 	/**
 	 * 
 	 * @return The notification type description.
@@ -120,6 +132,10 @@ public abstract class AbstractNotification {
 
 	public int getOwner() {
 		return owner;
+	}
+
+	public String getCreationTime() {
+		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(creationTime);
 	}
 
 }

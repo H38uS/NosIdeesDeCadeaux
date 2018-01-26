@@ -75,13 +75,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : catcher quand la session a expiré, pour faire une joli page
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
-	// TODO : notification quand on envoie une demande d'amis
-
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : 6 CSS check box
 	// FIXME : 9 mettre en ligne
-	
 	// TODO : pouvoir archiver les notifications sans les supprimer
 	// TODO : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise / autre?
 

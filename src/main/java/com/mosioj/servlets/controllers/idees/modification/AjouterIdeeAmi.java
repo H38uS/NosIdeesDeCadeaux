@@ -14,8 +14,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
+import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
-import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
@@ -81,7 +81,7 @@ public class AjouterIdeeAmi extends AbstractIdea {
 				
 				if (!estSurprise) {
 					notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));
-					notif.removeAllType(id, new NotifNoIdea());
+					notif.removeAllType(id, NotificationType.NO_IDEA);
 				}
 			}
 

@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Relation;
 import com.mosioj.model.User;
+import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.servlets.controllers.AbstractListes;
@@ -95,6 +96,9 @@ public class AfficherReseau extends AbstractListes<Relation> {
 				notif.addNotification(fromUserId, new NotifDemandeRefusee(user.id, user.name));
 			}
 		}
+		notif.removeAllType(userId, NotificationType.NEW_FRIENSHIP_REQUEST);
+		int count = notif.getUserNotificationCount(userId);
+		request.setAttribute("notif_count", count);
 
 		// Redirection à la page d'administration
 		request.setAttribute("accepted", accepted);

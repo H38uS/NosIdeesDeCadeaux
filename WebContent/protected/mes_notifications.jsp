@@ -9,15 +9,15 @@
 			<table>
 				<thead>
 					<tr>
-						<th>Type</th>
 						<th>Text</th>
+						<th>Créée le</th>
 						<th>Action</th>
 					</tr>
 				</thead>
 				<c:forEach var="notif" items="${notifications}">
 					<tr>
-						<td>${notif.description}</td>
 						<td>${notif.text}</td>
+						<td>${notif.creationTime}</td>
 						<td>
 							<a href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
 						</td>

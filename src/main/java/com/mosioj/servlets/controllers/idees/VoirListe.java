@@ -1,28 +1,19 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
-import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/voir_liste")
-public class VoirListe extends IdeesCadeauxServlet {
+public class VoirListe extends MesListes {
 
-	private static final Logger LOGGER = LogManager.getLogger(VoirListe.class);
 	private static final long serialVersionUID = -5233551522645668356L;
 	private static final String USER_ID_PARAM = "id";
 	private static final String PROTECTED_VOIR_LIST = "/protected/voir_liste";
@@ -37,25 +28,27 @@ public class VoirListe extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-
+	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+		List<User> ids = new ArrayList<User>();
 		User user = users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM));
-		LOGGER.info(MessageFormat.format("Gets the lists for {0}", user.getName()));
-
-		LOGGER.trace("Getting all ideas for this user...");
-		user.addIdeas(idees.getOwnerIdeas(user.id));
-		List<User> users = new ArrayList<User>();
-		users.add(user);
-
-		req.setAttribute("users", users);
-
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+		ids.add(user);
+		fillsUserIdeas(ParametersUtils.getUserId(req), ids);
+		return ids;
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(PROTECTED_VOIR_LIST, request, response); // Rien de spécifique pour le moment
-		// TODO : pouvoir demander des informations et/ou discuter avec d'autres membres
+	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+		return 1;
+	}
+
+	@Override
+	protected String getCallingURL() {
+		return PROTECTED_VOIR_LIST.substring(1);
+	}
+
+	@Override
+	protected String getSpecificParameters(HttpServletRequest req) {
+		return "";
 	}
 
 }

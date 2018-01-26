@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import com.mosioj.notifications.AbstractNotification;
@@ -16,8 +17,8 @@ public class NotifDemandeRefusee extends AbstractNotification {
 		params.put(ParameterName.USER_ID, fromUser);
 	}
 
-	public NotifDemandeRefusee(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.REJECTED_FRIENDSHIP, id, owner, text, parameters);
+	public NotifDemandeRefusee(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
+		super(NotificationType.REJECTED_FRIENDSHIP, id, owner, text, parameters, creationTime);
 	}
 
 	@Override
