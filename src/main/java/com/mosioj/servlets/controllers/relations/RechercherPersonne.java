@@ -93,10 +93,9 @@ public class RechercherPersonne extends AbstractListes<User> {
 		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
 		List<User> foundUsers = users.getUsers(userNameOrEmail, userId, onlyNonFriend, firstRow, maxNumberOfResults);
 
-		List<User> friends = userRelations.getAllUsersInRelation(userId);
 		if (!onlyNonFriend) {
 			for (User user : foundUsers) {
-				user.isInMyNetwork = friends.contains(user);
+				user.isInMyNetwork = userRelations.associationExists(user.id, userId);
 			}
 		}
 

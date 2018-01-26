@@ -190,7 +190,7 @@ public class Users extends Table {
 	 * @param nameToMatch
 	 * @param userIdToSkip
 	 * @param selectOnlyNonFriends
-	 * @return The list of users.
+	 * @return The number of users matching this name/email.
 	 * @throws SQLException
 	 */
 	public int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) throws SQLException {

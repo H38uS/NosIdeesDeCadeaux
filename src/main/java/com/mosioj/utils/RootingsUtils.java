@@ -1,6 +1,7 @@
 package com.mosioj.utils;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,8 +24,7 @@ public class RootingsUtils {
 	private static final Logger logger = LogManager.getLogger(RootingsUtils.class);
 
 	/**
-	 * Get the dispatcher and forward the request.
-	 * Should be used with *.JSP files only !!
+	 * Get the dispatcher and forward the request. Should be used with *.JSP files only !!
 	 * 
 	 * @param url
 	 * @param req
@@ -42,9 +42,8 @@ public class RootingsUtils {
 	}
 
 	/**
-	 * Get the dispatcher and forward the request.
-	 * Should be used to get rid of post feature.
-	 * <b>*** Warning : the landing page should NOT require csrf tokens. ***</b></br>
+	 * Get the dispatcher and forward the request. Should be used to get rid of post feature. <b>*** Warning : the
+	 * landing page should NOT require csrf tokens. ***</b></br>
 	 * Use it only when redirecting from a wrong URL.
 	 * 
 	 * @param url
@@ -60,7 +59,25 @@ public class RootingsUtils {
 			throw new ServletException(e.getMessage());
 		}
 	}
+
+	/**
+	 * The application properties.
+	 */
+	private static Properties p;
 	
+	/**
+	 * 
+	 * @return True if and only if the server should display technical stacks.
+	 * @throws IOException
+	 */
+	private static boolean shouldLogStack() throws IOException {
+		if (p == null) {
+			Properties p = new Properties();
+			p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("mail.properties"));
+		}
+		return "true".equals(p.get("shouldLogStack"));
+	}
+
 	/**
 	 * Set the error text, and root the request to the generic error page.
 	 * 
@@ -70,10 +87,17 @@ public class RootingsUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	public static void rootToGenericSQLError(Exception exception, HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		logger.error("An error occured: " + exception.getMessage());
 		exception.printStackTrace();
-		req.setAttribute("error", exception.getMessage());
+		
+		boolean shouldLogStack = shouldLogStack();
+		if (shouldLogStack) {
+			req.setAttribute("error", exception.getMessage());
+		}
+		req.setAttribute("shouldLogStack", shouldLogStack);
+		
 		RequestDispatcher rd = req.getRequestDispatcher(PUBLIC_SERVER_ERROR_JSP);
 		try {
 			rd.forward(req, resp);

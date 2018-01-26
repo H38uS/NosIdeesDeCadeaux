@@ -45,7 +45,7 @@ public class MesListes extends AbstractUserListes {
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
 		int userId = ParametersUtils.getUserId(req);
-		return userRelations.getAllUsersInRelation(userId).size() + 1; // On se compte
+		return userRelations.getRelationsCount(userId) + 1; // On se compte
 	}
 
 	@Override
