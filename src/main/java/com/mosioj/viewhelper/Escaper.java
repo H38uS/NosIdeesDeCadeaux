@@ -18,9 +18,9 @@ public class Escaper {
 	 * @return The html equivalent of this text.
 	 */
 	public static String textToHtml(String text) {
-		String res = text.replaceAll("\n", "<br/>").replaceAll("(https?://[^\\s]*)", "<a href=\"$0\">$0</a>");
+		String res = text.replaceAll("\n", "<br/>").replaceAll("(https?://[^\\s]*)", "<a href=\"$0\" target=\"_blank\">$0</a>");
 
-		List<String> tmp = new ArrayList<String>(Arrays.asList(res.split("<a href=\"([^\\s]*)\">")));
+		List<String> tmp = new ArrayList<String>(Arrays.asList(res.split("<a href=\"([^\\s]*)\" target=\"_blank\">")));
 		if (!tmp.isEmpty())
 			tmp.remove(0);
 
@@ -40,7 +40,7 @@ public class Escaper {
 	 * @return The text equivalent of this html string.
 	 */
 	public static String htmlToText(String html) {
-		return html.replaceAll("<br/>", "\n").replaceAll("<a href=\"([^\\s]*)\">[^\\s]*</a>", "$1");
+		return html.replaceAll("<br/>", "\n").replaceAll("<a href=\"?([^\\s\"]*)\"?( target=\"?_blank\"?)?>[^\\s]*</a>", "$1");
 	}
 
 }
