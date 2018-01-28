@@ -18,6 +18,6 @@
     	<div id="content">
 	        <jsp:doBody/>
     	</div>
-    	<footer>&#9400; 2016 NosIdeesCadeaux - Tous droits réservés - Conditions générales d'utilisation</footer>
+    	<footer>&#9400; 2016 NosIdeesCadeaux - Tous droits réservés - Conditions générales d'utilisation - <a href="public/remerciements.jsp">Remerciements</a></footer>
     	</div>
     </body>

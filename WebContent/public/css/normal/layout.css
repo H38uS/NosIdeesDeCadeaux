@@ -58,6 +58,9 @@ footer {
 	height: 30px;
 	color: white;
 }
+footer a:link, footer a:visited, footer a:active {
+    color: #b0cff8;
+}
 
 div#content {
 	padding: 10px 10px 40px 10px; /* bottom padding for footer */
