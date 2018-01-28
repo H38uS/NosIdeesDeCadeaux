@@ -77,6 +77,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
+	// FIXME : 8 remerciement clarounette l'intrépide
 	// FIXME : 9 mettre en ligne
 	// TODO : pouvoir archiver les notifications sans les supprimer
 	// TODO : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise / autre?

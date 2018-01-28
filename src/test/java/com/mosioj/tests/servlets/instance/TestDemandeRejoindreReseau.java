@@ -53,6 +53,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 
 		when(request.getParameter("user_id")).thenReturn("1");
 		when(users.getUser(1)).thenReturn(new User(1, "toto", "toto@hotmail.fr"));
+		when(users.getUser(32)).thenReturn(new User(32, "tutu", "tutu@hotmail.fr"));
 
 		// Should not throw an exception
 		doTestPost(request, response);
