@@ -72,7 +72,7 @@ public class RootingsUtils {
 	 */
 	private static boolean shouldLogStack() throws IOException {
 		if (p == null) {
-			Properties p = new Properties();
+			p = new Properties();
 			p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("mail.properties"));
 		}
 		return "true".equals(p.get("shouldLogStack"));
