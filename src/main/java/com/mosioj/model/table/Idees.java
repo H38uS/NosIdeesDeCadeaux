@@ -29,6 +29,7 @@ import com.mosioj.model.table.columns.CommentsColumns;
 import com.mosioj.model.table.columns.GroupIdeaColumns;
 import com.mosioj.model.table.columns.GroupIdeaContentColumns;
 import com.mosioj.model.table.columns.IdeeColumns;
+import com.mosioj.model.table.columns.PrioritesColumns;
 import com.mosioj.model.table.columns.SousReservationColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
@@ -117,6 +118,7 @@ public class Idees extends Table {
 
 		StringBuilder query = new StringBuilder(columns);
 		query.append(MessageFormat.format("  from {0} i ", TABLE_NAME));
+		query.append(MessageFormat.format("  left join {0} p on i.{1} = p.{2} ", Priorites.TABLE_NAME, PRIORITE, PrioritesColumns.ID));
 		query.append(MessageFormat.format("  left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
 		query.append(MessageFormat.format("  left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
 		query.append(MessageFormat.format("  left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
@@ -138,7 +140,7 @@ public class Idees extends Table {
 
 		StringBuilder query = getIdeaBasedSelect();
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
-		query.append(MessageFormat.format(" order by {0},{1}", PRIORITE, ID));
+		query.append(MessageFormat.format(" order by p.{0} desc,{1} desc, {2} desc", PrioritesColumns.ORDRE, MODIFICATION_DATE, ID));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 

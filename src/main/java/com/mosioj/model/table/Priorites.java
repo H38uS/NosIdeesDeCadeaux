@@ -16,7 +16,7 @@ import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 public class Priorites extends Table {
 
-	private static final String TABLE_NAME = "PRIORITES";
+	public static final String TABLE_NAME = "PRIORITES";
 
 	public List<Priorite> getPriorities() throws SQLException {
 

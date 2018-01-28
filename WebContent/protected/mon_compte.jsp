@@ -52,6 +52,18 @@
 							<label for="imageFile" class="custom-file-upload" >Choisissez un nouvel avatar</label>
 						</td>
 					</tr>
+					<tr>
+						<td>Nouveau mot de passe</td>
+						<td>
+							<input type="password" name="new_password" id="new_password" value="" />
+						</td>
+					</tr>
+					<tr>
+						<td>Confirmation du mot de passe</td>
+						<td>
+							<input type="password" name="conf_password" id="conf_password" value="" />
+						</td>
+					</tr>
 				</table>
 				
 				<div class="errors">
@@ -69,6 +81,9 @@
 				<input type="submit" name="submit" value="Sauvegarder">
 			</form>
 		</div>
+		<c:if test="${sauvegarde_ok}">
+			Mise à jour effectuée avec succès.
+		</c:if>
 		
 		<h2>Type de notifications</h2>
 		<table>

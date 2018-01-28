@@ -81,6 +81,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : 9 mettre en ligne
 	// TODO : pouvoir archiver les notifications sans les supprimer
 	// TODO : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise / autre?
+	
+	// TODO : gérer les noms qui commence par une voyelle dans mes listes et afficher d'
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

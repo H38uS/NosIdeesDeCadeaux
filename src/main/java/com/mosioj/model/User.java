@@ -5,6 +5,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 public class User {
 
 	public final int id;
@@ -88,7 +90,7 @@ public class User {
 	 * @return The name of the person.
 	 */
 	public String getName() {
-		return name != null && !name.trim().isEmpty() ? name : email;
+		return name != null && !name.trim().isEmpty() ? WordUtils.capitalize(name) : email;
 	}
 
 	public void addIdeas(List<Idee> ownerIdeas) {

@@ -81,6 +81,20 @@ public class MonCompte extends DefaultCompte {
 					val.checkDateFormat();
 					errors.addAll(val.getErrors());
 				}
+				
+				String newPwd = parameters.get("new_password").trim();
+				String confPwd = parameters.get("conf_password").trim();
+				
+				
+				if (newPwd != null && !newPwd.isEmpty()) {
+					List<String> pwdErrors1 = checkPwd(getValidatorPwd(newPwd));
+					List<String> pwdErrors2 = checkPwd(getValidatorPwd(confPwd));
+					if (!newPwd.equals(confPwd)) {
+						errors.add("Les deux mots de passe entrés ne correspondent pas.");
+					}
+					errors.addAll(pwdErrors1);
+					errors.addAll(pwdErrors2);
+				}
 
 				User user = users.getUser(userId);
 				user.email = email;
@@ -103,7 +117,12 @@ public class MonCompte extends DefaultCompte {
 
 				if (errors.isEmpty()) {
 					users.update(user);
-					request.getSession().setAttribute("emailorname", name);
+					request.getSession().setAttribute("emailorname", user.getName());
+					if (!newPwd.isEmpty()) {
+						String digested = hashPwd(newPwd, errors);
+						users.updatePassword(userId, digested);
+					}
+					request.getSession().setAttribute("sauvegarde_ok", true);
 				}
 			}
 

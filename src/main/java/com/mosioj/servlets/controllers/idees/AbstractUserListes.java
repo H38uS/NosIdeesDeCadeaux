@@ -19,7 +19,7 @@ public abstract class AbstractUserListes extends AbstractListes<User> {
 	public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 
 	public AbstractUserListes(SecurityPolicy policy) {
-		super(policy);
+		super(policy, 6);
 	}
 
 	@Override
