@@ -88,33 +88,33 @@
 		<h2>Type de notifications</h2>
 		<table>
 			<c:forEach var="notif" items="${notif_types}">
-				<tr>
-					<td>
-						<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
-					</td>
-					<td style="padding:0 20px;" >
-						<select id="value" name="value">
-							<c:forEach var="value" items="${possible_values}">
-								<c:choose>
-									<c:when test="${value == notif.parameterValue}">
-										<option selected="selected" value="${value}">${value}</option>
-									</c:when>
-									<c:otherwise>
-										<option value="${value}">${value}</option>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-						</select>
-					</td>
-					<td>
-						<form action="protected/update_notification_parameter" method="post" >
+				<form action="protected/update_notification_parameter" method="post" >
+					<tr>
+						<td>
+							<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
+						</td>
+						<td style="padding:0 20px;" >
+							<select id="value" name="value">
+								<c:forEach var="value" items="${possible_values}">
+									<c:choose>
+										<c:when test="${value == notif.parameterValue}">
+											<option selected="selected" value="${value}">${value}</option>
+										</c:when>
+										<c:otherwise>
+											<option value="${value}">${value}</option>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</select>
+						</td>
+						<td>
 							<input hidden="true" name="id" value="${notif.id}">
 							<input hidden="true" name="name" value="${notif.parameterName}">
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 							<input type="submit" name="submit" value="Sauvegarder">
-						</form>
-					</td>
-				</tr>
+						</td>
+					</tr>
+				</form>
 			</c:forEach>
 		</table>
 		

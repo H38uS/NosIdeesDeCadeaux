@@ -1,6 +1,7 @@
 package com.mosioj.utils;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
@@ -73,8 +74,9 @@ public class RootingsUtils {
 	private static boolean shouldLogStack() throws IOException {
 		if (p == null) {
 			p = new Properties();
-			p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("mail.properties"));
+			p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties"));
 		}
+		logger.info(MessageFormat.format("shouldLogStack: {0}", p.get("shouldLogStack")));
 		return "true".equals(p.get("shouldLogStack"));
 	}
 

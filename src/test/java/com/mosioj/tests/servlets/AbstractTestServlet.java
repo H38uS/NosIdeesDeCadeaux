@@ -20,6 +20,7 @@ import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Priorites;
+import com.mosioj.model.table.UserParameters;
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
@@ -47,6 +48,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected Categories cat;
 	protected Priorites prio;
 	protected Notifications notif;
+	protected UserParameters userParameters;
 	
 	protected final IdeesCadeauxServlet instance;
 	
@@ -60,6 +62,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		cat = mock(Categories.class);
 		prio = mock(Priorites.class);
 		notif = mock(Notifications.class);
+		userParameters = mock(UserParameters.class);
 		
 		when(request.getSession()).thenReturn(session);
 		when(request.getRequestURL()).thenReturn(new StringBuffer(CreationCompte.HTTP_LOCALHOST_8080));
@@ -88,6 +91,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		instance.setCat(cat);
 		instance.setPrio(prio);
 		instance.setNotificationManager(notif);
+		instance.setUserParameters(userParameters);
 		
 		try {
 			validateInstanceLinks();
@@ -108,15 +112,12 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	private void validateInstanceLinks() throws IllegalArgumentException, IllegalAccessException {
 		
 		Field[] fields = instance.getClass().getFields();
-		boolean hasAURL = false;
 		for (Field field : fields) {
 			
 			String name = field.getName();
 			if (!name.contains("URL")) {
 				continue;
 			}
-
-			hasAURL = true;
 			
 			String path = (String) field.get(null);
 			File web = new File(root, "WebContent");
@@ -125,9 +126,6 @@ public abstract class AbstractTestServlet extends TemplateTest {
 			File file = new File(web, path);
 			assertTrue("La jsp " + file + " n'existe pas.", file.exists());
 		}
-		
-		assertTrue("No URL static field found - this is really strange !!!", hasAURL);
-		
 	}
 
 	/**

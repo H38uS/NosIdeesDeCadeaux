@@ -387,6 +387,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		priorities = prio;
 	}
 
+	public void setUserParameters(UserParameters param) {
+		userParameters = param;
+	}
+
 	protected java.sql.Date getAsDate(String date) {
 		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
 		Date parsed;
