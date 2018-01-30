@@ -16,7 +16,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -53,6 +52,7 @@ import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.DataSourceIdKDo;
+import com.mosioj.viewhelper.Escaper;
 
 /**
  * An intermediate servlet for test purpose. Increase the visibility of tested method.
@@ -454,17 +454,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 					String fileName = fi.getName() == null ? "" : new String(fi.getName().getBytes("ISO-8859-1"), "UTF-8");
 					if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
-						fileName = StringEscapeUtils.escapeHtml4(fileName);
-						Random r = new Random();
-						int id = r.nextInt();
-						int maxSize = 30;
-						if (fileName.length() > maxSize) {
-							fileName = fileName.substring(0, maxSize - 4) + "_" + id + fileName.substring(fileName.length() - 4);
-						} else {
-							fileName = fileName.substring(0, fileName.length() - 4) + "_" + id
-									+ fileName.substring(fileName.length() - 4);
-						}
-						image = fileName;
+						image = Escaper.computeImageName(fileName);
 
 						File largeFolder = new File(filePath, "large/");
 						if (!largeFolder.exists()) {
@@ -475,7 +465,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 							smallFolder.mkdirs();
 						}
 
-						File file = new File(largeFolder, fileName);
+						File file = new File(largeFolder, image);
 						logger.debug("Uploading file : " + file);
 						fi.write(file);
 
@@ -484,11 +474,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 						int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 
 						BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_WIDTH, MAX_WIDTH);
-						ImageIO.write(resizeImageJpg, "png", new File(smallFolder, fileName));
+						ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
 
 						if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
 							resizeImageJpg = resizeImage(originalImage, originalType, 1920, 1080);
-							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, fileName));
+							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
 						}
 
 						parameters.put("image", image);

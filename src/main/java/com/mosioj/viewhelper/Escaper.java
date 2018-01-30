@@ -3,6 +3,7 @@ package com.mosioj.viewhelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Escaper {
 
@@ -41,6 +42,26 @@ public class Escaper {
 	 */
 	public static String htmlToText(String html) {
 		return html.replaceAll("<br/>", "\n").replaceAll("<a href=\"?([^\\s\"]*)\"?( target=\"?_blank\"?)?>[^\\s]*</a>", "$1");
+	}
+
+	/**
+	 * 
+	 * @param initialName The initial upload name.
+	 * @return The computed name to use.
+	 */
+	public static String computeImageName(String initialName) {
+
+		String fileName = initialName;
+		Random r = new Random();
+		int id = r.nextInt();
+		int maxSize = 30;
+		if (fileName.length() > maxSize) {
+			fileName = fileName.substring(0, maxSize - 4) + "_" + id + fileName.substring(fileName.length() - 4);
+		} else {
+			fileName = fileName.substring(0, fileName.length() - 4) + "_" + id + fileName.substring(fileName.length() - 4);
+		}
+
+		return fileName;
 	}
 
 }

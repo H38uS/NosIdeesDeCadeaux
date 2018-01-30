@@ -31,5 +31,26 @@ public class TestEscaper {
 			assertEquals(sources[i], Escaper.htmlToText(expected[i]));
 		}
 	}
+	
+	@Test
+	public void testComputeNewName() {
+		
+		String[] sources = new String[] {
+				"mon_fichier.png",
+				"avec_accentéèêîûôù.jpg"
+		};
+
+		String[] expected = new String[] {
+				"mon_fichier.png",
+				"avec_accentéèêîûôù.jpg"
+		};
+
+		for (int i = 0; i < sources.length; i++) {
+			String name = expected[i].substring(0, expected[i].lastIndexOf("."));
+			String computed = Escaper.computeImageName(sources[i]);
+			assertEquals(name, computed.substring(0, computed.lastIndexOf("_")));
+			assertTrue(computed.contains(name));
+		}
+	}
 
 }
