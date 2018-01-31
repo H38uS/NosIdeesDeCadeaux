@@ -77,8 +77,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : 8 remerciement clarounette l'intrépide
-	// FIXME : 9 mettre en ligne
 	// TODO : pouvoir archiver les notifications sans les supprimer
 	// TODO : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise / autre?
 	
@@ -97,6 +95,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	/**
 	 * L'interface vers la table USER_RELATIONS.
+	 * Static because it can be used in constructor for security checks.
 	 */
 	protected static UserRelations userRelations = new UserRelations();
 
@@ -117,6 +116,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	/**
 	 * The connections to the IDEES table.
+	 * Static because it can be used in constructor for security checks.
 	 */
 	protected static Idees idees = new Idees();
 
@@ -132,6 +132,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	/**
 	 * The connections to the NOTIFICATION table.
+	 * Static because it can be used in constructor for security checks.
 	 */
 	protected static Notifications notif = new Notifications();
 
@@ -147,11 +148,13 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	/**
 	 * The connections to the COMMENTS table.
+	 * Static because it can be used in constructor for security checks.
 	 */
 	protected static Comments comments = new Comments();
 	
 	/**
 	 * The connections to the QUESTIONS table.
+	 * Static because it can be used in constructor for security checks.
 	 */
 	protected static Questions questions = new Questions();
 
