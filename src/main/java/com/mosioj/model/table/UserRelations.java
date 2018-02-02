@@ -44,6 +44,7 @@ public class UserRelations extends Table {
 		query.append("left join {3} u2 on u2.id = urr.{1} ");
 		query.append("where {0} = ? ");
 		query.append("  and (lower(u2.{4}) like ? ESCAPE ''!'' or lower(u2.{5}) like ? ESCAPE ''!'') ");
+		query.append(" order by coalesce(u2.{4}, u2.{5}) ");
 		query.append(" LIMIT ?, ? ");
 
 		String formatedQuery = MessageFormat.format(query.toString(),
@@ -137,6 +138,7 @@ public class UserRelations extends Table {
 		query.append("  left join {5} u1 on u1.id = urr.{0} ");
 		query.append("  left join {5} u2 on u2.id = urr.{1} ");
 		query.append(" where {3} = ? ");
+		query.append(" order by coalesce(u2.{6}, u2.{7}) ");
 		query.append(" LIMIT ?, ? ");
 
 		String formatedQuery = MessageFormat.format(query.toString(),
