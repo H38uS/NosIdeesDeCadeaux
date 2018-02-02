@@ -82,6 +82,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// TODO : gérer les noms qui commence par une voyelle dans mes listes et afficher d'
 	// TODO : gérer les pages 403
+	
+	// FIXME : Mettre des icones pour les réservations etc
+	// FIXME : Dans la recherche pour les listes, regrouper si c'est le même utilisateur
+	// FIXME : prochain anniversaire qui ne marche pas ???
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

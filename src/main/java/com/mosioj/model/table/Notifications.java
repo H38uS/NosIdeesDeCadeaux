@@ -372,4 +372,7 @@ public class Notifications extends Table {
 			e.printStackTrace();
 		}
 	}
+
+	// FIXME checker les paramètres notifications
+	// FIXME pas d'objet USER_ROLES ? Regarder UserRolesColumns
 }
