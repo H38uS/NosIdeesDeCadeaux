@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Map;
 
+import com.mosioj.model.table.Notifications;
+import com.mosioj.notifications.instance.NotifErrorOccured;
+
 public class NotificationFactory {
 
 	private NotificationFactory() {
@@ -26,6 +29,10 @@ public class NotificationFactory {
 												String text,
 												Timestamp creationTime,
 												Map<ParameterName, Object> params) throws SQLException {
+		
+		if (Notifications.NOTIF_TYPE_ADMIN_ERROR.equals(type)) {
+			return new NotifErrorOccured(id, owner, text, params, creationTime);
+		}
 
 		NotificationType t = NotificationType.valueOf(type);
 		Class<? extends AbstractNotification> clazz = t.getNotificationClassName();

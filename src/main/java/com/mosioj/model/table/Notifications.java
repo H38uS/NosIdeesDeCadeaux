@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.table.columns.UserRolesColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationActivation;
@@ -35,11 +36,13 @@ public class Notifications extends Table {
 	public static final String TABLE_NAME = "NOTIFICATIONS";
 	public static final String TABLE_PARAMS = "NOTIFICATION_PARAMETERS";
 
+	public static final String NOTIF_TYPE_ADMIN_ERROR = "ADMIN_ERROR";
+
 	private final Logger logger = LogManager.getLogger(Notifications.class);
 	private final UserParameters userParameters = new UserParameters();
-	
+
 	private String urlTillProtectedPublic;
-	
+
 	public void setURL(String fullURL) {
 		if (fullURL.contains("protected")) {
 			urlTillProtectedPublic = fullURL.substring(0, fullURL.indexOf("protected"));
@@ -342,5 +345,31 @@ public class Notifications extends Table {
 	public AbstractNotification getNotification(int notifId) throws SQLException {
 		List<AbstractNotification> notifs = getNotificationWithWhereClause(MessageFormat.format("{0} = ?", ID), notifId);
 		return notifs.size() == 0 ? null : notifs.get(0);
+	}
+
+	/**
+	 * Logs an exception notifications to Admins.
+	 * 
+	 * @param exception
+	 * @throws SQLException
+	 */
+	public void logError(Exception exception) {
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format(" insert into {0} ", TABLE_NAME));
+		query.append(MessageFormat.format("   ({0},{1},{2},{3}) ", OWNER, TEXT, TYPE, CREATION_DATE));
+		query.append(MessageFormat.format(	" select u.{0}, ''Une erreur est survenue: {1}...'', ''{2}'', now()",
+											UsersColumns.ID,
+											exception.getMessage(),
+											NOTIF_TYPE_ADMIN_ERROR));
+		query.append(MessageFormat.format("   from {0} u ", Users.TABLE_NAME));
+		query.append(MessageFormat.format("   join USER_ROLES ur on ur.{0} = u.{1}", UserRolesColumns.EMAIL, UsersColumns.EMAIL));
+		query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
+
+		try {
+			getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
