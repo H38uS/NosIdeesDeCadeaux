@@ -11,6 +11,8 @@ import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 
 public class NotifIdeaModifiedWhenBirthdayIsSoon extends AbstractNotification {
+	
+	public static final int NB_DAYS_BEFORE_BIRTHDAY = 5;
 
 	private String userName;
 	private String idea;

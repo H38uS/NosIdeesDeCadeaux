@@ -18,7 +18,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.controllers.Index;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -103,7 +102,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 			if (birthday.before(today)) {
 				birthday.add(Calendar.YEAR, 1);
 			}
-			today.add(Calendar.DAY_OF_YEAR, Index.NB_DAYS_MAX_BEFORE_BIRTHDAY);
+			today.add(Calendar.DAY_OF_YEAR, NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY);
 			if (birthday.before(today)) {
 				for (User friend : userRelations.getAllUsersInRelation(user.id)) {
 					notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
