@@ -5,7 +5,7 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
 		</Console>
-		<RollingFile name="RollingFile" fileName="${work_dir}/logs/IdeesDeCadeaux.log" append="true" filePattern="${work_dir}/logs/%d{MM-dd-yyyy}-IdeesDeCadeaux-%i.log" >
+		<RollingFile name="RollingFile" fileName="${work_dir}/logs/IdeesDeCadeaux.log" append="true" filePattern="${work_dir}/logs/%d{yyyy-MM-dd}-IdeesDeCadeaux-%i.log" >
 			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
 			<Policies>
 				<TimeBasedTriggeringPolicy />
