@@ -6,7 +6,7 @@
 		<div class="indexbox">
 			<ul>
 				<li>
-					<a href="protected/index.jsp"><span class="fl_green">Se </span><span class="fl_yellow"> Connecter</span></a>
+					<a href="protected/index"><span class="fl_green">Se </span><span class="fl_yellow"> Connecter</span></a>
 				</li>
 				<li>
 					<a href="public/creation_compte.jsp"><span class="fl_blue">Créer un </span><span class="fl_purple">Compte</span></a>
