@@ -301,36 +301,32 @@ public class UserRelations extends Table {
 								firstUserId);
 	}
 
-	public List<String> getAllNamesOrEmailsInRelation(int userId, String userNameOrEmail, int firstRow, int limit)
-			throws SQLException {
+	public List<User> getAllNamesOrEmailsInRelation(int userId, String userNameOrEmail, int firstRow, int limit) throws SQLException {
 
-		List<String> namesOrEmails = new ArrayList<String>();
+		List<User> users = new ArrayList<User>();
 		userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format("select u.{0} as res ", UsersColumns.NAME));
+		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
 		query.append(MessageFormat.format("  from {0} u, {1} r ", Users.TABLE_NAME, TABLE_NAME));
 		query.append(MessageFormat.format(" where u.{0} = r.{1} ", UsersColumns.ID, FIRST_USER));
 		query.append(MessageFormat.format("   and r.{0} = ? ", SECOND_USER));
-		query.append(MessageFormat.format("   and lower(u.{0}) like ? ESCAPE ''!'' ", UsersColumns.NAME));
-		query.append(" union ");
-		query.append(MessageFormat.format("select u.{0} as res ", UsersColumns.EMAIL));
-		query.append(MessageFormat.format("  from {0} u, {1} r ", Users.TABLE_NAME, TABLE_NAME));
-		query.append(MessageFormat.format(" where u.{0} = r.{1} ", UsersColumns.ID, FIRST_USER));
-		query.append(MessageFormat.format("   and r.{0} = ? ", SECOND_USER));
-		query.append(MessageFormat.format("   and lower(u.{0}) like ? ESCAPE ''!'' ", UsersColumns.EMAIL));
+		query.append(MessageFormat.format("   and (lower(u.{0}) like ? ESCAPE ''!'' ", UsersColumns.NAME));
+		query.append(MessageFormat.format("   or lower(u.{0}) like ? ESCAPE ''!'') ", UsersColumns.EMAIL));
 		query.append(" order by 1 ");
 		query.append(" LIMIT ?, ? ");
 
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), query.toString());
-			ps.bindParameters(userId, userNameOrEmail, userId, userNameOrEmail, firstRow, limit);
+			ps.bindParameters(userId, userNameOrEmail, userNameOrEmail, firstRow, limit);
 
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
-					namesOrEmails.add(res.getString(1));
+					users.add(new User(	res.getInt(UsersColumns.ID.name()),
+										res.getString(UsersColumns.NAME.name()),
+										res.getString(UsersColumns.EMAIL.name())));
 				}
 			}
 		} finally {
@@ -339,7 +335,7 @@ public class UserRelations extends Table {
 			}
 		}
 
-		return namesOrEmails;
+		return users;
 	}
 
 	/**
@@ -352,8 +348,11 @@ public class UserRelations extends Table {
 	 * @return All users matching the name/email that are in suggestedBy network, but not in suggestedTo network.
 	 * @throws SQLException
 	 */
-	public List<User> getAllUsersInRelationNotInOtherNetwork(int suggestedBy, int suggestedTo, String userNameOrEmail, int firstRow,
-			int limit) throws SQLException {
+	public List<User> getAllUsersInRelationNotInOtherNetwork(	int suggestedBy,
+																int suggestedTo,
+																String userNameOrEmail,
+																int firstRow,
+																int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
 		PreparedStatementIdKdo ps = null;

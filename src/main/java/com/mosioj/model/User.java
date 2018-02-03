@@ -129,4 +129,12 @@ public class User {
 		return name + " (" + email + ")";
 	}
 
+	/**
+	 * 
+	 * @return The name with the email or the name with the email between parenthesis.
+	 */
+	public String getLongNameEmail() {
+		return name != null && !name.trim().isEmpty() ? MessageFormat.format("{0} ({1})", name, email) : email;
+	}
+
 }

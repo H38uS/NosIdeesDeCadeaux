@@ -84,7 +84,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : gérer les pages 403
 	
 	// FIXME : Mettre des icones pour les réservations etc
-	// FIXME : Dans la recherche pour les listes, regrouper si c'est le même utilisateur
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

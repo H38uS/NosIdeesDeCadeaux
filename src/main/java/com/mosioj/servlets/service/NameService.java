@@ -35,14 +35,10 @@ public class NameService extends IdeesCadeauxServlet {
 			User current = users.getUser(userId);
 			String param = ParametersUtils.readIt(request, NAME_OR_EMAIL).toLowerCase();
 			
-			List<String> res = new ArrayList<String>();
+			List<User> res = new ArrayList<User>();
 			int MAX = 5;
-			if (current.getEmail().toLowerCase().contains(param)) {
-				res.add(current.getEmail());
-				MAX--;
-			}
-			if (current.name != null && current.name.toLowerCase().contains(param)) {
-				res.add(current.name);
+			if (current.getEmail().toLowerCase().contains(param) || (current.name != null && current.name.toLowerCase().contains(param))) {
+				res.add(current);
 				MAX--;
 			}
 			
@@ -51,9 +47,9 @@ public class NameService extends IdeesCadeauxServlet {
 			// Building the JSON answer
 			StringBuilder resp = new StringBuilder();
 			resp.append("[");
-			for (String name : res) {
+			for (User user : res) {
 				resp.append("{");
-				resp.append(JSONObject.toString("value", name));
+				resp.append(JSONObject.toString("value", user.getLongNameEmail()));
 				resp.append("},");
 			}
 			resp.deleteCharAt(resp.length() - 1);
@@ -69,5 +65,5 @@ public class NameService extends IdeesCadeauxServlet {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		ideesKDoGET(request, response);
 	}
-	
+
 }
