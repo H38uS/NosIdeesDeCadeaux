@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.Priorite;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
 import com.mosioj.model.table.columns.CommentsColumns;
@@ -75,7 +76,10 @@ public class Idees extends Table {
 								rs.getString(CategoriesColumns.IMAGE.name()),
 								rs.getString(CategoriesColumns.ALT.name()),
 								rs.getString(CategoriesColumns.TITLE.name()),
-								rs.getInt(PRIORITE.name()),
+								new Priorite(	rs.getInt(PRIORITE.name()),
+												rs.getString("PRIORITY_NAME"),
+												rs.getString("PRIORITY_PICTURE"),
+												rs.getInt("PRIORITY_ORDER")),
 								rs.getTimestamp(RESERVE_LE.name()),
 								rs.getTimestamp(MODIFICATION_DATE.name()),
 								rs.getString(A_SOUS_RESERVATION.name()),
@@ -100,6 +104,9 @@ public class Idees extends Table {
 		columns.append(MessageFormat.format("       i.{0}, ", GROUPE_KDO_ID));
 		columns.append(MessageFormat.format("       i.{0} as id_image, ", IMAGE));
 		columns.append(MessageFormat.format("       i.{0}, ", PRIORITE));
+		columns.append(MessageFormat.format("       p.{0} as PRIORITY_NAME, ", PrioritesColumns.NOM));
+		columns.append(MessageFormat.format("       p.{0} as PRIORITY_PICTURE, ", PrioritesColumns.IMAGE));
+		columns.append(MessageFormat.format("       p.{0} as PRIORITY_ORDER, ", PrioritesColumns.ORDRE));
 		columns.append(MessageFormat.format("       i.{0}, ", RESERVE_LE));
 		columns.append(MessageFormat.format("       i.{0}, ", MODIFICATION_DATE));
 		columns.append(MessageFormat.format("       i.{0}, ", A_SOUS_RESERVATION));

@@ -17,7 +17,7 @@ public class Idee {
 	private final int group;
 	private final String image;
 	public final User owner;
-	private final int priorite;
+	private final Priorite priorite;
 	private final Timestamp bookedOn;
 	private final Timestamp lastModified;
 	private final boolean isPartiallyBooked;
@@ -27,7 +27,7 @@ public class Idee {
 	private User surpriseBy;
 
 	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage,
-			String catAlt, String catTitle, int priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked, User surpriseBy) {
+			String catAlt, String catTitle, Priorite priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked, User surpriseBy) {
 		id = pId;
 		text = pText;
 		type = pType;
@@ -75,7 +75,7 @@ public class Idee {
 		return bookingOwner != null || group > 0;
 	}
 
-	public int getPriorite() {
+	public Priorite getPriorite() {
 		return priorite;
 	}
 

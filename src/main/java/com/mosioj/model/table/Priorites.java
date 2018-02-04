@@ -23,7 +23,7 @@ public class Priorites extends Table {
 		List<Priorite> priorities = new ArrayList<Priorite>();
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(	getDb(),
-																MessageFormat.format(	"select {0},{1},{2},{3} from {4}",
+																MessageFormat.format(	"select {0},{1},{2},{3} from {4} order by {3} desc",
 																						ID,
 																						NOM,
 																						IMAGE,

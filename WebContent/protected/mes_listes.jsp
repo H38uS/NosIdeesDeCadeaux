@@ -37,6 +37,7 @@
 							<c:if test="${empty idee.surpriseBy}">
 								<li class="idea_square top_tooltip">
 									<div class="left">
+										<span title="${idee.priorite.name}">${idee.priorite.image}</span>
 										<c:if test="${not empty idee.category}">
 											<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 										</c:if>
@@ -81,6 +82,7 @@
 						<c:forEach var="idee" items="${user.ideas}">
 						<li class="idea_square top_tooltip ${idee.displayClass}">
 							<div class="left">
+								<span title="${idee.priorite.name}">${idee.priorite.image}</span>
 								<c:if test="${not empty idee.category}">
 									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 								</c:if>
