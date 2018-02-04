@@ -76,7 +76,7 @@
 			<!-- Fin idée de la personne -->
 
 			<c:if test="${userid != user.id}">
-				<h2 id="list_${user.id}">Liste de cadeaux de ${user.name}</h2>
+				<h2 id="list_${user.id}">Liste de cadeaux ${user.myDName}</h2>
 				<div>
 					<ul id="ideas_square_container">
 						<c:forEach var="idee" items="${user.ideas}">

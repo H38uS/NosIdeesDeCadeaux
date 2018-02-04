@@ -22,7 +22,7 @@ public class User {
 
 	public User(int id, String name, String email) {
 		this.id = id;
-		this.name = name;
+		this.name = name == null ? null : name.trim();
 		this.email = email;
 	}
 
@@ -90,7 +90,7 @@ public class User {
 	 * @return The name of the person.
 	 */
 	public String getName() {
-		return name != null && !name.trim().isEmpty() ? WordUtils.capitalize(name) : email;
+		return name != null && !name.isEmpty() ? WordUtils.capitalize(name) : email;
 	}
 
 	public void addIdeas(List<Idee> ownerIdeas) {
@@ -134,7 +134,16 @@ public class User {
 	 * @return The name with the email or the name with the email between parenthesis.
 	 */
 	public String getLongNameEmail() {
-		return name != null && !name.trim().isEmpty() ? MessageFormat.format("{0} ({1})", name, email) : email;
+		return name != null && !name.isEmpty() ? MessageFormat.format("{0} ({1})", name, email) : email;
+	}
+
+	public String getMyDName() {
+		if (name == null || name.isEmpty()) {
+			return MessageFormat.format("de {0}", email);
+		}
+		String vowel = "aeiuoyéè";
+		return vowel.indexOf(Character.toLowerCase(name.charAt(0))) == -1 ? MessageFormat.format("de {0}", getName())
+				: MessageFormat.format("d''{0}", getName());
 	}
 
 }

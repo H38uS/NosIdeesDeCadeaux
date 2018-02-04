@@ -80,7 +80,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir archiver les notifications sans les supprimer
 	// TODO : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise / autre?
 	
-	// TODO : gérer les noms qui commence par une voyelle dans mes listes et afficher d'
 	
 	// FIXME : Mettre des icones pour les réservations etc
 
