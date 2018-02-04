@@ -63,7 +63,7 @@
 
 	<error-page>
 		<error-code>404</error-code>
-		<location>/public/NotFound.jsp</location>
+		<location>/public/NotFound</location>
 	</error-page>
 
 </web-app>
