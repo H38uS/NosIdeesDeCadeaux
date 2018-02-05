@@ -9,6 +9,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 /**
@@ -47,8 +48,9 @@ public class SurpriseModification extends AllAccessToPostAndGet implements Secur
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
+	 * @throws NotLoggedInException 
 	 */
-	protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
 		Integer ideaId = ParametersUtils.readInt(request, ideaParameter);
 		if (ideaId == null) {
@@ -78,12 +80,12 @@ public class SurpriseModification extends AllAccessToPostAndGet implements Secur
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canInteractWithIdea(request, response);
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canInteractWithIdea(request, response);
 	}
 

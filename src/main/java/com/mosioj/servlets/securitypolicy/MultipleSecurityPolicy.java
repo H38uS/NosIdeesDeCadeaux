@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.utils.NotLoggedInException;
+
 /**
  * Fails if at least one fails.
  * 
@@ -20,7 +22,7 @@ public class MultipleSecurityPolicy implements SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		for (SecurityPolicy policy : policies) {
 			if (!policy.hasRightToInteractInGetRequest(request, response)) {
 				return false;
@@ -40,7 +42,7 @@ public class MultipleSecurityPolicy implements SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		for (SecurityPolicy policy : policies) {
 			if (!policy.hasRightToInteractInPostRequest(request, response)) {
 				return false;

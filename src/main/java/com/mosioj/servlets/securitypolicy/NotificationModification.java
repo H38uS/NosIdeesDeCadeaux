@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.table.Notifications;
 import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 /**
@@ -40,8 +41,9 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
+	 * @throws NotLoggedInException 
 	 */
-	private boolean canModifyNotification(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	private boolean canModifyNotification(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
 		Integer notifId = ParametersUtils.readInt(request, notifParameter);
 		if (notifId == null) {
@@ -66,12 +68,12 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyNotification(request, response);
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyNotification(request, response);
 	}
 

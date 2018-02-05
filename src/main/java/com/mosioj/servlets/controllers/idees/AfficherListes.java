@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -32,7 +33,7 @@ public class AfficherListes extends AbstractUserListes {
 	}
 
 	@Override
-	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
 		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
 		List<User> ids = new ArrayList<User>();
@@ -48,7 +49,7 @@ public class AfficherListes extends AbstractUserListes {
 	}
 
 	@Override
-	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
 		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
 		int size = userRelations.getAllUsersInRelationCount(userId, nameOrEmail);

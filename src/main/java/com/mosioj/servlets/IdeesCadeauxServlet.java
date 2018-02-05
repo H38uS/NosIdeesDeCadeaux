@@ -49,6 +49,7 @@ import com.mosioj.model.table.Users;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.DataSourceIdKDo;
@@ -66,21 +67,19 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
 
 	// TODO : notification quand un anniversaire ou les fêtes approchent, pour chaque idée qui a une date de
-	// modification très ancienne
+	// modification très ancienne => Ajouter la vérification sur la date de modification ??? + pour les nouvelles
 	// TODO : notification followers quand on ajoute des idées, les modifie etc.
 
 	// TODO : controle parental
-	// TODO : auto logout en javascript
 
-	// TODO : catcher quand la session a expiré, pour faire une joli page
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// TODO : pouvoir archiver les notifications sans les supprimer
-	// TODO : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise / autre?
-	
-	
+	// FIXME : pouvoir archiver les notifications sans les supprimer
+	// FIXME : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise /
+	// autre?
+
 	// FIXME : Mettre des icones pour les réservations etc
 
 	private static final int MAX_WIDTH = 150;
@@ -94,8 +93,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
 	/**
-	 * L'interface vers la table USER_RELATIONS.
-	 * Static because it can be used in constructor for security checks.
+	 * L'interface vers la table USER_RELATIONS. Static because it can be used in constructor for security checks.
 	 */
 	protected static UserRelations userRelations = new UserRelations();
 
@@ -115,8 +113,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected DataSourceIdKDo validatorConnection;
 
 	/**
-	 * The connections to the IDEES table.
-	 * Static because it can be used in constructor for security checks.
+	 * The connections to the IDEES table. Static because it can be used in constructor for security checks.
 	 */
 	protected static Idees idees = new Idees();
 
@@ -131,8 +128,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected Priorites priorities;
 
 	/**
-	 * The connections to the NOTIFICATION table.
-	 * Static because it can be used in constructor for security checks.
+	 * The connections to the NOTIFICATION table. Static because it can be used in constructor for security checks.
 	 */
 	protected static Notifications notif = new Notifications();
 
@@ -147,14 +143,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected UserRelationsSuggestion userRelationsSuggestion;
 
 	/**
-	 * The connections to the COMMENTS table.
-	 * Static because it can be used in constructor for security checks.
+	 * The connections to the COMMENTS table. Static because it can be used in constructor for security checks.
 	 */
 	protected static Comments comments = new Comments();
-	
+
 	/**
-	 * The connections to the QUESTIONS table.
-	 * Static because it can be used in constructor for security checks.
+	 * The connections to the QUESTIONS table. Static because it can be used in constructor for security checks.
 	 */
 	protected static Questions questions = new Questions();
 
@@ -325,9 +319,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			// Security has passed, perform the logic
 			ideesKDoGET(req, resp);
-		} catch (
-
-		SQLException e) {
+			
+		} catch (NotLoggedInException e) {
+			// Redirection vers l'emplacement de login
+			RootingsUtils.redirectToPage("/public/login.jsp", req, resp);
+		} catch (SQLException e) {
 			// Default error management
 			RootingsUtils.rootToGenericSQLError(e, req, resp);
 		}
@@ -376,7 +372,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			// Security has passed, perform the logic
 			ideesKDoPOST(request, response);
-
+			
+		} catch (NotLoggedInException e) {
+			// Redirection vers l'emplacement de login
+			RootingsUtils.redirectToPage("/public/login.jsp", request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(e, request, response);
 		}

@@ -16,6 +16,7 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.CanAskReplyToQuestions;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -31,7 +32,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 		super(new CanAskReplyToQuestions(userRelations, idees, IDEA_ID_PARAM));
 	}
 
-	private void insertMandatoryParams(HttpServletRequest req, Integer id) throws SQLException {
+	private void insertMandatoryParams(HttpServletRequest req, Integer id) throws SQLException, NotLoggedInException {
 		Idee idea = idees.getIdea(id);
 		req.setAttribute("text", idea.getTextSummary(50));
 		req.setAttribute("idee", id);

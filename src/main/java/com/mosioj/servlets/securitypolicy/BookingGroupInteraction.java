@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.UserRelations;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 /**
@@ -44,8 +45,9 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet implements Se
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
+	 * @throws NotLoggedInException 
 	 */
-	private boolean canInteractWithGroup(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	private boolean canInteractWithGroup(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
 		Integer groupId = ParametersUtils.readInt(request, groupParameter);
 		if (groupId == null) {
@@ -70,12 +72,12 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet implements Se
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canInteractWithGroup(request, response);
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canInteractWithGroup(request, response);
 	}
 

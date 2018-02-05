@@ -13,6 +13,7 @@ import com.mosioj.model.Relation;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/rechercher_reseau")
@@ -39,7 +40,7 @@ public class RechercherReseau extends AbstractListes<Relation> {
 		request.setAttribute("name", users.getUser(networkOwner).name);
 		request.setAttribute(SEARCH_USER_PARAM, nameOrEmail);
 
-		super.ideesKDoGET(request, response); // TODO mutualiser avec Afficher liste
+		super.ideesKDoGET(request, response);
 	}
 
 	@Override
@@ -73,8 +74,7 @@ public class RechercherReseau extends AbstractListes<Relation> {
 	}
 
 	@Override
-	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest request)
-			throws SQLException {
+	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException, NotLoggedInException {
 
 		String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
 		List<Relation> relations = userRelations.getRelations(	ParametersUtils.readInt(request, USER_ID_PARAM),

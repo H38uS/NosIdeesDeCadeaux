@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/voir_liste")
@@ -28,7 +29,7 @@ public class VoirListe extends MesListes {
 	}
 
 	@Override
-	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		List<User> ids = new ArrayList<User>();
 		User user = users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM));
 		ids.add(user);

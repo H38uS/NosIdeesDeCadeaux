@@ -21,6 +21,7 @@ import com.mosioj.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/afficher_reseau")
@@ -126,7 +127,7 @@ public class AfficherReseau extends AbstractListes<Relation> {
 	}
 
 	@Override
-	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 
 		int userId = ParametersUtils.getUserId(req);
 		List<Relation> relations = userRelations.getRelations(	ParametersUtils.readInt(req, USER_ID_PARAM),

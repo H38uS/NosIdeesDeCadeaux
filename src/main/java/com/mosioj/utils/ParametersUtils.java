@@ -58,19 +58,29 @@ public class ParametersUtils {
 	 * 
 	 * @param request
 	 * @return The current user name, or null if no user is logged in.
+	 * @throws NotLoggedInException If requested and the user is not logged in.
 	 */
-	public static String getUserName(HttpServletRequest request) {
+	public static String getUserName(HttpServletRequest request) throws NotLoggedInException {
 		HttpSession session = request.getSession();
-		return (String) session.getAttribute("username");
+		Object name = session.getAttribute("username");
+		if (name == null) {
+			throw new NotLoggedInException("Call on getUserName, but username was not found in the session.");
+		}
+		return (String) name;
 	}
 
 	/**
 	 * 
 	 * @param request
 	 * @return The current user id, or null if no user is logged in.
+	 * @throws NotLoggedInException If requested and the user is not logged in.
 	 */
-	public static int getUserId(HttpServletRequest request) {
+	public static int getUserId(HttpServletRequest request) throws NotLoggedInException {
 		HttpSession session = request.getSession();
-		return (Integer) session.getAttribute("userid");
+		Object id = session.getAttribute("userid");
+		if (id == null) {
+			throw new NotLoggedInException("Call on getUserId, but userid was not found in the session.");
+		}
+		return (Integer) id;
 	}
 }

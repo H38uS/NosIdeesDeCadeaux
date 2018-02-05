@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.relations.Page;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -54,8 +55,8 @@ public abstract class AbstractListes<T> extends IdeesCadeauxServlet {
 	protected abstract String getCallingURL();
 
 	protected abstract String getSpecificParameters(HttpServletRequest req);
-	protected abstract int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException;
-	protected abstract List<T> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException;
+	protected abstract int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException;
+	protected abstract List<T> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException;
 
 	protected List<Page> getPages(int total) {
 		List<Page> pages = new ArrayList<Page>();

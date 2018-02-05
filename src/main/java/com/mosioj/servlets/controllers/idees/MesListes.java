@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -33,7 +34,7 @@ public class MesListes extends AbstractUserListes {
 	}
 
 	@Override
-	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
 		List<User> ids = new ArrayList<User>();
 		int MAX = maxNumberOfResults;
@@ -47,7 +48,7 @@ public class MesListes extends AbstractUserListes {
 	}
 
 	@Override
-	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
 		return userRelations.getRelationsCount(userId) + 1; // On se compte
 	}

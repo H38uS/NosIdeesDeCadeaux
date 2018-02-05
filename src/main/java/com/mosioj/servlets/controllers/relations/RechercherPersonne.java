@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/rechercher_personne")
@@ -75,7 +76,7 @@ public class RechercherPersonne extends AbstractListes<User> {
 	}
 
 	@Override
-	protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException {
+	protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(request);
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
@@ -84,7 +85,7 @@ public class RechercherPersonne extends AbstractListes<User> {
 	}
 
 	@Override
-	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException {
+	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException, NotLoggedInException {
 
 		int userId = ParametersUtils.getUserId(request);
 

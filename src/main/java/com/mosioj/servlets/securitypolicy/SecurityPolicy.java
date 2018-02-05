@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.utils.NotLoggedInException;
+
 public interface SecurityPolicy {
 
 	/**
@@ -13,8 +15,9 @@ public interface SecurityPolicy {
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
 	 * @throws SQLException 
+	 * @throws NotLoggedInException 
 	 */
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException;
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException;
 
 	/**
 	 * 
@@ -28,8 +31,9 @@ public interface SecurityPolicy {
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
 	 * @throws SQLException 
+	 * @throws NotLoggedInException 
 	 */
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException;
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException;
 
 	/**
 	 * 
