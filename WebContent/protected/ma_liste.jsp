@@ -74,12 +74,14 @@
 					<c:if test="${empty idee.surpriseBy}">
 						<li class="idea_square top_tooltip">
 							<div class="left">
-								<span title="${idee.priorite.name}">${idee.priorite.image}</span>
+								<span>${idee.priorite.image}</span>
 								<c:if test="${not empty idee.category}">
 									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
 								</c:if>
 								<c:if test="${idee.hasQuestion()}">
-									<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+									<a href="protected/idee_questions?idee=${idee.id}">
+										<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+									</a>
 								</c:if>
 								<span class="outer_top_tooltiptext">
 									<span class="top_tooltiptext">

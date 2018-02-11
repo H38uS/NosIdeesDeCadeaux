@@ -176,6 +176,20 @@
 .top_tooltip .top_tooltiptext a {
     color: #b0cff8;
 }
+.top_tooltip .top_tooltiptext a img:hover {
+    border: transparent solid 1px;
+    -webkit-box-shadow: 0 1px 5px transparent;
+    box-shadow: 0 1px 5px transparent;
+    border-radius: 2px;
+    padding: 2px;
+}
+.top_tooltip .top_tooltiptext a img:hover {
+	background-color: #8a8a8a;
+    border: #8a8a8a solid 1px;
+    -webkit-box-shadow: 0 0 7px white;
+    box-shadow: 0 0 7px white;
+    border-radius: 2px;
+}
 
 .top_tooltip .top_tooltiptext::after {
     content: "";
