@@ -10,6 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.NotLoggedInException;
@@ -20,6 +23,7 @@ import com.mosioj.utils.RootingsUtils;
 public class AfficherListes extends AbstractUserListes {
 
 	private static final long serialVersionUID = 1209953017190072617L;
+	private static final Logger logger = LogManager.getLogger(AfficherListes.class);
 
 	public static final String AFFICHER_LISTES = "/protected/afficher_listes";
 	private static final String NAME_OR_EMAIL = "name";
@@ -32,10 +36,35 @@ public class AfficherListes extends AbstractUserListes {
 		super(new AllAccessToPostAndGet());
 	}
 
+	/**
+	 * 
+	 * @param req
+	 * @return The String to pass to the database
+	 */
+	private String getEffectiveParameter(HttpServletRequest req) {
+
+		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
+		logger.trace("Receive:" + nameOrEmail);
+
+		if (nameOrEmail == null || nameOrEmail.trim().isEmpty()) {
+			return nameOrEmail;
+		}
+
+		int open = nameOrEmail.indexOf("(");
+		int close = nameOrEmail.indexOf(")");
+		if (open > 0 && close > 0 && open < close) {
+			// Comes from some completion trick
+			nameOrEmail = nameOrEmail.substring(open + 1, close);
+		}
+
+		logger.trace("Returned:" + nameOrEmail.trim());
+		return nameOrEmail.trim();
+	}
+
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
-		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
+		String nameOrEmail = getEffectiveParameter(req);
 		List<User> ids = new ArrayList<User>();
 		int MAX = maxNumberOfResults;
 		User connected = users.getUser(userId);
@@ -51,7 +80,7 @@ public class AfficherListes extends AbstractUserListes {
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
-		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
+		String nameOrEmail = getEffectiveParameter(req);
 		int size = userRelations.getAllUsersInRelationCount(userId, nameOrEmail);
 		User connected = users.getUser(userId);
 		if (connected.matchNameOrEmail(nameOrEmail)) {

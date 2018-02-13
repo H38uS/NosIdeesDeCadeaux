@@ -59,7 +59,7 @@ public class RootingsUtils {
 	 */
 	public static void redirectToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		try {
-			resp.sendRedirect(req.getContextPath() + url);
+			resp.sendRedirect(req.getContextPath() + url.replaceAll(" ", "%20"));
 		} catch (IOException e) {
 			throw new ServletException(e.getMessage());
 		}

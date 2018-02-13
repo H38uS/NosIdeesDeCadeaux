@@ -472,7 +472,7 @@ public class UserRelations extends Table {
 			query.append("  and (lower(u.{1}) like ? ESCAPE ''!'' or lower(u.{2}) like ? ESCAPE ''!'') ");
 		}
 
-		query.append("order by {1}, {2}, {0}");
+		query.append("order by u.{1}, u.{2}, u.{0}");
 
 		String formatQuery = MessageFormat.format(	query.toString(),
 													UsersColumns.ID.name(),
