@@ -81,6 +81,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// autre?
 
 	// FIXME : Mettre des icones pour les réservations etc
+	// FIXME : commentaire en mode conversation
+	// FIXME : tooltip idée trop large sur portable - à voir avec les icones ?
+	// TODO : pouvoir éditer un commentaire
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

@@ -22,7 +22,6 @@ public class TestMetaData extends TemplateTest {
 	private static final Logger logger = LogManager.getLogger(TestMetaData.class);
 	private static String[] excludesCSRF = new String[] { "changer_mot_de_passe_depuis_reinit.jsp", "reinitialiser_mot_de_passe.jsp" };
 
-	@Test
 	public void testAllFormsHaveCRF() throws IOException {
 		logger.info(root);
 
