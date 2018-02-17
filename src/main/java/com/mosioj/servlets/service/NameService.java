@@ -34,9 +34,7 @@ public class NameService extends IdeesCadeauxServlet {
 
 			int userId = ParametersUtils.getUserId(request);
 			User current = users.getUser(userId);
-
-			// Post from Javascript are already performed in UTF-8
-			String param = ParametersUtils.readAndEscapeService(request, NAME_OR_EMAIL).toLowerCase();
+			String param = ParametersUtils.readAndEscape(request, NAME_OR_EMAIL).toLowerCase();
 
 			List<User> res = new ArrayList<User>();
 			int MAX = 5;

@@ -64,19 +64,6 @@ public class ParametersUtils {
 	/**
 	 * 
 	 * @param request
-	 * @param name
-	 * @return The parameter value from a service call, i.e. direct Javascript calls.
-	 */
-	public static String readAndEscapeService(HttpServletRequest request, String name) {
-		String res = request.getParameter(name);
-		if (res == null)
-			return "";
-		return StringEscapeUtils.escapeHtml4(res);
-	}
-
-	/**
-	 * 
-	 * @param request
 	 * @return The current user name, or null if no user is logged in.
 	 * @throws NotLoggedInException If requested and the user is not logged in.
 	 */
