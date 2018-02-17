@@ -44,7 +44,7 @@ public class AfficherListes extends AbstractUserListes {
 	private String getEffectiveParameter(HttpServletRequest req) {
 
 		String nameOrEmail = ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
-		logger.trace("Receive:" + nameOrEmail);
+		logger.trace(MessageFormat.format("Receive:{0}", nameOrEmail));
 
 		if (nameOrEmail == null || nameOrEmail.trim().isEmpty()) {
 			return nameOrEmail;
@@ -57,7 +57,7 @@ public class AfficherListes extends AbstractUserListes {
 			nameOrEmail = nameOrEmail.substring(open + 1, close);
 		}
 
-		logger.trace("Returned:" + nameOrEmail.trim());
+		logger.trace(MessageFormat.format("Returned:{0}", nameOrEmail.trim()));
 		return nameOrEmail.trim();
 	}
 
@@ -94,7 +94,7 @@ public class AfficherListes extends AbstractUserListes {
 		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
 																AFFICHER_LISTES,
 																NAME_OR_EMAIL,
-																ParametersUtils.readIt(request, NAME_OR_EMAIL)),
+																request.getParameter(NAME_OR_EMAIL)),
 										request,
 										response); // Rien de spécifique pour le moment
 	}

@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.simple.JSONObject;
 
 import com.mosioj.model.User;
@@ -33,29 +34,36 @@ public class NameService extends IdeesCadeauxServlet {
 
 			int userId = ParametersUtils.getUserId(request);
 			User current = users.getUser(userId);
-			String param = ParametersUtils.readIt(request, NAME_OR_EMAIL).toLowerCase();
-			
+
+			// Post from Javascript are already performed in UTF-8
+			String param = ParametersUtils.readAndEscapeService(request, NAME_OR_EMAIL).toLowerCase();
+
 			List<User> res = new ArrayList<User>();
 			int MAX = 5;
-			if (current.getEmail().toLowerCase().contains(param) || (current.name != null && current.name.toLowerCase().contains(param))) {
+			if (current.getEmail().toLowerCase().contains(param)
+					|| (current.name != null && current.name.toLowerCase().contains(param))) {
 				res.add(current);
 				MAX--;
 			}
-			
+
 			res.addAll(userRelations.getAllNamesOrEmailsInRelation(userId, param, 0, MAX));
-			
+
 			// Building the JSON answer
 			StringBuilder resp = new StringBuilder();
 			resp.append("[");
 			for (User user : res) {
 				resp.append("{");
-				resp.append(JSONObject.toString("value", user.getLongNameEmail()));
+				resp.append(JSONObject.toString("value", StringEscapeUtils.unescapeHtml4(user.getLongNameEmail())));
 				resp.append("},");
 			}
 			resp.deleteCharAt(resp.length() - 1);
 			resp.append("]");
-			
-			response.getOutputStream().println(resp.toString());
+
+			String content = resp.toString();
+			if (response.getCharacterEncoding() != null) {
+				content = new String(resp.toString().getBytes("UTF-8"), response.getCharacterEncoding());
+			}
+			response.getOutputStream().println(content);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

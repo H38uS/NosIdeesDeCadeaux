@@ -1,15 +1,21 @@
 package com.mosioj.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ParametersUtils {
 
+	private static final Logger logger = LogManager.getLogger(ParametersUtils.class);
+
 	/**
+	 * Attention: ne surtout pas utiliser dans les redirect post -> get.
 	 * 
 	 * @param request The processing request.
 	 * @param name The parameter name.
@@ -18,6 +24,7 @@ public class ParametersUtils {
 	 */
 	public static String readIt(HttpServletRequest request, String name) {
 		String res = request.getParameter(name);
+		logger.trace(MessageFormat.format("{0} is:{1}", name, res));
 		try {
 			return res == null ? "" : new String(res.getBytes("ISO-8859-1"), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -52,6 +59,19 @@ public class ParametersUtils {
 	 */
 	public static String readAndEscape(HttpServletRequest request, String name) {
 		return StringEscapeUtils.escapeHtml4(readIt(request, name));
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param name
+	 * @return The parameter value from a service call, i.e. direct Javascript calls.
+	 */
+	public static String readAndEscapeService(HttpServletRequest request, String name) {
+		String res = request.getParameter(name);
+		if (res == null)
+			return "";
+		return StringEscapeUtils.escapeHtml4(res);
 	}
 
 	/**
