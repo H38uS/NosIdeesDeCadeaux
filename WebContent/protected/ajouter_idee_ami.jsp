@@ -5,7 +5,8 @@
 <t:normal_protected>
 		<jsp:body>
 		<c:if test="${not empty text}">
-			Votre idée "${text}" a bien été créé.
+			Votre idée a bien été créé. Son contenu:
+			<p>${text}</p>
 		</c:if>
 		<h2>Ajouter une nouvelle idée à ${user.name}</h2>
 		<div>

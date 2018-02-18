@@ -16,13 +16,13 @@
 						<td>
 							<c:choose>
 								<c:when test="${user.nbDaysBeforeBirthday == 0}">
-									C'est l'anniversaire de ${user.name} aujourd'hui !
+									C'est l'anniversaire ${user.myDName} aujourd'hui !
 								</c:when>
 								<c:when test="${user.nbDaysBeforeBirthday == 1}">
-									L'anniversaire de ${user.name} est demain !
+									L'anniversaire ${user.myDName} est demain !
 								</c:when>
 								<c:otherwise>
-									L'anniversaire de ${user.name} arrive dans ${user.nbDaysBeforeBirthday} jours !
+									L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
 								</c:otherwise>
 							</c:choose>
 						</td>

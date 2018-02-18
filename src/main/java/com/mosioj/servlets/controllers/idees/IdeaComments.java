@@ -33,7 +33,7 @@ public class IdeaComments extends IdeesCadeauxServlet {
 
 	private void insertMandatoryParams(HttpServletRequest req, Integer id) throws SQLException {
 		Idee idea = idees.getIdea(id);
-		req.setAttribute("text", idea.getTextSummary(50));
+		req.setAttribute("text", idea.getText());
 		req.setAttribute("idee", id);
 		req.setAttribute("comments", comments.getCommentsOn(id));
 	}

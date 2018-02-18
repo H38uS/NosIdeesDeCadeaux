@@ -5,7 +5,9 @@
 <t:normal_protected>
 		<jsp:body>
 		<h2>Commenter une idée</h2>
-		<div>Rappel de l'idée : ${text}</div>
+		<div>Rappel de l'idée
+			<p>${text}</p>
+		</div>
 
 		<c:if test="${not empty success}">
 			Votre nouveau commentaire a bien été ajouté.

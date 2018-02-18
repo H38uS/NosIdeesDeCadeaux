@@ -76,7 +76,7 @@ public class AjouterIdeeAmi extends AbstractIdea {
 											parameters.get("image"),
 											estSurprise ? currentUser : null);
 				Idee idea = idees.getIdea(ideaId);
-				request.setAttribute("text", idea.getTextSummary(50));
+				request.setAttribute("text", idea.getText());
 				request.setAttribute("idea", idea);
 				
 				if (!estSurprise) {

@@ -12,7 +12,9 @@
 				<h2>Posez une question sur une idée</h2>
 			</c:otherwise>
 		</c:choose>
-		<div>Rappel de l'idée : ${text}</div>
+		<div>Rappel de l'idée
+			<p>${text}</p>
+		</div>
 
 		<c:if test="${not empty success}">
 			Votre nouveau commentaire a bien été ajouté.

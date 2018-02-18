@@ -34,7 +34,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 
 	private void insertMandatoryParams(HttpServletRequest req, Integer id) throws SQLException, NotLoggedInException {
 		Idee idea = idees.getIdea(id);
-		req.setAttribute("text", idea.getTextSummary(50));
+		req.setAttribute("text", idea.getText());
 		req.setAttribute("idee", id);
 		req.setAttribute("owner", idea.owner);
 		req.setAttribute("isOwner", idea.owner.id == ParametersUtils.getUserId(req));
