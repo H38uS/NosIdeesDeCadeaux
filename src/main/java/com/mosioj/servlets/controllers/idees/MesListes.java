@@ -37,12 +37,10 @@ public class MesListes extends AbstractUserListes {
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
 		List<User> ids = new ArrayList<User>();
-		int MAX = maxNumberOfResults;
 		if (firstRow == 0) {
 			ids.add(users.getUser(userId));
-			MAX--;
 		}
-		ids.addAll(userRelations.getAllUsersInRelation(userId, firstRow, MAX));
+		ids.addAll(userRelations.getAllUsersInRelation(userId, firstRow, maxNumberOfResults));
 		fillsUserIdeas(userId, ids);
 		return ids;
 	}
