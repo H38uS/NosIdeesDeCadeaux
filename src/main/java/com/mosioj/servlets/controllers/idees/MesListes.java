@@ -48,7 +48,8 @@ public class MesListes extends AbstractUserListes {
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
 		int userId = ParametersUtils.getUserId(req);
-		return userRelations.getRelationsCount(userId) + 1; // On se compte
+		// On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
+		return userRelations.getRelationsCount(userId);
 	}
 
 	@Override

@@ -58,6 +58,11 @@ public abstract class AbstractListes<T> extends IdeesCadeauxServlet {
 	protected abstract int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException;
 	protected abstract List<T> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException;
 
+	/**
+	 * 
+	 * @param total The total number of record.
+	 * @return The list of pages.
+	 */
 	protected List<Page> getPages(int total) {
 		List<Page> pages = new ArrayList<Page>();
 		for (int i = 0; i < total / maxNumberOfResults; i++) {
@@ -103,7 +108,7 @@ public abstract class AbstractListes<T> extends IdeesCadeauxServlet {
 		LOGGER.debug("Entities: " + ids);
 
 		int total = ids.size();
-		if (total == maxNumberOfResults || pageNumber > 1) {
+		if (total >= maxNumberOfResults || pageNumber > 1) {
 			// On regarde si y'en a pas d'autres
 			total = getTotalNumberOfRecords(req);
 			if (total > maxNumberOfResults) {
