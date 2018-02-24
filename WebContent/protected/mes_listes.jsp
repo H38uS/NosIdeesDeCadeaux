@@ -73,7 +73,7 @@
 												<span class="top_tooltiptext">
 													<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
 													ou 
-													<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
+													<a href="protected/remove_an_idea?ideeId=${idee.id}&from=/${identic_call_back}">supprimer</a>
 													cette idée.<br/>
 													<a href="protected/idee_questions?idee=${idee.id}">
 														<img src="public/image/questions.png" title="Voir les questions existantes" />
@@ -154,7 +154,7 @@
 												<c:when test="${not empty idee.surpriseBy}">
 													<c:choose>
 														<c:when test="${idee.surpriseBy.id == userid}">
-															Idée surprise créée par vous - l'<a href="protected/supprimer_surprise?&idee=${idee.id}">annuler</a>.
+															Idée surprise créée par vous - l'<a href="protected/supprimer_surprise?idee=${idee.id}&from=/${identic_call_back}">annuler</a>.
 														</c:when>
 														<c:otherwise>
 															Idée surprise créée par ${idee.surpriseBy.name}.
@@ -166,7 +166,7 @@
 														<c:when test="${not empty idee.bookingOwner}">
 															<c:choose>
 																<c:when test="${userid == idee.bookingOwner.id}">
-																	Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?&idee=${idee.id}">Annuler</a> !
+																	Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}">Annuler</a> !
 																</c:when>
 																<c:otherwise>
 																	Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}
@@ -185,13 +185,13 @@
 												</c:when>
 												<c:otherwise>
 														L'idée n'a pas encore été réservée.<br/>
-														<a href="protected/reserver?idee=${idee.id}">La réserver</a>,
+														<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}">La réserver</a>,
 														<a href="protected/sous_reserver?idee=${idee.id}"> réserver une sous-partie</a>
 														ou <a href="protected/create_a_group?idee=${idee.id}">créer un groupe</a>
 												</c:otherwise>
 											</c:choose><br/>
 											<c:if test="${empty idee.surpriseBy}">
-												<a href="protected/est_a_jour?idee=${idee.id}">Demander</a> si c'est à jour.<br/>
+												<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}">Demander</a> si c'est à jour.<br/>
 												<a href="protected/idee_questions?idee=${idee.id}" class="img">
 													<img src="public/image/questions.png" class="clickable" title="Poser une question à ${user.name} / voir les existantes" />
 												</a>

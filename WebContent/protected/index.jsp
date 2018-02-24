@@ -26,6 +26,9 @@
 								</c:otherwise>
 							</c:choose>
 						</td>
+						<td>
+							<a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
+						</td>
 					</tr>
 					</c:forEach>
 				</table>
