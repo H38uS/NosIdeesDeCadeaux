@@ -52,6 +52,8 @@ public class NameService extends IdeesCadeauxServlet {
 			for (User user : res) {
 				resp.append("{");
 				resp.append(JSONObject.toString("value", StringEscapeUtils.unescapeHtml4(user.getLongNameEmail())));
+				resp.append(",");
+				resp.append(JSONObject.toString("email", StringEscapeUtils.unescapeHtml4(user.getEmail())));
 				resp.append("},");
 			}
 			resp.deleteCharAt(resp.length() - 1);

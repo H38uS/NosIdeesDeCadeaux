@@ -34,7 +34,7 @@
 						source : "protected/service/name_resolver",
 						minLength : 2,
 						select : function(event, ui) {
-							$("#top_mes_listes_search").val(ui.item.value);
+							$("#top_mes_listes_search").val(ui.item.email);
 							$("#afficherliste_topmeslistes").submit();
 							return false;
 						}
@@ -265,7 +265,7 @@
 					source : "protected/service/name_resolver",
 					minLength : 2,
 					select : function(event, ui) {
-						$("#bottom_mes_listes_search").val(ui.item.value);
+						$("#bottom_mes_listes_search").val(ui.item.email);
 						$("#afficherliste_bottommeslistes").submit();
 						return false;
 					}

@@ -47,7 +47,7 @@
 					source : "protected/service/name_resolver",
 					minLength : 2,
 					select : function(event, ui) {
-						$("#header_name").val(ui.item.value);
+						$("#header_name").val(ui.item.email);
 						$("#afficherliste").submit();
 						return false;
 					}

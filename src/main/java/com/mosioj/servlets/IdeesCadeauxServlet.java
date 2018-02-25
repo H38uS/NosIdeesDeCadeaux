@@ -77,10 +77,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
 	// FIXME : pouvoir archiver les notifications sans les supprimer
-	// FIXME : bien rediriger vers la bonne page quand on fait des réserver / déreserver / annulation de surprise /
-	// autre?
 
-	// FIXME : Mettre des icones pour les réservations etc
 	// FIXME : commentaire en mode conversation
 	// FIXME : tooltip idée trop large sur portable - à voir avec les icones ?
 	// TODO : pouvoir éditer un commentaire
