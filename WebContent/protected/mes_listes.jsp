@@ -177,21 +177,29 @@
 															L'idée est réservée par un groupe (créé le ${idee.bookingDate}).
 															<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
 														</c:otherwise>
-													</c:choose>
+													</c:choose><br/>
 												</c:when>
 												<c:when test="${idee.isPartiallyBooked()}">
 													Une sous partie de l'idée est actuellement réservée.
-													<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a>
+													<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a><br/>
 												</c:when>
 												<c:otherwise>
 														L'idée n'a pas encore été réservée.<br/>
-														<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}">La réserver</a>,
-														<a href="protected/sous_reserver?idee=${idee.id}"> réserver une sous-partie</a>
-														ou <a href="protected/create_a_group?idee=${idee.id}">créer un groupe</a>
+														<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img">
+															<img src="public/image/reserver.png" class="clickable" title="Réserver l'idée" />
+														</a>
+														<a href="protected/sous_reserver?idee=${idee.id}" class="img">
+															<img src="public/image/sous_partie.png" class="clickable" title="Réserver une sous-partie de l'idée" />
+														</a>
+														<a href="protected/create_a_group?idee=${idee.id}" class="img">
+															<img src="public/image/grouper.png" class="clickable" title="Créer un groupe" />
+														</a>
 												</c:otherwise>
-											</c:choose><br/>
+											</c:choose>
 											<c:if test="${empty idee.surpriseBy}">
-												<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}">Demander</a> si c'est à jour.<br/>
+												<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}" class="img">
+													<img src="public/image/a_jour.png" class="clickable" title="Demander si c'est à jour." />
+												</a>
 												<a href="protected/idee_questions?idee=${idee.id}" class="img">
 													<img src="public/image/questions.png" class="clickable" title="Poser une question à ${user.name} / voir les existantes" />
 												</a>
