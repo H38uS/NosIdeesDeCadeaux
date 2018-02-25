@@ -37,6 +37,12 @@
 				Aucun anniversaire dans peu de temps... C'est le bon moment pour récupérer des repas !
 			</c:otherwise>
 		</c:choose>
+		<c:if test="${no_birth_date_set}">
+			<p>
+				Vous n'avez pas encore entré votre date de naissance... Vous devez le faire pour apparaitre ici auprès de vos amis !<br/>
+				Vous pouvez le faire à tout moment en suivant le lien <a href="protected/mon_compte">mon compte</a>.
+			</p>
+		</c:if>
 		<table id="indexactions">
 			<tr>
 				<td>

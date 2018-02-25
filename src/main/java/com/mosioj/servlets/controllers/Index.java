@@ -27,8 +27,12 @@ public class Index extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		List<User> users = userRelations.getCloseBirthday(ParametersUtils.getUserId(req), NB_DAYS_MAX_BEFORE_BIRTHDAY);
-		req.setAttribute("userBirthday", users);
+
+		User me = users.getUser(ParametersUtils.getUserId(req));
+		req.setAttribute("no_birth_date_set", me.getBirthday() == null);
+
+		List<User> friends = userRelations.getCloseBirthday(ParametersUtils.getUserId(req), NB_DAYS_MAX_BEFORE_BIRTHDAY);
+		req.setAttribute("userBirthday", friends);
 		RootingsUtils.rootToPage(VIEW_URL, req, resp);
 	}
 
