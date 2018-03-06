@@ -7,60 +7,65 @@
 		<h2>Détail du groupe</h2>
 		<div>
 			<c:if test="${not empty group}">
-				<div>Montant total souhaité : ${group.total}</div>
-				<c:choose>
-					<c:when test="${empty group.shares}">
-						Aucune participation pour le moment.
-					</c:when>
-					<c:otherwise>
-						<table>
-							<caption>
-								<th>Participant</th>
-								<th colspan="2" >Montant - Actions</th>
-							</caption>
-							<c:forEach var="share" items="${group.shares}">
-								<tr>
-									<td>${share.user.name}</td>
-									<c:choose>
-										<c:when test="${userid == share.user.id}">
-											<td>
-												<form method="POST" action="protected/detail_du_groupe">
-													<input name="amount" value="${share.amount}" />
-													<input type="hidden" name="groupid" value="${group.id}" />
-													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-													<input style="width:130px" type="submit" name="submit" id="submit" value="Modifier !" />
-												</form>
-											</td>
-											<td>
-												<form method="POST" action="protected/detail_du_groupe">
-													<input type="hidden" name="amount" value="annulation" />
-													<input type="hidden" name="groupid" value="${group.id}" />
-													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-													<input type="submit" name="submit" id="submit" value="Annuler ma participation" />
-												</form>
-											</td>
-										</c:when>
-										<c:otherwise>
-											<td>${share.amount}</td>
-										</c:otherwise>
-									</c:choose>
-								</tr>
-							</c:forEach>
-						</table>
-					</c:otherwise>
-				</c:choose>
-				<c:if test="${not is_in_group}">
-					<div>
-						Vous ne participez pas encore à ce groupe !
-						Ajouter un montant : 
-						<form method="POST" action="protected/detail_du_groupe">
-							<input name="amount" value="${share.amount}" />
-							<input type="hidden" name="groupid" value="${group.id}" />
-							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							<input type="submit" name="submit" id="submit" value="Participer !" />
-						</form>
-					</div>
-				</c:if>
+				<p>Montant total souhaité : ${group.total}</p>
+				<div>
+					<c:choose>
+						<c:when test="${empty group.shares}">
+							Aucune participation pour le moment.
+						</c:when>
+						<c:otherwise>
+							<table>
+								<caption>
+									<th>Participant</th>
+									<th colspan="2" >Montant - Actions</th>
+								</caption>
+								<c:forEach var="share" items="${group.shares}">
+									<tr>
+										<td>${share.user.name}</td>
+										<c:choose>
+											<c:when test="${userid == share.user.id}">
+												<td class="left_pad_center">
+													<form method="POST" action="protected/detail_du_groupe">
+														<input name="amount" value="${share.amount}" />
+														<input type="hidden" name="groupid" value="${group.id}" />
+														<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+														<input style="width:130px" type="submit" name="submit" id="submit" value="Modifier !" />
+													</form>
+												</td>
+												<td>
+													<form method="POST" action="protected/detail_du_groupe">
+														<input type="hidden" name="amount" value="annulation" />
+														<input type="hidden" name="groupid" value="${group.id}" />
+														<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+														<input type="submit" name="submit" id="submit" value="Annuler ma participation" />
+													</form>
+												</td>
+											</c:when>
+											<c:otherwise>
+												<td class="left_pad_center">${share.amount}€</td>
+											</c:otherwise>
+										</c:choose>
+									</tr>
+								</c:forEach>
+								<c:if test="${not is_in_group}">
+									<tr>
+										<td>
+											${username}
+										</td>
+										<td class="left_pad_center">
+											<form method="POST" action="protected/detail_du_groupe">
+												<input name="amount" value="${share.amount}" />
+												<input type="hidden" name="groupid" value="${group.id}" />
+												<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+												<input style="width:130px" type="submit" name="submit" id="submit" value="Participer !" />
+											</form>
+										</td>
+									</tr>
+								</c:if>
+							</table>
+						</c:otherwise>
+					</c:choose>
+				</div>
 			</c:if>
 			<c:if test="${empty group}">
 				Le groupe n'existe pas ou vous ne pouvez pas intéragir avec.
