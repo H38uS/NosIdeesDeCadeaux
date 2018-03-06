@@ -30,6 +30,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.mobile.device.Device;
+import org.springframework.mobile.device.DeviceResolver;
+import org.springframework.mobile.device.LiteDeviceResolver;
 
 import com.mosioj.model.Comment;
 import com.mosioj.model.Idee;
@@ -167,6 +170,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 */
 	private final SecurityPolicy policy;
 	protected Map<String, String> parameters;
+	protected Device device;
+	
+	/**
+	 * Spring device resolver.
+	 */
+	private static final DeviceResolver DEVICE_RESOLVER = new LiteDeviceResolver();
 
 	/**
 	 * Class constructor.
@@ -259,6 +268,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	public void setIdees(Idees pIdees) {
 		idees = pIdees;
 	}
+	
+	private void setDeviceVariables(HttpServletRequest request) {
+		device = DEVICE_RESOLVER.resolveDevice(request);
+		request.setAttribute("is_mobile", device.isMobile());
+		request.setAttribute("is_normal", device.isNormal());
+	}
 
 	/**
 	 * Internal class for GET processing, post security checks.
@@ -273,6 +288,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		setDeviceVariables(req);
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(req, resp);
 			return;
@@ -342,6 +358,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		setDeviceVariables(request);
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(request, response);
 			return;

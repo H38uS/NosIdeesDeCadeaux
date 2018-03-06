@@ -69,10 +69,11 @@
 		</div>
 		<h2>Ma liste de cadeaux</h2>
 		<c:if test="${fn:length(idees) > 0}">
-			<ul id="ideas_square_container">
+			<ul class="ideas_square_container">
 				<c:forEach var="idee" items="${idees}">
 					<c:if test="${empty idee.surpriseBy}">
 						<li class="idea_square top_tooltip">
+						<div>
 							<div class="left">
 								<span>${idee.priorite.image}</span>
 								<c:if test="${not empty idee.category}">
@@ -103,6 +104,7 @@
 									</a>
 								</div>
 							</c:if>
+						</div>
 						</li>
 					</c:if>
 				</c:forEach>

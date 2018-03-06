@@ -55,10 +55,11 @@
 					<!-- Début idée de la personne -->
 					<h2 id="list_${user.id}">Mes idées de cadeaux</h2>
 					<c:if test="${fn:length(user.ideas) > 0}">
-						<ul id="ideas_square_container">
+						<ul class="ideas_square_container">
 							<c:forEach var="idee" items="${user.ideas}">
 								<c:if test="${empty idee.surpriseBy}">
 									<li class="idea_square top_tooltip">
+									<div>
 										<div class="left">
 											<span>${idee.priorite.image}</span>
 											<c:if test="${not empty idee.category}">
@@ -91,6 +92,7 @@
 												</a>
 											</div>
 										</c:if>
+									</div>
 									</li>
 								</c:if>
 							</c:forEach>
@@ -104,10 +106,11 @@
 	
 				<c:if test="${userid != user.id}">
 					<h2 id="list_${user.id}">Liste de cadeaux ${user.myDName}</h2>
-					<div>
-						<ul id="ideas_square_container">
+					<c:if test="${fn:length(user.ideas) > 0}">
+						<ul class="ideas_square_container">
 							<c:forEach var="idee" items="${user.ideas}">
 							<li class="idea_square top_tooltip ${idee.displayClass}">
+							<div>
 								<div class="left">
 									<span>${idee.priorite.image}</span>
 									<c:if test="${not empty idee.category}">
@@ -220,10 +223,11 @@
 										</a>
 									</div>
 								</c:if>
+							</div>
 							</li>
 							</c:forEach>
 						</ul>
-					</div>
+					</c:if>
 					<c:if test="${fn:length(user.ideas) == 0}">
 						<span>${user.name} n'a pas encore d'idées.</span>
 					</c:if>
