@@ -81,7 +81,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// FIXME : pouvoir archiver les notifications sans les supprimer
 
-	// FIXME : commentaire en mode conversation
 	// TODO : pouvoir éditer un commentaire
 
 	private static final int MAX_WIDTH = 150;

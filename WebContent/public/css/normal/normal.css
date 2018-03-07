@@ -226,33 +226,79 @@
 .comment {
 	border: 2px solid #353b43;
 	margin: 0 15px 30px 15px;
+	width: 70%;
+	display: inline-block;
+	position: relative;
+	min-width: 60px;
+	margin-bottom: 30px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+.comment:after {
+	content: "";
+	position: absolute;
+	bottom: -20px; /* value = - border-top-width - border-bottom-width */
+	border-style: solid;
+	/* reduce the damage in FF3.0 */
+	display: block;
+	width: 0;
+	/* vary these values to change the angle of the vertex */
+	border-width: 20px 20px 0 0;
+	border-color: #353b43 transparent;
 }
 
+.comment_mine {
+	margin-left: 30%;
+}
+.comment_mine:after {
+	right: 50px;
+	/* vary these values to change the angle of the vertex */
+	border-width: 20px 0 0 20px;
+	border-color: #353b43 transparent;
+}
 .comment_header_mine {
 	padding: 3px;
 	background: #353b43;
 	color: white;
+	-webkit-border-radius: 7px 7px 0 0;
+	-moz-border-radius: 7px 7px 0 0;
+	border-radius: 7px 7px 0 0;
 }
-
 .comment_header_mine a:link, .comment_header_mine a:visited,
 	.comment_header_mine a:active {
 	color: #b0cff8;
 }
 
+.comment_other:after {
+	left: 50px;
+}
 .comment_header_other {
 	padding: 3px;
 	background: #353b43;
 	color: white;
+	-webkit-border-radius: 7px 7px 0 0;
+	-moz-border-radius: 7px 7px 0 0;
+	border-radius: 7px 7px 0 0;
 }
 
+.comment_owner:after {
+	left: 50px;
+}
 .comment_header_owner {
 	padding: 3px;
 	background: #353b43;
 	color: white;
+	-webkit-border-radius: 7px 7px 0 0;
+	-moz-border-radius: 7px 7px 0 0;
+	border-radius: 7px 7px 0 0;
 }
 
 .comment_text {
 	padding: 10px;
 	background-color: #8a8a8a;
 	color: white;
+	-webkit-border-radius: 0 0 7px 7px;
+	-moz-border-radius: 0 0 7px 7px;
+	border-radius: 0 0 7px 7px;
 }

@@ -44,17 +44,20 @@
 				</c:when>
 				<c:otherwise>
 					<c:forEach var="comment" items="${comments}" >
-						<div class="comment">
-							<c:choose>
-								<c:when test="${userid == comment.writtenBy.id}">
+						<c:choose>
+							<c:when test="${userid == comment.writtenBy.id}">
+								<div class="comment comment_mine">
 									<div class="comment_header_mine">Posté par vous le ${comment.time} - le <a href="protected/supprimer_commentaire?id=${comment.id}">supprimer</a></div>
-								</c:when>
-								<c:otherwise>
+									<div class="comment_text">${comment.text}</div>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="comment comment_other">
 									<div class="comment_header_other">Posté par ${comment.writtenBy.name} le ${comment.time}</div>
-								</c:otherwise>
-							</c:choose>
-							<div class="comment_text">${comment.text}</div>
-						</div>
+									<div class="comment_text">${comment.text}</div>
+								</div>
+							</c:otherwise>
+						</c:choose>
 					</c:forEach>
 				</c:otherwise>
 			</c:choose>
