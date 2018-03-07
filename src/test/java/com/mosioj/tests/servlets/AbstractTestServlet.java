@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Enumeration;
+import java.util.Collections;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -68,16 +68,9 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(request.getRequestURL()).thenReturn(new StringBuffer(CreationCompte.HTTP_LOCALHOST_8080));
 		when(request.getContextPath()).thenReturn("");
 		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
-		when(session.getAttributeNames()).thenReturn(new Enumeration<String>() {
-			@Override
-			public String nextElement() {
-				return null;
-			}
-			@Override
-			public boolean hasMoreElements() {
-				return false;
-			}
-		});		
+		when(session.getAttributeNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
+		when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
+		
 		userRelations = mock(UserRelations.class);
 		userRelationRequests = mock(UserRelationRequests.class);
 		validator = mock(DataSourceIdKDo.class);

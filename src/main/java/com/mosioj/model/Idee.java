@@ -122,6 +122,7 @@ public class Idee {
 	 */
 	public String getTextSummary(int maxLength) {
 
+		// FIXME : faire un test, et gérer pour ne pas couper des caractères html. Genre &cute;
 		String initial = Escaper.htmlToText(getText());
 		if (initial.length() > maxLength) {
 			return initial.substring(0, maxLength - 3) + "...";

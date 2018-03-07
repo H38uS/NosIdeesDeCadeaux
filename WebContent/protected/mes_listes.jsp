@@ -63,11 +63,11 @@
 										<div class="left">
 											<span>${idee.priorite.image}</span>
 											<c:if test="${not empty idee.category}">
-												<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
+												<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" width="${action_img_width}px" />
 											</c:if>
 											<c:if test="${idee.hasQuestion()}">
 												<a href="protected/idee_questions?idee=${idee.id}">
-													<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+													<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" width="${action_img_width}px" />
 												</a>
 											</c:if>
 											<span class="outer_top_tooltiptext">
@@ -77,7 +77,7 @@
 													<a href="protected/remove_an_idea?ideeId=${idee.id}&from=/${identic_call_back}">supprimer</a>
 													cette idée.<br/>
 													<a href="protected/idee_questions?idee=${idee.id}">
-														<img src="public/image/questions.png" title="Voir les questions existantes" />
+														<img src="public/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
 													</a>
 												</span>
 											</span>
@@ -114,41 +114,41 @@
 								<div class="left">
 									<span>${idee.priorite.image}</span>
 									<c:if test="${not empty idee.category}">
-										<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
+										<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" width="${action_img_width}px" />
 									</c:if>
 									<c:choose>
 										<c:when test="${not empty idee.surpriseBy}">
-											<img src="public/image/surprise.png" title="Idée surprise" />
+											<img src="public/image/surprise.png" title="Idée surprise" width="${action_img_width}px" />
 										</c:when>
 										<c:when test="${idee.isBooked()}">
 											<c:choose>
 												<c:when test="${not empty idee.bookingOwner}">
 													<c:choose>
 														<c:when test="${userid == idee.bookingOwner.id}">
-															<img src="public/image/reserve-moi.png" title="Une de vos généreuse réservation" alt="Idée réservée par vous" />
+															<img src="public/image/reserve-moi.png" title="Une de vos généreuse réservation" alt="Idée réservée par vous" width="${action_img_width}px" />
 														</c:when>
 														<c:otherwise>
-															<img src="public/image/reserve-autre.png" title="Une réservation d'une autre personne plus rapide..." alt="Idée réservée par une autre personne" />
+															<img src="public/image/reserve-autre.png" title="Une réservation d'une autre personne plus rapide..." alt="Idée réservée par une autre personne" width="${action_img_width}px" />
 														</c:otherwise>
 													</c:choose>
 												</c:when>
 												<c:otherwise>
-													<img src="public/image/reserve-groupe.png" title="Une réservation de groupe !" alt="Idée réservée par un groupe" />
+													<img src="public/image/reserve-groupe.png" title="Une réservation de groupe !" alt="Idée réservée par un groupe" width="${action_img_width}px" />
 												</c:otherwise>
 											</c:choose>
 										</c:when>
 										<c:otherwise>
-											<img src="public/image/non-reserve.png" title="Cette idée est libre... Faite plaisir en l'offrant !" alt="Idée non réservée" />
+											<img src="public/image/non-reserve.png" title="Cette idée est libre... Faite plaisir en l'offrant !" alt="Idée non réservée" width="${action_img_width}px" />
 										</c:otherwise>
 									</c:choose>
 									<c:if test="${idee.hasComment()}">
 										<a href="protected/idee_commentaires?idee=${idee.id}">
-											<img src="public/image/commentaires.png" title="Il existe des commentaires sur cette idée" />
+											<img src="public/image/commentaires.png" title="Il existe des commentaires sur cette idée" width="${action_img_width}px" />
 										</a>
 									</c:if>
 									<c:if test="${idee.hasQuestion()}">
 										<a href="protected/idee_questions?idee=${idee.id}">
-											<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+											<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" width="${action_img_width}px" />
 										</a>
 									</c:if>
 									<span class="outer_top_tooltiptext">
@@ -189,26 +189,26 @@
 												<c:otherwise>
 														L'idée n'a pas encore été réservée.<br/>
 														<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img">
-															<img src="public/image/reserver.png" class="clickable" title="Réserver l'idée" />
+															<img src="public/image/reserver.png" class="clickable" title="Réserver l'idée" width="${action_img_width}px" />
 														</a>
 														<a href="protected/sous_reserver?idee=${idee.id}" class="img">
-															<img src="public/image/sous_partie.png" class="clickable" title="Réserver une sous-partie de l'idée" />
+															<img src="public/image/sous_partie.png" class="clickable" title="Réserver une sous-partie de l'idée" width="${action_img_width}px" />
 														</a>
 														<a href="protected/create_a_group?idee=${idee.id}" class="img">
-															<img src="public/image/grouper.png" class="clickable" title="Créer un groupe" />
+															<img src="public/image/grouper.png" class="clickable" title="Créer un groupe" width="${action_img_width}px" />
 														</a>
 												</c:otherwise>
 											</c:choose>
 											<c:if test="${empty idee.surpriseBy}">
 												<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}" class="img">
-													<img src="public/image/a_jour.png" class="clickable" title="Demander si c'est à jour." />
+													<img src="public/image/a_jour.png" class="clickable" title="Demander si c'est à jour." width="${action_img_width}px" />
 												</a>
 												<a href="protected/idee_questions?idee=${idee.id}" class="img">
-													<img src="public/image/questions.png" class="clickable" title="Poser une question à ${user.name} / voir les existantes" />
+													<img src="public/image/questions.png" class="clickable" title="Poser une question à ${user.name} / voir les existantes" width="${action_img_width}px" />
 												</a>
 											</c:if>
 											<a href="protected/idee_commentaires?idee=${idee.id}" class="img">
-												<img src="public/image/commentaires.png" title="Ajouter un commentaire / voir les existants" />
+												<img src="public/image/commentaires.png" title="Ajouter un commentaire / voir les existants" width="${action_img_width}px" />
 											</a>
 										</span>
 									</span>

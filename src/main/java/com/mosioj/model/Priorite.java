@@ -5,7 +5,7 @@ public class Priorite {
 	private final String name;
 	private final int id;
 	private final int order;
-	private final String image;
+	public String image;
 
 	public Priorite(int pId, String pName, String pImage, int pOrder) {
 		name = pName;

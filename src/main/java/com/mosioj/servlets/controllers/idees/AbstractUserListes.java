@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.Priorite;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
@@ -60,6 +61,13 @@ public abstract class AbstractUserListes extends AbstractListes<User> {
 					idee.displayClass = "shared_booking_idea";
 				}
 				// Sinon, on laisse la class par défaut
+
+				if (device.isMobile()) {
+					Priorite priorite = idee.getPriorite();
+					if (priorite != null && priorite.getImage() != null) {
+						priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"80px\"");
+					}
+				}
 			}
 			user.addIdeas(ownerIdeas);
 		}

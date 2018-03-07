@@ -273,6 +273,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		device = DEVICE_RESOLVER.resolveDevice(request);
 		request.setAttribute("is_mobile", device.isMobile());
 		request.setAttribute("is_normal", device.isNormal());
+		request.setAttribute("action_img_width", device.isMobile() ? "80" : "30");
 	}
 
 	/**

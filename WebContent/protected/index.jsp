@@ -7,36 +7,6 @@
 
 <t:normal_protected>
 	<jsp:body>
-		<h1>Prochain anniversaire</h1>
-		<c:choose>
-			<c:when test="${not empty userBirthday}">
-				<table>
-					<c:forEach var="user" items="${userBirthday}" >
-					<tr>
-						<td>
-							<c:choose>
-								<c:when test="${user.nbDaysBeforeBirthday == 0}">
-									C'est l'anniversaire ${user.myDName} aujourd'hui !
-								</c:when>
-								<c:when test="${user.nbDaysBeforeBirthday == 1}">
-									L'anniversaire ${user.myDName} est demain !
-								</c:when>
-								<c:otherwise>
-									L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
-								</c:otherwise>
-							</c:choose>
-						</td>
-						<td>
-							<a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
-						</td>
-					</tr>
-					</c:forEach>
-				</table>
-			</c:when>
-			<c:otherwise>
-				Aucun anniversaire dans peu de temps... C'est le bon moment pour récupérer des repas !
-			</c:otherwise>
-		</c:choose>
 		<c:if test="${no_birth_date_set}">
 			<p>
 				Vous n'avez pas encore entré votre date de naissance... Vous devez le faire pour apparaitre ici auprès de vos amis !<br/>
@@ -77,5 +47,35 @@
 				</td>
 			</tr>
 		</table>
+		<h1>Prochain anniversaire</h1>
+		<c:choose>
+			<c:when test="${not empty userBirthday}">
+				<table>
+					<c:forEach var="user" items="${userBirthday}" >
+					<tr>
+						<td>
+							<c:choose>
+								<c:when test="${user.nbDaysBeforeBirthday == 0}">
+									C'est l'anniversaire ${user.myDName} aujourd'hui !
+								</c:when>
+								<c:when test="${user.nbDaysBeforeBirthday == 1}">
+									L'anniversaire ${user.myDName} est demain !
+								</c:when>
+								<c:otherwise>
+									L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
+								</c:otherwise>
+							</c:choose>
+						</td>
+						<td>
+							<a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
+						</td>
+					</tr>
+					</c:forEach>
+				</table>
+			</c:when>
+			<c:otherwise>
+				Aucun anniversaire dans peu de temps... C'est le bon moment pour récupérer des repas !
+			</c:otherwise>
+		</c:choose>
 	</jsp:body>
 </t:normal_protected>
