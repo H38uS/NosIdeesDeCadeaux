@@ -75,6 +75,10 @@ div#content {
 	padding: 10px;
 }
 
+.idea_square_text {
+	overflow: hidden;
+}
+
 /*******************/
 /* *** Tooltip *** */
 /*******************/

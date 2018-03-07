@@ -82,7 +82,7 @@
 												</span>
 											</span>
 										</div>
-										<div class="left">
+										<div class="left idea_square_text">
 											${idee.html}
 										</div>
 										<c:if test="${not empty idee.image}">
@@ -103,7 +103,6 @@
 					</c:if>
 				</c:if>
 				<!-- Fin idée de la personne -->
-	
 				<c:if test="${userid != user.id}">
 					<h2 id="list_${user.id}">Liste de cadeaux ${user.myDName}</h2>
 					<c:if test="${fn:length(user.ideas) > 0}">
@@ -213,7 +212,7 @@
 										</span>
 									</span>
 								</div>
-								<div class="left">
+								<div class="left idea_square_text">
 									${idee.html}
 								</div>
 								<c:if test="${not empty idee.image}">

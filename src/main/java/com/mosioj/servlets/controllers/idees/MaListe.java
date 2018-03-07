@@ -47,6 +47,13 @@ public class MaListe extends AbstractIdea {
 		List<Idee> ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(req));
 		for (Idee idee : ideas) {
 			idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
+
+			if (device.isMobile()) {
+				Priorite priorite = idee.getPriorite();
+				if (priorite != null && priorite.getImage() != null) {
+					priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"80px\"");
+				}
+			}
 		}
 		List<Categorie> cat = categories.getCategories();
 		List<Priorite> prio = priorities.getPriorities();

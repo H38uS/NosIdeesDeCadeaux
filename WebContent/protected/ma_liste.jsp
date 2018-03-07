@@ -38,7 +38,7 @@
 					<tr>
 						<td>Fichier Choisi</td>
 						<td>
-							<span id="newImage" class="input" ></span>
+							<span id="newImage" class="input"></span>
 						</td>
 					</tr>
 					<tr>
@@ -46,7 +46,7 @@
 							<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
 						</td>
 						<td>
-							<label for="imageFile" class="custom-file-upload" >Ajouter une image</label>
+							<label for="imageFile" class="custom-file-upload">Ajouter une image</label>
 						</td>
 					</tr>
 					<tr>
@@ -77,11 +77,13 @@
 							<div class="left">
 								<span>${idee.priorite.image}</span>
 								<c:if test="${not empty idee.category}">
-									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" />
+									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
+																						width="${action_img_width}px" />
 								</c:if>
 								<c:if test="${idee.hasQuestion()}">
 									<a href="protected/idee_questions?idee=${idee.id}">
-										<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée" />
+										<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée"
+																						width="${action_img_width}px" />
 									</a>
 								</c:if>
 								<span class="outer_top_tooltiptext">
@@ -89,17 +91,17 @@
 										<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
 										ou 
 										<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-										cette idée.<br/>
+										cette idée.<br />
 										<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
 									</span>
 								</span>
 							</div>
-							<div class="left">
+							<div class="left idea_square_text">
 								${idee.html}
 							</div>
 							<c:if test="${not empty idee.image}">
 								<div>
-									<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img" >
+									<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img">
 										<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
 									</a>
 								</div>

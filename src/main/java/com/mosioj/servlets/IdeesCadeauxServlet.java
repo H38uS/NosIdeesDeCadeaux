@@ -82,7 +82,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : pouvoir archiver les notifications sans les supprimer
 
 	// FIXME : commentaire en mode conversation
-	// FIXME : tooltip idée trop large sur portable - à voir avec les icones ?
 	// TODO : pouvoir éditer un commentaire
 
 	private static final int MAX_WIDTH = 150;
