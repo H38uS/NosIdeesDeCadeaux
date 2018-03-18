@@ -54,6 +54,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 			currentTotal += share.getAmount();
 		}
 
+		req.setAttribute("idee", idees.getIdea(idees.getIdeaId(groupId)));
 		req.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(req), groupId));
 		req.setAttribute("group", group);
 		req.setAttribute("currentTotal", currentTotal);
