@@ -82,6 +82,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : pouvoir archiver les notifications sans les supprimer
 
 	// TODO : pouvoir éditer un commentaire
+	// TODO : mettre le focus sur le champs recherche dans mes listes
+	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
+	// FIXME : afficher une image si on a déjà fait une demande "est-ce à jour"
+	
+	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ?
+	// TODO : taches cron pour faire des rappels d'anniversaire
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
