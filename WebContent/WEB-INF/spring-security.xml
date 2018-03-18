@@ -14,7 +14,7 @@
 			authentication-failure-url="/public/error.jsp" />
 		<logout logout-success-url="/public/index.jsp" />
 	</http>
-	
+
 	<http pattern="/protected/service/**">
 		<csrf disabled="true" />
 		<form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
@@ -23,7 +23,7 @@
 			data-source-ref="springDS" />
 		<logout logout-success-url="/public/index.jsp" />
 	</http>
-	
+
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/public" access="permitAll" />
@@ -47,4 +47,6 @@
 		</authentication-provider>
 	</authentication-manager>
 
+	<beans:bean class="com.mosioj.utils.AuthenticationListener" />
+	
 </beans:beans>

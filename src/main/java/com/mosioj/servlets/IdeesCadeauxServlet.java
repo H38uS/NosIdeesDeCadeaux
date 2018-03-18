@@ -75,6 +75,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : controle parental
 
+	// FIXME : faire des rappels d'anniversaire (tâche cron ?)
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
