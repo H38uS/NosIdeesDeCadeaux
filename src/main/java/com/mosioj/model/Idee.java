@@ -122,10 +122,34 @@ public class Idee {
 	 */
 	public String getTextSummary(int maxLength) {
 
-		// FIXME : faire un test, et gérer pour ne pas couper des caractères html. Genre &cute;
 		String initial = Escaper.htmlToText(getText());
 		if (initial.length() > maxLength) {
-			return initial.substring(0, maxLength - 3) + "...";
+			StringBuilder sb = new StringBuilder();
+			boolean needSemiColon = false;
+			for (int i = 0; i < maxLength - 3; i++) {
+				char c = initial.charAt(i);
+				sb.append(c);
+				if (needSemiColon && c == ';') {
+					needSemiColon = false;
+				}
+				if (c == '&') {
+					needSemiColon = true;
+				}
+			}
+			int i = maxLength - 3;
+			while (needSemiColon) {
+				if (i == initial.length()) {
+					break;
+				}
+				char c = initial.charAt(i);
+				sb.append(c);
+				i++;
+				if (c == ';') {
+					break;
+				}
+			}
+			sb.append("...");
+			return  sb.toString();
 		}
 
 		return initial;
