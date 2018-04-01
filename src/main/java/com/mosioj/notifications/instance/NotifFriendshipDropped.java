@@ -27,8 +27,8 @@ public class NotifFriendshipDropped extends AbstractNotification {
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifFriendshipDropped(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.FRIENDSHIP_DROPPED, id, owner, text, parameters, creationTime);
+	public NotifFriendshipDropped(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.FRIENDSHIP_DROPPED, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

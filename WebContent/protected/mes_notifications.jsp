@@ -5,20 +5,45 @@
 <t:normal_protected>
 		<jsp:body>
 		<h2>Mes notifications</h2>
-		<c:if test="${not empty notifications}">
+		<c:if test="${not empty unread_notifications}">
 			<table>
 				<thead>
 					<tr>
 						<th>Text</th>
-						<th>Créée le</th>
+						<th>Reçue le</th>
 						<th>Action</th>
 					</tr>
 				</thead>
-				<c:forEach var="notif" items="${notifications}">
+				<c:forEach var="notif" items="${unread_notifications}">
 					<tr>
 						<td>${notif.text}</td>
 						<td>${notif.creationTime}</td>
 						<td>
+							<a href="protected/notification_lue?notif_id=${notif.id}">Marquer comme lue</a> - 
+							<a href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
+						</td>
+					</tr>
+				</c:forEach>
+			</table>
+		</c:if>
+		<h2>Mes anciennes notifications</h2>
+		<c:if test="${not empty read_notifications}">
+			<table>
+				<thead>
+					<tr>
+						<th>Text</th>
+						<th>Reçue le</th>
+						<th>Marquée comme lue le</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<c:forEach var="notif" items="${read_notifications}">
+					<tr>
+						<td>${notif.text}</td>
+						<td>${notif.creationTime}</td>
+						<td>${notif.readOn}</td>
+						<td>
+							<a href="protected/notification_non_lue?notif_id=${notif.id}">Marquer comme non lue</a> - 
 							<a href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
 						</td>
 					</tr>

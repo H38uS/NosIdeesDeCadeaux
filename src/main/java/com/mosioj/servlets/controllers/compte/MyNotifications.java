@@ -1,14 +1,12 @@
 package com.mosioj.servlets.controllers.compte;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -27,8 +25,8 @@ public class MyNotifications extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		List<AbstractNotification> notifications = notif.getUserNotifications(ParametersUtils.getUserId(req));
-		req.setAttribute("notifications", notifications);
+		req.setAttribute("unread_notifications", notif.getUserUnReadNotifications(ParametersUtils.getUserId(req)));
+		req.setAttribute("read_notifications", notif.getUserReadNotifications(ParametersUtils.getUserId(req)));
 		RootingsUtils.rootToPage(VIEW_URL, req, resp);
 	}
 

@@ -18,8 +18,8 @@ public class NotifNewRelationSuggestion extends AbstractNotification implements 
 		params.put(ParameterName.USER_ID, fromUser);
 	}
 
-	public NotifNewRelationSuggestion(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> params) {
-		super(NotificationType.NEW_RELATION_SUGGESTION, id, owner, text, params, creationTime);
+	public NotifNewRelationSuggestion(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> params) {
+		super(NotificationType.NEW_RELATION_SUGGESTION, id, owner, text, params, creationTime, isUnread, readOn);
 	}
 
 	@Override

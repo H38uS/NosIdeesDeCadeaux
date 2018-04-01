@@ -36,8 +36,8 @@ public class NotifNewCommentOnIdea extends AbstractNotification implements Notif
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifNewCommentOnIdea(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.NEW_COMMENT_ON_IDEA, id, owner, text, parameters, creationTime);
+	public NotifNewCommentOnIdea(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.NEW_COMMENT_ON_IDEA, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

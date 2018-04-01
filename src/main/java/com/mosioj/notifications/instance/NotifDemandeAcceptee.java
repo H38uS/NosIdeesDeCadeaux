@@ -17,8 +17,8 @@ public class NotifDemandeAcceptee extends AbstractNotification {
 		params.put(ParameterName.USER_ID, fromUser);
 	}
 
-	public NotifDemandeAcceptee(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.ACCEPTED_FRIENDSHIP, id, owner, text, parameters, creationTime);
+	public NotifDemandeAcceptee(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.ACCEPTED_FRIENDSHIP, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

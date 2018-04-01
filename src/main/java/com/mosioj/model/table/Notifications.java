@@ -8,6 +8,8 @@ import static com.mosioj.model.table.columns.NotificationsColumns.OWNER;
 import static com.mosioj.model.table.columns.NotificationsColumns.TEXT;
 import static com.mosioj.model.table.columns.NotificationsColumns.TYPE;
 import static com.mosioj.model.table.columns.NotificationsColumns.CREATION_DATE;
+import static com.mosioj.model.table.columns.NotificationsColumns.IS_UNREAD;
+import static com.mosioj.model.table.columns.NotificationsColumns.READ_ON;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -230,6 +232,8 @@ public class Notifications extends Table {
 				String type = "";
 				String text = "";
 				Timestamp creation = null;
+				boolean isUnread = true;
+				Timestamp readOn = null;
 				Map<ParameterName, Object> notifParams = new HashMap<ParameterName, Object>();
 
 				while (res.next()) {
@@ -241,6 +245,8 @@ public class Notifications extends Table {
 						type = res.getString(TYPE.name());
 						text = res.getString(TEXT.name());
 						creation = res.getTimestamp(CREATION_DATE.name());
+						isUnread = "Y".equals(res.getString(IS_UNREAD.name()));
+						readOn = res.getTimestamp(READ_ON.name());
 					}
 
 					if (id == currentId) {
@@ -253,7 +259,14 @@ public class Notifications extends Table {
 					}
 
 					// New id detected, saving the notification
-					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, creation, notifParams));
+					notifications.add(NotificationFactory.buildIt(	currentId,
+																	owner,
+																	type,
+																	text,
+																	creation,
+																	isUnread,
+																	readOn,
+																	notifParams));
 
 					// Initialization for the next notification
 					currentId = id;
@@ -261,11 +274,20 @@ public class Notifications extends Table {
 					type = res.getString(TYPE.name());
 					text = res.getString(TEXT.name());
 					creation = res.getTimestamp(CREATION_DATE.name());
+					isUnread = "Y".equals(res.getString(IS_UNREAD.name()));
+					readOn = res.getTimestamp(READ_ON.name());
 					notifParams = new HashMap<ParameterName, Object>();
 				}
 
 				if (currentId != -1) {
-					notifications.add(NotificationFactory.buildIt(currentId, owner, type, text, creation, notifParams));
+					notifications.add(NotificationFactory.buildIt(	currentId,
+																	owner,
+																	type,
+																	text,
+																	creation,
+																	isUnread,
+																	readOn,
+																	notifParams));
 				}
 
 			}
@@ -289,14 +311,16 @@ public class Notifications extends Table {
 	private List<AbstractNotification> getNotificationWithWhereClause(String whereClause, Object... parameters) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select {0}, {1}, {2}, {3}, {4}, {5}, {6} ",
+		query.append(MessageFormat.format(	"select {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8} ",
 											ID,
 											TEXT,
 											TYPE,
 											OWNER,
 											PARAMETER_NAME,
 											PARAMETER_VALUE,
-											CREATION_DATE));
+											CREATION_DATE,
+											IS_UNREAD,
+											READ_ON));
 		query.append(MessageFormat.format("  from {0} ", TABLE_NAME));
 		query.append(MessageFormat.format("  left join {0} ", TABLE_PARAMS));
 		query.append(MessageFormat.format("    on {0} = {1} ", ID, NOTIFICATION_ID));
@@ -317,6 +341,26 @@ public class Notifications extends Table {
 	 */
 	public List<AbstractNotification> getUserNotifications(int userId) throws SQLException {
 		return getNotificationWithWhereClause(MessageFormat.format("{0} = ?", OWNER), userId);
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return All notifications for this user.
+	 * @throws SQLException
+	 */
+	public List<AbstractNotification> getUserReadNotifications(int userId) throws SQLException {
+		return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", OWNER, IS_UNREAD), userId, "N");
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return All notifications for this user.
+	 * @throws SQLException
+	 */
+	public List<AbstractNotification> getUserUnReadNotifications(int userId) throws SQLException {
+		return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", OWNER, IS_UNREAD), userId, "Y");
 	}
 
 	/**
@@ -371,5 +415,36 @@ public class Notifications extends Table {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Set the notification as read.
+	 * 
+	 * @param notifId
+	 * @throws SQLException
+	 */
+	public void setRead(int notifId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = now() where {3} = ? ",
+														TABLE_NAME,
+														IS_UNREAD,
+														READ_ON,
+														ID),
+								"N",
+								notifId);
+	}
+
+	/**
+	 * Set the notification as unread.
+	 * 
+	 * @param notifId
+	 * @throws SQLException
+	 */
+	public void setUnread(int notifId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? ",
+														TABLE_NAME,
+														IS_UNREAD,
+														ID),
+								"Y",
+								notifId);
 	}
 }

@@ -41,8 +41,8 @@ public class NotifGroupSuggestion extends AbstractNotification implements NotifU
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifGroupSuggestion(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.GROUP_IDEA_SUGGESTION, id, owner, text, parameters, creationTime);
+	public NotifGroupSuggestion(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.GROUP_IDEA_SUGGESTION, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

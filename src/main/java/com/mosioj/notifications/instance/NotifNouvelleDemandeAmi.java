@@ -1,5 +1,6 @@
 package com.mosioj.notifications.instance;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -19,8 +20,8 @@ public class NotifNouvelleDemandeAmi extends AbstractNotification {
 		params.put(ParameterName.USER_ID, fromUser);
 	}
 
-	public NotifNouvelleDemandeAmi(int id, int owner, String text, Map<ParameterName, Object> parameters) {
-		super(NotificationType.NEW_FRIENSHIP_REQUEST, id, owner, text, parameters, null);
+	public NotifNouvelleDemandeAmi(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.NEW_FRIENSHIP_REQUEST, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

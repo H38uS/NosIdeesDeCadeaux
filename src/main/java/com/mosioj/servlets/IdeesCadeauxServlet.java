@@ -80,19 +80,22 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 
-	// FIXME : pouvoir archiver les notifications sans les supprimer
-
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
 	// FIXME : afficher une image si on a déjà fait une demande "est-ce à jour"
 	
-	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ?
-	// TODO : taches cron pour faire des rappels d'anniversaire
+	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe etc.
+	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
+	
+	// FIXME : mobile, revoie le menu
+	// FIXME : retailler les images catégories en 80 px
+	
+	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
-	public static final String DATETIME_DISPLAY_FORMAT = "dd MMM yyyy à HH:mm:ss";
+	public static final String DATETIME_DISPLAY_FORMAT = "dd/MM/yyyy à HH:mm:ss";
 	private static final List<String> sessionNamesToKeep = new ArrayList<String>();
 
 	// Maximum 10M

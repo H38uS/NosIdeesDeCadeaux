@@ -41,8 +41,8 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifAskIfIsUpToDate(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.IS_IDEA_UP_TO_DATE, id, owner, text, parameters, creationTime);
+	public NotifAskIfIsUpToDate(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.IS_IDEA_UP_TO_DATE, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

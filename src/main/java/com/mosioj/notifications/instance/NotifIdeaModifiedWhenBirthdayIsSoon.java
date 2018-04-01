@@ -42,8 +42,8 @@ public class NotifIdeaModifiedWhenBirthdayIsSoon extends AbstractNotification {
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifIdeaModifiedWhenBirthdayIsSoon(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON, id, owner, text, parameters, creationTime);
+	public NotifIdeaModifiedWhenBirthdayIsSoon(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

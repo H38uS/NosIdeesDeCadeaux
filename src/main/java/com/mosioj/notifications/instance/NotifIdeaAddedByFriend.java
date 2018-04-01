@@ -38,8 +38,8 @@ public class NotifIdeaAddedByFriend extends AbstractNotification implements Noti
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifIdeaAddedByFriend(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.IDEA_ADDED_BY_FRIEND, id, owner, text, parameters, creationTime);
+	public NotifIdeaAddedByFriend(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.IDEA_ADDED_BY_FRIEND, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override

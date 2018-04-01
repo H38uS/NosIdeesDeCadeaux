@@ -32,6 +32,9 @@ public abstract class AbstractNotification {
 	private Timestamp creationTime;
 	protected Map<ParameterName, Object> params = new HashMap<ParameterName, Object>();
 
+	private boolean isUnread;
+	private Timestamp readOn;
+
 	/**
 	 * Default constructor for insertion.
 	 */
@@ -56,19 +59,33 @@ public abstract class AbstractNotification {
 	 * @param parameters The notification parameters.
 	 * @param creationDate The notification creation timestamp.
 	 * @param creationTime When the notification has been created.
+	 * @param readOn
+	 * @param isUnread
 	 */
 	public AbstractNotification(NotificationType type,
 								int id,
 								int owner,
 								String text,
 								Map<ParameterName, Object> parameters,
-								Timestamp creationTime) {
+								Timestamp creationTime,
+								boolean isUnread,
+								Timestamp readOn) {
 		this(type);
 		this.id = id;
 		this.owner = owner;
 		this.text = text;
 		this.creationTime = creationTime;
 		this.params = parameters;
+		this.isUnread = isUnread;
+		this.readOn = readOn;
+	}
+
+	public boolean getIsUnread() {
+		return isUnread;
+	}
+
+	public String getReadOn() {
+		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(readOn);
 	}
 
 	/**

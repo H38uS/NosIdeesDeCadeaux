@@ -19,6 +19,8 @@ public class NotificationFactory {
 	 * @param owner
 	 * @param type
 	 * @param text
+	 * @param readOn
+	 * @param isUnread
 	 * @param notifParams
 	 * @return A new notification object based on the database content.
 	 * @throws SQLException
@@ -28,10 +30,12 @@ public class NotificationFactory {
 												String type,
 												String text,
 												Timestamp creationTime,
+												boolean isUnread,
+												Timestamp readOn,
 												Map<ParameterName, Object> params) throws SQLException {
-		
+
 		if (Notifications.NOTIF_TYPE_ADMIN_ERROR.equals(type)) {
-			return new NotifErrorOccured(id, owner, text, params, creationTime);
+			return new NotifErrorOccured(id, owner, text, params, creationTime, isUnread, readOn);
 		}
 
 		NotificationType t = NotificationType.valueOf(type);
@@ -39,8 +43,14 @@ public class NotificationFactory {
 
 		AbstractNotification notification = null;
 		try {
-			Constructor<? extends AbstractNotification> ctor = clazz.getConstructor(int.class, int.class, String.class, Timestamp.class, Map.class);
-			notification = ctor.newInstance(new Object[] { id, owner, text, creationTime, params });
+			Constructor<? extends AbstractNotification> ctor = clazz.getConstructor(int.class,
+																					int.class,
+																					String.class,
+																					Timestamp.class,
+																					boolean.class,
+																					Timestamp.class,
+																					Map.class);
+			notification = ctor.newInstance(new Object[] { id, owner, text, creationTime, isUnread, readOn, params });
 		} catch (Exception e) {
 			throw new SQLException(e);
 		}

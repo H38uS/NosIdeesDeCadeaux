@@ -36,8 +36,8 @@ public class NotifNewQuestionOnIdea extends AbstractNotification implements Noti
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifNewQuestionOnIdea(int id, int owner, String text, Timestamp creationTime, Map<ParameterName, Object> parameters) {
-		super(NotificationType.NEW_QUESTION_ON_IDEA, id, owner, text, parameters, creationTime);
+	public NotifNewQuestionOnIdea(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+		super(NotificationType.NEW_QUESTION_ON_IDEA, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override
