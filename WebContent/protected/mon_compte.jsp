@@ -94,7 +94,7 @@
 							<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
 						</td>
 						<td style="padding:0 20px;" >
-							<select id="value" name="value">
+							<select id="value_${notif.parameterName}" name="value">
 								<c:forEach var="value" items="${possible_values}">
 									<c:choose>
 										<c:when test="${value == notif.parameterValue}">

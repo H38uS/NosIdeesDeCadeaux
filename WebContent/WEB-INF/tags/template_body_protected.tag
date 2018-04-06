@@ -5,16 +5,44 @@
     	<div id="container">
     	<header>
 			<c:choose>
-				<c:when test="${is_mobile}">
-					<img src="resources/image/header_index.png" />
-					<div id="right_search_field" class="ui-widget">
-						<form id="afficherliste" method="POST" action="protected/afficher_listes">
-							<input type="text" name="name" id="header_name" placeholder="Un nom ou un email" />
-							<input type="submit" value="Go" />
-						</form>
+			<c:when test="${is_mobile}">
+				<span class="menu_icon"><img src="resources/image/menu.png" /></span>
+				<img src="resources/image/header_index.png" />
+				<div id="right_search_field" class="ui-widget">
+					<form id="afficherliste" method="POST" action="protected/afficher_listes">
+						<input type="text" name="name" id="header_name" placeholder="Un nom ou un email" />
+						<input type="submit" value="Go" />
+					</form>
+				</div>
+				<div id="menu_content">
+					<span class="menu_icon"><img src="resources/image/back.png" /></span>
+					<div>
+						<a href="protected/index" class="fl_green">Accueil</a>
 					</div>
-				</c:when>
-				<c:otherwise>
+					<div>
+						<a href="protected/ma_liste" class="fl_yellow">Compléter ma liste</a>
+					</div>
+					<div>
+						<a href="protected/mes_listes" class="fl_blue">Afficher mes listes partagées</a>
+					</div>
+					<div>
+						<a href="protected/afficher_reseau?id=${userid}" class="fl_purple">Mes amis</a>
+					</div>
+					<div>
+						<a href="protected/rechercher_personne.jsp" class="fl_purple">Ajouter un ami</a>
+					</div>
+					<div>
+						<a href="protected/mon_compte" class="fl_blue">Mon compte</a>
+					</div>
+					<div>
+						<a href="protected/mes_notifications" class="fl_yellow">Mes notifications (${notif_count})</a>
+					</div>
+					<div>
+						<a href="<c:url value="/logout" />" class="fl_green">Se déconnecter</a>
+					</div>
+				</div>
+			</c:when>
+			<c:otherwise>
 	    		<div id="logo">
 		    		<img src="resources/image/header_index.png" />
 		    		<span>
@@ -51,7 +79,7 @@
 						<a href="protected/rechercher_personne.jsp" class="fl_purple">Ajouter un ami</a>
 					</li>
 	    		</ul>
-				</c:otherwise>
+			</c:otherwise>
 			</c:choose>
     	</header>
 		<script type="text/javascript">

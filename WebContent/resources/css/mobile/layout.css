@@ -27,26 +27,12 @@ header {
 	background: #353b43;
 }
 
-header #logo {
-	text-align: left;
-	padding-top: 10px;
-	padding-left: 10%;
-}
-
-header #logo span {
-	float: right;
-	color: white;
-}
-
-header #logo span a:link, header #logo span a:visited, header #logo span a:active {
-    color: #b0cff8;
-}
-
 header #logo_text {
+	display: inline-block;
 	color: white;
-	font-size: 130%;
+	font-size: 200%;
+	text-align: center;
 	padding: 10px;
-	padding-left: 10%;
 }
 
 footer {
@@ -70,37 +56,45 @@ div#content {
 /* *** Menu *** */
 /**********************/
 
-ul.menu {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #8a8a8a;
+.menu_icon {
+	margin: 8px;
+	vertical-align: super;
+	position: relative;
+	display: inline-block;
 }
 
-.menu li {
-    float: left;
+#menu_content {
+	height: 100%;
+	position: absolute;
+	top:0;
+	left:0;
+	background-color: #8a8a8a;
+	max-height: 999999px;
+	font-size: 260%;
+	z-index: 999;
+	border: #353b43 solid 2px;
+	-webkit-box-shadow: 0 1px 5px #353b43;
+	box-shadow: 0 1px 5px #353b43;
+	display: none;
+}
+#menu_content > div > a {
+	display: block;
+	padding: 40px 50px;
+	color: white;
+	text-align: center;
+}
+#menu_content > div > a:hover {
+	background-color: #111;
 }
 
-.menu li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-/* Change the link color to #111 (black) on hover */
-.menu li a:hover {
-    background-color: #111;
-}
 
 #right_search_field {
 	display: inline-block;
 	max-height: 999999px;
 	font-size: 200%;
-	margin: 8px;
-	vertical-align: top
+	margin-top: 12px;
+	margin-left: 8px;
+	vertical-align: top;
 }
 #right_search_field form {
 	display: inline;
@@ -110,6 +104,21 @@ ul.menu {
 	display: inline;
 	width: auto;
 	padding: 5px 7px;
+}
+
+#menu_right_connection {
+	display: inline-block;
+	max-height: 999999px;
+	font-size: 200%;
+	vertical-align: top;
+	margin-left: 20px;
+}
+#menu_right_connection a:link, #menu_right_connection a:visited, #menu_right_connection a:active {
+	color: #b0cff8;
+	padding: 20px;
+	vertical-align: baseline;
+	display: inline-block;
+	text-decoration: none;
 }
 
 /********************************/
