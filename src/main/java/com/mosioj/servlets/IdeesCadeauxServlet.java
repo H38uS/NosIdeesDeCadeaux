@@ -31,8 +31,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
-import org.springframework.mobile.device.DeviceResolver;
-import org.springframework.mobile.device.LiteDeviceResolver;
 
 import com.mosioj.model.Comment;
 import com.mosioj.model.Idee;
@@ -181,11 +179,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected Device device;
 	
 	/**
-	 * Spring device resolver.
-	 */
-	private static final DeviceResolver DEVICE_RESOLVER = new LiteDeviceResolver();
-
-	/**
 	 * Class constructor.
 	 * 
 	 * @param policy The security policy defining whether we can interact with the parameters, etc.
@@ -277,13 +270,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		idees = pIdees;
 	}
 	
-	private void setDeviceVariables(HttpServletRequest request) {
-		device = DEVICE_RESOLVER.resolveDevice(request);
-		request.setAttribute("is_mobile", device.isMobile());
-		request.setAttribute("is_normal", device.isNormal());
-		request.setAttribute("action_img_width", device.isMobile() ? "80" : "30");
-	}
-
 	/**
 	 * Internal class for GET processing, post security checks.
 	 * 
@@ -297,7 +283,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		setDeviceVariables(req);
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(req, resp);
 			return;
@@ -326,8 +311,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			String fullURL = req.getRequestURL().toString();
 			notif.setURL(fullURL);
 
-			// Converting session parameters to attributes
 			HttpSession session = req.getSession();
+			device = (Device) session.getAttribute("device");
+
+			// Converting session parameters to attributes
 			Enumeration<String> names = session.getAttributeNames();
 
 			while (names.hasMoreElements()) {
@@ -367,7 +354,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		setDeviceVariables(request);
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(request, response);
 			return;
@@ -395,6 +381,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			String fullURL = request.getRequestURL().toString();
 			notif.setURL(fullURL);
+			
+			HttpSession session = request.getSession();
+			device = (Device) session.getAttribute("device");
 
 			// Security has passed, perform the logic
 			ideesKDoPOST(request, response);
@@ -557,6 +546,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		sessionNamesToKeep.add("username");
 		sessionNamesToKeep.add("userid");
 		sessionNamesToKeep.add("emailorname");
+		sessionNamesToKeep.add("is_mobile");
+		sessionNamesToKeep.add("is_normal");
+		sessionNamesToKeep.add("action_img_width");
+		sessionNamesToKeep.add("device");
 	}
 
 }

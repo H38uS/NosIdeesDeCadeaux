@@ -5,8 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <t:template_head_includes>
-	<link rel="stylesheet" type="text/css" href="public/css/common.css" />
-	<link rel="stylesheet" type="text/css" href="public/css/normal/normal.css" />
 	<script src="public/js/search.js" type="text/javascript"></script>
 </t:template_head_includes>
 <t:template_body_protected>
