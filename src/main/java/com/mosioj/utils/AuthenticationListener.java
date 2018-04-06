@@ -9,11 +9,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
-
 public class AuthenticationListener implements ApplicationListener<ApplicationEvent> {
 
-	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
+	private static final Logger logger = LogManager.getLogger(AuthenticationListener.class);
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent appEvent) {
@@ -22,8 +20,9 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
 			logger.info(MessageFormat.format("{0} vient de se connecter.", event.getAuthentication().getName()));
 		} else if (appEvent instanceof AuthorizationFailureEvent) {
 			AuthorizationFailureEvent event = (AuthorizationFailureEvent) appEvent;
-			logger.warn(MessageFormat.format(	"Tentative de connexion avec l''erreur suivante: {0}.",
-												event.getAccessDeniedException().getMessage()));
+			logger.warn(MessageFormat.format(	"Tentative de connexion (depuis {1}) avec l''erreur suivante: {0}.",
+												event.getAccessDeniedException().getMessage(),
+												event.getSource()));
 			logger.warn(MessageFormat.format("Détails : {0}", event.getAuthentication().getDetails()));
 		}
 	}

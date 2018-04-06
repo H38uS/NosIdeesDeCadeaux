@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,22 +38,14 @@ public class DeviceResolverFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		logger.trace("Entering device resolver filtering...");
-		logger.debug("URL: " + ((HttpServletRequest) request).getRequestURL());
-		HttpSession session = ((HttpServletRequest) request).getSession();
-		Object isMobile = session.getAttribute("is_mobile");
-		if (isMobile == null) {
-			logger.debug("Resolving the device...");
-			Device device = DEVICE_RESOLVER.resolveDevice(((HttpServletRequest) request));
-			session.setAttribute("device", device);
-			session.setAttribute("is_mobile", device.isMobile());
-			session.setAttribute("is_normal", device.isNormal());
-			session.setAttribute("action_img_width", device.isMobile() ? "80" : "30");
-		}
-		logger.debug(MessageFormat.format("Is mobile ? {0}", session.getAttribute("is_mobile")));
-		request.setAttribute("is_mobile", session.getAttribute("is_mobile"));
-		request.setAttribute("is_normal", session.getAttribute("is_normal"));
-		request.setAttribute("action_img_width", session.getAttribute("action_img_width"));
-
+		Device device = DEVICE_RESOLVER.resolveDevice(((HttpServletRequest) request));
+		request.setAttribute("device", device);
+		request.setAttribute("is_mobile", device.isMobile());
+		request.setAttribute("is_normal", device.isNormal());
+		request.setAttribute("action_img_width", device.isMobile() ? "80" : "30");
+		logger.debug(MessageFormat.format(	"URL: {0}. Is mobile: {1}.",
+											((HttpServletRequest) request).getRequestURL(),
+											device.isMobile()));
 		chain.doFilter(request, response);
 	}
 

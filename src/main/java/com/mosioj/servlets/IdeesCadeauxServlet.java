@@ -12,7 +12,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -94,7 +92,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd/MM/yyyy à HH:mm:ss";
-	private static final List<String> sessionNamesToKeep = new ArrayList<String>();
+	
+	// FIXME : gérer le isMobile dans template_head_includes et dans template_body_protected puis revoir rechercher_personne.jsp
 
 	// Maximum 10M
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
@@ -311,23 +310,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			String fullURL = req.getRequestURL().toString();
 			notif.setURL(fullURL);
 
-			HttpSession session = req.getSession();
-			device = (Device) session.getAttribute("device");
-
-			// Converting session parameters to attributes
-			Enumeration<String> names = session.getAttributeNames();
-
-			while (names.hasMoreElements()) {
-
-				String name = names.nextElement();
-				if (sessionNamesToKeep.contains(name)) {
-					continue;
-				}
-
-				Object value = session.getAttribute(name);
-				req.setAttribute(name, value);
-				session.removeAttribute(name);
-			}
+			device = (Device) req.getAttribute("device");
 
 			// Security has passed, perform the logic
 			ideesKDoGET(req, resp);
@@ -382,8 +365,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			String fullURL = request.getRequestURL().toString();
 			notif.setURL(fullURL);
 			
-			HttpSession session = request.getSession();
-			device = (Device) session.getAttribute("device");
+			device = (Device) request.getAttribute("device");
 
 			// Security has passed, perform the logic
 			ideesKDoPOST(request, response);
@@ -541,15 +523,4 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 		return toBeAsked;
 	}
-
-	static {
-		sessionNamesToKeep.add("username");
-		sessionNamesToKeep.add("userid");
-		sessionNamesToKeep.add("emailorname");
-		sessionNamesToKeep.add("is_mobile");
-		sessionNamesToKeep.add("is_normal");
-		sessionNamesToKeep.add("action_img_width");
-		sessionNamesToKeep.add("device");
-	}
-
 }
