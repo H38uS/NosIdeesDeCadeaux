@@ -84,8 +84,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe etc.
 	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
 	
-	// FIXME : mobile, revoie le menu
 	// FIXME : retailler les images catégories en 80 px
+	// FIXME : revoir les check box en mode mobile (exemple: rechercher personne)
+	// FIXME : revoir ma liste et mes listes en mode mobile: supprimer les tooltips
 	
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
@@ -93,8 +94,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd/MM/yyyy à HH:mm:ss";
 	
-	// FIXME : gérer le isMobile dans template_head_includes et dans template_body_protected puis revoir rechercher_personne.jsp
-
 	// Maximum 10M
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
