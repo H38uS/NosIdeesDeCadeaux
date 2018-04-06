@@ -133,3 +133,11 @@ div#content {
 }
 
 
+
+/***********************************/
+/* *** Person with information *** */
+/***********************************/
+#person_square_container {
+	grid-template-columns: repeat(auto-fill, 450px);
+}
+
