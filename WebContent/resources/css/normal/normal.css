@@ -217,7 +217,7 @@
 
 .meslistes_search>form>input {
 	display: inline;
-	width: 200px;
+	width: auto;
 }
 
 /*************************/

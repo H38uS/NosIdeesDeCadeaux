@@ -77,12 +77,12 @@
 							<div class="left">
 								<span>${idee.priorite.image}</span>
 								<c:if test="${not empty idee.category}">
-									<img src="public/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
+									<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
 																						width="${action_img_width}px" />
 								</c:if>
 								<c:if test="${idee.hasQuestion()}">
 									<a href="protected/idee_questions?idee=${idee.id}">
-										<img src="public/image/questions.png" title="Il existe des questions/réponses sur cette idée"
+										<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
 																						width="${action_img_width}px" />
 									</a>
 								</c:if>

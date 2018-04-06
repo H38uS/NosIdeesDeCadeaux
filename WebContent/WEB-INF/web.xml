@@ -45,7 +45,11 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>DeviceResolver</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/protected/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>DeviceResolver</filter-name>
+		<url-pattern>/public/*</url-pattern>
 	</filter-mapping>
 
 	<filter>

@@ -5,8 +5,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <t:template_head_includes>
-	<script src="public/js/search.js" type="text/javascript"></script>
-	<link rel="stylesheet" type="text/css" href="public/css/mobile/forms.css" />
+	<script src="resources/js/search.js" type="text/javascript"></script>
+	<c:if test="${is_mobile}">
+		<link rel="stylesheet" type="text/css" href="resources/css/mobile/forms.css" />
+	</c:if>
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
@@ -110,11 +112,11 @@
 								<c:choose>
 									<c:when test="${user.isInMyNetwork}">
 										<span class="verticalcenter_helper"></span>
-										<img class="verticalcenter" alt="${user.name} fait déjà parti de vos amis." title="${user.name} fait déjà parti de vos amis." src="public/image/friend.png">
+										<img class="verticalcenter" alt="${user.name} fait déjà parti de vos amis." title="${user.name} fait déjà parti de vos amis." src="resources/image/friend.png">
 									</c:when>
 									<c:when test="${not empty user.freeComment}">
 										<span class="verticalcenter_helper"></span>
-										<img class="verticalcenter" alt="${user.freeComment}" title="${user.freeComment}" src="public/image/demande_envoyee.jpg">
+										<img class="verticalcenter" alt="${user.freeComment}" title="${user.freeComment}" src="resources/image/demande_envoyee.jpg">
 									</c:when>
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">

@@ -1,6 +1,7 @@
 package com.mosioj.viewhelper;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -8,7 +9,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -24,7 +24,6 @@ import org.springframework.mobile.device.LiteDeviceResolver;
  * @author Jordan Mosio
  *
  */
-@WebFilter("/*")
 public class DeviceResolverFilter implements Filter {
 
 	/**
@@ -40,6 +39,7 @@ public class DeviceResolverFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		logger.trace("Entering device resolver filtering...");
+		logger.debug("URL: " + ((HttpServletRequest) request).getRequestURL());
 		HttpSession session = ((HttpServletRequest) request).getSession();
 		Object isMobile = session.getAttribute("is_mobile");
 		if (isMobile == null) {
@@ -50,6 +50,7 @@ public class DeviceResolverFilter implements Filter {
 			session.setAttribute("is_normal", device.isNormal());
 			session.setAttribute("action_img_width", device.isMobile() ? "80" : "30");
 		}
+		logger.debug(MessageFormat.format("Is mobile ? {0}", session.getAttribute("is_mobile")));
 		request.setAttribute("is_mobile", session.getAttribute("is_mobile"));
 		request.setAttribute("is_normal", session.getAttribute("is_normal"));
 		request.setAttribute("action_img_width", session.getAttribute("action_img_width"));

@@ -3,7 +3,7 @@
     	<div id="container">
     	<header>
     		<div id="logo">
-	    		<img src="public/image/header_index.png" ></img>
+	    		<img src="resources/image/header_index.png" ></img>
     		</div>
     		<div id="logo_text">
     			Créer et partager vos envies de cadeaux avec toute votre famille et vos amis

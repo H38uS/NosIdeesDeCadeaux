@@ -38,11 +38,11 @@
 								<c:choose>
 									<c:when test="${user.isInMyNetwork}">
 										<span class="verticalcenter_helper"></span>
-										<img class="verticalcenter" alt="${user.name} fait déjà parti de vos amis." title="${user.name} fait déjà parti de vos amis." src="public/image/friend.png">
+										<img class="verticalcenter" alt="${user.name} fait déjà parti de vos amis." title="${user.name} fait déjà parti de vos amis." src="resources/image/friend.png">
 									</c:when>
 									<c:when test="${not empty user.freeComment}">
 										<span class="verticalcenter_helper"></span>
-										<img class="verticalcenter" alt="${user.freeComment}" title="${user.freeComment}" src="public/image/demande_envoyee.jpg">
+										<img class="verticalcenter" alt="${user.freeComment}" title="${user.freeComment}" src="resources/image/demande_envoyee.jpg">
 									</c:when>
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">

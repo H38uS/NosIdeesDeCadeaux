@@ -5,7 +5,7 @@
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 */
       
-var tb_pathToImage = "public/image/loadingAnimation.gif";
+var tb_pathToImage = "resources/image/loadingAnimation.gif";
 DEFAULT_WIDTH = $( window ).width() * .6;
 DEFAULT_HEIGTH = $( window ).height() * .8;
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/

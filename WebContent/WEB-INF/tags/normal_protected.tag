@@ -4,8 +4,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <t:template_head_includes>
-	<link rel="stylesheet" type="text/css" href="public/css/lib/thickbox.css" />
-	<script src="public/js/lib/thickbox.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="resources/css/lib/thickbox.css" />
+	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
 </t:template_head_includes>
 <t:template_body_protected>
 		<jsp:doBody />
