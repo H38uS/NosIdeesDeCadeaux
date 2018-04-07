@@ -63,11 +63,74 @@ div#content {
 }
 
 
+
+/*******************************/
+/* *** Formulaire de login *** */
+/*******************************/
+.login_form {
+	background-color: #8a8a8a;
+	color: white;
+	width: 700px;
+	margin: 50px auto;
+	margin-bottom: 0;
+	padding: 20px 50px;
+}
+
+.login_form table {
+	width: 100%;
+}
+
+.login_form a.button {
+	display: block;
+	width: 100%;
+	background-color: #c0c0c0;
+	color: black;
+	padding: 10px 0px;
+	margin: 8px 0;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+}
+
+.login_form a.button:hover {
+	background: #353b43;
+	color: white;
+	text-decoration: none;
+}
+
+
 /***********************************/
 /* *** Ideas with information *** */
 /***********************************/
+.ideas_square_container {
+	display: block;
+	padding: 0;
+	margin: 0 0;
+}
+
+.ideas_square_container>* {
+	vertical-align: top;
+}
 
 .idea_square {
+	margin: 10px 20px 20px 0px;
+	text-align: center;
+	background-color: #eafaff;
+	border: transparent solid 1px;
+	-webkit-box-shadow: 0 1px 5px transparent;
+	box-shadow: 0 1px 5px transparent;
+	min-height: 70px;
+	min-width: 300px;
+	-moz-box-shadow: 0px 0px 5px 0px #353b43;
+	-webkit-box-shadow: 0px 0px 5px 0px #353b43;
+	-o-box-shadow: 0px 0px 5px 0px #353b43;
+	box-shadow: 0px 0px 5px 0px #353b43;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=#353b43,
+		Direction=NaN, Strength=5);
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 	width: 100%;
 	padding: 0;
 }
@@ -75,9 +138,33 @@ div#content {
 	padding: 10px;
 }
 
+.idea_square .left {
+	padding-bottom: 10px;
+}
+
+.idea_square:hover {
+	background-color: #c1b0f8;
+	border: #353b43 solid 1px;
+	-webkit-box-shadow: 0 1px 5px #353b43;
+	box-shadow: 0 1px 5px #353b43;
+}
+
+.booked_by_me_idea {
+	background-color: #d6ffd7;
+}
+
+.booked_by_others_idea {
+	background-color: #d6d6d6;
+}
+
+.shared_booking_idea {
+	background-color: #fffac9;
+}
 .idea_square_text {
 	overflow: hidden;
 }
+
+
 
 /*******************/
 /* *** Tooltip *** */
@@ -103,6 +190,10 @@ div#content {
 }
 
 .top_tooltip .outer_top_tooltiptext .top_tooltiptext {
+	background-color: #353b43;
+	color: #fff;
+	border-radius: 6px;
+	padding: 10px 10px;
 	text-align: left;
 	width: 100%;
 	position: absolute;
@@ -113,6 +204,26 @@ div#content {
 	box-shadow: 0 1px 0 black;
 }
 
+.top_tooltip .top_tooltiptext a {
+	color: #b0cff8;
+}
+
+.top_tooltip .top_tooltiptext a img:hover {
+	border: transparent solid 1px;
+	-webkit-box-shadow: 0 1px 5px transparent;
+	box-shadow: 0 1px 5px transparent;
+	border-radius: 2px;
+	padding: 2px;
+}
+
+.top_tooltip .top_tooltiptext a img:hover {
+	background-color: #8a8a8a;
+	border: #8a8a8a solid 1px;
+	-webkit-box-shadow: 0 0 7px white;
+	box-shadow: 0 0 7px white;
+	border-radius: 2px;
+}
+
 .top_tooltip .top_tooltiptext::after {
 	content: "";
 	position: absolute;
@@ -120,24 +231,160 @@ div#content {
 	left: 50%;
 	margin-left: -25px;
 	border-width: 25px;
-	z-index: 2;
+	border-style: solid;
 	border-color: #353b43 transparent transparent transparent;
+	z-index: 2;
 }
+
+.top_tooltip:hover .outer_top_tooltiptext {
+	visibility: visible;
+}
+
+
 
 /***************************/
 /* *** Index protected *** */
 /***************************/
+#indexactions {
+	width: 70%;
+	margin: 20px auto;
+}
+
 #indexactions tr td {
 	display: block;
 	padding: 40px 0;
 }
 
 
-
 /***********************************/
 /* *** Person with information *** */
 /***********************************/
 #person_square_container {
+	display: grid;
 	grid-template-columns: repeat(auto-fill, 450px);
+	grid-gap: 00px;
+	justify-content: center;
+	align-content: flex-start;
+	list-style: none;
+	padding: 0;
 }
 
+#person_square_container>* {
+	vertical-align: top;
+}
+
+.person_square {
+	margin: 0 10px;
+	text-align: center;
+}
+
+.person_square_action {
+	margin: 5px;
+	padding: 8px;
+	background-color: #8a8a8a;
+	color: white;
+}
+
+.person_square_action a:link, .person_square_action a:visited,
+	.person_square_action a:active {
+	color: #b0cff8;
+}
+
+
+
+/****************************/
+/* *** Search box idées *** */
+/****************************/
+.meslistes_search>form {
+	display: inline;
+}
+
+.meslistes_search>form>input {
+	display: inline;
+	width: auto;
+}
+
+
+
+/*************************/
+/* *** Commentaires *** */
+/*************************/
+.comment {
+	border: 2px solid #353b43;
+	margin: 0 15px 30px 15px;
+	width: 70%;
+	display: inline-block;
+	position: relative;
+	min-width: 60px;
+	margin-bottom: 30px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+.comment:after {
+	content: "";
+	position: absolute;
+	bottom: -20px; /* value = - border-top-width - border-bottom-width */
+	border-style: solid;
+	/* reduce the damage in FF3.0 */
+	display: block;
+	width: 0;
+	/* vary these values to change the angle of the vertex */
+	border-width: 20px 20px 0 0;
+	border-color: #353b43 transparent;
+}
+
+.comment_mine {
+	margin-left: 30%;
+}
+.comment_mine:after {
+	right: 50px;
+	/* vary these values to change the angle of the vertex */
+	border-width: 20px 0 0 20px;
+	border-color: #353b43 transparent;
+}
+.comment_header_mine {
+	padding: 3px;
+	background: #353b43;
+	color: white;
+	-webkit-border-radius: 7px 7px 0 0;
+	-moz-border-radius: 7px 7px 0 0;
+	border-radius: 7px 7px 0 0;
+}
+.comment_header_mine a:link, .comment_header_mine a:visited,
+	.comment_header_mine a:active {
+	color: #b0cff8;
+}
+
+.comment_other:after {
+	left: 50px;
+}
+.comment_header_other {
+	padding: 3px;
+	background: #353b43;
+	color: white;
+	-webkit-border-radius: 7px 7px 0 0;
+	-moz-border-radius: 7px 7px 0 0;
+	border-radius: 7px 7px 0 0;
+}
+
+.comment_owner:after {
+	left: 50px;
+}
+.comment_header_owner {
+	padding: 3px;
+	background: #353b43;
+	color: white;
+	-webkit-border-radius: 7px 7px 0 0;
+	-moz-border-radius: 7px 7px 0 0;
+	border-radius: 7px 7px 0 0;
+}
+
+.comment_text {
+	padding: 10px;
+	background-color: #8a8a8a;
+	color: white;
+	-webkit-border-radius: 0 0 7px 7px;
+	-moz-border-radius: 0 0 7px 7px;
+	border-radius: 0 0 7px 7px;
+}
