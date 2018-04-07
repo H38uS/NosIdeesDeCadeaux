@@ -100,6 +100,15 @@ div#content {
 }
 
 
+
+/***********************************/
+/* *** Inputs, forms, checkbox *** */
+/***********************************/
+input, textarea, select {
+	font-size: 130%;
+}
+
+
 /***********************************/
 /* *** Ideas with information *** */
 /***********************************/
@@ -134,8 +143,18 @@ div#content {
 	width: 100%;
 	padding: 0;
 }
-.idea_square > div {
+.idea_square > div, .idea_square > table {
 	padding: 10px;
+}
+.idea_square > table {
+	width: 100%;
+	table-layout:fixed;
+}
+.idea_square td {
+	padding: 5px;
+}
+.idea_square .right {
+	text-align: right;
 }
 
 .idea_square .left {
@@ -162,6 +181,12 @@ div#content {
 }
 .idea_square_text {
 	overflow: hidden;
+}
+td.idea_square_text {
+	
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    word-wrap: break-word;
 }
 
 
@@ -253,6 +278,7 @@ div#content {
 #indexactions tr td {
 	display: block;
 	padding: 40px 0;
+	text-align: center;
 }
 
 

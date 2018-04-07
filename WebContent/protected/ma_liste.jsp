@@ -69,48 +69,117 @@
 		</div>
 		<h2>Ma liste de cadeaux</h2>
 		<c:if test="${fn:length(idees) > 0}">
-			<ul class="ideas_square_container">
-				<c:forEach var="idee" items="${idees}">
-					<c:if test="${empty idee.surpriseBy}">
-						<li class="idea_square top_tooltip">
-						<div>
-							<div class="left">
-								<span>${idee.priorite.image}</span>
-								<c:if test="${not empty idee.category}">
-									<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
-																						width="${action_img_width}px" />
-								</c:if>
-								<c:if test="${idee.hasQuestion()}">
-									<a href="protected/idee_questions?idee=${idee.id}">
-										<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
-																						width="${action_img_width}px" />
-									</a>
-								</c:if>
-								<span class="outer_top_tooltiptext">
-									<span class="top_tooltiptext">
-										<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
-										ou 
-										<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-										cette idée.<br />
-										<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
-									</span>
-								</span>
-							</div>
-							<div class="left idea_square_text">
-								${idee.html}
-							</div>
-							<c:if test="${not empty idee.image}">
-								<div>
-									<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img">
-										<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
-									</a>
-								</div>
-							</c:if>
+		<c:choose>
+			<c:when test="${is_mobile}">
+				<div class="ideas_square_container">
+					<c:forEach var="idee" items="${idees}">
+						<c:if test="${empty idee.surpriseBy}">
+						<div class="idea_square">
+							<table>
+								<tr>
+									<td>
+										<span>${idee.priorite.image}</span>
+										<c:if test="${not empty idee.category}">
+											<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
+																								width="${action_img_width}px" />
+										</c:if>
+										<c:if test="${idee.hasQuestion()}">
+											<a href="protected/idee_questions?idee=${idee.id}">
+												<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
+																								width="${action_img_width}px" />
+											</a>
+										</c:if>
+									</td>
+									<td class="right">
+										<a href="protected/modifier_idee?id=${idee.id}">
+											<img src="resources/image/modifier.png"
+												 title="Modifier cette idée"
+												 width="${action_img_width}px" />
+										</a>
+										<a href="protected/remove_an_idea?ideeId=${idee.id}">
+											<img src="resources/image/supprimer.png"
+												 title="Supprimer cette idée"
+												 width="${action_img_width}px" />
+										</a>
+										<a href="protected/idee_questions?idee=${idee.id}">
+											<img src="resources/image/questions.png"
+												 title="Il existe des questions/réponses sur cette idée"
+												 width="${action_img_width}px" />
+										</a>
+									</td>
+								</tr>
+								<tr>
+									<c:choose>
+										<c:when test="${not empty idee.image}">
+											<td>
+												<div>
+													<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img">
+														<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+													</a>
+												</div>
+											</td>
+											<td class="idea_square_text">
+												${idee.html}
+											</td>
+										</c:when>
+										<c:otherwise>
+											<td colspan="2" class="idea_square_text">
+												${idee.html}
+											</td>
+										</c:otherwise>
+									</c:choose>
+								</tr>
+							</table>
 						</div>
-						</li>
-					</c:if>
-				</c:forEach>
-			</ul>
+						</c:if>
+					</c:forEach>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<ul class="ideas_square_container">
+					<c:forEach var="idee" items="${idees}">
+						<c:if test="${empty idee.surpriseBy}">
+							<li class="idea_square top_tooltip">
+							<div>
+								<div class="left">
+									<span>${idee.priorite.image}</span>
+									<c:if test="${not empty idee.category}">
+										<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
+																							width="${action_img_width}px" />
+									</c:if>
+									<c:if test="${idee.hasQuestion()}">
+										<a href="protected/idee_questions?idee=${idee.id}">
+											<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
+																							width="${action_img_width}px" />
+										</a>
+									</c:if>
+									<span class="outer_top_tooltiptext">
+										<span class="top_tooltiptext">
+											<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
+											ou 
+											<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
+											cette idée.<br />
+											<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
+										</span>
+									</span>
+								</div>
+								<div class="left idea_square_text">
+									${idee.html}
+								</div>
+								<c:if test="${not empty idee.image}">
+									<div>
+										<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img">
+											<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+										</a>
+									</div>
+								</c:if>
+							</div>
+							</li>
+						</c:if>
+					</c:forEach>
+				</ul>
+			</c:otherwise>
+		</c:choose>
 		</c:if>
 	</jsp:body>
 </t:normal_protected>

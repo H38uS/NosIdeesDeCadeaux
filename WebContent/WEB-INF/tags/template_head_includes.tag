@@ -14,8 +14,8 @@
 				<link rel="stylesheet" type="text/css" href="resources/css/mobile/normal.css" />
 			</c:when>
 			<c:otherwise>
-				<link rel="stylesheet" type="text/css" href="resources/css/normal/normal.css" />
 				<link rel="stylesheet" type="text/css" href="resources/css/normal/layout.css" />
+				<link rel="stylesheet" type="text/css" href="resources/css/normal/normal.css" />
 			</c:otherwise>
 		</c:choose>
 		<script src="resources/js/jquery-3.2.1.min.js" type="text/javascript"></script>
