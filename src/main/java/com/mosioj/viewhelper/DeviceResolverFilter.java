@@ -37,15 +37,23 @@ public class DeviceResolverFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
 		logger.trace("Entering device resolver filtering...");
-		Device device = DEVICE_RESOLVER.resolveDevice(((HttpServletRequest) request));
+
+		HttpServletRequest detailRequest = (HttpServletRequest) request;
+		String url = detailRequest.getRequestURL().toString();
+		if (url.contains("/protected/files/")) {
+			chain.doFilter(request, response);
+			return;
+		}
+
+		Device device = DEVICE_RESOLVER.resolveDevice(detailRequest);
 		request.setAttribute("device", device);
 		request.setAttribute("is_mobile", device.isMobile());
 		request.setAttribute("is_normal", device.isNormal());
 		request.setAttribute("action_img_width", device.isMobile() ? "80" : "30");
-		logger.debug(MessageFormat.format(	"URL: {0}. Is mobile: {1}.",
-											((HttpServletRequest) request).getRequestURL(),
-											device.isMobile()));
+
+		logger.debug(MessageFormat.format("URL: {0}. Is mobile: {1}.", url, device.isMobile()));
 		chain.doFilter(request, response);
 	}
 
