@@ -41,6 +41,27 @@
 						<a href="<c:url value="/logout" />" class="fl_green">Se déconnecter</a>
 					</div>
 				</div>
+				<script type="text/javascript">
+					$(document).ready(function() {
+						jQuery.ui.autocomplete.prototype._resizeMenu = function () {
+							var ul = this.menu.element;
+							ul.outerWidth(
+									Math.max( $("#mobile_res_search").outerWidth(), this.element.outerWidth())
+								);
+						}
+						$("#header_name").autocomplete({
+							source : "protected/service/name_resolver",
+							minLength : 2,
+							appendTo: "#mobile_res_search",
+							position: { my : "left top", at: "left top", of : "#mobile_res_search" },
+							select : function(event, ui) {
+								$("#header_name").val(ui.item.email);
+								$("#afficherliste").submit();
+								return false;
+							}
+						});
+					});
+				</script>
 			</c:when>
 			<c:otherwise>
 	    		<div id="logo">
@@ -79,23 +100,25 @@
 						<a href="protected/rechercher_personne.jsp" class="fl_purple">Ajouter un ami</a>
 					</li>
 	    		</ul>
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$("#header_name").autocomplete({
+							source : "protected/service/name_resolver",
+							minLength : 2,
+							appendTo: "#mobile_res_search",
+							select : function(event, ui) {
+								$("#header_name").val(ui.item.email);
+								$("#afficherliste").submit();
+								return false;
+							}
+						});
+					});
+				</script>
 			</c:otherwise>
 			</c:choose>
     	</header>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$("#header_name").autocomplete({
-					source : "protected/service/name_resolver",
-					minLength : 2,
-					select : function(event, ui) {
-						$("#header_name").val(ui.item.email);
-						$("#afficherliste").submit();
-						return false;
-					}
-				});
-			});
-		</script>
 		<div id="content">
+			<div id="mobile_res_search">&nbsp;</div>
 	        <jsp:doBody/>
     	</div>
     	<footer>&#9400; 2016 NosIdeesCadeaux - Tous droits réservés - Conditions générales d'utilisation - <a href="public/remerciements.jsp">Remerciements</a></footer>
