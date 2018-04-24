@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		User thisOne = users.getUser(userId);
 		
 		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, userId);
+		logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
 		List<User> removable = new ArrayList<User>();
 		for (User toRemove : potentialGroupUser) {
 			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, groupId, idea);

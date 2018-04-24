@@ -249,35 +249,45 @@ public class Idees extends Table {
 		List<User> users = new ArrayList<User>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
-		query.append(MessageFormat.format("from {0} ur ", UserRelations.TABLE_NAME));
-		query.append(MessageFormat.format(	"inner join {0} u on u.{1} = ur.{2} ",
-											Users.TABLE_NAME,
-											UsersColumns.ID,
+
+		query.append("\n");
+		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} \n", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+
+		// On sélectionne toutes les relations (= second_user) du owner (= first_user) de l'idée...
+		query.append(MessageFormat.format("  from {0} ur \n", UserRelations.TABLE_NAME));
+
+		// [ Pour récupérer les infos des users ]
+		query.append(MessageFormat.format(" inner join {0} u \n", Users.TABLE_NAME));
+		query.append(MessageFormat.format("    on u.{0} = ur.{1} \n", UsersColumns.ID, UserRelationsColumns.SECOND_USER));
+
+		// Récupération du owner de l'idée de ce groupe
+		query.append(MessageFormat.format(" inner join {0} i \n", TABLE_NAME));
+		query.append(MessageFormat.format("    on ur.{0} = i.{1} \n", UserRelationsColumns.FIRST_USER, OWNER));
+		query.append(MessageFormat.format("   and i.{0} = ? \n", GROUPE_KDO_ID));
+
+		// On filtre sur les personnes qui sont amis avec l'utilisateur connecté
+		query.append(MessageFormat.format(" inner join {0} friends \n", UserRelations.TABLE_NAME));
+		query.append(MessageFormat.format("    on friends.{0} = ? \n", UserRelationsColumns.FIRST_USER));
+		query.append(MessageFormat.format(	"   and friends.{0} = ur.{1} \n",
+											UserRelationsColumns.SECOND_USER,
 											UserRelationsColumns.SECOND_USER));
-		query.append(MessageFormat.format(	"inner join {0} g on g.{1} = ? ",
+
+		// ... Qui ne sont pas déjà dans le groupe !
+		query.append(MessageFormat.format(	" where not exists (select 1 from {0} g where g.{1} = ? and g.{2} = ur.{3})",
 											GroupIdea.TABLE_NAME_CONTENT,
-											GroupIdeaContentColumns.GROUP_ID));
-		query.append(MessageFormat.format("inner join {0} i on i.{1} = ? ", TABLE_NAME, GROUPE_KDO_ID));
-		query.append(MessageFormat.format("inner join {0} ur2 ", UserRelations.TABLE_NAME));
-		query.append(MessageFormat.format("on ur2.{0} = i.{1} ", UserRelationsColumns.FIRST_USER, OWNER));
-		query.append(MessageFormat.format(	" and ur2.{0} = ur.{1} ",
-											UserRelationsColumns.SECOND_USER,
+											GroupIdeaContentColumns.GROUP_ID,
+											GroupIdeaContentColumns.USER_ID,
 											UserRelationsColumns.SECOND_USER));
-		query.append(MessageFormat.format(	"where ur.{0} <> g.{1} ",
-											UserRelationsColumns.SECOND_USER,
-											GroupIdeaContentColumns.USER_ID));
-		query.append(MessageFormat.format("  and ur.{0} <> i.{1} ", UserRelationsColumns.SECOND_USER, OWNER));
-		query.append(MessageFormat.format("  and ur.{0} = ? ", UserRelationsColumns.FIRST_USER));
 
 		logger.trace(query);
+		logger.trace(MessageFormat.format("GroupId: {0} / UserId: {1}", groupId, userId));
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 
 		try {
-			ps.bindParameters(groupId, groupId, userId);
+			ps.bindParameters(groupId, userId, groupId);
 			if (ps.execute()) {
 				ResultSet rs = ps.getResultSet();
-				if (rs.next()) {
+				while (rs.next()) {
 					users.add(new User(	rs.getInt(UsersColumns.ID.name()),
 										rs.getString(UsersColumns.NAME.name()),
 										rs.getString(UsersColumns.EMAIL.name())));
