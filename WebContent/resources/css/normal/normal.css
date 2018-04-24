@@ -125,6 +125,15 @@
 	box-shadow: 0 1px 5px #353b43;
 }
 
+.idea_square_modif_date {
+	font-style: italic;
+	font-size: 60%;
+	text-align: right;
+	position: relative;
+	top:15px;
+	left:15px;
+}
+
 .booked_by_me_idea {
 	background-color: #d6ffd7;
 }
