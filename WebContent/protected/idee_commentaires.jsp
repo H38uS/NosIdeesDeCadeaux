@@ -3,7 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
-		<jsp:body>
+	<jsp:body>
+		<p>
+		A la différence des questions, cette page permet de discuter entre participant autour d'une idée, pour mieux s'organiser.
+		Le propriétaire de l'idée ne pourra donc rien voir de ce qu'il se passe ici !
+		</p>
 		<h2>Commenter une idée</h2>
 		<div>Rappel de l'idée
 			<p>${text}</p>
