@@ -81,30 +81,31 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
 	// FIXME : afficher une image si on a déjà fait une demande "est-ce à jour"
-	
-	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe etc.
+
+	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe
+	// etc.
 	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
-	
+
 	// FIXME : retailler les images catégories en 80 px
 	// FIXME : revoir les check box en mode mobile (exemple: rechercher personne)
 	// FIXME : revoir mes listes en mode mobile: supprimer les tooltips
 	// FIXME : Mobile: revoir les pages login/error/acceuil
 	// FIXME : Mobile: améliorer la vision mes amis
-	
+
 	// FIXME : faire du javascript pour les notifications
 	// FIXME : faire du javascript pour les discussions
-	
+
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
-	
+
 	// FIXME : faire un template pour une idée, et le mettre dans les aperçus (au moins détail groupe ?)
-	//			Attention !!!
-	//			==> Le template ne marche pas si c'est notre idée (genre pour les questions)
-	//			==> il reste un identic_call_back, à voir si c'est géré...
+	// Attention !!!
+	// ==> Le template ne marche pas si c'est notre idée (genre pour les questions)
+	// ==> il reste un identic_call_back, à voir si c'est géré...
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATETIME_DISPLAY_FORMAT = "dd/MM/yyyy à HH:mm:ss";
-	
+
 	// Maximum 10M
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
