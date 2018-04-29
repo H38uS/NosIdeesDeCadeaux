@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -48,6 +49,7 @@ import com.mosioj.model.table.Users;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.utils.MyDateFormat;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -403,7 +405,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	}
 
 	protected java.sql.Date getAsDate(String date) {
-		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+		SimpleDateFormat format = new MyDateFormat(DATE_FORMAT);
 		Date parsed;
 		try {
 			parsed = format.parse(date);

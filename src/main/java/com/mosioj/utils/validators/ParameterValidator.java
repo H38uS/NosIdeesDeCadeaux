@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.utils.MyDateFormat;
 import com.mosioj.utils.database.DataSourceIdKDo;
 
 /**
@@ -198,7 +199,7 @@ public class ParameterValidator {
 	}
 
 	public void checkDateFormat() {
-		SimpleDateFormat sdf = new SimpleDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
+		SimpleDateFormat sdf = new MyDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
 		try {
 			sdf.parse(parameterValue);
 		} catch (ParseException e) {

@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -15,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.EmailSender;
+import com.mosioj.utils.MyDateFormat;
 
 public abstract class AbstractNotification {
 
@@ -85,7 +85,7 @@ public abstract class AbstractNotification {
 	}
 
 	public String getReadOn() {
-		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(readOn);
+		return new MyDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(readOn);
 	}
 
 	/**
@@ -152,7 +152,7 @@ public abstract class AbstractNotification {
 	}
 
 	public String getCreationTime() {
-		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(creationTime);
+		return new MyDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(creationTime);
 	}
 
 }

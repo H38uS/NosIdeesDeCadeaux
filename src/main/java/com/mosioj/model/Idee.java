@@ -3,14 +3,14 @@ package com.mosioj.model;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.utils.MyDateFormat;
 import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
 	
-	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("d MMMM à HH:mm", Locale.FRANCE);
+	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormat("d MMMM à HH:mm");
 
 	private final int id;
 	public String text;
@@ -101,7 +101,7 @@ public class Idee {
 	public String getBookingDate() {
 		if (bookedOn == null)
 			return null;
-		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(bookedOn);
+		return new MyDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(bookedOn);
 	}
 
 	public String getModificationDate() {

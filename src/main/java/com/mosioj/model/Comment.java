@@ -1,9 +1,9 @@
 package com.mosioj.model;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.utils.MyDateFormat;
 
 public class Comment {
 
@@ -39,6 +39,6 @@ public class Comment {
 	}
 
 	public String getTime() {
-		return new SimpleDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(time);
+		return new MyDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(time);
 	}
 }
