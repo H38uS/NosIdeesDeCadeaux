@@ -124,7 +124,9 @@
 												<c:when test="${not empty idee.bookingOwner}">
 													<c:choose>
 														<c:when test="${userid == idee.bookingOwner.id}">
-															<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation" alt="Idée réservée par vous" width="${action_img_width}px" />
+															<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}">
+																<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
+															</a>
 														</c:when>
 														<c:otherwise>
 															<img src="resources/image/reserve-autre.png" title="Une réservation d'une autre personne plus rapide..." alt="Idée réservée par une autre personne" width="${action_img_width}px" />
@@ -132,9 +134,16 @@
 													</c:choose>
 												</c:when>
 												<c:otherwise>
-													<img src="resources/image/reserve-groupe.png" title="Une réservation de groupe !" alt="Idée réservée par un groupe" width="${action_img_width}px" />
+													<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">
+														<img src="resources/image/reserve-groupe.png" title="Une réservation de groupe !" alt="Idée réservée par un groupe" width="${action_img_width}px" />
+													</a>
 												</c:otherwise>
 											</c:choose>
+										</c:when>
+										<c:when test="${idee.isPartiallyBooked()}">
+											<a href="protected/detail_sous_reservation?idee=${idee.id}">
+												<img src="resources/image/non-reserve.png" title="Un sous-ensemble de cette idée est réservé. Voyez si vous pouvez compléter !" alt="Sous partie de l'idée réservée" width="${action_img_width}px" />
+											</a>
 										</c:when>
 										<c:otherwise>
 											<img src="resources/image/non-reserve.png" title="Cette idée est libre... Faite plaisir en l'offrant !" alt="Idée non réservée" width="${action_img_width}px" />
