@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -53,16 +54,16 @@ public class CreateGroup extends AbstractIdea {
 
 		ParameterValidator valTot = ValidatorFactory.getMascValidator(ParametersUtils.readIt(request, "total"), "total");
 		valTot.checkEmpty();
-		valTot.checkIfInteger();
-		valTot.checkIntegerGreaterThan(-1);
+		valTot.checkIfAmount();
+		valTot.checkIntegerGreaterThan(0);
 
 		String amountString = ParametersUtils.readIt(request, "amount");
 		ParameterValidator valAmount = ValidatorFactory.getFemValidator(amountString, "participation");
 		valAmount.checkEmpty();
-		valAmount.checkIfInteger();
+		valAmount.checkIfAmount();
 
-		Integer total = ParametersUtils.readInt(request, "total");
-		valAmount.checkIntegerAmount(0, total == null ? 0 : total);
+		Double total = ParametersUtils.readDouble(request, "total");
+		valAmount.checkDoubleAmount(0, total == null ? 0 : total);
 
 		List<String> errors = valTot.getErrors();
 		errors.addAll(valAmount.getErrors());
@@ -76,7 +77,7 @@ public class CreateGroup extends AbstractIdea {
 			return;
 		}
 
-		Integer amount = ParametersUtils.readInt(request, "amount");
+		Double amount = ParametersUtils.readDouble(request, "amount");
 
 		int userId = ParametersUtils.getUserId(request);
 		Integer groupId = null;
@@ -90,6 +91,7 @@ public class CreateGroup extends AbstractIdea {
 			return;
 		}
 
+		logger.debug(MessageFormat.format("Total: {0}, amount: {1}", total, amount));
 		RootingsUtils.rootToPage(SuggestGroupIdea.VIEW_URL + "?" + SuggestGroupIdea.GROUP_ID_PARAM + "=" + groupId, request, response);
 	}
 }

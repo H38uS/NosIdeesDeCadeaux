@@ -3,13 +3,14 @@ package com.mosioj.model;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
 	
-	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("d MMMM à HH:mm");
+	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new SimpleDateFormat("d MMMM à HH:mm", Locale.FRANCE);
 
 	private final int id;
 	public String text;

@@ -273,11 +273,12 @@ public class Idees extends Table {
 											UserRelationsColumns.SECOND_USER));
 
 		// ... Qui ne sont pas déjà dans le groupe !
-		query.append(MessageFormat.format(	" where not exists (select 1 from {0} g where g.{1} = ? and g.{2} = ur.{3})",
+		query.append(MessageFormat.format(	" where not exists (select 1 from {0} g where g.{1} = ? and g.{2} = ur.{3}) \n",
 											GroupIdea.TABLE_NAME_CONTENT,
 											GroupIdeaContentColumns.GROUP_ID,
 											GroupIdeaContentColumns.USER_ID,
 											UserRelationsColumns.SECOND_USER));
+		query.append(MessageFormat.format("  order by coalesce(u.{0}, {1})", UsersColumns.NAME, UsersColumns.EMAIL));
 
 		logger.trace(query);
 		logger.trace(MessageFormat.format("GroupId: {0} / UserId: {1}", groupId, userId));

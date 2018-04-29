@@ -5,7 +5,7 @@
 <t:normal_protected>
 		<jsp:body>
 		<c:if test="${not empty group}">
-			<h2>Partager ce groupe</h2>
+			<h2>Partager ce <a href="protected/detail_du_groupe?groupid=${group.id}">groupe</a></h2>
 			<c:if test="${not empty sent_to_users}">
 				La requête a bien été envoyé aux utilisateurs suivants :
 				<ul>

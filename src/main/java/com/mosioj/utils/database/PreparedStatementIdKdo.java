@@ -61,6 +61,11 @@ public class PreparedStatementIdKdo implements Closeable {
 				continue;
 			}
 
+			if (parameter instanceof Double) {
+				ps.setDouble(i + 1, (Double) parameter);
+				continue;
+			}
+
 			if (parameter instanceof Integer) {
 				ps.setInt(i + 1, (Integer) parameter);
 				continue;
@@ -84,7 +89,7 @@ public class PreparedStatementIdKdo implements Closeable {
 		return ps.getResultSet();
 	}
 
-	public int [] executeBatch() throws SQLException {
+	public int[] executeBatch() throws SQLException {
 		return ps.executeBatch();
 	}
 

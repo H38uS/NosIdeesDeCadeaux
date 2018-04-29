@@ -31,7 +31,7 @@ public class GroupIdea extends Table {
 	 * @return
 	 * @throws SQLException
 	 */
-	public int createAGroup(int total, int amount, int userId) throws SQLException {
+	public int createAGroup(double total, double amount, int userId) throws SQLException {
 		int id = getDb().executeUpdateGeneratedKey(	MessageFormat.format("insert into {0} ({1}) values (?)", TABLE_NAME, NEEDED_PRICE),
 													total);
 		addNewAmount(amount, userId, id);
@@ -47,7 +47,7 @@ public class GroupIdea extends Table {
 	 * @return
 	 * @throws SQLException
 	 */
-	private int addNewAmount(int amount, int userId, int groupId) throws SQLException {
+	private int addNewAmount(double amount, int userId, int groupId) throws SQLException {
 		return getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
 																			TABLE_NAME_CONTENT,
 																			GROUP_ID,
@@ -94,11 +94,11 @@ public class GroupIdea extends Table {
 				ResultSet res = ps.getResultSet();
 
 				if (res.next()) {
-					group = new IdeaGroup(groupId, res.getInt(NEEDED_PRICE.name()));
+					group = new IdeaGroup(groupId, res.getDouble(NEEDED_PRICE.name()));
 					group.addUser(	new User(	res.getInt(USER_ID.name()),
 												res.getString(UsersColumns.NAME.name()),
 												res.getString(UsersColumns.EMAIL.name())),
-									res.getInt(PRICE.name()));
+									res.getDouble(PRICE.name()));
 				}
 
 				while (res.next()) {

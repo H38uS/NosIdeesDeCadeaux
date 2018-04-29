@@ -222,10 +222,11 @@
 										</a>
 									</div>
 								</c:if>
-								<c:if test="${not empty idee.modificationDate}"></c:if>
+								<c:if test="${not empty idee.modificationDate}">
 									<div class="idea_square_modif_date" >
 										${idee.modificationDate}
 									</div>
+								</c:if>
 							</div>
 							</li>
 							</c:forEach>

@@ -49,6 +49,16 @@ public class ParametersUtils {
 		return param;
 	}
 
+	public static Double readDouble(HttpServletRequest request, String name) {
+		double param = -1;
+		try {
+			param = Double.parseDouble(readIt(request, name));
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		return param;
+	}
+
 	/**
 	 * Reads and escape HTML4 caracters.
 	 * 

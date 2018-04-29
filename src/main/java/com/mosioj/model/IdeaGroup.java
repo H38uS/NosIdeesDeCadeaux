@@ -5,16 +5,16 @@ import java.util.List;
 
 public class IdeaGroup {
 
-	private final int total;
+	private final double total;
 	private final int id;
 	private final List<Share> shares = new ArrayList<Share>();
 	
-	public IdeaGroup(int id, int total) {
+	public IdeaGroup(int id, double d) {
 		this.id = id;
-		this.total = total;
+		this.total = d;
 	}
 
-	public int getTotal() {
+	public double getTotal() {
 		return total;
 	}
 
@@ -26,8 +26,8 @@ public class IdeaGroup {
 		return shares;
 	}
 
-	public void addUser(User user, int amount) {
-		shares.add(new Share(user, amount));
+	public void addUser(User user, double d) {
+		shares.add(new Share(user, d));
 	}
 	
 }

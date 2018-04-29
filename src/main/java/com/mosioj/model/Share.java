@@ -3,18 +3,18 @@ package com.mosioj.model;
 public class Share {
 	
 	private final User user;
-	private final int amount;
+	private final double amount;
 	
-	public Share(User user, int amount) {
+	public Share(User user, double d) {
 		this.user = user;
-		this.amount = amount;
+		this.amount = d;
 	}
 
 	public User getUser() {
 		return user;
 	}
 
-	public int getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 	

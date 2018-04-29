@@ -82,9 +82,30 @@ public class ParameterValidator {
 		}
 	}
 
+	public void checkIfAmount() {
+		try {
+			Double.valueOf(parameterValue);
+		} catch (NumberFormatException e) {
+			errors.add(article + parameterName + " doit être un nombre.");
+		}
+	}
+
 	public void checkIntegerAmount(int min, int max) {
 		try {
 			int val = Integer.valueOf(parameterValue);
+			if (val < min) {
+				errors.add(MessageFormat.format("{0}{1} doit être au moins égal à {2}.", article, parameterName, min));
+			}
+			if (val > max) {
+				errors.add(MessageFormat.format("{0}{1} doit être plus petit que {2}.", article, parameterName, max));
+			}
+		} catch (NumberFormatException e) {
+		}
+	}
+
+	public void checkDoubleAmount(double min, double max) {
+		try {
+			double val = Double.valueOf(parameterValue);
 			if (val < min) {
 				errors.add(MessageFormat.format("{0}{1} doit être au moins égal à {2}.", article, parameterName, min));
 			}
