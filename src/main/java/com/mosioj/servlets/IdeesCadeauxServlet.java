@@ -184,7 +184,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	private final SecurityPolicy policy;
 	protected Map<String, String> parameters;
 	protected Device device;
-	
+
 	/**
 	 * Class constructor.
 	 * 
@@ -276,7 +276,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	public void setIdees(Idees pIdees) {
 		idees = pIdees;
 	}
-	
+
 	/**
 	 * Internal class for GET processing, post security checks.
 	 * 
@@ -289,6 +289,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
 
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(req, resp);
@@ -322,7 +324,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			// Security has passed, perform the logic
 			ideesKDoGET(req, resp);
-			
+
 		} catch (NotLoggedInException e) {
 			// Redirection vers l'emplacement de login
 			RootingsUtils.redirectToPage("/public/login.jsp", req, resp);
@@ -344,6 +346,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
 
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(request, response);
@@ -372,12 +376,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			String fullURL = request.getRequestURL().toString();
 			notif.setURL(fullURL);
-			
+
 			device = (Device) request.getAttribute("device");
 
 			// Security has passed, perform the logic
 			ideesKDoPOST(request, response);
-			
+
 		} catch (NotLoggedInException e) {
 			// Redirection vers l'emplacement de login
 			RootingsUtils.redirectToPage("/public/login.jsp", request, response);

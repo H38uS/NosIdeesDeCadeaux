@@ -42,7 +42,7 @@ public class ParametersUtils {
 	public static Integer readInt(HttpServletRequest request, String name) {
 		int param = -1;
 		try {
-			param = Integer.parseInt(readIt(request, name));
+			param = Integer.parseInt(readIt(request, name).replaceAll(" ", ""));
 		} catch (NumberFormatException e) {
 			return null;
 		}
