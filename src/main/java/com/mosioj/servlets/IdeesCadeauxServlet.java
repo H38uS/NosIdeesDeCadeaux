@@ -71,7 +71,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : controle parental
 
-	// FIXME : faire des rappels d'anniversaire (tâche cron ?)
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
 	// TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
@@ -90,7 +89,15 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : Mobile: revoir les pages login/error/acceuil
 	// FIXME : Mobile: améliorer la vision mes amis
 	
+	// FIXME : faire du javascript pour les notifications
+	// FIXME : faire du javascript pour les discussions
+	
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
+	
+	// FIXME : faire un template pour une idée, et le mettre dans les aperçus (au moins détail groupe ?)
+	//			Attention !!!
+	//			==> Le template ne marche pas si c'est notre idée (genre pour les questions)
+	//			==> il reste un identic_call_back, à voir si c'est géré...
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
