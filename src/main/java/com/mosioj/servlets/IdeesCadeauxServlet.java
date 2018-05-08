@@ -513,7 +513,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	protected void removeUploadedImage(File path, String image) {
 		if (image != null && !image.isEmpty()) {
-			logger.debug(MessageFormat.format("Deleting pictures in {0} folder...", path));
+			image = StringEscapeUtils.unescapeHtml4(image);
+			logger.debug(MessageFormat.format("Deleting pictures ({1}) in {0} folder...", path, image));
 			File small = new File(path, "small/" + image);
 			small.delete();
 			File large = new File(path, "large/" + image);
