@@ -465,7 +465,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		try {
 			for (FileItem fi : upload.parseRequest(request)) {
 				if (!fi.isFormField()) {
-					String fileName = fi.getName() == null ? "" : new String(fi.getName().getBytes("ISO-8859-1"), "UTF-8");
+					logger.debug(MessageFormat.format("Character encoding: {0}", request.getCharacterEncoding()));
+					String fileName = fi.getName() == null ? "" : fi.getName();
+					logger.debug(MessageFormat.format("File name: {0}", fileName));
 					if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
 						image = Escaper.computeImageName(fileName);
@@ -482,6 +484,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 						File file = new File(largeFolder, image);
 						logger.debug("Uploading file : " + file);
 						fi.write(file);
+						logger.debug(MessageFormat.format("File size: {0} kos.", (file.length() / 1024)));
 
 						// Creation de la vignette
 						BufferedImage originalImage = ImageIO.read(file);
