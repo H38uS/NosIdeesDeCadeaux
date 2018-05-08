@@ -147,7 +147,7 @@ public class Idees extends Table {
 
 		StringBuilder query = getIdeaBasedSelect();
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
-		query.append(MessageFormat.format(" order by p.{0} desc,{1} desc, {2} desc", PrioritesColumns.ORDRE, MODIFICATION_DATE, ID));
+		query.append(MessageFormat.format(" order by p.{0} desc,{1}, {2} desc, {3} desc", PrioritesColumns.ORDRE, IDEE, MODIFICATION_DATE, ID));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 

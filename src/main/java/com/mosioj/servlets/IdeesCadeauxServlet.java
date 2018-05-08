@@ -465,12 +465,19 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		try {
 			for (FileItem fi : upload.parseRequest(request)) {
 				if (!fi.isFormField()) {
-					logger.debug(MessageFormat.format("Character encoding: {0}", request.getCharacterEncoding()));
+					logger.trace(MessageFormat.format("Character encoding: {0}", request.getCharacterEncoding()));
 					String fileName = fi.getName() == null ? "" : fi.getName();
 					logger.debug(MessageFormat.format("File name: {0}", fileName));
 					if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
 						image = Escaper.computeImageName(fileName);
+						image = image.replaceAll("'", "");
+						image = image.replaceAll("[éêè]", "e");
+						image = image.replaceAll("î", "i");
+						image = image.replaceAll("ô", "o");
+						image = image.replaceAll("[ùû]", "u");
+						image = image.replaceAll("[àâ]", "a");
+						image = StringEscapeUtils.escapeHtml4(image);
 
 						File largeFolder = new File(filePath, "large/");
 						if (!largeFolder.exists()) {
