@@ -84,7 +84,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 		// Removing current user, and notifying others
 		toBeNotified.remove(current);
 		for (User notified : toBeNotified) {
-			notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea));
+			notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
 		}
 
 		insertMandatoryParams(request, id);

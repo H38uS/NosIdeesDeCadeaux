@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Idee;
 import com.mosioj.model.Share;
 import com.mosioj.model.User;
-import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
+import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
@@ -73,12 +73,13 @@ public class IdeaComments extends IdeesCadeauxServlet {
 		}
 
 		// Notifying at least all people in the thread
-		toBeNotified.addAll(questions.getUserListOnComment(idea.getId()));
+		toBeNotified.addAll(comments.getUserListOnComment(idea.getId()));
 		
 		// Removing current user, and notifying others
 		toBeNotified.remove(current);
+
 		for (User notified : toBeNotified) {
-			notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea));
+			notif.addNotification(notified.id, new NotifNewCommentOnIdea(current, idea));
 		}
 
 		insertMandatoryParams(request, id);
