@@ -10,7 +10,7 @@ import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
 	
-	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormat("d MMMM à HH:mm");
+	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT);
 
 	private final int id;
 	public String text;

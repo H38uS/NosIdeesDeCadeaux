@@ -27,27 +27,29 @@
 		<c:forEach var="user" items="${entities}">
 			<a href="${identic_call_back}#list_${user.id}">${user.name}</a> |
 		</c:forEach>
-		<c:if test="${fn:length(entities) gt 1}">
-			<script type="text/javascript">
-				$(document).ready(function() {
-					$("#top_mes_listes_search").autocomplete({
-						source : "protected/service/name_resolver",
-						minLength : 2,
-						select : function(event, ui) {
-							$("#top_mes_listes_search").val(ui.item.email);
-							$("#afficherliste_topmeslistes").submit();
-							return false;
-						}
+		<c:if test="${not is_mobile}">
+			<c:if test="${fn:length(entities) gt 1}">
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$("#top_mes_listes_search").autocomplete({
+							source : "protected/service/name_resolver",
+							minLength : 2,
+							select : function(event, ui) {
+								$("#top_mes_listes_search").val(ui.item.email);
+								$("#afficherliste_topmeslistes").submit();
+								return false;
+							}
+						});
 					});
-				});
-			</script>
-			<div class="meslistes_search">
-				Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
-				<form id="afficherliste_topmeslistes" method="POST" action="protected/afficher_listes">
-					<input type="text" name="name" id="top_mes_listes_search" placeholder="Entrez un nom ou un email" />
-					<input type="submit" value="Rechercher !" />
-				</form>
-			</div>
+				</script>
+				<div class="meslistes_search">
+					Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
+					<form id="afficherliste_topmeslistes" method="POST" action="protected/afficher_listes">
+						<input type="text" name="name" id="top_mes_listes_search" placeholder="Entrez un nom ou un email" />
+						<input type="submit" value="Rechercher !" />
+					</form>
+				</div>
+			</c:if>
 		</c:if>
 		<c:if test="${not empty entities}">
 			<c:forEach var="user" items="${entities}">
@@ -72,10 +74,16 @@
 											</c:if>
 											<span class="outer_top_tooltiptext">
 												<span class="top_tooltiptext">
-													<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
-													ou 
-													<a href="protected/remove_an_idea?ideeId=${idee.id}&from=/${identic_call_back}">supprimer</a>
-													cette idée.<br/>
+													<a href="protected/modifier_idee?id=${idee.id}">
+														<img src="resources/image/modifier.png"
+															 title="Modifier cette idée"
+															 width="${action_img_width}px" />
+													</a>
+													<a href="protected/remove_an_idea?ideeId=${idee.id}">
+														<img src="resources/image/supprimer.png"
+															 title="Supprimer cette idée"
+															 width="${action_img_width}px" />
+													</a>
 													<a href="protected/idee_questions?idee=${idee.id}">
 														<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
 													</a>
@@ -161,52 +169,17 @@
 									</c:if>
 									<span class="outer_top_tooltiptext">
 										<span class="top_tooltiptext">
-											<c:choose>
-												<c:when test="${not empty idee.surpriseBy}">
-													<c:choose>
-														<c:when test="${idee.surpriseBy.id == userid}">
-															Idée surprise créée par vous - l'<a href="protected/supprimer_surprise?idee=${idee.id}&from=/${identic_call_back}">annuler</a>.
-														</c:when>
-														<c:otherwise>
-															Idée surprise créée par ${idee.surpriseBy.name}.
-														</c:otherwise>
-													</c:choose>
-												</c:when>
-												<c:when test="${idee.isBooked()}">
-													<c:choose>
-														<c:when test="${not empty idee.bookingOwner}">
-															<c:choose>
-																<c:when test="${userid == idee.bookingOwner.id}">
-																	Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}">Annuler</a> !
-																</c:when>
-																<c:otherwise>
-																	Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}
-																</c:otherwise>
-															</c:choose>
-														</c:when>
-														<c:otherwise>
-															L'idée est réservée par un groupe (créé le ${idee.bookingDate}).
-															<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
-														</c:otherwise>
-													</c:choose><br/>
-												</c:when>
-												<c:when test="${idee.isPartiallyBooked()}">
-													Une sous partie de l'idée est actuellement réservée.
-													<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a><br/>
-												</c:when>
-												<c:otherwise>
-														L'idée n'a pas encore été réservée.<br/>
-														<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img">
-															<img src="resources/image/reserver.png" class="clickable" title="Réserver l'idée" width="${action_img_width}px" />
-														</a>
-														<a href="protected/sous_reserver?idee=${idee.id}" class="img">
-															<img src="resources/image/sous_partie.png" class="clickable" title="Réserver une sous-partie de l'idée" width="${action_img_width}px" />
-														</a>
-														<a href="protected/create_a_group?idee=${idee.id}" class="img">
-															<img src="resources/image/grouper.png" class="clickable" title="Créer un groupe" width="${action_img_width}px" />
-														</a>
-												</c:otherwise>
-											</c:choose>
+											<c:if test="${empty idee.surpriseBy && not idee.isBooked() && not idee.isPartiallyBooked()}">
+												<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img">
+													<img src="resources/image/reserver.png" class="clickable" title="Réserver l'idée" width="${action_img_width}px" />
+												</a>
+												<a href="protected/sous_reserver?idee=${idee.id}" class="img">
+													<img src="resources/image/sous_partie.png" class="clickable" title="Réserver une sous-partie de l'idée" width="${action_img_width}px" />
+												</a>
+												<a href="protected/create_a_group?idee=${idee.id}" class="img">
+													<img src="resources/image/grouper.png" class="clickable" title="Créer un groupe" width="${action_img_width}px" />
+												</a>
+											</c:if>
 											<c:if test="${empty idee.surpriseBy}">
 												<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}" class="img">
 													<img src="resources/image/a_jour.png" class="clickable" title="Demander si c'est à jour." width="${action_img_width}px" />
@@ -233,7 +206,43 @@
 								</c:if>
 								<c:if test="${not empty idee.modificationDate}">
 									<div class="idea_square_modif_date" >
-										${idee.modificationDate}
+										<c:choose>
+												<c:when test="${not empty idee.surpriseBy}">
+													<c:choose>
+														<c:when test="${idee.surpriseBy.id == userid}">
+															Idée surprise créée le ${idee.modificationDate} par vous - l'<a href="protected/supprimer_surprise?idee=${idee.id}&from=/${identic_call_back}">annuler</a>.
+														</c:when>
+														<c:otherwise>
+															Idée surprise créée le ${idee.modificationDate} par ${idee.surpriseBy.name}.
+														</c:otherwise>
+													</c:choose>
+												</c:when>
+												<c:when test="${idee.isBooked()}">
+													<c:choose>
+														<c:when test="${not empty idee.bookingOwner}">
+															<c:choose>
+																<c:when test="${userid == idee.bookingOwner.id}">
+																	Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}">Annuler</a> !
+																</c:when>
+																<c:otherwise>
+																	Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}
+																</c:otherwise>
+															</c:choose>
+														</c:when>
+														<c:otherwise>
+															Réservée par un groupe (créé le ${idee.bookingDate}).
+															<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
+														</c:otherwise>
+													</c:choose><br/>
+												</c:when>
+												<c:when test="${idee.isPartiallyBooked()}">
+													Une sous partie de l'idée est actuellement réservée.
+													<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a><br/>
+												</c:when>
+												<c:otherwise>
+														Non réservée, modifiée le ${idee.modificationDate}.
+												</c:otherwise>
+											</c:choose>
 									</div>
 								</c:if>
 							</div>
@@ -276,40 +285,42 @@
 				</p>
 			</div>
 		</c:if>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$("#bottom_mes_listes_search").autocomplete({
-					source : "protected/service/name_resolver",
-					minLength : 2,
-					select : function(event, ui) {
-						$("#bottom_mes_listes_search").val(ui.item.email);
-						$("#afficherliste_bottommeslistes").submit();
-						return false;
-					}
+		<c:if test="${not is_mobile}">
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$("#bottom_mes_listes_search").autocomplete({
+						source : "protected/service/name_resolver",
+						minLength : 2,
+						select : function(event, ui) {
+							$("#bottom_mes_listes_search").val(ui.item.email);
+							$("#afficherliste_bottommeslistes").submit();
+							return false;
+						}
+					});
 				});
-			});
-		</script>
-		<c:choose>
-			<c:when test="${fn:length(entities) eq 1}">
-				<div class="meslistes_search">
-					Consultez une autre liste : 
-					<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
-						<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
-						<input type="submit" value="Rechercher !" />
-					</form>
-					<br/><br/><br/><br/><br/><br/><br/><br/><br/>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="meslistes_search">
-					Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
-					<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
-						<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
-						<input type="submit" value="Rechercher !" />
-					</form>
-					<br/><br/><br/><br/><br/><br/><br/><br/><br/>
-				</div>
-			</c:otherwise>
-		</c:choose>
+			</script>
+			<c:choose>
+				<c:when test="${fn:length(entities) eq 1}">
+					<div class="meslistes_search">
+						Consultez une autre liste : 
+						<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
+							<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
+							<input type="submit" value="Rechercher !" />
+						</form>
+						<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="meslistes_search">
+						Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
+						<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
+							<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
+							<input type="submit" value="Rechercher !" />
+						</form>
+						<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
 	</jsp:body>
 </t:normal_protected>

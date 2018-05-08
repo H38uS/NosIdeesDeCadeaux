@@ -104,7 +104,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
-	public static final String DATETIME_DISPLAY_FORMAT = "dd/MM/yyyy à HH:mm:ss";
+	public static final String DATETIME_DISPLAY_FORMAT = "d MMMM à HH'h'mm";
 
 	// Maximum 10M
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
