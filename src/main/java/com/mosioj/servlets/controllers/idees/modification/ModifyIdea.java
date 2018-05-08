@@ -20,6 +20,7 @@ import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -58,7 +59,7 @@ public class ModifyIdea extends AbstractIdea {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		String url = PROTECTED_MODIFIER_IDEE;
+		String url = MaListe.PROTECTED_MA_LISTE;
 
 		Integer ideaId = ParametersUtils.readInt(request, IDEE_ID_PARAM);
 		url = url + "?id=" + ideaId;
