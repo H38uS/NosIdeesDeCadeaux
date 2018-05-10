@@ -90,23 +90,6 @@
 											</a>
 										</c:if>
 									</td>
-									<td class="right">
-										<a href="protected/modifier_idee?id=${idee.id}">
-											<img src="resources/image/modifier.png"
-												 title="Modifier cette idée"
-												 width="${action_img_width}px" />
-										</a>
-										<a href="protected/remove_an_idea?ideeId=${idee.id}">
-											<img src="resources/image/supprimer.png"
-												 title="Supprimer cette idée"
-												 width="${action_img_width}px" />
-										</a>
-										<a href="protected/idee_questions?idee=${idee.id}">
-											<img src="resources/image/questions.png"
-												 title="Il existe des questions/réponses sur cette idée"
-												 width="${action_img_width}px" />
-										</a>
-									</td>
 								</tr>
 								<tr>
 									<c:choose>
@@ -130,6 +113,23 @@
 									</c:choose>
 								</tr>
 							</table>
+							<span class="outer_top_tooltiptext">
+								<span class="top_tooltiptext">
+									<a href="protected/modifier_idee?id=${idee.id}">
+										<img src="resources/image/modifier.png"
+											 title="Modifier cette idée"
+											 width="${action_img_width}px" />
+									</a>
+									<a href="protected/remove_an_idea?ideeId=${idee.id}">
+										<img src="resources/image/supprimer.png"
+											 title="Supprimer cette idée"
+											 width="${action_img_width}px" />
+									</a>
+									<a href="protected/idee_questions?idee=${idee.id}">
+										<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
+									</a>
+								</span>
+							</span>
 						</div>
 						</c:if>
 					</c:forEach>
@@ -155,11 +155,19 @@
 									</c:if>
 									<span class="outer_top_tooltiptext">
 										<span class="top_tooltiptext">
-											<a href="protected/modifier_idee?id=${idee.id}">Modifier</a>
-											ou 
-											<a href="protected/remove_an_idea?ideeId=${idee.id}">supprimer</a>
-											cette idée.<br />
-											<a href="protected/idee_questions?idee=${idee.id}">Voir les questions existantes</a>.
+											<a href="protected/modifier_idee?id=${idee.id}">
+												<img src="resources/image/modifier.png"
+													 title="Modifier cette idée"
+													 width="${action_img_width}px" />
+											</a>
+											<a href="protected/remove_an_idea?ideeId=${idee.id}">
+												<img src="resources/image/supprimer.png"
+													 title="Supprimer cette idée"
+													 width="${action_img_width}px" />
+											</a>
+											<a href="protected/idee_questions?idee=${idee.id}">
+												<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
+											</a>
 										</span>
 									</span>
 								</div>
