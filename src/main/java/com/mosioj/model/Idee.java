@@ -106,7 +106,7 @@ public class Idee {
 
 	public String getModificationDate() {
 		if (lastModified == null)
-			return null;
+			return "-- on ne sait pas --";
 		return MODIFICATION_DATE_FORMAT.format(lastModified);
 	}
 
