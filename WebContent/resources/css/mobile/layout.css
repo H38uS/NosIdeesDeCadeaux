@@ -25,6 +25,13 @@ div#container {
 
 header {
 	background: #353b43;
+	padding: 10px 10px 20px 10px;
+}
+
+#header_logo_picture {
+	width: 100%;
+	display: block;
+	text-align: center;
 }
 
 header #logo_text {
@@ -57,13 +64,12 @@ div#content {
 /**********************/
 
 .menu_icon {
-	margin: 8px;
 	vertical-align: super;
-	position: relative;
-	display: inline-block;
+	float: left;
 }
 
 #menu_content {
+	padding: 10px;
 	height: 100%;
 	position: absolute;
 	top:0;
@@ -89,9 +95,9 @@ div#content {
 
 
 #right_search_field {
-	display: inline-block;
+	display: block;
 	max-height: 999999px;
-	font-size: 200%;
+	font-size: 270%;
 	margin-top: 12px;
 	margin-left: 8px;
 	vertical-align: top;

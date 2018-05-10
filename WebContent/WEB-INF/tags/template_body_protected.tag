@@ -6,8 +6,8 @@
     	<header>
 			<c:choose>
 			<c:when test="${is_mobile}">
-				<span class="menu_icon"><img src="resources/image/menu.png" /></span>
-				<img src="resources/image/header_index.png" />
+				<span class="menu_icon"><img src="resources/image/menu.png" width="${action_img_width}" /></span>
+				<div id="header_logo_picture"><img src="resources/image/header_index.png" height="${action_img_width}" /></div>
 				<div id="right_search_field" class="ui-widget">
 					<form id="afficherliste" method="POST" action="protected/afficher_listes">
 						<input type="text" name="name" id="header_name" placeholder="Un nom ou un email" />
@@ -15,7 +15,7 @@
 					</form>
 				</div>
 				<div id="menu_content">
-					<span class="menu_icon"><img src="resources/image/back.png" /></span>
+					<span class="menu_icon"><img src="resources/image/back.png" width="${action_img_width}" /></span>
 					<div>
 						<a href="protected/index" class="fl_green">Accueil</a>
 					</div>
