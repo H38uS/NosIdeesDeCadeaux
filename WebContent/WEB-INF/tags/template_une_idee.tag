@@ -44,11 +44,45 @@
 				</a>
 			</div>
 		</c:if>
-		<c:if test="${not empty idee.modificationDate}">
-			<div class="idea_square_modif_date" >
-				${idee.modificationDate}
-			</div>
-		</c:if>
+		<div class="idea_square_modif_date" >
+			<c:choose>
+				<c:when test="${not empty idee.surpriseBy}">
+					<c:choose>
+						<c:when test="${idee.surpriseBy.id == userid}">
+							Idée surprise créée le ${idee.modificationDate} par vous - l'<a href="protected/supprimer_surprise?idee=${idee.id}&from=/${identic_call_back}">annuler</a>.
+						</c:when>
+						<c:otherwise>
+							Idée surprise créée le ${idee.modificationDate} par ${idee.surpriseBy.name}.
+						</c:otherwise>
+					</c:choose>
+				</c:when>
+				<c:when test="${idee.isBooked()}">
+					<c:choose>
+						<c:when test="${not empty idee.bookingOwner}">
+							<c:choose>
+								<c:when test="${userid == idee.bookingOwner.id}">
+									Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}">Annuler</a> !
+								</c:when>
+								<c:otherwise>
+									Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}
+								</c:otherwise>
+							</c:choose>
+						</c:when>
+						<c:otherwise>
+							Réservée par un groupe (créé le ${idee.bookingDate}).
+							<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
+						</c:otherwise>
+					</c:choose><br/>
+				</c:when>
+				<c:when test="${idee.isPartiallyBooked()}">
+					Une sous partie de l'idée est actuellement réservée.
+					<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a><br/>
+				</c:when>
+				<c:otherwise>
+					Non réservée, modifiée le ${idee.modificationDate}.
+				</c:otherwise>
+			</c:choose>
+		</div>
 	</div>
 	</li>
 </ul>

@@ -130,6 +130,9 @@
 									</a>
 								</span>
 							</span>
+							<div class="idea_square_modif_date" >
+								Mise à jour le ${idee.modificationDate}.
+							</div>
 						</div>
 						</c:if>
 					</c:forEach>
@@ -181,6 +184,9 @@
 										</a>
 									</div>
 								</c:if>
+								<div class="idea_square_modif_date" >
+									Mise à jour le ${idee.modificationDate}.
+								</div>
 							</div>
 							</li>
 						</c:if>
