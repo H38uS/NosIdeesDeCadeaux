@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ tag language="java" pageEncoding="UTF-8"%>
 
 <ul class="ideas_square_container">
 	<li class="idea_square top_tooltip ${idee.displayClass}">
