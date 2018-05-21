@@ -18,4 +18,8 @@ public class Share {
 		return amount;
 	}
 	
+	public String getShareAmount() {
+		return String.format("%1$,.2f", amount);
+	}
+
 }

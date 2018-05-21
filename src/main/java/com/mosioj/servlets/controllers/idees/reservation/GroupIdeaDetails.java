@@ -43,22 +43,31 @@ public class GroupIdeaDetails extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int groupId = ParametersUtils.readInt(req, GROUP_ID_PARAM);
+		int groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 
 		logger.debug("Getting details for idea group " + groupId + "...");
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
-		int currentTotal = 0;
+		double currentTotal = 0;
 		for (Share share : group.getShares()) {
 			currentTotal += share.getAmount();
 		}
+		double remaining = group.getTotal() - currentTotal;
 
-		req.setAttribute("idee", idees.getIdea(idees.getIdeaId(groupId)));
-		req.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(req), groupId));
-		req.setAttribute("group", group);
-		req.setAttribute("currentTotal", currentTotal);
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+
+		Object errors = request.getSession().getAttribute("errors");
+		if (errors != null) {
+			request.setAttribute("errors", errors);
+			request.getSession().removeAttribute("errors");
+		}
+		
+		request.setAttribute("idee", idees.getIdea(idees.getIdeaId(groupId)));
+		request.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(request), groupId));
+		request.setAttribute("group", group);
+		request.setAttribute("currentTotal", currentTotal);
+		request.setAttribute("remaining", String.format("%1$,.2f", remaining));
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 
 	}
 
@@ -67,7 +76,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 
 		int userId = ParametersUtils.getUserId(request);
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
-		String amount = ParametersUtils.readIt(request, "amount");
+		String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
 		if ("annulation".equals(amount)) {
 			groupForIdea.removeUserFromGroup(userId, groupId);
@@ -81,15 +90,15 @@ public class GroupIdeaDetails extends AbstractIdea {
 
 		ParameterValidator val = ValidatorFactory.getMascValidator(amount, "montant");
 		val.checkEmpty();
-		val.checkIfInteger();
+		val.checkIfAmount();
 		val.checkIntegerGreaterThan(1);
 		List<String> errorsAmount = val.getErrors();
 
 		if (!errorsAmount.isEmpty()) {
-			request.setAttribute("errors", errorsAmount);
+			request.getSession().setAttribute("errors", errorsAmount);
 		} else {
 			// Modification de la participation
-			boolean newMember = groupForIdea.updateAmount(groupId, userId, Integer.parseInt(amount));
+			boolean newMember = groupForIdea.updateAmount(groupId, userId, Double.parseDouble(amount));
 			if (newMember) {
 				List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
 				for (AbstractNotification notification : notifications) {

@@ -105,7 +105,7 @@ public class GroupIdea extends Table {
 					group.addUser(	new User(	res.getInt(USER_ID.name()),
 												res.getString(UsersColumns.NAME.name()),
 												res.getString(UsersColumns.EMAIL.name())),
-									res.getInt(PRICE.name()));
+									res.getDouble(PRICE.name()));
 				}
 			}
 		} finally {
@@ -124,7 +124,7 @@ public class GroupIdea extends Table {
 	 * @return True if and only if the user is a new participant.
 	 * @throws SQLException
 	 */
-	public boolean updateAmount(Integer groupId, int userId, int newAmount) throws SQLException {
+	public boolean updateAmount(Integer groupId, int userId, double newAmount) throws SQLException {
 		try {
 			addNewAmount(newAmount, userId, groupId);
 			return true;

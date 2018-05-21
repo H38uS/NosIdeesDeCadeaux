@@ -17,6 +17,10 @@ public class IdeaGroup {
 	public double getTotal() {
 		return total;
 	}
+	
+	public String getTotalAmount() {
+		return String.format("%1$,.2f", total);
+	}
 
 	public int getId() {
 		return id;
