@@ -8,6 +8,7 @@
 		<div>
 			<c:if test="${not empty idea}">
 				<form action="protected/modifier_idee?id=${idea.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="from" value="${from}" />
 					<table>
 						<tr>
 							<td><label for="text">Le texte de l'idée</label></td>

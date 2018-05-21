@@ -88,7 +88,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// FIXME : retailler les images catégories en 80 px
 	// FIXME : revoir les check box en mode mobile (exemple: rechercher personne)
-	// FIXME : revoir mes listes en mode mobile: supprimer les tooltips
 	// FIXME : Mobile: revoir les pages login/error/acceuil
 	// FIXME : Mobile: améliorer la vision mes amis
 

@@ -23,7 +23,6 @@ public class EstAJour extends AbstractIdea {
 	private static final Logger logger = LogManager.getLogger(EstAJour.class);
 	private static final long serialVersionUID = -2229577569569388562L;
 	private static final String IDEE_FIELD_PARAMETER = "idee";
-	public static final String FROM_URL = "from";
 	private static final String VIEW_PAGE_URL = "est_a_jour_succes.jsp";
 	private static final String ERROR_PAGE_URL = "est_a_jour_error.jsp";
 
@@ -35,23 +34,20 @@ public class EstAJour extends AbstractIdea {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Idee idea = getIdeeFromSecurityChecks();
-		String from = ParametersUtils.readIt(request, FROM_URL);
-		logger.debug(MessageFormat.format("Deleting idea from: {0}", from));
-		if (from == null || from.trim().isEmpty()) {
-			from = MesListes.PROTECTED_MES_LISTES;
-		}
-		
-		NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(users.getUser(ParametersUtils.getUserId(request)), idea);
+		int userId = ParametersUtils.getUserId(request);
+		logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
+
+		NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(users.getUser(userId), idea);
 		if (notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
 			request.setAttribute("name", idea.owner.name);
 			request.setAttribute("error_message", "Une demande sur cette idée a déjà été envoyée.");
-			request.setAttribute("link", from.substring(1));
+			request.setAttribute("link", getFrom(request, MesListes.PROTECTED_MES_LISTES).substring(1));
 			RootingsUtils.rootToPage(ERROR_PAGE_URL, request, resp);
 		} else {
 			notif.addNotification(idea.owner.id, isUpToDateNotif);
 			request.setAttribute("text", idea.getTextSummary(50));
 			request.setAttribute("user", idea.owner.name);
-			request.setAttribute("link", from.substring(1));
+			request.setAttribute("link", getFrom(request, MesListes.PROTECTED_MES_LISTES).substring(1));
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);
 		}
 	}

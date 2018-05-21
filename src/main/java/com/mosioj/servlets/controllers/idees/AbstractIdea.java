@@ -2,6 +2,7 @@ package com.mosioj.servlets.controllers.idees;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,6 +29,9 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	private static final Logger logger = LogManager.getLogger(AbstractIdea.class);
+
+	private static final String FROM_URL = "from";
+
 	private File ideasPicturePath;
 
 	protected List<String> errors = new ArrayList<String>();
@@ -39,12 +43,46 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	public AbstractIdea(SecurityPolicy policy) {
 		super(policy);
 	}
-	
+
 	protected File getIdeaPicturePath() {
 		if (ideasPicturePath == null) {
 			ideasPicturePath = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas");
 		}
 		return ideasPicturePath;
+	}
+
+	/**
+	 * Tries to read a from request parameters or from parameters map. If it looks coming from the web site, returns it.
+	 * Otherwise, returns the default value.
+	 * 
+	 * @param request Current request being processed.
+	 * @param defaultValue Default value for the next redirection.
+	 * @return The next page to be redirected to.
+	 */
+	protected String getFrom(HttpServletRequest request, String defaultValue) {
+
+		String from = ParametersUtils.readIt(request, FROM_URL);
+		logger.debug(MessageFormat.format("Resolving request from: {0}", from));
+
+		if (from == null || from.trim().isEmpty()) {
+
+			if (parameters == null) {
+				return defaultValue;
+			}
+
+			// Trying to resolve it from parameters
+			from = parameters.get(FROM_URL);
+			if (from == null || from.trim().isEmpty()) {
+				return defaultValue;
+			}
+		}
+
+		if (!from.startsWith("/")) {
+			// Looks like it is not coming from the website...
+			return defaultValue;
+		}
+
+		return from;
 	}
 
 	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
@@ -122,28 +160,31 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	 * @throws SQLException
 	 * @throws ServletException
 	 */
-	protected boolean sousReserver(HttpServletRequest request, HttpServletResponse response, int userId, Idee idea, String landingURL)
-			throws SQLException, ServletException {
-			
-				List<String> errors = new ArrayList<String>();
-				String comment = ParametersUtils.readAndEscape(request, "comment");
-				if (comment == null || comment.isEmpty()) {
-					errors.add("Le commentaire ne peut pas être vide !");
-				}
-			
-				if (!idees.canSubBook(idea.getId(), userId)) {
-					errors.add("L'idée a déjà été réservée, ou vous en avez déjà réservé une sous partie.");
-				}
-			
-				if (!errors.isEmpty()) {
-					request.setAttribute("errors", errors);
-					RootingsUtils.rootToPage(landingURL, request, response);
-					return false;
-				}
-			
-				idees.sousReserver(idea.getId(), userId, comment);
-				sousReservation.sousReserver(idea.getId(), userId, comment);
-				return true;
-			}
+	protected boolean sousReserver(	HttpServletRequest request,
+									HttpServletResponse response,
+									int userId,
+									Idee idea,
+									String landingURL) throws SQLException, ServletException {
+
+		List<String> errors = new ArrayList<String>();
+		String comment = ParametersUtils.readAndEscape(request, "comment");
+		if (comment == null || comment.isEmpty()) {
+			errors.add("Le commentaire ne peut pas être vide !");
+		}
+
+		if (!idees.canSubBook(idea.getId(), userId)) {
+			errors.add("L'idée a déjà été réservée, ou vous en avez déjà réservé une sous partie.");
+		}
+
+		if (!errors.isEmpty()) {
+			request.setAttribute("errors", errors);
+			RootingsUtils.rootToPage(landingURL, request, response);
+			return false;
+		}
+
+		idees.sousReserver(idea.getId(), userId, comment);
+		sousReservation.sousReserver(idea.getId(), userId, comment);
+		return true;
+	}
 
 }

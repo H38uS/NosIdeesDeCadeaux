@@ -11,19 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/dereserver")
-public class DereserverIdee extends IdeesCadeauxServlet {
+public class DereserverIdee extends AbstractIdea {
 
 	private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
 	private static final long serialVersionUID = -8244829899125982644L;
 	private static final String IDEA_ID_PARAM = "idee";
-	public static final String FROM_URL = "from";
 
 	/**
 	 * Class constructor
@@ -37,15 +36,11 @@ public class DereserverIdee extends IdeesCadeauxServlet {
 
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
 		int userId = ParametersUtils.getUserId(request);
-		String from = ParametersUtils.readIt(request, FROM_URL);
-		logger.debug(MessageFormat.format("Deleting idea from: {0}", from));
-		if (from == null || from.trim().isEmpty()) {
-			from = MesListes.PROTECTED_MES_LISTES;
-		}
 
+		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea, userId));
 		idees.dereserver(idea, userId);
 
-		RootingsUtils.redirectToPage(from, request, resp);
+		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp);
 	}
 
 	@Override

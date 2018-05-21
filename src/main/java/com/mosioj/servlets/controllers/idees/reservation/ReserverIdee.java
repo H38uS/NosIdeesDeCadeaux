@@ -11,19 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/reserver")
-public class ReserverIdee extends IdeesCadeauxServlet {
+public class ReserverIdee extends AbstractIdea {
 
 	private static final Logger logger = LogManager.getLogger(ReserverIdee.class);
 	private static final long serialVersionUID = 7349100644264613480L;
 	private static final String IDEA_ID_PARAM = "idee";
-	public static final String FROM_URL = "from";
 
 	/**
 	 * Class constructor
@@ -33,21 +32,17 @@ public class ReserverIdee extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		String from = ParametersUtils.readIt(req, FROM_URL);
-		logger.debug(MessageFormat.format("Deleting idea from: {0}", from));
-		if (from == null || from.trim().isEmpty()) {
-			from = MesListes.PROTECTED_MES_LISTES;
-		}
-		Integer idea = ParametersUtils.readInt(req, IDEA_ID_PARAM);
-		int userId = ParametersUtils.getUserId(req);
+		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		int userId = ParametersUtils.getUserId(request);
+		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea, userId));
 
 		if (idees.canBook(idea, userId)) {
 			idees.reserver(idea, userId);
 		}
 
-		RootingsUtils.redirectToPage(from, req, resp);
+		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, response);
 	}
 
 	@Override

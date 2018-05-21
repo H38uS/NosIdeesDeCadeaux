@@ -11,19 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.SurpriseModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_surprise")
-public class SupprimerSurprise extends IdeesCadeauxServlet {
+public class SupprimerSurprise extends AbstractIdea {
 
 	private static final Logger logger = LogManager.getLogger(SupprimerSurprise.class);
 	private static final long serialVersionUID = -8244829899125982644L;
 	private static final String IDEA_ID_PARAM = "idee";
-	public static final String FROM_URL = "from";
 
 	/**
 	 * Class constructor
@@ -34,14 +33,10 @@ public class SupprimerSurprise extends IdeesCadeauxServlet {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
-		String from = ParametersUtils.readIt(request, FROM_URL);
-		logger.debug(MessageFormat.format("Deleting idea from: {0}", from));
-		if (from == null || from.trim().isEmpty()) {
-			from = MesListes.PROTECTED_MES_LISTES;
-		}
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea, ParametersUtils.getUserId(request)));
 		idees.remove(idea);
-		RootingsUtils.redirectToPage(from, request, resp);
+		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp);
 	}
 
 	@Override

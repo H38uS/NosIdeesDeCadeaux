@@ -44,25 +44,23 @@ public class ModifyIdea extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Idee idea = getIdeeFromSecurityChecks();
 		idea.text = Escaper.htmlToText(idea.text);
 
-		req.setAttribute("types", categories.getCategories());
-		req.setAttribute("priorites", priorities.getPriorities());
-		req.setAttribute("idea", idea);
+		request.setAttribute("types", categories.getCategories());
+		request.setAttribute("priorites", priorities.getPriorities());
+		request.setAttribute("idea", idea);
+		request.setAttribute("from", getFrom(request, ""));
 
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		String url = MaListe.PROTECTED_MA_LISTE;
-
 		Integer ideaId = ParametersUtils.readInt(request, IDEE_ID_PARAM);
-		url = url + "?id=" + ideaId;
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
@@ -106,7 +104,9 @@ public class ModifyIdea extends AbstractIdea {
 
 		}
 
-		RootingsUtils.redirectToPage(url, request, response);
+		RootingsUtils.redirectToPage(	getFrom(request, MaListe.PROTECTED_MA_LISTE + "?" + "id=" + ideaId),
+										request,
+										response);
 	}
 
 }

@@ -54,7 +54,9 @@
 		<c:if test="${not empty entities}">
 			<c:forEach var="user" items="${entities}">
 				<c:if test="${userid == user.id}">
+
 					<!-- Début idée de la personne -->
+
 					<h2 id="list_${user.id}">Mes idées de cadeaux</h2>
 					<c:if test="${fn:length(user.ideas) > 0}">
 						<ul class="ideas_square_container">
@@ -74,12 +76,12 @@
 											</c:if>
 											<span class="outer_top_tooltiptext">
 												<span class="top_tooltiptext">
-													<a href="protected/modifier_idee?id=${idee.id}">
+													<a href="protected/modifier_idee?id=${idee.id}&from=/${identic_call_back}">
 														<img src="resources/image/modifier.png"
 															 title="Modifier cette idée"
 															 width="${action_img_width}px" />
 													</a>
-													<a href="protected/remove_an_idea?ideeId=${idee.id}">
+													<a href="protected/remove_an_idea?ideeId=${idee.id}&from=/${identic_call_back}">
 														<img src="resources/image/supprimer.png"
 															 title="Supprimer cette idée"
 															 width="${action_img_width}px" />
@@ -113,7 +115,9 @@
 						<span>Vous n'avez pas encore d'idées. Cliquez <a href="protected/ma_liste">ici</a> pour en ajouter.</span>
 					</c:if>
 				</c:if>
+
 				<!-- Fin idée de la personne -->
+
 				<c:if test="${userid != user.id}">
 					<h2 id="list_${user.id}">Liste de cadeaux ${user.myDName}</h2>
 					<c:if test="${fn:length(user.ideas) > 0}">

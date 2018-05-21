@@ -31,7 +31,6 @@ import com.mosioj.utils.RootingsUtils;
 public class RemoveOneIdea extends AbstractIdea {
 
 	public static final String IDEE_ID_PARAM = "ideeId";
-	public static final String FROM_URL = "from";
 	private static final Logger logger = LogManager.getLogger(RemoveOneIdea.class);
 
 	public RemoveOneIdea() {
@@ -54,11 +53,6 @@ public class RemoveOneIdea extends AbstractIdea {
 
 		// Reading parameters
 		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
-		String from = ParametersUtils.readIt(request, FROM_URL);
-		logger.debug(MessageFormat.format("Deleting idea from: {0}", from));
-		if (from == null || from.trim().isEmpty()) {
-			from = MaListe.PROTECTED_MA_LISTE;
-		}
 
 		Idee idea = getIdeeFromSecurityChecks();
 		if (idea != null && idea.isBooked()) {
@@ -96,6 +90,6 @@ public class RemoveOneIdea extends AbstractIdea {
 			notif.addNotification(userId, new NotifNoIdea());
 		}
 
-		RootingsUtils.redirectToPage(from, request, response);
+		RootingsUtils.redirectToPage(getFrom(request, MaListe.PROTECTED_MA_LISTE), request, response);
 	}
 }
