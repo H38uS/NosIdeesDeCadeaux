@@ -101,6 +101,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// Attention !!!
 	// ==> Le template ne marche pas si c'est notre idée (genre pour les questions)
 	// ==> il reste un identic_call_back, à voir si c'est géré...
+	
+	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

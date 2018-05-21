@@ -9,6 +9,10 @@
 	text-align: center;
 }
 
+.hidden {
+	display: none;
+}
+
 .left {
 	text-align: left;
 }
@@ -281,6 +285,27 @@ input[type="file"] {
 	-moz-transform: scale(1);
 	-ms-transform: scale(1);
 	transform: scale(1);
+}
+
+div.button_container {
+	width: 100%;
+	text-align: center;
+}
+div.button {
+	font-family: sans-serif, "MyFont", Georgia, Arial;
+	font-size: 105%;
+	background-color: #c0c0c0;
+	color: black;
+	border-radius: 4px;
+	padding: 10px 14px;
+	margin: 8px 0;
+	border: 1px solid #ccc;
+	cursor: pointer;
+}
+
+div.button:hover {
+	background: #353b43;
+	color: white;
 }
 
 .form_img {

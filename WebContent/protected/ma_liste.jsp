@@ -7,12 +7,19 @@
 		<h2>Ajouter une nouvelle idée</h2>
 		<div>
 			<form action="protected/ma_liste?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
-				<table>
+				<table id="ma_liste_table_ajouter">
 					<tr>
+						<td colspan="2">
+							<div class="button_container">
+								<div id="ma_liste_deplier" class="button">Cliquer pour déplier</div>
+							</div>
+						</td>
+					</tr>
+					<tr class="hidden" >
 						<td><label for="text">Le texte de l'idée</label></td>
 						<td><textarea id="text" name="text" cols="70" rows="6"></textarea></td>
 					</tr>
-					<tr>
+					<tr class="hidden" >
 						<td><label for="type">Type</label></td>
 						<td>
 							<select id="type" name="type">
@@ -24,7 +31,7 @@
 							</select>
 						</td>
 					</tr>
-					<tr>
+					<tr class="hidden" >
 						<td><label for="priority">Priorité</label></td>
 						<td>
 						<select id="priority" name="priority">
@@ -35,13 +42,13 @@
 						</select>
 						</td>
 					</tr>
-					<tr>
+					<tr class="hidden" >
 						<td>Fichier Choisi</td>
 						<td>
 							<span id="newImage" class="input"></span>
 						</td>
 					</tr>
-					<tr>
+					<tr class="hidden" >
 						<td>
 							<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
 						</td>
@@ -49,7 +56,7 @@
 							<label for="imageFile" class="custom-file-upload">Ajouter une image</label>
 						</td>
 					</tr>
-					<tr>
+					<tr class="hidden" >
 						<td colspan="2" align="center">
 							<input type="submit" name="submit" id="submit" value="Ajouter" />
 						</td>
