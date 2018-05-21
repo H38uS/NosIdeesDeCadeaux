@@ -223,10 +223,29 @@
 .meslistes_search>form {
 	display: inline;
 }
-
 .meslistes_search>form>input {
 	display: inline;
 	width: auto;
+}
+
+
+#mes_listes_entities_container {
+	margin-left: 200px;
+}
+#mes_listes_list_users {
+	position: fixed;
+	overflow: auto;
+	height: 700px;
+}
+#mes_listes_list_users > a {
+	display: block;
+	padding: 25px 15px;
+	text-align: center;
+}
+#mes_listes_list_users > a:hover {
+	text-decoration: none;
+	background-color: #8a8a8a;
+	color: white;
 }
 
 /*************************/
