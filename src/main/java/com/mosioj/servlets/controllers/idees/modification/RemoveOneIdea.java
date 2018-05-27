@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.Idee;
-import com.mosioj.model.Share;
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
@@ -55,19 +53,8 @@ public class RemoveOneIdea extends AbstractIdea {
 		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
 
 		Idee idea = getIdeeFromSecurityChecks();
-		if (idea != null && idea.isBooked()) {
-			User owner = idea.owner;
-			User booker = idea.getBookingOwner();
-			if (booker != null) {
-				notif.addNotification(booker.id, new NotifBookedRemove(idea, owner.getName()));
-			} else {
-				// Il s'agit d'un groupe
-				IdeaGroup group = groupForIdea.getGroupDetails(idea.getGroupKDO());
-				for (Share share : group.getShares()) {
-					User groupUser = share.getUser();
-					notif.addNotification(groupUser.id, new NotifBookedRemove(idea, owner.getName()));
-				}
-			}
+		for (User user : idea.getBookers(groupForIdea, sousReservation)) {
+			notif.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
 		}
 
 		String image = idea.getImage();

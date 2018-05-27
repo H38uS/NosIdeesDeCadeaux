@@ -135,6 +135,9 @@
 									<a href="protected/idee_questions?idee=${idee.id}">
 										<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
 									</a>
+									<a href="protected/je_le_veux_encore?idee=${idee.id}">
+										<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
+									</a>
 								</span>
 							</span>
 							<div class="idea_square_modif_date" >
@@ -177,6 +180,9 @@
 											</a>
 											<a href="protected/idee_questions?idee=${idee.id}">
 												<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
+											</a>
+											<a href="protected/je_le_veux_encore?idee=${idee.id}">
+												<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
 											</a>
 										</span>
 									</span>

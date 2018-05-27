@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
-import com.mosioj.model.Share;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
@@ -62,18 +61,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 
 		// If the idea is booked, we notify the bookers
 		User current = users.getUser(userId);
-		if (idea.isBooked()) {
-			User bookingOwner = idea.getBookingOwner();
-			if (bookingOwner != null) {
-				toBeNotified.add(bookingOwner);
-			} else {
-				// Idea is booked by a group
-				int groupId = idea.getGroupKDO();
-				for (Share share : groupForIdea.getGroupDetails(groupId).getShares()) {
-					toBeNotified.add(share.getUser());
-				}
-			}
-		}
+		toBeNotified.addAll(idea.getBookers(groupForIdea, sousReservation));
 
 		// Notifying at least all people in the thread
 		toBeNotified.addAll(questions.getUserListOnComment(idea.getId()));

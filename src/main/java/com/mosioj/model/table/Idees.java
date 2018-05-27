@@ -147,7 +147,11 @@ public class Idees extends Table {
 
 		StringBuilder query = getIdeaBasedSelect();
 		query.append(MessageFormat.format("where i.{0} = ?", OWNER));
-		query.append(MessageFormat.format(" order by p.{0} desc,{1}, {2} desc, {3} desc", PrioritesColumns.ORDRE, IDEE, MODIFICATION_DATE, ID));
+		query.append(MessageFormat.format(	" order by p.{0} desc,{1}, {2} desc, {3} desc",
+											PrioritesColumns.ORDRE,
+											IDEE,
+											MODIFICATION_DATE,
+											ID));
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 
@@ -561,12 +565,15 @@ public class Idees extends Table {
 	}
 
 	/**
-	 * Drops this idea.
+	 * Supprime tout type de réservation sur l'idée.
+	 * Fait aussi le ménage pour les groupes sous-jacent etc.
 	 * 
-	 * @param idea
+	 * @param idea L'idée qu'on doit déréserver.
 	 * @throws SQLException
 	 */
-	public void remove(Integer idea) throws SQLException {
+	public void toutDereserver(int idea) throws SQLException {
+
+		// Suppression des groupes potentiels
 		int groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?", idea);
 		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
 														GroupIdea.TABLE_NAME_CONTENT,
@@ -574,6 +581,33 @@ public class Idees extends Table {
 								groupId);
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
 								groupId);
+
+		// Des sous-reservations
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
+														SousReservation.TABLE_NAME,
+														SousReservationColumns.IDEE_ID),
+								idea);
+
+		// Mise a zero des flags
+		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {2} = ''N'', {3} = null, {4} = null, {5} = null where {1} = ?",
+														TABLE_NAME,
+														ID,
+														A_SOUS_RESERVATION,
+														RESERVE,
+														RESERVE_LE,
+														GROUPE_KDO_ID),
+								idea);
+
+	}
+
+	/**
+	 * Drops this idea.
+	 * 
+	 * @param idea
+	 * @throws SQLException
+	 */
+	public void remove(int idea) throws SQLException {
+		toutDereserver(idea);
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", Comments.TABLE_NAME, CommentsColumns.IDEA_ID),
 								idea);
 		logger.debug(MessageFormat.format("Suppression de l''idée: {0}", idea));

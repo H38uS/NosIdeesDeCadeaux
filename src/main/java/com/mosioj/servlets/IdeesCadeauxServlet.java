@@ -102,6 +102,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// ==> il reste un identic_call_back, à voir si c'est géré...
 	
 	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
+	
+	// FIXME : supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

@@ -216,6 +216,7 @@ td.idea_square_text {
 .top_tooltiptext img {
 	display: block;
 	padding: 50px 40px;
+	margin: auto;
 }
 
 .top_tooltiptext a {

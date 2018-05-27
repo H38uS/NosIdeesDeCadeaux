@@ -120,6 +120,36 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	}
 
 	/**
+	 * 
+	 * @param user The user.
+	 * @return True if and only if the birthday of this user is set up, and will come in less than 
+	 * NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY.
+	 */
+	protected boolean isBirthdayClose(User user) {
+
+		if (user.birthday == null) {
+			return false;
+		}
+
+		Calendar birthday = Calendar.getInstance();
+		birthday.setTime(new Date(user.birthday.getTime()));
+
+		Calendar today = Calendar.getInstance();
+		today.set(Calendar.HOUR, 0);
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
+		today.set(Calendar.MILLISECOND, 0);
+
+		birthday.set(Calendar.YEAR, today.get(Calendar.YEAR));
+		if (birthday.before(today)) {
+			birthday.add(Calendar.YEAR, 1);
+		}
+		today.add(Calendar.DAY_OF_YEAR, NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY);
+		
+		return birthday.before(today);
+	}
+
+	/**
 	 * Ajoute une notification au amis de la personne si son anniversaire approche.
 	 * 
 	 * @param user
@@ -128,23 +158,9 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	 * @throws SQLException
 	 */
 	protected void addModificationNotification(User user, Idee idea, boolean isNew) throws SQLException {
-		if (user.birthday != null) {
-			Calendar birthday = Calendar.getInstance();
-			birthday.setTime(new Date(user.birthday.getTime()));
-			Calendar today = Calendar.getInstance();
-			today.set(Calendar.HOUR, 0);
-			today.set(Calendar.MINUTE, 0);
-			today.set(Calendar.SECOND, 0);
-			today.set(Calendar.MILLISECOND, 0);
-			birthday.set(Calendar.YEAR, today.get(Calendar.YEAR));
-			if (birthday.before(today)) {
-				birthday.add(Calendar.YEAR, 1);
-			}
-			today.add(Calendar.DAY_OF_YEAR, NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY);
-			if (birthday.before(today)) {
-				for (User friend : userRelations.getAllUsersInRelation(user.id)) {
-					notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
-				}
+		if (isBirthdayClose(user)) {
+			for (User friend : userRelations.getAllUsersInRelation(user.id)) {
+				notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
 			}
 		}
 	}

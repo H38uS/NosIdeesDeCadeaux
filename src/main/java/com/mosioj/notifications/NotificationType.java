@@ -14,6 +14,7 @@ import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
+import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
 
 /**
  * 50 caracters max.
@@ -36,6 +37,7 @@ public enum NotificationType {
 	NEW_FRIENSHIP_REQUEST(NotifNouvelleDemandeAmi.class, "Quelqu'un vous fait une demande d'ami"), //
 	ACCEPTED_FRIENDSHIP(NotifDemandeAcceptee.class, "Quelqu'un a accepté votre demande"), //
 	REJECTED_FRIENDSHIP(NotifDemandeRefusee.class, "Quelqu'un a refusé votre demande d'amis"), //
+	RECURENT_IDEA_UNBOOK(NotifRecurentIdeaUnbook.class, "Un amis précise qu'une idée déjà reçue est toujours d'actualité"), //
 	IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class, "Un ami vous a ajouté une idée");
 
 	private final Class<? extends AbstractNotification> notificationClassName;

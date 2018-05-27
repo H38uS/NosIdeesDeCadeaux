@@ -492,6 +492,12 @@ public class UserRelations extends Table {
 		}
 	}
 
+	/**
+	 * 
+	 * @param userId
+	 * @return All user friends, without him.
+	 * @throws SQLException
+	 */
 	public List<User> getAllUsersInRelation(int userId) throws SQLException {
 		return getAllUsersInRelation(userId, -1, -1);
 	}

@@ -1,15 +1,20 @@
 package com.mosioj.model;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.mosioj.model.table.GroupIdea;
+import com.mosioj.model.table.SousReservation;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.MyDateFormat;
 import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
-	
+
 	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT);
 
 	private final int id;
@@ -29,8 +34,21 @@ public class Idee {
 	public boolean hasQuestion = false;
 	private User surpriseBy;
 
-	public Idee(int pId, User owner, String pText, String pType, User pBookingOwner, int pGroupKDO, String image, String catImage,
-			String catAlt, String catTitle, Priorite priorite, Timestamp bookedOn, Timestamp lastModified, String isPartiallyBooked, User surpriseBy) {
+	public Idee(int pId,
+				User owner,
+				String pText,
+				String pType,
+				User pBookingOwner,
+				int pGroupKDO,
+				String image,
+				String catImage,
+				String catAlt,
+				String catTitle,
+				Priorite priorite,
+				Timestamp bookedOn,
+				Timestamp lastModified,
+				String isPartiallyBooked,
+				User surpriseBy) {
 		id = pId;
 		text = pText;
 		type = pType;
@@ -72,6 +90,38 @@ public class Idee {
 
 	/**
 	 * 
+	 * @param groupForIdea Group interface.
+	 * @param sousReservation Partial booking interface.
+	 * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
+	 * @throws SQLException
+	 */
+	public List<User> getBookers(GroupIdea groupForIdea, SousReservation sousReservation) throws SQLException {
+		List<User> bookers = new ArrayList<User>();
+
+		if (isBooked()) {
+			User bookingOwner = getBookingOwner();
+			if (bookingOwner == null) {
+				// Réservé par un groupe
+				IdeaGroup group = groupForIdea.getGroupDetails(getGroupKDO());
+				for (Share share : group.getShares()) {
+					bookers.add(share.getUser());
+				}
+			} else {
+				// Réservé par une personne
+				bookers.add(bookingOwner);
+			}
+		} else if (isPartiallyBooked()) {
+			// Réservé par plusieurs personnes, mais pas dans un groupe
+			for (SousReservationEntity res : sousReservation.getSousReservation(getId())) {
+				bookers.add(res.user);
+			}
+		}
+
+		return bookers;
+	}
+
+	/**
+	 * 
 	 * @return True if the idea is booked (by a owner, or a group)
 	 */
 	public boolean isBooked() {
@@ -93,7 +143,7 @@ public class Idee {
 	public int getId() {
 		return id;
 	}
-	
+
 	public boolean isPartiallyBooked() {
 		return isPartiallyBooked;
 	}
@@ -152,7 +202,7 @@ public class Idee {
 				}
 			}
 			sb.append("...");
-			return  sb.toString();
+			return sb.toString();
 		}
 
 		return initial;
