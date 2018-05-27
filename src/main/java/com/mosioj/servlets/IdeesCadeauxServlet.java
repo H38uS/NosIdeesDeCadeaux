@@ -104,6 +104,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
 	
 	// FIXME : supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève
+	// FIXME : remplir le gdoc
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

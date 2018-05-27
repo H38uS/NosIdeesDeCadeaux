@@ -40,7 +40,7 @@ public class DetailSousReservation extends AbstractIdea {
 	private void setupCommon(HttpServletRequest req, Idee idea, int userId) throws SQLException {
 
 		logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
-		req.setAttribute("idea", idea);
+		req.setAttribute("idee", idea);
 
 		List<SousReservationEntity> reservations = sousReservation.getSousReservation(idea.getId());
 		req.setAttribute("sous_reservation_existantes", reservations);

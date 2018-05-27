@@ -7,30 +7,32 @@
 		<h2>Détail de la réservation partielle</h2>
 		<div>
 			<h3>Le text de l'idée</h3>
-			${idea.text}
+			<t:template_une_idee />
 		</div>
 		<div>
 			<h3>Les sous réservations existantes</h3>
 			<table>
 			<c:forEach items="${sous_reservation_existantes}" var="resa" >
 				<tr>
-					<td>${resa.comment}</td>
 					<td>
 						<c:choose>
 							<c:when test="${resa.user.id == userid}">
-								<strong>(Vous)</strong>
+								<strong>Vous</strong>
 							</c:when>
 							<c:otherwise>
-								<strong>(${resa.user.name})</strong>
+								<strong>${resa.user.name}</strong>
 							</c:otherwise>
 						</c:choose>
 					</td>
+					<td>${resa.comment}</td>
 					<td>
-						<form action="protected/annuler_sous_reservation" method="post" >
-							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							<input type="hidden" name="idee" value="${idea.id}">
-							<input type="submit" name="submit" id="submit" value="Annuler !" />
-						</form>
+						<c:if test="${resa.user.id == userid}">
+							<form action="protected/annuler_sous_reservation" method="post" >
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<input type="hidden" name="idee" value="${idee.id}">
+								<input type="submit" name="submit" id="submit" value="Annuler !" />
+							</form>
+						</c:if>
 					</td>
 				</tr>
 			</c:forEach>
@@ -43,10 +45,10 @@
 					Vous avez déjà reservé une partie de cette idée.
 				</c:when>
 				<c:otherwise>
-					<c:if test="${not empty idea}">
+					<c:if test="${not empty idee}">
 						<form action="protected/sous_reserver" method="post" >
 							<table>
-								<input type="hidden" name="idee" value="${idea.id}">
+								<input type="hidden" name="idee" value="${idee.id}">
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 								<tr>
 									<td><label for="comment">Commentaire de la réservation</label></td>
@@ -64,7 +66,7 @@
 					</c:if>
 				</c:otherwise>
 			</c:choose>
-			<c:if test="${empty idea}">
+			<c:if test="${empty idee}">
 				L'idée que vous souhaitez réserver n'existe pas, ou vous n'avez pas les droits pour le faire.
 			</c:if>
 		</div>
