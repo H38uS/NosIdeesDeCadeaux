@@ -110,6 +110,18 @@ public class LoginHelper implements Filter {
 			} catch (SQLException e) {
 				// Osef
 			}
+			
+			// Child connection
+			Object initial = session.getAttribute("initial_user_id");
+			if (initial != null) {
+				try {
+					int initial_id = Integer.parseInt(initial.toString());
+					request.setAttribute("initial_user_id", initial_id);
+					Users users = new Users();
+					request.setAttribute("initial_user_name", users.getUser(initial_id).getName());
+				} catch (Exception e) {
+				}
+			}
 		}
 
 		chain.doFilter(request, response);

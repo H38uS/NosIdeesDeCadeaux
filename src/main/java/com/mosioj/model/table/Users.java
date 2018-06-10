@@ -105,6 +105,18 @@ public class Users extends Table {
 	}
 
 	/**
+	 * 
+	 * @param email The identifier of the person (currently the email).
+	 * @return This person's id.
+	 * @throws SQLException
+	 */
+	public int getIdFromNameOrEmail(String nameOrEmail) throws SQLException {
+		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1", ID, TABLE_NAME, EMAIL, NAME),
+									nameOrEmail,
+									nameOrEmail);
+	}
+
+	/**
 	 * Persists the user configuration in DB.
 	 * 
 	 * @param user
@@ -133,8 +145,11 @@ public class Users extends Table {
 	 * @return The list of users.
 	 * @throws SQLException
 	 */
-	public List<User> getUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends, int firstRow, int limit)
-			throws SQLException {
+	public List<User> getUsers(	String nameToMatch,
+								int userIdToSkip,
+								boolean selectOnlyNonFriends,
+								int firstRow,
+								int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
 		LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.", nameToMatch, userIdToSkip));

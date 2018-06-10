@@ -220,15 +220,6 @@
 /****************************/
 /* *** Search box idées *** */
 /****************************/
-.meslistes_search>form {
-	display: inline;
-}
-.meslistes_search>form>input {
-	display: inline;
-	width: auto;
-}
-
-
 #mes_listes_entities_container {
 	margin-left: 200px;
 }

@@ -37,6 +37,11 @@
 					<div>
 						<a href="protected/mes_notifications" class="fl_yellow">Mes notifications (${notif_count})</a>
 					</div>
+					<c:if test="${not empty initial_user_name}">
+					<div>
+						<a href="protected/sorti_enfant" class="fl_green">Reconnexion en ${initial_user_name}</a>
+					</div>
+					</c:if>
 					<div>
 						<a href="<c:url value="/logout" />" class="fl_green">Se déconnecter</a>
 					</div>
@@ -72,6 +77,10 @@
 			    		<c:if test="${notif_count > 0}">
 			    			<br/>Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !
 			    		</c:if>
+			    		<c:if test="${not empty initial_user_name}">
+			    			<br/>Vous êtes connectés depuis le compte de ${initial_user_name}, <a href="protected/sorti_enfant">y retourner</a>.
+			    		</c:if>
+			    		<br/>
 			    		<div id="right_search_field" class="ui-widget">
 			    			<form id="afficherliste" method="POST" action="protected/afficher_listes">
 			    				<input type="text" name="name" id="header_name" placeholder="Entrez un nom ou un email" />

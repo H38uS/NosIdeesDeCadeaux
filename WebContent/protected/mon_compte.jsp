@@ -85,6 +85,78 @@
 			Mise à jour effectuée avec succès.
 		</c:if>
 		
+		<h2>Contrôle parental - Procuration</h2>
+
+		<h3>
+			<div class="inline_form">
+				Mes comptes parent
+				<c:if test="${not empty parents}">
+				<form id="supprimer_parents" method="POST" action="protected/supprimer_parents">
+					<input type="submit" value="Je suis assez grand(e), les supprimer" />
+				</form>
+				</c:if>
+			</div>
+		</h3>
+		<c:choose>
+			<c:when test="${not empty parents}">
+				<ul>
+					<c:forEach var="parent" items="${parents}">
+					<li>${parent}</li>
+					</c:forEach>
+				</ul>
+			</c:when>
+			<c:otherwise>
+				Vous n'avez actuellement pas de comptes parent.
+			</c:otherwise>
+		</c:choose>
+		<div class="inline_form">
+			<form id="ajouter_un_parent" method="POST" action="protected/ajouter_parent">
+				<input type="text" name="name" id="input_add_parent" placeholder="Nom ou email du parent" />
+				<input type="submit" value="Ajouter" />
+			</form>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#input_add_parent").autocomplete({
+					source : "protected/service/name_resolver",
+					minLength : 2,
+					select : function(event, ui) {
+						$("#input_add_parent").val(ui.item.email);
+						$("#ajouter_un_parent").submit();
+						return false;
+					}
+				});
+			});
+		</script>
+
+		<h3>Mes comptes enfant</h3>
+		<c:choose>
+			<c:when test="${not empty children}">
+			<table>
+				<c:forEach var="child" items="${children}">
+				<tr>
+					<td>${child}</td>
+					<td>
+						<form method="POST" action="protected/connexion_enfant">
+							<input type="hidden" name="name" value="${child.id}" />
+							<input type="submit" value="Se connecter avec ce compte" />
+						</form>
+					</td>
+				</tr>
+				</c:forEach>
+			</table>
+				<ul>
+				</ul>
+			</c:when>
+			<c:otherwise>
+				Vous n'avez actuellement pas de comptes enfant.
+			</c:otherwise>
+		</c:choose>
+		<p>
+			Pour en ajouter, connectez-vous (ou créez un autre compte) depuis le compte enfant
+			afin d'initialiser la procuration. <br/>Vous pourrez alors accéder à vos comptes enfant depuis le vôtre !
+		</p>
+		
 		<h2>Type de notifications</h2>
 		<table>
 			<c:forEach var="notif" items="${notif_types}">

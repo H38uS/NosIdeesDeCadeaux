@@ -127,6 +127,15 @@ img.clickable:active, a:active > img:active {
 /**********************/
 /* *** Formulaire *** */
 /**********************/
+
+.inline_form>form { /* formulaire sur une ligne */
+	display: inline;
+}
+.inline_form>form>input { /* formulaire sur une ligne */
+	display: inline;
+	width: auto;
+}
+
 label {
 	display: block;
 	min-width: 120px;

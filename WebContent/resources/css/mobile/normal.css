@@ -318,15 +318,6 @@ td.idea_square_text {
 /****************************/
 /* *** Search box idées *** */
 /****************************/
-.meslistes_search>form {
-	display: inline;
-}
-
-.meslistes_search>form>input {
-	display: inline;
-	width: auto;
-}
-
 .ui-widget {
 	font-size: 200%;
 }

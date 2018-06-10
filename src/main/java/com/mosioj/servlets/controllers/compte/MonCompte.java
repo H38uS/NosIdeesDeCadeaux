@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
@@ -39,17 +40,30 @@ public class MonCompte extends DefaultCompte {
 	}
 	
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(req);
+		int userId = ParametersUtils.getUserId(request);
 		User current = users.getUser(userId);
-		req.setAttribute("user", current);
+		request.setAttribute("user", current);
 
+		HttpSession session = request.getSession(); // FIXME idem les autres
+		if (session.getAttribute("sauvegarde_ok") != null) {
+			request.setAttribute("sauvegarde_ok", session.getAttribute("sauvegarde_ok"));
+			session.removeAttribute("sauvegarde_ok");
+		}
+		if (session.getAttribute("errors_info_gen") != null) {
+			request.setAttribute("errors_info_gen", session.getAttribute("errors_info_gen"));
+			session.removeAttribute("errors_info_gen");
+		}
+		
 		List<UserParameter> userNotificationParameters = userParameters.getUserNotificationParameters(userId);
-		req.setAttribute("notif_types", userNotificationParameters);
+		request.setAttribute("notif_types", userNotificationParameters);
+		
+		request.setAttribute("parents", parentRelationship.getParents(userId));
+		request.setAttribute("children", parentRelationship.getChildren(userId));
 
-		req.setAttribute("possible_values", NotificationActivation.values());
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+		request.setAttribute("possible_values", NotificationActivation.values());
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);
 	}
 
 	@Override

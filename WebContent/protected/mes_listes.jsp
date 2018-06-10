@@ -50,7 +50,7 @@
 							});
 						});
 					</script>
-					<div class="meslistes_search">
+					<div class="inline_form">
 						Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
 						<form id="afficherliste_topmeslistes" method="POST" action="protected/afficher_listes">
 							<input type="text" name="name" id="top_mes_listes_search" placeholder="Entrez un nom ou un email" />
@@ -322,7 +322,7 @@
 				</script>
 				<c:choose>
 					<c:when test="${fn:length(entities) eq 1}">
-						<div class="meslistes_search">
+						<div class="inline_form">
 							Consultez une autre liste : 
 							<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
 								<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
@@ -332,7 +332,7 @@
 						</div>
 					</c:when>
 					<c:otherwise>
-						<div class="meslistes_search">
+						<div class="inline_form">
 							Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
 							<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
 								<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />

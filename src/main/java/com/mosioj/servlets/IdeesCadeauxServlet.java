@@ -38,6 +38,7 @@ import com.mosioj.model.table.Comments;
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
+import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.model.table.Priorites;
 import com.mosioj.model.table.Questions;
 import com.mosioj.model.table.SousReservation;
@@ -65,13 +66,7 @@ import com.mosioj.viewhelper.Escaper;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet extends HttpServlet {
 
-	// TODO : vérifier que l'on redirige bien vers le site quand on est dans une frame etc => vérifier l'URL
-
-	// TODO : notification quand un anniversaire ou les fêtes approchent, pour chaque idée qui a une date de
-	// modification très ancienne => Ajouter la vérification sur la date de modification ??? + pour les nouvelles
 	// TODO : notification followers quand on ajoute des idées, les modifie etc.
-
-	// TODO : controle parental
 
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
 
@@ -184,6 +179,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * The connections to the SOUS_RESERVATION table.
 	 */
 	protected SousReservation sousReservation = new SousReservation();
+
+	/**
+	 * The connection to the PARENT_RELATIONSHIP table.
+	 */
+	protected static ParentRelationship parentRelationship = new ParentRelationship();
 
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
@@ -552,5 +552,31 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			}
 		}
 		return toBeAsked;
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param parameterName
+	 * @return The String to pass to the database
+	 */
+	protected String readNameOrEmail(HttpServletRequest request, String parameterName) {
+	
+		String nameOrEmail = ParametersUtils.readAndEscape(request, parameterName);
+		logger.trace(MessageFormat.format("Receive:{0}", nameOrEmail));
+	
+		if (nameOrEmail == null || nameOrEmail.trim().isEmpty()) {
+			return nameOrEmail;
+		}
+	
+		int open = nameOrEmail.lastIndexOf("(");
+		int close = nameOrEmail.lastIndexOf(")");
+		if (open > 0 && close > 0 && open < close) {
+			// Comes from some completion trick
+			nameOrEmail = nameOrEmail.substring(open + 1, close);
+		}
+	
+		logger.trace(MessageFormat.format("Returned:{0}", nameOrEmail.trim()));
+		return nameOrEmail.trim();
 	}
 }

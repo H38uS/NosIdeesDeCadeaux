@@ -37,10 +37,10 @@ public class RootingsUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void rootToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-		RequestDispatcher rd = req.getRequestDispatcher(url);
+	public static void rootToPage(String url, HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		RequestDispatcher rd = request.getRequestDispatcher(url);
 		try {
-			rd.forward(req, resp);
+			rd.forward(request, response);
 		} catch (IOException e) {
 			throw new ServletException(e.getMessage());
 		}
@@ -57,9 +57,9 @@ public class RootingsUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void redirectToPage(String url, HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	public static void redirectToPage(String url, HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
-			resp.sendRedirect(req.getContextPath() + url.replaceAll(" ", "%20"));
+			response.sendRedirect(request.getContextPath() + url.replaceAll(" ", "%20"));
 		} catch (IOException e) {
 			throw new ServletException(e.getMessage());
 		}
