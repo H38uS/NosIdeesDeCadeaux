@@ -12,7 +12,7 @@ function doSearch(value, only_non_friend) {
 	if (only_non_friend) only_non_friend = "on";
 	$("#res").html('<img alt="Chargement..." src="resources/image/big_ajax_loader.gif" height="280" width="280" />');
 
-	$.post('/NosIdeesDeCadeaux/protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
+	$.post('/${app_name}/protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
 		$("#res").html(data);
 		$("#res li").hide();
 		setTimeout(function() {
