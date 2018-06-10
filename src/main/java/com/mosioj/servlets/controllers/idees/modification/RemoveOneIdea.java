@@ -2,7 +2,9 @@ package com.mosioj.servlets.controllers.idees.modification;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,10 +53,13 @@ public class RemoveOneIdea extends AbstractIdea {
 
 		// Reading parameters
 		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
+		logger.debug(MessageFormat.format("Deleting idea {0}.", id));
 
+		Set<Integer> notified = new HashSet<>();
 		Idee idea = getIdeeFromSecurityChecks();
 		for (User user : idea.getBookers(groupForIdea, sousReservation)) {
 			notif.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
+			notified.add(user.id);
 		}
 
 		String image = idea.getImage();
@@ -65,7 +70,10 @@ public class RemoveOneIdea extends AbstractIdea {
 		for (AbstractNotification notification : notifications) {
 			if (notification instanceof NotifUserIdParam) {
 				NotifUserIdParam notifUserId = (NotifUserIdParam) notification;
-				notif.addNotification(notifUserId.getUserIdParam(), new NotifBookedRemove(idea, ParametersUtils.getUserName(request)));
+				if (!notified.contains(notifUserId.getUserIdParam())) {
+					notif.addNotification(notifUserId.getUserIdParam(), new NotifBookedRemove(idea, ParametersUtils.getUserName(request)));
+					notified.add(notifUserId.getUserIdParam());
+				}
 			}
 			notif.remove(notification.id);
 		}
