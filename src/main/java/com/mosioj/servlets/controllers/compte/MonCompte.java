@@ -46,7 +46,7 @@ public class MonCompte extends DefaultCompte {
 		User current = users.getUser(userId);
 		request.setAttribute("user", current);
 
-		HttpSession session = request.getSession(); // FIXME idem les autres
+		HttpSession session = request.getSession();
 		if (session.getAttribute("sauvegarde_ok") != null) {
 			request.setAttribute("sauvegarde_ok", session.getAttribute("sauvegarde_ok"));
 			session.removeAttribute("sauvegarde_ok");

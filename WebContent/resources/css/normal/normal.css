@@ -224,9 +224,11 @@
 	margin-left: 200px;
 }
 #mes_listes_list_users {
-	position: fixed;
+	position: sticky;
 	overflow: auto;
-	height: 700px;
+	left: 0;
+	top: 0;
+	float: left;
 }
 #mes_listes_list_users > a {
 	display: block;

@@ -42,8 +42,6 @@ public class AjouterParent extends DefaultCompte {
 		parentRelationship.addProcuration(parentId, ParametersUtils.getUserId(request));
 
 		RootingsUtils.redirectToPage(MonCompte.URL, request, response);
-		// FIXME 0 pouvoir se connecter en enfant
-		// FIXME 0 pouvoir revenir à son vrai compte
 	}
 
 }
