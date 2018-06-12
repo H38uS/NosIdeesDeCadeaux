@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -277,6 +278,10 @@ public class Notifications extends Table {
 					isUnread = "Y".equals(res.getString(IS_UNREAD.name()));
 					readOn = res.getTimestamp(READ_ON.name());
 					notifParams = new HashMap<ParameterName, Object>();
+					String name = res.getString(PARAMETER_NAME.name());
+					if (name != null && !name.isEmpty()) {
+						notifParams.put(ParameterName.valueOf(name), res.getString(PARAMETER_VALUE.name()));
+					}
 				}
 
 				if (currentId != -1) {
@@ -328,7 +333,9 @@ public class Notifications extends Table {
 		if (whereClause != null && !whereClause.isEmpty()) {
 			query.append(MessageFormat.format(" where {0}", whereClause));
 		}
-		query.append(MessageFormat.format(" order by {0} desc", CREATION_DATE));
+		query.append(MessageFormat.format(" order by {0} desc", NOTIFICATION_ID));
+		logger.debug(MessageFormat.format("Query: {0}", query.toString()));
+		logger.debug(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
 
 		return getNotificationFromQuery(query.toString(), parameters);
 	}

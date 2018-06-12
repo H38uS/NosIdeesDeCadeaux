@@ -3,12 +3,18 @@ package com.mosioj.notifications;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.table.Notifications;
 import com.mosioj.notifications.instance.NotifErrorOccured;
 
 public class NotificationFactory {
+
+	private static final Logger LOGGER = LogManager.getLogger(NotificationFactory.class);
 
 	private NotificationFactory() {
 	}
@@ -43,6 +49,7 @@ public class NotificationFactory {
 
 		AbstractNotification notification = null;
 		try {
+			LOGGER.debug(MessageFormat.format("Creation d''une notification  de type {0} avec les paramètres: {1}", type, params));
 			Constructor<? extends AbstractNotification> ctor = clazz.getConstructor(int.class,
 																					int.class,
 																					String.class,
