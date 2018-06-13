@@ -3,6 +3,7 @@ package com.mosioj.model.table;
 import static com.mosioj.model.table.columns.ParentRelationshipColumns.ID;
 import static com.mosioj.model.table.columns.ParentRelationshipColumns.CHILD_ID;
 import static com.mosioj.model.table.columns.ParentRelationshipColumns.PARENT_ID;
+import static com.mosioj.model.table.columns.ParentRelationshipColumns.CREATION_DATE;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -142,7 +143,7 @@ public class ParentRelationship extends Table {
 	 * @throws SQLException
 	 */
 	public void addProcuration(int parentId, int childId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format("insert into {0} ({1},{2}) values (?, ?)", TABLE_NAME, PARENT_ID, CHILD_ID),
+		getDb().executeUpdate(	MessageFormat.format("insert into {0} ({1},{2},{3}) values (?, ?, now())", TABLE_NAME, PARENT_ID, CHILD_ID, CREATION_DATE),
 								parentId,
 								childId);
 	}
