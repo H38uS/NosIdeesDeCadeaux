@@ -19,7 +19,7 @@
 			</c:otherwise>
 		</c:choose>
 		<script src="resources/js/jquery-3.2.1.min.js" type="text/javascript"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="resources/js/lib/jquery-ui.js"></script>
 		<script src="resources/js/lib/jquery.tooltipster.min.js" type="text/javascript"></script>
 		<script src="resources/js/global.js" type="text/javascript"></script>
 		<jsp:doBody />
