@@ -111,7 +111,11 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public int getIdFromNameOrEmail(String nameOrEmail) throws SQLException {
-		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1", ID, TABLE_NAME, EMAIL, NAME),
+		return getDb().selectInt(	MessageFormat.format(	"select {0} from {1} where {2} = ? or {3} = ? limit 1",
+															ID,
+															TABLE_NAME,
+															EMAIL,
+															NAME),
 									nameOrEmail,
 									nameOrEmail);
 	}
@@ -124,6 +128,8 @@ public class Users extends Table {
 	 */
 	public void update(User user) throws SQLException {
 		LOGGER.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
+		String previousEmail = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?", EMAIL, TABLE_NAME, ID),
+													user.id);
 		String query = MessageFormat.format("update {0} set {1} = ?, {2} = ?, {3} = ?, {5} = ? where {4} = ?",
 											TABLE_NAME,
 											EMAIL,
@@ -132,6 +138,49 @@ public class Users extends Table {
 											ID,
 											AVATAR);
 		getDb().executeUpdate(query, user.email, user.name, user.birthday, user.avatar, user.id);
+		if (!previousEmail.equals(user.email)) {
+			getDb().executeUpdate(	MessageFormat.format(	"update USER_ROLES set {0} = ? where {1} = ? ",
+															UserRolesColumns.EMAIL,
+															UserRolesColumns.EMAIL),
+									user.email,
+									previousEmail);
+		}
+	}
+
+	/**
+	 * 
+	 * @return All the users in DB. Only used for administration
+	 * @throws SQLException
+	 */
+	public List<User> getAllUsers() throws SQLException {
+
+		List<User> users = new ArrayList<User>();
+
+		StringBuilder query = new StringBuilder();
+		query.append(MessageFormat.format("select {0},{1},{2},{3} ", ID, NAME, EMAIL, AVATAR));
+		query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
+		query.append(MessageFormat.format(" order by {0}, {1}, {2} ", NAME, EMAIL, ID));
+
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+		try {
+
+			if (!ps.execute()) {
+				throw new SQLException("No result set available.");
+			}
+
+			ResultSet res = ps.getResultSet();
+			while (res.next()) {
+				users.add(new User(	res.getInt(ID.name()),
+									res.getString(NAME.name()),
+									res.getString(EMAIL.name()),
+									res.getString(AVATAR.name())));
+			}
+
+		} finally {
+			ps.close();
+		}
+
+		return users;
 	}
 
 	/**
