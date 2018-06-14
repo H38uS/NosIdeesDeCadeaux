@@ -306,7 +306,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 		try {
 
-			if (!policy.hasRightToInteractInGetRequest(req, resp)) {
+			if (!req.isUserInRole("ROLE_ADMIN") && !policy.hasRightToInteractInGetRequest(req, resp)) {
 
 				int userId;
 				try {
@@ -363,7 +363,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 		try {
 
-			if (!policy.hasRightToInteractInPostRequest(request, response)) {
+			if (!request.isUserInRole("ROLE_ADMIN") && !policy.hasRightToInteractInPostRequest(request, response)) {
 
 				int userId;
 				try {

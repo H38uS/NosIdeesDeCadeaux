@@ -34,6 +34,11 @@
 					<div>
 						<a href="protected/mon_compte" class="fl_blue">Mon compte</a>
 					</div>
+					<c:if test="${is_admin}">
+					<div>
+						<a href="protected/administration/administration" class="fl_blue">Administration</a>
+					</div>
+					</c:if>
 					<div>
 						<a href="protected/mes_notifications" class="fl_yellow">Mes notifications (${notif_count})</a>
 					</div>
@@ -72,13 +77,14 @@
 	    		<div id="logo">
 		    		<img src="resources/image/header_index.png" />
 		    		<span>
-			    		Bonjour, ${emailorname} - <a href="<c:url value="/logout" />">me deconnecter.</a>
-			    		Accéder à <a href="protected/mon_compte">mon compte.</a>
-			    		<c:if test="${notif_count > 0}">
-			    			<br/>Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !
-			    		</c:if>
+			    		Bonjour, ${emailorname} 
 			    		<c:if test="${not empty initial_user_name}">
-			    			<br/>Vous êtes connectés depuis le compte de ${initial_user_name}, <a href="protected/sorti_enfant">y retourner</a>.
+			    			(depuis le compte de ${initial_user_name}, <a href="protected/sorti_enfant">y retourner</a>)
+			    		</c:if>			    		
+			    		- <a href="<c:url value="/logout" />">me deconnecter.</a>
+			    		<br/>Accéder à <a href="protected/mon_compte">mon compte.</a> 
+			    		<c:if test="${notif_count > 0}">
+			    			Vous avez <a href="protected/mes_notifications">${notif_count} notifications</a> !
 			    		</c:if>
 			    		<br/>
 			    		<div id="right_search_field" class="ui-widget">
@@ -108,6 +114,11 @@
 					<li>
 						<a href="protected/rechercher_personne.jsp" class="fl_purple">Ajouter un ami</a>
 					</li>
+					<c:if test="${is_admin}">
+					<li>
+						<a href="protected/administration/administration" class="fl_blue">Administration</a>
+					</li>
+					</c:if>
 	    		</ul>
 				<script type="text/javascript">
 					$(document).ready(function() {

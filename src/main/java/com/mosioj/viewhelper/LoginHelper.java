@@ -3,6 +3,7 @@ package com.mosioj.viewhelper;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -50,9 +51,10 @@ public class LoginHelper implements Filter {
 
 		logger.trace("Do Filtering in helper...");
 
-		HttpSession session = ((HttpServletRequest) request).getSession();
-		String name = ((HttpServletRequest) request).getRemoteUser();
-		logger.trace("Name: " + name);
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		HttpSession session = httpServletRequest.getSession();
+		String name = httpServletRequest.getRemoteUser();
+		logger.trace(MessageFormat.format("Name: {0} requesting URL: {1}", name, httpServletRequest.getRequestURL().toString()));
 		if (name != null) {
 
 			name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
@@ -122,6 +124,8 @@ public class LoginHelper implements Filter {
 				} catch (Exception e) {
 				}
 			}
+			
+			request.setAttribute("is_admin", httpServletRequest.isUserInRole("ROLE_ADMIN"));
 		}
 
 		chain.doFilter(request, response);

@@ -37,6 +37,13 @@ public class ConnexionEnfant extends DefaultCompte {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
+		if (request.getAttribute("initial_user_name") != null) {
+			request.setAttribute(	"error_message",
+									"Vous vous êtes déjà connecté à un autre utilisateur. Revenez d'abord à votre compte.");
+			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
+			return;
+		}
+
 		int currentUserId = ParametersUtils.getUserId(request);
 		Integer childId = ParametersUtils.readInt(request, CHILD_ID_PARAM);
 		User current = users.getUser(currentUserId);
