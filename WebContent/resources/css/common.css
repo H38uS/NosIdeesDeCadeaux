@@ -124,6 +124,35 @@ img.clickable:active, a:active > img:active {
 	vertical-align: middle;
 }
 
+#loading_message_container {
+	position:sticky;
+	top: 0;
+	left: 0;
+	height: 20px;
+	z-index: 999;
+}
+#loading_message_div {
+	text-align: left;
+	padding:10px;
+	padding-left: 20px;
+}
+#loading_message_div > img {
+	vertical-align: middle;
+	margin-right: 10px;
+}
+#loading_message_div.loading {
+	background-color: #ffcc99;
+	border-left: #ff9933 8px solid;	
+}
+#loading_message_div.success {
+	background-color: #adebad;
+	border-left: #33cc33 8px solid;	
+}
+#loading_message_div.fail {
+	background-color: #ff8080;
+	border-left: #ff0000 8px solid;	
+}
+
 /**********************/
 /* *** Formulaire *** */
 /**********************/

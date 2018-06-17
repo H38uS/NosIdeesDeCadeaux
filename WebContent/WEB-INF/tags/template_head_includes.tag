@@ -22,5 +22,6 @@
 		<script src="resources/js/lib/jquery-ui.js"></script>
 		<script src="resources/js/lib/jquery.tooltipster.min.js" type="text/javascript"></script>
 		<script src="resources/js/global.js" type="text/javascript"></script>
+		<script src="resources/js/idea.js" type="text/javascript"></script>
 		<jsp:doBody />
 	</head>

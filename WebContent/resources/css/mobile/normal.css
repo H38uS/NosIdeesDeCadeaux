@@ -1,4 +1,4 @@
-div#content {
+div#content, div#loading_message_div {
 	max-height: 999999px;
 	font-size: 200%;
 }
@@ -210,7 +210,7 @@ td.idea_square_text {
 	background-color: #353b43;
 	color: #fff;
 	height: 100%;
-	z-index: 1;
+	z-index: 9999;
 }
 
 .top_tooltiptext img {

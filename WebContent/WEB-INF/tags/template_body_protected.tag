@@ -137,6 +137,7 @@
 			</c:otherwise>
 			</c:choose>
     	</header>
+		<div id="loading_message_container"><div id="loading_message_div"></div></div>
 		<div id="content">
 			<div id="mobile_res_search">&nbsp;</div>
 	        <jsp:doBody/>

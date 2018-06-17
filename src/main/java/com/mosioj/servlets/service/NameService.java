@@ -2,6 +2,7 @@ package com.mosioj.servlets.service;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +15,11 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.simple.JSONObject;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/name_resolver")
-public class NameService extends IdeesCadeauxServlet {
+public class NameService extends AbstractService {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	private static final String NAME_OR_EMAIL = "term";
@@ -47,23 +47,17 @@ public class NameService extends IdeesCadeauxServlet {
 			res.addAll(userRelations.getAllNamesOrEmailsInRelation(userId, param, 0, MAX));
 
 			// Building the JSON answer
-			StringBuilder resp = new StringBuilder();
-			resp.append("[");
+			String[] resp = new String[res.size()];
+			int i = 0;
 			for (User user : res) {
-				resp.append("{");
-				resp.append(JSONObject.toString("value", StringEscapeUtils.unescapeHtml4(user.getLongNameEmail())));
-				resp.append(",");
-				resp.append(JSONObject.toString("email", StringEscapeUtils.unescapeHtml4(user.getEmail())));
-				resp.append("},");
+				resp[i] = MessageFormat.format(	"{0},{1}",
+												JSONObject.toString("value", StringEscapeUtils.unescapeHtml4(user.getLongNameEmail())),
+												JSONObject.toString("email", StringEscapeUtils.unescapeHtml4(user.getEmail())));
+				i++;
 			}
-			resp.deleteCharAt(resp.length() - 1);
-			resp.append("]");
 
-			String content = resp.toString();
-			if (response.getCharacterEncoding() != null) {
-				content = new String(resp.toString().getBytes("UTF-8"), response.getCharacterEncoding());
-			}
-			response.getOutputStream().println(content);
+			writeJSonArrayOutput(response, resp);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
