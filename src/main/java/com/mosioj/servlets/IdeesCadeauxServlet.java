@@ -86,8 +86,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : Mobile: revoir les pages login/error/acceuil
 	// FIXME : Mobile: améliorer la vision mes amis
 
-	// FIXME : faire du javascript pour les notifications
-	// FIXME : faire du javascript pour les discussions
+	// TODO : faire du javascript pour les discussions
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
@@ -100,6 +99,18 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// FIXME : supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève
 	// FIXME : remplir le gdoc
+	
+	// TODO : pouvoir modifier le niveau de log depuis l'administration
+	// TODO : afficher le contenu des logs courant depuis l'administration ?
+	
+	// FIXME : racourcir les emails en vue portable ? Voir ceux de banque pop ?
+	
+	// TODO : faire un seul repo git ?
+	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
+	
+	// FIXME : 0 reste mon compte pour le JS
+	// FIXME : 0 et mes listes : si c'est à jour etc.
+	// FIXME : 0 et rechercher dans mes amis
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -191,6 +202,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	private final SecurityPolicy policy;
 	protected Map<String, String> parameters;
 	protected Device device;
+	private File ideasPicturePath;
 
 	/**
 	 * Class constructor.
@@ -306,7 +318,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 		try {
 
-			if (!req.isUserInRole("ROLE_ADMIN") && !policy.hasRightToInteractInGetRequest(req, resp)) {
+			if (!policy.hasRightToInteractInGetRequest(req, resp) && !req.isUserInRole("ROLE_ADMIN")) {
 
 				int userId;
 				try {
@@ -363,7 +375,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 		try {
 
-			if (!request.isUserInRole("ROLE_ADMIN") && !policy.hasRightToInteractInPostRequest(request, response)) {
+			if (!policy.hasRightToInteractInPostRequest(request, response) && !request.isUserInRole("ROLE_ADMIN")) {
 
 				int userId;
 				try {
@@ -522,6 +534,16 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 	}
 
+	protected File getIdeaPicturePath() {
+		if (ideasPicturePath == null) {
+			String workDir = getServletContext().getInitParameter("work_dir");
+			logger.debug(MessageFormat.format("Initialisation du répertoire de travail à {0}", workDir));
+			ideasPicturePath = new File(workDir, "uploaded_pictures/ideas");
+		}
+		return ideasPicturePath;
+	}
+
+	// FIXME à supprimer quand on ne s'en sert plus
 	protected void removeUploadedImage(File path, String image) {
 		if (image != null && !image.isEmpty()) {
 			image = StringEscapeUtils.unescapeHtml4(image);

@@ -82,7 +82,7 @@ function servicePost(url, params, successHandler, loadingMessage, successMessage
 }
 
 function getURLParameter(url, name) {
-	var results = new RegExp('[\?&]' + name + '=([^]*)').exec(url);
+	var results = new RegExp('[\?&]' + name + '=([^&]*)').exec(url);
 	if (results == null) {
 		return null;
 	} else {

@@ -91,7 +91,7 @@
 																								width="${action_img_width}px" />
 										</c:if>
 										<c:if test="${idee.hasQuestion()}">
-											<a href="protected/idee_questions?idee=${idee.id}">
+											<a href="protected/idee_questions?idee=${idee.id}" class="img">
 												<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
 																								width="${action_img_width}px" />
 											</a>
@@ -122,20 +122,20 @@
 							</table>
 							<span class="outer_top_tooltiptext">
 								<span class="top_tooltiptext">
-									<a href="protected/modifier_idee?id=${idee.id}">
+									<a href="protected/modifier_idee?id=${idee.id}" class="img">
 										<img src="resources/image/modifier.png"
 											 title="Modifier cette idée"
 											 width="${action_img_width}px" />
 									</a>
-									<a href="protected/remove_an_idea?ideeId=${idee.id}">
+									<a href="protected/remove_an_idea?ideeId=${idee.id}" class="img idea_remove">
 										<img src="resources/image/supprimer.png"
 											 title="Supprimer cette idée"
 											 width="${action_img_width}px" />
 									</a>
-									<a href="protected/idee_questions?idee=${idee.id}">
+									<a href="protected/idee_questions?idee=${idee.id}" class="img">
 										<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
 									</a>
-									<a href="protected/je_le_veux_encore?idee=${idee.id}">
+									<a href="protected/je_le_veux_encore?idee=${idee.id}" class="img">
 										<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
 									</a>
 								</span>
@@ -161,27 +161,27 @@
 																							width="${action_img_width}px" />
 									</c:if>
 									<c:if test="${idee.hasQuestion()}">
-										<a href="protected/idee_questions?idee=${idee.id}">
+										<a href="protected/idee_questions?idee=${idee.id}" class="img">
 											<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
 																							width="${action_img_width}px" />
 										</a>
 									</c:if>
 									<span class="outer_top_tooltiptext">
 										<span class="top_tooltiptext">
-											<a href="protected/modifier_idee?id=${idee.id}">
+											<a href="protected/modifier_idee?id=${idee.id}" class="img">
 												<img src="resources/image/modifier.png"
 													 title="Modifier cette idée"
 													 width="${action_img_width}px" />
 											</a>
-											<a href="protected/remove_an_idea?ideeId=${idee.id}">
+											<a href="protected/remove_an_idea?ideeId=${idee.id}" class="img idea_remove">
 												<img src="resources/image/supprimer.png"
 													 title="Supprimer cette idée"
 													 width="${action_img_width}px" />
 											</a>
-											<a href="protected/idee_questions?idee=${idee.id}">
+											<a href="protected/idee_questions?idee=${idee.id}" class="img">
 												<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
 											</a>
-											<a href="protected/je_le_veux_encore?idee=${idee.id}">
+											<a href="protected/je_le_veux_encore?idee=${idee.id}" class="img">
 												<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
 											</a>
 										</span>

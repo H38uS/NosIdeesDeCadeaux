@@ -1,37 +1,23 @@
 package com.mosioj.servlets.controllers.idees.modification;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mosioj.model.Idee;
-import com.mosioj.model.User;
-import com.mosioj.notifications.AbstractNotification;
-import com.mosioj.notifications.ParameterName;
-import com.mosioj.notifications.instance.NotifBookedRemove;
-import com.mosioj.notifications.instance.NotifNoIdea;
-import com.mosioj.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MaListe;
+import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/remove_an_idea")
 public class RemoveOneIdea extends AbstractIdea {
 
 	public static final String IDEE_ID_PARAM = "ideeId";
-	private static final Logger logger = LogManager.getLogger(RemoveOneIdea.class);
 
 	public RemoveOneIdea() {
 		super(new IdeaModification(idees, IDEE_ID_PARAM));
@@ -45,46 +31,14 @@ public class RemoveOneIdea extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		removeIt(req, resp);
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		removeIt(request, response);
 	}
 
-	private void removeIt(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException {
-
-		// Reading parameters
-		Integer id = ParametersUtils.readInt(request, IDEE_ID_PARAM);
-		logger.debug(MessageFormat.format("Deleting idea {0}.", id));
-
-		Set<Integer> notified = new HashSet<>();
+	protected void removeIt(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException {
+		IdeaInteractions logic = new IdeaInteractions();
 		Idee idea = getIdeeFromSecurityChecks();
-		for (User user : idea.getBookers(groupForIdea, sousReservation)) {
-			notif.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
-			notified.add(user.id);
-		}
-
-		String image = idea.getImage();
-		logger.debug(MessageFormat.format("Image: {0}.", image));
-		removeUploadedImage(getIdeaPicturePath(), image);
-
-		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
-		for (AbstractNotification notification : notifications) {
-			if (notification instanceof NotifUserIdParam) {
-				NotifUserIdParam notifUserId = (NotifUserIdParam) notification;
-				if (!notified.contains(notifUserId.getUserIdParam())) {
-					notif.addNotification(notifUserId.getUserIdParam(), new NotifBookedRemove(idea, ParametersUtils.getUserName(request)));
-					notified.add(notifUserId.getUserIdParam());
-				}
-			}
-			notif.remove(notification.id);
-		}
-
-		int userId = ParametersUtils.getUserId(request);
-		idees.remove(id);
-
-		if (!idees.hasIdeas(userId)) {
-			notif.addNotification(userId, new NotifNoIdea());
-		}
-
+		logic.removeIt(idea, getIdeaPicturePath(), request);
 		RootingsUtils.redirectToPage(getFrom(request, MaListe.PROTECTED_MA_LISTE), request, response);
 	}
 }

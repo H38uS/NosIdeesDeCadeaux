@@ -80,26 +80,26 @@
 													<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" width="${action_img_width}px" />
 												</c:if>
 												<c:if test="${idee.hasQuestion()}">
-													<a href="protected/idee_questions?idee=${idee.id}">
+													<a href="protected/idee_questions?idee=${idee.id}" class="img">
 														<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée" width="${action_img_width}px" />
 													</a>
 												</c:if>
 												<span class="outer_top_tooltiptext">
 													<span class="top_tooltiptext">
-														<a href="protected/modifier_idee?id=${idee.id}&from=/${identic_call_back}">
+														<a href="protected/modifier_idee?id=${idee.id}&from=/${identic_call_back}" class="img">
 															<img src="resources/image/modifier.png"
 																 title="Modifier cette idée"
 																 width="${action_img_width}px" />
 														</a>
-														<a href="protected/remove_an_idea?ideeId=${idee.id}&from=/${identic_call_back}">
+														<a href="protected/remove_an_idea?ideeId=${idee.id}&from=/${identic_call_back}" class="img idea_remove">
 															<img src="resources/image/supprimer.png"
 																 title="Supprimer cette idée"
 																 width="${action_img_width}px" />
 														</a>
-														<a href="protected/idee_questions?idee=${idee.id}">
+														<a href="protected/idee_questions?idee=${idee.id}" class="img">
 															<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
 														</a>
-														<a href="protected/je_le_veux_encore?idee=${idee.id}&from=/${identic_call_back}">
+														<a href="protected/je_le_veux_encore?idee=${idee.id}&from=/${identic_call_back}" class="img">
 															<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
 														</a>
 													</span>
@@ -152,7 +152,7 @@
 													<c:when test="${not empty idee.bookingOwner}">
 														<c:choose>
 															<c:when test="${userid == idee.bookingOwner.id}">
-																<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}">
+																<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="img">
 																	<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
 																</a>
 															</c:when>
@@ -162,14 +162,14 @@
 														</c:choose>
 													</c:when>
 													<c:otherwise>
-														<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">
+														<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}" class="img">
 															<img src="resources/image/reserve-groupe.png" title="Une réservation de groupe !" alt="Idée réservée par un groupe" width="${action_img_width}px" />
 														</a>
 													</c:otherwise>
 												</c:choose>
 											</c:when>
 											<c:when test="${idee.isPartiallyBooked()}">
-												<a href="protected/detail_sous_reservation?idee=${idee.id}">
+												<a href="protected/detail_sous_reservation?idee=${idee.id}" class="img">
 													<img src="resources/image/non-reserve.png" title="Un sous-ensemble de cette idée est réservé. Voyez si vous pouvez compléter !" alt="Sous partie de l'idée réservée" width="${action_img_width}px" />
 												</a>
 											</c:when>
@@ -178,12 +178,12 @@
 											</c:otherwise>
 										</c:choose>
 										<c:if test="${idee.hasComment()}">
-											<a href="protected/idee_commentaires?idee=${idee.id}">
+											<a href="protected/idee_commentaires?idee=${idee.id}" class="img">
 												<img src="resources/image/commentaires.png" title="Il existe des commentaires sur cette idée" width="${action_img_width}px" />
 											</a>
 										</c:if>
 										<c:if test="${idee.hasQuestion()}">
-											<a href="protected/idee_questions?idee=${idee.id}">
+											<a href="protected/idee_questions?idee=${idee.id}" class="img">
 												<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée" width="${action_img_width}px" />
 											</a>
 										</c:if>

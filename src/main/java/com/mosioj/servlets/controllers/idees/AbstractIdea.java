@@ -1,6 +1,5 @@
 package com.mosioj.servlets.controllers.idees;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -32,8 +31,6 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 
 	private static final String FROM_URL = "from";
 
-	private File ideasPicturePath;
-
 	protected List<String> errors = new ArrayList<String>();
 
 	/**
@@ -42,13 +39,6 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	 */
 	public AbstractIdea(SecurityPolicy policy) {
 		super(policy);
-	}
-
-	protected File getIdeaPicturePath() {
-		if (ideasPicturePath == null) {
-			ideasPicturePath = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas");
-		}
-		return ideasPicturePath;
 	}
 
 	/**
@@ -122,8 +112,8 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	/**
 	 * 
 	 * @param user The user.
-	 * @return True if and only if the birthday of this user is set up, and will come in less than 
-	 * NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY.
+	 * @return True if and only if the birthday of this user is set up, and will come in less than
+	 *         NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY.
 	 */
 	protected boolean isBirthdayClose(User user) {
 
@@ -145,7 +135,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 			birthday.add(Calendar.YEAR, 1);
 		}
 		today.add(Calendar.DAY_OF_YEAR, NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY);
-		
+
 		return birthday.before(today);
 	}
 
