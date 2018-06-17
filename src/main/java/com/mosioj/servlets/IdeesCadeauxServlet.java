@@ -75,41 +75,44 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
-	// FIXME : afficher une image si on a déjà fait une demande "est-ce à jour"
+	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour"
 
 	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe
 	// etc.
 	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
 
-	// FIXME : retailler les images catégories en 80 px
-	// FIXME : revoir les check box en mode mobile (exemple: rechercher personne)
-	// FIXME : Mobile: revoir les pages login/error/acceuil
-	// FIXME : Mobile: améliorer la vision mes amis
+	// FIXME : 2 retailler les images catégories en 80 px
+	// FIXME : 2 revoir les check box en mode mobile (exemple: rechercher personne)
+	// FIXME : 2 Mobile: revoir les pages login/error/acceuil
+	// FIXME : 2 Mobile: améliorer la vision mes amis
 
 	// TODO : faire du javascript pour les discussions
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// FIXME : faire un template pour une idée, et le mettre dans les aperçus (au moins détail groupe ?)
+	// FIXME : 1 faire un template pour une idée, et le mettre dans les aperçus
 	// Attention !!!
-	// ==> Le template ne marche pas si c'est notre idée (genre pour les questions)
 	// ==> il reste un identic_call_back, à voir si c'est géré...
+	// ==> il manque quand on crée une sous réservation, quand on crée un groupe
+	// ==> pour les questions et commentaire faut faire gaffe au template
+	// manque le lien "sa liste" dans le détail de la sous réservation
 	
 	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
 	
-	// FIXME : supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève
+	// FIXME : 2 supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève + revoir celle qui dépende user_id et idea_id
 	// FIXME : remplir le gdoc
 	
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
 	
-	// FIXME : racourcir les emails en vue portable ? Voir ceux de banque pop ?
+	// FIXME : 3 racourcir les emails en vue portable ? Voir ceux de banque pop ?
 	
 	// TODO : faire un seul repo git ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 	
 	// FIXME : 0 reste mon compte pour le JS
-	// FIXME : 0 et mes listes : si c'est à jour etc.
+	// FIXME : 0 et mes listes : 1. si c'est à jour 2. réservation simple => question et commentaire plus tard
+	// FIXME : 0 et modifier idée : sur la page spécifique
 	// FIXME : 0 et rechercher dans mes amis
 
 	private static final int MAX_WIDTH = 150;
