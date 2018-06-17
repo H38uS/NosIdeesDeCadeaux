@@ -152,7 +152,7 @@
 													<c:when test="${not empty idee.bookingOwner}">
 														<c:choose>
 															<c:when test="${userid == idee.bookingOwner.id}">
-																<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="img">
+																<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_dereserver">
 																	<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
 																</a>
 															</c:when>
@@ -190,7 +190,7 @@
 										<span class="outer_top_tooltiptext">
 											<span class="top_tooltiptext">
 												<c:if test="${empty idee.surpriseBy && not idee.isBooked() && not idee.isPartiallyBooked()}">
-													<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img">
+													<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_reserver">
 														<img src="resources/image/reserver.png" class="clickable" title="Réserver l'idée" width="${action_img_width}px" />
 													</a>
 													<a href="protected/sous_reserver?idee=${idee.id}" class="img">
@@ -201,7 +201,7 @@
 													</a>
 												</c:if>
 												<c:if test="${empty idee.surpriseBy}">
-													<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}" class="img">
+													<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}" class="img idea_est_a_jour">
 														<img src="resources/image/a_jour.png" class="clickable" title="Demander si c'est à jour." width="${action_img_width}px" />
 													</a>
 													<a href="protected/idee_questions?idee=${idee.id}" class="img">
@@ -241,7 +241,7 @@
 														<c:when test="${not empty idee.bookingOwner}">
 															<c:choose>
 																<c:when test="${userid == idee.bookingOwner.id}">
-																	Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}">Annuler</a> !
+																	Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="idea_dereserver">Annuler</a> !
 																</c:when>
 																<c:otherwise>
 																	Réservée par ${idee.bookingOwner.name} le ${idee.bookingDate}

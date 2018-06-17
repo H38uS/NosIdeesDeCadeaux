@@ -64,13 +64,16 @@ function actionError(message) {
 	}, 7000);
 }
 
-function servicePost(url, params, successHandler, loadingMessage, successMessage) {
+function servicePost(url, params, successHandler, loadingMessage, successMessage, errorMessage) {
 
 	doLoading('<img src="resources/image/loading.gif" width="' + getPictureWidth() + '" />' + loadingMessage);
 
 	$.post(url, params, function(data) {
-		if (data.status === 'undefined' || data.status !== 'ok') {
-			actionError('<img src="resources/image/ko.png" width="' + getPictureWidth() + '" /> Echec de la mise à jour, veuillez réessayer.<br/> Si cela ne fonctionne pas à nouveau, essayez de recharger la page (touche F5).');
+		if ( typeof data.status === "undefined" || data.status !== 'ok' ) {
+			if ( typeof errorMessage === "undefined" ) {
+				errorMessage = "Echec de la mise à jour, veuillez réessayer.<br/> Si cela ne fonctionne pas à nouveau, essayez de recharger la page (touche F5).";
+			}
+			actionError('<img src="resources/image/ko.png" width="' + getPictureWidth() + '" /> ' + errorMessage);
 		} else {
 			actionDone('<img src="resources/image/ok.png" width="' + getPictureWidth() + '" />' + successMessage);
 			successHandler(data);

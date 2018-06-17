@@ -75,7 +75,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
-	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour"
+	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS
 
 	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe
 	// etc.
@@ -111,8 +111,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 	
 	// FIXME : 0 reste mon compte pour le JS
-	// FIXME : 0 et mes listes : 1. si c'est à jour 2. réservation simple => question et commentaire plus tard
-	// FIXME : 0 et modifier idée : sur la page spécifique
+	// FIXME : 0 réservation simple / annulation réservation simple => mettre à jour les blocs /!\ au différent bloc...
+	// FIXME : 0 et ajouter / modifier idée : sur la page spécifique
 	// FIXME : 0 et rechercher dans mes amis
 
 	private static final int MAX_WIDTH = 150;
