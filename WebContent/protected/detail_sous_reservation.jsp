@@ -7,7 +7,9 @@
 		<h2>Détail de la réservation partielle</h2>
 		<div>
 			<h3>Le text de l'idée</h3>
-			<t:template_une_idee />
+			<ul class="ideas_square_container">
+				<t:template_une_idee />
+			</ul>
 		</div>
 		<div>
 			<h3>Les sous réservations existantes</h3>

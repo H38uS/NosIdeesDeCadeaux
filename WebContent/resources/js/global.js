@@ -36,7 +36,10 @@ function getPictureWidth() {
 	}
 }
 
+var timer;
+
 function doLoading(message) {
+	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()
 							 .html(message)
@@ -44,22 +47,24 @@ function doLoading(message) {
 							 .slideDown();
 }
 function actionDone(message) {
+	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()
 							 .html(message)
 							 .addClass('success')
 							 .slideDown();
-	setTimeout(function() {
+	timer = setTimeout(function() {
 		$("#loading_message_div").fadeOut('slow');
 	}, 7000);
 }
 function actionError(message) {
+	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()
 							 .html(message)
 							 .addClass('fail')
 							 .slideDown();
-	setTimeout(function() {
+	timer = setTimeout(function() {
 		$("#loading_message_div").fadeOut('slow');
 	}, 7000);
 }

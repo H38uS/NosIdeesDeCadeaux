@@ -33,6 +33,8 @@ import org.springframework.mobile.device.Device;
 
 import com.mosioj.model.Comment;
 import com.mosioj.model.Idee;
+import com.mosioj.model.Priorite;
+import com.mosioj.model.User;
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.Comments;
 import com.mosioj.model.table.GroupIdea;
@@ -111,8 +113,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 	
 	// FIXME : 0 reste mon compte pour le JS
-	// FIXME : 0 réservation simple / annulation réservation simple => mettre à jour les blocs /!\ au différent bloc...
-	// FIXME : 0 et ajouter / modifier idée : sur la page spécifique
 	// FIXME : 0 et rechercher dans mes amis
 
 	private static final int MAX_WIDTH = 150;
@@ -603,5 +603,55 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 		logger.trace(MessageFormat.format("Returned:{0}", nameOrEmail.trim()));
 		return nameOrEmail.trim();
+	}
+
+	
+	protected void fillAUserIdea(int userId, Idee idee) throws SQLException {
+
+		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
+		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
+		
+		User surpriseBy = idee.getSurpriseBy();
+		if (surpriseBy != null) {
+			if (surpriseBy.id == userId) {
+				idee.displayClass = "booked_by_me_idea";
+			} else {
+				idee.displayClass = "booked_by_others_idea";
+			}
+		} else if (idee.isBooked()) {
+			if (idee.getBookingOwner() != null) {
+				if (idee.getBookingOwner().id == userId) {
+					// Réservé par soit !
+					idee.displayClass = "booked_by_me_idea";
+				} else {
+					// Réservé par un autre
+					idee.displayClass = "booked_by_others_idea";
+				}
+			} else {
+				// Réserver par un groupe
+				idee.displayClass = "shared_booking_idea";
+			}
+		} else if (idee.isPartiallyBooked()) {
+			idee.displayClass = "shared_booking_idea";
+		}
+		// Sinon, on laisse la class par défaut
+
+		if (device.isMobile()) {
+			Priorite priorite = idee.getPriorite();
+			if (priorite != null && priorite.getImage() != null) {
+				priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"80px\"");
+			}
+		}
+	}
+
+	protected void fillsUserIdeas(int userId, List<User> ids) throws SQLException {
+		logger.trace("Getting all ideas for all users...");
+		for (User user : ids) {
+			List<Idee> ownerIdeas = idees.getOwnerIdeas(user.id);
+			for (Idee idee : ownerIdeas) {
+				fillAUserIdea(userId, idee);
+			}
+			user.addIdeas(ownerIdeas);
+		}
 	}
 }

@@ -76,137 +76,63 @@
 		</div>
 		<h2>Ma liste de cadeaux</h2>
 		<c:if test="${fn:length(idees) > 0}">
-		<c:choose>
-			<c:when test="${is_mobile}">
-				<div class="ideas_square_container">
-					<c:forEach var="idee" items="${idees}">
-						<c:if test="${empty idee.surpriseBy}">
-						<div class="idea_square">
-							<table>
-								<tr>
-									<td>
-										<span>${idee.priorite.image}</span>
-										<c:if test="${not empty idee.category}">
-											<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
-																								width="${action_img_width}px" />
-										</c:if>
-										<c:if test="${idee.hasQuestion()}">
-											<a href="protected/idee_questions?idee=${idee.id}" class="img">
-												<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
-																								width="${action_img_width}px" />
-											</a>
-										</c:if>
-									</td>
-								</tr>
-								<tr>
-									<c:choose>
-										<c:when test="${not empty idee.image}">
-											<td>
-												<div>
-													<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img">
-														<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
-													</a>
-												</div>
-											</td>
-											<td class="idea_square_text">
-												${idee.html}
-											</td>
-										</c:when>
-										<c:otherwise>
-											<td colspan="2" class="idea_square_text">
-												${idee.html}
-											</td>
-										</c:otherwise>
-									</c:choose>
-								</tr>
-							</table>
-							<span class="outer_top_tooltiptext">
-								<span class="top_tooltiptext">
-									<a href="protected/modifier_idee?id=${idee.id}" class="img">
-										<img src="resources/image/modifier.png"
-											 title="Modifier cette idée"
-											 width="${action_img_width}px" />
-									</a>
-									<a href="protected/remove_an_idea?ideeId=${idee.id}" class="img idea_remove">
-										<img src="resources/image/supprimer.png"
-											 title="Supprimer cette idée"
-											 width="${action_img_width}px" />
-									</a>
+			<ul class="ideas_square_container">
+				<c:forEach var="idee" items="${idees}">
+					<c:if test="${empty idee.surpriseBy}">
+						<li class="idea_square top_tooltip">
+						<div>
+							<div class="left">
+								<span>${idee.priorite.image}</span>
+								<c:if test="${not empty idee.category}">
+									<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" width="${action_img_width}px" />
+								</c:if>
+								<c:if test="${idee.hasQuestion()}">
 									<a href="protected/idee_questions?idee=${idee.id}" class="img">
-										<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
+										<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée" width="${action_img_width}px" />
 									</a>
-									<a href="protected/je_le_veux_encore?idee=${idee.id}" class="img">
-										<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
-									</a>
+								</c:if>
+								<span class="outer_top_tooltiptext">
+									<span class="top_tooltiptext">
+										<a href="protected/modifier_idee?id=${idee.id}&from=/${identic_call_back}" class="img">
+											<img src="resources/image/modifier.png"
+												 title="Modifier cette idée"
+												 width="${action_img_width}px" />
+										</a>
+										<a href="protected/remove_an_idea?ideeId=${idee.id}&from=/${identic_call_back}" class="img idea_remove">
+											<img src="resources/image/supprimer.png"
+												 title="Supprimer cette idée"
+												 width="${action_img_width}px" />
+										</a>
+										<a href="protected/idee_questions?idee=${idee.id}" class="img">
+											<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
+										</a>
+										<a href="protected/je_le_veux_encore?idee=${idee.id}&from=/${identic_call_back}" class="img">
+											<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
+										</a>
+									</span>
 								</span>
-							</span>
+							</div>
+							<div class="left idea_square_text">
+								${idee.html}
+							</div>
+							<c:if test="${not empty idee.image}">
+								<div>
+									<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img" >
+										<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+									</a>
+								</div>
+							</c:if>
 							<div class="idea_square_modif_date" >
 								Mise à jour le ${idee.modificationDate}.
 							</div>
 						</div>
-						</c:if>
-					</c:forEach>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<ul class="ideas_square_container">
-					<c:forEach var="idee" items="${idees}">
-						<c:if test="${empty idee.surpriseBy}">
-							<li class="idea_square top_tooltip">
-							<div>
-								<div class="left">
-									<span>${idee.priorite.image}</span>
-									<c:if test="${not empty idee.category}">
-										<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}"
-																							width="${action_img_width}px" />
-									</c:if>
-									<c:if test="${idee.hasQuestion()}">
-										<a href="protected/idee_questions?idee=${idee.id}" class="img">
-											<img src="resources/image/questions.png" title="Il existe des questions/réponses sur cette idée"
-																							width="${action_img_width}px" />
-										</a>
-									</c:if>
-									<span class="outer_top_tooltiptext">
-										<span class="top_tooltiptext">
-											<a href="protected/modifier_idee?id=${idee.id}" class="img">
-												<img src="resources/image/modifier.png"
-													 title="Modifier cette idée"
-													 width="${action_img_width}px" />
-											</a>
-											<a href="protected/remove_an_idea?ideeId=${idee.id}" class="img idea_remove">
-												<img src="resources/image/supprimer.png"
-													 title="Supprimer cette idée"
-													 width="${action_img_width}px" />
-											</a>
-											<a href="protected/idee_questions?idee=${idee.id}" class="img">
-												<img src="resources/image/questions.png" title="Voir les questions existantes" width="${action_img_width}px" />
-											</a>
-											<a href="protected/je_le_veux_encore?idee=${idee.id}" class="img">
-												<img src="resources/image/encore.png" title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite." height="${action_img_width}px" />
-											</a>
-										</span>
-									</span>
-								</div>
-								<div class="left idea_square_text">
-									${idee.html}
-								</div>
-								<c:if test="${not empty idee.image}">
-									<div>
-										<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img">
-											<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
-										</a>
-									</div>
-								</c:if>
-								<div class="idea_square_modif_date" >
-									Mise à jour le ${idee.modificationDate}.
-								</div>
-							</div>
-							</li>
-						</c:if>
-					</c:forEach>
-				</ul>
-			</c:otherwise>
-		</c:choose>
+						</li>
+					</c:if>
+				</c:forEach>
+			</ul>
+		</c:if>
+		<c:if test="${fn:length(idees) == 0}">
+			<span>Vous n'avez pas encore d'idées. Cliquez <a href="protected/ma_liste">ici</a> pour en ajouter.</span>
 		</c:if>
 	</jsp:body>
 </t:normal_protected>

@@ -42,9 +42,9 @@ public class MaListe extends AbstractIdea {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-		List<Idee> ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(req));
+		List<Idee> ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(request));
 		for (Idee idee : ideas) {
 			idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
 
@@ -58,11 +58,12 @@ public class MaListe extends AbstractIdea {
 		List<Categorie> cat = categories.getCategories();
 		List<Priorite> prio = priorities.getPriorities();
 
-		req.setAttribute("idees", ideas);
-		req.setAttribute("types", cat);
-		req.setAttribute("priorites", prio);
+		request.setAttribute("idees", ideas);
+		request.setAttribute("types", cat);
+		request.setAttribute("priorites", prio);
+		request.setAttribute("identic_call_back", PROTECTED_MA_LISTE.substring(1));
 
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);
 	}
 
 	@Override
