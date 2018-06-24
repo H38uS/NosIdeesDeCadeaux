@@ -125,7 +125,6 @@
 						$("#header_name").autocomplete({
 							source : "protected/service/name_resolver",
 							minLength : 2,
-							appendTo: "#mobile_res_search",
 							select : function(event, ui) {
 								$("#header_name").val(ui.item.email);
 								$("#afficherliste").submit();
