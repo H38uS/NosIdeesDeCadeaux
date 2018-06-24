@@ -10,13 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.table.UserChangePwdRequest;
+import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.EmailSender;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
-public class ReinitialisationMotDePasse extends DefaultCompte {
+public class ReinitialisationMotDePasse extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = 5998641192324526001L;
 	public static final String VIEW_PAGE_URL = "/public/reinitialiser_mot_de_passe.jsp";
@@ -33,12 +35,14 @@ public class ReinitialisationMotDePasse extends DefaultCompte {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		
+		CompteInteractions helper = new CompteInteractions();
 
 		String email1 = ParametersUtils.readAndEscape(request, "email1").trim();
 		String email2 = ParametersUtils.readAndEscape(request, "email2").trim();
 
-		List<String> emailErrors1 = checkEmail(getValidatorEmail(email1), -1, true);
-		List<String> emailErrors2 = checkEmail(getValidatorEmail(email2), -1, true);
+		List<String> emailErrors1 = helper.checkEmail(helper.getValidatorEmail(email1), -1, true);
+		List<String> emailErrors2 = helper.checkEmail(helper.getValidatorEmail(email2), -1, true);
 		if (!email1.equals(email2)) {
 			emailErrors2.add("Les deux emails ne correspondent pas.");
 		}

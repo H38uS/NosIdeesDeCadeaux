@@ -18,15 +18,14 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.model.UserParameter;
 import com.mosioj.notifications.NotificationActivation;
-import com.mosioj.servlets.logichelpers.IdeaInteractions;
+import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
-import com.mosioj.utils.validators.ParameterValidator;
-import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/mon_compte")
-public class MonCompte extends DefaultCompte {
+public class MonCompte extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = -101081965549681889L;
 	private static final Logger logger = LogManager.getLogger(MonCompte.class);
@@ -80,66 +79,16 @@ public class MonCompte extends DefaultCompte {
 			}
 
 			readMultiFormParameters(request, filePath);
-			String info = parameters.get("modif_info_gen");
-			if ("true".equals(info)) {
-				String email = parameters.get("email").trim();
-				String name = parameters.get("name").trim();
-
-				int userId = ParametersUtils.getUserId(request);
-				List<String> errors = checkEmail(getValidatorEmail(email), userId, true);
-				request.getSession().setAttribute("errors_info_gen", errors);
-
-				String birthday = parameters.get("birthday");
-				if (!birthday.isEmpty()) {
-					logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
-					ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
-					val.checkDateFormat();
-					errors.addAll(val.getErrors());
-				}
-				
-				String newPwd = parameters.get("new_password").trim();
-				String confPwd = parameters.get("conf_password").trim();
-				
-				
-				if (newPwd != null && !newPwd.isEmpty()) {
-					List<String> pwdErrors1 = checkPwd(getValidatorPwd(newPwd));
-					List<String> pwdErrors2 = checkPwd(getValidatorPwd(confPwd));
-					if (!newPwd.equals(confPwd)) {
-						errors.add("Les deux mots de passe entrés ne correspondent pas.");
-					}
-					errors.addAll(pwdErrors1);
-					errors.addAll(pwdErrors2);
-				}
-
+			int userId = ParametersUtils.getUserId(request);
+			
+			CompteInteractions helper = new CompteInteractions();
+			List<String> errors = helper.processSave(filePath, parameters, userId);
+			if (errors == null || errors.isEmpty()) {
+				request.getSession().setAttribute("sauvegarde_ok", true);
 				User user = users.getUser(userId);
-				user.email = email;
-				user.name = name;
-				user.birthday = getAsDate(birthday);
-
-				String image = parameters.get("image");
-				String old = parameters.get("old_picture");
-				if (image == null || image.isEmpty()) {
-					image = old;
-				} else {
-					// Modification de l'image
-					// On supprime la précédente
-					if (!"default.png".equals(old)) {
-						IdeaInteractions helper = new IdeaInteractions();
-						helper.removeUploadedImage(filePath, old);
-					}
-					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
-				}
-				user.avatar = image;
-
-				if (errors.isEmpty()) {
-					users.update(user);
-					request.getSession().setAttribute("emailorname", user.getName());
-					if (!newPwd.isEmpty()) {
-						String digested = hashPwd(newPwd, errors);
-						users.updatePassword(userId, digested);
-					}
-					request.getSession().setAttribute("sauvegarde_ok", true);
-				}
+				request.getSession().setAttribute("emailorname", user.getName());
+			} else {
+				request.getSession().setAttribute("errors_info_gen", errors);
 			}
 
 		}

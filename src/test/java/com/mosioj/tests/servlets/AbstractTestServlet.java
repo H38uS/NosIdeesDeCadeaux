@@ -79,7 +79,6 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		instance.setUsers(users);
 		instance.setUserRelations(userRelations);
 		instance.setUserRelationRequests(userRelationRequests);
-		instance.setValidatorConnection(validator);
 		instance.setIdees(idees);
 		instance.setCat(cat);
 		instance.setPrio(prio);

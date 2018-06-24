@@ -13,12 +13,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
+import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/sorti_enfant")
-public class SortiEnfant extends DefaultCompte {
+public class SortiEnfant extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(SortiEnfant.class);

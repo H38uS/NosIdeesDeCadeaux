@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -52,11 +49,9 @@ import com.mosioj.model.table.Users;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
-import com.mosioj.utils.MyDateFormat;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
-import com.mosioj.utils.database.DataSourceIdKDo;
 import com.mosioj.viewhelper.Escaper;
 
 /**
@@ -139,11 +134,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected Users users;
 
 	/**
-	 * The connection to use for parameters.
-	 */
-	protected DataSourceIdKDo validatorConnection;
-
-	/**
 	 * The connections to the IDEES table. Static because it can be used in constructor for security checks.
 	 */
 	protected static Idees idees = new Idees();
@@ -213,7 +203,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 */
 	public IdeesCadeauxServlet(SecurityPolicy policy) {
 		userRelationRequests = new UserRelationRequests();
-		validatorConnection = new DataSourceIdKDo();
 		users = new Users();
 		categories = new Categories();
 		priorities = new Priorites();
@@ -269,15 +258,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 */
 	public void setUserRelationRequests(UserRelationRequests pUserRelationRequests) {
 		userRelationRequests = pUserRelationRequests;
-	}
-
-	/**
-	 * For test purposes.
-	 * 
-	 * @param manager
-	 */
-	public void setValidatorConnection(DataSourceIdKDo manager) {
-		validatorConnection = manager;
 	}
 
 	/**
@@ -421,18 +401,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	public void setUserParameters(UserParameters param) {
 		userParameters = param;
-	}
-
-	protected java.sql.Date getAsDate(String date) {
-		SimpleDateFormat format = new MyDateFormat(DATE_FORMAT);
-		Date parsed;
-		try {
-			parsed = format.parse(date);
-		} catch (ParseException e) {
-			return null;
-		}
-		java.sql.Date sql = new java.sql.Date(parsed.getTime());
-		return sql;
 	}
 
 	/**

@@ -15,6 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -23,7 +25,7 @@ import com.mosioj.viewhelper.EmptyFilter;
 import com.mosioj.viewhelper.LoginHelper;
 
 @WebServlet("/creation_compte")
-public class CreationCompte extends DefaultCompte {
+public class CreationCompte extends IdeesCadeauxServlet {
 
 	public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
 	public static final String SUCCES_URL = "/public/succes_creation.jsp";
@@ -51,6 +53,7 @@ public class CreationCompte extends DefaultCompte {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		HttpSession session = request.getSession();
+		CompteInteractions helper = new CompteInteractions();
 
 		// Récupération des paramètres
 		String pwd = ParametersUtils.readIt(request, "pwd");
@@ -58,10 +61,10 @@ public class CreationCompte extends DefaultCompte {
 		String name = ParametersUtils.readAndEscape(request, "pseudo").trim();
 
 		// Validation des paramètres
-		List<String> pwdErrors = checkPwd(getValidatorPwd(pwd));
+		List<String> pwdErrors = helper.checkPwd(helper.getValidatorPwd(pwd));
 		request.setAttribute("pwd_errors", pwdErrors);
 
-		List<String> emailErrors = checkEmail(getValidatorEmail(email), -1, false); // The user does not exist yet
+		List<String> emailErrors = helper.checkEmail(helper.getValidatorEmail(email), -1, false); // The user does not exist yet
 		request.setAttribute("email_errors", emailErrors);
 
 		try {
@@ -80,7 +83,7 @@ public class CreationCompte extends DefaultCompte {
 		}
 		
 		// Password hash
-		String hashPwd = hashPwd(pwd, pwdErrors);
+		String hashPwd = helper.hashPwd(pwd, pwdErrors);
 
 		// Retour au formulaire si un paramètre est incorrect
 		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {

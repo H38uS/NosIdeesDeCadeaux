@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.table.UserChangePwdRequest;
+import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.securitypolicy.PasswordChangeRequest;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/public/changer_mot_de_passe_depuis_reinit")
-public class ChangerMotDePasseDepuisReinit extends DefaultCompte {
+public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = 5998641192324526001L;
 	public static final String VIEW_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit.jsp";
@@ -36,6 +38,8 @@ public class ChangerMotDePasseDepuisReinit extends DefaultCompte {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		
+		CompteInteractions helper = new CompteInteractions();
 
 		request.setAttribute(tokenParameter, ParametersUtils.readInt(request, tokenParameter));
 		int userId = ParametersUtils.readInt(request, userIdParameter);
@@ -44,13 +48,13 @@ public class ChangerMotDePasseDepuisReinit extends DefaultCompte {
 		String pwd1 = ParametersUtils.readAndEscape(request, "pwd1").trim();
 		String pwd2 = ParametersUtils.readAndEscape(request, "pwd2").trim();
 		
-		List<String> pwdErrors1 = checkPwd(getValidatorPwd(pwd1));
-		List<String> pwdErrors2 = checkPwd(getValidatorPwd(pwd2));
+		List<String> pwdErrors1 = helper.checkPwd(helper.getValidatorPwd(pwd1));
+		List<String> pwdErrors2 = helper.checkPwd(helper.getValidatorPwd(pwd2));
 		if (!pwd1.equals(pwd2)) {
 			pwdErrors2.add("Les deux mots de passe ne correspondent pas.");
 		}
 		
-		String digested = hashPwd(pwd1, pwdErrors1);
+		String digested = helper.hashPwd(pwd1, pwdErrors1);
 		
 		if (!pwdErrors1.isEmpty() || !pwdErrors2.isEmpty()) {
 			request.setAttribute("pwd1_error", pwdErrors1);
