@@ -39,7 +39,7 @@ public class IdeaInteractions {
 	protected Idees idees = new Idees();
 	protected Users users = new Users();
 
-	protected void removeUploadedImage(File path, String image) {
+	public void removeUploadedImage(File path, String image) {
 		if (image != null && !image.isEmpty()) {
 			image = StringEscapeUtils.unescapeHtml4(image);
 			logger.debug(MessageFormat.format("Deleting pictures ({1}) in {0} folder...", path, image));

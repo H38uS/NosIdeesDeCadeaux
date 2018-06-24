@@ -546,18 +546,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		return ideasPicturePath;
 	}
 
-	// FIXME à supprimer quand on ne s'en sert plus
-	protected void removeUploadedImage(File path, String image) {
-		if (image != null && !image.isEmpty()) {
-			image = StringEscapeUtils.unescapeHtml4(image);
-			logger.debug(MessageFormat.format("Deleting pictures ({1}) in {0} folder...", path, image));
-			File small = new File(path, "small/" + image);
-			small.delete();
-			File large = new File(path, "large/" + image);
-			large.delete();
-		}
-	}
-
 	/**
 	 * 
 	 * @param params Parameters received in this request.

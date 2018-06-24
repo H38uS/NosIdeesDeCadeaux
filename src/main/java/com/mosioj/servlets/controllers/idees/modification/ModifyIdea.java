@@ -21,6 +21,7 @@ import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MaListe;
+import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -82,7 +83,8 @@ public class ModifyIdea extends AbstractIdea {
 				} else {
 					// Modification de l'image
 					// On supprime la précédente
-					removeUploadedImage(getIdeaPicturePath(), old);
+					IdeaInteractions helper = new IdeaInteractions();
+					helper.removeUploadedImage(getIdeaPicturePath(), old);
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
 

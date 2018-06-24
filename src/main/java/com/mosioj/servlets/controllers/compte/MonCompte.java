@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.model.UserParameter;
 import com.mosioj.notifications.NotificationActivation;
+import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -123,7 +124,8 @@ public class MonCompte extends DefaultCompte {
 					// Modification de l'image
 					// On supprime la précédente
 					if (!"default.png".equals(old)) {
-						removeUploadedImage(filePath, old);
+						IdeaInteractions helper = new IdeaInteractions();
+						helper.removeUploadedImage(filePath, old);
 					}
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
