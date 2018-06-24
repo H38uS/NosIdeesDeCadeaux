@@ -106,8 +106,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// TODO : faire un seul repo git ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
-	
-	// FIXME : 0 reste mon compte pour le JS
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

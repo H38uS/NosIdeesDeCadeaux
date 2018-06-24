@@ -41,7 +41,7 @@
 					<tr>
 						<td>Avatar actuel</td>
 						<td>
-							<a href="${avatars}/${user.avatarSrcLarge}" class="thickbox img">
+							<a id="avatar_picture" href="${avatars}/${user.avatarSrcLarge}" class="thickbox img">
 								<img src="${avatars}/${user.avatarSrcSmall}" width="150" class="input" />
 							</a>
 							<input type="hidden" name="old_picture" value="${user.avatar}" />
@@ -170,7 +170,7 @@
 	<h2>Type de notifications</h2>
 	<table>
 		<c:forEach var="notif" items="${notif_types}">
-			<form action="protected/update_notification_parameter" method="post" >
+			<form action="protected/update_notification_parameter" method="post">
 				<tr>
 					<td>
 						<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
@@ -193,7 +193,7 @@
 						<input type="hidden" name="id" value="${notif.id}">
 						<input type="hidden" name="name" value="${notif.parameterName}">
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-						<input type="submit" name="submit" value="Sauvegarder">
+						<input type="submit" class="notification_form_submit" value="Sauvegarder">
 					</td>
 				</tr>
 			</form>

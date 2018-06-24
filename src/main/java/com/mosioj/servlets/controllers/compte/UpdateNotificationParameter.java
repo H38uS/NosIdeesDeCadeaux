@@ -33,7 +33,7 @@ public class UpdateNotificationParameter extends IdeesCadeauxServlet {
 		String name = request.getParameter("name");
 		String value = request.getParameter("value");
 		
-		if (name != null) {
+		if (name != null && value != null) {
 			userParameters.insertUpdateParameter(userId, name, value);
 		}
 		RootingsUtils.redirectToPage(MonCompte.URL, request, response);

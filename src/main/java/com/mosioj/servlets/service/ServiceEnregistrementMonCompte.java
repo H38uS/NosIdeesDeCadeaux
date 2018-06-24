@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
+import com.mosioj.model.User;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -43,6 +44,10 @@ public class ServiceEnregistrementMonCompte extends AbstractService {
 		String status = "ko";
 		String message = "Le formulaire n'a pas le bon format.";
 
+		String avatar = "";
+		String avatarLarge = "";
+		String avatarSmall = "";
+
 		if (ServletFileUpload.isMultipartContent(request)) {
 
 			if (filePath == null) {
@@ -53,12 +58,16 @@ public class ServiceEnregistrementMonCompte extends AbstractService {
 
 			readMultiFormParameters(request, filePath);
 			int userId = ParametersUtils.getUserId(request);
-			
+
 			CompteInteractions helper = new CompteInteractions();
 			List<String> errors = helper.processSave(filePath, parameters, userId);
 			if (errors == null || errors.isEmpty()) {
 				status = "ok";
 				message = "";
+				User user = users.getUser(userId);
+				avatar = user.getAvatar();
+				avatarLarge = user.getAvatarSrcLarge();
+				avatarSmall = user.getAvatarSrcSmall();
 			} else {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<ul>");
@@ -73,9 +82,13 @@ public class ServiceEnregistrementMonCompte extends AbstractService {
 
 		try {
 			writeJSonOutput(response,
-							MessageFormat.format(	"{0},{1}",
+							MessageFormat.format(	"{0},{1},{2},{3},{4},{5}",
 													JSONObject.toString("status", status),
-													JSONObject.toString("errors", message)));
+													JSONObject.toString("errors", message),
+													JSONObject.toString("avatar", avatar),
+													JSONObject.toString("avatarLarge", avatarLarge),
+													JSONObject.toString("avatarSmall", avatarSmall),
+													JSONObject.toString("avatars", request.getAttribute("avatars"))));
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
