@@ -4,6 +4,47 @@
 
 <t:normal_protected>
 	<jsp:body>
+		<c:choose>
+			<c:when test="${is_mobile}">
+				<script type="text/javascript">
+					$(document).ready(function() {
+						jQuery.ui.autocomplete.prototype._resizeMenu = function () {
+							var ul = this.menu.element;
+							ul.outerWidth(
+									Math.max( $("#mobile_res_search").outerWidth(), this.element.outerWidth())
+								);
+						}
+						$("#looking_for").autocomplete({
+							source : "protected/service/name_resolver",
+							minLength : 2,
+							appendTo: "#mobile_res_search_afficher_reseau",
+							position: { my : "left top", at: "left top", of : "#mobile_res_search_afficher_reseau" },
+							select : function(event, ui) {
+								$("#looking_for").val(ui.item.email);
+								$("#form_rechercher_dans_reseau").submit();
+								return false;
+							}
+						});
+					});
+				</script>
+			</c:when>
+			<c:otherwise>
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$("#looking_for").autocomplete({
+							source : "protected/service/name_resolver",
+							minLength : 2,
+							select : function(event, ui) {
+								$("#looking_for").val(ui.item.email);
+								$("#form_rechercher_dans_reseau").submit();
+								return false;
+							}
+						});
+					});
+				</script>
+			</c:otherwise>
+		</c:choose>
+
 		<c:if test="${not empty accepted}">
 			<h2>Succès</h2>
 			Les demandes suivantes ont été acceptées avec succès.
@@ -50,7 +91,7 @@
 			Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
 		</c:if>
 		<h2>Rechercher des personnes dans le réseau de ${name}</h2>
-			<form method="POST" action="protected/rechercher_reseau">
+			<form id="form_rechercher_dans_reseau" method="POST" action="protected/rechercher_reseau">
 				<table>
 					<tr>
 						<td>
@@ -58,10 +99,9 @@
 						</td>
 						<td>
 							<input type="text" name="looking_for" id="looking_for" value="${looking_for}" />
-						</td>
 						<td></td>
 						<td align="center">
-							<input type="submit" name="submit" id="submit" value="Rechercher !" />
+							<input type="submit" value="Rechercher !" />
 						</td>
 					</tr>
 				</table>
@@ -69,6 +109,7 @@
 				<input type="hidden" name="page" value="1" />
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
+		<div id="mobile_res_search_afficher_reseau" class="mobile_res_search"></div>
 		<h2>Réseau de ${name}</h2>
 		<c:if test="${not empty pages}">
 			<div class="center">

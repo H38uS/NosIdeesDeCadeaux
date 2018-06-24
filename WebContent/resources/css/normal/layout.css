@@ -115,7 +115,7 @@ ul.menu {
 	padding: 5px 7px;
 }
 
-#mobile_res_search {
+#mobile_res_search, .mobile_res_search {
 	display: none;
 }
 

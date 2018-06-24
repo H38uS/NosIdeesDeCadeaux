@@ -113,7 +113,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 	
 	// FIXME : 0 reste mon compte pour le JS
-	// FIXME : 0 et rechercher dans mes amis
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

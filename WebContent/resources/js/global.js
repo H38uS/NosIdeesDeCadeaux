@@ -55,7 +55,7 @@ function actionDone(message) {
 							 .slideDown();
 	timer = setTimeout(function() {
 		$("#loading_message_div").fadeOut('slow');
-	}, 7000);
+	}, 5000);
 }
 function actionError(message) {
 	clearTimeout(timer);
@@ -66,7 +66,7 @@ function actionError(message) {
 							 .slideDown();
 	timer = setTimeout(function() {
 		$("#loading_message_div").fadeOut('slow');
-	}, 7000);
+	}, 5000);
 }
 
 function servicePost(url, params, successHandler, loadingMessage, successMessage, errorMessage) {

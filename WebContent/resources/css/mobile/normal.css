@@ -321,7 +321,7 @@ td.idea_square_text {
 .ui-widget {
 	font-size: 200%;
 }
-#mobile_res_search {
+#mobile_res_search, .mobile_res_search {
 	width: 100%;
 }
 .ui-menu-item {
