@@ -171,7 +171,7 @@ public class ParameterValidator {
 	 */
 	public void checkIsUnique(String sqlQuery, DataSourceIdKDo db) {
 		try {
-			int res = db.selectInt(sqlQuery, parameterValue);
+			int res = db.selectCountStar(sqlQuery, parameterValue);
 			if (res > 0) {
 				errors.add(article + parameterName + " existe déjà.");
 			}
@@ -189,7 +189,7 @@ public class ParameterValidator {
 	 */
 	public void checkExists(String sqlQuery, DataSourceIdKDo db) {
 		try {
-			int res = db.selectInt(sqlQuery, parameterValue);
+			int res = db.selectCountStar(sqlQuery, parameterValue);
 			if (res == 0) {
 				errors.add(article + parameterName + " n'existe pas.");
 			}

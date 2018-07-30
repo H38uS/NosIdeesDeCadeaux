@@ -108,7 +108,7 @@ public class UserRelations extends Table {
 													UsersColumns.NAME,
 													UsersColumns.EMAIL);
 
-		return getDb().selectInt(formatedQuery, userId, sanitizeSQLLike(nameOrEmail), sanitizeSQLLike(nameOrEmail));
+		return getDb().selectCountStar(formatedQuery, userId, sanitizeSQLLike(nameOrEmail), sanitizeSQLLike(nameOrEmail));
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class UserRelations extends Table {
 	 * @throws SQLException
 	 */
 	public int getRelationsCount(int userId) throws SQLException {
-		return getDb().selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, FIRST_USER), userId);
+		return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, FIRST_USER), userId);
 	}
 
 	/**
@@ -486,9 +486,9 @@ public class UserRelations extends Table {
 
 		if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
 			userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
-			return getDb().selectInt(formatQuery, userId, userNameOrEmail, userNameOrEmail);
+			return getDb().selectCountStar(formatQuery, userId, userNameOrEmail, userNameOrEmail);
 		} else {
-			return getDb().selectInt(formatQuery, userId);
+			return getDb().selectCountStar(formatQuery, userId);
 		}
 	}
 

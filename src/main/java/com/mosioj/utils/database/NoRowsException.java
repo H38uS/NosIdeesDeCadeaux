@@ -1,8 +1,6 @@
 package com.mosioj.utils.database;
 
-import java.sql.SQLException;
-
-public class NoRowsException extends SQLException {
+public class NoRowsException extends Exception {
 
 	private static final long serialVersionUID = -1540821301172762945L;
 

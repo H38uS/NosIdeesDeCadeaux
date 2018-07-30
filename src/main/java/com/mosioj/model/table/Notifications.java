@@ -166,7 +166,7 @@ public class Notifications extends Table {
 	 * @return The number of notification this user has.
 	 */
 	public int getUserNotificationCount(int userId) throws SQLException {
-		return getDb().selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, OWNER), userId);
+		return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, OWNER), userId);
 	}
 
 	/**

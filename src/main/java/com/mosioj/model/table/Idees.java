@@ -34,6 +34,7 @@ import com.mosioj.model.table.columns.PrioritesColumns;
 import com.mosioj.model.table.columns.SousReservationColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UsersColumns;
+import com.mosioj.utils.database.NoRowsException;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 import com.mosioj.utils.database.PreparedStatementIdKdoInserter;
 import com.mosioj.viewhelper.Escaper;
@@ -202,8 +203,9 @@ public class Idees extends Table {
 	 * @param groupId
 	 * @return The idea id of the idea booked by this group.
 	 * @throws SQLException
+	 * @throws NoRowsException
 	 */
-	public int getIdeaId(int groupId) throws SQLException {
+	public int getIdeaId(int groupId) throws SQLException, NoRowsException {
 		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, GROUPE_KDO_ID), groupId);
 	}
 
@@ -309,11 +311,12 @@ public class Idees extends Table {
 	 * 
 	 * @param ideeId
 	 * @return L'utilisateur qui a réservé l'idée, ou null si aucun ne l'a fait.
+	 * @throws SQLException
 	 */
-	public Integer isBookedBy(int ideeId) {
+	public Integer isBookedBy(int ideeId) throws SQLException {
 		try {
 			return getDb().selectInt("select " + RESERVE + " from " + TABLE_NAME + " where " + ID + " = ?", ideeId);
-		} catch (SQLException e) {
+		} catch (NoRowsException e) {
 			return null;
 		}
 	}
@@ -324,14 +327,15 @@ public class Idees extends Table {
 	 * @param userId
 	 * @return True if and only if the user has sub booked the idea.
 	 * @throws SQLException
+	 * @throws NoRowsException
 	 */
 	public boolean isSubBookBy(int ideaId, int userId) throws SQLException {
-		return getDb().selectInt(	MessageFormat.format(	"select count(*) from {0} where {1} = ? and {2} = ?",
-															SousReservation.TABLE_NAME,
-															SousReservationColumns.IDEE_ID,
-															SousReservationColumns.USER_ID),
-									ideaId,
-									userId) > 0;
+		return getDb().selectCountStar(	MessageFormat.format(	"select count(*) from {0} where {1} = ? and {2} = ?",
+																SousReservation.TABLE_NAME,
+																SousReservationColumns.IDEE_ID,
+																SousReservationColumns.USER_ID),
+										ideaId,
+										userId) > 0;
 	}
 
 	/**
@@ -484,11 +488,11 @@ public class Idees extends Table {
 																SousReservationColumns.USER_ID),
 										ideaId,
 										userId);
-		if (nb > 0 && getDb().selectInt(
-										MessageFormat.format(	"select count(*) from {0} where {1} = ?",
-																SousReservation.TABLE_NAME,
-																SousReservationColumns.IDEE_ID),
-										ideaId) == 0) {
+		if (nb > 0 && getDb().selectCountStar(
+												MessageFormat.format(	"select count(*) from {0} where {1} = ?",
+																		SousReservation.TABLE_NAME,
+																		SousReservationColumns.IDEE_ID),
+												ideaId) == 0) {
 			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ''N'' where {2} = ?",
 															TABLE_NAME,
 															A_SOUS_RESERVATION,
@@ -529,7 +533,7 @@ public class Idees extends Table {
 											UserRelationsColumns.SECOND_USER,
 											A_SOUS_RESERVATION);
 		logger.debug(query);
-		return getDb().selectInt(query, userId, userId, idea, userId) > 0;
+		return getDb().selectCountStar(query, userId, userId, idea, userId) > 0;
 	}
 
 	/**
@@ -561,12 +565,11 @@ public class Idees extends Table {
 											UserRelationsColumns.FIRST_USER,
 											UserRelationsColumns.SECOND_USER);
 		logger.debug(query);
-		return getDb().selectInt(query, userId, userId, idea, userId, userId) > 0;
+		return getDb().selectCountStar(query, userId, userId, idea, userId, userId) > 0;
 	}
 
 	/**
-	 * Supprime tout type de réservation sur l'idée.
-	 * Fait aussi le ménage pour les groupes sous-jacent etc.
+	 * Supprime tout type de réservation sur l'idée. Fait aussi le ménage pour les groupes sous-jacent etc.
 	 * 
 	 * @param idea L'idée qu'on doit déréserver.
 	 * @throws SQLException
@@ -574,13 +577,18 @@ public class Idees extends Table {
 	public void toutDereserver(int idea) throws SQLException {
 
 		// Suppression des groupes potentiels
-		int groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?", idea);
-		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
-														GroupIdea.TABLE_NAME_CONTENT,
-														GroupIdeaContentColumns.GROUP_ID),
-								groupId);
-		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
-								groupId);
+		int groupId;
+		try {
+			groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?", idea);
+			getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
+															GroupIdea.TABLE_NAME_CONTENT,
+															GroupIdeaContentColumns.GROUP_ID),
+									groupId);
+			getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
+									groupId);
+		} catch (NoRowsException e) {
+			// Nothing to do
+		}
 
 		// Des sous-reservations
 		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",

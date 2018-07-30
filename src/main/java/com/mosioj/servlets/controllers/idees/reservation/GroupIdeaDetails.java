@@ -21,6 +21,7 @@ import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
+import com.mosioj.utils.database.NoRowsException;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
@@ -62,7 +63,12 @@ public class GroupIdeaDetails extends AbstractIdea {
 			request.getSession().removeAttribute("errors");
 		}
 		
-		request.setAttribute("idee", idees.getIdea(idees.getIdeaId(groupId)));
+		try {
+			request.setAttribute("idee", idees.getIdea(idees.getIdeaId(groupId)));
+		} catch (NoRowsException e) {
+			RootingsUtils.rootToUnexistingGroupError(request, response);
+			return;
+		}
 		request.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(request), groupId));
 		request.setAttribute("group", group);
 		request.setAttribute("currentTotal", currentTotal);

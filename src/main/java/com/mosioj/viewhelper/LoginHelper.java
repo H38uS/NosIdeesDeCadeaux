@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Users;
+import com.mosioj.utils.database.NoRowsException;
 
 /**
  * Provides helper functions to the views.
@@ -67,11 +68,17 @@ public class LoginHelper implements Filter {
 				try {
 					// Getting the id
 					Users user = new Users();
-					userId = user.getId(name);
-					User connected = user.getUser(userId);
-					// Storing the new one
-					session.setAttribute("userid", userId);
-					session.setAttribute("emailorname", connected.getName());
+					try {
+						userId = user.getId(name);
+						User connected = user.getUser(userId);
+						// Storing the new one
+						session.setAttribute("userid", userId);
+						session.setAttribute("emailorname", connected.getName());
+					} catch (NoRowsException e) {
+						// Impossible: le nom existe forcément
+						// Sait-on jamais, on le log
+						logger.fatal(MessageFormat.format("L''utilisateur {0} est connecté mais n''a pas de compte...", name));
+					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

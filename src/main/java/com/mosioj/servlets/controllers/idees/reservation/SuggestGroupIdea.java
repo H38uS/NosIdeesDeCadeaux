@@ -22,6 +22,7 @@ import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
+import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/suggerer_groupe_idee")
 public class SuggestGroupIdea extends IdeesCadeauxServlet {
@@ -41,15 +42,21 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer groupId = ParametersUtils.readInt(req, GROUP_ID_PARAM);
+		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		logger.debug("Getting details for idea group " + groupId + "...");
 
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
-		Idee idea = idees.getIdea(idees.getIdeaId(groupId));
+		Idee idea;
+		try {
+			idea = idees.getIdea(idees.getIdeaId(groupId));
+		} catch (NoRowsException e) {
+			RootingsUtils.rootToUnexistingGroupError(request, response);
+			return;
+		}
 
-		int userId = ParametersUtils.getUserId(req);
+		int userId = ParametersUtils.getUserId(request);
 		User thisOne = users.getUser(userId);
 		
 		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, userId);
@@ -63,18 +70,24 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		}
 		potentialGroupUser.removeAll(removable);
 
-		req.setAttribute("candidates", potentialGroupUser);
-		req.setAttribute("idea", idea);
-		req.setAttribute("group", group);
+		request.setAttribute("candidates", potentialGroupUser);
+		request.setAttribute("idea", idea);
+		request.setAttribute("group", group);
 
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
-		Idee idea = idees.getIdea(idees.getIdeaId(groupId));
+		Idee idea;
+		try {
+			idea = idees.getIdea(idees.getIdeaId(groupId));
+		} catch (NoRowsException e) {
+			RootingsUtils.rootToUnexistingGroupError(request, response);
+			return;
+		}
 
 		List<Integer> selectedUsers = new ArrayList<Integer>();
 		Map<String, String[]> params = request.getParameterMap();

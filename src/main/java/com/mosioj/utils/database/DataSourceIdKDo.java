@@ -29,7 +29,7 @@ public class DataSourceIdKDo {
 	protected Connection getAConnection() throws SQLException {
 		return getDatasource().getConnection();
 	}
-
+	
 	/**
 	 * 
 	 * @param query The sql query.
@@ -37,7 +37,39 @@ public class DataSourceIdKDo {
 	 * @return The result of the first row on the first column.
 	 * @throws SQLException
 	 */
-	public int selectInt(String query, Object... parameters) throws SQLException {
+	public int selectCountStar(String query, Object... parameters) throws SQLException {
+		try {
+			return selectInt(query, parameters);
+		} catch (NoRowsException e) {
+			return 0;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param query The sql query.
+	 * @param defaultValue The default value if no rows are found.
+	 * @param parameters Optional bindable parameters.
+	 * @return The result of the first row on the first column.
+	 * @throws SQLException
+	 */
+	public int selectIntWithDefault(String query, int defaultValue, Object... parameters) throws SQLException {
+		try {
+			return selectInt(query, parameters);
+		} catch (NoRowsException e) {
+			return defaultValue;
+		}
+	}
+
+	/**
+	 * 
+	 * @param query The sql query.
+	 * @param parameters Optional bindable parameters.
+	 * @return The result of the first row on the first column.
+	 * @throws SQLException
+	 * @throws NoRowsException 
+	 */
+	public int selectInt(String query, Object... parameters) throws SQLException, NoRowsException {
 
 		PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query);
 		try {

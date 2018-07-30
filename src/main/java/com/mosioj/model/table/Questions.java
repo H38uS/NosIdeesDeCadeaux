@@ -80,7 +80,7 @@ public class Questions extends Table {
 	}
 
 	public int getNbQuestions(int ideaId) throws SQLException {
-		return getDb().selectInt("select count(*) from " + TABLE_NAME + " where " + IDEA_ID + " = ?", ideaId);
+		return getDb().selectCountStar("select count(*) from " + TABLE_NAME + " where " + IDEA_ID + " = ?", ideaId);
 	}
 
 	/**

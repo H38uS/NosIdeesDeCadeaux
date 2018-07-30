@@ -15,6 +15,7 @@ import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
+import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/ajouter_parent")
 public class AjouterParent extends IdeesCadeauxServlet {
@@ -38,9 +39,14 @@ public class AjouterParent extends IdeesCadeauxServlet {
 		String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
 		logger.debug(MessageFormat.format("Name or email reçu: {0}.", nameOrEmail));
 		
-		int parentId = users.getIdFromNameOrEmail(nameOrEmail);
-		logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
-		parentRelationship.addProcuration(parentId, ParametersUtils.getUserId(request));
+		int parentId;
+		try {
+			parentId = users.getIdFromNameOrEmail(nameOrEmail);
+			logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
+			parentRelationship.addProcuration(parentId, ParametersUtils.getUserId(request));
+		} catch (NoRowsException e) {
+			logger.warn("L'ajout du parent a échoué : il n'existe pas de compte pour le nom ou l'email passé en paramètre.");
+		}
 
 		RootingsUtils.redirectToPage(MonCompte.URL, request, response);
 	}

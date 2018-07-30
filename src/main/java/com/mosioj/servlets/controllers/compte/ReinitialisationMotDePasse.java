@@ -16,6 +16,7 @@ import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.EmailSender;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
+import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
 public class ReinitialisationMotDePasse extends IdeesCadeauxServlet {
@@ -56,7 +57,15 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxServlet {
 			return;
 		}
 		
-		int userId = users.getId(email1);
+		int userId;
+		try {
+			userId = users.getId(email1);
+		} catch (NoRowsException e) {
+			// L'email n'existe pas. On affiche la page de base pour éviter plus d'info aux pirates.
+			ideesKDoGET(request, response);
+			return;
+		}
+		
 		int token = new Random().nextInt();
 		UserChangePwdRequest changePwdRequest = new UserChangePwdRequest();
 		changePwdRequest.deleteAssociation(userId);

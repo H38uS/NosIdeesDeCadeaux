@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.UserRelationsColumns;
 import com.mosioj.model.table.columns.UserRolesColumns;
+import com.mosioj.utils.database.NoRowsException;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 /**
@@ -99,8 +100,9 @@ public class Users extends Table {
 	 * @param email The identifier of the person (currently the email).
 	 * @return This person's id.
 	 * @throws SQLException
+	 * @throws NoRowsException 
 	 */
-	public int getId(String email) throws SQLException {
+	public int getId(String email) throws SQLException, NoRowsException {
 		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL), email);
 	}
 
@@ -109,8 +111,9 @@ public class Users extends Table {
 	 * @param email The identifier of the person (currently the email).
 	 * @return This person's id.
 	 * @throws SQLException
+	 * @throws NoRowsException 
 	 */
-	public int getIdFromNameOrEmail(String nameOrEmail) throws SQLException {
+	public int getIdFromNameOrEmail(String nameOrEmail) throws SQLException, NoRowsException {
 		return getDb().selectInt(	MessageFormat.format(	"select {0} from {1} where {2} = ? or {3} = ? limit 1",
 															ID,
 															TABLE_NAME,

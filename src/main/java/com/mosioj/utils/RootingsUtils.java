@@ -113,9 +113,28 @@ public class RootingsUtils {
 
 		String url = req.getRequestURI().contains("/protected/") ? PROTECTED_SERVER_ERROR_JSP : PUBLIC_SERVER_ERROR_JSP;
 		RequestDispatcher rd = req.getRequestDispatcher(url);
-		
+
 		try {
 			rd.forward(req, resp);
+		} catch (IOException e) {
+			throw new ServletException(e.getMessage());
+		}
+	}
+
+	/**
+	 * Used when no idea is defined for a given group.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException 
+	 */
+	public static void rootToUnexistingGroupError(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		RequestDispatcher rd = request.getRequestDispatcher("/protected/erreur_parametre_ou_droit.jsp");
+		request.setAttribute("error_message", "L'idée ne semble plus exister pour ce groupe.");
+
+		try {
+			rd.forward(request, response);
 		} catch (IOException e) {
 			throw new ServletException(e.getMessage());
 		}
