@@ -3,14 +3,17 @@ package com.mosioj.model.table;
 import static com.mosioj.model.table.columns.NotificationParametersColumns.NOTIFICATION_ID;
 import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_NAME;
 import static com.mosioj.model.table.columns.NotificationParametersColumns.PARAMETER_VALUE;
+import static com.mosioj.model.table.columns.NotificationsColumns.CREATION_DATE;
 import static com.mosioj.model.table.columns.NotificationsColumns.ID;
+import static com.mosioj.model.table.columns.NotificationsColumns.IS_UNREAD;
 import static com.mosioj.model.table.columns.NotificationsColumns.OWNER;
+import static com.mosioj.model.table.columns.NotificationsColumns.READ_ON;
 import static com.mosioj.model.table.columns.NotificationsColumns.TEXT;
 import static com.mosioj.model.table.columns.NotificationsColumns.TYPE;
-import static com.mosioj.model.table.columns.NotificationsColumns.CREATION_DATE;
-import static com.mosioj.model.table.columns.NotificationsColumns.IS_UNREAD;
-import static com.mosioj.model.table.columns.NotificationsColumns.READ_ON;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -20,10 +23,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.columns.UserRolesColumns;
 import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.notifications.AbstractNotification;
@@ -31,6 +39,9 @@ import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.notifications.NotificationFactory;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
+import com.mosioj.utils.EmailSender;
+import com.mosioj.utils.NotLoggedInException;
+import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 import com.mosioj.utils.database.PreparedStatementIdKdoInserter;
 
@@ -402,9 +413,10 @@ public class Notifications extends Table {
 	 * Logs an exception notifications to Admins.
 	 * 
 	 * @param exception
+	 * @param req
 	 * @throws SQLException
 	 */
-	public void logError(Exception exception) {
+	public void logError(Exception exception, HttpServletRequest req) {
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format(" insert into {0} ", TABLE_NAME));
@@ -421,6 +433,70 @@ public class Notifications extends Table {
 			getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
 		} catch (SQLException e) {
 			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+
+		String userEmail = null;
+		try {
+			Users users = new Users();
+			User user = users.getUser(ParametersUtils.getUserId(req));
+			userEmail = user.getEmail();
+		} catch (NotLoggedInException | SQLException e) {
+			userEmail = "Aucun, pas de connexion.";
+			logger.warn(e);
+		}
+
+		query = new StringBuilder();
+		query.append(MessageFormat.format("select u.{0} ", UsersColumns.EMAIL));
+		query.append(MessageFormat.format("  from {0} u ", Users.TABLE_NAME));
+		query.append(MessageFormat.format("  join USER_ROLES ur on ur.{0} = u.{1} ", UserRolesColumns.EMAIL, UsersColumns.EMAIL));
+		query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
+
+		PreparedStatementIdKdo ps = null;
+		try {
+			ps = new PreparedStatementIdKdo(getDb(), query.toString());
+			ps.bindParameters("ROLE_ADMIN");
+			ps.execute();
+			ResultSet res = ps.getResultSet();
+
+			while (res.next()) {
+				String emailAdress = res.getString(UsersColumns.EMAIL.name());
+				try {
+					InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("notif.properties");
+					Properties p = new Properties();
+					try {
+						p.load(new InputStreamReader(input, "UTF-8"));
+					} catch (IOException e) {
+						e.printStackTrace();
+						logger.error(e);
+					}
+
+					StringBuilder notifText = new StringBuilder();
+					notifText.append("L'erreur suivante est survenue: " + exception.getMessage() + "<br/>");
+					notifText.append("Email de l'utilisateur connecté: " + userEmail + "<br/>");
+					notifText.append("Stacktrace:<br/><br/>");
+					for (StackTraceElement line : exception.getStackTrace()) {
+						notifText.append(line);
+						notifText.append("<br/>");
+					}
+
+					String messageTemplate = p.get("mail_template").toString();
+					String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(notifText.toString()));
+					EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Une erreur est survenue...", body);
+
+				} catch (Exception e) {
+					logger.error(MessageFormat.format("Fail to send error email to {0}", emailAdress));
+					e.printStackTrace();
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
 		}
 	}
 
@@ -447,11 +523,6 @@ public class Notifications extends Table {
 	 * @throws SQLException
 	 */
 	public void setUnread(int notifId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? ",
-														TABLE_NAME,
-														IS_UNREAD,
-														ID),
-								"Y",
-								notifId);
+		getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? ", TABLE_NAME, IS_UNREAD, ID), "Y", notifId);
 	}
 }

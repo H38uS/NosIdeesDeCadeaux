@@ -107,7 +107,7 @@ public class RootingsUtils {
 			req.setAttribute("error", exception.getMessage());
 		} else {
 			Notifications notif = new Notifications();
-			notif.logError(exception);
+			notif.logError(exception, req);
 		}
 		req.setAttribute("shouldLogStack", shouldLogStack);
 
