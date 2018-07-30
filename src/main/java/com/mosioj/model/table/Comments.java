@@ -80,7 +80,7 @@ public class Comments extends Table {
 	}
 
 	public int getNbComments(int ideaId) throws SQLException {
-		return getDb().selectCountStar("select count(*) from " + TABLE_NAME + " where " + IDEA_ID + " = ?", 0, ideaId);
+		return getDb().selectCountStar("select count(*) from " + TABLE_NAME + " where " + IDEA_ID + " = ?", ideaId);
 	}
 
 	/**
