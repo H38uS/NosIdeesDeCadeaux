@@ -135,6 +135,15 @@ public class DataSourceIdKDo {
 	}
 
 	/**
+	 * !!!! Only for test !!!!
+	 * 
+	 * @param newDS
+	 */
+	public static void setDataSource(DataSource newDS) {
+		ds = newDS;
+	}
+	
+	/**
 	 * 
 	 * @return The data source to use.
 	 */

@@ -72,7 +72,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
-	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS
+	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS (i.e. recharger l'idée)
 
 	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe
 	// etc.
@@ -81,7 +81,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// FIXME : 2 retailler les images catégories en 80 px
 	// FIXME : 2 revoir les check box en mode mobile (exemple: rechercher personne)
 	// FIXME : 2 Mobile: revoir les pages login/error/acceuil
-	// FIXME : 2 Mobile: améliorer la vision mes amis
+	// FIXME : 2 Mobile: améliorer la vision mes amis / mon compte
 
 	// TODO : faire du javascript pour les discussions
 
@@ -106,6 +106,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// TODO : faire un seul repo git ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
+	
+	// TODO stocker l'objet User quand on se connecte
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -232,51 +234,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	}
 
 	/**
-	 * For test purposes.
-	 * 
-	 * @param manager
-	 */
-	public void setNotificationManager(Notifications manager) {
-		notif = manager;
-	}
-
-	/**
-	 * For test purposes.
-	 * 
-	 * @param pUserRelations
-	 */
-	public void setUserRelations(UserRelations pUserRelations) {
-		userRelations = pUserRelations;
-	}
-
-	/**
-	 * For test purposes.
-	 * 
-	 * @param pUserRelationRequests
-	 */
-	public void setUserRelationRequests(UserRelationRequests pUserRelationRequests) {
-		userRelationRequests = pUserRelationRequests;
-	}
-
-	/**
-	 * For test purposes.
-	 * 
-	 * @param pUsers
-	 */
-	public void setUsers(Users pUsers) {
-		users = pUsers;
-	}
-
-	/**
-	 * For test purposes.
-	 * 
-	 * @param pIdees
-	 */
-	public void setIdees(Idees pIdees) {
-		idees = pIdees;
-	}
-
-	/**
 	 * Internal class for GET processing, post security checks.
 	 * 
 	 * @param req
@@ -389,18 +346,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 	}
 
-	public void setCat(Categories cat) {
-		categories = cat;
-	}
-
-	public void setPrio(Priorites prio) {
-		priorities = prio;
-	}
-
-	public void setUserParameters(UserParameters param) {
-		userParameters = param;
-	}
-
 	/**
 	 * 
 	 * @param originalImage
@@ -506,9 +451,13 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		if (ideasPicturePath == null) {
 			String workDir = getServletContext().getInitParameter("work_dir");
 			logger.debug(MessageFormat.format("Initialisation du répertoire de travail à {0}", workDir));
-			ideasPicturePath = new File(workDir, "uploaded_pictures/ideas");
+			setIdeaPicturePath(new File(workDir, "uploaded_pictures/ideas"));
 		}
 		return ideasPicturePath;
+	}
+	
+	public void setIdeaPicturePath(File file) {
+		ideasPicturePath = file;
 	}
 
 	/**

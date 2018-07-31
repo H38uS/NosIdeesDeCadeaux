@@ -8,15 +8,12 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
@@ -33,12 +30,7 @@ public class TestIdees extends AbstractTestServlet {
 
 	@Test
 	public void testGetSuccess() throws ServletException, IOException, SQLException {
-
-		List<Idee> ideas = new ArrayList<Idee>();
-		when(idees.getOwnerIdeas(_OWNER_ID_)).thenReturn(ideas);
-
 		doTestGet(request, response);
-
 		verify(request).getRequestDispatcher(eq(MaListe.VIEW_PAGE_URL));
 	}
 
@@ -52,5 +44,4 @@ public class TestIdees extends AbstractTestServlet {
 		verify(request).getRequestDispatcher(eq(MaListe.VIEW_PAGE_URL));
 		verify(request, never()).setAttribute(eq("errors"), anyObject());
 	}
-
 }

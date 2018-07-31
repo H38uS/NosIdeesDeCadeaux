@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.model.User;
+import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.servlets.controllers.relations.DemandeRejoindreReseau;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.RootingsUtils;
@@ -51,9 +51,9 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 	@Test
 	public void testPostSuccess() throws ServletException, IOException, SQLException {
 
-		when(request.getParameter("user_id")).thenReturn("1");
-		when(users.getUser(1)).thenReturn(new User(1, "toto", "toto@hotmail.fr"));
-		when(users.getUser(32)).thenReturn(new User(32, "tutu", "tutu@hotmail.fr"));
+		UserRelationRequests urr = new UserRelationRequests();
+		urr.cancelRequest(26, 23);
+		when(request.getParameter("user_id")).thenReturn("23");
 
 		// Should not throw an exception
 		doTestPost(request, response);
@@ -65,9 +65,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 	@Test
 	public void testAlreadySent() throws ServletException, IOException, SQLException {
 		
-		when(request.getParameter("user_id")).thenReturn("1");
-		when(users.getUser(1)).thenReturn(new User(1, "toto", "toto@hotmail.fr"));
-		when(userRelationRequests.associationExists(32, 1)).thenReturn(true);
+		when(request.getParameter("user_id")).thenReturn("10");
 		
 		// Should not throw an exception
 		doTestPost(request, response);
@@ -81,9 +79,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 	public void testGroupAlreadyExist() throws ServletException, IOException, SQLException {
 		
 		when(request.getParameter("user_id")).thenReturn("1");
-		when(users.getUser(1)).thenReturn(new User(1, "toto", "toto@hotmail.fr"));
-
-		when(userRelations.associationExists(1, 32)).thenReturn(true);
 		
 		// Should not throw an exception
 		doTestPost(request, response);

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 
@@ -55,9 +56,10 @@ public class TestCreationCompte extends AbstractTestServlet {
 	}
 
 	@Test
-	public void testSuccess() throws ServletException, IOException {
+	public void testSuccess() throws ServletException, IOException, SQLException {
 
-		when(request.getParameter("email")).thenReturn("jordan.mosio@hotmail.fr");
+		ds.executeUpdate("delete from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr");
+		when(request.getParameter("email")).thenReturn("tartenpiontoto@hotmaildzndqudn.fr");
 		when(request.getParameter("pwd")).thenReturn("mydummypwd");
 
 		// Should not throw an exception
