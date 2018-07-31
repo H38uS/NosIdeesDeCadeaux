@@ -40,7 +40,7 @@ public class CreateGroup extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		Idee idea = getIdeeFromSecurityChecks();
-		req.setAttribute("idea", idea);
+		req.setAttribute("idee", idea);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
@@ -70,7 +70,7 @@ public class CreateGroup extends AbstractIdea {
 
 		if (!errors.isEmpty()) {
 			request.setAttribute("errors", errors);
-			request.setAttribute("idea", idea);
+			request.setAttribute("idee", idea);
 			request.setAttribute("total", total);
 			request.setAttribute("amount", amountString);
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);

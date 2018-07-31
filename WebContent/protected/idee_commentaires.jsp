@@ -9,9 +9,8 @@
 		Le propriétaire de l'idée ne pourra donc rien voir de ce qu'il se passe ici !
 		</p>
 		<h2>Commenter une idée</h2>
-		<div>Rappel de l'idée
-			<p>${text}</p>
-		</div>
+		<h3>Rappel de l'idée</h3>
+		<t:template_une_idee />
 
 		<c:if test="${not empty success}">
 			Votre nouveau commentaire a bien été ajouté.
@@ -26,7 +25,7 @@
 							<label>Votre message</label>
 						</td>
 						<td>
-							<textarea id="text" name="text" cols="70" rows="6" required="required">${idea.text}</textarea>
+							<textarea id="text" name="text" cols="70" rows="6" required="required"></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -35,7 +34,7 @@
 						</td>
 					</tr>
 				</table>
-				<input type="hidden" name="idee" value="${idee}" />
+				<input type="hidden" name="idee" value="${idee.id}" />
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</div>

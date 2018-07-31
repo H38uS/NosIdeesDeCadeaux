@@ -6,10 +6,10 @@
 		<jsp:body>
 		<h2>Création d'un groupe</h2>
 		<div>
-			<c:if test="${not empty idea}">
+			<c:if test="${not empty idee}">
 				<form action="protected/create_a_group" method="post" >
 					<table>
-						<input type="hidden" name="idee" value="${idea.id}">
+						<input type="hidden" name="idee" value="${idee.id}">
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 						<tr>
 							<td><label for="total">Montant minimum (environ) pour ce cadeau, en incluant ta participation</label></td>
@@ -26,9 +26,10 @@
 						</tr>
 					</table>
 				</form>
-				<div>Le text de l'idée : ${idea.text}</div>
+				<h2>Rappel de l'idée</h2>
+				<t:template_une_idee />
 			</c:if>
-			<c:if test="${empty idea}">
+			<c:if test="${empty idee}">
 				L'idée sur laquelle vous souhaitez créer un groupe n'existe pas, ou vous n'avez pas les droits pour le faire.
 			</c:if>
 		</div>

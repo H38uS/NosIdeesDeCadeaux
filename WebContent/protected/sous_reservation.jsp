@@ -6,10 +6,10 @@
 		<jsp:body>
 		<h2>Réservation d'une partie de l'idée</h2>
 		<div>
-			<c:if test="${not empty idea}">
+			<c:if test="${not empty idee}">
 				<form action="protected/sous_reserver" method="post" >
 					<table>
-						<input type="hidden" name="idee" value="${idea.id}">
+						<input type="hidden" name="idee" value="${idee.id}">
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 						<tr>
 							<td><label for="comment">Commentaire de la réservation</label></td>
@@ -24,9 +24,10 @@
 						</tr>
 					</table>
 				</form>
-				<div>Le text de l'idée : <br/>${idea.text}</div>
+				<h2>Rappel de l'idée</h2>
+				<t:template_une_idee />
 			</c:if>
-			<c:if test="${empty idea}">
+			<c:if test="${empty idee}">
 				L'idée que vous souhaitez réserver n'existe pas, ou vous n'avez pas les droits pour le faire.
 			</c:if>
 		</div>

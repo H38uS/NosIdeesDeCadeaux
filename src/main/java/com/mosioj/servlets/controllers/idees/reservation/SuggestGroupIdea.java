@@ -71,7 +71,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		potentialGroupUser.removeAll(removable);
 
 		request.setAttribute("candidates", potentialGroupUser);
-		request.setAttribute("idea", idea);
+		request.setAttribute("idee", idea);
 		request.setAttribute("group", group);
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);

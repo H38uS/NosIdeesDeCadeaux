@@ -87,13 +87,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// FIXME : 1 faire un template pour une idée, et le mettre dans les aperçus
-	// Attention !!!
-	// ==> il reste un identic_call_back, à voir si c'est géré...
-	// ==> il manque quand on crée une sous réservation, quand on crée un groupe
-	// ==> pour les questions et commentaire faut faire gaffe au template
-	// manque le lien "sa liste" dans le détail de la sous réservation
-	
 	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
 	
 	// FIXME : 2 supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève + revoir celle qui dépende user_id et idea_id

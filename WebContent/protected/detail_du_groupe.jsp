@@ -5,9 +5,7 @@
 <t:normal_protected>
 		<jsp:body>
 		<h2>L'idée ${idee.owner.myDName} - <a href="protected/voir_liste?id=${idee.owner.id}">Sa liste</a></h2>
-		<ul class="ideas_square_container">
-			<t:template_une_idee />
-		</ul>
+		<t:template_une_idee />
 		<h2>Détail du groupe</h2>
 		<div>
 			<c:if test="${not empty group}">

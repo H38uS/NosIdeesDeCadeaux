@@ -4,12 +4,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
 		<jsp:body>
-		<h2>Détail de la réservation partielle</h2>
+		<h2>Détail de la réservation partielle - <a href="protected/voir_liste?id=${idee.owner.id}">Liste ${idee.owner.myDName}</a></h2>
 		<div>
 			<h3>Le text de l'idée</h3>
-			<ul class="ideas_square_container">
-				<t:template_une_idee />
-			</ul>
+			<t:template_une_idee />
 		</div>
 		<div>
 			<h3>Les sous réservations existantes</h3>

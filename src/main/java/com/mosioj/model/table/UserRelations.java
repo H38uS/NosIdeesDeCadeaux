@@ -251,12 +251,8 @@ public class UserRelations extends Table {
 	 * @throws SQLException
 	 */
 	public boolean associationExists(int first, int second) throws SQLException {
-		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
-																TABLE_NAME,
-																FIRST_USER,
-																SECOND_USER),
-										first,
-										second);
+		String query = MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?", TABLE_NAME, FIRST_USER, SECOND_USER);
+		return getDb().doesReturnRows(query, first, second);
 	}
 
 	/**

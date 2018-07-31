@@ -31,7 +31,7 @@ public class SousReserverIdee extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		Idee idea = getIdeeFromSecurityChecks();
-		req.setAttribute("idea", idea);
+		req.setAttribute("idee", idea);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
 
@@ -40,7 +40,7 @@ public class SousReserverIdee extends AbstractIdea {
 
 		int userId = ParametersUtils.getUserId(request);
 		Idee idea = getIdeeFromSecurityChecks();
-		request.setAttribute("idea", idea);
+		request.setAttribute("idee", idea);
 
 		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {
 			RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", DetailSousReservation.URL, IDEA_ID_PARAM, idea.getId()), request, response);

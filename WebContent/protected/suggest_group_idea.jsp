@@ -41,7 +41,7 @@
 				Vous ne connaissez personne qui serait susceptible de participer à ce cadeau...
 			</c:if>
 			<h3>Rappel de l'idée</h3>
-			<div>${idea.text}</div>
+			<t:template_une_idee />
 			<h3>Détail de ce groupe</h3>
 			<div>
 				<div>Montant total souhaité : ${group.total}</div>
