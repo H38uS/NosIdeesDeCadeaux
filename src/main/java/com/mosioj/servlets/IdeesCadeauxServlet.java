@@ -78,8 +78,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// etc.
 	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
 
-	// FIXME : 1 retailler les images catégories en 80 px
-
 	// TODO : faire du javascript pour les discussions
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
