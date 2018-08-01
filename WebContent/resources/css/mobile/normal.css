@@ -410,3 +410,12 @@ td.idea_square_text {
 	-moz-border-radius: 0 0 7px 7px;
 	border-radius: 0 0 7px 7px;
 }
+
+/* *** Tables *** */
+td {
+	padding: 10px 5px 10px 5px;
+}
+
+
+
+

@@ -1,0 +1,58 @@
+@CHARSET "UTF-8";
+
+.indexbox {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+#middleindexbox {
+	text-align: center;
+	background: #8a8a8a;
+	padding: 1em;
+	color: white;
+}
+
+a:link, a:visited, a:active {
+	color: white;
+    text-decoration: none;	
+}
+
+/********************************/
+/* *** First letter colored *** */
+/********************************/
+
+.indexbox ul li a span {
+	display: block;
+	float:left;
+	padding: 0 2px;
+    margin-top: -20px;
+}
+
+.indexbox ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.indexbox ul li {
+	display: block;
+	width: 80%;
+	margin: 80px auto;
+}
+
+.indexbox ul li a {
+    padding: 80px;
+    background-color: #8a8a8a;
+    display: block;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 150%;
+    border: 5px solid white;
+}
+
+.indexbox ul li a:hover {
+    background-color: #353b43;
+    border: 5px solid black;
+}

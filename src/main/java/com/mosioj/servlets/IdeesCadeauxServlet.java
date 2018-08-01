@@ -78,10 +78,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// etc.
 	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
 
-	// FIXME : 2 retailler les images catégories en 80 px
-	// FIXME : 2 revoir les check box en mode mobile (exemple: rechercher personne)
-	// FIXME : 2 Mobile: revoir les pages login/error/acceuil
-	// FIXME : 2 Mobile: améliorer la vision mes amis / mon compte
+	// FIXME : 1 retailler les images catégories en 80 px
+	// FIXME : 1 Mobile: améliorer la vision mes amis / mon compte
 
 	// TODO : faire du javascript pour les discussions
 
@@ -90,7 +88,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
 	
 	// FIXME : 2 supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève + revoir celle qui dépende user_id et idea_id
-	// FIXME : remplir le gdoc
+	// FIXME : remplir le gdoc + historiser la base de test
 	
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?

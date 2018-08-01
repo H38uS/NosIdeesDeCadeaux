@@ -12,6 +12,7 @@
 			<c:when test="${is_mobile}">
 				<link rel="stylesheet" type="text/css" href="resources/css/mobile/layout.css" />
 				<link rel="stylesheet" type="text/css" href="resources/css/mobile/normal.css" />
+				<link rel="stylesheet" type="text/css" href="resources/css/mobile/forms.css" />
 			</c:when>
 			<c:otherwise>
 				<link rel="stylesheet" type="text/css" href="resources/css/normal/layout.css" />

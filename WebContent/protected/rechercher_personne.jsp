@@ -6,9 +6,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <t:template_head_includes>
 	<script src="resources/js/search.js" type="text/javascript"></script>
-	<c:if test="${is_mobile}">
-		<link rel="stylesheet" type="text/css" href="resources/css/mobile/forms.css" />
-	</c:if>
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>

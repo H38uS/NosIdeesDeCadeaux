@@ -35,11 +35,11 @@
 										<td>
 											<label for="selected_${suggestedUser.id}" >${suggestedUser.email}</label>
 										</td>
-										<td>
+										<td class="center">
 											<input type="checkbox" name="selected_${suggestedUser.id}" id="selected_${suggestedUser.id}" />
 											<span class="checkbox"></span>
 										</td>
-										<td>
+										<td class="center">
 											<input type="checkbox" name="reject_${suggestedUser.id}" id="reject_${suggestedUser.id}" />
 											<span class="checkbox"></span>
 										</td>
