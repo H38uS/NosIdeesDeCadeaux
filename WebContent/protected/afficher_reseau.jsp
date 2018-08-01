@@ -58,7 +58,7 @@
 			</ul>
 		</c:if>
 		<c:if test="${not empty demandes}">
-			<div class="login_form">
+			<div class="default_form">
 				<h2>Demandes reçues</h2>
 				<form method="POST" action="protected/afficher_reseau">
 					<table>

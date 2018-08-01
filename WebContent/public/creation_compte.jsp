@@ -6,7 +6,7 @@
 
 <t:normal_public_recaptcha>
 	<jsp:body>
-		<div class="login_form">
+		<div class="default_form">
 			<h2 class="fl_yellow">Création de compte</h2>
 			<div>
 				<form method="POST" action="creation_compte">

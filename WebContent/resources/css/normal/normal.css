@@ -1,7 +1,7 @@
 /*******************************/
 /* *** Formulaire de login *** */
 /*******************************/
-.login_form {
+.default_form {
 	background-color: #8a8a8a;
 	color: white;
 	width: 700px;
@@ -10,11 +10,11 @@
 	padding: 20px 50px;
 }
 
-.login_form table {
+.default_form table {
 	width: 100%;
 }
 
-.login_form a.button {
+.default_form a.button {
 	display: block;
 	width: 100%;
 	background-color: #c0c0c0;
@@ -27,7 +27,7 @@
 	border: 1px solid #ccc;
 }
 
-.login_form a.button:hover {
+.default_form a.button:hover {
 	background: #353b43;
 	color: white;
 	text-decoration: none;

@@ -3,7 +3,7 @@
 <%@taglib  uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 <t:normal_public>
 	<jsp:body>
-		<div class="login_form">
+		<div class="default_form">
 			<h2 class="fl_yellow">Réinitialisation du mot de passe</h2>
 			<div>
 				<form method="POST" action="public/reinitialiser_mot_de_passe">

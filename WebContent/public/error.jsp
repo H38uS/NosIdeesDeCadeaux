@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <t:normal_public>
 	<jsp:body>
-		<div class="login_form">
+		<div class="default_form">
 			<h2 class="fl_yellow">Identification</h2>
 			<div>
 				<form method="POST" action="login">

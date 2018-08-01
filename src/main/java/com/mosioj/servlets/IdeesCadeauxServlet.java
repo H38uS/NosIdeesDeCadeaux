@@ -79,7 +79,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
 
 	// FIXME : 1 retailler les images catégories en 80 px
-	// FIXME : 1 Mobile: améliorer la vision mes amis / mon compte
 
 	// TODO : faire du javascript pour les discussions
 
@@ -99,6 +98,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 	
 	// TODO stocker l'objet User quand on se connecte
+	
+	// TODO : quand on clique sur compléter ma liste, n'afficher que le formulaire. Quand on veut sa liste, on la recherche !
+	// TODO : ajouter l'année dans les dates ? Réservations, mise à jour...
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

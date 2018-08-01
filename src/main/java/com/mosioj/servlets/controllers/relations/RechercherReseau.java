@@ -84,7 +84,6 @@ public class RechercherReseau extends AbstractListes<Relation> {
 		int userId = ParametersUtils.getUserId(request);
 
 		// Ajout du flag network
-		// TODO : tout faire en SQL ?
 		for (Relation r : relations) {
 			if (userRelations.associationExists(r.getSecond().id, userId)) {
 				r.secondIsInMyNetwork = true;

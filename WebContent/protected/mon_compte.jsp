@@ -13,7 +13,7 @@
 <t:template_body_protected>
 	<jsp:body>
 	
-	<div class="login_form">
+	<div class="default_form">
 		<h2>Informations générales</h2>
 	
 		<form id="form_main_change_mon_compte" action="protected/mon_compte?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
@@ -168,37 +168,75 @@
 	</p>
 	
 	<h2>Type de notifications</h2>
-	<table>
-		<c:forEach var="notif" items="${notif_types}">
-			<form action="protected/update_notification_parameter" method="post">
-				<tr>
-					<td>
-						<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
-					</td>
-					<td style="padding:0 20px;" >
-						<select id="value_${notif.parameterName}" name="value">
-							<c:forEach var="value" items="${possible_values}">
-								<c:choose>
-									<c:when test="${value == notif.parameterValue}">
-										<option selected="selected" value="${value}">${value}</option>
-									</c:when>
-									<c:otherwise>
-										<option value="${value}">${value}</option>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-						</select>
-					</td>
-					<td>
-						<input type="hidden" name="id" value="${notif.id}">
-						<input type="hidden" name="name" value="${notif.parameterName}">
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-						<input type="submit" class="notification_form_submit" value="Sauvegarder">
-					</td>
-				</tr>
-			</form>
-		</c:forEach>
-	</table>
+	
+	<c:choose>
+		<c:when test="${is_mobile}">
+			<c:forEach var="notif" items="${notif_types}">
+				<div class="default_form">
+					<form action="protected/update_notification_parameter" method="post">
+						<tr>
+							<td>
+								<label for="${notif.parameterName}_value" class="notif_param_desc">${notif.parameterDescription}</label>
+							</td>
+							<td style="padding:0 20px;" >
+								<select id="value_${notif.parameterName}" name="value">
+									<c:forEach var="value" items="${possible_values}">
+										<c:choose>
+											<c:when test="${value == notif.parameterValue}">
+												<option selected="selected" value="${value}">${value}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${value}">${value}</option>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</select>
+							</td>
+							<td>
+								<input type="hidden" name="id" value="${notif.id}">
+								<input type="hidden" name="name" value="${notif.parameterName}">
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<input type="submit" class="notification_form_submit" value="Sauvegarder">
+							</td>
+						</tr>
+					</form>
+				</div>
+			</c:forEach>
+		</c:when>
+		<c:otherwise>
+			<table>
+				<c:forEach var="notif" items="${notif_types}">
+					<form action="protected/update_notification_parameter" method="post">
+						<tr>
+							<td>
+								<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
+							</td>
+							<td style="padding:0 20px;" >
+								<select id="value_${notif.parameterName}" name="value">
+									<c:forEach var="value" items="${possible_values}">
+										<c:choose>
+											<c:when test="${value == notif.parameterValue}">
+												<option selected="selected" value="${value}">${value}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${value}">${value}</option>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</select>
+							</td>
+							<td>
+								<input type="hidden" name="id" value="${notif.id}">
+								<input type="hidden" name="name" value="${notif.parameterName}">
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<input type="submit" class="notification_form_submit" value="Sauvegarder">
+							</td>
+						</tr>
+					</form>
+				</c:forEach>
+			</table>
+		</c:otherwise>
+	</c:choose>
 	
 </jsp:body>
 </t:template_body_protected>
