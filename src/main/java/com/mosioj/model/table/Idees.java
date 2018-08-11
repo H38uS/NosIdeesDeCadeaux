@@ -615,6 +615,18 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void remove(int idea) throws SQLException {
+		try {
+			int nb = getDb().executeUpdate(	MessageFormat.format(	"insert into IDEES_HIST select * from {0} where {1} = ?",
+																	TABLE_NAME,
+																	ID),
+											idea);
+			if (nb != 1) {
+				logger.warn(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}", nb, idea));
+			} else {
+				getDb().executeUpdate(	MessageFormat.format("update IDEES_HIST set {0} = now() where {1} = ?", MODIFICATION_DATE, ID), idea);
+			}
+		} catch (Exception e) {
+		}
 		toutDereserver(idea);
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", Comments.TABLE_NAME, CommentsColumns.IDEA_ID),
 								idea);

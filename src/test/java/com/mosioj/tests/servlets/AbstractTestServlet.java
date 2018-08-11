@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import org.junit.BeforeClass;
 import org.springframework.mobile.device.Device;
 
+import com.mosioj.model.table.Idees;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.compte.CreationCompte;
 import com.mosioj.tests.TemplateTest;
@@ -41,6 +42,8 @@ public abstract class AbstractTestServlet extends TemplateTest {
 
 	protected final IdeesCadeauxServlet instance;
 	protected static DataSourceIdKDo ds;
+	
+	protected final Idees idees = new Idees();
 
 	@BeforeClass
 	public static void init() throws NamingException, SQLException, NoRowsException {
