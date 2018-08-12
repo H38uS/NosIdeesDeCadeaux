@@ -1,7 +1,9 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,12 +38,23 @@ public class ConfirmationEstAJour extends AbstractIdea {
 
 		Idee idea = getIdeeFromSecurityChecks();
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
+		Set<Integer> ids = new HashSet<>();
 		for (AbstractNotification notification : notifications) {
 			if (notification instanceof NotifAskIfIsUpToDate) {
 				NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
 				notif.addNotification(	isUpToDate.getUserIdParam(),
 				                      	new NotifConfirmedUpToDate(users.getUser(ParametersUtils.getUserId(req)), idea));
 				notif.remove(notification.id);
+				ids.add(isUpToDate.getUserIdParam());
+			}
+		}
+		for (AbstractNotification notification : notifications) {
+			// Deletes old confirmation notifications
+			if (notification instanceof NotifConfirmedUpToDate) {
+				NotifConfirmedUpToDate confirmed = (NotifConfirmedUpToDate) notification;
+				if (ids.contains(confirmed.owner)) {
+					notif.remove(notification.id);
+				}
 			}
 		}
 

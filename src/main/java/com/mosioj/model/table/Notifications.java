@@ -71,9 +71,10 @@ public class Notifications extends Table {
 	 * 
 	 * @param userId The user id that will receive this notification.
 	 * @param notif The notification.
+	 * @return The id of the notification created, or -1 if none were created.
 	 * @throws SQLException
 	 */
-	public void addNotification(int userId, AbstractNotification notif) throws SQLException {
+	public int addNotification(int userId, AbstractNotification notif) throws SQLException {
 
 		logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
 		NotificationActivation activation = getActivationType(userId, notif);
@@ -130,6 +131,8 @@ public class Notifications extends Table {
 												userId);
 			notif.sendEmail(email, urlTillProtectedPublic);
 		}
+		
+		return id;
 	}
 
 	/**

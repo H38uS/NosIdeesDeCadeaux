@@ -1,6 +1,7 @@
 package com.mosioj.tests.servlets.instance;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import org.junit.Test;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.table.GroupIdea;
+import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.controllers.idees.modification.RemoveOneIdea;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
@@ -59,6 +61,23 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 		assertEquals(0, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
 		assertEquals(0, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
+	}
+	
+	@Test
+	public void testUnderlyingNotificationAreWellRemoved() throws SQLException, ServletException, IOException {
+
+		int id = idees.addIdea(_OWNER_ID_, "generated", "", 0, null, null);
+		assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
+		
+		int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idees.getIdea(id)));
+		assertTrue(notifId > -1);
+		assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+		
+		// Suppression
+		when(request.getParameter(RemoveOneIdea.IDEE_ID_PARAM)).thenReturn(id+"");
+		doTestPost(request, response);
+
+		assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
 	}
 
 }

@@ -22,7 +22,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 
 	/**
 	 * 
-	 * @param askedUser
+	 * @param askedUser User who asked whether this idea is up to date or not.
 	 * @param idea
 	 */
 	public NotifAskIfIsUpToDate(User askedUser, Idee idea) {
