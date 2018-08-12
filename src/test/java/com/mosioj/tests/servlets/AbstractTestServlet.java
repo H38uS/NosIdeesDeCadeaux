@@ -51,6 +51,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(session.getAttributeNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
 		when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
 		when(request.getAttribute("device")).thenReturn(device);
+		when(request.getRequestDispatcher("/protected/erreur_parametre_ou_droit.jsp")).thenReturn(dispatcher);
 
 		instance = pInstance;
 		instance.setIdeaPicturePath(new File("C:\\temp"));

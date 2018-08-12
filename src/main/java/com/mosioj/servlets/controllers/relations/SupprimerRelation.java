@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
+import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
@@ -18,7 +21,7 @@ import com.mosioj.utils.RootingsUtils;
 public class SupprimerRelation extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = 2491763819457048609L;
-	private static final String USER_PARAMETER = "id";
+	public static final String USER_PARAMETER = "id";
 
 	public SupprimerRelation() {
 		super(new NetworkAccess(userRelations, USER_PARAMETER));
@@ -32,17 +35,30 @@ public class SupprimerRelation extends IdeesCadeauxServlet {
 
 		// Drops it
 		userRelations.deleteAssociation(user, currentId);
-		
+		for (AbstractNotification n : notif.getNotifications(	currentId,
+																NotificationType.ACCEPTED_FRIENDSHIP,
+																ParameterName.USER_ID,
+																user)) {
+			notif.remove(n.id);
+		}
+		for (AbstractNotification n : notif.getNotifications(	user,
+																NotificationType.ACCEPTED_FRIENDSHIP,
+																ParameterName.USER_ID,
+																currentId)) {
+			notif.remove(n.id);
+		}
+
 		// Send a notification
 		User me = users.getUser(currentId);
 		notif.addNotification(user, new NotifFriendshipDropped(currentId, me.name));
-		
-		RootingsUtils.redirectToPage(AfficherReseau.URL + "?id=" + currentId, req, resp);
+
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, req, resp); // TODO faire ça dans le
+																								// post plutôt
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(AfficherReseau.URL + "?id=" + ParametersUtils.getUserId(request), request, response);
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
 	}
 
 }

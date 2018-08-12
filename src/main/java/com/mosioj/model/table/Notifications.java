@@ -131,7 +131,7 @@ public class Notifications extends Table {
 												userId);
 			notif.sendEmail(email, urlTillProtectedPublic);
 		}
-		
+
 		return id;
 	}
 
@@ -382,6 +382,30 @@ public class Notifications extends Table {
 	 */
 	public List<AbstractNotification> getUserUnReadNotifications(int userId) throws SQLException {
 		return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", OWNER, IS_UNREAD), userId, "Y");
+	}
+
+	/**
+	 * 
+	 * @param owner
+	 * @param type
+	 * @param parameterName
+	 * @param parameterValue
+	 * @return The list of notification having the given parameter name equals to this value.
+	 * @throws SQLException
+	 */
+	public List<AbstractNotification> getNotifications(	int owner,
+														NotificationType type,
+														ParameterName parameterName,
+														Object parameterValue) throws SQLException {
+		String whereClause = MessageFormat.format(	" exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?) and {5} = ? and {6} = ?",
+													TABLE_PARAMS,
+													NOTIFICATION_ID,
+													ID,
+													PARAMETER_NAME,
+													PARAMETER_VALUE,
+													OWNER,
+													TYPE);
+		return getNotificationWithWhereClause(whereClause, parameterName, parameterValue, owner, type);
 	}
 
 	/**

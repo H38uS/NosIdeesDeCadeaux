@@ -117,7 +117,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * Interface vers la table USER_RELATION_REQUESTS.
 	 */
-	protected UserRelationRequests userRelationRequests;
+	protected static UserRelationRequests userRelationRequests = new UserRelationRequests();;
 
 	/**
 	 * Interface vers la table USERS.
@@ -193,7 +193,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @param policy The security policy defining whether we can interact with the parameters, etc.
 	 */
 	public IdeesCadeauxServlet(SecurityPolicy policy) {
-		userRelationRequests = new UserRelationRequests();
 		users = new Users();
 		categories = new Categories();
 		priorities = new Priorites();

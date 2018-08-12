@@ -2,36 +2,29 @@ package com.mosioj.servlets.controllers.relations;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.servlet.http.HttpSession;
 
 import com.mosioj.model.Relation;
 import com.mosioj.model.User;
-import com.mosioj.notifications.NotificationType;
-import com.mosioj.notifications.instance.NotifDemandeAcceptee;
-import com.mosioj.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
+import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_reseau")
 public class AfficherReseau extends AbstractListes<Relation> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
-	private static final Logger logger = LogManager.getLogger(AfficherReseau.class);
 
-	private static final String USER_ID_PARAM = "id";
-	public static final String URL = "/protected/afficher_reseau";
+	public static final String USER_ID_PARAM = "id";
+	public static final String SELF_VIEW = "/protected/afficher_reseau";
 	public static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
 
 	/**
@@ -42,68 +35,35 @@ public class AfficherReseau extends AbstractListes<Relation> {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer user = ParametersUtils.readInt(req, USER_ID_PARAM);
-		int userId = ParametersUtils.getUserId(req);
+		Integer user = ParametersUtils.readInt(request, USER_ID_PARAM);
+		int userId = ParametersUtils.getUserId(request);
 
 		if (userId == user) {
 			// Uniquement sur notre compte
-			req.setAttribute("demandes", userRelationRequests.getRequests(userId));
-			req.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
+			request.setAttribute("demandes", userRelationRequests.getRequests(userId));
+			request.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
 
-		req.setAttribute("id", user);
-		req.setAttribute("name", users.getUser(user).name);
+		request.setAttribute("id", user);
+		request.setAttribute("name", users.getUser(user).name);
 
-		super.ideesKDoGET(req, resp);
+		HttpSession session = request.getSession();
+		request.setAttribute("notif_count", session.getAttribute("notif_count"));
+		request.setAttribute("accepted", session.getAttribute("accepted"));
+
+		super.ideesKDoGET(request, response);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-
-		int userId = ParametersUtils.getUserId(request);
-		User user = users.getUser(userId);
-
-		List<User> accepted = new ArrayList<User>();
-		Map<String, String[]> params = request.getParameterMap();
-		for (String key : params.keySet()) {
-
-			if (!key.startsWith("choix")) {
-				continue;
-			}
-
-			int fromUserId = Integer.parseInt(key.substring("choix_".length()));
-			if (!userRelationRequests.associationExists(fromUserId, userId)) {
-				// On ne traite que les demandes réellement envoyées...
-				continue;
-			}
-
-			boolean accept = "Accepter".equals(params.get(key)[0]);
-
-			if (accept) {
-				logger.info(MessageFormat.format(	"Approbation de la demande par {0} de l'utilisateur {1}.",
-													userId,
-													key.substring("choix_".length())));
-				userRelations.addAssociation(fromUserId, userId);
-				userRelationRequests.cancelRequest(fromUserId, userId);
-				accepted.add(users.getUser(fromUserId));
-				notif.addNotification(fromUserId, new NotifDemandeAcceptee(user.id, user.name));
-			} else {
-				logger.info(MessageFormat.format(	"Refus de la demande par {0} de l'utilisateur {1}.",
-													userId,
-													key.substring("choix_".length())));
-				userRelationRequests.cancelRequest(fromUserId, userId);
-				notif.addNotification(fromUserId, new NotifDemandeRefusee(user.id, user.name));
-			}
-		}
-		notif.removeAllType(userId, NotificationType.NEW_FRIENSHIP_REQUEST);
-		int count = notif.getUserNotificationCount(userId);
-		request.setAttribute("notif_count", count);
-
-		// Redirection à la page d'administration
-		request.setAttribute("accepted", accepted);
-		ideesKDoGET(request, response);
+		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
+																SELF_VIEW,
+																USER_ID_PARAM,
+																ParametersUtils.readInt(request, USER_ID_PARAM)),
+										request,
+										response);
 	}
 
 	@Override
@@ -113,7 +73,7 @@ public class AfficherReseau extends AbstractListes<Relation> {
 
 	@Override
 	protected String getCallingURL() {
-		return URL.substring(1);
+		return SELF_VIEW.substring(1);
 	}
 
 	@Override

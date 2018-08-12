@@ -60,7 +60,7 @@
 		<c:if test="${not empty demandes}">
 			<div class="default_form">
 				<h2>Demandes reçues</h2>
-				<form method="POST" action="protected/afficher_reseau">
+				<form method="POST" action="protected/resoudre_demande_ami">
 					<table>
 						<thead>
 							<tr>
