@@ -14,6 +14,8 @@ import org.junit.Test;
 import com.mosioj.model.Idee;
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
+import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.controllers.idees.modification.RemoveOneIdea;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
@@ -69,15 +71,22 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		int id = idees.addIdea(_OWNER_ID_, "generated", "", 0, null, null);
 		assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 		
-		int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idees.getIdea(id)));
-		assertTrue(notifId > -1);
-		assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+		int isUpToDate = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idees.getIdea(id)));
+		int confirmedUpToDate = notif.addNotification(_FRIEND_ID_, new NotifConfirmedUpToDate(firefox, idees.getIdea(id)));
+		int groupSuggestion = notif.addNotification(_FRIEND_ID_, new NotifGroupSuggestion(firefox, 0, idees.getIdea(id)));
+
+		assertTrue(isUpToDate > -1);
+		assertNotifDoesExists(isUpToDate);
+		assertNotifDoesExists(confirmedUpToDate);
+		assertNotifDoesExists(groupSuggestion);
 		
 		// Suppression
 		when(request.getParameter(RemoveOneIdea.IDEE_ID_PARAM)).thenReturn(id+"");
 		doTestPost(request, response);
 
-		assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+		assertNotifDoesNotExists(isUpToDate);
+		assertNotifDoesNotExists(confirmedUpToDate);
+		assertNotifDoesNotExists(groupSuggestion);
 	}
 
 }

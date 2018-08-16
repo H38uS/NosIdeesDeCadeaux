@@ -27,7 +27,7 @@ public class GroupIdea extends Table {
 	 * 
 	 * @param total
 	 * @param amount
-	 * @param userId
+	 * @param userId First user belonging to this new group.
 	 * @return
 	 * @throws SQLException
 	 */

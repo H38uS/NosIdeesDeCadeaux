@@ -31,10 +31,10 @@ public class GroupIdeaDetails extends AbstractIdea {
 	private static final long serialVersionUID = -2188278918134412556L;
 	private static final Logger logger = LogManager.getLogger(GroupIdeaDetails.class);
 
-	private static final String GROUP_ID_PARAM = "groupid";
+	public static final String GROUP_ID_PARAM = "groupid";
 
 	public static final String VIEW_PAGE_URL = "/protected/detail_du_groupe.jsp";
-	public static final String GET_PAGE_URL = "/protected/detail_du_groupe?groupid=";
+	public static final String GET_PAGE_WITH_GROUP_ID = "/protected/detail_du_groupe?groupid=";
 
 	/**
 	 * Class constructor.
@@ -115,7 +115,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 			}
 		}
 
-		RootingsUtils.redirectToPage(GET_PAGE_URL + groupId, request, response);
+		RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + groupId, request, response);
 	}
 
 }

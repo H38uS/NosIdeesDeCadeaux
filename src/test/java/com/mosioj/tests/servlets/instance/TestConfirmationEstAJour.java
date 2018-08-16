@@ -1,6 +1,5 @@
 package com.mosioj.tests.servlets.instance;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -30,13 +29,13 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
 		Idee idee = idees.getIdea(id);
 		
 		int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
-		assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+		assertNotifDoesExists(notifId);
 
 		when(request.getRequestDispatcher(MyNotifications.URL)).thenReturn(dispatcher);
 		when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id+"");
 		doTestGet(request, response);
 
-		assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+		assertNotifDoesNotExists(notifId);
 	}
 
 }

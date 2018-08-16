@@ -15,6 +15,7 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 
 import com.mosioj.model.User;
+import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.UserParameters;
@@ -50,6 +51,12 @@ public class TemplateTest {
 	 * test@toto.com
 	 */
 	protected User friendOfFirefox;
+	protected User firefox;
+
+	/**
+	 * moiautre@toto.com
+	 */
+	protected User moiAutre;
 
 	protected final Idees idees = new Idees();
 	protected final Users users = new Users();
@@ -57,12 +64,15 @@ public class TemplateTest {
 	protected final Notifications notif = new Notifications();
 	protected final UserRelations userRelations = new UserRelations();
 	protected final UserRelationRequests userRelationRequests = new UserRelationRequests();
+	protected final GroupIdea groupIdea = new GroupIdea();
 	
 	protected static DataSourceIdKDo ds;
 	
 	public TemplateTest() {
 		try {
-			friendOfFirefox = users.getUser(_FRIEND_ID_);
+			friendOfFirefox = users.getUser(_OWNER_ID_);
+			firefox = users.getUser(_FRIEND_ID_);
+			moiAutre = users.getUser(_MOI_AUTRE_);
 		} catch (SQLException e) {
 			fail("Fail to retrieve the friend of Firefox");
 		}
@@ -107,5 +117,13 @@ public class TemplateTest {
 		LOGGER.info(sb);
 		System.out.println();
 		System.out.println();
+	}
+
+	protected void assertNotifDoesNotExists(int notifId) throws SQLException {
+		assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+	}
+
+	protected void assertNotifDoesExists(int notifId) throws SQLException {
+		assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
 	}
 }

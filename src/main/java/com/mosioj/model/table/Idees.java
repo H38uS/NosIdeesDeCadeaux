@@ -350,6 +350,8 @@ public class Idees extends Table {
 	 */
 	public int addIdea(int ownerId, String text, String type, int priorite, String image, User surprisePar) throws SQLException {
 
+		type = type == null ? "" : type;
+		
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
 		insert.append(TABLE_NAME);

@@ -1,6 +1,5 @@
 package com.mosioj.tests.servlets.instance;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -52,8 +51,8 @@ public class TestResoudreDemandeAmi extends AbstractTestServlet {
 		// Ajout des notifs
 		int n1 = notif.addNotification(_OWNER_ID_, new NotifDemandeRefusee(_MOI_AUTRE_, "Moi Autre"));
 		int n2 = notif.addNotification(_MOI_AUTRE_, new NotifFriendshipDropped(_OWNER_ID_, "Firefox"));
-		assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", n1));
-		assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", n2));
+		assertNotifDoesExists(n1);
+		assertNotifDoesExists(n2);
 		
 		// Ajout de la demande d'ami
 		userRelationRequests.insert(_MOI_AUTRE_, _OWNER_ID_);
@@ -65,8 +64,8 @@ public class TestResoudreDemandeAmi extends AbstractTestServlet {
 		doTestPost(request, response);
 
 		assertTrue(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
-		assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", n1));
-		assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", n2));
+		assertNotifDoesNotExists(n1);
+		assertNotifDoesNotExists(n2);
 	}
 
 }

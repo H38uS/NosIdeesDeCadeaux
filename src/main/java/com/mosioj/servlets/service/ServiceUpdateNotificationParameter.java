@@ -36,6 +36,8 @@ public class ServiceUpdateNotificationParameter extends AbstractService {
 		int userId = ParametersUtils.getUserId(request);
 		String name = request.getParameter("name");
 		String value = request.getParameter("value");
+		// FIXME : 0 get parameter attention !!! utiliser parametersUtils
+		// FIXME : 0 vérifier le contenu...
 		
 		if (name != null && value != null) {
 			userParameters.insertUpdateParameter(userId, name, value);

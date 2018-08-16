@@ -35,7 +35,7 @@ public class TestModifyIdea extends AbstractTestServlet {
 		assertFalse(newText.equals(idee.text));
 		
 		int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
-		assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+		assertNotifDoesExists(notifId);
 		
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("text", newText);
@@ -47,7 +47,7 @@ public class TestModifyIdea extends AbstractTestServlet {
 
 		idee = idees.getIdea(id);
 		assertEquals(newText, idee.text);
-		assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+		assertNotifDoesNotExists(notifId);
 	}
 
 }

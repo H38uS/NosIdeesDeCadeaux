@@ -40,7 +40,7 @@ public class DereserverIdee extends AbstractIdea {
 		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea, userId));
 		idees.dereserver(idea, userId);
 
-		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp);
+		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp); // TODO doit être fait en post
 	}
 
 	@Override

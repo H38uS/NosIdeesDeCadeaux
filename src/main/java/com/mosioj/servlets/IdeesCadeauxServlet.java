@@ -73,6 +73,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
 	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS (i.e. recharger l'idée)
+	// FIXME : 0 rejoindre un groupe en mode pc : moche !!
+	// FIXME : 0 quand on annule, on ne revient pas sur le groupe ?
 
 	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe
 	// etc.
@@ -84,8 +86,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
 	
-	// FIXME : 2 supprimer les notifications lorsque l'on fait l'action : on consulte la liste, idée supprimée on enlève + revoir celle qui dépende user_id et idea_id
-	// FIXME : remplir le gdoc + historiser la base de test
+	// FIXME : 4 voir pour elastic search :)
+	// FIXME : 5 remplir le gdoc + historiser la base de test
 	
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?

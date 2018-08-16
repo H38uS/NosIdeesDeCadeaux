@@ -33,7 +33,7 @@ public class ConfirmationEstAJour extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER);
+		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER); // TODO faire ça dans le post plutôt
 		idees.touch(id);
 
 		Idee idea = getIdeeFromSecurityChecks();
