@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
+import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
@@ -24,7 +26,7 @@ public class IdeaComments extends IdeesCadeauxServlet {
 	private static final long serialVersionUID = -433226623397937479L;
 	public static final String IDEA_ID_PARAM = "idee";
 	public static final String VIEW_PAGE_URL = "/protected/idee_commentaires.jsp";
-	public static final String URL = "/protected/idee_commentaires";
+	public static final String WEB_SERVLET = "/protected/idee_commentaires";
 
 	public IdeaComments() {
 		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
@@ -37,11 +39,23 @@ public class IdeaComments extends IdeesCadeauxServlet {
 		req.setAttribute("comments", comments.getCommentsOn(id));
 	}
 
+	/**
+	 * Drops all notification linked to questions of the given owner links to the given idea.
+	 * 
+	 * @param ownerId
+	 * @param ideaId
+	 * @throws SQLException
+	 */
+	private void dropNotificationOnView(int ownerId, int ideaId) throws SQLException {
+		notif.removeAllType(ownerId, NotificationType.NEW_COMMENT_ON_IDEA, ParameterName.IDEA_ID, ideaId);
+	}
+
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		Integer id = ParametersUtils.readInt(req, IDEA_ID_PARAM);
-		insertMandatoryParams(req, id);
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		insertMandatoryParams(request, id);
+		dropNotificationOnView(ParametersUtils.getUserId(request), id);
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
 	@Override
@@ -51,7 +65,7 @@ public class IdeaComments extends IdeesCadeauxServlet {
 		String text = ParametersUtils.readAndEscape(request, "text");
 
 		int userId = ParametersUtils.getUserId(request);
-		comments.saveComment(userId, id, text);
+		comments.addComment(userId, id, text);
 		Idee idea = idees.getIdea(id);
 
 		Set<User> toBeNotified = new HashSet<User>();
@@ -62,7 +76,7 @@ public class IdeaComments extends IdeesCadeauxServlet {
 
 		// Notifying at least all people in the thread
 		toBeNotified.addAll(comments.getUserListOnComment(idea.getId()));
-		
+
 		// Removing current user, and notifying others
 		toBeNotified.remove(current);
 
@@ -71,8 +85,9 @@ public class IdeaComments extends IdeesCadeauxServlet {
 		}
 
 		insertMandatoryParams(request, id);
+		dropNotificationOnView(ParametersUtils.getUserId(request), id);
 		request.setAttribute("success", true);
-		RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", URL, IDEA_ID_PARAM, id), request, response);
+		RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", WEB_SERVLET, IDEA_ID_PARAM, id), request, response);
 	}
 
 }

@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.ParameterName;
+import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
@@ -22,7 +25,7 @@ public class ReserverIdee extends AbstractIdea {
 
 	private static final Logger logger = LogManager.getLogger(ReserverIdee.class);
 	private static final long serialVersionUID = 7349100644264613480L;
-	private static final String IDEA_ID_PARAM = "idee";
+	public static final String IDEA_ID_PARAM = "idee";
 
 	/**
 	 * Class constructor
@@ -40,6 +43,11 @@ public class ReserverIdee extends AbstractIdea {
 
 		if (idees.canBook(idea, userId)) {
 			idees.reserver(idea, userId);
+			for (AbstractNotification n : notif.getNotification(ParameterName.IDEA_ID, idea)) {
+				if (n instanceof NotifRecurentIdeaUnbook) {
+					notif.remove(n.id);
+				}
+			}
 		}
 
 		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, response);

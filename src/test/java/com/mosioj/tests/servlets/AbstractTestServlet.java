@@ -113,9 +113,9 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	protected void doTestGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doTestGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		when(request.getMethod()).thenReturn("GET");
-		instance.doGet(req, resp);
+		instance.doGet(request, response);
 	}
 
 	protected void createMultiPartRequest(Map<String,String> parameters) throws IOException {

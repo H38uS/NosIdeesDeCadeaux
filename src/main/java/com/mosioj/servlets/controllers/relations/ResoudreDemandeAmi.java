@@ -94,7 +94,13 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet {
 			toBeRemoved.addAll(notif.getNotifications(userId, NotificationType.REJECTED_FRIENDSHIP, ParameterName.USER_ID, fromUserId));
 			// Si userId avait supprimé sa relation avec fromUserId
 			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.REJECTED_FRIENDSHIP, ParameterName.USER_ID, userId));
-
+			
+			// Suppression des suggestions d'amitiés entre ces deux personnes
+			toBeRemoved.addAll(notif.getNotifications(userId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, fromUserId));
+			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userId));
+			
+			// Suppression des demandes d'amis
+			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.NEW_FRIENSHIP_REQUEST, ParameterName.USER_ID, userId));
 		}
 		
 		for (AbstractNotification n : toBeRemoved) {
@@ -104,7 +110,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet {
 		notif.removeAllType(userId, NotificationType.NEW_FRIENSHIP_REQUEST);
 		int count = notif.getUserNotificationCount(userId);
 		HttpSession session = request.getSession();
-		session.setAttribute("notif_count", count);
+		session.setAttribute("notif_count", count); // FIXME 0 : le faire en fin de get/post à chaque fois ?
 
 		// Redirection à la page d'administration
 		session.setAttribute("accepted", accepted);

@@ -13,6 +13,12 @@ public class NotifNouvelleDemandeAmi extends AbstractNotification {
 	private String userName;
 	private int toUserID;
 
+	/**
+	 * 
+	 * @param fromUser L'utilisateur qui souhaite être ami avec toUserID
+	 * @param toUserID La personne à qui on demande d'être ami
+	 * @param userName Le nom de fromUser
+	 */
 	public NotifNouvelleDemandeAmi(int fromUser, int toUserID, String userName) {
 		super(NotificationType.NEW_FRIENSHIP_REQUEST);
 		this.userName = userName;

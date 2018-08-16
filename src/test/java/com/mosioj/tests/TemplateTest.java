@@ -15,9 +15,11 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 
 import com.mosioj.model.User;
+import com.mosioj.model.table.Comments;
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.Notifications;
+import com.mosioj.model.table.Questions;
 import com.mosioj.model.table.UserParameters;
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
@@ -65,6 +67,8 @@ public class TemplateTest {
 	protected final UserRelations userRelations = new UserRelations();
 	protected final UserRelationRequests userRelationRequests = new UserRelationRequests();
 	protected final GroupIdea groupIdea = new GroupIdea();
+	protected final Questions questions = new Questions();
+	protected final Comments comments = new Comments();
 	
 	protected static DataSourceIdKDo ds;
 	

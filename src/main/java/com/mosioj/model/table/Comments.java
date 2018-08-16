@@ -29,7 +29,7 @@ public class Comments extends Table {
 	 * @param text
 	 * @throws SQLException
 	 */
-	public void saveComment(int userId, Integer ideaId, String text) throws SQLException {
+	public void addComment(int userId, Integer ideaId, String text) throws SQLException {
 		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
 																	TABLE_NAME,
 																	IDEA_ID,

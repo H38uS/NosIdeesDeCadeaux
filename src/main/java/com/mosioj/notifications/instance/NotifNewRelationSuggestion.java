@@ -12,10 +12,15 @@ public class NotifNewRelationSuggestion extends AbstractNotification implements 
 
 	private String userName;
 	
-	public NotifNewRelationSuggestion(int fromUser, String userName) {
+	/**
+	 * 
+	 * @param suggestedUserId L'id de l'utilsateur qu'on suggère.
+	 * @param suggestor Le nom de l'utilisateur qui suggère la demande d'amitié.
+	 */
+	public NotifNewRelationSuggestion(int suggestedUserId, String suggestor) {
 		super(NotificationType.NEW_RELATION_SUGGESTION);
-		this.userName = userName;
-		params.put(ParameterName.USER_ID, fromUser);
+		this.userName = suggestor;
+		params.put(ParameterName.USER_ID, suggestedUserId);
 	}
 
 	public NotifNewRelationSuggestion(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> params) {

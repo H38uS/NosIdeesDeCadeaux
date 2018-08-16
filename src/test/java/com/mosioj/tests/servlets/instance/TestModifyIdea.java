@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.mosioj.model.Idee;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
+import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.servlets.controllers.idees.modification.ModifyIdea;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.database.NoRowsException;
@@ -35,7 +36,9 @@ public class TestModifyIdea extends AbstractTestServlet {
 		assertFalse(newText.equals(idee.text));
 		
 		int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+		int addByFriend = notif.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));
 		assertNotifDoesExists(notifId);
+		assertNotifDoesExists(addByFriend);
 		
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("text", newText);
@@ -48,6 +51,7 @@ public class TestModifyIdea extends AbstractTestServlet {
 		idee = idees.getIdea(id);
 		assertEquals(newText, idee.text);
 		assertNotifDoesNotExists(notifId);
+		assertNotifDoesNotExists(addByFriend);
 	}
 
 }

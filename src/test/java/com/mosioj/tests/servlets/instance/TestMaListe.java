@@ -8,18 +8,21 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
-public class TestIdees extends AbstractTestServlet {
+public class TestMaListe extends AbstractTestServlet {
 
-	public TestIdees() throws SQLException {
+	public TestMaListe() throws SQLException {
 		super(new MaListe());
 	}
 
@@ -35,13 +38,19 @@ public class TestIdees extends AbstractTestServlet {
 	}
 
 	@Test
-	public void testPostSuccess() throws ServletException, IOException {
+	public void testPostSuccess() throws ServletException, IOException, SQLException {
+		
+		int noIdea = notif.addNotification(_OWNER_ID_, new NotifNoIdea());
+		assertNotifDoesExists(noIdea);
 
-		when(request.getParameter("text")).thenReturn("Ma super idée wouhouuuu");
-		when(request.getParameter("priority")).thenReturn("1");
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("text", "Ma super idée wouhouuuu");
+		param.put("priority", "1");
+		createMultiPartRequest(param);
 		doTestPost(request, response);
 
 		verify(request).getRequestDispatcher(eq(MaListe.VIEW_PAGE_URL));
 		verify(request, never()).setAttribute(eq("errors"), anyObject());
+		assertNotifDoesNotExists(noIdea);
 	}
 }

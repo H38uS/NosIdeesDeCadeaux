@@ -27,7 +27,7 @@ public class AjouterIdeeAmi extends AbstractIdea {
 	private static final long serialVersionUID = -7053283110787519597L;
 	private static final Logger logger = LogManager.getLogger(AjouterIdeeAmi.class);
 
-	private static final String USER_PARAMETER = "id";
+	public static final String USER_PARAMETER = "id";
 
 	public static final String VIEW_PAGE_URL = "/protected/ajouter_idee_ami.jsp";
 

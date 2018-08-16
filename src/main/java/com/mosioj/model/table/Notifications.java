@@ -175,6 +175,33 @@ public class Notifications extends Table {
 	}
 
 	/**
+	 * Deletes all notification that have the given owner, type and parameters.
+	 * 
+	 * @param owner
+	 * @param type
+	 * @param parameterName
+	 * @param parameterValue
+	 * @throws SQLException
+	 */
+	public void removeAllType(	int owner,
+								NotificationType type,
+								ParameterName parameterName,
+								Object parameterValue) throws SQLException {
+		StringBuilder sb = new StringBuilder();
+		sb.append(MessageFormat.format("delete from {0} where ", TABLE_NAME));
+		sb.append(MessageFormat.format(	" exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) and {5} = ? and {6} = ?",
+										TABLE_PARAMS,
+										NOTIFICATION_ID,
+										ID,
+										PARAMETER_NAME,
+										PARAMETER_VALUE,
+										OWNER,
+										TYPE));
+		logger.trace(sb.toString());
+		getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner, type);
+	}
+
+	/**
 	 * 
 	 * @param userId
 	 * @return The number of notification this user has.

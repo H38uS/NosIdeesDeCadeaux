@@ -18,7 +18,7 @@ public class NotifNewQuestionOnIdea extends AbstractNotification implements Noti
 
 	/**
 	 * 
-	 * @param user La personne que l'on notifie.
+	 * @param user La personne qui vient d'ajouter une question ou une réponse.
 	 * @param groupId
 	 * @param idea
 	 * @param toOwner

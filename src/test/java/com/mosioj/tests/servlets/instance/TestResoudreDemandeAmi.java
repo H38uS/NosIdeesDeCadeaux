@@ -15,6 +15,8 @@ import org.junit.Test;
 
 import com.mosioj.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.notifications.instance.NotifFriendshipDropped;
+import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
+import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
 import com.mosioj.servlets.controllers.relations.AfficherReseau;
 import com.mosioj.servlets.controllers.relations.ResoudreDemandeAmi;
 import com.mosioj.tests.servlets.AbstractTestServlet;
@@ -51,8 +53,14 @@ public class TestResoudreDemandeAmi extends AbstractTestServlet {
 		// Ajout des notifs
 		int n1 = notif.addNotification(_OWNER_ID_, new NotifDemandeRefusee(_MOI_AUTRE_, "Moi Autre"));
 		int n2 = notif.addNotification(_MOI_AUTRE_, new NotifFriendshipDropped(_OWNER_ID_, "Firefox"));
+		int newRelationSuggestion = notif.addNotification(_OWNER_ID_, new NotifNewRelationSuggestion(_MOI_AUTRE_, "Friend of firefox"));
+		int notRemoved = notif.addNotification(_OWNER_ID_, new NotifNewRelationSuggestion(_FRIEND_ID_, "Friend of firefox"));
+		int newFriendshipRequest = notif.addNotification(_OWNER_ID_, new NotifNouvelleDemandeAmi(_MOI_AUTRE_, _OWNER_ID_, "Moi autre"));
 		assertNotifDoesExists(n1);
 		assertNotifDoesExists(n2);
+		assertNotifDoesExists(newRelationSuggestion);
+		assertNotifDoesExists(notRemoved);
+		assertNotifDoesExists(newFriendshipRequest);
 		
 		// Ajout de la demande d'ami
 		userRelationRequests.insert(_MOI_AUTRE_, _OWNER_ID_);
@@ -66,6 +74,9 @@ public class TestResoudreDemandeAmi extends AbstractTestServlet {
 		assertTrue(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
 		assertNotifDoesNotExists(n1);
 		assertNotifDoesNotExists(n2);
+		assertNotifDoesNotExists(newRelationSuggestion);
+		assertNotifDoesExists(notRemoved);
+		assertNotifDoesNotExists(newFriendshipRequest);
 	}
 
 }

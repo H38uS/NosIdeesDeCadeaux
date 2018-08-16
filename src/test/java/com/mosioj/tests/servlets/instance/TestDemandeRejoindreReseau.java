@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.mosioj.model.table.UserRelationRequests;
+import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.servlets.controllers.relations.DemandeRejoindreReseau;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.RootingsUtils;
@@ -52,12 +53,20 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 	public void testPostSuccess() throws ServletException, IOException, SQLException {
 
 		UserRelationRequests urr = new UserRelationRequests();
-		urr.cancelRequest(26, 23);
-		when(request.getParameter("user_id")).thenReturn("23");
+		final int otherUserNotFriendYet = 23;
+		urr.cancelRequest(_OWNER_ID_, otherUserNotFriendYet);
+		
+		int suggestionAndAsk = notif.addNotification(_OWNER_ID_, new NotifNewRelationSuggestion(otherUserNotFriendYet, "Toto"));
+		int suggestionAndAsked = notif.addNotification(otherUserNotFriendYet, new NotifNewRelationSuggestion(_OWNER_ID_, "Toto"));
+		assertNotifDoesExists(suggestionAndAsk);
+		assertNotifDoesExists(suggestionAndAsked);
 
 		// Should not throw an exception
+		when(request.getParameter("user_id")).thenReturn("23");
 		doTestPost(request, response);
 
+		assertNotifDoesNotExists(suggestionAndAsk);
+		assertNotifDoesNotExists(suggestionAndAsked);
 		verify(request).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.ERROR_URL));
 	}

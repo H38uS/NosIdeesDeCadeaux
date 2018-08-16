@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifFriendshipDropped;
@@ -35,18 +34,8 @@ public class SupprimerRelation extends IdeesCadeauxServlet {
 
 		// Drops it
 		userRelations.deleteAssociation(user, currentId);
-		for (AbstractNotification n : notif.getNotifications(	currentId,
-																NotificationType.ACCEPTED_FRIENDSHIP,
-																ParameterName.USER_ID,
-																user)) {
-			notif.remove(n.id);
-		}
-		for (AbstractNotification n : notif.getNotifications(	user,
-																NotificationType.ACCEPTED_FRIENDSHIP,
-																ParameterName.USER_ID,
-																currentId)) {
-			notif.remove(n.id);
-		}
+		notif.removeAllType(currentId, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
+		notif.removeAllType(user, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, currentId);
 
 		// Send a notification
 		User me = users.getUser(currentId);

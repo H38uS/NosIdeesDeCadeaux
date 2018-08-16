@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
+import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
@@ -26,7 +28,7 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 	 * Class constructor.
 	 */
 	public DemandeRejoindreReseau() {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToPostAndGet()); // FIXME 0 : utiliser une police
 	}
 
 	@Override
@@ -63,6 +65,10 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 			RootingsUtils.rootToPage(ERROR_URL, request, response);
 			return;
 		}
+
+		// Suppression des notifications
+		notif.removeAllType(userId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, parseInt);
+		notif.removeAllType(parseInt, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userId);
 
 		// On ajoute l'association
 		userRelationRequests.insert(userId, userToSendInvitation.id);

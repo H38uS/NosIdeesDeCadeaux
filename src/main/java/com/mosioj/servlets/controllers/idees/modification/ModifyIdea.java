@@ -19,6 +19,7 @@ import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
@@ -99,6 +100,9 @@ public class ModifyIdea extends AbstractIdea {
 					if (notification instanceof NotifAskIfIsUpToDate) {
 						NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
 						notif.addNotification(isUpToDate.getUserIdParam(), new NotifConfirmedUpToDate(user, idees.getIdea(ideaId)));
+						notif.remove(notification.id);
+					}
+					if (notification instanceof NotifIdeaAddedByFriend) {
 						notif.remove(notification.id);
 					}
 				}

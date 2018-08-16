@@ -31,7 +31,7 @@ public class SupprimerQuestions extends IdeesCadeauxServlet {
 		questions.delete(id);
 
 		RootingsUtils.rootToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																IdeaQuestion.URL,
+																IdeaQuestion.WEB_SERVLET,
 																IdeaQuestion.IDEA_ID_PARAM,
 																comment.getIdea()),
 										req,

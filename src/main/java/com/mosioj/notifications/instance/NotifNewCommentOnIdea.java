@@ -18,7 +18,7 @@ public class NotifNewCommentOnIdea extends AbstractNotification implements Notif
 
 	/**
 	 * 
-	 * @param user La personne que l'on notifie.
+	 * @param user La personne qui a ajouté un nouveau commentaire
 	 * @param groupId
 	 * @param idea
 	 */
