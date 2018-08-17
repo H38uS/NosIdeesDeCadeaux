@@ -73,12 +73,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
 	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS (i.e. recharger l'idée)
-	// FIXME : 0 rejoindre un groupe en mode pc : moche !!
-	// FIXME : 0 quand on annule, on ne revient pas sur le groupe ?
-
-	// TODO : quand on affiche le rappel d'une idée, formater en mode classique + pouvoir intéragir ? -- genre groupe
-	// etc.
-	// TODO : pouvoir configurer le nombre de personnes sur une page dans "mes listes"
 
 	// TODO : faire du javascript pour les discussions
 
@@ -99,8 +93,10 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	
 	// TODO stocker l'objet User quand on se connecte
 	
-	// TODO : quand on clique sur compléter ma liste, n'afficher que le formulaire. Quand on veut sa liste, on la recherche !
-	// TODO : ajouter l'année dans les dates ? Réservations, mise à jour...
+	// FIXME 3 : quand on clique sur compléter ma liste, n'afficher que le formulaire. Quand on veut sa liste, on la recherche !
+	// FIXME 3 : ajouter l'année dans les dates ? Réservations, mise à jour...
+	// TODO vérifier en JS que le nombre de notification n'a pas bougé
+	// TODO faire une appli androïd !!
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

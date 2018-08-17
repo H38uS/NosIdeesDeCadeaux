@@ -17,7 +17,6 @@ import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -90,7 +89,7 @@ public class GroupIdeaDetails extends AbstractIdea {
 			for (AbstractNotification notification : notifications) {
 				notif.remove(notification.id);
 			}
-			RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
+			RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + groupId, request, response);
 			return;
 		}
 

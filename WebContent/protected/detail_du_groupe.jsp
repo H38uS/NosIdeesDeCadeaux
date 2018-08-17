@@ -38,16 +38,17 @@
 			<c:when test="${not is_in_group}">
 				<div>Vous ne participez pas encore à ce groupe.</div>
 				<form method="POST" action="protected/detail_du_groupe">
-					<input name="amount" type="text" value="${share.amount}" />
 					<input type="hidden" name="groupid" value="${group.id}" />
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 					<c:choose>
 						<c:when test="${is_mobile}">
+							<input name="amount" type="text" value="${share.amount}" />
 							<div>
 								<input type="submit" name="submit" id="submit" value="Participer !" />
 							</div>
 						</c:when>
 						<c:otherwise>
+							<input style="width:130px" name="amount" type="text" value="${share.amount}" />
 							<input style="width:130px" type="submit" name="submit" id="submit" value="Participer !" />
 						</c:otherwise>
 					</c:choose>
