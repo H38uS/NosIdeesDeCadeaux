@@ -12,12 +12,14 @@ import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/demande_rejoindre_reseau")
 public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
+
+	public static final String USER_ID_PARAM = "user_id";
 
 	private static final long serialVersionUID = -7941136326499438776L;
 
@@ -28,47 +30,19 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
 	 * Class constructor.
 	 */
 	public DemandeRejoindreReseau() {
-		super(new AllAccessToPostAndGet()); // FIXME 0 : utiliser une police
+		super(new PeutDemanderARejoindreLeReseau(userRelations, userRelationRequests, USER_ID_PARAM));
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		String user = ParametersUtils.readAndEscape(request, "user_id");
-		if (user.isEmpty()) {
-			request.setAttribute("error_message", "Aucun utilisateur spécifié !");
-			RootingsUtils.rootToPage(ERROR_URL, request, response);
-			return;
-		}
-
-		int parseInt = 0;
-		try {
-			parseInt = Integer.parseInt(user);
-		} catch (NumberFormatException nfe) {
-			request.setAttribute("error_message", "Le paramètre est incorrect.");
-			RootingsUtils.rootToPage(ERROR_URL, request, response);
-			return;
-		}
-
-		User userToSendInvitation = users.getUser(parseInt);
+		User userToSendInvitation = users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM));
 		int userId = ParametersUtils.getUserId(request);
 		request.setAttribute("name", userToSendInvitation.name);
 
-		if (userToSendInvitation.id == userId || userRelations.associationExists(userToSendInvitation.id, userId)) {
-			request.setAttribute("error_message", "Vous faites déjà parti du même réseau.");
-			RootingsUtils.rootToPage(ERROR_URL, request, response);
-			return;
-		}
-
-		if (userRelationRequests.associationExists(userId, userToSendInvitation.id)) {
-			request.setAttribute("error_message", "Vous avez déjà envoyé une demande pour cette personne.");
-			RootingsUtils.rootToPage(ERROR_URL, request, response);
-			return;
-		}
-
 		// Suppression des notifications
-		notif.removeAllType(userId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, parseInt);
-		notif.removeAllType(parseInt, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userId);
+		notif.removeAllType(userId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userToSendInvitation.id);
+		notif.removeAllType(userToSendInvitation.id, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userId);
 
 		// On ajoute l'association
 		userRelationRequests.insert(userId, userToSendInvitation.id);

@@ -1,9 +1,6 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,53 +13,48 @@ import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet implements SecurityPolicy {
+public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet implements SecurityPolicy {
 
-	private static final Logger logger = LogManager.getLogger(PeutResoudreDemandesAmis.class);
+	private static final Logger logger = LogManager.getLogger(PeutDemanderARejoindreLeReseau.class);
 
 	private final UserRelations userRelations;
 	private final UserRelationRequests userRelationRequests;
+
+	private final String userParameter;
 
 	/**
 	 * 
 	 * @param userRelations
 	 * @param userRelationRequests
 	 */
-	public PeutResoudreDemandesAmis(UserRelations userRelations, UserRelationRequests userRelationRequests) {
+	public PeutDemanderARejoindreLeReseau(	UserRelations userRelations,
+											UserRelationRequests userRelationRequests,
+											String userParameter) {
 		this.userRelations = userRelations;
 		this.userRelationRequests = userRelationRequests;
+		this.userParameter = userParameter;
 	}
 
 	private boolean hasAccess(HttpServletRequest request) throws SQLException, NotLoggedInException {
-		try {
-			Set<Integer> ids = new HashSet<Integer>();
-			Map<String, String[]> params = request.getParameterMap();
-			for (String key : params.keySet()) {
-				if (!key.startsWith("choix_")) {
-					continue;
-				}
-				ids.add(Integer.parseInt(key.substring("choix_".length())));
-			}
 
-			if (ids.isEmpty()) {
+		try {
+			int userId = ParametersUtils.getUserId(request);
+
+			// Y a-t-il un utilisateur ?
+			Integer toBeSentTo = ParametersUtils.readInt(request, userParameter);
+			if (toBeSentTo == null) {
 				lastReason = "Aucun utilisateur trouvé en paramètre.";
 				return false;
 			}
 
-			int userId = ParametersUtils.getUserId(request);
-			for (int user : ids.toArray(new Integer[ids.size()])) {
-				if (user == userId) {
-					lastReason = "Vous ne pouvez pas être ami avec vous-même...";
-					return false;
-				}
-				if (userRelations.associationExists(userId, user)) {
-					lastReason = "Vous êtes déjà ami avec l'une des personnes...";
-					return false;
-				}
-				if (!userRelationRequests.associationExists(user, userId)) {
-					lastReason = "Au moins une personne ne vous a jamais fait de demande...";
-					return false;
-				}
+			if (toBeSentTo == userId || userRelations.associationExists(toBeSentTo, userId)) {
+				lastReason = "Vous faites déjà parti du même réseau.";
+				return false;
+			}
+
+			if (userRelationRequests.associationExists(userId, toBeSentTo)) {
+				lastReason = "Vous avez déjà envoyé une demande pour cette personne.";
+				return false;
 			}
 
 			return true;
@@ -83,7 +75,8 @@ public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet implements S
 	@Override
 	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return hasAccess(request);
+		lastReason = "L'accès en GET est interdit.";
+		return false;
 	}
 
 }
