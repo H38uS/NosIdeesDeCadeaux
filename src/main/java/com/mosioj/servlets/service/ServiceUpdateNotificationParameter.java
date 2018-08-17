@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
+import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
@@ -34,17 +35,23 @@ public class ServiceUpdateNotificationParameter extends AbstractService {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		int userId = ParametersUtils.getUserId(request);
-		String name = request.getParameter("name");
-		String value = request.getParameter("value");
-		// FIXME : 0 get parameter attention !!! utiliser parametersUtils
-		// FIXME : 0 vérifier le contenu...
-		
-		if (name != null && value != null) {
-			userParameters.insertUpdateParameter(userId, name, value);
+		String name = ParametersUtils.readAndEscape(request, "name");
+		String value = ParametersUtils.readAndEscape(request, "value");
+
+		String statut = "ko";
+
+		try {
+			if (name != null && value != null) {
+				NotificationType.valueOf(name);
+				userParameters.insertUpdateParameter(userId, name, value);
+				statut = "ok";
+			}
+		} catch (IllegalArgumentException e) {
+			logger.error(e.getMessage());
 		}
 
 		try {
-			writeJSonOutput(response, JSONObject.toString("status", "ok"));
+			writeJSonOutput(response, JSONObject.toString("status", statut));
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
