@@ -36,11 +36,15 @@ public class ReserverIdee extends AbstractIdea {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
+	}
 
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
 		int userId = ParametersUtils.getUserId(request);
 		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea, userId));
-
+		
 		if (idees.canBook(idea, userId)) {
 			idees.reserver(idea, userId);
 			for (AbstractNotification n : notif.getNotification(ParameterName.IDEA_ID, idea)) {
@@ -49,13 +53,8 @@ public class ReserverIdee extends AbstractIdea {
 				}
 			}
 		}
-
+		
 		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, response);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
 	}
 
 }

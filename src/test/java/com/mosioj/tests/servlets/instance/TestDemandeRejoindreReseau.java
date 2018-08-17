@@ -45,7 +45,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 		verify(request, atMost(1)).getParameter(anyString());
 
 		// Error in processing
-		verify(request).getRequestDispatcher(eq(DemandeRejoindreReseau.ERROR_URL));
 		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 	}
 
@@ -80,7 +79,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 		doTestPost(request, response);
 
 		verify(request).setAttribute(eq("error_message"), eq("Vous avez déjà envoyé une demande pour cette personne."));
-		verify(request).getRequestDispatcher(eq(DemandeRejoindreReseau.ERROR_URL));
 		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 	}
 
@@ -93,7 +91,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 		doTestPost(request, response);
 		
 		verify(request).setAttribute(eq("error_message"), eq("Vous faites déjà parti du même réseau."));
-		verify(request).getRequestDispatcher(eq(DemandeRejoindreReseau.ERROR_URL));
 		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 	}
 

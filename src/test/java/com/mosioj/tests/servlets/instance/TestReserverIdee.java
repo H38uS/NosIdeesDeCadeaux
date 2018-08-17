@@ -32,7 +32,7 @@ public class TestReserverIdee extends AbstractTestServlet {
 		assertNotifDoesExists(recurentUnbook);
 
 		when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-		doTestGet(request, response); // FIXME 0 : WTF, go post !
+		doTestPost(request, response);
 		idee = idees.getIdea(id);
 
 		assertNotifDoesNotExists(recurentUnbook);
