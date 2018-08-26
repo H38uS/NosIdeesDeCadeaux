@@ -142,7 +142,7 @@ public class Idees extends Table {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Idee> getOwnerIdeas(int ownerId) throws SQLException {
+	public List<Idee> getIdeasOf(int ownerId) throws SQLException {
 
 		List<Idee> ideas = new ArrayList<Idee>();
 

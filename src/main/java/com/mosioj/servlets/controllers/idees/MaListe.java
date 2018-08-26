@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Categorie;
-import com.mosioj.model.Idee;
 import com.mosioj.model.Priorite;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
@@ -30,9 +29,9 @@ public class MaListe extends AbstractIdea {
 	private static final Logger logger = LogManager.getLogger(MaListe.class);
 	private static final long serialVersionUID = -1774633803227715931L;
 
-	public static final String VIEW_PAGE_URL = "/protected/ma_liste.jsp";
+	public static final String VIEW_PAGE_URL = "/protected/completer_ma_liste.jsp";
 	public static final String PROTECTED_MA_LISTE = "/protected/ma_liste";
-	
+
 	/**
 	 * Class constructor.
 	 */
@@ -44,24 +43,11 @@ public class MaListe extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-		List<Idee> ideas = idees.getOwnerIdeas(ParametersUtils.getUserId(request));
-		for (Idee idee : ideas) {
-			idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
-
-			if (device.isMobile()) {
-				Priorite priorite = idee.getPriorite();
-				if (priorite != null && priorite.getImage() != null) {
-					priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"80px\"");
-				}
-			}
-		}
 		List<Categorie> cat = categories.getCategories();
 		List<Priorite> prio = priorities.getPriorities();
 
-		request.setAttribute("idees", ideas);
 		request.setAttribute("types", cat);
 		request.setAttribute("priorites", prio);
-		request.setAttribute("identic_call_back", PROTECTED_MA_LISTE.substring(1));
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);
 	}
@@ -90,6 +76,16 @@ public class MaListe extends AbstractIdea {
 											null);
 				addModificationNotification(users.getUser(userId), idees.getIdea(ideaId), true);
 				notif.removeAllType(userId, NotificationType.NO_IDEA);
+				
+				request.getSession().setAttribute("added_idea_id", ideaId);
+
+				RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
+																		VoirListe.PROTECTED_VOIR_LIST,
+																		VoirListe.USER_ID_PARAM,
+																		userId),
+												request,
+												response);
+				return;
 			}
 
 		}

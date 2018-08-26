@@ -79,21 +79,20 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
 	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
-	
+
 	// FIXME : 4 voir pour elastic search :)
 	// FIXME : 5 remplir le gdoc + historiser la base de test
-	
+
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
-	
+
 	// FIXME : 3 racourcir les emails en vue portable ? Voir ceux de banque pop ?
-	
+
 	// TODO : faire un seul repo git ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
-	
+
 	// TODO stocker l'objet User quand on se connecte
-	
-	// FIXME 3 : quand on clique sur compléter ma liste, n'afficher que le formulaire. Quand on veut sa liste, on la recherche !
+
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
 
@@ -553,7 +552,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	protected void fillsUserIdeas(int userId, List<User> ids) throws SQLException {
 		logger.trace("Getting all ideas for all users...");
 		for (User user : ids) {
-			List<Idee> ownerIdeas = idees.getOwnerIdeas(user.id);
+			List<Idee> ownerIdeas = idees.getIdeasOf(user.id);
 			for (Idee idee : ownerIdeas) {
 				fillAUserIdea(userId, idee);
 			}

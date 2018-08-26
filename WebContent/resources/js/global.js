@@ -21,11 +21,6 @@ $(document).ready(function() {
 	$(".menu_icon").click(function () {
 		$("#menu_content").toggle("slide");
 	});
-	
-	$("#ma_liste_deplier").click(function () {
-		$(this).hide();
-		$(this).parent().parents("#ma_liste_table_ajouter").find("tr").show("slow");
-	});
 });
 
 function getPictureWidth() {
