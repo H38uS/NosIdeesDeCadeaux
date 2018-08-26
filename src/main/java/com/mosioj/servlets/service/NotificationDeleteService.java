@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.NotificationModification;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/notification_delete")
@@ -25,7 +25,7 @@ public class NotificationDeleteService extends AbstractService {
 	private static final Logger logger = LogManager.getLogger(NotificationDeleteService.class);
 
 	public NotificationDeleteService() {
-		super(new AllAccessToPostAndGet());
+		super(new NotificationModification(notif, NOTIFICATION_PARAMETER));
 	}
 
 	@Override
