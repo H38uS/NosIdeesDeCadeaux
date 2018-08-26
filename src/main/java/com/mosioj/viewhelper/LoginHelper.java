@@ -20,7 +20,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
-import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.Users;
 import com.mosioj.utils.database.NoRowsException;
 
@@ -112,14 +111,6 @@ public class LoginHelper implements Filter {
 			request.setAttribute("avatars", "protected/files/uploaded_pictures/avatars");
 			request.setAttribute("ideas_pictures", "protected/files/uploaded_pictures/ideas");
 
-			Notifications notif = new Notifications();
-			try {
-				int count = notif.getUserNotificationCount(userId);
-				request.setAttribute("notif_count", count);
-			} catch (SQLException e) {
-				// Osef
-			}
-			
 			// Child connection
 			Object initial = session.getAttribute("initial_user_id");
 			if (initial != null) {

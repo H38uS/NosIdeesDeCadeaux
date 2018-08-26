@@ -50,7 +50,6 @@ public class AfficherReseau extends AbstractListes<Relation> {
 		request.setAttribute("name", users.getUser(user).name);
 
 		HttpSession session = request.getSession();
-		request.setAttribute("notif_count", session.getAttribute("notif_count"));
 		request.setAttribute("accepted", session.getAttribute("accepted"));
 
 		super.ideesKDoGET(request, response);

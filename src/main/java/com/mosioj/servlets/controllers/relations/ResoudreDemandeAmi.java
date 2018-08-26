@@ -108,11 +108,9 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet {
 		}
 		
 		notif.removeAllType(userId, NotificationType.NEW_FRIENSHIP_REQUEST);
-		int count = notif.getUserNotificationCount(userId);
-		HttpSession session = request.getSession();
-		session.setAttribute("notif_count", count); // FIXME 0 : le faire en fin de get/post à chaque fois ?
 
 		// Redirection à la page d'administration
+		HttpSession session = request.getSession();
 		session.setAttribute("accepted", accepted);
 		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
 																AfficherReseau.SELF_VIEW,

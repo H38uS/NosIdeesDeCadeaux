@@ -232,49 +232,58 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	public abstract void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException;
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
 
 		Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
 
 		if (!policy.isGetRequestAllowed()) {
-			super.doGet(req, resp);
+			super.doGet(request, resp);
 			return;
 		}
 
 		try {
 
-			if (!policy.hasRightToInteractInGetRequest(req, resp) && !req.isUserInRole("ROLE_ADMIN")) {
+			if (!policy.hasRightToInteractInGetRequest(request, resp) && !request.isUserInRole("ROLE_ADMIN")) {
 
 				int userId;
 				try {
-					userId = ParametersUtils.getUserId(req);
+					userId = ParametersUtils.getUserId(request);
 				} catch (Exception e) {
 					userId = -1;
 				}
 
-				req.setAttribute("error_message", policy.getLastReason());
+				request.setAttribute("error_message", policy.getLastReason());
 				logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0} on {1}. Reason: {2}",
 													userId,
-													req.getRequestURL(),
+													request.getRequestURL(),
 													policy.getLastReason()));
-				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", req, resp);
+				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, resp);
 				return;
 			}
 
-			String fullURL = req.getRequestURL().toString();
+			String fullURL = request.getRequestURL().toString();
 			notif.setURL(fullURL);
 
-			device = (Device) req.getAttribute("device");
+			device = (Device) request.getAttribute("device");
 
 			// Security has passed, perform the logic
-			ideesKDoGET(req, resp);
+			ideesKDoGET(request, resp);
+
+			// Mise à jour du nombre de notifications
+			try {
+				int userId = ParametersUtils.getUserId(request);
+				int count = notif.getUserNotificationCount(userId);
+				request.setAttribute("notif_count", count);
+			} catch (Exception e) {
+				// Osef
+			}
 
 		} catch (NotLoggedInException e) {
 			// Redirection vers l'emplacement de login
-			RootingsUtils.redirectToPage("/public/login.jsp", req, resp);
+			RootingsUtils.redirectToPage("/public/login.jsp", request, resp);
 		} catch (SQLException e) {
 			// Default error management
-			RootingsUtils.rootToGenericSQLError(e, req, resp);
+			RootingsUtils.rootToGenericSQLError(e, request, resp);
 		}
 	};
 
@@ -325,6 +334,15 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			// Security has passed, perform the logic
 			ideesKDoPOST(request, response);
+
+			// Mise à jour du nombre de notifications
+			try {
+				int userId = ParametersUtils.getUserId(request);
+				int count = notif.getUserNotificationCount(userId);
+				request.setAttribute("notif_count", count);
+			} catch (Exception e) {
+				// Osef
+			}
 
 		} catch (NotLoggedInException e) {
 			// Redirection vers l'emplacement de login
@@ -443,7 +461,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 		return ideasPicturePath;
 	}
-	
+
 	public void setIdeaPicturePath(File file) {
 		ideasPicturePath = file;
 	}
@@ -476,31 +494,30 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @return The String to pass to the database
 	 */
 	protected String readNameOrEmail(HttpServletRequest request, String parameterName) {
-	
+
 		String nameOrEmail = ParametersUtils.readAndEscape(request, parameterName);
 		logger.trace(MessageFormat.format("Receive:{0}", nameOrEmail));
-	
+
 		if (nameOrEmail == null || nameOrEmail.trim().isEmpty()) {
 			return nameOrEmail;
 		}
-	
+
 		int open = nameOrEmail.lastIndexOf("(");
 		int close = nameOrEmail.lastIndexOf(")");
 		if (open > 0 && close > 0 && open < close) {
 			// Comes from some completion trick
 			nameOrEmail = nameOrEmail.substring(open + 1, close);
 		}
-	
+
 		logger.trace(MessageFormat.format("Returned:{0}", nameOrEmail.trim()));
 		return nameOrEmail.trim();
 	}
 
-	
 	protected void fillAUserIdea(int userId, Idee idee) throws SQLException {
 
 		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
 		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
-		
+
 		User surpriseBy = idee.getSurpriseBy();
 		if (surpriseBy != null) {
 			if (surpriseBy.id == userId) {
