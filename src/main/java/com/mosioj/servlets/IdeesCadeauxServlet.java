@@ -94,13 +94,12 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO stocker l'objet User quand on se connecte
 	
 	// FIXME 3 : quand on clique sur compléter ma liste, n'afficher que le formulaire. Quand on veut sa liste, on la recherche !
-	// FIXME 3 : ajouter l'année dans les dates ? Réservations, mise à jour...
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
-	public static final String DATETIME_DISPLAY_FORMAT = "d MMMM à HH'h'mm";
+	public static final String DATETIME_DISPLAY_FORMAT = "d MMMM yyyy à HH'h'mm";
 
 	// Maximum 10M
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
