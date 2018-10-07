@@ -44,12 +44,12 @@ public class UserRelationRequests extends Table {
 	 */
 	public void insert(int sent_by, int sent_to) throws SQLException {
 		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
-														TABLE_NAME,
-														SENT_BY_USER,
-														SENT_TO_USER,
-														REQUEST_DATE),
-								sent_by,
-								sent_to);
+																	TABLE_NAME,
+																	SENT_BY_USER,
+																	SENT_TO_USER,
+																	REQUEST_DATE),
+											sent_by,
+											sent_to);
 	}
 
 	/**
@@ -114,5 +114,15 @@ public class UserRelationRequests extends Table {
 														SENT_TO_USER),
 								userThatSendTheRequest,
 								userThatReceiveTheRequest);
+	}
+
+	public void removeAllFromAndTo(int userId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? or {2} = ?",
+														TABLE_NAME,
+														SENT_BY_USER,
+														SENT_TO_USER),
+								userId,
+								userId);
+
 	}
 }

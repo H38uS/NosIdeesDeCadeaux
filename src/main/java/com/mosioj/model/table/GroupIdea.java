@@ -11,6 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.IdeeColumns;
@@ -18,6 +21,8 @@ import com.mosioj.model.table.columns.UsersColumns;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 
 public class GroupIdea extends Table {
+
+	private static final Logger LOGGER = LogManager.getLogger(GroupIdea.class);
 
 	public static final String TABLE_NAME = "GROUP_IDEA";
 	public static final String TABLE_NAME_CONTENT = "GROUP_IDEA_CONTENT";
@@ -162,6 +167,29 @@ public class GroupIdea extends Table {
 															IdeeColumns.RESERVE_LE),
 									groupId);
 		}
+	}
+
+	public void removeUserFromAllGroups(int userId) throws SQLException {
+
+		String query = MessageFormat.format("select distinct {0} from {1} where {2} = ? ", GROUP_ID, TABLE_NAME_CONTENT, USER_ID);
+
+		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
+
+			ps.bindParameters(userId);
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					removeUserFromGroup(userId, res.getInt(GROUP_ID.name()));
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.error(MessageFormat.format(	"Error while fetching query to remove user id {0} from groups. Exception: {1}",
+												userId,
+												e.getMessage()));
+		}
+
 	}
 
 	/**

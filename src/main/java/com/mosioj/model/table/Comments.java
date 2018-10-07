@@ -182,4 +182,13 @@ public class Comments extends Table {
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, ID), commentId);
 	}
 
+	/**
+	 * 
+	 * @param commentId
+	 * @throws SQLException
+	 */
+	public void deleteAll(int userId) throws SQLException {
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, WRITTEN_BY), userId);
+	}
+
 }

@@ -182,4 +182,8 @@ public class Questions extends Table {
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, ID), commentId);
 	}
 
+	public void deleteAll(int userId) throws SQLException {
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, WRITTEN_BY), userId);
+	}
+
 }

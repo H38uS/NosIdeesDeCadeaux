@@ -74,7 +74,6 @@ public class ParentRelationship extends Table {
 
 		List<User> users = new ArrayList<>();
 
-
 		StringBuilder sb = new StringBuilder();
 		sb.append(MessageFormat.format(	" select u.{0}, u.{1}, u.{2}, u.{3} ",
 										ID,
@@ -143,8 +142,18 @@ public class ParentRelationship extends Table {
 	 * @throws SQLException
 	 */
 	public void addProcuration(int parentId, int childId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format("insert into {0} ({1},{2},{3}) values (?, ?, now())", TABLE_NAME, PARENT_ID, CHILD_ID, CREATION_DATE),
+		getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?, ?, now())",
+														TABLE_NAME,
+														PARENT_ID,
+														CHILD_ID,
+														CREATION_DATE),
 								parentId,
 								childId);
+	}
+
+	public void deleteAllRelationForUser(int userId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? or {2} = ?", TABLE_NAME, PARENT_ID, CHILD_ID),
+								userId,
+								userId);
 	}
 }

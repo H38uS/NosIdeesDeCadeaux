@@ -24,6 +24,10 @@ public class UserParameters extends Table {
 	public static final String TABLE_NAME = "USER_PARAMETERS";
 	private static final Logger logger = LogManager.getLogger(UserParameters.class);
 
+	public void deleteAllUserParameters(int userId) throws SQLException {
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, USER_ID), userId);
+	}
+
 	public void insertUpdateParameter(int userId, String paramName, String paramValue) throws SQLException {
 		int nb = getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? and {3} = ?",
 																TABLE_NAME,

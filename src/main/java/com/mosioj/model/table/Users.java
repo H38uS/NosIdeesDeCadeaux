@@ -40,23 +40,25 @@ public class Users extends Table {
 	 * @param email
 	 * @param digestedPwd
 	 * @param name
+	 * @return the created user id.
 	 * @throws SQLException
 	 */
-	public void addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
-		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, now(), ?)",
-																	TABLE_NAME,
-																	EMAIL,
-																	PASSWORD,
-																	CREATION_DATE,
-																	NAME),
-											email,
-											digestedPwd,
-											name);
+	public int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
+		int userId = getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, now(), ?)",
+																				TABLE_NAME,
+																				EMAIL,
+																				PASSWORD,
+																				CREATION_DATE,
+																				NAME),
+														email,
+														digestedPwd,
+														name);
 		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into USER_ROLES ({0},{1}) values (?, ?)",
 																	UserRolesColumns.EMAIL,
 																	UserRolesColumns.ROLE),
 											email,
 											"ROLE_USER");
+		return userId;
 	}
 
 	/**
@@ -100,7 +102,7 @@ public class Users extends Table {
 	 * @param email The identifier of the person (currently the email).
 	 * @return This person's id.
 	 * @throws SQLException
-	 * @throws NoRowsException 
+	 * @throws NoRowsException
 	 */
 	public int getId(String email) throws SQLException, NoRowsException {
 		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL), email);
@@ -111,7 +113,7 @@ public class Users extends Table {
 	 * @param email The identifier of the person (currently the email).
 	 * @return This person's id.
 	 * @throws SQLException
-	 * @throws NoRowsException 
+	 * @throws NoRowsException
 	 */
 	public int getIdFromNameOrEmail(String nameOrEmail) throws SQLException, NoRowsException {
 		return getDb().selectInt(	MessageFormat.format(	"select {0} from {1} where {2} = ? or {3} = ? limit 1",
@@ -313,6 +315,48 @@ public class Users extends Table {
 		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ? where {2} = ?", TABLE_NAME, PASSWORD, ID),
 								digestedPwd,
 								userId);
+	}
+
+	public void deleteUser(User user) throws SQLException {
+
+		LOGGER.info(MessageFormat.format("Suppression de {0}...", user));
+		int userId = user.id;
+
+		// Suppression des commentaires
+		new Comments().deleteAll(userId);
+
+		// Suppression des participations aux groupes
+		new GroupIdea().removeUserFromAllGroups(userId);
+
+		// Suppression des idées
+		// Suppression de l'historique des idées
+		new Idees().removeAll(userId);
+
+		// Suppression des notifications
+		new Notifications().removeAll(userId);
+
+		// Suppression des relations parents - enfants
+		new ParentRelationship().deleteAllRelationForUser(userId);
+
+		// Suppresion des questions
+		new Questions().deleteAll(userId);
+
+		// Suppression des demandes de modifications de mdp
+		new UserChangePwdRequest().deleteAssociation(userId);
+
+		// Suppression des paramètres utilisateurs
+		new UserParameters().deleteAllUserParameters(userId);
+
+		// Suppression des relations, des suggestions et des demandes
+		new UserRelations().removeAllAssociationsTo(userId);
+		new UserRelationsSuggestion().removeAllFromAndTo(userId);
+		new UserRelationRequests().removeAllFromAndTo(userId);
+
+		// Suppression des roles
+		getDb().executeUpdate(MessageFormat.format("delete from USER_ROLES where {0} = ?", UserRolesColumns.EMAIL), user.email);
+
+		// Et !! Suppression du user
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, ID), userId);
 	}
 
 }

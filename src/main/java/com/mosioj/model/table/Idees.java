@@ -351,7 +351,7 @@ public class Idees extends Table {
 	public int addIdea(int ownerId, String text, String type, int priorite, String image, User surprisePar) throws SQLException {
 
 		type = type == null ? "" : type;
-		
+
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
 		insert.append(TABLE_NAME);
@@ -625,7 +625,8 @@ public class Idees extends Table {
 			if (nb != 1) {
 				logger.warn(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}", nb, idea));
 			} else {
-				getDb().executeUpdate(	MessageFormat.format("update IDEES_HIST set {0} = now() where {1} = ?", MODIFICATION_DATE, ID), idea);
+				getDb().executeUpdate(	MessageFormat.format("update IDEES_HIST set {0} = now() where {1} = ?", MODIFICATION_DATE, ID),
+										idea);
 			}
 		} catch (Exception e) {
 		}
@@ -682,6 +683,11 @@ public class Idees extends Table {
 								priority,
 								image,
 								id);
+	}
+
+	public void removeAll(int userId) throws SQLException {
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, OWNER), userId);
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", "IDEES_HIST", OWNER), userId);
 	}
 
 }

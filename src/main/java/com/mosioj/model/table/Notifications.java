@@ -579,4 +579,15 @@ public class Notifications extends Table {
 	public void setUnread(int notifId) throws SQLException {
 		getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? ", TABLE_NAME, IS_UNREAD, ID), "Y", notifId);
 	}
+
+	public void removeAll(int userId) throws SQLException {
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, OWNER), userId);
+		String query = MessageFormat.format(	"delete from {0} where not exists (select 1 from {1} n where {2} = n.{3}) ",
+													TABLE_PARAMS,
+													TABLE_NAME,
+													NOTIFICATION_ID,
+													ID);
+		logger.debug(query);
+		getDb().executeUpdate(query);
+	}
 }

@@ -169,4 +169,10 @@ public class UserRelationsSuggestion extends Table {
 								user);
 	}
 
+	public void removeAllFromAndTo(int userId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? or {2} = ?", TABLE_NAME, SUGGESTED_TO, USER_ID),
+								userId,
+								userId);
+	}
+
 }

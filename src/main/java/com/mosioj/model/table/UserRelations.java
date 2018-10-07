@@ -297,6 +297,13 @@ public class UserRelations extends Table {
 								firstUserId);
 	}
 
+	public void removeAllAssociationsTo(int userId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? or {2} = ?", TABLE_NAME, FIRST_USER, SECOND_USER),
+								userId,
+								userId);
+
+	}
+
 	public List<User> getAllNamesOrEmailsInRelation(int userId, String userNameOrEmail, int firstRow, int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
