@@ -65,7 +65,7 @@ public abstract class AbstractService extends IdeesCadeauxServlet {
 		}
 	}
 
-	protected void writeJSonOutput(HttpServletResponse response, String jsonObject) throws IOException {
+	private void writeJSonOutput(HttpServletResponse response, String jsonObject) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
 		builder.append(jsonObject);

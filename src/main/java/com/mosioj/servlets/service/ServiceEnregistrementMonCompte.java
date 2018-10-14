@@ -1,7 +1,6 @@
 package com.mosioj.servlets.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
@@ -80,19 +78,13 @@ public class ServiceEnregistrementMonCompte extends AbstractService {
 
 		}
 
-		try {
-			writeJSonOutput(response,
-							MessageFormat.format(	"{0},{1},{2},{3},{4},{5}",
-													JSONObject.toString("status", status),
-													JSONObject.toString("errors", message),
-													JSONObject.toString("avatar", avatar),
-													JSONObject.toString("avatarLarge", avatarLarge),
-													JSONObject.toString("avatarSmall", avatarSmall),
-													JSONObject.toString("avatars", request.getAttribute("avatars"))));
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
+		writeJSonOutput(response,
+						makeJSonPair("status", status),
+						makeJSonPair("errors", message),
+						makeJSonPair("avatar", avatar),
+						makeJSonPair("avatarLarge", avatarLarge),
+						makeJSonPair("avatarSmall", avatarSmall),
+						makeJSonPair("avatars", request.getAttribute("avatars").toString()));
 	}
 
 }

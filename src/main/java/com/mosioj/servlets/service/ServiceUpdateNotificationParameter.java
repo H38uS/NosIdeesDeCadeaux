@@ -1,6 +1,5 @@
 package com.mosioj.servlets.service;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
@@ -50,12 +48,7 @@ public class ServiceUpdateNotificationParameter extends AbstractService {
 			logger.error(e.getMessage());
 		}
 
-		try {
-			writeJSonOutput(response, JSONObject.toString("status", statut));
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
+		writeJSonOutput(response, makeJSonPair("status", statut));
 	}
 
 }

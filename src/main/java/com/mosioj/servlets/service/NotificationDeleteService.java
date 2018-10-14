@@ -1,6 +1,5 @@
 package com.mosioj.servlets.service;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
 import com.mosioj.servlets.securitypolicy.NotificationModification;
 import com.mosioj.utils.ParametersUtils;
@@ -38,11 +36,7 @@ public class NotificationDeleteService extends AbstractService {
 		notif.remove(ParametersUtils.readInt(request, NOTIFICATION_PARAMETER));
 		logger.info(MessageFormat.format(	"Suppression de la notification {0}",
 											ParametersUtils.readInt(request, NOTIFICATION_PARAMETER)));
-		try {
-			writeJSonOutput(response, JSONObject.toString("status", "ok"));
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
+		
+		writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}
 }
