@@ -74,8 +74,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
 	// FIXME : 6 vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
-	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS (i.e. recharger
-	// l'idée)
 
 	// TODO : faire du javascript pour les discussions
 
@@ -553,16 +551,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	/**
 	 * 
-	 * @param ideaId
-	 * @return The idea as is in DB.
-	 * @throws SQLException
-	 */
-	protected Idee getIdeaWithoutEnrichment(int ideaId) throws SQLException {
-		return idees.getIdea(ideaId);
-	}
-	
-	/**
-	 * 
 	 * @param request
 	 * @param ideaId
 	 * @return The idea from the DB, enriched with useful information.
@@ -570,7 +558,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * @throws NotLoggedInException
 	 */
 	protected Idee getIdeaAndEnrichIt(HttpServletRequest request, int ideaId) throws SQLException, NotLoggedInException {
-		Idee idee = getIdeaWithoutEnrichment(ideaId);
+		Idee idee = idees.getIdeaWithoutEnrichment(ideaId);
 		int userId = ParametersUtils.getUserId(request);
 		fillAUserIdea(userId, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
 		return idee;
