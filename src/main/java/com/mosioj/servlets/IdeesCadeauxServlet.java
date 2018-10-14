@@ -262,9 +262,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			device = (Device) request.getAttribute("device");
 
-			// Security has passed, perform the logic
-			ideesKDoGET(request, resp);
-
 			// Mise à jour du nombre de notifications
 			try {
 				int userId = ParametersUtils.getUserId(request);
@@ -273,6 +270,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			} catch (Exception e) {
 				// Osef
 			}
+
+			// Security has passed, perform the logic
+			ideesKDoGET(request, resp);
 
 		} catch (NotLoggedInException e) {
 			// Redirection vers l'emplacement de login
@@ -328,9 +328,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			device = (Device) request.getAttribute("device");
 
-			// Security has passed, perform the logic
-			ideesKDoPOST(request, response);
-
 			// Mise à jour du nombre de notifications
 			try {
 				int userId = ParametersUtils.getUserId(request);
@@ -339,6 +336,9 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 			} catch (Exception e) {
 				// Osef
 			}
+
+			// Security has passed, perform the logic
+			ideesKDoPOST(request, response);
 
 		} catch (NotLoggedInException e) {
 			// Redirection vers l'emplacement de login
