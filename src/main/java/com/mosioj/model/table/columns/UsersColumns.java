@@ -1,5 +1,5 @@
 package com.mosioj.model.table.columns;
 
 public enum UsersColumns {
-	ID, EMAIL, PASSWORD, CREATION_DATE, NAME, BIRTHDAY, AVATAR;
+	ID, EMAIL, PASSWORD, CREATION_DATE, NAME, BIRTHDAY, AVATAR, LAST_LOGIN;
 }

@@ -7,6 +7,7 @@ import static com.mosioj.model.table.columns.UsersColumns.NAME;
 import static com.mosioj.model.table.columns.UsersColumns.PASSWORD;
 import static com.mosioj.model.table.columns.UsersColumns.BIRTHDAY;
 import static com.mosioj.model.table.columns.UsersColumns.AVATAR;
+import static com.mosioj.model.table.columns.UsersColumns.LAST_LOGIN;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -357,6 +358,20 @@ public class Users extends Table {
 
 		// Et !! Suppression du user
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, ID), userId);
+	}
+
+	/**
+	 * Lorsque l'on vient de se connecter.
+	 * 
+	 * @param email
+	 */
+	public void touch(String email) {
+		try {
+			getDb().executeUpdate("update " + TABLE_NAME + " set " + LAST_LOGIN + " = now() where " + EMAIL + " = ?", email);
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 }
