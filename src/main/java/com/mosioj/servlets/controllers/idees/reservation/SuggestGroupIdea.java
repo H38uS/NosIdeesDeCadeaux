@@ -83,7 +83,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		Idee idea;
 		try {
-			idea = getIdeaWithoutEnrichment(idees.getIdeaId(groupId));
+			idea = idees.getIdeaWithoutEnrichment(idees.getIdeaId(groupId));
 		} catch (NoRowsException e) {
 			RootingsUtils.rootToUnexistingGroupError(request, response);
 			return;

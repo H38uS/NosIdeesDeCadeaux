@@ -55,7 +55,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		GroupIdea g = new GroupIdea();
 		int group = g.createAGroup(200, 10, 10);
 		idees.bookByGroup(id, group);
-		Idee idee = idees.getIdea(id);
+		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		assertEquals(group, idee.getGroupKDO());
 		assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
 		assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
@@ -76,7 +76,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		int id = idees.addIdea(_OWNER_ID_, "generated", "", 0, null, null);
 		assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 
-		Idee idee = idees.getIdea(id);
+		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		int isUpToDate = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
 		int confirmedUpToDate = notif.addNotification(_FRIEND_ID_, new NotifConfirmedUpToDate(firefox, idee));
 		int groupSuggestion = notif.addNotification(_FRIEND_ID_, new NotifGroupSuggestion(firefox, 0, idee));

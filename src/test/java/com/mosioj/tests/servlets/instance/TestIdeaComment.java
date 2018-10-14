@@ -24,7 +24,7 @@ public class TestIdeaComment extends AbstractTestServlet {
 	public void test() throws SQLException, ServletException, IOException {
 		
 		int id = idees.addIdea(_FRIEND_ID_, "avec commentaire", null, 0, null, null);
-		Idee idee = idees.getIdea(id);
+		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		comments.addComment(_OWNER_ID_, id, "mon pti com'");
 
 		int newComment = notif.addNotification(_OWNER_ID_, new NotifNewCommentOnIdea(firefox, idee));

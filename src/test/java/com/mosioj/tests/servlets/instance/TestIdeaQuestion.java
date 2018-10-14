@@ -25,7 +25,7 @@ public class TestIdeaQuestion extends AbstractTestServlet {
 	public void testGetQuestions() throws SQLException, ServletException, IOException {
 		
 		int id = idees.addIdea(_OWNER_ID_, "avec questions", null, 0, null, null);
-		Idee idee = idees.getIdea(id);
+		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		questions.addComment(_FRIEND_ID_, id, "mon pti com'");
 
 		int addByFriend = notif.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));

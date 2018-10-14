@@ -31,7 +31,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 		int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
 		idees.bookByGroup(idea, id);
 
-		int groupSuggestion = notif.addNotification(_OWNER_ID_, new NotifGroupSuggestion(firefox, id, idees.getIdea(idea)));
+		int groupSuggestion = notif.addNotification(_OWNER_ID_, new NotifGroupSuggestion(firefox, id, idees.getIdeaWithoutEnrichment(idea)));
 		assertNotifDoesExists(groupSuggestion);
 		
 		when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id+"");
@@ -54,7 +54,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 		             	             	                     	GroupIdeaColumns.ID),
 		             	             	id));
 
-		int groupSuggestion = notif.addNotification(_MOI_AUTRE_, new NotifGroupSuggestion(moiAutre, id, idees.getIdea(idea)));
+		int groupSuggestion = notif.addNotification(_MOI_AUTRE_, new NotifGroupSuggestion(moiAutre, id, idees.getIdeaWithoutEnrichment(idea)));
 		assertNotifDoesExists(groupSuggestion);
 
 		when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id+"");

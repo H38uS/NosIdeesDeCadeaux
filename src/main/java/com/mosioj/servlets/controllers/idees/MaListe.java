@@ -74,7 +74,7 @@ public class MaListe extends AbstractIdea {
 											Integer.parseInt(parameters.get("priority")),
 											parameters.get("image"),
 											null);
-				addModificationNotification(users.getUser(userId), getIdeaWithoutEnrichment(ideaId), true);
+				addModificationNotification(users.getUser(userId), idees.getIdeaWithoutEnrichment(ideaId), true);
 				notif.removeAllType(userId, NotificationType.NO_IDEA);
 				
 				request.getSession().setAttribute("added_idea_id", ideaId);

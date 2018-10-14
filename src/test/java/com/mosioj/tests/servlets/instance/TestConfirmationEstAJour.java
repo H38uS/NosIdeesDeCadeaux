@@ -26,7 +26,7 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
 	public void testAskAndAnswerYes() throws SQLException, NoRowsException, ServletException, IOException {
 
 		int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
-		Idee idee = idees.getIdea(id);
+		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		
 		int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
 		assertNotifDoesExists(notifId);

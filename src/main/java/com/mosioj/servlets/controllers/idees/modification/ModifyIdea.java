@@ -100,7 +100,7 @@ public class ModifyIdea extends AbstractIdea {
 					if (notification instanceof NotifAskIfIsUpToDate) {
 						NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
 						notif.addNotification(	isUpToDate.getUserIdParam(),
-												new NotifConfirmedUpToDate(user, getIdeaWithoutEnrichment(ideaId)));
+												new NotifConfirmedUpToDate(user, idees.getIdeaWithoutEnrichment(ideaId)));
 						notif.remove(notification.id);
 					}
 					if (notification instanceof NotifIdeaAddedByFriend) {

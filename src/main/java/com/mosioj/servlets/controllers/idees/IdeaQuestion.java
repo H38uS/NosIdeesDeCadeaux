@@ -72,7 +72,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 
 		int userId = ParametersUtils.getUserId(request);
 		questions.addComment(userId, id, text);
-		Idee idea = getIdeaWithoutEnrichment(id);
+		Idee idea = getIdeeFromSecurityChecks();
 
 		Set<User> toBeNotified = new HashSet<User>();
 
