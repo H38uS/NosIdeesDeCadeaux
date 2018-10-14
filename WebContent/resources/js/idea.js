@@ -17,10 +17,14 @@ function estAJourIdea(e) {
 	
 	e.preventDefault();
 	var id = getURLParameter($(this).attr("href"), 'idee');
+	var from = getURLParameter($(this).attr("href"), 'from');
+	var idea = $(this).closest('.idea_square');
 	
 	servicePost('protected/service/est_a_jour',
 			{ idee : id },
-			function(data) {},
+			function(data) {
+				refreshIdea(idea, id, from);
+			},
 			"Création de la demande en cours...",
 			"La demande a bien été créée.",
 			"Impossible de créer la demande... Peut-être existe-t-elle déjà ?");

@@ -42,6 +42,9 @@
 					<img src="resources/image/non-reserve.png" title="Cette idée est libre... Faite plaisir en l'offrant !" alt="Idée non réservée" width="${action_img_width}px" />
 				</c:otherwise>
 			</c:choose>
+			<c:if test="${idee.hasAskedIfUpToDate()}">
+				<img src="resources/image/a_jour.png" title="Vous avez envoyé une demande pour savoir si c'est à jour" alt="Demande est-ce à jour envoyée" width="${action_img_width}px" />
+			</c:if>
 			<c:if test="${idee.hasComment()}">
 				<a href="protected/idee_commentaires?idee=${idee.id}" class="img">
 					<img src="resources/image/commentaires.png" title="Il existe des commentaires sur cette idée" width="${action_img_width}px" />

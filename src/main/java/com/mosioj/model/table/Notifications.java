@@ -21,9 +21,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -208,6 +210,42 @@ public class Notifications extends Table {
 	 */
 	public int getUserNotificationCount(int userId) throws SQLException {
 		return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, OWNER), userId);
+	}
+
+	/**
+	 * 
+	 * @param askingUser The user who has asked if the idea is up to date.
+	 * @return The set of idea id's on which the given user has asked if it is up to date.
+	 * @throws SQLException
+	 */
+	public Set<Integer> getIdeasOnWhichWeHaveAskedIfUpToDate(int askingUser) throws SQLException {
+
+		StringBuilder query = new StringBuilder();
+
+		query.append(MessageFormat.format("select np.{0} ", PARAMETER_VALUE));
+		query.append(MessageFormat.format("  from {0} np ", TABLE_PARAMS));
+		query.append(MessageFormat.format("  inner join {0} n  ", TABLE_NAME));
+		query.append(MessageFormat.format("     on n.{0} = np.{1} ", ID, NOTIFICATION_ID));
+		query.append(MessageFormat.format("    and np.{0} = ''IDEA_ID''", PARAMETER_NAME));
+		query.append(MessageFormat.format("  inner join {0} npp ", TABLE_PARAMS));
+		query.append(MessageFormat.format("     on n.{0} = npp.{1} ", ID, NOTIFICATION_ID));
+		query.append(MessageFormat.format("    and npp.{0} = ''USER_ID''", PARAMETER_NAME));
+		query.append(MessageFormat.format("    and npp.{0} = ?", PARAMETER_VALUE));
+
+		logger.debug(query.toString());
+		Set<Integer> userSet = new HashSet<Integer>();
+
+		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
+			ps.bindParameters(askingUser);
+			if (ps.execute()) {
+				ResultSet res = ps.getResultSet();
+				while (res.next()) {
+					userSet.add(res.getInt(PARAMETER_VALUE.name()));
+				}
+			}
+		}
+
+		return userSet;
 	}
 
 	/**
@@ -582,11 +620,11 @@ public class Notifications extends Table {
 
 	public void removeAll(int userId) throws SQLException {
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, OWNER), userId);
-		String query = MessageFormat.format(	"delete from {0} where not exists (select 1 from {1} n where {2} = n.{3}) ",
-													TABLE_PARAMS,
-													TABLE_NAME,
-													NOTIFICATION_ID,
-													ID);
+		String query = MessageFormat.format("delete from {0} where not exists (select 1 from {1} n where {2} = n.{3}) ",
+											TABLE_PARAMS,
+											TABLE_NAME,
+											NOTIFICATION_ID,
+											ID);
 		logger.debug(query);
 		getDb().executeUpdate(query);
 	}
