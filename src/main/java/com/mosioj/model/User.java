@@ -126,7 +126,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return name + " (" + email + ")";
+		return getName() + " (" + email + ")";
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class User {
 	 * @return The name with the email or the name with the email between parenthesis.
 	 */
 	public String getLongNameEmail() {
-		return name != null && !name.isEmpty() ? MessageFormat.format("{0} ({1})", name, email) : email;
+		return name != null && !name.isEmpty() ? MessageFormat.format("{0} ({1})", WordUtils.capitalize(name), email) : email;
 	}
 
 	public String getMyDName() {
