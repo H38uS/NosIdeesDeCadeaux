@@ -73,14 +73,15 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
-	// TODO : vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
-	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS (i.e. recharger l'idée)
+	// FIXME : 6 vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
+	// FIXME : 3 afficher une image si on a déjà fait une demande "est-ce à jour" + le faire dans le JS (i.e. recharger
+	// l'idée)
 
 	// TODO : faire du javascript pour les discussions
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// TODO : pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
+	// FIXME : 7 pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
 
 	// FIXME : 4 voir pour elastic search :)
 	// FIXME : 5 remplir le gdoc + historiser la base de test
@@ -88,7 +89,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
 
-	// TODO : faire un seul repo git ?
+	// TODO : faire un seul repo git ? -- Faire que le task dépende d'impulsion ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 
 	// TODO stocker l'objet User quand on se connecte

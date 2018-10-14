@@ -60,7 +60,7 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 
 		int userId = ParametersUtils.getUserId(request);
 
-		idea = idees.getIdea(ideaId);
+		idea = idees.getIdea(ideaId); // FIXME : enrich
 		if (idea == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
