@@ -70,8 +70,12 @@ function servicePost(url, params, successHandler, loadingMessage, successMessage
 
 	$.post(url, params, function(data) {
 		if ( typeof data.status === "undefined" || data.status !== 'ok' ) {
-			if ( typeof errorMessage === "undefined" ) {
-				errorMessage = "Echec de la mise à jour, veuillez réessayer.<br/> Si cela ne fonctionne pas à nouveau, essayez de recharger la page (touche F5).";
+			if ( typeof data.error_message === "undefined" || data.error_message === '' ) {
+				if ( typeof errorMessage === "undefined" ) {
+					errorMessage = "Echec de la mise à jour, veuillez réessayer.<br/> Si cela ne fonctionne pas à nouveau, essayez de recharger la page (touche F5).";
+				}
+			} else {
+				errorMessage = 'Une erreur est survenue: ' + data.error_message;
 			}
 			actionError('<img src="resources/image/ko.png" width="' + getPictureWidth() + '" /> ' + errorMessage);
 		} else {

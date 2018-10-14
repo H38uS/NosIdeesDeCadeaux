@@ -15,6 +15,8 @@ import javax.servlet.ReadListener;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -52,6 +54,11 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
 		when(request.getAttribute("device")).thenReturn(device);
 		when(request.getRequestDispatcher("/protected/erreur_parametre_ou_droit.jsp")).thenReturn(dispatcher);
+		try {
+			when(response.getOutputStream()).thenReturn(new MyServerOutput());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		instance = pInstance;
 		instance.setIdeaPicturePath(new File("C:\\temp"));
@@ -177,4 +184,25 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(request.getContentLength()).thenReturn(byteContent.length);
 	}
 
+	private class MyServerOutput extends ServletOutputStream {
+
+		@Override
+		public boolean isReady() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void setWriteListener(WriteListener writeListener) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void write(int b) throws IOException {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 }

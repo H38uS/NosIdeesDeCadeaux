@@ -86,8 +86,6 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
 
-	// FIXME : 3 racourcir les emails en vue portable ? Voir ceux de banque pop ?
-
 	// TODO : faire un seul repo git ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 
