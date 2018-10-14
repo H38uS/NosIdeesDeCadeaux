@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
@@ -28,7 +29,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxServlet {
 
 	private static final long serialVersionUID = -3425240682690763149L;
 	private static final Logger logger = LogManager.getLogger(GetIdeaOfFriendService.class);
-	
+
 	private static final String IDEA_ID_PARAM = "idee";
 	private static final String FROM_PARAM = "from";
 	public static final String VIEW_PAGE_URL = "/protected/service/get_idea_of_friend.jsp";
@@ -40,14 +41,17 @@ public class GetIdeaOfFriendService extends IdeesCadeauxServlet {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Idee idee = idees.getIdea(ParametersUtils.readInt(request, IDEA_ID_PARAM));
+		Idee idee = getIdeaAndEnrichIt(request, ParametersUtils.readInt(request, IDEA_ID_PARAM));
 		String from = ParametersUtils.readIt(request, FROM_PARAM);
-		if (from.startsWith("/")) from = from.substring(1);
+		if (from.startsWith("/"))
+			from = from.substring(1);
 
 		logger.debug(MessageFormat.format("Getting idea {0} from service call (from {1})...", idee.getId(), from));
-		
-		fillAUserIdea(ParametersUtils.getUserId(request), idee);
 
+		fillAUserIdea(	ParametersUtils.getUserId(request),
+						idee,
+						notif.hasNotification(	idee.owner.id,
+												new NotifAskIfIsUpToDate(users.getUser(ParametersUtils.getUserId(request)), idee)));
 
 		request.setAttribute("idee", idee);
 		request.setAttribute("identic_call_back", from);

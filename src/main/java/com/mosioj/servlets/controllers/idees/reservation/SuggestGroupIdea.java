@@ -50,7 +50,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
 		Idee idea;
 		try {
-			idea = idees.getIdea(idees.getIdeaId(groupId));
+			idea = getIdeaAndEnrichIt(request, idees.getIdeaId(groupId));
 		} catch (NoRowsException e) {
 			RootingsUtils.rootToUnexistingGroupError(request, response);
 			return;
@@ -58,7 +58,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 
 		int userId = ParametersUtils.getUserId(request);
 		User thisOne = users.getUser(userId);
-		
+
 		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, userId);
 		logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
 		List<User> removable = new ArrayList<User>();
@@ -83,7 +83,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet {
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		Idee idea;
 		try {
-			idea = idees.getIdea(idees.getIdeaId(groupId));
+			idea = getIdeaWithoutEnrichment(idees.getIdeaId(groupId));
 		} catch (NoRowsException e) {
 			RootingsUtils.rootToUnexistingGroupError(request, response);
 			return;

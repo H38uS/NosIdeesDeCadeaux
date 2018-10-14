@@ -17,6 +17,7 @@ import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -32,11 +33,13 @@ public class IdeaComments extends IdeesCadeauxServlet {
 		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
 	}
 
-	private void insertMandatoryParams(HttpServletRequest req, Integer id) throws SQLException {
-		Idee idea = idees.getIdea(id);
-		req.setAttribute("text", idea.getText());
-		req.setAttribute("idee", idea);
-		req.setAttribute("comments", comments.getCommentsOn(id));
+	private void insertMandatoryParams(HttpServletRequest request, Integer id) throws SQLException, NotLoggedInException {
+		Idee idea = getIdeaAndEnrichIt(request, id);
+
+		// FIXME : on ne doit plus voir besoin de tout ça 
+		request.setAttribute("text", idea.getText());
+		request.setAttribute("idee", idea);
+		request.setAttribute("comments", comments.getCommentsOn(id));
 	}
 
 	/**
@@ -66,7 +69,7 @@ public class IdeaComments extends IdeesCadeauxServlet {
 
 		int userId = ParametersUtils.getUserId(request);
 		comments.addComment(userId, id, text);
-		Idee idea = idees.getIdea(id);
+		Idee idea = getIdeaWithoutEnrichment(id);
 
 		Set<User> toBeNotified = new HashSet<User>();
 

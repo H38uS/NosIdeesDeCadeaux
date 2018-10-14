@@ -99,7 +99,8 @@ public class ModifyIdea extends AbstractIdea {
 				for (AbstractNotification notification : notifications) {
 					if (notification instanceof NotifAskIfIsUpToDate) {
 						NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
-						notif.addNotification(isUpToDate.getUserIdParam(), new NotifConfirmedUpToDate(user, idees.getIdea(ideaId)));
+						notif.addNotification(	isUpToDate.getUserIdParam(),
+												new NotifConfirmedUpToDate(user, getIdeaWithoutEnrichment(ideaId)));
 						notif.remove(notification.id);
 					}
 					if (notification instanceof NotifIdeaAddedByFriend) {
@@ -110,9 +111,7 @@ public class ModifyIdea extends AbstractIdea {
 
 		}
 
-		RootingsUtils.redirectToPage(	getFrom(request, MaListe.PROTECTED_MA_LISTE + "?" + "id=" + ideaId),
-										request,
-										response);
+		RootingsUtils.redirectToPage(getFrom(request, MaListe.PROTECTED_MA_LISTE + "?" + "id=" + ideaId), request, response);
 	}
 
 }

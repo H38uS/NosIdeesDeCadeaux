@@ -75,7 +75,7 @@ public class AjouterIdeeAmi extends AbstractIdea {
 											Integer.parseInt(parameters.get("priority")),
 											parameters.get("image"),
 											estSurprise ? currentUser : null);
-				Idee idea = idees.getIdea(ideaId);
+				Idee idea = getIdeaAndEnrichIt(request, ideaId);
 				request.setAttribute("text", idea.getText());
 				request.setAttribute("idea", idea);
 				

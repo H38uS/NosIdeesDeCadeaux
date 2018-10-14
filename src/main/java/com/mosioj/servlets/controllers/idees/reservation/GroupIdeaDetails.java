@@ -55,15 +55,14 @@ public class GroupIdeaDetails extends AbstractIdea {
 		}
 		double remaining = group.getTotal() - currentTotal;
 
-
 		Object errors = request.getSession().getAttribute("errors");
 		if (errors != null) {
 			request.setAttribute("errors", errors);
 			request.getSession().removeAttribute("errors");
 		}
-		
+
 		try {
-			request.setAttribute("idee", idees.getIdea(idees.getIdeaId(groupId)));
+			request.setAttribute("idee", getIdeaAndEnrichIt(request, idees.getIdeaId(groupId)));
 		} catch (NoRowsException e) {
 			RootingsUtils.rootToUnexistingGroupError(request, response);
 			return;

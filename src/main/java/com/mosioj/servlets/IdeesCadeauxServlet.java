@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -46,6 +47,7 @@ import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.UserRelationsSuggestion;
 import com.mosioj.model.table.Users;
+import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
@@ -509,10 +511,11 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		return nameOrEmail.trim();
 	}
 
-	protected void fillAUserIdea(int userId, Idee idee) throws SQLException {
+	protected void fillAUserIdea(int userId, Idee idee, boolean hasUserAskedIfUpToDate) throws SQLException {
 
 		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
 		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
+		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate);
 
 		User surpriseBy = idee.getSurpriseBy();
 		if (surpriseBy != null) {
@@ -547,12 +550,47 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * 
+	 * @param ideaId
+	 * @return The idea as is in DB.
+	 * @throws SQLException
+	 */
+	protected Idee getIdeaWithoutEnrichment(int ideaId) throws SQLException {
+		return idees.getIdea(ideaId);
+	}
+	
+	/**
+	 * 
+	 * @param request
+	 * @param ideaId
+	 * @return The idea from the DB, enriched with useful information.
+	 * @throws SQLException
+	 * @throws NotLoggedInException
+	 */
+	protected Idee getIdeaAndEnrichIt(HttpServletRequest request, int ideaId) throws SQLException, NotLoggedInException {
+		Idee idee = getIdeaWithoutEnrichment(ideaId);
+		int userId = ParametersUtils.getUserId(request);
+		fillAUserIdea(userId, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
+		return idee;
+	}
+
+	/**
+	 * Fills in the user ideas.
+	 * 
+	 * @param userId The connected user.
+	 * @param ids We want the ideas of those user list.
+	 * @throws SQLException
+	 */
 	protected void fillsUserIdeas(int userId, List<User> ids) throws SQLException {
+
+		Set<Integer> ideas = notif.getIdeasOnWhichWeHaveAskedIfUpToDate(userId);
+
 		logger.trace("Getting all ideas for all users...");
 		for (User user : ids) {
 			List<Idee> ownerIdeas = idees.getIdeasOf(user.id);
 			for (Idee idee : ownerIdeas) {
-				fillAUserIdea(userId, idee);
+				fillAUserIdea(userId, idee, ideas.contains(idee.getId()));
 			}
 			user.addIdeas(ownerIdeas);
 		}

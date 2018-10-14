@@ -33,13 +33,15 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 		super(new CanAskReplyToQuestions(userRelations, idees, IDEA_ID_PARAM));
 	}
 
-	private void insertMandatoryParams(HttpServletRequest req, Integer id) throws SQLException, NotLoggedInException {
-		Idee idea = idees.getIdea(id);
-		req.setAttribute("text", idea.getText());
-		req.setAttribute("idee", idea);
-		req.setAttribute("owner", idea.owner);
-		req.setAttribute("isOwner", idea.owner.id == ParametersUtils.getUserId(req));
-		req.setAttribute("comments", questions.getCommentsOn(id));
+	private void insertMandatoryParams(HttpServletRequest request, Integer id) throws SQLException, NotLoggedInException {
+		Idee idea = getIdeaAndEnrichIt(request, id);
+		
+		// FIXME : on ne doit plus voir besoin de tout ça 
+		request.setAttribute("text", idea.getText());
+		request.setAttribute("idee", idea);
+		request.setAttribute("owner", idea.owner);
+		request.setAttribute("isOwner", idea.owner.id == ParametersUtils.getUserId(request));
+		request.setAttribute("comments", questions.getCommentsOn(id));
 	}
 
 	/**
@@ -70,7 +72,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 
 		int userId = ParametersUtils.getUserId(request);
 		questions.addComment(userId, id, text);
-		Idee idea = idees.getIdea(id);
+		Idee idea = getIdeaWithoutEnrichment(id);
 
 		Set<User> toBeNotified = new HashSet<User>();
 
