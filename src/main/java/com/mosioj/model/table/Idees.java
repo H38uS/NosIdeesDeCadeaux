@@ -177,7 +177,7 @@ public class Idees extends Table {
 	 * @return All fields for this idea.
 	 * @throws SQLException
 	 */
-	public Idee getIdea(int idIdee) throws SQLException {
+	public Idee getIdeaWithoutEnrichment(int idIdee) throws SQLException {
 
 		StringBuilder query = getIdeaBasedSelect();
 		query.append(MessageFormat.format("where i.{0} = ?", ID));
