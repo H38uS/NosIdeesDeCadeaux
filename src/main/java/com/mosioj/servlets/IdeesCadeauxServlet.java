@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -29,7 +28,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
-import com.mosioj.model.Comment;
 import com.mosioj.model.Idee;
 import com.mosioj.model.Priorite;
 import com.mosioj.model.User;
@@ -49,7 +47,6 @@ import com.mosioj.model.table.UserRelationsSuggestion;
 import com.mosioj.model.table.Users;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
-import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
@@ -63,7 +60,7 @@ import com.mosioj.viewhelper.Escaper;
  *
  */
 @SuppressWarnings("serial")
-public abstract class IdeesCadeauxServlet extends HttpServlet {
+public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
 	// TODO : notification followers quand on ajoute des idées, les modifie etc.
 
@@ -177,7 +174,7 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
-	private final SecurityPolicy policy;
+	protected final P policy;
 	protected Map<String, String> parameters;
 	protected Device device;
 	private File ideasPicturePath;
@@ -187,35 +184,13 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 	 * 
 	 * @param policy The security policy defining whether we can interact with the parameters, etc.
 	 */
-	public IdeesCadeauxServlet(SecurityPolicy policy) {
+	public IdeesCadeauxServlet(P policy) {
 		users = new Users();
 		categories = new Categories();
 		priorities = new Priorites();
 		groupForIdea = new GroupIdea();
 		userRelationsSuggestion = new UserRelationsSuggestion();
 		this.policy = policy;
-	}
-
-	/**
-	 * 
-	 * @return The idea being checked.
-	 */
-	protected Idee getIdeeFromSecurityChecks() {
-		if (policy instanceof IdeaSecurityChecker) {
-			return ((IdeaSecurityChecker) policy).getIdea();
-		}
-		return null;
-	}
-
-	/**
-	 * 
-	 * @return The comment being checked.
-	 */
-	protected Comment getCommentFromSecurityChecks() {
-		if (policy instanceof CommentSecurityChecker) {
-			return ((CommentSecurityChecker) policy).getComment();
-		}
-		return null;
 	}
 
 	/**
@@ -265,11 +240,24 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 
 			// Mise à jour du nombre de notifications
 			try {
+
 				int userId = ParametersUtils.getUserId(request);
 				int count = notif.getUserNotificationCount(userId);
 				request.setAttribute("notif_count", count);
+
+				// FIXME : 0 faire une passe et utiliser l'idée des security check !
+				// Ajout d'information sur l'idée du Security check
+				if (policy instanceof IdeaSecurityChecker) {
+					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
+					fillAUserIdea(	userId,
+									idee,
+									notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
+				}
+
 			} catch (Exception e) {
 				// Osef
+				logger.warn(e.getMessage());
+				e.printStackTrace();
 			}
 
 			// Security has passed, perform the logic
@@ -334,8 +322,19 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 				int userId = ParametersUtils.getUserId(request);
 				int count = notif.getUserNotificationCount(userId);
 				request.setAttribute("notif_count", count);
+
+				// Ajout d'information sur l'idée du Security check
+				if (policy instanceof IdeaSecurityChecker) {
+					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
+					fillAUserIdea(	userId,
+									idee,
+									notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
+				}
+
 			} catch (Exception e) {
 				// Osef
+				logger.warn(e.getMessage());
+				e.printStackTrace();
 			}
 
 			// Security has passed, perform the logic
@@ -510,6 +509,8 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		return nameOrEmail.trim();
 	}
 
+	// FIXME : 1 déplacer dans idées ? Problème device.isMobile()
+	// faire un setIsMobile dans le default get/post ?
 	protected void fillAUserIdea(int userId, Idee idee, boolean hasUserAskedIfUpToDate) throws SQLException {
 
 		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
@@ -562,26 +563,5 @@ public abstract class IdeesCadeauxServlet extends HttpServlet {
 		int userId = ParametersUtils.getUserId(request);
 		fillAUserIdea(userId, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
 		return idee;
-	}
-
-	/**
-	 * Fills in the user ideas.
-	 * 
-	 * @param userId The connected user.
-	 * @param ids We want the ideas of those user list.
-	 * @throws SQLException
-	 */
-	protected void fillsUserIdeas(int userId, List<User> ids) throws SQLException {
-
-		Set<Integer> ideas = notif.getIdeasOnWhichWeHaveAskedIfUpToDate(userId);
-
-		logger.trace("Getting all ideas for all users...");
-		for (User user : ids) {
-			List<Idee> ownerIdeas = idees.getIdeasOf(user.id);
-			for (Idee idee : ownerIdeas) {
-				fillAUserIdea(userId, idee, ideas.contains(idee.getId()));
-			}
-			user.addIdeas(ownerIdeas);
-		}
 	}
 }

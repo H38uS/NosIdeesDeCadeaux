@@ -17,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_listes")
-public class AfficherListes extends AbstractUserListes {
+public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 1209953017190072617L;
 

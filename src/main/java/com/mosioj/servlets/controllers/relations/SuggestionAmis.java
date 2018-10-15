@@ -20,7 +20,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggestion_amis")
-public class SuggestionAmis extends IdeesCadeauxServlet {
+public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -8566629037022016825L;
 	private static final String DISPATCH_URL = "suggestion_amis.jsp";

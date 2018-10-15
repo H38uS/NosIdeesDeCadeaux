@@ -15,7 +15,7 @@ import com.mosioj.servlets.securitypolicy.NotificationModification;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/notification_delete")
-public class NotificationDeleteService extends AbstractService {
+public class NotificationDeleteService extends AbstractService<NotificationModification> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	private static final String NOTIFICATION_PARAMETER = "notif_id";
@@ -37,6 +37,6 @@ public class NotificationDeleteService extends AbstractService {
 		logger.info(MessageFormat.format(	"Suppression de la notification {0}",
 											ParametersUtils.readInt(request, NOTIFICATION_PARAMETER)));
 		
-		writeJSonOutput(response, makeJSonPair("status", "ok"));
+		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}
 }

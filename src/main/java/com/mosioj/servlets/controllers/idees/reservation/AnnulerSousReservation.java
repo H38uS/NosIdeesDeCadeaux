@@ -18,7 +18,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/annuler_sous_reservation")
-public class AnnulerSousReservation extends AbstractIdea {
+public class AnnulerSousReservation extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = 4998191671705040181L;
 	private static final Logger logger = LogManager.getLogger(AnnulerSousReservation.class);
@@ -33,7 +33,7 @@ public class AnnulerSousReservation extends AbstractIdea {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", DetailSousReservation.URL, IDEA_ID_PARAM, idea.getId()), request, response);
 	}
 
@@ -41,7 +41,7 @@ public class AnnulerSousReservation extends AbstractIdea {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		int userId = ParametersUtils.getUserId(request);
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 
 		if (idees.isSubBookBy(idea.getId(), userId)) {
 			logger.debug(MessageFormat.format("Suppression des sous réservations de {0} sur l''idée {1}", userId, idea.getId()));

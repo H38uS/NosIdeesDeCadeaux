@@ -19,7 +19,7 @@ import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/name_resolver")
-public class NameService extends AbstractService {
+public class NameService extends AbstractService<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	private static final String NAME_OR_EMAIL = "term";
@@ -56,7 +56,7 @@ public class NameService extends AbstractService {
 				i++;
 			}
 
-			writeJSonArrayOutput(response, resp);
+			writter.writeJSonArrayOutput(response, resp);
 
 		} catch (IOException e) {
 			e.printStackTrace();

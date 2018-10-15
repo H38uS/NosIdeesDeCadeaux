@@ -13,7 +13,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/public/NotFound")
-public class NotFound extends IdeesCadeauxServlet {
+public class NotFound extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 936404523785343564L;
 	private static final String VIEW_PROTECTED_URL = "/protected/NotFound.jsp";

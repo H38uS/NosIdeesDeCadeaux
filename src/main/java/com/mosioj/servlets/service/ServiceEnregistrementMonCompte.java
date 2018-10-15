@@ -20,7 +20,7 @@ import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/enregistrement_mon_compte")
-public class ServiceEnregistrementMonCompte extends AbstractService {
+public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -3371121559895996016L;
 	private static final Logger logger = LogManager.getLogger(ServiceEnregistrementMonCompte.class);
@@ -78,13 +78,13 @@ public class ServiceEnregistrementMonCompte extends AbstractService {
 
 		}
 
-		writeJSonOutput(response,
-						makeJSonPair("status", status),
-						makeJSonPair("errors", message),
-						makeJSonPair("avatar", avatar),
-						makeJSonPair("avatarLarge", avatarLarge),
-						makeJSonPair("avatarSmall", avatarSmall),
-						makeJSonPair("avatars", request.getAttribute("avatars").toString()));
+		writter.writeJSonOutput(response,
+								makeJSonPair("status", status),
+								makeJSonPair("errors", message),
+								makeJSonPair("avatar", avatar),
+								makeJSonPair("avatarLarge", avatarLarge),
+								makeJSonPair("avatarSmall", avatarSmall),
+								makeJSonPair("avatars", request.getAttribute("avatars").toString()));
 	}
 
 }

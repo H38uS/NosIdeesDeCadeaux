@@ -15,7 +15,7 @@ import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/reserver")
-public class ServiceReserver extends AbstractService {
+public class ServiceReserver extends AbstractService<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	private static final String IDEA_ID_PARAM = "idee";
@@ -42,6 +42,6 @@ public class ServiceReserver extends AbstractService {
 			idees.reserver(idea, userId);
 		}
 
-		writeJSonOutput(response, makeJSonPair("status", "ok"));
+		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}
 }

@@ -12,7 +12,7 @@ import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 
 @WebServlet("/protected/service/delete_idea")
-public class ServiceDeleteIdea extends AbstractService {
+public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	public static final String IDEE_ID_PARAM = "ideeId";
@@ -30,9 +30,9 @@ public class ServiceDeleteIdea extends AbstractService {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		IdeaInteractions logic = new IdeaInteractions();
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		logic.removeIt(idea, getIdeaPicturePath(), request);
 
-		writeJSonOutput(response, makeJSonPair("status", "ok"));
+		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}
 }

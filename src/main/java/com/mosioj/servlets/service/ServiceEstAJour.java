@@ -12,7 +12,7 @@ import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 
 @WebServlet("/protected/service/est_a_jour")
-public class ServiceEstAJour extends AbstractService {
+public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	private static final String IDEE_FIELD_PARAMETER = "idee";
@@ -30,9 +30,9 @@ public class ServiceEstAJour extends AbstractService {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		IdeaInteractions logic = new IdeaInteractions();
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		String status = logic.askIfUpToDate(idea, request) ? "ok" : "ko";
 
-		writeJSonOutput(response, makeJSonPair("status", status));
+		writter.writeJSonOutput(response, makeJSonPair("status", status));
 	}
 }

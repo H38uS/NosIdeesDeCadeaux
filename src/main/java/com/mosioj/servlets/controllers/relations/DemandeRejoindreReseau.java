@@ -17,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/demande_rejoindre_reseau")
-public class DemandeRejoindreReseau extends IdeesCadeauxServlet {
+public class DemandeRejoindreReseau extends IdeesCadeauxServlet<PeutDemanderARejoindreLeReseau> {
 
 	public static final String USER_ID_PARAM = "user_id";
 

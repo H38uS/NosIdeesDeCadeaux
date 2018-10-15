@@ -21,7 +21,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/reserver")
-public class ReserverIdee extends AbstractIdea {
+public class ReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final Logger logger = LogManager.getLogger(ReserverIdee.class);
 	private static final long serialVersionUID = 7349100644264613480L;

@@ -13,7 +13,7 @@ import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/est_a_jour")
-public class EstAJour extends AbstractIdea {
+public class EstAJour extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = -2229577569569388562L;
 	private static final String IDEE_FIELD_PARAMETER = "idee";
@@ -27,7 +27,7 @@ public class EstAJour extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		IdeaInteractions logic = new IdeaInteractions();
 
 		if (logic.askIfUpToDate(idea, request)) {

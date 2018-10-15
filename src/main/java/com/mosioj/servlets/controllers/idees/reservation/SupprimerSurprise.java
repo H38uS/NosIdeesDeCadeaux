@@ -18,7 +18,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_surprise")
-public class SupprimerSurprise extends AbstractIdea {
+public class SupprimerSurprise extends AbstractIdea<SurpriseModification> {
 
 	private static final Logger logger = LogManager.getLogger(SupprimerSurprise.class);
 	private static final long serialVersionUID = -8244829899125982644L;

@@ -22,7 +22,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/ajouter_idee_ami")
-public class AjouterIdeeAmi extends AbstractIdea {
+public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 
 	private static final long serialVersionUID = -7053283110787519597L;
 	private static final Logger logger = LogManager.getLogger(AjouterIdeeAmi.class);

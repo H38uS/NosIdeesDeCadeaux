@@ -19,7 +19,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/connexion_enfant")
-public class ConnexionEnfant extends IdeesCadeauxServlet {
+public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(ConnexionEnfant.class);

@@ -17,7 +17,7 @@ import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/rechercher_reseau")
-public class RechercherReseau extends AbstractListes<Relation> {
+public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 

@@ -15,7 +15,7 @@ import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/remove_an_idea")
-public class RemoveOneIdea extends AbstractIdea {
+public class RemoveOneIdea extends AbstractIdea<IdeaModification> {
 
 	public static final String IDEE_ID_PARAM = "ideeId";
 
@@ -37,7 +37,7 @@ public class RemoveOneIdea extends AbstractIdea {
 
 	protected void removeIt(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException {
 		IdeaInteractions logic = new IdeaInteractions();
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		logic.removeIt(idea, getIdeaPicturePath(), request);
 		RootingsUtils.redirectToPage(getFrom(request, MaListe.PROTECTED_MA_LISTE), request, response);
 	}

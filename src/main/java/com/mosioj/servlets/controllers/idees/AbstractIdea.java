@@ -24,7 +24,7 @@ import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
-public abstract class AbstractIdea extends IdeesCadeauxServlet {
+public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	private static final Logger logger = LogManager.getLogger(AbstractIdea.class);
@@ -37,7 +37,7 @@ public abstract class AbstractIdea extends IdeesCadeauxServlet {
 	 * 
 	 * @param policy The security policy defining whether we can interact with the parameters, etc.
 	 */
-	public AbstractIdea(SecurityPolicy policy) {
+	public AbstractIdea(P policy) {
 		super(policy);
 	}
 

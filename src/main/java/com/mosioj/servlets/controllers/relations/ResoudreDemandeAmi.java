@@ -29,7 +29,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/resoudre_demande_ami")
-public class ResoudreDemandeAmi extends IdeesCadeauxServlet {
+public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandesAmis> {
 
 	private static final long serialVersionUID = 454017088023043164L;
 	private static final Logger logger = LogManager.getLogger(ResoudreDemandeAmi.class);

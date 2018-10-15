@@ -19,7 +19,7 @@ import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
-public class ReinitialisationMotDePasse extends IdeesCadeauxServlet {
+public class ReinitialisationMotDePasse extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 5998641192324526001L;
 	public static final String VIEW_PAGE_URL = "/public/reinitialiser_mot_de_passe.jsp";

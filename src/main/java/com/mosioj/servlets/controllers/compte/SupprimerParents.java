@@ -17,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_parents")
-public class SupprimerParents extends IdeesCadeauxServlet {
+public class SupprimerParents extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(SupprimerParents.class);

@@ -17,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/je_le_veux_encore")
-public class JeLaVeuxEncore extends AbstractIdea {
+public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
 
 	private static final long serialVersionUID = 5633779078170135048L;
 	public static final String IDEA_ID_PARAM = "idee";
@@ -29,7 +29,7 @@ public class JeLaVeuxEncore extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 
 		Set<User> toBeNotified = new HashSet<User>();
 

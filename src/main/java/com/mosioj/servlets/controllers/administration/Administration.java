@@ -18,7 +18,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/administration/administration")
-public class Administration extends IdeesCadeauxServlet {
+public class Administration extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 1944117196491457908L;
 	private static final Logger logger = LogManager.getLogger(Administration.class);

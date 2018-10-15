@@ -25,6 +25,7 @@ import org.springframework.mobile.device.Device;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.compte.CreationCompte;
+import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.tests.TemplateTest;
 
 public abstract class AbstractTestServlet extends TemplateTest {
@@ -35,9 +36,9 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	protected HttpSession session;
 	protected Device device;
 
-	protected final IdeesCadeauxServlet instance;
+	protected final IdeesCadeauxServlet<? extends SecurityPolicy> instance;
 
-	public AbstractTestServlet(IdeesCadeauxServlet pInstance) {
+	public AbstractTestServlet(IdeesCadeauxServlet<? extends SecurityPolicy> pInstance) {
 
 		request = mock(HttpServletRequest.class);
 		response = mock(HttpServletResponse.class);

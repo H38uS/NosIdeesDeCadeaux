@@ -21,7 +21,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/ma_liste")
-public class MaListe extends AbstractIdea {
+public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 
 	/**
 	 * Class logger.

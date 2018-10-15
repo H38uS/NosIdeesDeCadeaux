@@ -21,7 +21,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/confirmation_est_a_jour")
-public class ConfirmationEstAJour extends AbstractIdea {
+public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 
 	private static final long serialVersionUID = -6645017540948612364L;
 	public static final String IDEE_FIELD_PARAMETER = "idee";
@@ -33,10 +33,10 @@ public class ConfirmationEstAJour extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER); // FIXME faire ça dans le post plutôt
+		Integer id = ParametersUtils.readInt(req, IDEE_FIELD_PARAMETER); // FIXME : 2 faire ça dans le post plutôt
 		idees.touch(id);
 
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
 		Set<Integer> ids = new HashSet<>();
 		for (AbstractNotification notification : notifications) {

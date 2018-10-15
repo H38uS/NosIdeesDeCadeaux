@@ -19,7 +19,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_reseau")
-public class AfficherReseau extends AbstractListes<Relation> {
+public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 

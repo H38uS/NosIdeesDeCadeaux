@@ -25,7 +25,7 @@ import com.mosioj.viewhelper.EmptyFilter;
 import com.mosioj.viewhelper.LoginHelper;
 
 @WebServlet("/creation_compte")
-public class CreationCompte extends IdeesCadeauxServlet {
+public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
 	public static final String SUCCES_URL = "/public/succes_creation.jsp";

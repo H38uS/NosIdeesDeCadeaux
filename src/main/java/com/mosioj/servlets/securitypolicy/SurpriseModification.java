@@ -60,7 +60,7 @@ public class SurpriseModification extends AllAccessToPostAndGet implements Secur
 
 		int userId = ParametersUtils.getUserId(request);
 
-		idea = idees.getIdeaWithoutEnrichment(ideaId); // FIXME : 0 enrich
+		idea = idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;

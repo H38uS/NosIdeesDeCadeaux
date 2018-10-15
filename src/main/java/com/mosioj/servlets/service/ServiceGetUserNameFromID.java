@@ -16,7 +16,7 @@ import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/get_user_name")
-public class ServiceGetUserNameFromID extends AbstractService {
+public class ServiceGetUserNameFromID extends AbstractService<NetworkAccess> {
 
 	private static final long serialVersionUID = 8894577701063844430L;
 	private static final Logger logger = LogManager.getLogger(ServiceGetUserNameFromID.class);
@@ -49,7 +49,7 @@ public class ServiceGetUserNameFromID extends AbstractService {
 			e.printStackTrace();
 		}
 
-		writeJSonOutput(response, makeJSonPair("status", status), makeJSonPair("message", res));
+		writter.writeJSonOutput(response, makeJSonPair("status", status), makeJSonPair("message", res));
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/dereserver")
-public class DereserverIdee extends AbstractIdea {
+public class DereserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
 	private static final long serialVersionUID = -8244829899125982644L;

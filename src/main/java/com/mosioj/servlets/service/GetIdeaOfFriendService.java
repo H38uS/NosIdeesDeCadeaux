@@ -25,7 +25,7 @@ import com.mosioj.utils.RootingsUtils;
  *
  */
 @WebServlet("/protected/service/get_idea_of_friend")
-public class GetIdeaOfFriendService extends IdeesCadeauxServlet {
+public class GetIdeaOfFriendService extends IdeesCadeauxServlet<IdeaInteraction> {
 
 	private static final long serialVersionUID = -3425240682690763149L;
 	private static final Logger logger = LogManager.getLogger(GetIdeaOfFriendService.class);

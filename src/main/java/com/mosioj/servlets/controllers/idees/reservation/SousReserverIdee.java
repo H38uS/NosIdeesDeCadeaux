@@ -15,7 +15,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/sous_reserver")
-public class SousReserverIdee extends AbstractIdea {
+public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = 7349100644264613480L;
 	private static final String IDEA_ID_PARAM = "idee";
@@ -30,7 +30,7 @@ public class SousReserverIdee extends AbstractIdea {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		req.setAttribute("idee", idea);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
@@ -39,7 +39,7 @@ public class SousReserverIdee extends AbstractIdea {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		int userId = ParametersUtils.getUserId(request);
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
 
 		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {

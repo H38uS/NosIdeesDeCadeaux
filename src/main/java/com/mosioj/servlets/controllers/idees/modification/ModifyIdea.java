@@ -29,7 +29,7 @@ import com.mosioj.utils.RootingsUtils;
 import com.mosioj.viewhelper.Escaper;
 
 @WebServlet("/protected/modifier_idee")
-public class ModifyIdea extends AbstractIdea {
+public class ModifyIdea extends AbstractIdea<IdeaModification> {
 
 	private static final Logger logger = LogManager.getLogger(ModifyIdea.class);
 	private static final long serialVersionUID = -1774633803227715931L;
@@ -48,7 +48,7 @@ public class ModifyIdea extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		idea.text = Escaper.htmlToText(idea.text);
 
 		request.setAttribute("types", categories.getCategories());
@@ -93,7 +93,7 @@ public class ModifyIdea extends AbstractIdea {
 				User user = users.getUser(ParametersUtils.getUserId(request));
 
 				// Ajout de notification aux amis si l'anniversaire approche
-				addModificationNotification(user, getIdeeFromSecurityChecks(), false);
+				addModificationNotification(user, policy.getIdea(), false);
 
 				List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, ideaId);
 				for (AbstractNotification notification : notifications) {

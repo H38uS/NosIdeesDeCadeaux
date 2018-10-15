@@ -25,7 +25,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mon_compte")
-public class MonCompte extends IdeesCadeauxServlet {
+public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -101081965549681889L;
 	private static final Logger logger = LogManager.getLogger(MonCompte.class);

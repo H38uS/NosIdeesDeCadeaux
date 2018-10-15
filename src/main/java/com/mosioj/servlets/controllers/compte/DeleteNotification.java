@@ -13,7 +13,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_notification")
-public class DeleteNotification extends IdeesCadeauxServlet {
+public class DeleteNotification extends IdeesCadeauxServlet<NotificationModification> {
 
 	private static final long serialVersionUID = -5381776220247069645L;
 	private static final String NOTIFICATION_PARAMETER = "notif_id";

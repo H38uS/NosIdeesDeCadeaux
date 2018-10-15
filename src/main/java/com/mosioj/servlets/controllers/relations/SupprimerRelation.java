@@ -17,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_relation")
-public class SupprimerRelation extends IdeesCadeauxServlet {
+public class SupprimerRelation extends IdeesCadeauxServlet<NetworkAccess> {
 
 	private static final long serialVersionUID = 2491763819457048609L;
 	public static final String USER_PARAMETER = "id";
@@ -41,7 +41,7 @@ public class SupprimerRelation extends IdeesCadeauxServlet {
 		User me = users.getUser(currentId);
 		notif.addNotification(user, new NotifFriendshipDropped(currentId, me.name));
 
-		// FIXME faire ça dans le post plutôt
+		// FIXME : 3 faire ça dans le post plutôt
 		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, req, resp);
 	}
 

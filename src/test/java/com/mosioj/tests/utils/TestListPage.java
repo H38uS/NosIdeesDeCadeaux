@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.controllers.relations.Page;
+import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
 public class TestListPage {
@@ -76,7 +77,7 @@ public class TestListPage {
 		
 	}
 
-	private class TestList extends AbstractListes<Object> {
+	private class TestList extends AbstractListes<Object, SecurityPolicy> {
 		
 		private static final long serialVersionUID = 1L;
 

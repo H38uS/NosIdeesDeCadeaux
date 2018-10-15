@@ -17,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggestion_rejoindre_reseau")
-public class SuggestionRejoindreReseau extends IdeesCadeauxServlet {
+public class SuggestionRejoindreReseau extends IdeesCadeauxServlet<NetworkAccess> {
 
 	private static final long serialVersionUID = 5529157183937072477L;
 	private static final String USER_PARAMETER = "userId";

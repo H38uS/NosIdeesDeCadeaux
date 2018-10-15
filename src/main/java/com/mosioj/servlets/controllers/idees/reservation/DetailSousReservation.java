@@ -19,7 +19,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/detail_sous_reservation")
-public class DetailSousReservation extends AbstractIdea {
+public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = -2188278918134412556L;
 	private static final Logger logger = LogManager.getLogger(DetailSousReservation.class);
@@ -57,7 +57,7 @@ public class DetailSousReservation extends AbstractIdea {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		int userId = ParametersUtils.getUserId(req);
 
 		setupCommon(req, idea, userId);
@@ -70,7 +70,7 @@ public class DetailSousReservation extends AbstractIdea {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		int userId = ParametersUtils.getUserId(request);
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 
 		setupCommon(request, idea, userId);
 

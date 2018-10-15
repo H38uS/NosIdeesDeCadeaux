@@ -16,7 +16,7 @@ import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/rechercher_personne")
-public class RechercherPersonne extends AbstractListes<User> {
+public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	public static final String DEFAULT_FORM_URL = "/protected/rechercher_personne.jsp";

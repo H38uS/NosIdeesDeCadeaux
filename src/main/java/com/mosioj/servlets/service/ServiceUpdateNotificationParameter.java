@@ -15,7 +15,7 @@ import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/update_notification_parameter")
-public class ServiceUpdateNotificationParameter extends AbstractService {
+public class ServiceUpdateNotificationParameter extends AbstractService<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 8087174276226168482L;
 	private static final Logger logger = LogManager.getLogger(ServiceUpdateNotificationParameter.class);
@@ -48,7 +48,7 @@ public class ServiceUpdateNotificationParameter extends AbstractService {
 			logger.error(e.getMessage());
 		}
 
-		writeJSonOutput(response, makeJSonPair("status", statut));
+		writter.writeJSonOutput(response, makeJSonPair("status", statut));
 	}
 
 }

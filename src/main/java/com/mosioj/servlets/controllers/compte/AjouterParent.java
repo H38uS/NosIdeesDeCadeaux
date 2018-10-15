@@ -18,7 +18,7 @@ import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/ajouter_parent")
-public class AjouterParent extends IdeesCadeauxServlet {
+public class AjouterParent extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(AjouterParent.class);

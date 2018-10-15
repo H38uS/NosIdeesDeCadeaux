@@ -26,7 +26,7 @@ import com.mosioj.utils.RootingsUtils;
  *
  * @param <T> The entity types displayed.
  */
-public abstract class AbstractListes<T> extends IdeesCadeauxServlet {
+public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
 
 	private static final long serialVersionUID = -3557546858990933563L;
 	private static final Logger LOGGER = LogManager.getLogger(AbstractListes.class);
@@ -34,11 +34,11 @@ public abstract class AbstractListes<T> extends IdeesCadeauxServlet {
 	private static final String PAGE_ARG = "page";
 	protected final int maxNumberOfResults;
 
-	public AbstractListes(SecurityPolicy policy, int maxNumberOfResults) {
+	public AbstractListes(P policy, int maxNumberOfResults) {
 		super(policy);
 		this.maxNumberOfResults = maxNumberOfResults;
 	}
-	public AbstractListes(SecurityPolicy policy) {
+	public AbstractListes(P policy) {
 		this(policy, 20); // Default max number
 	}
 

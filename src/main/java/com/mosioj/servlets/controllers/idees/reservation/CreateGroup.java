@@ -22,7 +22,7 @@ import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/create_a_group")
-public class CreateGroup extends AbstractIdea {
+public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	private static final Logger logger = LogManager.getLogger(CreateGroup.class);
@@ -39,7 +39,7 @@ public class CreateGroup extends AbstractIdea {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 		req.setAttribute("idee", idea);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
 	}
@@ -48,7 +48,7 @@ public class CreateGroup extends AbstractIdea {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 
 		logger.debug("Create a new group for idea : " + idea.getId());
 

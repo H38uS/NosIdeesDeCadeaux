@@ -15,7 +15,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_commentaire")
-public class SupprimerCommentaire extends IdeesCadeauxServlet {
+public class SupprimerCommentaire extends IdeesCadeauxServlet<CommentModification> {
 
 	private static final long serialVersionUID = 7722016569684838786L;
 	private static final String COMMENT_ID_PARAMETER = "id";
@@ -27,7 +27,7 @@ public class SupprimerCommentaire extends IdeesCadeauxServlet {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER);
-		Comment comment = getCommentFromSecurityChecks();
+		Comment comment = policy.getComment();
 		comments.delete(id);
 
 		RootingsUtils.rootToPage(	MessageFormat.format(	"{0}?{1}={2}",

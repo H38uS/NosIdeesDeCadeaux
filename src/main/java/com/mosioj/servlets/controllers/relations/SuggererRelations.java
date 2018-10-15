@@ -16,7 +16,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggerer_relations")
-public class SuggererRelations extends AbstractListes<User> {
+public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 
 	private static final long serialVersionUID = -5480617244868517709L;
 	private static final String USER_PARAMETER = "id";

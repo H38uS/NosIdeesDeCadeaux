@@ -16,7 +16,7 @@ import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/dereserver")
-public class ServiceDereserver extends AbstractService {
+public class ServiceDereserver extends AbstractService<IdeaInteractionBookingUpToDate> {
 
 	private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
 	private static final long serialVersionUID = -8244829899125982644L;
@@ -43,6 +43,6 @@ public class ServiceDereserver extends AbstractService {
 		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea, userId));
 		idees.dereserver(idea, userId);
 
-		writeJSonOutput(response, makeJSonPair("status", "ok"));
+		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}
 }

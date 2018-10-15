@@ -25,7 +25,7 @@ import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/detail_du_groupe")
-public class GroupIdeaDetails extends AbstractIdea {
+public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
 	private static final long serialVersionUID = -2188278918134412556L;
 	private static final Logger logger = LogManager.getLogger(GroupIdeaDetails.class);

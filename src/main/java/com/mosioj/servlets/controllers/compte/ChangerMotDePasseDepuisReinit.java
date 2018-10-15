@@ -16,7 +16,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/public/changer_mot_de_passe_depuis_reinit")
-public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet {
+public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordChangeRequest> {
 
 	private static final long serialVersionUID = 5998641192324526001L;
 	public static final String VIEW_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit.jsp";

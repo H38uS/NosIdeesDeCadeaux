@@ -13,7 +13,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_notifications")
-public class MyNotifications extends IdeesCadeauxServlet {
+public class MyNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -5988235378202921870L;
 	public static final String URL = "/protected/mes_notifications";

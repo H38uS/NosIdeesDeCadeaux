@@ -22,7 +22,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/idee_questions")
-public class IdeaQuestion extends IdeesCadeauxServlet {
+public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 
 	private static final long serialVersionUID = -433226623397937479L;
 	public static final String IDEA_ID_PARAM = "idee";
@@ -36,7 +36,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 	private void insertMandatoryParams(HttpServletRequest request, Integer id) throws SQLException, NotLoggedInException {
 		Idee idea = getIdeaAndEnrichIt(request, id);
 		
-		// FIXME : on ne doit plus voir besoin de tout ça 
+		// FIXME : 0 on ne doit plus voir besoin de tout ça 
 		request.setAttribute("text", idea.getText());
 		request.setAttribute("idee", idea);
 		request.setAttribute("owner", idea.owner);
@@ -72,7 +72,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet {
 
 		int userId = ParametersUtils.getUserId(request);
 		questions.addComment(userId, id, text);
-		Idee idea = getIdeeFromSecurityChecks();
+		Idee idea = policy.getIdea();
 
 		Set<User> toBeNotified = new HashSet<User>();
 

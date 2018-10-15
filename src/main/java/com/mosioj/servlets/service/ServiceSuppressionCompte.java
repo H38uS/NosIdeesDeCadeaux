@@ -16,7 +16,7 @@ import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/administration/service/supprimer_compte")
-public class ServiceSuppressionCompte extends AbstractService {
+public class ServiceSuppressionCompte extends AbstractService<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -8612163046284587669L;
 	private static final Logger logger = LogManager.getLogger(ServiceSuppressionCompte.class);
@@ -62,7 +62,7 @@ public class ServiceSuppressionCompte extends AbstractService {
 			messageErreur = "L'utilisateur n'existe pas";
 		}
 
-		writeJSonOutput(response, makeJSonPair("status", status), makeJSonPair("error_message", messageErreur));
+		writter.writeJSonOutput(response, makeJSonPair("status", status), makeJSonPair("error_message", messageErreur));
 	}
 
 }

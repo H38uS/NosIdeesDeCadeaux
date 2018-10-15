@@ -25,7 +25,7 @@ import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/suggerer_groupe_idee")
-public class SuggestGroupIdea extends IdeesCadeauxServlet {
+public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteraction> {
 
 	private static final Logger logger = LogManager.getLogger(SuggestGroupIdea.class);
 	private static final long serialVersionUID = 5094570058900475394L;

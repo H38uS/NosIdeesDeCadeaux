@@ -15,7 +15,7 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/index")
-public class Index extends IdeesCadeauxServlet {
+public class Index extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	public static final int NB_DAYS_MAX_BEFORE_BIRTHDAY = 20;
 	private static final long serialVersionUID = -8386214705432810179L;
