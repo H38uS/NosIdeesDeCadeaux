@@ -7,10 +7,10 @@ import static com.mosioj.model.table.columns.IdeeColumns.IDEE;
 import static com.mosioj.model.table.columns.IdeeColumns.IMAGE;
 import static com.mosioj.model.table.columns.IdeeColumns.MODIFICATION_DATE;
 import static com.mosioj.model.table.columns.IdeeColumns.OWNER;
-import static com.mosioj.model.table.columns.IdeeColumns.SURPRISE_PAR;
 import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE_LE;
+import static com.mosioj.model.table.columns.IdeeColumns.SURPRISE_PAR;
 import static com.mosioj.model.table.columns.IdeeColumns.TYPE;
 
 import java.sql.ResultSet;
@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.mobile.device.Device;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.Priorite;
@@ -47,6 +48,9 @@ public class Idees extends Table {
 	 * Class logger.
 	 */
 	private static final Logger logger = LogManager.getLogger(Idees.class);
+	
+	private final Comments comments = new Comments();
+	private final Questions questions = new Questions();
 
 	/**
 	 * Fills the idea structure from a result set query. /!\ The result set must be valid, and have a row available.
@@ -690,4 +694,50 @@ public class Idees extends Table {
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", "IDEES_HIST", OWNER), userId);
 	}
 
+	/**
+	 * 
+	 * @param userId
+	 * @param idee
+	 * @param hasUserAskedIfUpToDate
+	 * @param device 
+	 * @throws SQLException
+	 */
+	public void fillAUserIdea(int userId, Idee idee, boolean hasUserAskedIfUpToDate, Device device) throws SQLException {
+
+		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
+		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
+		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate); // FIXME : 8 gérer cela dans une table, et plus par notification...
+
+		User surpriseBy = idee.getSurpriseBy();
+		if (surpriseBy != null) {
+			if (surpriseBy.id == userId) {
+				idee.displayClass = "booked_by_me_idea";
+			} else {
+				idee.displayClass = "booked_by_others_idea";
+			}
+		} else if (idee.isBooked()) {
+			if (idee.getBookingOwner() != null) {
+				if (idee.getBookingOwner().id == userId) {
+					// Réservé par soit !
+					idee.displayClass = "booked_by_me_idea";
+				} else {
+					// Réservé par un autre
+					idee.displayClass = "booked_by_others_idea";
+				}
+			} else {
+				// Réserver par un groupe
+				idee.displayClass = "shared_booking_idea";
+			}
+		} else if (idee.isPartiallyBooked()) {
+			idee.displayClass = "shared_booking_idea";
+		}
+		// Sinon, on laisse la class par défaut
+
+		if (device.isMobile()) {
+			Priorite priorite = idee.getPriorite();
+			if (priorite != null && priorite.getImage() != null) {
+				priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"80px\"");
+			}
+		}
+	}
 }

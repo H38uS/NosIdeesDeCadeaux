@@ -29,8 +29,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
 import com.mosioj.model.Idee;
-import com.mosioj.model.Priorite;
-import com.mosioj.model.User;
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.Comments;
 import com.mosioj.model.table.GroupIdea;
@@ -76,7 +74,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// FIXME : 7 pour les images, pouvoir faire un copier / coller ou un déplacer ici ?
+	// FIXME : 7 pour les images, pouvoir faire un copier / coller ou un déplacer ici ? Ou copier une url qui contient
+	// une image
 
 	// FIXME : 4 voir pour elastic search :)
 	// FIXME : 5 remplir le gdoc + historiser la base de test
@@ -248,9 +247,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				// Ajout d'information sur l'idée du Security check
 				if (policy instanceof IdeaSecurityChecker) {
 					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-					fillAUserIdea(	userId,
-									idee,
-									notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
+					idees.fillAUserIdea(userId,
+										idee,
+										notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
+										device);
 				}
 
 			} catch (Exception e) {
@@ -325,9 +325,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				// Ajout d'information sur l'idée du Security check
 				if (policy instanceof IdeaSecurityChecker) {
 					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-					fillAUserIdea(	userId,
-									idee,
-									notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
+					idees.fillAUserIdea(userId,
+										idee,
+										notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
+										device);
 				}
 
 			} catch (Exception e) {
@@ -508,47 +509,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		return nameOrEmail.trim();
 	}
 
-	// FIXME : 1 déplacer dans idées ? Problème device.isMobile()
-	// faire un setIsMobile dans le default get/post ?
-	protected void fillAUserIdea(int userId, Idee idee, boolean hasUserAskedIfUpToDate) throws SQLException {
-
-		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
-		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
-		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate);
-
-		User surpriseBy = idee.getSurpriseBy();
-		if (surpriseBy != null) {
-			if (surpriseBy.id == userId) {
-				idee.displayClass = "booked_by_me_idea";
-			} else {
-				idee.displayClass = "booked_by_others_idea";
-			}
-		} else if (idee.isBooked()) {
-			if (idee.getBookingOwner() != null) {
-				if (idee.getBookingOwner().id == userId) {
-					// Réservé par soit !
-					idee.displayClass = "booked_by_me_idea";
-				} else {
-					// Réservé par un autre
-					idee.displayClass = "booked_by_others_idea";
-				}
-			} else {
-				// Réserver par un groupe
-				idee.displayClass = "shared_booking_idea";
-			}
-		} else if (idee.isPartiallyBooked()) {
-			idee.displayClass = "shared_booking_idea";
-		}
-		// Sinon, on laisse la class par défaut
-
-		if (device.isMobile()) {
-			Priorite priorite = idee.getPriorite();
-			if (priorite != null && priorite.getImage() != null) {
-				priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"80px\"");
-			}
-		}
-	}
-
 	/**
 	 * 
 	 * @param request
@@ -560,7 +520,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	protected Idee getIdeaAndEnrichIt(HttpServletRequest request, int ideaId) throws SQLException, NotLoggedInException {
 		Idee idee = idees.getIdeaWithoutEnrichment(ideaId);
 		int userId = ParametersUtils.getUserId(request);
-		fillAUserIdea(userId, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)));
+		idees.fillAUserIdea(userId,
+							idee,
+							notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
+							device);
 		return idee;
 	}
 }

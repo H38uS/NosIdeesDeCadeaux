@@ -43,7 +43,7 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
 		for (User user : ids) {
 			List<Idee> ownerIdeas = idees.getIdeasOf(user.id);
 			for (Idee idee : ownerIdeas) {
-				fillAUserIdea(userId, idee, ideas.contains(idee.getId()));
+				idees.fillAUserIdea(userId, idee, ideas.contains(idee.getId()), device);
 			}
 			user.addIdeas(ownerIdeas);
 		}
