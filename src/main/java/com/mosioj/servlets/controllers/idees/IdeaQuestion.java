@@ -17,7 +17,6 @@ import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.CanAskReplyToQuestions;
-import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -31,17 +30,6 @@ public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 
 	public IdeaQuestion() {
 		super(new CanAskReplyToQuestions(userRelations, idees, IDEA_ID_PARAM));
-	}
-
-	private void insertMandatoryParams(HttpServletRequest request, Integer id) throws SQLException, NotLoggedInException {
-		Idee idea = policy.getIdea();
-		
-		// FIXME : 0 on ne doit plus avoir besoin de tout ça 
-		request.setAttribute("text", idea.getText());
-		request.setAttribute("idee", idea);
-		request.setAttribute("owner", idea.owner);
-		request.setAttribute("isOwner", idea.owner.id == ParametersUtils.getUserId(request));
-		request.setAttribute("comments", questions.getCommentsOn(id));
 	}
 
 	/**
@@ -58,9 +46,11 @@ public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
-		insertMandatoryParams(request, id);
-		dropNotificationOnView(ParametersUtils.getUserId(request), id);
+		Idee idea = policy.getIdea();
+		request.setAttribute("idee", idea);
+		request.setAttribute("isOwner", idea.owner.id == ParametersUtils.getUserId(request));
+		request.setAttribute("comments", questions.getCommentsOn(idea.getId()));
+		dropNotificationOnView(ParametersUtils.getUserId(request), idea.getId());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
@@ -92,9 +82,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 			notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
 		}
 
-		insertMandatoryParams(request, id);
 		dropNotificationOnView(ParametersUtils.getUserId(request), id);
-		request.setAttribute("success", true);
 		RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", WEB_SERVLET, IDEA_ID_PARAM, id), request, response);
 	}
 

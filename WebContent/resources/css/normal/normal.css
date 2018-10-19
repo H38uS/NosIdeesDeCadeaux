@@ -280,7 +280,7 @@
 }
 .comment_header_mine {
 	padding: 3px;
-	background: #353b43;
+	background: #094dbc;
 	color: white;
 	-webkit-border-radius: 7px 7px 0 0;
 	-moz-border-radius: 7px 7px 0 0;
@@ -322,4 +322,9 @@
 	-webkit-border-radius: 0 0 7px 7px;
 	-moz-border-radius: 0 0 7px 7px;
 	border-radius: 0 0 7px 7px;
+}
+
+.comment_mine > .comment_text {
+	background-color: #e0ebfc;
+	color: black;
 }

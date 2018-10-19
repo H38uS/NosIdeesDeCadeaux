@@ -30,7 +30,7 @@
 					<h3>Répondez aux questions / Laissez un message pour cette idée</h3>
 				</c:when>
 				<c:otherwise>
-					<h3>Posez une question à ${owner.name}</h3>
+					<h3>Posez une question à ${idee.owner.name}</h3>
 				</c:otherwise>
 			</c:choose>
 			<form action="protected/idee_questions" method="post">
@@ -76,9 +76,9 @@
 									<div class="comment_text">${comment.text}</div>
 								</div>
 							</c:when>
-							<c:when test="${comment.writtenBy.id == owner.id}">
+							<c:when test="${comment.writtenBy.id == idee.owner.id}">
 								<div class="comment comment_owner">
-									<div class="comment_header_owner">Posté par ${owner.name} le ${comment.time}</div>
+									<div class="comment_header_owner">Posté par ${idee.owner.name} le ${comment.time}</div>
 									<div class="comment_text">${comment.text}</div>
 								</div>
 							</c:when>
