@@ -245,7 +245,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				int count = notif.getUserNotificationCount(userId);
 				request.setAttribute("notif_count", count);
 
-				// FIXME : 0 faire une passe et utiliser l'idée des security check !
 				// Ajout d'information sur l'idée du Security check
 				if (policy instanceof IdeaSecurityChecker) {
 					Idee idee = ((IdeaSecurityChecker) policy).getIdea();

@@ -62,7 +62,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer ideaId = ParametersUtils.readInt(request, IDEE_ID_PARAM);
+		Idee idea = policy.getIdea();
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
@@ -89,18 +89,18 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
 
-				idees.modifier(ideaId, parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
+				idees.modifier(idea.getId(), parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
 				User user = users.getUser(ParametersUtils.getUserId(request));
 
 				// Ajout de notification aux amis si l'anniversaire approche
 				addModificationNotification(user, policy.getIdea(), false);
 
-				List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, ideaId);
+				List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, idea.getId());
 				for (AbstractNotification notification : notifications) {
 					if (notification instanceof NotifAskIfIsUpToDate) {
 						NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
 						notif.addNotification(	isUpToDate.getUserIdParam(),
-												new NotifConfirmedUpToDate(user, idees.getIdeaWithoutEnrichment(ideaId)));
+												new NotifConfirmedUpToDate(user, idea));
 						notif.remove(notification.id);
 					}
 					if (notification instanceof NotifIdeaAddedByFriend) {
@@ -111,7 +111,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 
 		}
 
-		RootingsUtils.redirectToPage(getFrom(request, MaListe.PROTECTED_MA_LISTE + "?" + "id=" + ideaId), request, response);
+		RootingsUtils.redirectToPage(getFrom(request, MaListe.PROTECTED_MA_LISTE + "?" + "id=" + idea.getId()), request, response);
 	}
 
 }
