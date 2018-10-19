@@ -41,7 +41,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxServlet<IdeaInteraction>
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Idee idee = getIdeaAndEnrichIt(request, ParametersUtils.readInt(request, IDEA_ID_PARAM));
+		Idee idee = policy.getIdea();
 		String from = ParametersUtils.readIt(request, FROM_PARAM);
 		if (from.startsWith("/"))
 			from = from.substring(1);

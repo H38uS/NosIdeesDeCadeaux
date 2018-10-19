@@ -34,9 +34,9 @@ public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	}
 
 	private void insertMandatoryParams(HttpServletRequest request, Integer id) throws SQLException, NotLoggedInException {
-		Idee idea = getIdeaAndEnrichIt(request, id);
+		Idee idea = policy.getIdea();
 		
-		// FIXME : 0 on ne doit plus voir besoin de tout ça 
+		// FIXME : 0 on ne doit plus avoir besoin de tout ça 
 		request.setAttribute("text", idea.getText());
 		request.setAttribute("idee", idea);
 		request.setAttribute("owner", idea.owner);
