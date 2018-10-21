@@ -2,8 +2,19 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<t:normal_protected>
-		<jsp:body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<t:template_head_includes>
+	<link rel="stylesheet" type="text/css" href="resources/css/lib/thickbox.css" />
+	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
+	<c:choose>
+		<c:when test="${is_mobile}">
+			<script src="resources/js/mobile/idea.js" type="text/javascript"></script>
+		</c:when>
+	</c:choose>
+</t:template_head_includes>
+<t:template_body_protected>
+	<jsp:body>
 		Avant d'ajouter une idée, je voudrai consulter <a href="protected/voir_liste?id=${userid}">ma liste</a>.
 		<h2>Ajouter une nouvelle idée</h2>
 		<div>
@@ -26,7 +37,10 @@
 						</select>
 						<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
 						<label for="imageFile" class="custom-file-upload">Ajouter une image</label>
-						<span id="newImage" class="input"></span>
+						<span id="newImage" class="input"></span><br/>
+						<div class="center">
+							<img id="imageFilePreview" alt="" src="" width="400" />
+						</div>
 						<input type="submit" name="submit" id="submit" value="Ajouter" />
 					</form>
 				</c:when>
@@ -35,7 +49,7 @@
 						<table id="ma_liste_table_ajouter">
 							<tr>
 								<td><label for="text">Le texte de l'idée</label></td>
-								<td><textarea id="text" name="text" cols="70" rows="6"></textarea></td>
+								<td><textarea id="text" name="text" cols="70" rows="6" placeholder="Tapez ici le texte de votre idée !"></textarea></td>
 							</tr>
 							<tr>
 								<td><label for="type">Type</label></td>
@@ -75,6 +89,12 @@
 								</td>
 							</tr>
 							<tr>
+								<td></td>
+								<td>
+									<img id="imageFilePreview" alt="" src="" width="300" />
+								</td>
+							</tr>
+							<tr>
 								<td colspan="2" align="center">
 									<input type="submit" name="submit" id="submit" value="Ajouter" />
 								</td>
@@ -95,4 +115,5 @@
 			</c:if>
 		</div>
 	</jsp:body>
-</t:normal_protected>
+</t:template_body_protected>
+</html>

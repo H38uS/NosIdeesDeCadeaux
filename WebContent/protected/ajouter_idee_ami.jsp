@@ -63,6 +63,12 @@
 						</td>
 					</tr>
 					<tr>
+						<td></td>
+						<td>
+							<img id="imageFilePreview" alt="" src="" width="300" />
+						</td>
+					</tr>
+					<tr>
 						<td colspan="2" align="center">
 							<input type="submit" name="submit" id="submit" value="Ajouter" />
 						</td>

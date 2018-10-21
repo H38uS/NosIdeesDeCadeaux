@@ -63,6 +63,12 @@
 					</td>
 				</tr>
 				<tr>
+					<td></td>
+					<td>
+						<img id="imageFilePreview" alt="" src="" width="300" />
+					</td>
+				</tr>
+				<tr>
 					<td>Nouveau mot de passe</td>
 					<td>
 						<input type="password" name="new_password" id="new_password" value="" />

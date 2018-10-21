@@ -1,6 +1,22 @@
 myTooltipsterInfoParam={delay: 200, position: 'bottom', theme: 'tooltipster-default'};
 myTooltipsterPrioParam={delay: 800, position: 'bottom', contentAsHTML: true, theme: 'tooltipster-html'};
 
+function loadPreview(e) {
+
+	var inputFiles = $('#imageFile').prop('files');
+	if (inputFiles == undefined || inputFiles.length == 0)
+		return;
+	var inputFile = inputFiles[0];
+
+	var reader = new FileReader();
+	reader.onload = function(event) {
+		$("#imageFilePreview").attr("src", event.target.result);
+	};
+	// no error for the preview --> reader.onerror = function(event) {};
+	reader.readAsDataURL(inputFile);
+
+}
+
 $(document).ready(function() {
 	$("span.checkbox").click(function() {
 		var checkBoxes = $(this).prev();
@@ -8,6 +24,7 @@ $(document).ready(function() {
 	});
 	$('#imageFile').change(function() {
 		$('#newImage').text($(this).val());
+		loadPreview();
 	});
 
 	if (typeof ($().tooltipster) === "function") {

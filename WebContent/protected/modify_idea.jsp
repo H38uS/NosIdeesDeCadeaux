@@ -65,6 +65,12 @@
 								<label for="imageFile" class="custom-file-upload" >Choisissez une nouvelle image</label>
 							</td>
 						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<img id="imageFilePreview" alt="" src="" width="300" />
+							</td>
+						</tr>
 						<c:if test="${not empty idea.image}">
 							<tr>
 								<td>Image actuelle</td>

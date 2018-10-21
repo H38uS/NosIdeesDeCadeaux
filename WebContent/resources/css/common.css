@@ -73,6 +73,10 @@ img.clickable:active, a:active > img:active {
 	border-radius: 2px;
 }
 
+td > #imageFilePreview {
+	margin-left: 7px;
+}
+
 /* Les erreurs... */
 .error, .errors {
 	font-size: 90%;
