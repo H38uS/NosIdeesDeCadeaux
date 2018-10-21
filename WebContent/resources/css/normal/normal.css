@@ -1,3 +1,15 @@
+.picture_drag_over {
+	background-color: red;
+}
+
+#newImage {
+	padding: 5px;
+	font-style: italic;
+	font-size: 80%;
+	color: grey;
+}
+
+
 /*******************************/
 /* *** Formulaire de login *** */
 /*******************************/

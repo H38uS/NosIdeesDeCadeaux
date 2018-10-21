@@ -11,6 +11,9 @@
 		<c:when test="${is_mobile}">
 			<script src="resources/js/mobile/idea.js" type="text/javascript"></script>
 		</c:when>
+		<c:otherwise>
+			<script src="resources/js/browser/pictures.js" type="text/javascript"></script>
+		</c:otherwise>
 	</c:choose>
 </t:template_head_includes>
 <t:template_body_protected>
@@ -77,7 +80,7 @@
 							<tr>
 								<td>Fichier Choisi</td>
 								<td>
-									<span id="newImage" class="input"></span>
+									<div id="newImage" class="input">Faites glisser une image ici ou cliquez sur le bouton ci-dessous</div>
 								</td>
 							</tr>
 							<tr>
