@@ -27,10 +27,15 @@ public class SupprimerRelation extends IdeesCadeauxServlet<NetworkAccess> {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
+	}
 
-		Integer user = ParametersUtils.readInt(req, USER_PARAMETER);
-		int currentId = ParametersUtils.getUserId(req);
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+
+		Integer user = ParametersUtils.readInt(request, USER_PARAMETER);
+		int currentId = ParametersUtils.getUserId(request);
 
 		// Drops it
 		userRelations.deleteAssociation(user, currentId);
@@ -41,13 +46,7 @@ public class SupprimerRelation extends IdeesCadeauxServlet<NetworkAccess> {
 		User me = users.getUser(currentId);
 		notif.addNotification(user, new NotifFriendshipDropped(currentId, me.name));
 
-		// FIXME : 3 faire ça dans le post plutôt
-		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, req, resp);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, request, response);
 	}
 
 }

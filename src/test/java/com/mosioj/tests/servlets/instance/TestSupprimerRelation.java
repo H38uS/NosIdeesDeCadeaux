@@ -33,7 +33,7 @@ public class TestSupprimerRelation extends AbstractTestServlet {
 		assertNotifDoesExists(notifId);
 		
 		when(request.getParameter(SupprimerRelation.USER_PARAMETER)).thenReturn(_MOI_AUTRE_ + "");
-		doTestGet(request, response);
+		doTestPost(request, response);
 
 		assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
 		assertNotifDoesNotExists(notifId);

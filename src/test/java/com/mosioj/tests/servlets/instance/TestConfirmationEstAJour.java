@@ -33,7 +33,7 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
 
 		when(request.getRequestDispatcher(MyNotifications.URL)).thenReturn(dispatcher);
 		when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id+"");
-		doTestGet(request, response);
+		doTestPost(request, response);
 
 		assertNotifDoesNotExists(notifId);
 	}

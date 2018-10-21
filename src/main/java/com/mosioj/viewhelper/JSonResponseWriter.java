@@ -38,25 +38,19 @@ public class JSonResponseWriter {
 
 	}
 
-	private void writeJSonOutput(HttpServletResponse response, String jsonObject) throws IOException {
-		StringBuilder builder = new StringBuilder();
-		builder.append("{");
-		builder.append(jsonObject);
-		builder.append("}");
-		buildResponse(response, builder.toString());
-	}
-
+	// FIXME : 8 faire un objet réponse avec un statut, un message d'erreur et un objet optionnel
 	public void writeJSonOutput(HttpServletResponse response, JSonPair... values) {
 		try {
 			if (values.length > 0) {
 				StringBuilder json = new StringBuilder();
+				json.append("{");
 				for (JSonPair value : values) {
 					json.append(JSONObject.toString(value.left, value.right));
 					json.append(",");
 				}
 				json.deleteCharAt(json.length() - 1);
-
-				writeJSonOutput(response, json.toString());
+				json.append("}");
+				buildResponse(response, json.toString());
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());

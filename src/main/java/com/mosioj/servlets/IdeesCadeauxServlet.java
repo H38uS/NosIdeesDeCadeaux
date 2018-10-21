@@ -68,17 +68,17 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
-	// FIXME : 6 vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
+	// FIXME : 7 vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
 
 	// TODO : faire du javascript pour les discussions
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// FIXME : 7 pour les images, pouvoir faire un copier / coller ou un déplacer ici ? Ou copier une url qui contient
+	// FIXME : 6 pour les images, pouvoir faire un copier / coller ou un déplacer ici ? Ou copier une url qui contient
 	// une image
 
 	// FIXME : 4 voir pour elastic search :)
-	// FIXME : 5 remplir le gdoc + historiser la base de test
+	// FIXME : 9 remplir le gdoc + historiser la base de test
 
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
