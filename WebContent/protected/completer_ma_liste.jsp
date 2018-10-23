@@ -80,7 +80,7 @@
 							<tr>
 								<td>Fichier Choisi</td>
 								<td>
-									<div id="newImage" class="input">Faites glisser une image ici ou cliquez sur le bouton ci-dessous</div>
+									<div id="newImage" class="picture_not_drag input"></div>
 								</td>
 							</tr>
 							<tr>

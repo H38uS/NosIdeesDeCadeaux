@@ -1,12 +1,23 @@
 myTooltipsterInfoParam={delay: 200, position: 'bottom', theme: 'tooltipster-default'};
 myTooltipsterPrioParam={delay: 800, position: 'bottom', contentAsHTML: true, theme: 'tooltipster-html'};
 
+pictureNeedsRefresh = false;
+
 function loadPreview(e) {
 
+	if (!pictureNeedsRefresh) {
+		return;
+	}
+	pictureNeedsRefresh = false;
+	
 	var inputFiles = $('#imageFile').prop('files');
 	if (inputFiles == undefined || inputFiles.length == 0)
 		return;
 	var inputFile = inputFiles[0];
+	
+	var fileName = inputFile.name;
+	lastFilePreview = fileName;
+	$('#newImage').text(fileName);
 
 	var reader = new FileReader();
 	reader.onload = function(event) {
@@ -22,8 +33,8 @@ $(document).ready(function() {
 		var checkBoxes = $(this).prev();
 		checkBoxes.prop("checked", !checkBoxes.prop("checked"));
 	});
-	$('#imageFile').change(function() {
-		$('#newImage').text($(this).val());
+	$('#imageFile').on("change", function() {
+		pictureNeedsRefresh = true;
 		loadPreview();
 	});
 

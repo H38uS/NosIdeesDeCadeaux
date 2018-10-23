@@ -1,5 +1,10 @@
 .picture_drag_over {
-	background-color: red;
+	border: 1px inset blue;
+	background-color: #eaecff;
+	border-radius: 5px;
+}
+.picture_not_drag {
+	border: 1px solid white;
 }
 
 #newImage {

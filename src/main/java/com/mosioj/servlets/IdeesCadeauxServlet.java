@@ -74,8 +74,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// FIXME : 6 pour les images, pouvoir faire un copier / coller ou un déplacer ici ? Ou copier une url qui contient
-	// une image
+	// FIXME : 0 pour les images, pouvoir faire un copier / coller 
+	// => le drag and drop fonctionne pour compléter ma liste, le faire pour partout !!
+	// => essayer de retailler l'image avant ajout
 
 	// FIXME : 4 voir pour elastic search :)
 	// FIXME : 9 remplir le gdoc + historiser la base de test
