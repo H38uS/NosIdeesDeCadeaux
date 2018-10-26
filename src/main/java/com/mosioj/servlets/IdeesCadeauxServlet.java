@@ -74,10 +74,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// FIXME : 0 pour les images, pouvoir faire un copier / coller 
-	// => le drag and drop fonctionne pour compléter ma liste, le faire pour partout !!
-	// => essayer de retailler l'image avant ajout
-
 	// FIXME : 4 voir pour elastic search :)
 	// FIXME : 9 remplir le gdoc + historiser la base de test
 
@@ -241,7 +237,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			// Mise à jour du nombre de notifications
 			try {
 
-				int userId = ParametersUtils.getUserId(request);
+				int userId = ParametersUtils.getUserId(request); // FIXME faut y faire que si on est loggé
 				int count = notif.getUserNotificationCount(userId);
 				request.setAttribute("notif_count", count);
 
