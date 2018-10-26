@@ -21,7 +21,7 @@
 .default_form {
 	background-color: #8a8a8a;
 	color: white;
-	width: 700px;
+	width: 800px;
 	margin: 50px auto;
 	margin-bottom: 0;
 	padding: 20px 50px;
@@ -48,6 +48,10 @@
 	background: #353b43;
 	color: white;
 	text-decoration: none;
+}
+
+.default_form #newImage {
+	color: white;
 }
 
 /***************************/

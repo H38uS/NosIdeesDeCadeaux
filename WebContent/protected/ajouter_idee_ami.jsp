@@ -2,8 +2,22 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<t:normal_protected>
-		<jsp:body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<t:template_head_includes>
+	<link rel="stylesheet" type="text/css" href="resources/css/lib/thickbox.css" />
+	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
+	<c:choose>
+		<c:when test="${is_mobile}">
+			<script src="resources/js/mobile/idea.js" type="text/javascript"></script>
+		</c:when>
+		<c:otherwise>
+			<script src="resources/js/browser/pictures.js" type="text/javascript"></script>
+		</c:otherwise>
+	</c:choose>
+</t:template_head_includes>
+<t:template_body_protected>
+	<jsp:body>
 		<c:if test="${not empty text}">
 			Votre idée a bien été créé. Son contenu:
 			<p>${text}</p>
@@ -87,4 +101,5 @@
 			</c:if>
 		</div>
 	</jsp:body>
-</t:normal_protected>
+</t:template_body_protected>
+</html>
