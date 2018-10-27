@@ -74,7 +74,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
-	// FIXME : 4 voir pour elastic search :)
+	// TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
 	// FIXME : 9 remplir le gdoc + historiser la base de test
 
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
@@ -237,7 +237,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			// Mise à jour du nombre de notifications
 			try {
 
-				int userId = ParametersUtils.getUserId(request); // FIXME faut y faire que si on est loggé
+				int userId = ParametersUtils.getUserId(request); // FIXME : 3 faut y faire que si on est loggé
 				int count = notif.getUserNotificationCount(userId);
 				request.setAttribute("notif_count", count);
 

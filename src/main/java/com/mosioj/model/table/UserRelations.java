@@ -8,8 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -304,25 +306,110 @@ public class UserRelations extends Table {
 
 	}
 
+	/**
+	 * 
+	 * @param userId
+	 * @param userNameOrEmail The user or email to look for. Allow one character mistake.
+	 * @param firstRow The first row to fetch.
+	 * @param limit
+	 * @return
+	 * @throws SQLException
+	 */
 	public List<User> getAllNamesOrEmailsInRelation(int userId, String userNameOrEmail, int firstRow, int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
 		userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
+		int length = userNameOrEmail.length() - StringUtils.countMatches(userNameOrEmail, "!") - 2;
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
-		query.append(MessageFormat.format("  from {0} u, {1} r ", Users.TABLE_NAME, TABLE_NAME));
-		query.append(MessageFormat.format(" where u.{0} = r.{1} ", UsersColumns.ID, FIRST_USER));
-		query.append(MessageFormat.format("   and r.{0} = ? ", SECOND_USER));
-		query.append(MessageFormat.format("   and (lower(u.{0}) like ? ESCAPE ''!'' ", UsersColumns.NAME));
-		query.append(MessageFormat.format("   or lower(u.{0}) like ? ESCAPE ''!'') ", UsersColumns.EMAIL));
-		query.append(" order by 1 ");
-		query.append(" LIMIT ?, ? ");
+		query.append(MessageFormat.format("select res.{0}, res.{1}, res.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append("  from ( \n ");
+		
+		query.append(MessageFormat.format("select 10 as pertinence, u.{0}, u.{1}, u.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format("  from {0} u, {1} r \n ", Users.TABLE_NAME, TABLE_NAME));
+		query.append(MessageFormat.format(" where u.{0} = r.{1} \n ", UsersColumns.ID, FIRST_USER));
+		query.append(MessageFormat.format("   and r.{0} = ? \n ", SECOND_USER));
+		query.append(MessageFormat.format("   and ( lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.NAME));
+		query.append(MessageFormat.format(" or lower(u.{0}) like ? ESCAPE ''!'') \n ", UsersColumns.EMAIL));
+
+		// une erreur
+		if (length > 0) {
+			query.append(" union \n ");
+			
+			query.append(MessageFormat.format("select 2 as pertinence, u.{0}, u.{1}, u.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+			query.append(MessageFormat.format("  from {0} u, {1} r \n ", Users.TABLE_NAME, TABLE_NAME));
+			query.append(MessageFormat.format(" where u.{0} = r.{1} \n ", UsersColumns.ID, FIRST_USER));
+			query.append(MessageFormat.format("   and r.{0} = ? \n ", SECOND_USER));
+			query.append("   and ( \n ");
+			for (int i = 0; i < length; i++) {
+				if ( i > 0) {
+					query.append(" or ");
+				}
+				query.append(MessageFormat.format("    lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.NAME));
+				query.append(MessageFormat.format(" or lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.EMAIL));
+			}
+			query.append("                        )\n ");
+		}
+
+		// deux erreurs
+		if (length > 1) {
+			query.append(" union \n ");
+			
+			query.append(MessageFormat.format("select 1 as pertinence, u.{0}, u.{1}, u.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+			query.append(MessageFormat.format("  from {0} u, {1} r \n ", Users.TABLE_NAME, TABLE_NAME));
+			query.append(MessageFormat.format(" where u.{0} = r.{1} \n ", UsersColumns.ID, FIRST_USER));
+			query.append(MessageFormat.format("   and r.{0} = ? \n ", SECOND_USER));
+			query.append("   and ( \n ");
+			for (int i = 0; i < length - 1; i++) {
+				if ( i > 0) {
+					query.append(" or ");
+				}
+				query.append(MessageFormat.format("    lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.NAME));
+				query.append(MessageFormat.format(" or lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.EMAIL));
+			}
+			query.append("                        )\n ");
+		}
+
+		query.append("       ) res \n ");
+		query.append(MessageFormat.format(" group by res.{0}, res.{1}, res.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(" order by sum(pertinence) desc, 2, 3 \n ");
+		query.append(" LIMIT ?, ? \n ");
+		logger.trace(query.toString());
 
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), query.toString());
-			ps.bindParameters(userId, userNameOrEmail, userNameOrEmail, firstRow, limit);
+			int size = length > 1 ? 2 * length + 7 + 2 * (length - 1) : 6;
+			Object[] parameters = new Object[ size ];
+			parameters[0] = userId;
+			parameters[1] = userNameOrEmail;
+			parameters[2] = userNameOrEmail;
+			parameters[3] = userId;
+
+			// une erreur => 2*length elements
+			for (int i = 1; i < userNameOrEmail.length() - 1; i++) {
+				if ('!' == userNameOrEmail.charAt(i)) {
+					continue;
+				}
+				String toBeSearched = MessageFormat.format("{0}_{1}", userNameOrEmail.substring(0,i), userNameOrEmail.substring(i+1));
+				parameters[ 2*(i-1) + 4 ] = toBeSearched; // for names
+				parameters[ 2*(i-1) + 5 ] = toBeSearched; // for emails
+			}
+			if (length > 1) { // deux erreurs => 2 * (length - 1) elements
+				parameters[ 2*length + 4 ] = userId;
+				for (int i = 1; i < userNameOrEmail.length() - 2; i++) {
+					if ('!' == userNameOrEmail.charAt(i) || '!' == userNameOrEmail.charAt(i + 1)) {
+						continue;
+					}
+					String toBeSearched = MessageFormat.format("{0}__{1}", userNameOrEmail.substring(0,i), userNameOrEmail.substring(i+2));
+					parameters[ 2*length + 2*(i-1) + 5] = toBeSearched; // for names
+					parameters[ 2*length + 2*(i-1) + 6] = toBeSearched; // for emails
+				}
+			}
+			parameters[ parameters.length -2 ] = firstRow;
+			parameters[ parameters.length -1 ] = limit;
+			logger.trace(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
+			ps.bindParameters(parameters);
 
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
