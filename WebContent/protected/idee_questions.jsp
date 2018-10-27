@@ -6,7 +6,7 @@
 	<jsp:body>
 		Cette page permet d'échanger des questions entre le propriétaire de l'idée et les intéressés. Donc:
 		<ul>
-			<li>Le propriétarie de l'idée verra tout ce qui est écris ici...</li>
+			<li>Le propriétaire de l'idée verra tout ce qui est écris ici...</li>
 			<li>... Mais les commentaires seront anonymes.</li>
 		</ul>
 		<c:choose>
