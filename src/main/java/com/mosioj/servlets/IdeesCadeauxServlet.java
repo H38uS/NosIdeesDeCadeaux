@@ -234,26 +234,27 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 			device = (Device) request.getAttribute("device");
 
-			// Mise à jour du nombre de notifications
-			try {
-
-				int userId = ParametersUtils.getUserId(request); // FIXME : 3 faut y faire que si on est loggé
-				int count = notif.getUserNotificationCount(userId);
-				request.setAttribute("notif_count", count);
-
-				// Ajout d'information sur l'idée du Security check
-				if (policy instanceof IdeaSecurityChecker) {
-					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-					idees.fillAUserIdea(userId,
-										idee,
-										notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
-										device);
+			if (request.getRemoteUser() != null) {
+				try {
+					// Mise à jour du nombre de notifications
+					int userId = ParametersUtils.getUserId(request);
+					int count = notif.getUserNotificationCount(userId);
+					request.setAttribute("notif_count", count);
+					
+					// Ajout d'information sur l'idée du Security check
+					if (policy instanceof IdeaSecurityChecker) {
+						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
+						idees.fillAUserIdea(userId,
+						                    idee,
+						                    notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
+						                    device);
+					}
+					
+				} catch (Exception e) {
+					// Osef
+					logger.warn(e.getMessage());
+					e.printStackTrace();
 				}
-
-			} catch (Exception e) {
-				// Osef
-				logger.warn(e.getMessage());
-				e.printStackTrace();
 			}
 
 			// Security has passed, perform the logic
@@ -313,25 +314,27 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 			device = (Device) request.getAttribute("device");
 
-			// Mise à jour du nombre de notifications
-			try {
-				int userId = ParametersUtils.getUserId(request);
-				int count = notif.getUserNotificationCount(userId);
-				request.setAttribute("notif_count", count);
-
-				// Ajout d'information sur l'idée du Security check
-				if (policy instanceof IdeaSecurityChecker) {
-					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-					idees.fillAUserIdea(userId,
-										idee,
-										notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
-										device);
+			if (request.getRemoteUser() != null) {
+				try {
+					// Mise à jour du nombre de notifications
+					int userId = ParametersUtils.getUserId(request);
+					int count = notif.getUserNotificationCount(userId);
+					request.setAttribute("notif_count", count);
+					
+					// Ajout d'information sur l'idée du Security check
+					if (policy instanceof IdeaSecurityChecker) {
+						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
+						idees.fillAUserIdea(userId,
+						                    idee,
+						                    notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
+						                    device);
+					}
+					
+				} catch (Exception e) {
+					// Osef
+					logger.warn(e.getMessage());
+					e.printStackTrace();
 				}
-
-			} catch (Exception e) {
-				// Osef
-				logger.warn(e.getMessage());
-				e.printStackTrace();
 			}
 
 			// Security has passed, perform the logic
