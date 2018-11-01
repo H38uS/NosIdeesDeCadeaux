@@ -6,7 +6,6 @@
 			<h2 class="fl_yellow">Identification</h2>
 			<div>
 				<form method="POST" action="login">
-				
 					<div class="form-group">
 						<label for="username" class="required fl_green">Identifiant</label>
 						<input type="text" class="form-control" name="j_username" id="username" value="" />
