@@ -10,14 +10,11 @@ html, body {
 	padding: 0;
 	height: 100%; /* needed for container min-height */
 	font-family: sans-serif, "MyFont", Georgia, Arial;
-	font-size: 105%;
 }
 
 div#container {
-	position: relative; /* needed for footer positioning*/
 	margin: 0 auto; /* center, not in IE5 */
 	width: 100%;
-	min-width: 950px;
 	height: auto !important; /* real browsers */
 	height: 100%; /* IE6: treaded as min-height*/
 	min-height: 100%; /* real browsers */
@@ -25,7 +22,8 @@ div#container {
 
 header {
 	background: #353b43;
-	padding: 10px 10px 20px 10px;
+	color:white;
+	padding: 10px 10px 0 10px;
 }
 
 #header_logo_picture {
@@ -34,29 +32,16 @@ header {
 	text-align: center;
 }
 
-header #logo_text {
-	display: inline-block;
-	color: white;
-	font-size: 200%;
-	text-align: center;
-	padding: 10px;
-}
-
 footer {
 	position: absolute;
 	width: 100%;
 	bottom: 0; /* stick to bottom */
 	background: #353b43;
 	text-align: center;
-	height: 30px;
 	color: white;
 }
 footer a:link, footer a:visited, footer a:active {
     color: #b0cff8;
-}
-
-div#content {
-	padding: 10px 10px 40px 10px; /* bottom padding for footer */
 }
 
 /**********************/
@@ -76,7 +61,6 @@ div#content {
 	left:0;
 	background-color: #8a8a8a;
 	max-height: 999999px;
-	font-size: 260%;
 	z-index: 9999;
 	border: #353b43 solid 2px;
 	-webkit-box-shadow: 0 1px 5px #353b43;

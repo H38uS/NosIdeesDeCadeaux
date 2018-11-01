@@ -17,6 +17,8 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
+import com.mosioj.model.table.Idees;
+
 /**
  * Provides helper functions to the views.
  * 
@@ -51,7 +53,7 @@ public class DeviceResolverFilter implements Filter {
 		request.setAttribute("device", device);
 		request.setAttribute("is_mobile", device.isMobile());
 		request.setAttribute("is_normal", device.isNormal());
-		request.setAttribute("action_img_width", device.isMobile() ? "80" : "30");
+		request.setAttribute("action_img_width", device.isMobile() ? Idees.MOBILE_PICTURE_WIDTH : "30");
 
 		logger.debug(MessageFormat.format("URL: {0}. Is mobile: {1}.", url, device.isMobile()));
 		chain.doFilter(request, response);

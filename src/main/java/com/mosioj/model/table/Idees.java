@@ -48,6 +48,8 @@ public class Idees extends Table {
 	 * Class logger.
 	 */
 	private static final Logger logger = LogManager.getLogger(Idees.class);
+
+	public static final int MOBILE_PICTURE_WIDTH = 60;
 	
 	private final Comments comments = new Comments();
 	private final Questions questions = new Questions();
@@ -736,7 +738,7 @@ public class Idees extends Table {
 		if (device.isMobile()) {
 			Priorite priorite = idee.getPriorite();
 			if (priorite != null && priorite.getImage() != null) {
-				priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"80px\"");
+				priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"", "width=\"" + MOBILE_PICTURE_WIDTH + "px\"");
 			}
 		}
 	}
