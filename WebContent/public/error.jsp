@@ -30,7 +30,7 @@
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 					<button type="submit" class="btn btn-primary my-3" name="submit" id="submit">Se connecter</button>
 					ou...
-					<a class="btn btn-secondary my-3" href="public/creation_compte.jsp"><span class="fl_green">Créez</span> un compte !</a>
+					<a class="btn btn-secondary my-3" href="public/creation_compte.jsp"><span class="fl_green">Créer</span> un compte !</a>
 				</form>
 			</div>
 		</div>
