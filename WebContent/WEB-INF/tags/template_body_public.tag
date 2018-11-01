@@ -49,10 +49,10 @@
 			</c:otherwise>
 			</c:choose>
 		</header>
-		<div id="content" class="container-fluid p-3 pb-5" >
+		<div id="content" class="container-fluid" >
 			<jsp:doBody/>
 		</div>
-		<footer>
+		<footer class="mt-5">
 			&#9400; 2016 NosIdeesCadeaux - Tous droits réservés - Conditions générales d'utilisation - <a href="public/remerciements.jsp">Remerciements</a>
 		</footer>
 		</div>

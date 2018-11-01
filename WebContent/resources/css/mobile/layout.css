@@ -44,6 +44,9 @@ footer {
 footer a:link, footer a:visited, footer a:active {
     color: #b0cff8;
 }
+div#content {
+	padding: 0.75rem 0.75rem 4rem 0.75rem; /* bottom padding for footer */
+}
 
 /**********************/
 /* *** Menu *** */

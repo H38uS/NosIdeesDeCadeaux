@@ -24,7 +24,7 @@ import com.mosioj.viewhelper.CaptchaHandler;
 import com.mosioj.viewhelper.EmptyFilter;
 import com.mosioj.viewhelper.LoginHelper;
 
-@WebServlet("/creation_compte")
+@WebServlet("/public/creation_compte")
 public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
