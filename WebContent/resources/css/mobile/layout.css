@@ -13,6 +13,7 @@ html, body {
 }
 
 div#container {
+	position:relative;
 	margin: 0 auto; /* center, not in IE5 */
 	width: 100%;
 	height: auto !important; /* real browsers */
