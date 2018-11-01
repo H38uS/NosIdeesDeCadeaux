@@ -6,51 +6,30 @@
 			<h2 class="fl_yellow">Identification</h2>
 			<div>
 				<form method="POST" action="login">
-					<table>
-						<tr>
-							<td id="username-label">
-								<label for="username" class="required fl_green">Identifiant</label>
-							</td>
-							<td>
-								<input type="text" name="j_username" id="username" value="" />
-							</td>
-						</tr>
-						<tr>
-							<td id="password-label">
-								<label for="password" class="required fl_purple">Mot de passe</label>
-							</td>
-							<td>
-								<input type="password" name="j_password" id="password" value="" />
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td style="text-align:right" >
-								<a href="public/reinitialiser_mot_de_passe">Mot de passe oublié ?</a>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<label for="remember-me" class="fl_green">Maintenir la connexion</label>
-							</td>
-							<td>
-								<input id="remember-me" type="checkbox" name="remember-me" />
-								<span class="checkbox"></span>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" align="center">
-								<input type="submit" name="submit" id="submit" class="fl_yellow" value="Se connecter" />
-							</td>
-						</tr>
-					</table>
-					
+				
+					<div class="form-group">
+						<label for="username" class="required fl_green">Identifiant</label>
+						<input type="text" class="form-control" name="j_username" id="username" value="" />
+					</div>
+
+					<div class="form-group">
+						<label for="password" class="required fl_purple">Mot de passe</label>
+						<input type="password" name="j_password" class="form-control" id="password" value="" />
+						<small>
+							<a href="public/reinitialiser_mot_de_passe">Mot de passe oublié ?</a>
+						</small>
+					</div>
+
+					<div class="form-check">
+						<input id="remember-me" class="form-check-input" type="checkbox" name="remember-me" />
+						<label for="remember-me" class="fl_green">Maintenir la connexion</label>
+					</div>
+				
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+					<button type="submit" class="btn btn-primary my-3" name="submit" id="submit">Se connecter</button>
+					ou...
+					<a class="btn btn-secondary my-3" href="public/creation_compte.jsp"><span class="fl_green">Créez</span> un compte !</a>
 				</form>
-			</div>
-			<div><br/><br/>Ou...</div>
-			<div class="center">
-				<a class="button" href="public/creation_compte.jsp"><span class="fl_green">Créez</span> un compte !</a>
 			</div>
 		</div>
 	</jsp:body>
