@@ -11,6 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="resources/css/lib/jquery-ui.min.css" />
 		<link rel="stylesheet" type="text/css" href="resources/css/lib/tooltipster.css" />
 		<link rel="stylesheet" type="text/css" href="resources/css/common.css" />
+		<link rel="stylesheet" type="text/css" href="resources/css/common_layout.css" />
 		<c:choose>
 			<c:when test="${is_mobile}">
 				<link rel="stylesheet" type="text/css" href="resources/css/mobile/layout.css" />

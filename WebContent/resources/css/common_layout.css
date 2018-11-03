@@ -1,0 +1,61 @@
+@CHARSET "UTF-8";
+
+@font-face {
+	font-family: "MyFont";
+	src: url('BAUHS93.TTF');
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%; /* needed for container min-height */
+	font-family: sans-serif, "MyFont", Georgia, Arial;
+}
+
+header {
+	background: #353b43;
+	color:white;
+	padding: 0;
+}
+
+header div > a:link, header div > a:visited, header div > a:active {
+	color: #b0cff8;
+}
+
+footer {
+	position: absolute;
+	width: 100%;
+	bottom: 0; /* stick to bottom */
+	background: #353b43;
+	text-align: center;
+	color: white;
+	min-height: 30px;
+}
+
+footer a:link, footer a:visited, footer a:active {
+	color: #b0cff8;
+}
+
+/**********************/
+/* *** Menu *** */
+/**********************/
+
+.menu_mobile li {
+	text-align: center;
+}
+
+.menu_mobile li a {
+	width: 230px;
+	display: inline-block;
+}
+
+.menu {
+	background-color: #8a8a8a;
+}
+
+.menu li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 12px;
+}

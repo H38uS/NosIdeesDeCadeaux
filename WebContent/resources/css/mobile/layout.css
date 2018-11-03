@@ -1,17 +1,5 @@
 @CHARSET "UTF-8";
 
-@font-face {
-	font-family: "MyFont";
-	src: url('BAUHS93.TTF');
-}
-
-html, body {
-	margin: 0;
-	padding: 0;
-	height: 100%; /* needed for container min-height */
-	font-family: sans-serif, "MyFont", Georgia, Arial;
-}
-
 div#container {
 	position:relative;
 	margin: 0 auto; /* center, not in IE5 */
@@ -21,99 +9,7 @@ div#container {
 	min-height: 100%; /* real browsers */
 }
 
-header {
-	background: #353b43;
-	color:white;
-	padding: 0;
-}
 
-footer {
-	position: absolute;
-	width: 100%;
-	bottom: 0; /* stick to bottom */
-	background: #353b43;
-	text-align: center;
-	color: white;
-}
-footer a:link, footer a:visited, footer a:active {
-    color: #b0cff8;
-}
 div#content {
 	padding: 0.75rem 0.75rem 4rem 0.75rem; /* bottom padding for footer */
-}
-
-/**********************/
-/* *** Menu *** */
-/**********************/
-
-.menu {
-	background-color: #8a8a8a;
-}
-
-.menu_mobile li {
-	text-align: center;
-}
-
-.menu_mobile li a {
-/* 	background-color: #8a8a8a; */
-/* 	color: white; */
-	width: 200px;
-	display: inline-block;
-}
-
-.menu li a {
-	display: block;
-	color: white;
-	text-align: center;
-	padding: 14px 12px;
-}
-
-#right_search_field {
-	display: block;
-	max-height: 999999px;
-	font-size: 270%;
-	margin-top: 12px;
-	margin-left: 8px;
-	vertical-align: top;
-}
-#right_search_field form {
-	display: inline;
-}
-#right_search_field input {
-	margin: 0 3px;
-	display: inline;
-	width: auto;
-	padding: 5px 7px;
-}
-
-#menu_right_connection {
-	display: inline-block;
-	max-height: 999999px;
-	font-size: 200%;
-	vertical-align: top;
-	margin-left: 20px;
-}
-#menu_right_connection a:link, #menu_right_connection a:visited, #menu_right_connection a:active {
-	color: #b0cff8;
-	padding: 20px;
-	vertical-align: baseline;
-	display: inline-block;
-	text-decoration: none;
-}
-
-/********************************/
-/* *** First letter colored *** */
-/********************************/
-
-.fl_yellow::first-letter {
-	color: #f3f0c9;
-}
-.fl_green::first-letter {
-	color: #c9f3d5;
-}
-.fl_blue::first-letter {
-	color: #b0cff8;
-}
-.fl_purple::first-letter {
-	color: #c1b0f8;
 }
