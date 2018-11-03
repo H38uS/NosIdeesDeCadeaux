@@ -24,13 +24,7 @@ div#container {
 header {
 	background: #353b43;
 	color:white;
-	padding: 10px 10px 0 10px;
-}
-
-#header_logo_picture {
-	width: 100%;
-	display: block;
-	text-align: center;
+	padding: 0;
 }
 
 footer {
@@ -52,35 +46,27 @@ div#content {
 /* *** Menu *** */
 /**********************/
 
-.menu_icon {
-	vertical-align: super;
-	float: left;
+.menu {
+	background-color: #8a8a8a;
 }
 
-#menu_content {
-	padding: 10px;
-	height: 100%;
-	position: absolute;
-	top:0;
-	left:0;
-	background-color: #8a8a8a;
-	max-height: 999999px;
-	z-index: 9999;
-	border: #353b43 solid 2px;
-	-webkit-box-shadow: 0 1px 5px #353b43;
-	box-shadow: 0 1px 5px #353b43;
-	display: none;
-}
-#menu_content > div > a {
-	display: block;
-	padding: 40px 50px;
-	color: white;
+.menu_mobile li {
 	text-align: center;
 }
-#menu_content > div > a:hover {
-	background-color: #111;
+
+.menu_mobile li a {
+/* 	background-color: #8a8a8a; */
+/* 	color: white; */
+	width: 200px;
+	display: inline-block;
 }
 
+.menu li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 12px;
+}
 
 #right_search_field {
 	display: block;

@@ -21,7 +21,8 @@
 				<link rel="stylesheet" type="text/css" href="resources/css/normal/normal.css" />
 			</c:otherwise>
 		</c:choose>
-		<script src="resources/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+		<script src="resources/js/lib/jquery-3.2.1.min.js" type="text/javascript"></script>
+		<script src="resources/js/lib/bootstrap.bundle.min-4.1.3.js" type="text/javascript"></script>
 		<script src="resources/js/lib/jquery-ui.js"></script>
 		<script src="resources/js/lib/jquery.tooltipster.min.js" type="text/javascript"></script>
 		<script src="resources/js/global.js" type="text/javascript"></script>

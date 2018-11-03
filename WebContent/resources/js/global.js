@@ -45,10 +45,6 @@ $(document).ready(function() {
 		// Tooltip pour les images : information sur l'action
 		$('img[title]').tooltipster(myTooltipsterInfoParam);
 	}
-	
-	$(".menu_icon").click(function () {
-		$("#menu_content").toggle("slide");
-	});
 });
 
 function getPictureWidth() {
