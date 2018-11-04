@@ -49,7 +49,7 @@
 		<div class="container-fluid mt-sm-3 mt-lg-5">
 			<div class="row justify-content-center">
 				<div class="col-auto col-sm-4 col-lg-5 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
-					<a href="protected/mes_listes">
+					<a href="protected/mes_listes" class="img">
 						<img class="clickable" alt="Afficher mes listes partagées" title="Afficher mes listes partagées"
 											src="resources/image/index/CheckListeOUT.png" onmouseout="this.src='resources/image/index/CheckListeOUT.png'"
 											onmouseover="this.src='resources/image/index/CheckListeOVER.png'" />
@@ -57,7 +57,7 @@
 					<span class="ml-3 d-none d-lg-inline">Afficher mes listes partagées</span>
 				</div>
 				<div class="col-auto col-sm-5 col-xl-5 mr-sm-auto mr-lg-0 mb-2">
-					<a href="protected/ma_liste">
+					<a href="protected/ma_liste" class="img">
 						<img class="clickable" alt="Compléter ma liste" title="Compléter ma liste"
 											src="resources/image/index/AjouterIdeeOUT.png" onmouseout="this.src='resources/image/index/AjouterIdeeOUT.png'"
 											onmouseover="this.src='resources/image/index/AjouterIdeeOVER.png'" />
@@ -65,7 +65,7 @@
 					<span class="ml-3 d-none d-lg-inline">Compléter ma liste</span>
 				</div>
 				<div class="col-auto col-sm-4 col-lg-5 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
-					<a href="protected/afficher_reseau?id=${userid}">
+					<a href="protected/afficher_reseau?id=${userid}" class="img">
 						<img class="clickable" alt="Mes amis" title="Mes amis" src="resources/image/index/CreerGroupeOUT.png"
 											onmouseout="this.src='resources/image/index/CreerGroupeOUT.png'"
 											onmouseover="this.src='resources/image/index/CreerGroupeOVER.png'" />
@@ -73,7 +73,7 @@
 					<span class="ml-3 d-none d-lg-inline">Afficher mes amis</span>
 				</div>
 				<div class="col-auto col-sm-5 col-xl-5 mr-sm-auto mr-lg-0 mb-2">
-					<a href="protected/rechercher_personne.jsp">
+					<a href="protected/rechercher_personne.jsp" class="img">
 						<img class="clickable" alt="Ajouter un ami" title="Ajouter un ami" src="resources/image/index/RejoindreGroupeOUT.png"
 											onmouseout="this.src='resources/image/index/RejoindreGroupeOUT.png'"
 											onmouseover="this.src='resources/image/index/RejoindreGroupeOVER.png'" />
