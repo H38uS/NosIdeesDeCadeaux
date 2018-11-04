@@ -88,13 +88,15 @@
 				</div>
 			</nav>
 
-			<div class="row align-items-center justify-content-center mx-0">
-				<div class="col-12 col-md-5 col-lg-6 col-xl-7 mr-auto huge">Créer et partager vos envies de cadeaux avec toute votre famille et vos amis</div>
-				<div class="col-12 col-sm-auto pt-2 pt-md-0">
-					<form id="afficherliste" class="form-inline justify-content-center justify-content-md-end" method="POST" action="protected/afficher_listes">
-						<input type="text" class="form-control mx-2" name="name" id="header_name" placeholder="Entrer un nom ou un email" />
-						<button type="submit" class="btn btn-primary d-none d-sm-block">Rechercher !</button>
-					</form>
+			<div class="container-fluid">
+				<div class="row align-items-center justify-content-center mx-0">
+					<div class="col-12 col-md-5 col-lg-6 col-xl-7 mr-auto huge w-100">Créer et partager vos envies de cadeaux avec toute votre famille et vos amis</div>
+					<div class="col-12 col-sm-auto pt-2 pt-md-0">
+						<form id="afficherliste" class="form-inline justify-content-center justify-content-md-end" method="POST" action="protected/afficher_listes">
+							<input type="text" class="form-control mx-2" name="name" id="header_name" placeholder="Entrer un nom ou un email" />
+							<button type="submit" class="btn btn-primary d-none d-sm-block">Rechercher !</button>
+						</form>
+					</div>
 				</div>
 			</div>
 
