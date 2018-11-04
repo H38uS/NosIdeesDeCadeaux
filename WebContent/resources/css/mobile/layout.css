@@ -13,3 +13,9 @@ div#container {
 div#content {
 	padding: 0.75rem 0.75rem 4rem 0.75rem; /* bottom padding for footer */
 }
+
+#mobile_res_search, .mobile_res_search {
+	position: absolute;
+	width: 94%;
+	left: 3%;
+}

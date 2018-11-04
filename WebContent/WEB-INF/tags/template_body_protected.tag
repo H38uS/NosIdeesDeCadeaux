@@ -168,8 +168,8 @@
 			</c:choose>
 		</header>
 		<div id="loading_message_container"><div id="loading_message_div"></div></div>
+		<div id="mobile_res_search" class="mobile_res_search">&nbsp;</div>
 		<div id="content">
-			<div id="mobile_res_search" class="mobile_res_search">&nbsp;</div>
 			<jsp:doBody/>
 		</div>
 		<footer>&#9400; 2016 NosIdeesCadeaux - Tous droits réservés - Conditions générales d'utilisation - <a href="public/remerciements.jsp">Remerciements</a></footer>
