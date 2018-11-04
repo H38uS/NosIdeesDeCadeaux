@@ -54,19 +54,6 @@
 	color: white;
 }
 
-/***************************/
-/* *** Index protected *** */
-/***************************/
-#indexactions {
-	width: 70%;
-	margin: 20px auto;
-}
-
-#indexactions tr td {
-	padding: 20px 0;
-	text-align: center;
-}
-
 /***********************************/
 /* *** Person with information *** */
 /***********************************/

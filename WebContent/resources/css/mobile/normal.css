@@ -37,14 +37,6 @@
 }
 
 /***********************************/
-/* *** Inputs, forms, checkbox *** */
-/***********************************/
-input, textarea, select {
-	font-size: 130%;
-}
-
-
-/***********************************/
 /* *** Ideas with information *** */
 /***********************************/
 .ideas_square_container {
@@ -158,21 +150,6 @@ td.idea_square_text {
 	color: #b0cff8;
 }
 
-/***************************/
-/* *** Index protected *** */
-/***************************/
-#indexactions {
-	width: 70%;
-	margin: 20px auto;
-}
-
-#indexactions tr td {
-	display: block;
-	padding: 40px 0;
-	text-align: center;
-}
-
-
 /***********************************/
 /* *** Person with information *** */
 /***********************************/
@@ -213,10 +190,7 @@ td.idea_square_text {
 /* *** Search box idées *** */
 /****************************/
 .ui-widget {
-	font-size: 200%;
-}
-#mobile_res_search, .mobile_res_search {
-	width: 100%;
+	font-size: 2rem;
 }
 .ui-menu-item {
 	padding: 50px 0;
