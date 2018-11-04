@@ -48,7 +48,7 @@
 		
 		<div class="container-fluid mt-sm-3 mt-lg-5">
 			<div class="row justify-content-center">
-				<div class="col-auto col-sm-4 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
+				<div class="col-auto col-sm-4 col-lg-5 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
 					<a href="protected/mes_listes">
 						<img class="clickable" alt="Afficher mes listes partagées" title="Afficher mes listes partagées"
 											src="resources/image/index/CheckListeOUT.png" onmouseout="this.src='resources/image/index/CheckListeOUT.png'"
@@ -64,7 +64,7 @@
 					</a>
 					<span class="ml-3 d-none d-lg-inline">Compléter ma liste</span>
 				</div>
-				<div class="col-auto col-sm-4 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
+				<div class="col-auto col-sm-4 col-lg-5 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
 					<a href="protected/afficher_reseau?id=${userid}">
 						<img class="clickable" alt="Mes amis" title="Mes amis" src="resources/image/index/CreerGroupeOUT.png"
 											onmouseout="this.src='resources/image/index/CreerGroupeOUT.png'"
@@ -78,7 +78,7 @@
 											onmouseout="this.src='resources/image/index/RejoindreGroupeOUT.png'"
 											onmouseover="this.src='resources/image/index/RejoindreGroupeOVER.png'" />
 					</a>
-					<span class="ml-3 d-none d-lg-inline">Ajouter un nouvel amis</span>
+					<span class="ml-3 d-none d-lg-inline">Ajouter un nouvel ami</span>
 				</div>
 			</div>
 		</div>
