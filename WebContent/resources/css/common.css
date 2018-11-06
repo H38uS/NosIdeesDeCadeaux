@@ -37,7 +37,7 @@ a.img:link, a.img:visited, a.img:active, a.img:hover {
 	text-decoration: none;
 }
 
-img.clickable, a > img {
+img.clickable, a > img, .ideas_square_container img {
 	text-decoration: none;
 	border: transparent solid 1px;
 	-webkit-box-shadow: 0 1px 5px transparent;

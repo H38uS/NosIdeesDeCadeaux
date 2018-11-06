@@ -51,7 +51,7 @@ function getPictureWidth() {
 	if ( $("#mobile_res_search").css('display') == 'none' ) {
 		return 30;
 	} else {
-		return 80;
+		return 45;
 	}
 }
 

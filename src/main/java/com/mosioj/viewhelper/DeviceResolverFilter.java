@@ -27,6 +27,8 @@ import com.mosioj.model.table.Idees;
  */
 public class DeviceResolverFilter implements Filter {
 
+	private static final String PICTURE_PC_WIDTH = "36";
+
 	/**
 	 * Class logger.
 	 */
@@ -53,7 +55,7 @@ public class DeviceResolverFilter implements Filter {
 		request.setAttribute("device", device);
 		request.setAttribute("is_mobile", device.isMobile());
 		request.setAttribute("is_normal", device.isNormal());
-		request.setAttribute("action_img_width", device.isMobile() ? Idees.MOBILE_PICTURE_WIDTH : "30");
+		request.setAttribute("action_img_width", device.isMobile() ? Idees.MOBILE_PICTURE_WIDTH : PICTURE_PC_WIDTH);
 
 		logger.debug(MessageFormat.format("URL: {0}. Is mobile: {1}.", url, device.isMobile()));
 		chain.doFilter(request, response);

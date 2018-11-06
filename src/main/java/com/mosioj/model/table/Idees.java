@@ -49,7 +49,7 @@ public class Idees extends Table {
 	 */
 	private static final Logger logger = LogManager.getLogger(Idees.class);
 
-	public static final int MOBILE_PICTURE_WIDTH = 60;
+	public static final int MOBILE_PICTURE_WIDTH = 42;
 	
 	private final Comments comments = new Comments();
 	private final Questions questions = new Questions();
