@@ -9,7 +9,6 @@
 	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
 	<c:choose>
 		<c:when test="${is_mobile}">
-			<script src="resources/js/mobile/idea.js" type="text/javascript"></script>
 		</c:when>
 		<c:otherwise>
 			<script src="resources/js/browser/pictures.js" type="text/javascript"></script>

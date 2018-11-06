@@ -28,6 +28,9 @@ function loadPreview(e) {
 
 }
 
+var timer;
+var lastModalOpened;
+
 $(document).ready(function() {
 	$("span.checkbox").click(function() {
 		var checkBoxes = $(this).prev();
@@ -45,6 +48,10 @@ $(document).ready(function() {
 		// Tooltip pour les images : information sur l'action
 		$('img[title]').tooltipster(myTooltipsterInfoParam);
 	}
+	
+	$('.modal').on('show.bs.modal', function (e) {
+		lastModalOpened = $(this);
+	});
 });
 
 function getPictureWidth() {
@@ -55,9 +62,16 @@ function getPictureWidth() {
 	}
 }
 
-var timer;
+function closeModal() {
+	if (typeof lastModalOpened != 'undefined') {
+		lastModalOpened.modal('hide');
+	}
+	$("body").removeClass("modal-open");
+	$(".modal-backdrop").remove();
+}
 
 function doLoading(message) {
+	closeModal();
 	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()
@@ -66,6 +80,7 @@ function doLoading(message) {
 							 .slideDown();
 }
 function actionDone(message) {
+	closeModal();
 	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()
@@ -77,6 +92,7 @@ function actionDone(message) {
 	}, 5000);
 }
 function actionError(message) {
+	closeModal();
 	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()

@@ -87,6 +87,12 @@ function setIdeaActionsToJs(my_idea) {
 	my_idea.find("a.idea_est_a_jour").click(estAJourIdea);
 	my_idea.find("a.idea_reserver").click(reserverIdea);
 	my_idea.find("a.idea_dereserver").click(dereserverIdea);
+	my_idea.find(".mobile_actions").click(function () {
+		my_idea.find(".modal").modal('show');
+	});
+	my_idea.find(".modal").on('show.bs.modal', function (e) {
+		lastModalOpened = $(this);
+	});
 }
 
 $(document).ready(function() {

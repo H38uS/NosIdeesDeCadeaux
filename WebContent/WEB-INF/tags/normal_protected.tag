@@ -6,9 +6,6 @@
 <t:template_head_includes>
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/thickbox.css" />
 	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
-	<c:if test="${is_mobile}">
-	<script src="resources/js/mobile/idea.js" type="text/javascript"></script>
-	</c:if>
 </t:template_head_includes>
 <t:template_body_protected>
 		<jsp:doBody />
