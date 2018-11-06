@@ -14,27 +14,69 @@
 					</div>
 					<div class="modal-body">
 						<c:if test="${empty idee.surpriseBy && not idee.isBooked() && not idee.isPartiallyBooked()}">
-							<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_reserver">
-								<img src="resources/image/reserver.png" class="clickable" title="Réserver l'idée" width="${action_img_width}px" />
-							</a>
-							<a href="protected/sous_reserver?idee=${idee.id}" class="img">
-								<img src="resources/image/sous_partie.png" class="clickable" title="Réserver une sous-partie de l'idée" width="${action_img_width}px" />
-							</a>
-							<a href="protected/create_a_group?idee=${idee.id}" class="img">
-								<img src="resources/image/grouper.png" class="clickable" title="Créer un groupe" width="${action_img_width}px" />
-							</a>
+							<div class="row align-items-center">
+								<div class="col-3 pr-0">
+									<a href="protected/reserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_reserver">
+										<img src="resources/image/reserver.png" class="clickable" title="Réserver l'idée" width="${action_img_width}px" />
+									</a>
+								</div>
+								<div class="col-9 pl-0 text-left">
+									Réserver l'idée
+								</div>
+							</div>
+							<div class="row align-items-center">
+								<div class="col-3 pr-0">
+									<a href="protected/sous_reserver?idee=${idee.id}" class="img">
+										<img src="resources/image/sous_partie.png" class="clickable" title="Réserver une sous-partie de l'idée" width="${action_img_width}px" />
+									</a>
+								</div>
+								<div class="col-9 pl-0 text-left">
+									Réserver une sous-partie de l'idée
+								</div>
+							</div>
+							<div class="row align-items-center">
+								<div class="col-3 pr-0">
+									<a href="protected/create_a_group?idee=${idee.id}" class="img">
+										<img src="resources/image/grouper.png" class="clickable" title="Créer un groupe" width="${action_img_width}px" />
+									</a>
+								</div>
+								<div class="col-9 pl-0 text-left">
+									Créer un groupe
+								</div>
+							</div>
 						</c:if>
 						<c:if test="${empty idee.surpriseBy}">
-							<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}" class="img idea_est_a_jour">
-								<img src="resources/image/a_jour.png" class="clickable" title="Demander si c'est à jour." width="${action_img_width}px" />
-							</a>
-							<a href="protected/idee_questions?idee=${idee.id}" class="img">
-								<img src="resources/image/questions.png" class="clickable" title="Poser une question à ${user.name} / voir les existantes" width="${action_img_width}px" />
-							</a>
+							<div class="row align-items-center">
+								<div class="col-3 pr-0">
+									<a href="protected/est_a_jour?idee=${idee.id}&from=/${identic_call_back}" class="img idea_est_a_jour">
+										<img src="resources/image/a_jour.png" class="clickable" title="Demander si c'est à jour." width="${action_img_width}px" />
+									</a>
+								</div>
+								<div class="col-9 pl-0 text-left">
+									Demander si c'est à jour
+								</div>
+							</div>
+							<div class="row align-items-center">
+								<div class="col-3 pr-0">
+									<a href="protected/idee_questions?idee=${idee.id}" class="img">
+										<img src="resources/image/questions.png" class="clickable" title="Poser une question à ${user.name} / voir les existantes" width="${action_img_width}px" />
+									</a>
+								</div>
+								<div class="col-9 pl-0 text-left">
+									Poser une question à ${user.name} / voir les existantes
+								</div>
+							</div>
 						</c:if>
-						<a href="protected/idee_commentaires?idee=${idee.id}" class="img">
-							<img src="resources/image/commentaires.png" title="Ajouter un commentaire / voir les existants" width="${action_img_width}px" />
-						</a>
+						<div class="row align-items-center">
+							<div class="col-3 pr-0">
+								<a href="protected/idee_commentaires?idee=${idee.id}" class="img">
+									<img src="resources/image/commentaires.png" title="Ajouter un commentaire / voir les existants" width="${action_img_width}px" />
+								</a>
+							</div>
+							<div class="col-9 pl-0 text-left">
+								Ajouter un commentaire / voir les existants
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>

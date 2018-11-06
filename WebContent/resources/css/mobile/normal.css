@@ -130,24 +130,7 @@ td.idea_square_text {
 /*******************/
 
 .outer_top_tooltiptext {
-	position: fixed;
-	top: 0;
-	right: 0;
 	display: none;
-	background-color: #353b43;
-	color: #fff;
-	height: 100%;
-	z-index: 9999;
-}
-
-.top_tooltiptext img {
-	display: block;
-	padding: 50px 40px;
-	margin: auto;
-}
-
-.top_tooltiptext a {
-	color: #b0cff8;
 }
 
 /***********************************/
