@@ -20,7 +20,7 @@
 		<div class="mb-3">
 			Avant d'ajouter une idée, je voudrai consulter <a href="protected/voir_liste?id=${userid}">ma liste</a>.
 		</div>
-		<div class="container">
+		<div class="container border border-info bg-light rounded mb-2 p-3">
 			<form class="mw-50" action="protected/ma_liste?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
