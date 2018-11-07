@@ -18,7 +18,7 @@ header #logo span a:link, header #logo span a:visited, header #logo span a:activ
 }
 
 div#content {
-	padding: 10px 10px 40px 10px; /* bottom padding for footer */
+	padding: 10px 10px 100px 10px; /* bottom padding for footer */
 }
 
 .huge {

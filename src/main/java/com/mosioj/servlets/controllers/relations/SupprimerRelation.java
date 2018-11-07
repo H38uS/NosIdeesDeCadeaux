@@ -28,25 +28,25 @@ public class SupprimerRelation extends IdeesCadeauxServlet<NetworkAccess> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-
 		Integer user = ParametersUtils.readInt(request, USER_PARAMETER);
 		int currentId = ParametersUtils.getUserId(request);
-
+		
 		// Drops it
 		userRelations.deleteAssociation(user, currentId);
 		notif.removeAllType(currentId, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
 		notif.removeAllType(user, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, currentId);
-
+		
 		// Send a notification
 		User me = users.getUser(currentId);
 		notif.addNotification(user, new NotifFriendshipDropped(currentId, me.name));
-
+		
 		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, request, response);
+	}
+
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
+		// FIXME utiliser le post, mais faut faire un service !!!
 	}
 
 }

@@ -47,10 +47,14 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 		}
 
 		request.setAttribute("id", user);
-		request.setAttribute("name", users.getUser(user).name);
+		request.setAttribute("name", users.getUser(user).getMyDName());
 
 		HttpSession session = request.getSession();
-		request.setAttribute("accepted", session.getAttribute("accepted"));
+		Object accepted = session.getAttribute("accepted");
+		if (accepted != null) {
+			request.setAttribute("accepted", accepted);
+			session.removeAttribute("accepted");
+		}
 
 		super.ideesKDoGET(request, response);
 	}

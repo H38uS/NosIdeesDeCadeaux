@@ -46,42 +46,41 @@
 		</c:choose>
 
 		<c:if test="${not empty accepted}">
-			<h2>Succès</h2>
-			Les demandes suivantes ont été acceptées avec succès.
-			<ul>
-				<c:forEach var="accept" items="${accepted}">
-					<li>
-						${accept.name} :
-						<a href="protected/suggerer_relations?id=${accept.id}">Suggérer</a> des relations
-					</li>
-				</c:forEach>
-			</ul>
+			<h3>Succès</h3>
+			<div class="alert alert-success">
+				Les demandes suivantes ont été acceptées avec succès.
+				<ul>
+					<c:forEach var="accept" items="${accepted}">
+						<li>
+							${accept.name} :
+							<a href="protected/suggerer_relations?id=${accept.id}">Suggérer</a> des relations
+						</li>
+					</c:forEach>
+				</ul>
+			</div>
 		</c:if>
 		<c:if test="${not empty demandes}">
-			<div class="default_form">
-				<h2>Demandes reçues</h2>
+			<div class="default_form mb-3">
+				<h3>Demandes reçues</h3>
 				<form method="POST" action="protected/resoudre_demande_ami">
-					<table>
-						<thead>
-							<tr>
-								<th>Nom du demandeur</th>
-							</tr>
-						</thead>
-						<c:forEach var="demande" items="${demandes}">
-							<tr>
-								<td>${demande.sent_by.name}</td>
-								<td>
-									<input type="radio" id="acc_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Accepter">
-									<label for="acc_choix_${demande.sent_by.id}">Accepter</label>
-								</td>
-								<td>
-									<input type="radio" id="ref_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Refuser">
-									<label for="ref_choix_${demande.sent_by.id}">Refuser</label>
-								</td>
-							</tr>
-						</c:forEach>
-					</table>
-					<input type="submit" id="submit" name="submit" value="Sauvegarder">
+					<c:forEach var="demande" items="${demandes}">
+						<div class="row align-items-center">
+							<div class="col-6">
+								<span>${demande.sent_by.name} (${demande.sent_by.email})</span>
+							</div>
+							<div class="col-3">
+								<input type="radio" id="acc_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Accepter">
+								<label for="acc_choix_${demande.sent_by.id}">Accepter</label>
+							</div>
+							<div class="col-3">
+								<input type="radio" id="ref_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Refuser">
+								<label for="ref_choix_${demande.sent_by.id}">Refuser</label>
+							</div>
+						</div>
+					</c:forEach>
+					<div class="center">
+						<button class="btn btn-primary" type="submit" id="submit" name="submit">Sauvegarder</button>
+					</div>
 					<input type="hidden" name="id" value="${id}" />
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				</form>
@@ -90,27 +89,25 @@
 		<c:if test="${not empty suggestions && suggestions}">
 			Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
 		</c:if>
-		<h2>Rechercher des personnes dans le réseau de ${name}</h2>
-			<form id="form_rechercher_dans_reseau" method="POST" action="protected/rechercher_reseau">
-				<table>
-					<tr>
-						<td>
-							<label for="name" class="required">Nom / Email de la personne</label>
-						</td>
-						<td>
-							<input type="text" name="looking_for" id="looking_for" value="${looking_for}" />
-						<td></td>
-						<td align="center">
-							<input type="submit" value="Rechercher !" />
-						</td>
-					</tr>
-				</table>
+		<h3 class="pb-1">Rechercher des personnes dans le réseau ${name}</h3>
+			<form id="form_rechercher_dans_reseau" class="form-inline" method="POST" action="protected/rechercher_reseau">
+				<div class="row align-items-center">
+					<div class="col-auto d-none d-md-inline-block">
+						<label for="name">Nom / Email de la personne</label>
+					</div>
+					<div class="col-7 col-sm-auto">
+						<input type="text" class="form-control" name="looking_for" id="looking_for" value="${looking_for}" />
+					</div>
+					<div class="col-auto px-0">
+						<button class="btn btn-primary" type="submit">Rechercher !</button>
+					</div>
+				</div>
 				<input type="hidden" name="id" value="${id}" />
 				<input type="hidden" name="page" value="1" />
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		<div id="mobile_res_search_afficher_reseau" class="mobile_res_search"></div>
-		<h2>Réseau de ${name}</h2>
+		<h3 class="pt-4">Réseau ${name}</h3>
 		<c:if test="${not empty pages}">
 			<div class="center">
 				<c:if test="${current != 1}">
@@ -136,15 +133,16 @@
 				Aucune relation trouvée. <a href="protected/rechercher_personne.jsp" >Rechercher</a> des personnes à ajouter !
 			</c:when>
 			<c:otherwise>
-				<ul id="person_square_container">
+				<div class="row align-items-start mx-0 justify-content-around">
 					<c:forEach var="relation" items="${entities}">
-						<li class="person_square">
-							<div class="vertical_center_div">
-								<span class="verticalcenter_helper"></span>
-								<img class="verticalcenter" src="${avatars}/${relation.second.avatarSrcSmall}">
+						<div class="card col-auto px-0 m-2">
+							<img class="card-img-top" src="${avatars}/${relation.second.avatarSrcSmall}">
+							<div class="card-body">
+								<h5 class="card-title">
+									<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a>
+								</h5>
 							</div>
-							<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a><br/>
-							<div class="person_square_action">
+							<div class="card-footer">
 								<c:choose>
 									<c:when test="${relation.second.id != userid && relation.secondIsInMyNetwork}">
 										Aller voir <a href="protected/voir_liste?id=${relation.second.id}">sa liste</a>.<br/>
@@ -172,9 +170,9 @@
 									</c:otherwise>
 								</c:choose>
 							</div>
-						</li>
+						</div>
 					</c:forEach>
-				</ul>
+				</div>
 			</c:otherwise>
 		</c:choose>
 		<c:if test="${not empty pages}">

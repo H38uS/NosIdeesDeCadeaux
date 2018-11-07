@@ -10,69 +10,29 @@
 <t:template_body_protected>
 	<jsp:body>
 		<h2>Rechercher une personne pour l'ajouter</h2>
-		<div>
-			<c:choose>
-				<c:when test="${is_mobile}">
-					<form method="POST" action="protected/rechercher_personne">
-						<p>
-							<label for="name" class="required">Nom / Email de la personne</label>
-							<input type="text" name="name" id="name" value="${name}" />
-						</p>
-						<div>&nbsp;
-							<label id="label_only_non_friend" for="only_non_friend">Afficher uniquement les non-amis</label>
-						</div>
-						<div class="checkbox_container">
-							<c:if test="${onlyNonFriend}">
-								<input type="checkbox" name="only_non_friend" id="only_non_friend" checked="checked" />
-								<span id="span_only_non_friend" class="checkbox"></span>
-							</c:if>
-							<c:if test="${not onlyNonFriend}">
-								<input type="checkbox" name="only_non_friend" id="only_non_friend" />
-								<span id="span_only_non_friend" class="checkbox"></span>
-							</c:if>
-						</div>
-						<input type="submit" name="submit" id="submit" value="Rechercher !" />
-						<input type="hidden" name="page" value="1" />
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-					</form>
-				</c:when>
-				<c:otherwise>
-					<form method="POST" action="protected/rechercher_personne">
-						<table>
-							<tr>
-								<td>
-									<label for="name" class="required">Nom / Email de la personne</label>
-								</td>
-								<td>
-									<input type="text" name="name" id="name" value="${name}" />
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label id="label_only_non_friend" for="only_non_friend">Afficher uniquement les non-amis</label>
-								</td>
-								<td>
-									<c:if test="${onlyNonFriend}">
-										<input type="checkbox" name="only_non_friend" id="only_non_friend" checked="checked" />
-										<span id="span_only_non_friend" class="checkbox"></span>
-									</c:if>
-									<c:if test="${not onlyNonFriend}">
-										<input type="checkbox" name="only_non_friend" id="only_non_friend" />
-										<span id="span_only_non_friend" class="checkbox"></span>
-									</c:if>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" align="center">
-									<input type="submit" name="submit" id="submit" value="Rechercher !" />
-								</td>
-							</tr>
-						</table>
-						<input type="hidden" name="page" value="1" />
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-					</form>
-				</c:otherwise>
-			</c:choose>
+		<div class="container">
+			<form class="default_form mb-3" method="POST" action="protected/rechercher_personne">
+				<div class="form-group">
+					<label for="name" class="required">Nom / Email de la personne</label>
+					<input type="text" class="form-control" name="name" id="name" value="${name}" />
+				</div>
+				
+				<div class="form-check">
+					<c:if test="${onlyNonFriend}">
+						<input type="checkbox" class="form-check-input" name="only_non_friend" id="only_non_friend" checked="checked" />
+					</c:if>
+					<c:if test="${not onlyNonFriend}">
+						<input type="checkbox" class="form-check-input" name="only_non_friend" id="only_non_friend" />
+					</c:if>
+					<label id="label_only_non_friend" for="only_non_friend">Afficher uniquement les non-amis</label>
+				</div>
+				
+				<div class="center">
+					<button class="btn btn-primary" type="submit" name="submit" id="submit">Rechercher !</button>
+				</div>
+				<input type="hidden" name="page" value="1" />
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			</form>
 		</div>
 		<div id="res">
 			<c:if test="${not empty entities}">
@@ -96,16 +56,18 @@
 						</c:if>
 					</div>
 				</c:if>
-				<ul id="person_square_container">
+				
+				<div class="row align-items-start mx-0">
 					<c:forEach var="user" items="${entities}">
-						<li class="person_square">
-							<div class="vertical_center_div">
-								<span class="verticalcenter_helper"></span>
-								<img class="verticalcenter" src="${avatars}/${user.avatarSrcSmall}">
+						<div class="card col-auto px-0 m-2" style="width:250px">
+							<img class="card-img-top" src="${avatars}/${user.avatarSrcSmall}">
+							<div class="card-body">
+								<h5 class="card-title">
+									<div>${user.name}</div>
+									<div>${user.email}</div>
+								</h5>
 							</div>
-							<div>${user.name}</div>
-							<div>${user.email}</div>
-							<div style="height:70px;">
+							<div class="card-footer text-center">
 								<c:choose>
 									<c:when test="${user.isInMyNetwork}">
 										<span class="verticalcenter_helper"></span>
@@ -118,15 +80,15 @@
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">
 											<input type="hidden" name="user_id" value="${user.id}" >
-											<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
+											<button class="btn btn-primary" type="submit" name="submit" id="submit">Envoyer une demande</button>
 											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										</form>
 									</c:otherwise>
 								</c:choose>
 							</div>
-						</li>
+						</div>
 					</c:forEach>
-				</ul>
+				</div>
 			</c:if>
 			<c:if test="${not empty pages}">
 				<div class="center">

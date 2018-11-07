@@ -25,16 +25,17 @@
 						</c:if>
 					</div>
 				</c:if>
-				<ul id="person_square_container">
+				<div class="row align-items-start mx-0">
 					<c:forEach var="user" items="${entities}">
-						<li class="person_square">
-							<div class="vertical_center_div">
-								<span class="verticalcenter_helper"></span>
-								<img class="verticalcenter" src="${avatars}/${user.avatarSrcSmall}">
+						<div class="card col-auto px-0 m-2" style="width:250px">
+							<img class="card-img-top" src="${avatars}/${user.avatarSrcSmall}">
+							<div class="card-body">
+								<h5 class="card-title">
+									<div>${user.name}</div>
+									<div>${user.email}</div>
+								</h5>
 							</div>
-							<div>${user.name}</div>
-							<div>${user.email}</div>
-							<div>
+							<div class="card-footer text-center">
 								<c:choose>
 									<c:when test="${user.isInMyNetwork}">
 										<span class="verticalcenter_helper"></span>
@@ -46,16 +47,16 @@
 									</c:when>
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">
-											<input hidden="true" type="hidden" name="user_id" value="${user.id}" >
-											<input type="submit" name="submit" id="submit" value="Envoyer une demande" />
+											<input type="hidden" name="user_id" value="${user.id}" >
+											<button class="btn btn-primary" type="submit" name="submit" id="submit">Envoyer une demande</button>
 											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										</form>
 									</c:otherwise>
 								</c:choose>
 							</div>
-						</li>
+						</div>
 					</c:forEach>
-				</ul>
+				</div>
 			</c:if>
 			<c:if test="${not empty pages}">
 				<div class="center">

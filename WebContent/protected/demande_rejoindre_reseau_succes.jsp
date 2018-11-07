@@ -6,6 +6,6 @@
 <t:normal_protected>
 	<jsp:body>
 		<h2>Succès !</h2>
-		<div>Une demande d'amis à ${name} vient d'être envoyée.</div>
+		<div class="alert alert-success">Une demande d'amis à ${name} vient d'être envoyée.</div>
 	</jsp:body>
 </t:normal_protected>

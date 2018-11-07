@@ -7,32 +7,25 @@
 <t:normal_protected>
 	<jsp:body>
 		<h2>Erreur</h2>
-		<div>
+		<div class="alert alert-danger">
 			Des erreurs sont survenues, empêchant d'envoyer les demandes... Veuillez réessayer.
 		</div>
 		<div>Envoyer de nouvelles demandes : </div>
 		<div>
-			<form method="POST" action="protected/suggerer_relations">
-				<table>
-					<tr>
-						<td>
-							<label for="name" class="required">Nom / Email de la personne</label>
-						</td>
-						<td>
-							<input type="text" name="name" id="name" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<input type="hidden" name="id" value="${user.id}" >
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" align="center">
-							<input type="submit" name="submit" id="submit" value="Rechercher !" />
-						</td>
-					</tr>
-				</table>
+			<form method="POST" class="form-inline" action="protected/suggerer_relations">
+				<div class="row align-items-center mx-0">
+					<div class="col-auto d-none d-md-inline-block">
+						<label for="name">Nom / Email de la personne</label>
+					</div>
+					<div class="col-7 col-md-auto mx-0">
+						<input class="form-control" type="text" name="name" id="name" />
+					</div>
+					<div class="col-5 col-md-auto">
+						<button class="btn btn-primary" type="submit" name="submit" id="submit">Rechercher !</button>
+					</div>
+				</div>
+				<div></div>
+				<input type="hidden" name="id" value="${user.id}" >
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			</form>
 		</div>

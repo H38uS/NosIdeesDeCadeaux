@@ -79,6 +79,10 @@ td > #imageFilePreview {
 	color: #ff6666;
 }
 
+.card {
+	width: 280px;
+}
+
 /* Fonction de chargement */
 #loading {
 	display: none;

@@ -133,40 +133,6 @@ td.idea_square_text {
 	display: none;
 }
 
-/***********************************/
-/* *** Person with information *** */
-/***********************************/
-#person_square_container {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, 450px);
-	grid-gap: 00px;
-	justify-content: center;
-	align-content: flex-start;
-	list-style: none;
-	padding: 0;
-}
-
-#person_square_container>* {
-	vertical-align: top;
-}
-
-.person_square {
-	margin: 0 10px;
-	text-align: center;
-}
-
-.person_square_action {
-	margin: 5px;
-	padding: 8px;
-	background-color: #8a8a8a;
-	color: white;
-}
-
-.person_square_action a:link, .person_square_action a:visited,
-	.person_square_action a:active {
-	color: #b0cff8;
-}
-
 /****************************/
 /* *** Search box idées *** */
 /****************************/

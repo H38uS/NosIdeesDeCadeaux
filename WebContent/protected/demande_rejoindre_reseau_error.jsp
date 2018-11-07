@@ -4,6 +4,6 @@
 <t:normal_protected>
 	<jsp:body>
 		<h2>Impossible d'envoyer une demande à ${name}...</h2>
-		<div>${error_message}</div>
+		<div class="alert alert-danger">${error_message}</div>
 	</jsp:body>
 </t:normal_protected>
