@@ -48,7 +48,7 @@
 				<div class="form-group">
 					<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
 					<div>
-						<label for="imageFile" class="btn btn-primary">Ajouter une image</label>
+						<label for="imageFile" class="btn btn-secondary">Ajouter une image</label>
 					</div>
 					<span class="d-none d-md-inline-block">Fichier Choisi: </span>
 					<span id="newImage" class="picture_not_drag input"></span>

@@ -20,70 +20,59 @@
 		<h2>Informations générales</h2>
 	
 		<form id="form_main_change_mon_compte" action="protected/mon_compte?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
-			<table>
-				<tr>
-					<td>Email</td>
-					<td>
-						<input type="text" name="email" value="${user.email}">
-					</td>
-				</tr>
-				<tr>
-					<td>Nom</td>
-					<td>
-						<input type="text" name="name" value="${user.name}">
-					</td>
-				</tr>
-				<tr>
-					<td>Date de naissance</td>
-					<td>
-						<input type="date" name="birthday" placeholder="aaaa-mm-jj" value="${user.birthday}"
-												title="Utilisez le format suivant: aaaa-mm-jj (année sur 4 chiffres, tiret, mois sur 2 chiffres, tiret, jour sur deux chiffres)">
-					</td>
-				</tr>
-				<c:if test="${not empty user.avatar}">
-					<tr>
-						<td>Avatar actuel</td>
-						<td>
-							<a id="avatar_picture" href="${avatars}/${user.avatarSrcLarge}" class="thickbox img">
-								<img src="${avatars}/${user.avatarSrcSmall}" width="150" class="input" />
-							</a>
-							<input type="hidden" name="old_picture" value="${user.avatar}" />
-						</td>
-					</tr>
-				</c:if>
-				<tr>
-					<td>Fichier Choisi</td>
-					<td>
-						<span id="newImage" class="input" ></span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
-					</td>
-					<td>
-						<label for="imageFile" class="custom-file-upload" >Choisissez un nouvel avatar</label>
-					</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td>
-						<img id="imageFilePreview" alt="" src="" width="300" />
-					</td>
-				</tr>
-				<tr>
-					<td>Nouveau mot de passe</td>
-					<td>
-						<input type="password" name="new_password" id="new_password" value="" />
-					</td>
-				</tr>
-				<tr>
-					<td>Confirmation du mot de passe</td>
-					<td>
-						<input type="password" name="conf_password" id="conf_password" value="" />
-					</td>
-				</tr>
-			</table>
+
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input id="email" class="form-control" type="text" name="email" value="${user.email}">
+			</div>
+
+			<div class="form-group">
+				<label for="name">Nom</label>
+				<input id="name" type="text" class="form-control" name="name" value="${user.name}">
+			</div>
+
+			<div class="form-group">
+				<label for="birthday">Date de naissance</label>
+				<input id="birthday" 
+						class="form-control"
+						type="date"
+						name="birthday"
+						placeholder="aaaa-mm-jj"
+						value="${user.birthday}"
+						title="Utilisez le format suivant: aaaa-mm-jj (année sur 4 chiffres, tiret, mois sur 2 chiffres, tiret, jour sur deux chiffres)">
+			</div>
+
+			<c:if test="${not empty user.avatar}">
+				<div class="form-group">
+					<label>Avatar actuel</label>
+					<a id="avatar_picture" href="${avatars}/${user.avatarSrcLarge}" class="thickbox img">
+						<img src="${avatars}/${user.avatarSrcSmall}" width="150" class="input" />
+					</a>
+					<input type="hidden" name="old_picture" value="${user.avatar}" />
+				</div>
+			</c:if>
+			
+			<div class="form-group">
+				<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+				<div>
+					<label for="imageFile" class="btn btn-light">Choisissez un nouvel avatar</label>
+				</div>
+				<span class="d-none d-md-inline-block pb-2">Fichier Choisi: </span>
+				<span id="newImage" class="picture_not_drag input"></span>
+				<div>
+					<img id="imageFilePreview" alt="" src="" width="300" />
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="new_password">Nouveau mot de passe</label>
+				<input class="form-control" type="password" name="new_password" id="new_password" value="" />
+			</div>
+
+			<div class="form-group">
+				<label for="conf_password">Confirmation du mot de passe</label>
+				<input class="form-control" type="password" name="conf_password" id="conf_password" value="" />
+			</div>
 			
 			<div class="errors">
 				<c:if test="${fn:length(errors_info_gen) > 0}">
@@ -97,155 +86,134 @@
 			</div>
 			
 			<input type="hidden" name="modif_info_gen" value="true">
-			<input id="submit_main_form" type="submit" value="Sauvegarder">
+			
+			<div class="center">
+				<button class="btn btn-primary" id="submit_main_form" type="submit">Sauvegarder</button>
+			</div>
 		</form>
 	</div>
 	<c:if test="${sauvegarde_ok}">
 		Mise à jour effectuée avec succès.
 	</c:if>
 	
-	<h2>Contrôle parental - Procuration</h2>
+	<h2 class="pt-3">Contrôle parental - Procuration</h2>
 
-	<h3>
-		<div class="inline_form">
-			Mes comptes parent
-			<c:if test="${not empty parents}">
-			<form id="supprimer_parents" method="POST" action="protected/supprimer_parents">
-				<input type="submit" value="Je suis assez grand(e), les supprimer" />
-			</form>
-			</c:if>
+	<div class="border border-info bg-light rounded mb-2 p-2">
+		<div class="row align-items-center ">
+			<div class="col-auto">
+				<h3>Mes comptes parent</h3>
+			</div>
+			<div class="col-auto">
+				<c:if test="${not empty parents}">
+					<form id="supprimer_parents" class="form-inline" method="POST" action="protected/supprimer_parents">
+						<button type="submit" class="btn btn-primary">Je suis assez grand(e), les supprimer</button>
+					</form>
+				</c:if>
+			</div>
 		</div>
-	</h3>
-	<c:choose>
-		<c:when test="${not empty parents}">
-			<ul>
-				<c:forEach var="parent" items="${parents}">
-				<li>${parent}</li>
-				</c:forEach>
-			</ul>
-		</c:when>
-		<c:otherwise>
-			Vous n'avez actuellement pas de comptes parent.
-		</c:otherwise>
-	</c:choose>
-	<div class="inline_form">
-		<form id="ajouter_un_parent" method="POST" action="protected/ajouter_parent">
-			<input type="text" name="name" id="input_add_parent" placeholder="Nom ou email du parent" />
-			<input type="submit" value="Ajouter" />
-		</form>
-	</div>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#input_add_parent").autocomplete({
-				source : "protected/service/name_resolver",
-				minLength : 2,
-				select : function(event, ui) {
-					$("#input_add_parent").val(ui.item.email);
-					$("#ajouter_un_parent").submit();
-					return false;
-				}
-			});
-		});
-	</script>
-
-	<h3>Mes comptes enfant</h3>
-	<c:choose>
-		<c:when test="${not empty children}">
-		<table>
-			<c:forEach var="child" items="${children}">
-			<tr>
-				<td>${child}</td>
-				<td>
-					<form method="POST" action="protected/connexion_enfant">
-						<input type="hidden" name="name" value="${child.id}" />
-						<input type="submit" value="Se connecter avec ce compte" />
-					</form>
-				</td>
-			</tr>
-			</c:forEach>
-		</table>
-			<ul>
-			</ul>
-		</c:when>
-		<c:otherwise>
-			Vous n'avez actuellement pas de comptes enfant.
-		</c:otherwise>
-	</c:choose>
-	<p>
-		Pour en ajouter, connectez-vous (ou créez un autre compte) depuis le compte enfant
-		afin d'initialiser la procuration. <br/>Vous pourrez alors accéder à vos comptes enfant depuis le vôtre !
-	</p>
-	
-	<h2>Type de notifications</h2>
-	
-	<c:choose>
-		<c:when test="${is_mobile}">
-			<c:forEach var="notif" items="${notif_types}">
-				<div class="default_form">
-					<form action="protected/update_notification_parameter" method="post">
-						<tr>
-							<td>
-								<label for="${notif.parameterName}_value" class="notif_param_desc">${notif.parameterDescription}</label>
-							</td>
-							<td style="padding:0 20px;" >
-								<select id="value_${notif.parameterName}" name="value">
-									<c:forEach var="value" items="${possible_values}">
-										<c:choose>
-											<c:when test="${value == notif.parameterValue}">
-												<option selected="selected" value="${value}">${value}</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${value}">${value}</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-								</select>
-							</td>
-							<td>
-								<input type="hidden" name="id" value="${notif.id}">
-								<input type="hidden" name="name" value="${notif.parameterName}">
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-								<input type="submit" class="notification_form_submit" value="Sauvegarder">
-							</td>
-						</tr>
-					</form>
+		<c:choose>
+			<c:when test="${not empty parents}">
+				<ul>
+					<c:forEach var="parent" items="${parents}">
+					<li>${parent}</li>
+					</c:forEach>
+				</ul>
+			</c:when>
+			<c:otherwise>
+				Vous n'avez actuellement pas de comptes parent.
+			</c:otherwise>
+		</c:choose>
+		<form id="ajouter_un_parent" class="form-inline" method="POST" action="protected/ajouter_parent">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-auto">
+					<label for="input_add_parent" class="d-none d-lg-inline-block mr-3">Ajouter un nouveau parent pour gérer ce compte</label>
 				</div>
-			</c:forEach>
-		</c:when>
-		<c:otherwise>
+				<div class="col-auto px-0">
+					<input type="text" class="form-control" name="name" id="input_add_parent" placeholder="Nom ou email du parent" />
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-primary mx-md-2" type="submit">Ajouter</button>
+				</div>
+			</div>
+		</form>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#input_add_parent").autocomplete({
+					source : "protected/service/name_resolver",
+					minLength : 2,
+					select : function(event, ui) {
+						$("#input_add_parent").val(ui.item.email);
+						$("#ajouter_un_parent").submit();
+						return false;
+					}
+				});
+			});
+		</script>
+		<h3 class="mt-2">Mes comptes enfant</h3>
+		<c:choose>
+			<c:when test="${not empty children}">
 			<table>
-				<c:forEach var="notif" items="${notif_types}">
-					<form action="protected/update_notification_parameter" method="post">
-						<tr>
-							<td>
-								<label for="${notif.parameterName}_value">${notif.parameterDescription}</label>
-							</td>
-							<td style="padding:0 20px;" >
-								<select id="value_${notif.parameterName}" name="value">
-									<c:forEach var="value" items="${possible_values}">
-										<c:choose>
-											<c:when test="${value == notif.parameterValue}">
-												<option selected="selected" value="${value}">${value}</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${value}">${value}</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-								</select>
-							</td>
-							<td>
-								<input type="hidden" name="id" value="${notif.id}">
-								<input type="hidden" name="name" value="${notif.parameterName}">
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-								<input type="submit" class="notification_form_submit" value="Sauvegarder">
-							</td>
-						</tr>
-					</form>
+				<c:forEach var="child" items="${children}">
+				<tr>
+					<td>${child}</td>
+					<td>
+						<form method="POST" action="protected/connexion_enfant">
+							<input type="hidden" name="name" value="${child.id}" />
+							<input type="submit" value="Se connecter avec ce compte" />
+						</form>
+					</td>
+				</tr>
 				</c:forEach>
 			</table>
-		</c:otherwise>
-	</c:choose>
+				<ul>
+				</ul>
+			</c:when>
+			<c:otherwise>
+				Vous n'avez actuellement pas de comptes enfant.
+			</c:otherwise>
+		</c:choose>
+		<p class="mb-0">
+			Pour en ajouter, connectez-vous (ou créez un autre compte) depuis le compte enfant
+			afin d'initialiser la procuration. <br/>Vous pourrez alors accéder à vos comptes enfant depuis le vôtre !
+		</p>
+	</div>
+
+	<h2 class="pt-3">Type de notifications</h2>
+	
+	<div class="container">
+	
+	<c:forEach var="notif" items="${notif_types}">
+		<div class="border border-info bg-light rounded mb-2 p-2">
+			<div class="row align-items-center py-2">
+				<form class="form-inline w-100" action="protected/update_notification_parameter" method="post">
+					<div class="col-12 col-md-5 col-lg-7">
+						<label class="justify-content-start" for="${notif.parameterName}_value">${notif.parameterDescription}</label>
+					</div>
+					<div class="col-7 col-md-auto">
+						<select class="form-control w-100" id="value_${notif.parameterName}" name="value">
+							<c:forEach var="value" items="${possible_values}">
+								<c:choose>
+									<c:when test="${value == notif.parameterValue}">
+										<option selected="selected" value="${value}">${value}</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${value}">${value}</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+					</div>
+					<input type="hidden" name="id" value="${notif.id}">
+					<input type="hidden" name="name" value="${notif.parameterName}">
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+					<div class="col-5 col-md-auto">
+						<button class="btn btn-primary" type="submit" class="notification_form_submit">Sauvegarder</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</c:forEach>
+	</div>
 	
 </jsp:body>
 </t:template_body_protected>

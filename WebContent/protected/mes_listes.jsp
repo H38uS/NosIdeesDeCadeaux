@@ -56,11 +56,13 @@
 							});
 						});
 					</script>
-					<div class="inline_form">
-						Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
-						<form id="afficherliste_topmeslistes" method="POST" action="protected/afficher_listes">
-							<input type="text" name="name" id="top_mes_listes_search" placeholder="Entrez un nom ou un email" />
-							<input type="submit" value="Rechercher !" />
+					<div class="row align-items-center pb-2">
+						<div class="col-auto">
+							Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
+						</div>
+						<form id="afficherliste_topmeslistes" class="form-inline" method="POST" action="protected/afficher_listes">
+							<input type="text" class="form-control" name="name" id="top_mes_listes_search" placeholder="Entrez un nom ou un email" />
+							<button class="btn btn-primary mx-2" type="submit">Rechercher !</button>
 						</form>
 					</div>
 				</c:if>
@@ -506,28 +508,28 @@
 						});
 					});
 				</script>
+				<div class="row align-items-center pb-5">
 				<c:choose>
 					<c:when test="${fn:length(entities) eq 1}">
-						<div class="inline_form">
+						<div class="col-auto">
 							Consultez une autre liste : 
-							<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
-								<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
-								<input type="submit" value="Rechercher !" />
-							</form>
-							<br/><br/><br/><br/><br/><br/><br/><br/><br/>
 						</div>
+						<form id="afficherliste_bottommeslistes" class="form-inline"  method="POST" action="protected/afficher_listes">
+							<input type="text" class="form-control" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
+							<button class="btn btn-primary mx-2" type="submit">Rechercher !</button>
+						</form>
 					</c:when>
 					<c:otherwise>
-						<div class="inline_form">
+						<div class="col-auto">
 							Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
-							<form id="afficherliste_bottommeslistes" method="POST" action="protected/afficher_listes">
-								<input type="text" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
-								<input type="submit" value="Rechercher !" />
-							</form>
-							<br/><br/><br/><br/><br/><br/><br/><br/><br/>
 						</div>
+						<form id="afficherliste_bottommeslistes" class="form-inline" method="POST" action="protected/afficher_listes">
+							<input type="text" class="form-control" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
+							<button class="btn btn-primary mx-2" type="submit">Rechercher !</button>
+						</form>
 					</c:otherwise>
 				</c:choose>
+				</div>
 			</c:if>
 		</div>
 	</jsp:body>
