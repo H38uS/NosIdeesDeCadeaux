@@ -18,6 +18,16 @@
 <t:template_body_protected>
 	<jsp:body>
 		<h3>Modification d'idée</h3>
+		<c:if test="${fn:length(errors) > 0}">
+			<div class="alert alert-danger">
+				<p>Des erreurs ont empêché la modification de cette idée:</p>
+				<ul>
+					<c:forEach var="error" items="${errors}">
+						<li>${error}</li>
+					</c:forEach>
+				</ul>
+			</div>
+		</c:if>
 		<div>
 			<c:if test="${not empty idea}">
 				<div class="container border border-info bg-light rounded mb-2 p-3">
@@ -90,16 +100,6 @@
 				L'idée que vous souhaitez modifier n'existe pas, ou vous n'avez pas les droits pour modifier celle-ci.
 			</c:if>
 		</div>
-		<c:if test="${fn:length(errors) > 0}">
-			<div class="alert alert-danger">
-				<p>Des erreurs ont empêché la modification de cette idée:</p>
-				<ul>
-					<c:forEach var="error" items="${errors}">
-						<li>${error}</li>
-					</c:forEach>
-				</ul>
-			</div>
-		</c:if>
 	</jsp:body>
 </t:template_body_protected>
 </html>

@@ -55,6 +55,12 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 		request.setAttribute("priorites", priorities.getPriorities());
 		request.setAttribute("idea", idea);
 		request.setAttribute("from", getFrom(request, ""));
+		
+		Object errors = request.getSession().getAttribute("errors");
+		if (errors != null) {
+			request.setAttribute("errors", errors);
+			request.getSession().removeAttribute("errors");
+		}
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
@@ -71,6 +77,13 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 
 			if (!errors.isEmpty()) {
 				request.getSession().setAttribute("errors", errors);
+				RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?id={1}&from={2}",
+																		PROTECTED_MODIFIER_IDEE,
+																		idea.getId(),
+																		getFrom(request, "")),
+												request,
+												response);
+				return;
 			} else {
 				logger.info(MessageFormat.format(	"Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",
 													parameters.get("text"),
@@ -99,8 +112,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 				for (AbstractNotification notification : notifications) {
 					if (notification instanceof NotifAskIfIsUpToDate) {
 						NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
-						notif.addNotification(	isUpToDate.getUserIdParam(),
-												new NotifConfirmedUpToDate(user, idea));
+						notif.addNotification(isUpToDate.getUserIdParam(), new NotifConfirmedUpToDate(user, idea));
 						notif.remove(notification.id);
 					}
 					if (notification instanceof NotifIdeaAddedByFriend) {
