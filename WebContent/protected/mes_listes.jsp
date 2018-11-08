@@ -19,28 +19,7 @@
 		</div>
 
 		<div id="mes_listes_entities_container">
-
-			<c:if test="${not empty pages}">
-				<div class="center">
-					<c:if test="${current != 1}">
-						<a href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
-					</c:if>
-					<c:forEach var="page" items="${pages}">
-						<c:choose>
-							<c:when test="${current != page.numero}">
-								<a href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
-							</c:when>
-							<c:otherwise>
-								${page.numero}
-							</c:otherwise>
-						</c:choose>
-					</c:forEach>
-					<c:if test="${current != last}">
-						<a href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
-					</c:if>
-				</div>
-			</c:if>
-	
+			
 			<c:if test="${not is_mobile}">
 				<c:if test="${fn:length(entities) gt 1}">
 					<script type="text/javascript">
@@ -66,6 +45,51 @@
 						</form>
 					</div>
 				</c:if>
+			</c:if>
+		
+			<c:if test="${not empty pages}">
+				<div class="my-3">
+					<ul class="pagination justify-content-center">
+						<c:choose>
+							<c:when test="${current != 1}">
+								<li class="page-item">
+									<a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-item disabled">
+									<a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
+								</li>
+							</c:otherwise>
+						</c:choose>
+						<c:forEach var="page" items="${pages}">
+							<c:choose>
+								<c:when test="${current != page.numero}">
+									<li class="page-item">
+										<a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="page-item active">
+										<a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
+									</li>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<c:choose>
+							<c:when test="${current != last}">
+								<li class="page-item">
+									<a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-item disabled">
+									<a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
+								</li>
+							</c:otherwise>
+						</c:choose>
+					</ul>
+				</div>
 			</c:if>
 	
 			<c:if test="${not empty entities}">
@@ -463,23 +487,47 @@
 				</c:forEach>
 	
 				<c:if test="${not empty pages}">
-					<div class="center">
-						<c:if test="${current != 1}">
-							<a href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
-						</c:if>
-						<c:forEach var="page" items="${pages}">
+					<div class="my-3">
+						<ul class="pagination justify-content-center">
 							<c:choose>
-								<c:when test="${current != page.numero}">
-									<a href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
+								<c:when test="${current != 1}">
+									<li class="page-item">
+										<a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
+									</li>
 								</c:when>
 								<c:otherwise>
-									${page.numero}
+									<li class="page-item disabled">
+										<a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
+									</li>
 								</c:otherwise>
 							</c:choose>
-						</c:forEach>
-						<c:if test="${current != last}">
-							<a href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
-						</c:if>
+							<c:forEach var="page" items="${pages}">
+								<c:choose>
+									<c:when test="${current != page.numero}">
+										<li class="page-item">
+											<a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
+										</li>
+									</c:when>
+									<c:otherwise>
+										<li class="page-item active">
+											<a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
+										</li>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+							<c:choose>
+								<c:when test="${current != last}">
+									<li class="page-item">
+										<a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="page-item disabled">
+										<a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
+									</li>
+								</c:otherwise>
+							</c:choose>
+						</ul>
 					</div>
 				</c:if>
 			</c:if>

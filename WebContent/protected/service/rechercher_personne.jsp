@@ -6,23 +6,47 @@
 
 			<c:if test="${not empty entities}">
 				<c:if test="${not empty pages}">
-					<div class="center">
-						<c:if test="${current != 1}">
-							<a href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
-						</c:if>
-						<c:forEach var="page" items="${pages}">
+					<div>
+						<ul class="pagination justify-content-center">
 							<c:choose>
-								<c:when test="${current != page.numero}">
-									<a href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+								<c:when test="${current != 1}">
+									<li class="page-item">
+										<a class="page-link" href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
+									</li>
 								</c:when>
 								<c:otherwise>
-									${page.numero}
+									<li class="page-item disabled">
+										<a class="page-link" href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
+									</li>
 								</c:otherwise>
 							</c:choose>
-						</c:forEach>
-						<c:if test="${current != last}">
-						<a href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
-						</c:if>
+							<c:forEach var="page" items="${pages}">
+								<c:choose>
+									<c:when test="${current != page.numero}">
+										<li class="page-item">
+											<a class="page-link" href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+										</li>
+									</c:when>
+									<c:otherwise>
+										<li class="page-item active">
+											<a class="page-link" href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+										</li>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+							<c:choose>
+								<c:when test="${current != last}">
+									<li class="page-item">
+										<a class="page-link" href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="page-item disabled">
+										<a class="page-link" href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
+									</li>
+								</c:otherwise>
+							</c:choose>
+						</ul>
 					</div>
 				</c:if>
 				<div class="row align-items-start mx-0 justify-content-around">
@@ -59,22 +83,46 @@
 				</div>
 			</c:if>
 			<c:if test="${not empty pages}">
-				<div class="center">
-					<c:if test="${current != 1}">
-						<a href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
-					</c:if>
-					<c:forEach var="page" items="${pages}">
+				<div>
+					<ul class="pagination justify-content-center">
 						<c:choose>
-							<c:when test="${current != page.numero}">
-								<a href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+							<c:when test="${current != 1}">
+								<li class="page-item">
+									<a class="page-link" href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
+								</li>
 							</c:when>
 							<c:otherwise>
-								${page.numero}
+								<li class="page-item disabled">
+									<a class="page-link" href="protected/rechercher_personne?page=${current-1}&only_non_friend=${onlyNonFriend}&name=${name}">Précédent</a>
+								</li>
 							</c:otherwise>
 						</c:choose>
-					</c:forEach>
-					<c:if test="${current != last}">
-					<a href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
-					</c:if>
+						<c:forEach var="page" items="${pages}">
+							<c:choose>
+								<c:when test="${current != page.numero}">
+									<li class="page-item">
+										<a class="page-link" href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="page-item active">
+										<a class="page-link" href="protected/rechercher_personne?page=${page.numero}&only_non_friend=${onlyNonFriend}&name=${name}">${page.numero}</a>
+									</li>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+						<c:choose>
+							<c:when test="${current != last}">
+								<li class="page-item">
+									<a class="page-link" href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-item disabled">
+									<a class="page-link" href="protected/rechercher_personne?page=${current+1}&only_non_friend=${onlyNonFriend}&name=${name}">Suivant</a>
+								</li>
+							</c:otherwise>
+						</c:choose>
+					</ul>
 				</div>
 			</c:if>
