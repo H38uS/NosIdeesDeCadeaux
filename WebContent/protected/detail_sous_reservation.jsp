@@ -70,15 +70,15 @@
 				L'idée que vous souhaitez réserver n'existe pas, ou vous n'avez pas les droits pour le faire.
 			</c:if>
 		</div>
-		<div class="errors">
-			<c:if test="${fn:length(errors) > 0}">
+		<c:if test="${fn:length(errors) > 0}">
+			<div class="alert alert-danger">
 				<p>Des erreurs ont empêché la réservation d'une partie de cette idée:</p>
 				<ul>
 					<c:forEach var="error" items="${errors}">
 						<li>${error}</li>
 					</c:forEach>
 				</ul>
-			</c:if>
-		</div>
+			</div>
+		</c:if>
 	</jsp:body>
 </t:normal_protected>

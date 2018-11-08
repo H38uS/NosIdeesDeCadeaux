@@ -59,7 +59,7 @@
 				</div>
 				<span class="d-none d-md-inline-block pb-2">Fichier Choisi: </span>
 				<span id="newImage" class="picture_not_drag input"></span>
-				<div>
+				<div class="center">
 					<img id="imageFilePreview" alt="" src="" width="300" />
 				</div>
 			</div>
@@ -74,16 +74,16 @@
 				<input class="form-control" type="password" name="conf_password" id="conf_password" value="" />
 			</div>
 			
-			<div class="errors">
-				<c:if test="${fn:length(errors_info_gen) > 0}">
+			<c:if test="${fn:length(errors_info_gen) > 0}">
+				<div class="alert alert-danger">
 					<p>Des erreurs ont empêché la sauvegarde:</p>
 					<ul>
 						<c:forEach var="error" items="${errors_info_gen}">
 							<li>${error}</li>
 						</c:forEach>
 					</ul>
-				</c:if>
-			</div>
+				</div>
+			</c:if>
 			
 			<input type="hidden" name="modif_info_gen" value="true">
 			

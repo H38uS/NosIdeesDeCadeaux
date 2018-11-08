@@ -17,39 +17,36 @@
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
-		<h2>Modification d'idée</h2>
+		<h3>Modification d'idée</h3>
 		<div>
 			<c:if test="${not empty idea}">
-				<form action="protected/modifier_idee?id=${idea.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
-					<input type="hidden" name="from" value="${from}" />
-					<table>
-						<tr>
-							<td><label for="text">Le texte de l'idée</label></td>
-							<td><textarea id="text" name="text" cols="70" rows="6">${idea.text}</textarea></td>
-						</tr>
-						<tr>
-							<td><label for="type">Type</label></td>
-							<td>
-								<select id="type" name="type">
-									<option value="">Sélectionnez un type</option>
-									<c:forEach var="type" items="${types}">
-										<c:choose>
-											<c:when test="${type.name == idea.type}">
-												<option value="${type.name}" selected="selected">${type.alt}</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${type.name}">${type.alt}</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-									<option value="">Autre</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td><label for="priority">Priorité</label></td>
-							<td>
-							<select id="priority" name="priority">
+				<div class="container border border-info bg-light rounded mb-2 p-3">
+					<form class="mw-50" action="protected/modifier_idee?id=${idea.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="from" value="${from}" />
+						<div class="form-group">
+							<label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
+							<textarea id="text" class="form-control" name="text" cols="70" rows="6">${idea.text}</textarea>
+						</div>
+						<div class="form-group">
+							<label for="type" class="d-none d-md-inline-block">Type</label>
+							<select id="type" class="form-control" name="type">
+								<option value="">Sélectionnez un type</option>
+								<c:forEach var="type" items="${types}">
+									<c:choose>
+										<c:when test="${type.name == idea.type}">
+											<option value="${type.name}" selected="selected">${type.alt}</option>
+										</c:when>
+										<c:otherwise>
+											<option value="${type.name}">${type.alt}</option>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+								<option value="">Autre</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="priority" class="d-none d-md-inline-block">Priorité</label>
+							<select id="priority" class="form-control" name="priority">
 								<option value="1">Sélectionnez une priorité</option>
 								<c:forEach var="priorite" items="${priorites}">
 									<c:choose>
@@ -62,59 +59,47 @@
 									</c:choose>
 								</c:forEach>
 							</select>
-							</td>
-						</tr>
-						<tr>
-							<td>Fichier Choisi</td>
-							<td>
-								<span id="newImage" class="input" ></span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
-							</td>
-							<td>
-								<label for="imageFile" class="custom-file-upload" >Choisissez une nouvelle image</label>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
+						</div>
+						<div class="form-group">
+							<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+							<div>
+								<label for="imageFile" class="btn btn-secondary">Ajouter une image</label>
+							</div>
+							<span class="d-none d-md-inline-block">Fichier Choisi: </span>
+							<span id="newImage" class="picture_not_drag input"></span>
+							<div class="center">
 								<img id="imageFilePreview" alt="" src="" width="300" />
-							</td>
-						</tr>
+							</div>
+						</div>
+
 						<c:if test="${not empty idea.image}">
-							<tr>
-								<td>Image actuelle</td>
-								<td>
-									<img class="form_img" src="${ideas_pictures}/${idea.imageSrcSmall}" width="150" />
-									<input type="hidden" name="old_picture" value="${idea.image}" />
-								</td>
-							</tr>
+						<div class="form-group">
+							<span>Image actuelle</span>
+							<img class="form_img" src="${ideas_pictures}/${idea.imageSrcSmall}" width="150" />
+							<input type="hidden" name="old_picture" value="${idea.image}" />
+						</div>
 						</c:if>
-						<tr>
-							<td colspan="2" align="center">
-								<input type="submit" name="submit" id="submit" value="Modifier" />
-							</td>
-						</tr>
-					</table>
-				</form>
+						
+						<div class="center">
+							<button type="submit" class="btn btn-primary" name="submit" id="submit">Modifier</button>
+						</div>
+					</form>
+				</div>
 			</c:if>
 			<c:if test="${empty idea}">
 				L'idée que vous souhaitez modifier n'existe pas, ou vous n'avez pas les droits pour modifier celle-ci.
 			</c:if>
 		</div>
-		<div class="errors">
-			<c:if test="${fn:length(errors) > 0}">
+		<c:if test="${fn:length(errors) > 0}">
+			<div class="alert alert-danger">
 				<p>Des erreurs ont empêché la modification de cette idée:</p>
 				<ul>
 					<c:forEach var="error" items="${errors}">
 						<li>${error}</li>
 					</c:forEach>
 				</ul>
-			</c:if>
-		</div>
+			</div>
+		</c:if>
 	</jsp:body>
 </t:template_body_protected>
 </html>

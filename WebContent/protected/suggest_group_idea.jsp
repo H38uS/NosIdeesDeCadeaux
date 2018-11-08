@@ -67,16 +67,16 @@
 					</c:choose>
 				</div>
 			</div>
-			<div class="errors">
-				<c:if test="${fn:length(errors) > 0}">
+			<c:if test="${fn:length(errors) > 0}">
+				<div class="alert alert-danger">
 					<p>Des erreurs sont survenues:</p>
 					<ul>
 						<c:forEach var="error" items="${errors}">
 							<li>${error}</li>
 						</c:forEach>
 					</ul>
-				</c:if>
-			</div>
+				</div>
+			</c:if>
 		</c:if>
 		<c:if test="${empty group}">
 			Le groupe n'existe pas ou vous ne pouvez pas intéragir avec.

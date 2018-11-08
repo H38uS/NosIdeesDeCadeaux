@@ -52,7 +52,7 @@
 					</div>
 					<span class="d-none d-md-inline-block">Fichier Choisi: </span>
 					<span id="newImage" class="picture_not_drag input"></span>
-					<div>
+					<div class="center">
 						<img id="imageFilePreview" alt="" src="" width="300" />
 					</div>
 				</div>
@@ -61,16 +61,16 @@
 				</div>
 			</form>
 		</div>
-		<div class="errors">
-			<c:if test="${fn:length(errors) > 0}">
+		<c:if test="${fn:length(errors) > 0}">
+			<div class="alert alert-danger">
 				<p>Des erreurs ont empêché la création de cette nouvelle idée:</p>
 				<ul>
 					<c:forEach var="error" items="${errors}">
 						<li>${error}</li>
 					</c:forEach>
 				</ul>
-			</c:if>
-		</div>
+			</div>
+		</c:if>
 	</jsp:body>
 </t:template_body_protected>
 </html>

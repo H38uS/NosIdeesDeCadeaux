@@ -94,16 +94,16 @@
 				</c:forEach>
 			</c:otherwise>
 		</c:choose>
-		<div class="errors">
-			<c:if test="${fn:length(errors) > 0}">
+		<c:if test="${fn:length(errors) > 0}">
+			<div class="alert alert-danger">
 				<p>Des erreurs sont survenues:</p>
 				<ul>
 					<c:forEach var="error" items="${errors}">
 						<li>${error}</li>
 					</c:forEach>
 				</ul>
-			</c:if>
-		</div>
+			</div>
+		</c:if>
 		<c:if test="${group.total > currentTotal}">
 			<h3>Suggérer ce groupe à quelqu'un</h3>
 			Il manque un peu (${remaining}€ très exactement)... N'hésitez plus, <a href="protected/suggerer_groupe_idee?groupid=${group.id}">suggérer</a> ce groupe à d'autres personnes !

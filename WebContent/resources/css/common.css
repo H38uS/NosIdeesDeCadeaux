@@ -72,13 +72,6 @@ td > #imageFilePreview {
 	margin-left: 7px;
 }
 
-/* Les erreurs... */
-.error, .errors {
-	font-size: 90%;
-	font-style: italic;
-	color: #ff6666;
-}
-
 .card {
 	width: 280px;
 }
