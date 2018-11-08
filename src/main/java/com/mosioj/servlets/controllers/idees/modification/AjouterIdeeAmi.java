@@ -76,8 +76,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 											parameters.get("image"),
 											estSurprise ? currentUser : null);
 				Idee idea = getIdeaAndEnrichIt(request, ideaId);
-				request.setAttribute("text", idea.getText());
-				request.setAttribute("idea", idea);
+				request.setAttribute("idee", idea);
 				
 				if (!estSurprise) {
 					notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));

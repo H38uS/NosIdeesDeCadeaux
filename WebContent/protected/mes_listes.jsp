@@ -144,7 +144,7 @@
 													</div>
 												</div>
 											</div>
-											<div class="row justify-content-start">
+											<div class="row justify-content-start align-items-center">
 												<div class="col-auto pr-0">${idea_from_liste.priorite.image}</div>
 												<c:if test="${not empty idea_from_liste.category}">
 												<div class="col-auto px-0">
@@ -298,7 +298,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row justify-content-start">
+									<div class="row justify-content-start align-items-center">
 										<div class="col-auto pr-0">${idea_from_liste.priorite.image}</div>
 										<c:if test="${not empty idea_from_liste.category}">
 										<div class="col-auto px-0">

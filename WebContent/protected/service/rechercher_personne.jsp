@@ -25,7 +25,7 @@
 						</c:if>
 					</div>
 				</c:if>
-				<div class="row align-items-start mx-0">
+				<div class="row align-items-start mx-0 justify-content-around">
 					<c:forEach var="user" items="${entities}">
 						<div class="card col-auto px-0 m-2" style="width:250px">
 							<img class="card-img-top" src="${avatars}/${user.avatarSrcSmall}">

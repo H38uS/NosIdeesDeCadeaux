@@ -17,76 +17,58 @@
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
-		<c:if test="${not empty text}">
-			Votre idée a bien été créé. Son contenu:
-			<p>${text}</p>
+		<c:if test="${not empty idee}">
+			<div class="alert alert-success">
+				Votre idée a bien été créé.
+			</div>
+			<div>
+				<t:template_une_idee></t:template_une_idee>
+			</div>
 		</c:if>
-		<h2>Ajouter une nouvelle idée à ${user.name}</h2>
-		<div>
-			<form action="protected/ajouter_idee_ami?id=${user.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
-				<table>
-					<tr>
-						<td><label for="text">Le texte de l'idée</label></td>
-						<td><textarea id="text" name="text" cols="70" rows="6"></textarea></td>
-					</tr>
-					<tr>
-						<td><label for="type">Type</label></td>
-						<td>
-							<select id="type" name="type">
-								<option value="">Sélectionnez un type</option>
-								<c:forEach var="type" items="${types}">
-									<option value="${type.name}">${type.alt}</option>
-								</c:forEach>
-								<option value="">Autre</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td><label for="priority">Priorité</label></td>
-						<td>
-						<select id="priority" name="priority">
-							<option value="1">Sélectionnez une priorité</option>
-							<c:forEach var="priorite" items="${priorites}">
-								<option value="${priorite.id}">${priorite.name}</option>
-							</c:forEach>
-						</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<label for="est_surprise">C'est une surprise</label>
-						</td>
-						<td>
-							<input type="checkbox" name="est_surprise" id="est_surprise" />
-							<span id="span_est_surprise" class="checkbox"></span>
-						</td>
-					</tr>
-					<tr>
-						<td>Fichier Choisi</td>
-						<td>
-							<span id="newImage" class="input" ></span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
-						</td>
-						<td>
-							<label for="imageFile" class="custom-file-upload" >Ajouter une image</label>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<img id="imageFilePreview" alt="" src="" width="300" />
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" align="center">
-							<input type="submit" name="submit" id="submit" value="Ajouter" />
-						</td>
-					</tr>
-				</table>
+		<h3>Ajouter une nouvelle idée à ${user.name}</h3>
+		<div class="container border border-info bg-light rounded mb-2 p-3">
+			<form class="mw-50" action="protected/ajouter_idee_ami?id=${user.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
+					<textarea id="text" class="form-control" name="text" cols="70" rows="6"></textarea>
+				</div>
+				<div class="form-group">
+					<label for="type" class="d-none d-md-inline-block">Type</label>
+					<select id="type" class="form-control" name="type">
+						<option value="">Sélectionnez un type</option>
+						<c:forEach var="type" items="${types}">
+							<option value="${type.name}">${type.alt}</option>
+						</c:forEach>
+						<option value="">Autre</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="priority" class="d-none d-md-inline-block">Priorité</label>
+					<select id="priority" class="form-control" name="priority">
+						<option value="1">Sélectionnez une priorité</option>
+						<c:forEach var="priorite" items="${priorites}">
+							<option value="${priorite.id}">${priorite.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" name="est_surprise" id="est_surprise" />
+					<label for="est_surprise">C'est une surprise</label>
+				</div>
+				<div class="form-group">
+					<input id="imageFile" name="image" type="file" accept="image/jpg, image/jpeg, image/png" />
+					<div>
+						<label for="imageFile" class="btn btn-secondary">Ajouter une image</label>
+					</div>
+					<span class="d-none d-md-inline-block">Fichier Choisi: </span>
+					<span id="newImage" class="picture_not_drag input"></span>
+					<div>
+						<img id="imageFilePreview" alt="" src="" width="300" />
+					</div>
+				</div>
+				<div class="center">
+					<button type="submit" class="btn btn-primary" name="submit" id="submit">Ajouter</button>
+				</div>
 			</form>
 		</div>
 		<div class="errors">

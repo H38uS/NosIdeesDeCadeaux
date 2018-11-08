@@ -84,7 +84,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row justify-content-start">
+		<div class="row justify-content-start align-items-center">
 			<div class="col-auto pr-0">${idee.priorite.image}</div>
 			<c:if test="${not empty idee.category}">
 			<div class="col-auto px-0">
