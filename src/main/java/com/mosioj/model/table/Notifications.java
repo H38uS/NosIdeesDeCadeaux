@@ -222,17 +222,19 @@ public class Notifications extends Table {
 
 		StringBuilder query = new StringBuilder();
 
-		query.append(MessageFormat.format("select np.{0} ", PARAMETER_VALUE));
-		query.append(MessageFormat.format("  from {0} np ", TABLE_PARAMS));
-		query.append(MessageFormat.format("  inner join {0} n  ", TABLE_NAME));
-		query.append(MessageFormat.format("     on n.{0} = np.{1} ", ID, NOTIFICATION_ID));
-		query.append(MessageFormat.format("    and np.{0} = ''IDEA_ID''", PARAMETER_NAME));
-		query.append(MessageFormat.format("  inner join {0} npp ", TABLE_PARAMS));
-		query.append(MessageFormat.format("     on n.{0} = npp.{1} ", ID, NOTIFICATION_ID));
-		query.append(MessageFormat.format("    and npp.{0} = ''USER_ID''", PARAMETER_NAME));
-		query.append(MessageFormat.format("    and npp.{0} = ?", PARAMETER_VALUE));
+		query.append(MessageFormat.format("select np.{0} \n", PARAMETER_VALUE));
+		query.append(MessageFormat.format("  from {0} np \n", TABLE_PARAMS));
+		query.append(MessageFormat.format("  inner join {0} n  \n", TABLE_NAME));
+		query.append(MessageFormat.format("     on n.{0} = np.{1} \n", ID, NOTIFICATION_ID));
+		query.append(MessageFormat.format("    and np.{0} = ''IDEA_ID'' \n", PARAMETER_NAME));
+		query.append(MessageFormat.format("    and n.{0} = ''IS_IDEA_UP_TO_DATE'' \n", TYPE));
+		query.append(MessageFormat.format("  inner join {0} npp \n", TABLE_PARAMS));
+		query.append(MessageFormat.format("     on n.{0} = npp.{1} \n", ID, NOTIFICATION_ID));
+		query.append(MessageFormat.format("    and npp.{0} = ''USER_ID'' \n", PARAMETER_NAME));
+		query.append(MessageFormat.format("    and npp.{0} = ? \n", PARAMETER_VALUE));
 
 		logger.debug(query.toString());
+		logger.debug(MessageFormat.format("User id: {0}", askingUser));
 		Set<Integer> userSet = new HashSet<Integer>();
 
 		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
@@ -283,6 +285,7 @@ public class Notifications extends Table {
 		queryParameters[i++] = userId;
 
 		logger.trace(query);
+		logger.trace("Parameters => " + parameters);
 
 		return getDb().doesReturnRows(query.toString(), queryParameters);
 	}
