@@ -33,10 +33,10 @@
 					<h3>Posez une question à ${idee.owner.name}</h3>
 				</c:otherwise>
 			</c:choose>
-			<form action="protected/idee_questions" method="post">
-				<table>
-					<tr>
-						<td>
+			<div class="container">
+				<form action="protected/idee_questions" method="post">
+					<div class="form-group">
+						<div class="d-none d-md-inline-block">
 							<c:choose>
 								<c:when test="${isOwner}">
 									<label>Votre réponse / commentaire</label>
@@ -45,24 +45,20 @@
 									<label>Votre question</label>
 								</c:otherwise>
 							</c:choose>
-						</td>
-						<td>
-							<textarea id="text" name="text" cols="70" rows="6" required="required"></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<input type="submit" name="submit" value="Ajouter !">
-						</td>
-					</tr>
-				</table>
-				<input type="hidden" name="idee" value="${idee.id}" />
-				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-			</form>
+						</div>
+						<textarea id="text" class="form-control" name="text" cols="70" rows="6" required="required"></textarea>
+					</div>
+					<div class="center">
+						<button class="btn btn-primary" type="submit" name="submit">Ajouter !</button>
+					</div>
+					<input type="hidden" name="idee" value="${idee.id}" />
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				</form>
+			</div>
 		</div>
 
-		<h3>Questions / réponses existantes</h3>
-		<div>
+		<h3 class="mt-2">Questions / réponses existantes</h3>
+		<div class="container">
 			<c:choose>
 				<c:when test="${empty comments}">
 					Aucun commentaire sur l'idée pour le moment.

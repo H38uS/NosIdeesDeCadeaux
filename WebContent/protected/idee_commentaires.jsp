@@ -18,29 +18,23 @@
 	
 		<div>
 			<h3>Ajouter un nouveau commentaire</h3>
-			<form action="protected/idee_commentaires" method="post">
-				<table>
-					<tr>
-						<td>
-							<label>Votre message</label>
-						</td>
-						<td>
-							<textarea id="text" name="text" cols="70" rows="6" required="required"></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<input type="submit" name="submit" value="Ajouter !">
-						</td>
-					</tr>
-				</table>
-				<input type="hidden" name="idee" value="${idee.id}" />
-				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-			</form>
+			<div class="container">
+				<form action="protected/idee_commentaires" method="post">
+					<div class="form-group">
+						<label class="d-none d-md-inline-block">Votre message</label>
+						<textarea id="text" class="form-control" name="text" cols="70" rows="6" required="required" placeholder="Votre commentaire..."></textarea>
+					</div>
+					<div class="center">
+						<button class="btn btn-primary" type="submit" name="submit">Ajouter !</button>
+					</div>
+					<input type="hidden" name="idee" value="${idee.id}" />
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				</form>
+			</div>
 		</div>
 
-		<h3>Commentaires existants</h3>
-		<div>
+		<h3 class="mt-2">Commentaires existants</h3>
+		<div class="container">
 			<c:choose>
 				<c:when test="${empty comments}">
 					Aucun commentaire sur l'idée pour le moment.
