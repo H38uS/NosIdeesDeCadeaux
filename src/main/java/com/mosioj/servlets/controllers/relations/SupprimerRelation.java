@@ -46,7 +46,7 @@ public class SupprimerRelation extends IdeesCadeauxServlet<NetworkAccess> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
-		// FIXME utiliser le post, mais faut faire un service !!!
+		// FIXME : 3 utiliser le post, mais faut faire un service !!!
 	}
 
 }

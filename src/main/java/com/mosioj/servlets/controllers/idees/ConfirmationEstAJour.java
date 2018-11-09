@@ -32,12 +32,6 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(MesNotifications.URL, request, response);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-
 		Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
 		idees.touch(id);
 
@@ -64,6 +58,12 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 		}
 
 		RootingsUtils.rootToPage(MesNotifications.URL, request, response);
+		// FIXME : 2 faut mettre en post, mais y faire un service
+	}
+
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		RootingsUtils.redirectToPage(MesNotifications.URL, request, response);
 	}
 
 }
