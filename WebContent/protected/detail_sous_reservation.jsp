@@ -11,64 +11,26 @@
 		</div>
 		<div>
 			<h3>Les sous réservations existantes</h3>
-			<table>
-			<c:forEach items="${sous_reservation_existantes}" var="resa" >
-				<tr>
-					<td>
-						<c:choose>
-							<c:when test="${resa.user.id == userid}">
-								<strong>Vous</strong>
-							</c:when>
-							<c:otherwise>
-								<strong>${resa.user.name}</strong>
-							</c:otherwise>
-						</c:choose>
-					</td>
-					<td>${resa.comment}</td>
-					<td>
-						<c:if test="${resa.user.id == userid}">
-							<form action="protected/annuler_sous_reservation" method="post" >
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-								<input type="hidden" name="idee" value="${idee.id}">
-								<input type="submit" name="submit" id="submit" value="Annuler !" />
-							</form>
-						</c:if>
-					</td>
-				</tr>
-			</c:forEach>
-			</table>
-		</div>
-		<div>
-			<h3>Ajouter la vôtre !</h3>
-			<c:choose>
-				<c:when test="${fait_parti_sous_reservation}">
-					Vous avez déjà reservé une partie de cette idée.
-				</c:when>
-				<c:otherwise>
-					<c:if test="${not empty idee}">
-						<form action="protected/sous_reserver" method="post" >
-							<table>
-								<input type="hidden" name="idee" value="${idee.id}">
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-								<tr>
-									<td><label for="comment">Commentaire de la réservation</label></td>
-									<td>
-										<textarea id="comment" name="comment" required="required" cols="50" rows="5" placeholder="Je prends le tome 42 de la série..." >${comment}</textarea>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2" align="center">
-										<input type="submit" name="submit" id="submit" value="Réserver !" />
-									</td>
-								</tr>
-							</table>
+			<c:forEach items="${sous_reservation_existantes}" var="resa">
+				<div class="row align-items-center mx-0 my-2">
+					<div class="col-4 col-lg-3 col-xl-2 center">
+						<span class="badge badge-info">
+							<c:choose>
+								<c:when test="${resa.user.id == userid}">Vous</c:when>
+								<c:otherwise>${resa.user.name}</c:otherwise>
+							</c:choose>
+						</span>
+					</div>
+					<span class="mx-2">${resa.comment}</span>
+					<c:if test="${resa.user.id == userid}">
+						<form class="form-inline" action="protected/annuler_sous_reservation" method="post" >
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<input type="hidden" name="idee" value="${idee.id}">
+							<button class="btn btn-primary" type="submit" name="submit" id="submit">Annuler !</button>
 						</form>
 					</c:if>
-				</c:otherwise>
-			</c:choose>
-			<c:if test="${empty idee}">
-				L'idée que vous souhaitez réserver n'existe pas, ou vous n'avez pas les droits pour le faire.
-			</c:if>
+				</div>
+			</c:forEach>
 		</div>
 		<c:if test="${fn:length(errors) > 0}">
 			<div class="alert alert-danger">
@@ -78,6 +40,29 @@
 						<li>${error}</li>
 					</c:forEach>
 				</ul>
+			</div>
+		</c:if>
+		<c:if test="${not fait_parti_sous_reservation}">
+			<div>
+				<h3 class="mt-2">Ajouter la vôtre !</h3>
+				<c:if test="${not empty idee}">
+					<div class="container">
+						<form action="protected/sous_reserver" method="post" >
+							<input type="hidden" name="idee" value="${idee.id}">
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<div class="form-group">
+								<label for="comment" class="d-none d-md-inline-block">Commentaire de la réservation</label>
+								<textarea id="comment" class="form-control" name="comment" required="required" cols="50" rows="5" placeholder="Je prends le tome 42 de la série..." >${comment}</textarea>
+							</div>
+							<div class="center">
+								<button class="btn btn-primary" type="submit" name="submit" id="submit">Réserver !</button>
+							</div>
+						</form>
+					</div>
+				</c:if>
+				<c:if test="${empty idee}">
+					L'idée que vous souhaitez réserver n'existe pas, ou vous n'avez pas les droits pour le faire.
+				</c:if>
 			</div>
 		</c:if>
 	</jsp:body>

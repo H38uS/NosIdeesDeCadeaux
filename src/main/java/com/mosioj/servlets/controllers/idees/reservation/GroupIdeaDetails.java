@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.idees.reservation;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -13,10 +14,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.Share;
+import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.servlets.controllers.idees.VoirListe;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -48,7 +51,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 		int groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 
 		logger.debug("Getting details for idea group " + groupId + "...");
-		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
+		IdeaGroup group = groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
 		double currentTotal = 0;
 		for (Share share : group.getShares()) {
 			currentTotal += share.getAmount();
@@ -83,12 +86,24 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 		String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
 		if ("annulation".equals(amount)) {
-			groupForIdea.removeUserFromGroup(userId, groupId);
+			User owner = idees.getIdeaOwnerFromGroup(groupId);
+			boolean isThereSomeoneRemaning = groupForIdea.removeUserFromGroup(userId, groupId);
 			List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
 			for (AbstractNotification notification : notifications) {
 				notif.remove(notification.id);
 			}
-			RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + groupId, request, response);
+
+			if (isThereSomeoneRemaning) {
+				RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + groupId, request, response);
+			} else {
+				RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
+																		VoirListe.PROTECTED_VOIR_LIST,
+																		VoirListe.USER_ID_PARAM,
+																		owner.id),
+												request,
+												response);
+			}
+
 			return;
 		}
 

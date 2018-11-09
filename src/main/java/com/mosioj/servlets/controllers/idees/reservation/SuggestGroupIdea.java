@@ -47,7 +47,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		logger.debug("Getting details for idea group " + groupId + "...");
 
-		IdeaGroup group = groupForIdea.getGroupDetails(groupId);
+		IdeaGroup group = groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
 		Idee idea;
 		try {
 			idea = getIdeaAndEnrichIt(request, idees.getIdeaId(groupId));

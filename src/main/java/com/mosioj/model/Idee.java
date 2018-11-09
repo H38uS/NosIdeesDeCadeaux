@@ -117,7 +117,7 @@ public class Idee {
 			User bookingOwner = getBookingOwner();
 			if (bookingOwner == null) {
 				// Réservé par un groupe
-				IdeaGroup group = groupForIdea.getGroupDetails(getGroupKDO());
+				IdeaGroup group = groupForIdea.getGroupDetails(getGroupKDO()).orElse(new IdeaGroup(-1, 0));
 				for (Share share : group.getShares()) {
 					bookers.add(share.getUser());
 				}

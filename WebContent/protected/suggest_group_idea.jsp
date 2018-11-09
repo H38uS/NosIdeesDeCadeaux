@@ -7,35 +7,34 @@
 		<c:if test="${not empty group}">
 			<h2>Partager ce <a href="protected/detail_du_groupe?groupid=${group.id}">groupe</a></h2>
 			<c:if test="${not empty sent_to_users}">
-				La requête a bien été envoyé aux utilisateurs suivants :
-				<ul>
-					<c:forEach var="user" items="${sent_to_users}">
-						<li>${user.name}</li>
-					</c:forEach>
-				</ul>
+				<div class="alert alert-success">
+					La requête a bien été envoyé aux utilisateurs suivants :
+					<ul>
+						<c:forEach var="user" items="${sent_to_users}">
+							<li>${user.name}</li>
+						</c:forEach>
+					</ul>
+				</div>
 			</c:if>
 			<c:if test="${not empty candidates}">
-				Partagez ce groupe avec :
-				<form method="POST" action="protected/suggerer_groupe_idee">
-					<table>
+				<div class="container border border-info bg-light rounded my-3 p-2">
+					<h4>Partagez ce groupe avec</h4>
+					<form method="POST" class="form-inline" action="protected/suggerer_groupe_idee">
+						<input type="hidden" name="groupid" value="${group.id}" />
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 						<c:forEach var="user" items="${candidates}">
-							<tr>
-								<td><label for="cb${user.id}" >${user.name}</label></td>
-								<td>
-									<input type="checkbox" id="cb${user.id}" name="${user.id}" />
-									<span class="checkbox"></span>
-								</td>
-							</tr>
+							<div class="col-12 mx-2">
+								<input type="checkbox"  class="form-check-input" id="cb${user.id}" name="${user.id}" />
+								<label class="d-inline-block" for="cb${user.id}">${user.name}</label>
+							</div>
 						</c:forEach>
-						<tr>
-							<td colspan="2" align="center">
-								<input type="submit" name="submit" id="submit" value="Suggérer !" />
-							</td>
-						</tr>
-					</table>
-					<input type="hidden" name="groupid" value="${group.id}" />
-					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-				</form>
+						<div class="center w-100">
+							<button class="btn btn-primary" type="submit" name="submit" id="submit">Suggérer !</button>
+						</div>
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+						<input type="hidden" name="userId" value="${user.id}" />
+					</form>
+				</div>
 			</c:if>
 			<c:if test="${empty candidates}">
 				Vous ne connaissez personne qui serait susceptible de participer à ce cadeau...
@@ -44,24 +43,21 @@
 			<t:template_une_idee />
 			<h3>Détail de ce groupe</h3>
 			<div>
-				<div>Montant total souhaité : ${group.total}</div>
+				<p>Montant total souhaité : ${group.totalAmount}€</p>
 				<div>
 					<c:choose>
 						<c:when test="${empty group.shares}">
 							Aucune participation pour le moment.
 						</c:when>
 						<c:otherwise>
-							<table>
-								<caption>
-									<th>Participant</th>
-									<th>Montant</th>
-								</caption>
+							<ul>
 								<c:forEach var="share" items="${group.shares}">
-									<tr>
-										<td>${share.user.name}</td>
-										<td>${share.amount}</td>
-									</tr>
+									<li>${share.user.name} : ${share.shareAmount}€
+										<td></td>
+										
+									</li>
 								</c:forEach>
+							</ul>
 							</table>
 						</c:otherwise>
 					</c:choose>

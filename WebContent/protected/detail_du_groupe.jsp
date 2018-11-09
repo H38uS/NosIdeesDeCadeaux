@@ -57,39 +57,19 @@
 			<c:otherwise>
 				<c:forEach var="share" items="${group.shares}">
 					<c:if test="${userid == share.user.id}">
-						<c:choose>
-							<c:when test="${is_mobile}">
-								<form method="POST" action="protected/detail_du_groupe">
-									<input name="amount" type="text" value="${share.shareAmount}" />
-									<input type="hidden" name="groupid" value="${group.id}" />
-									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-									<div>
-										<input type="submit" name="submit" id="submit" value="Modifier !" />
-									</div>
-								</form>
-								<form method="POST" action="protected/detail_du_groupe">
-									<input type="hidden" name="amount" value="annulation" />
-									<input type="hidden" name="groupid" value="${group.id}" />
-									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-									<input type="submit" name="submit" id="submit" value="Annuler ma participation" />
-								</form>
-							</c:when>
-							<c:otherwise>
-								<form style="display:inline" method="POST" action="protected/detail_du_groupe">
-									Modifier le montant : 
-									<input style="display:inline-block;width:130px" name="amount" type="text" value="${share.shareAmount}" />
-									<input type="hidden" name="groupid" value="${group.id}" />
-									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-									<input style="width:130px" type="submit" name="submit" id="submit" value="Modifier !" />
-								</form>
-								<form style="display:inline-block" method="POST" action="protected/detail_du_groupe">
-									<input type="hidden" name="amount" value="annulation" />
-									<input type="hidden" name="groupid" value="${group.id}" />
-									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-									<input type="submit" name="submit" id="submit" value="Annuler ma participation" />
-								</form>
-							</c:otherwise>
-						</c:choose>
+						<form class="form-inline d-inline" method="POST" action="protected/detail_du_groupe">
+							<label for="amount" class="d-none d-lg-inline-block">Modifier le montant :</label> 
+							<input id="amount" class="form-control mt-2 mt-md-0" name="amount" type="text" value="${share.shareAmount}" />
+							<input type="hidden" name="groupid" value="${group.id}" />
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<button class="btn btn-primary mt-2 mt-md-0" type="submit" name="submit" id="submit">Modifier !</button>
+						</form>
+						<form class="form-inline d-inline-block" method="POST" action="protected/detail_du_groupe">
+							<input type="hidden" name="amount" value="annulation" />
+							<input type="hidden" name="groupid" value="${group.id}" />
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<button class="btn btn-primary mt-2 mt-md-0" type="submit" name="submit" id="submit">Annuler ma participation</button>
+						</form>
 					</c:if>
 				</c:forEach>
 			</c:otherwise>
@@ -105,7 +85,7 @@
 			</div>
 		</c:if>
 		<c:if test="${group.total > currentTotal}">
-			<h3>Suggérer ce groupe à quelqu'un</h3>
+			<h3 class="mt-3">Suggérer ce groupe à quelqu'un</h3>
 			Il manque un peu (${remaining}€ très exactement)... N'hésitez plus, <a href="protected/suggerer_groupe_idee?groupid=${group.id}">suggérer</a> ce groupe à d'autres personnes !
 		</c:if>
 	</jsp:body>

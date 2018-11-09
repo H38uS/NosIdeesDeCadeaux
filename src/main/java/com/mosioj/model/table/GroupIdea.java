@@ -10,6 +10,7 @@ import static com.mosioj.model.table.columns.GroupIdeaContentColumns.USER_ID;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,14 +71,16 @@ public class GroupIdea extends Table {
 	 * @return
 	 * @throws SQLException
 	 */
-	public IdeaGroup getGroupDetails(int groupId) throws SQLException {
+	public Optional<IdeaGroup> getGroupDetails(int groupId) throws SQLException {
 
-		IdeaGroup group = null;
+		Optional<IdeaGroup> group = Optional.empty();
 		StringBuilder q = new StringBuilder();
-		q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9} ");
-		q.append("from {3} gi, {4} gic ");
-		q.append("left join {7} u on u.id = gic.{1} ");
-		q.append("where gi.{5} = gic.{6} and gi.{5} = ? ");
+		q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9} \n ");
+		q.append("  from {3} gi, {4} gic \n ");
+		q.append("  left join {7} u on u.id = gic.{1} \n ");
+		q.append(" where gi.{5} = gic.{6} and gi.{5} = ? ");
+		
+		LOGGER.debug(q.toString());
 
 		String query = MessageFormat.format(q.toString(),
 											NEEDED_PRICE,
@@ -99,15 +102,15 @@ public class GroupIdea extends Table {
 				ResultSet res = ps.getResultSet();
 
 				if (res.next()) {
-					group = new IdeaGroup(groupId, res.getDouble(NEEDED_PRICE.name()));
-					group.addUser(	new User(	res.getInt(USER_ID.name()),
+					group = Optional.of(new IdeaGroup(groupId, res.getDouble(NEEDED_PRICE.name())));
+					group.get().addUser(	new User(	res.getInt(USER_ID.name()),
 												res.getString(UsersColumns.NAME.name()),
 												res.getString(UsersColumns.EMAIL.name())),
 									res.getDouble(PRICE.name()));
 				}
 
 				while (res.next()) {
-					group.addUser(	new User(	res.getInt(USER_ID.name()),
+					group.get().addUser(	new User(	res.getInt(USER_ID.name()),
 												res.getString(UsersColumns.NAME.name()),
 												res.getString(UsersColumns.EMAIL.name())),
 									res.getDouble(PRICE.name()));
@@ -150,9 +153,10 @@ public class GroupIdea extends Table {
 	 * 
 	 * @param userId
 	 * @param groupId
+	 * @return true if there is at least one member left
 	 * @throws SQLException
 	 */
-	public void removeUserFromGroup(int userId, Integer groupId) throws SQLException {
+	public boolean removeUserFromGroup(int userId, Integer groupId) throws SQLException {
 		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
 														TABLE_NAME_CONTENT,
 														USER_ID,
@@ -166,7 +170,9 @@ public class GroupIdea extends Table {
 															IdeeColumns.GROUPE_KDO_ID,
 															IdeeColumns.RESERVE_LE),
 									groupId);
+			return false;
 		}
+		return true;
 	}
 
 	public void removeUserFromAllGroups(int userId) throws SQLException {
