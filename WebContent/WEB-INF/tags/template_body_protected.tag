@@ -21,21 +21,17 @@
 									Bonjour, ${emailorname} 
 									<c:if test="${not empty initial_user_name}">
 										(depuis le compte de ${initial_user_name},&nbsp;<a href="protected/sorti_enfant">y retourner</a>)
-									</c:if> -&nbsp;<a href="<c:url value="/logout" />">me deconnecter.</a>
+									</c:if> -&nbsp;<a href="<c:url value="/logout" />">me deconnecter</a>
 								</div>
 								<div class="row align-items-center">
 									Accéder à &nbsp;<a href="protected/mon_compte">mon compte</a>&nbsp;
-									ou ouvrir &nbsp;
-									<c:choose>
-										<c:when test="${not empty notif_count}">
-											<a href="protected/mes_notifications">mes notifications (${notif_count})</a>
-										</c:when>
-										<c:otherwise>
-											<a href="protected/mes_notifications">mes notifications</a>
-										</c:otherwise>
-									</c:choose>
 								</div>
 							</div>
+						</div>
+						<div class="col-auto justify-content-end d-none d-md-flex ml-md-auto ml-lg-0">
+							<a href="protected/mes_notifications" class="btn btn-secondary ml-2" style="color:white" >
+								Notifications <span class="badge badge-light">${notif_count}</span>
+							</a>
 						</div>
 					</div>
 				</div>
