@@ -9,24 +9,26 @@
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
-		<table>
+		<div class="container">
 			<c:forEach var="user" items="${users}">
-			<tr>
-				<td>${user}</td>
-				<td>
-					<form method="POST" action="protected/connexion_enfant">
-						<input type="hidden" name="name" value="${user.id}" />
-						<input type="submit" value="Se connecter avec ce compte" />
-					</form>
-				</td>
-				<td>
-					<form class="form_suppression_compte" method="POST" action="administration/suppression_compte">
-						<input type="hidden" name="name" value="${user.id}" />
-						<input class="form_suppression_compte_submit" type="submit" value="Supprimer ce compte" />
-					</form>
-				</td>
-			</tr>
+				<div class="row my-4 align-items-center">
+					<div class="col-12 col-lg-6">
+						${user}
+					</div>
+					<div class="col-auto">
+						<form method="POST" action="protected/connexion_enfant">
+							<input type="hidden" name="name" value="${user.id}" />
+							<button class="btn btn-primary" type="submit">Se connecter avec ce compte</button>
+						</form>
+					</div>
+					<div class="col-auto">
+						<form class="form_suppression_compte" method="POST" action="administration/suppression_compte">
+							<input type="hidden" name="name" value="${user.id}" />
+							<button class="btn btn-primary form_suppression_compte_submit" type="submit">Supprimer ce compte</button>
+						</form>
+					</div>
+				</div>
 			</c:forEach>
-		</table>
+		</div>
 	</jsp:body>
 </t:template_body_protected>
