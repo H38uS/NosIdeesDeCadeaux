@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.mosioj.model.Idee;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.servlets.controllers.compte.MyNotifications;
+import com.mosioj.servlets.controllers.compte.MesNotifications;
 import com.mosioj.servlets.controllers.idees.ConfirmationEstAJour;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.database.NoRowsException;
@@ -31,7 +31,7 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
 		int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
 		assertNotifDoesExists(notifId);
 
-		when(request.getRequestDispatcher(MyNotifications.URL)).thenReturn(dispatcher);
+		when(request.getRequestDispatcher(MesNotifications.URL)).thenReturn(dispatcher);
 		when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id+"");
 		doTestPost(request, response);
 

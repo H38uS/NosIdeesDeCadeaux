@@ -159,7 +159,7 @@
 			<c:otherwise>
 				<div class="row align-items-start mx-0 justify-content-around">
 					<c:forEach var="relation" items="${entities}">
-						<div class="card col-auto px-0 m-2">
+						<div class="card col-auto px-0 m-2" style="width:280px">
 							<img class="card-img-top" src="${avatars}/${relation.second.avatarSrcSmall}">
 							<div class="card-body">
 								<h5 class="card-title">

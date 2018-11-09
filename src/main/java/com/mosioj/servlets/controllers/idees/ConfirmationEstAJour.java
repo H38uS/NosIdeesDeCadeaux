@@ -15,7 +15,7 @@ import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
-import com.mosioj.servlets.controllers.compte.MyNotifications;
+import com.mosioj.servlets.controllers.compte.MesNotifications;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -32,7 +32,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(MyNotifications.URL, request, response);
+		RootingsUtils.redirectToPage(MesNotifications.URL, request, response);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 			}
 		}
 
-		RootingsUtils.rootToPage(MyNotifications.URL, request, response);
+		RootingsUtils.rootToPage(MesNotifications.URL, request, response);
 	}
 
 }

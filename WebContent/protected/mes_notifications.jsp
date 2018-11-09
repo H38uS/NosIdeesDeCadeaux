@@ -11,52 +11,50 @@
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
-		<h2>Mes notifications</h2>
-		<c:if test="${not empty unread_notifications}">
-			<table>
-				<thead>
-					<tr>
-						<th>Text</th>
-						<th>Reçue le</th>
-						<th>Action</th>
-					</tr>
-				</thead>
+		<h3>Mes notifications</h3>
+		<div class="container">
+			<div class="card-deck">
 				<c:forEach var="notif" items="${unread_notifications}">
-					<tr>
-						<td>${notif.text}</td>
-						<td>${notif.creationTime}</td>
-						<td>
-							<a href="protected/notification_lue?notif_id=${notif.id}">Marquer comme lue</a> - 
-							<a class="notif_delete" href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
-						</td>
-					</tr>
+					<div class="card my-2">
+						<div class="card-header bg-dark" style="color:white">
+							${notif.description}
+						</div>
+						<div class="card-body">${notif.text}</div>
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item center">
+								<a class="btn btn-primary" href="protected/notification_lue?notif_id=${notif.id}">Notification lue</a>
+								<a class="btn btn-secondary notif_delete" href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
+							</li>
+						</ul>
+						<div class="card-footer text-muted text-right">
+							${notif.creationTime}
+						</div>
+					</div>
 				</c:forEach>
-			</table>
-		</c:if>
-		<h2>Mes anciennes notifications</h2>
-		<c:if test="${not empty read_notifications}">
-			<table>
-				<thead>
-					<tr>
-						<th>Text</th>
-						<th>Reçue le</th>
-						<th>Marquée comme lue le</th>
-						<th>Action</th>
-					</tr>
-				</thead>
+			</div>
+		</div>
+		<h3 class="my-2">Mes anciennes notifications</h3>
+		<div class="container">
+			<div class="card-deck">
 				<c:forEach var="notif" items="${read_notifications}">
-					<tr>
-						<td>${notif.text}</td>
-						<td>${notif.creationTime}</td>
-						<td>${notif.readOn}</td>
-						<td>
-							<a href="protected/notification_non_lue?notif_id=${notif.id}">Marquer comme non lue</a> - 
-							<a class="notif_delete" href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
-						</td>
-					</tr>
+					<div class="card my-2">
+						<div class="card-header bg-dark" style="color:white">
+							${notif.description}
+						</div>
+						<div class="card-body">${notif.text}</div>
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item center">
+								<a class="btn btn-primary" href="protected/notification_non_lue?notif_id=${notif.id}">Marquer non lue</a>
+								<a class="btn btn-secondary notif_delete" href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
+							</li>
+						</ul>
+						<div class="card-footer text-muted text-right">
+							${notif.creationTime}
+						</div>
+					</div>
 				</c:forEach>
-			</table>
-		</c:if>
+			</div>
+		</div>
 	</jsp:body>
 </t:template_body_protected>
 </html>

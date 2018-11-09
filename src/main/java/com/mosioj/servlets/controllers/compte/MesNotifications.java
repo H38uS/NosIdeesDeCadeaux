@@ -13,13 +13,13 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_notifications")
-public class MyNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class MesNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -5988235378202921870L;
 	public static final String URL = "/protected/mes_notifications";
 	private static final String VIEW_URL = "/protected/mes_notifications.jsp";
 
-	public MyNotifications() {
+	public MesNotifications() {
 		super(new AllAccessToPostAndGet());
 	}
 

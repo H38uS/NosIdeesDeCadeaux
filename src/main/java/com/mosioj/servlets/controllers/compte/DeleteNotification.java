@@ -25,12 +25,12 @@ public class DeleteNotification extends IdeesCadeauxServlet<NotificationModifica
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		notif.remove(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER));
-		RootingsUtils.redirectToPage(MyNotifications.URL, req, resp);
+		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(MyNotifications.URL, request, response);
+		RootingsUtils.redirectToPage(MesNotifications.URL, request, response);
 	}
 
 }
