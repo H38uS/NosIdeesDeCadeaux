@@ -51,7 +51,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 		String oui = MessageFormat.format(	"<li><a href=\"protected/confirmation_est_a_jour?{0}={1}\">Oui !</a></li>",
 											ConfirmationEstAJour.IDEE_FIELD_PARAMETER,
 											ideaId);
-		String nonSupr = MessageFormat.format(	"<li>Non... Il faudrait la <a href=\"protected/remove_an_idea?{0}={1}\">supprimer</a>.</li>",
+		String nonSupr = MessageFormat.format(	"<li>Non... Il faudrait la <a href=\"protected/remove_an_idea?{0}={1}&from=/protected/mes_notifications\">supprimer</a>.</li>",
 												RemoveOneIdea.IDEE_ID_PARAM,
 												ideaId);
 		String nonModif = MessageFormat.format(	"<li>Non... Je la <a href=\"protected/modifier_idee?{0}={1}\">modifie</a> de suite !</li>",

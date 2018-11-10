@@ -13,9 +13,9 @@
 	<jsp:body>
 		<h3>Mes notifications</h3>
 		<div class="container">
-			<div class="card-deck">
+			<div class="row align-items-start mx-0 justify-content-around">
 				<c:forEach var="notif" items="${unread_notifications}">
-					<div class="card my-2">
+					<div class="card my-3" style="width:300px">
 						<div class="card-header bg-dark" style="color:white">
 							${notif.description}
 						</div>
