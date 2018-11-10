@@ -23,7 +23,7 @@
 						<input type="hidden" name="groupid" value="${group.id}" />
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 						<c:forEach var="user" items="${candidates}">
-							<div class="col-12 mx-2">
+							<div class="col-12 col-sm-5 col-lg-3 mx-2">
 								<input type="checkbox"  class="form-check-input" id="cb${user.id}" name="${user.id}" />
 								<label class="d-inline-block" for="cb${user.id}">${user.name}</label>
 							</div>
