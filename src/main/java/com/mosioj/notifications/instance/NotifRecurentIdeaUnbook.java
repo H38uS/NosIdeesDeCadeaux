@@ -22,7 +22,7 @@ public class NotifRecurentIdeaUnbook extends AbstractNotification {
 	 */
 	public NotifRecurentIdeaUnbook(User user, Idee idea) {
 		super(NotificationType.RECURENT_IDEA_UNBOOK);
-		this.userName = user.name;
+		this.userName = user.getName();
 		int size = 50;
 		this.idea = idea.getTextSummary(size);
 		params.put(ParameterName.USER_ID, user.id);

@@ -17,12 +17,12 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
+import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
-import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/suggerer_groupe_idee")
 public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteraction> {
@@ -48,22 +48,16 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 		logger.debug("Getting details for idea group " + groupId + "...");
 
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
-		Idee idea;
-		try {
-			idea = getIdeaAndEnrichIt(request, idees.getIdeaId(groupId));
-		} catch (NoRowsException e) {
-			RootingsUtils.rootToUnexistingGroupError(request, response);
-			return;
-		}
 
-		int userId = ParametersUtils.getUserId(request);
-		User thisOne = users.getUser(userId);
+		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+		User user = users.getUser(ParametersUtils.getUserId(request));
+		idees.fillAUserIdea(user.id, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(user, idee)), device);
 
-		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, userId);
+		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, user.id);
 		logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
 		List<User> removable = new ArrayList<User>();
 		for (User toRemove : potentialGroupUser) {
-			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, groupId, idea);
+			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(user, groupId, idee);
 			if (notif.hasNotification(toRemove.id, suggestion)) {
 				removable.add(toRemove);
 			}
@@ -71,7 +65,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 		potentialGroupUser.removeAll(removable);
 
 		request.setAttribute("candidates", potentialGroupUser);
-		request.setAttribute("idee", idea);
+		request.setAttribute("idee", idee);
 		request.setAttribute("group", group);
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
@@ -81,13 +75,9 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
-		Idee idea;
-		try {
-			idea = idees.getIdeaWithoutEnrichment(idees.getIdeaId(groupId));
-		} catch (NoRowsException e) {
-			RootingsUtils.rootToUnexistingGroupError(request, response);
-			return;
-		}
+		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+		User thisOne = users.getUser(ParametersUtils.getUserId(request));
+		idees.fillAUserIdea(thisOne.id, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(thisOne, idee)), device);
 
 		List<Integer> selectedUsers = new ArrayList<Integer>();
 		Map<String, String[]> params = request.getParameterMap();
@@ -102,13 +92,12 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 			}
 		}
 
-		User thisOne = users.getUser(ParametersUtils.getUserId(request));
 		List<User> successTo = new ArrayList<User>();
 
 		logger.debug("Selected users : " + selectedUsers);
 		for (int userId : selectedUsers) {
 			User user = users.getUser(userId);
-			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, groupId, idea);
+			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, groupId, idee);
 			if (!notif.hasNotification(userId, suggestion)) {
 				notif.addNotification(userId, suggestion);
 			}

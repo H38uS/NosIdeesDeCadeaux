@@ -6,6 +6,7 @@ import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.notifications.instance.NotifFriendshipDropped;
+import com.mosioj.notifications.instance.NotifGroupEvolution;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
@@ -27,6 +28,7 @@ public enum NotificationType {
 	NO_IDEA(NotifNoIdea.class, "Lorsque vous n'avez pas d'idées"), //
 	BOOKED_REMOVE(NotifBookedRemove.class, "Un ami a supprimé une idée que vous aviez réservée"), //
 	GROUP_IDEA_SUGGESTION(NotifGroupSuggestion.class, "On vous invite à un groupe sur une idée"), //
+	GROUP_EVOLUTION(NotifGroupEvolution.class, "Quelqu'un a rejoint/quitté un groupe où vous participez"), //
 	IS_IDEA_UP_TO_DATE(NotifAskIfIsUpToDate.class, "On vous demande si l'idée est à jour"), //
 	CONFIRMED_UP_TO_DATE(NotifConfirmedUpToDate.class, "On vous confirme que l'idée est à jour"), //
 	NEW_RELATION_SUGGESTION(NotifNewRelationSuggestion.class, "On vous suggère une demande d'ami"), //

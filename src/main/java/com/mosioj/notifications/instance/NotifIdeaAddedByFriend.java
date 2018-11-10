@@ -24,7 +24,7 @@ public class NotifIdeaAddedByFriend extends AbstractNotification implements Noti
 	 */
 	public NotifIdeaAddedByFriend(User user, Idee idea) {
 		super(NotificationType.IDEA_ADDED_BY_FRIEND);
-		this.userName = user.name;
+		this.userName = user.getName();
 		int size = 50;
 		this.idea = idea.getTextSummary(size);
 		params.put(ParameterName.USER_ID, user.id);

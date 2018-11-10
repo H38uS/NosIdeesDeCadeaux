@@ -201,6 +201,57 @@ public class Notifications extends Table {
 										TYPE));
 		logger.trace(sb.toString());
 		getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner, type);
+
+		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
+													NOTIFICATION_ID,
+													ID,
+													TABLE_NAME));
+	}
+
+	/**
+	 * Deletes all notification that have the given owner, type and parameters.
+	 * 
+	 * @param type
+	 * @param parameterName
+	 * @param parameterValue
+	 * @param parameterName2
+	 * @param parameterValue2
+	 * @throws SQLException
+	 */
+	public void removeAllType(	NotificationType type,
+								ParameterName parameterName,
+								Object parameterValue,
+								ParameterName parameterName2,
+								Object parameterValue2) throws SQLException {
+		StringBuilder sb = new StringBuilder();
+		sb.append(MessageFormat.format("delete from {0} where \n ", TABLE_NAME));
+		sb.append(MessageFormat.format(	"    exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) and {5} = ? \n ",
+										TABLE_PARAMS,
+										NOTIFICATION_ID,
+										ID,
+										PARAMETER_NAME,
+										PARAMETER_VALUE,
+										TYPE));
+		sb.append(MessageFormat.format(	" and exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) \n ",
+										TABLE_PARAMS,
+										NOTIFICATION_ID,
+										ID,
+										PARAMETER_NAME,
+										PARAMETER_VALUE));
+		logger.debug(sb.toString());
+		logger.debug(MessageFormat.format(	"Paramètres: {0} / {1} / {2} / {3} / {4}",
+											parameterName,
+											parameterValue,
+											type,
+											parameterName2,
+											parameterValue2));
+		int nb = getDb().executeUpdate(sb.toString(), parameterName, parameterValue, type, parameterName2, parameterValue2);
+		logger.debug(MessageFormat.format("Suppression de {0} Notifications.", nb));
+
+		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
+													NOTIFICATION_ID,
+													ID,
+													TABLE_NAME));
 	}
 
 	/**

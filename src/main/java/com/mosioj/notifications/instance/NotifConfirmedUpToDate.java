@@ -43,7 +43,7 @@ public class NotifConfirmedUpToDate extends AbstractNotification implements Noti
 
 	@Override
 	public String getTextToInsert() {
-		return MessageFormat.format("{0} confirme que son idée \"{1}\" est maintenant à jour !", ideaOwner.name, ideaText);
+		return MessageFormat.format("{0} confirme que son idée \"{1}\" est maintenant à jour !", ideaOwner.getName(), ideaText);
 	}
 
 	@Override

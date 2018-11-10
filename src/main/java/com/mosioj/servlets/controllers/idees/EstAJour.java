@@ -32,11 +32,11 @@ public class EstAJour extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 		if (logic.askIfUpToDate(idea, request)) {
 			request.setAttribute("text", idea.getTextSummary(50));
-			request.setAttribute("user", idea.owner.name);
+			request.setAttribute("user", idea.owner.getName());
 			request.setAttribute("link", getFrom(request, MesListes.PROTECTED_MES_LISTES).substring(1));
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);
 		} else {
-			request.setAttribute("name", idea.owner.name);
+			request.setAttribute("name", idea.owner.getName());
 			request.setAttribute("error_message", "Une demande sur cette idée a déjà été envoyée.");
 			request.setAttribute("link", getFrom(request, MesListes.PROTECTED_MES_LISTES).substring(1));
 			RootingsUtils.rootToPage(ERROR_PAGE_URL, request, resp);

@@ -53,12 +53,12 @@ public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			userRelationsSuggestion.removeIfExists(userId, userToAsk);
 			
 			if (userToSendInvitation.id == userId || userRelations.associationExists(userToSendInvitation.id, userId)) {
-				errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", userToSendInvitation.name));
+				errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", userToSendInvitation.getName()));
 				continue;
 			}
 			
 			if (userRelationRequests.associationExists(userId, userToSendInvitation.id)) {
-				errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.", userToSendInvitation.name));
+				errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.", userToSendInvitation.getName()));
 				continue;
 			}
 			

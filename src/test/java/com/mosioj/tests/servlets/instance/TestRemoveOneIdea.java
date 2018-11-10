@@ -15,6 +15,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.notifications.instance.NotifGroupEvolution;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
@@ -53,9 +54,11 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 
 		// Creation du groupe
 		GroupIdea g = new GroupIdea();
-		int group = g.createAGroup(200, 10, 10);
+		int group = g.createAGroup(200, 10, _MOI_AUTRE_);
 		idees.bookByGroup(id, group);
 		Idee idee = idees.getIdeaWithoutEnrichment(id);
+		int notifId = notif.addNotification(_FRIEND_ID_, new NotifGroupEvolution(moiAutre, group, idee, true));
+		assertNotifDoesExists(notifId);		
 		assertEquals(group, idee.getGroupKDO());
 		assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
 		assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
@@ -65,6 +68,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		doTestPost(request, response);
 
 		// Validation que cela supprime tout
+		assertNotifDoesNotExists(notifId);
 		assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 		assertEquals(0, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
 		assertEquals(0, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));

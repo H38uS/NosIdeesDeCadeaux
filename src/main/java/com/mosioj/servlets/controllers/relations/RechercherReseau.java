@@ -37,7 +37,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 		String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
 		int networkOwner = ParametersUtils.readInt(request, USER_ID_PARAM);
 		request.setAttribute("id", networkOwner);
-		request.setAttribute("name", users.getUser(networkOwner).name);
+		request.setAttribute("name", users.getUser(networkOwner).getName());
 		request.setAttribute(SEARCH_USER_PARAM, nameOrEmail);
 
 		super.ideesKDoGET(request, response);

@@ -24,7 +24,7 @@ public class NotifNewCommentOnIdea extends AbstractNotification implements Notif
 	 */
 	public NotifNewCommentOnIdea(User user, Idee idea) {
 		super(NotificationType.NEW_COMMENT_ON_IDEA);
-		this.userName = user.name;
+		this.userName = user.getName();
 		this.idea = idea;
 		params.put(ParameterName.IDEA_ID, idea.getId());
 	}

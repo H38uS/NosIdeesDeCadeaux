@@ -50,7 +50,7 @@ public class Idees extends Table {
 	private static final Logger logger = LogManager.getLogger(Idees.class);
 
 	public static final int MOBILE_PICTURE_WIDTH = 42;
-	
+
 	private final Comments comments = new Comments();
 	private final Questions questions = new Questions();
 
@@ -211,8 +211,28 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 * @throws NoRowsException
 	 */
-	public int getIdeaId(int groupId) throws SQLException, NoRowsException {
-		return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, GROUPE_KDO_ID), groupId);
+	public Idee getIdeaWithoutEnrichmentFromGroup(int groupId) throws SQLException {
+
+		StringBuilder query = getIdeaBasedSelect();
+		query.append(MessageFormat.format(" where i.{0} = ( ", ID));
+		query.append(MessageFormat.format("    select {0} from {1} where {2} = ?", ID, TABLE_NAME, GROUPE_KDO_ID));
+		query.append(" ) ");
+
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
+
+		try {
+			ps.bindParameters(groupId);
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				if (rs.next()) {
+					return createIdeaFromQuery(rs);
+				}
+			}
+		} finally {
+			ps.close();
+		}
+
+		return null;
 	}
 
 	/**
@@ -701,14 +721,15 @@ public class Idees extends Table {
 	 * @param userId
 	 * @param idee
 	 * @param hasUserAskedIfUpToDate
-	 * @param device 
+	 * @param device
 	 * @throws SQLException
 	 */
 	public void fillAUserIdea(int userId, Idee idee, boolean hasUserAskedIfUpToDate, Device device) throws SQLException {
 
 		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
 		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
-		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate); // FIXME : 8 gérer cela dans une table, et plus par notification...
+		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate); // FIXME : 8 gérer cela dans une table, et plus par
+															// notification...
 
 		User surpriseBy = idee.getSurpriseBy();
 		if (surpriseBy != null) {

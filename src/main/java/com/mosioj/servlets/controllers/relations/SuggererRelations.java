@@ -53,13 +53,13 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 
 		for (User u : toBeSuggested) {
 			if (userRelationsSuggestion.hasReceivedSuggestionOf(suggestTo, u.id)) {
-				u.freeComment = MessageFormat.format("{0} a déjà reçu une suggestion pour {1}.", suggestToUser.name, u.name);
+				u.freeComment = MessageFormat.format("{0} a déjà reçu une suggestion pour {1}.", suggestToUser.getName(), u.getName());
 			}
 			if (userRelationRequests.associationExists(suggestTo, u.id)) {
-				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", suggestToUser.name, u.name);
+				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", suggestToUser.getName(), u.getName());
 			}
 			if (userRelationRequests.associationExists(u.id, suggestTo)) {
-				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", u.name, suggestToUser.name);
+				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", u.getName(), suggestToUser.getName());
 			}
 		}
 

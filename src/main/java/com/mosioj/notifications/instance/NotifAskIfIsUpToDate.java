@@ -59,7 +59,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 												ideaId);
 
 		return MessageFormat.format("{0} souhaiterait savoir si votre idée \"{1}\" est toujours à jour. <ul> {2}{3}{4}</ul>",
-									askedUser.name,
+									askedUser.getName(),
 									ideaText,
 									oui,
 									nonSupr,

@@ -79,11 +79,11 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 				userRelations.addAssociation(fromUserId, userId);
 				userRelationRequests.cancelRequest(fromUserId, userId);
 				accepted.add(users.getUser(fromUserId));
-				notif.addNotification(fromUserId, new NotifDemandeAcceptee(user.id, user.name));
+				notif.addNotification(fromUserId, new NotifDemandeAcceptee(user.id, user.getName()));
 			} else {
 				logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", userId, fromUserId));
 				userRelationRequests.cancelRequest(fromUserId, userId);
-				notif.addNotification(fromUserId, new NotifDemandeRefusee(user.id, user.name));
+				notif.addNotification(fromUserId, new NotifDemandeRefusee(user.id, user.getName()));
 			}
 
 			// Si fromUserId avait supprimé sa relation avec userId

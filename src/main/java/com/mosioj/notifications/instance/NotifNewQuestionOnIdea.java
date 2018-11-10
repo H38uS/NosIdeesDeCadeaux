@@ -25,7 +25,7 @@ public class NotifNewQuestionOnIdea extends AbstractNotification implements Noti
 	 */
 	public NotifNewQuestionOnIdea(User user, Idee idea, boolean toOwner) {
 		super(NotificationType.NEW_QUESTION_ON_IDEA);
-		this.userName = toOwner ? "Quelqu'un" : user.name;
+		this.userName = toOwner ? "Quelqu'un" : user.getName();
 		this.idea = idea;
 		params.put(ParameterName.IDEA_ID, idea.getId());
 	}

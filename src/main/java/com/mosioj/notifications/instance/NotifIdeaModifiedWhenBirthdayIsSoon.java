@@ -26,7 +26,7 @@ public class NotifIdeaModifiedWhenBirthdayIsSoon extends AbstractNotification {
 	 */
 	public NotifIdeaModifiedWhenBirthdayIsSoon(User user, Idee idea, boolean isNew) {
 		super(NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON);
-		this.userName = user.name;
+		this.userName = user.getName();
 		int size = 50;
 		this.idea = idea.getTextSummary(size);
 		this.isNew = isNew;

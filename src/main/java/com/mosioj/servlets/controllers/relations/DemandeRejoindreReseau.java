@@ -38,7 +38,7 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet<PeutDemanderARej
 
 		User userToSendInvitation = users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM));
 		int userId = ParametersUtils.getUserId(request);
-		request.setAttribute("name", userToSendInvitation.name);
+		request.setAttribute("name", userToSendInvitation.getName());
 
 		// Suppression des notifications
 		notif.removeAllType(userId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userToSendInvitation.id);
@@ -47,7 +47,7 @@ public class DemandeRejoindreReseau extends IdeesCadeauxServlet<PeutDemanderARej
 		// On ajoute l'association
 		userRelationRequests.insert(userId, userToSendInvitation.id);
 		notif.addNotification(	userToSendInvitation.id,
-								new NotifNouvelleDemandeAmi(userId, userToSendInvitation.id, users.getUser(userId).name));
+								new NotifNouvelleDemandeAmi(userId, userToSendInvitation.id, users.getUser(userId).getName()));
 		RootingsUtils.rootToPage(SUCCESS_URL, request, response);
 
 	}

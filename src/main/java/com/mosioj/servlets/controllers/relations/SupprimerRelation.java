@@ -38,7 +38,7 @@ public class SupprimerRelation extends IdeesCadeauxServlet<NetworkAccess> {
 		
 		// Send a notification
 		User me = users.getUser(currentId);
-		notif.addNotification(user, new NotifFriendshipDropped(currentId, me.name));
+		notif.addNotification(user, new NotifFriendshipDropped(currentId, me.getName()));
 		
 		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, request, response);
 	}
