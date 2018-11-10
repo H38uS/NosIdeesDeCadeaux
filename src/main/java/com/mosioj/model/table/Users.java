@@ -45,10 +45,11 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
-		int userId = getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, now(), ?)",
+		int userId = getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
 																				TABLE_NAME,
 																				EMAIL,
 																				PASSWORD,
+																				LAST_LOGIN,
 																				CREATION_DATE,
 																				NAME),
 														email,

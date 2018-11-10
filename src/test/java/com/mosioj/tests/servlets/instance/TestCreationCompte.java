@@ -1,5 +1,6 @@
 package com.mosioj.tests.servlets.instance;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -59,6 +60,7 @@ public class TestCreationCompte extends AbstractTestServlet {
 	public void testSuccess() throws ServletException, IOException, SQLException {
 
 		ds.executeUpdate("delete from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr");
+		assertEquals(0, ds.selectCountStar("select count(*) from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr"));
 		when(request.getParameter("email")).thenReturn("tartenpiontoto@hotmaildzndqudn.fr");
 		when(request.getParameter("pwd")).thenReturn("mydummypwd");
 
@@ -66,6 +68,7 @@ public class TestCreationCompte extends AbstractTestServlet {
 		doTestPost(request, response);
 
 		// Success
+		assertEquals(1, ds.selectCountStar("select count(*) from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr"));
 		verify(request).getRequestDispatcher(eq(CreationCompte.SUCCES_URL));
 		verify(request, never()).getRequestDispatcher(eq(RootingsUtils.PUBLIC_SERVER_ERROR_JSP));
 		verify(request, never()).getRequestDispatcher(eq(CreationCompte.FORM_URL));
