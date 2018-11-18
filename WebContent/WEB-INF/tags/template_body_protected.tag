@@ -164,7 +164,7 @@
 			</c:choose>
 		</header>
 		<div id="loading_message_container"><div id="loading_message_div"></div></div>
-		<div id="mobile_res_search" class="mobile_res_search">&nbsp;</div>
+		<div id="mobile_res_search" class="mobile_res_search word-break-all">&nbsp;</div>
 		<div id="content">
 			<jsp:doBody/>
 		</div>

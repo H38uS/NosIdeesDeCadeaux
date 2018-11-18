@@ -60,12 +60,12 @@
 			</div>
 		</c:if>
 		<c:if test="${not empty demandes}">
-			<div class="default_form mb-3">
+			<div class="container border border-info bg-light rounded p-3 mb-3">
 				<h3>Demandes reçues</h3>
 				<form method="POST" action="protected/resoudre_demande_ami">
 					<c:forEach var="demande" items="${demandes}">
 						<div class="row align-items-center">
-							<div class="col-6">
+							<div class="col-6 word-break-all">
 								<span>${demande.sent_by.name} (${demande.sent_by.email})</span>
 							</div>
 							<div class="col-3">
