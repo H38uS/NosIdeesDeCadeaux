@@ -42,7 +42,7 @@ function submitNotificationForm(e) {
 
 	e.preventDefault();
 
-	var form = $(this).closest( "tr" );
+	var form = $(this).closest( "form" );
 	var name = form.find("input[name=name]").val();
 	var value = form.find("select[name=value]").val();
 

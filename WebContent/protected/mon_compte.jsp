@@ -189,7 +189,7 @@
 					<div class="col-12 col-md-5 col-lg-7">
 						<label class="justify-content-start" for="${notif.parameterName}_value">${notif.parameterDescription}</label>
 					</div>
-					<div class="col-7 col-md-auto">
+					<div class="col-12 col-sm-7 col-md-auto">
 						<select class="form-control w-100" id="value_${notif.parameterName}" name="value">
 							<c:forEach var="value" items="${possible_values}">
 								<c:choose>
@@ -206,8 +206,8 @@
 					<input type="hidden" name="id" value="${notif.id}">
 					<input type="hidden" name="name" value="${notif.parameterName}">
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-					<div class="col-5 col-md-auto">
-						<button class="btn btn-primary" type="submit" class="notification_form_submit">Sauvegarder</button>
+					<div class="center col-12 mt-2 col-sm-5 mt-sm-0 col-md-auto">
+						<button class="btn btn-primary notification_form_submit" type="submit">Sauvegarder</button>
 					</div>
 				</form>
 			</div>
