@@ -39,7 +39,8 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 			List<User> res = new ArrayList<User>();
 			int MAX = 5;
 			if (current.getEmail().toLowerCase().contains(param)
-					|| (StringEscapeUtils.unescapeHtml4(current.getName().toLowerCase()).contains(param))) {
+					|| (StringEscapeUtils.unescapeHtml4(current.getName().toLowerCase()).contains(param))
+					|| "moi".equalsIgnoreCase(param)) {
 				res.add(current);
 				MAX--;
 			}

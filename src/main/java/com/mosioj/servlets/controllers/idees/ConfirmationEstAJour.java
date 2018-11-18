@@ -58,7 +58,6 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 		}
 
 		RootingsUtils.rootToPage(MesNotifications.URL, request, response);
-		// FIXME : 2 faut mettre en post, mais y faire un service
 	}
 
 	@Override
