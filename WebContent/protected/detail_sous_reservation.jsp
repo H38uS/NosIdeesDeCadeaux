@@ -11,26 +11,32 @@
 		</div>
 		<div>
 			<h3>Les sous réservations existantes</h3>
-			<c:forEach items="${sous_reservation_existantes}" var="resa">
-				<div class="row align-items-center mx-0 my-2">
-					<div class="col-4 col-lg-3 col-xl-2 center">
-						<span class="badge badge-info">
-							<c:choose>
-								<c:when test="${resa.user.id == userid}">Vous</c:when>
-								<c:otherwise>${resa.user.name}</c:otherwise>
-							</c:choose>
-						</span>
+			<div class="container">
+				<c:forEach items="${sous_reservation_existantes}" var="resa">
+					<div class="row align-items-center justify-content-start mx-0 my-3">
+						<div class="col-auto">
+							<span class="badge badge-info">
+								<c:choose>
+									<c:when test="${resa.user.id == userid}">Vous</c:when>
+									<c:otherwise>${resa.user.name}</c:otherwise>
+								</c:choose>
+							</span>
+						</div>
+						<c:if test="${resa.user.id == userid}">
+							<div class="col-auto">
+								<form class="form-inline" action="protected/annuler_sous_reservation" method="post" >
+									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+									<input type="hidden" name="idee" value="${idee.id}">
+									<button class="btn btn-primary" type="submit" name="submit" id="submit">Annuler !</button>
+								</form>
+							</div>
+						</c:if>
+						<div class="col-9 col-sm">
+							${resa.comment}
+						</div>
 					</div>
-					<span class="mx-2">${resa.comment}</span>
-					<c:if test="${resa.user.id == userid}">
-						<form class="form-inline" action="protected/annuler_sous_reservation" method="post" >
-							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							<input type="hidden" name="idee" value="${idee.id}">
-							<button class="btn btn-primary" type="submit" name="submit" id="submit">Annuler !</button>
-						</form>
-					</c:if>
-				</div>
-			</c:forEach>
+				</c:forEach>
+			</div>
 		</div>
 		<c:if test="${fn:length(errors) > 0}">
 			<div class="alert alert-danger">
