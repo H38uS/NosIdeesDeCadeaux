@@ -74,10 +74,11 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 											parameters.get("type"),
 											Integer.parseInt(parameters.get("priority")),
 											parameters.get("image"),
-											estSurprise ? currentUser : null);
+											estSurprise ? currentUser : null,
+											currentUser);
 				Idee idea = getIdeaAndEnrichIt(request, ideaId);
 				request.setAttribute("idee", idea);
-				
+
 				if (!estSurprise) {
 					notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));
 					notif.removeAllType(id, NotificationType.NO_IDEA);

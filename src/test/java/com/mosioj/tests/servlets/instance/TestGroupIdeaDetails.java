@@ -32,7 +32,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	@Test
 	public void testRejoindreGroupe() throws SQLException, ServletException, IOException {
 
-		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null);
+		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
 		int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
 		idees.bookByGroup(idea, id);
 
@@ -51,7 +51,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	@Test
 	public void testAnnulerParticipation() throws SQLException, ServletException, IOException, NoRowsException {
 
-		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null);
+		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
 		int id = groupIdea.createAGroup(300, 250, _OWNER_ID_);
 		groupIdea.updateAmount(id, _MOI_AUTRE_, 25);
 		idees.bookByGroup(idea, id);
@@ -89,7 +89,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	public void testRejoindrePuisAnnuler() throws SQLException, ServletException, IOException, NoRowsException {
 
 		// On crée un groupe sur une idée
-		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null);
+		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
 		int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
 		idees.bookByGroup(idea, id);
 		assertGroupExists(id);

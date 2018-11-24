@@ -11,6 +11,8 @@ import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE_LE;
 import static com.mosioj.model.table.columns.IdeeColumns.SURPRISE_PAR;
+import static com.mosioj.model.table.columns.IdeeColumns.CREE_LE;
+import static com.mosioj.model.table.columns.IdeeColumns.CREE_PAR;
 import static com.mosioj.model.table.columns.IdeeColumns.TYPE;
 
 import java.sql.ResultSet;
@@ -371,12 +373,21 @@ public class Idees extends Table {
 	 * @param text
 	 * @param type
 	 * @param priorite
-	 * @param est_surprise
+	 * @param image
+	 * @param surprisePar
+	 * @param createdBy
 	 * @throws SQLException
 	 */
-	public int addIdea(int ownerId, String text, String type, int priorite, String image, User surprisePar) throws SQLException {
+	public int addIdea(	int ownerId,
+						String text,
+						String type,
+						int priorite,
+						String image,
+						User surprisePar,
+						User createdBy) throws SQLException {
 
 		type = type == null ? "" : type;
+		int createdById = createdBy == null ? ownerId : createdBy.id;
 
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
@@ -388,8 +399,10 @@ public class Idees extends Table {
 		insert.append(IMAGE).append(",");
 		insert.append(MODIFICATION_DATE).append(",");
 		insert.append(SURPRISE_PAR).append(",");
+		insert.append(CREE_LE).append(",");
+		insert.append(CREE_PAR).append(",");
 		insert.append(PRIORITE);
-		insert.append(") values (?, ?, ?, ?, now(), ?, ?)");
+		insert.append(") values (?, ?, ?, ?, now(), ?, now(), ?, ?)");
 
 		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
 		PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), insert.toString());
@@ -402,7 +415,7 @@ public class Idees extends Table {
 												image,
 												surprisePar,
 												priorite));
-			ps.bindParameters(ownerId, text, type, image, surprisePar == null ? null : surprisePar.id, priorite);
+			ps.bindParameters(ownerId, text, type, image, surprisePar == null ? null : surprisePar.id, createdById, priorite);
 
 			return ps.executeUpdate();
 

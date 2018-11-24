@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Categorie;
 import com.mosioj.model.Priorite;
+import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -68,13 +69,15 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 													parameters.get("type"),
 													parameters.get("priority")));
 				int userId = ParametersUtils.getUserId(request);
+				User user = users.getUser(userId);
 				int ideaId = idees.addIdea(	userId,
 											parameters.get("text"),
 											parameters.get("type"),
 											Integer.parseInt(parameters.get("priority")),
 											parameters.get("image"),
-											null);
-				addModificationNotification(users.getUser(userId), idees.getIdeaWithoutEnrichment(ideaId), true);
+											null,
+											user);
+				addModificationNotification(user, idees.getIdeaWithoutEnrichment(ideaId), true);
 				notif.removeAllType(userId, NotificationType.NO_IDEA);
 				
 				request.getSession().setAttribute("added_idea_id", ideaId);

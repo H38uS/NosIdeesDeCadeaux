@@ -24,7 +24,7 @@ public class TestIdeaQuestion extends AbstractTestServlet {
 	@Test
 	public void testGetQuestions() throws SQLException, ServletException, IOException {
 		
-		int id = idees.addIdea(_OWNER_ID_, "avec questions", null, 0, null, null);
+		int id = idees.addIdea(_OWNER_ID_, "avec questions", null, 0, null, null, null);
 		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		questions.addComment(_FRIEND_ID_, id, "mon pti com'");
 
