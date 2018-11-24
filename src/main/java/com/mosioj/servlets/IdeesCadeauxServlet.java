@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -240,20 +241,21 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 					int userId = ParametersUtils.getUserId(request);
 					int count = notif.getUserNotificationCount(userId);
 					request.setAttribute("notif_count", count);
-					
+
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
 						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
 						idees.fillAUserIdea(userId,
-						                    idee,
-						                    notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
-						                    device);
+											idee,
+											notif.hasNotification(	idee.owner.id,
+																	new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
+											device);
 					}
-					
+
 				} catch (Exception e) {
 					// Osef
-					logger.warn(e.getMessage());
-					e.printStackTrace();
+					logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
+					logger.warn(Arrays.toString(e.getStackTrace()));
 				}
 			}
 
@@ -320,20 +322,21 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 					int userId = ParametersUtils.getUserId(request);
 					int count = notif.getUserNotificationCount(userId);
 					request.setAttribute("notif_count", count);
-					
+
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
 						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
 						idees.fillAUserIdea(userId,
-						                    idee,
-						                    notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
-						                    device);
+											idee,
+											notif.hasNotification(	idee.owner.id,
+																	new NotifAskIfIsUpToDate(users.getUser(userId), idee)),
+											device);
 					}
-					
+
 				} catch (Exception e) {
 					// Osef
-					logger.warn(e.getMessage());
-					e.printStackTrace();
+					logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
+					logger.warn(Arrays.toString(e.getStackTrace()));
 				}
 			}
 

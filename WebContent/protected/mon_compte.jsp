@@ -159,7 +159,7 @@
 					<td>
 						<form method="POST" action="protected/connexion_enfant">
 							<input type="hidden" name="name" value="${child.id}" />
-							<input type="submit" value="Se connecter avec ce compte" />
+							<button type="submit" class="btn btn-primary ml-sm-2">Se connecter avec ce compte</button>
 						</form>
 					</td>
 				</tr>

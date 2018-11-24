@@ -38,26 +38,18 @@ public class TemplateTest {
 	 * firefox@toto.com
 	 */
 	protected static final int _OWNER_ID_ = 26;
+	protected User firefox;
 	
 	/**
 	 * test@toto.com
 	 */
 	protected static final int _FRIEND_ID_ = 4;
+	protected User friendOfFirefox;
 	
 	/**
 	 * moiautre@toto.com
 	 */
 	protected static final int _MOI_AUTRE_ = 8;
-
-	/**
-	 * test@toto.com
-	 */
-	protected User friendOfFirefox;
-	protected User firefox;
-
-	/**
-	 * moiautre@toto.com
-	 */
 	protected User moiAutre;
 
 	protected final Idees idees = new Idees();

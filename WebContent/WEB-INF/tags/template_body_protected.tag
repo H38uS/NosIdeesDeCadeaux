@@ -6,16 +6,16 @@
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-0">
 				<div class="container-fluid">
-					<div class="row align-items-center justify-content-start mx-0 w-100">
+					<div class="row align-items-center justify-content-end mx-0 w-100">
 						<div class="col-auto">
 							<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu_content" aria-controls="menu_content" aria-expanded="false" aria-label="Toggle navigation">
 								<span class="navbar-toggler-icon"></span>
 							</button>
 						</div>
-						<div class="col-auto px-0">
+						<div class="col-auto mr-auto px-0">
 							<img src="resources/image/mobile_header_index.png" />
 						</div>
-						<div class="col-auto ml-auto justify-content-end d-none d-lg-flex">
+						<div class="col-auto justify-content-end d-none d-lg-flex">
 							<div class="container">
 								<div class="row align-items-center">
 									Bonjour, ${emailorname} 
@@ -28,7 +28,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-auto justify-content-end d-none d-md-flex ml-md-auto ml-lg-0">
+						<div class="col-auto justify-content-end d-none d-md-flex">
 							<a href="protected/mes_notifications" class="btn btn-secondary ml-2" style="color:white" >
 								Notifications <span class="badge badge-light">${notif_count}</span>
 							</a>

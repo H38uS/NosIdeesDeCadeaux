@@ -42,7 +42,7 @@ public class ParametersUtils {
 	public static Integer readInt(HttpServletRequest request, String name) {
 		int param = -1;
 		try {
-			param = Integer.parseInt(readIt(request, name).replaceAll(" ", ""));
+			param = Integer.parseInt(readIt(request, name).replaceAll("[  ]", "").replaceAll("%C2%A0", ""));
 		} catch (NumberFormatException e) {
 			return null;
 		}
@@ -52,7 +52,7 @@ public class ParametersUtils {
 	public static Double readDouble(HttpServletRequest request, String name) {
 		double param = -1;
 		try {
-			param = Double.parseDouble(readIt(request, name));
+			param = Double.parseDouble(readIt(request, name).replaceAll("[  ]", "").replaceAll("%C2%A0", ""));
 		} catch (NumberFormatException e) {
 			return null;
 		}
