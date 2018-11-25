@@ -89,6 +89,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
+	// TODO pour tous les noms faire une tooltip pour avoir l'email, la photo etc.
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -98,6 +99,11 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
+
+	// FIXME : 2 faire un service pour l'envoie de demande de réseau
+	// FIXME : 8 quand on se connecte avec quelqu'un d'autre, ça ne rafraichi pas de suite le menu, faut y recliquer
+	// FIXME : 8 pouvoir inviter des gens dans ajouter amis si on ne les trouve pas
+	// FIXME : 9 pouvoir réserver des surprises (groupe, réservation partielle, etc.)
 
 	/**
 	 * L'interface vers la table USER_RELATIONS. Static because it can be used in constructor for security checks.
