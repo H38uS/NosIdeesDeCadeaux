@@ -4,7 +4,7 @@
 	<body>
 		<div id="container">
 		<header>
-			<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-0">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-0 pb-0">
 				<div class="container-fluid">
 					<div class="row align-items-center justify-content-end mx-0 w-100">
 						<div class="col-auto">
@@ -28,7 +28,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-auto justify-content-end d-none d-md-flex">
+						<div class="col-auto mx-auto my-3 my-sm-0 mx-md-0 justify-content-md-end  d-md-flex">
 							<a href="protected/mes_notifications" class="btn btn-secondary ml-2" style="color:white" >
 								Notifications <span class="badge badge-light">${notif_count}</span>
 							</a>
@@ -36,7 +36,7 @@
 					</div>
 				</div>
 			</nav>
-			<nav class="navbar navbar-dark bg-dark pt-0">
+			<nav class="navbar navbar-dark bg-dark py-0 pb-md-2">
 				<div class="collapse navbar-collapse" id="menu_content">
 					<ul class="navbar-nav mr-auto mt-lg-0 menu_mobile">
 						<li class="nav-item m-2">
@@ -86,8 +86,8 @@
 
 			<div class="container-fluid">
 				<div class="row align-items-center justify-content-center mx-0">
-					<div class="col-12 col-md-5 col-lg-6 col-xl-7 mr-auto huge w-100">Créer et partager vos envies de cadeaux avec toute votre famille et vos amis</div>
-					<div class="col-12 col-sm-auto pt-2 pt-md-0">
+					<div class="col-12 col-md-5 col-lg-6 col-xl-7 mr-auto huge w-100 d-none d-sm-block pb-sm-2">Créer et partager vos envies de cadeaux avec toute votre famille et vos amis</div>
+					<div class="col-12 col-sm-auto pt-md-0">
 						<form id="afficherliste" class="form-inline justify-content-center justify-content-md-end" method="POST" action="protected/afficher_listes">
 							<input type="text" class="form-control mx-2" name="name" id="header_name" placeholder="Entrer un nom ou un email" />
 							<button type="submit" class="btn btn-primary d-none d-sm-block">Rechercher !</button>

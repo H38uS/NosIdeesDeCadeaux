@@ -239,8 +239,17 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				try {
 					// Mise à jour du nombre de notifications
 					int userId = ParametersUtils.getUserId(request);
-					int count = notif.getUserNotificationCount(userId);
-					request.setAttribute("notif_count", count);
+					final Compteur count = new Compteur(notif.getUserNotificationCount(userId));
+					parentRelationship.getChildren(userId).forEach(c -> {
+						try {
+							count.add(notif.getUserNotificationCount(c.id));
+						} catch (Exception e) {
+							logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
+																c.getName(),
+																c.id));
+						}
+					});
+					request.setAttribute("notif_count", count.getValue());
 
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
@@ -320,8 +329,17 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				try {
 					// Mise à jour du nombre de notifications
 					int userId = ParametersUtils.getUserId(request);
-					int count = notif.getUserNotificationCount(userId);
-					request.setAttribute("notif_count", count);
+					final Compteur count = new Compteur(notif.getUserNotificationCount(userId));
+					parentRelationship.getChildren(userId).forEach(c -> {
+						try {
+							count.add(notif.getUserNotificationCount(c.id));
+						} catch (Exception e) {
+							logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
+																c.getName(),
+																c.id));
+						}
+					});
+					request.setAttribute("notif_count", count.getValue());
 
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
