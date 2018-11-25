@@ -33,6 +33,34 @@
 				</c:forEach>
 			</div>
 		</div>
+		<c:if test="${not empty child_notifications}">
+		<h3 class="my-2">Les notifications de mes comptes enfants</h3>
+			<c:forEach var="child" items="${child_notifications}">
+				<c:if test="${not empty child.notifications}">
+				<div class="container">
+					<h4>${child.name}</h4>
+					<div class="row align-items-start mx-0 justify-content-around">
+					<c:forEach var="notif" items="${child.notifications}">
+						<div class="card my-3" style="width:300px">
+							<div class="card-header bg-dark" style="color:white">
+								${notif.description}
+							</div>
+							<div class="card-body">${notif.text}</div>
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item center">
+									<a class="btn btn-primary notif_delete" href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
+								</li>
+							</ul>
+							<div class="card-footer text-muted text-right">
+								${notif.creationTime}
+							</div>
+						</div>
+					</c:forEach>
+					</div>
+				</div>
+				</c:if>
+			</c:forEach>
+		</c:if>
 		<h3 class="my-2">Mes anciennes notifications</h3>
 		<div class="container">
 			<div class="card-deck">
