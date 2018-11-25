@@ -47,7 +47,7 @@ public class NotifGroupSuggestion extends AbstractNotification implements NotifU
 
 	@Override
 	public String getTextToInsert() {
-		final String link = MessageFormat.format("<a href=\"protected/detail_du_groupe?groupid={0}\">ici</a>", groupId);
+		final String link = "<a href=\"protected/detail_du_groupe?groupid=" + groupId + "\">ici</a>";
 		return MessageFormat.format("{0} vous suggère un groupe sur l''idée \"{1}\". Cliquez {2} pour participer !",
 									userName,
 									idea,

@@ -41,22 +41,29 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifAskIfIsUpToDate(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+	public NotifAskIfIsUpToDate(int id,
+								int owner,
+								String text,
+								Timestamp creationTime,
+								boolean isUnread,
+								Timestamp readOn,
+								Map<ParameterName, Object> parameters) {
 		super(NotificationType.IS_IDEA_UP_TO_DATE, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
 	@Override
 	public String getTextToInsert() {
 
-		String oui = MessageFormat.format(	"<li><a href=\"protected/confirmation_est_a_jour?{0}={1}\">Oui !</a></li>",
-											ConfirmationEstAJour.IDEE_FIELD_PARAMETER,
-											ideaId);
-		String nonSupr = MessageFormat.format(	"<li>Non... Il faudrait la <a href=\"protected/remove_an_idea?{0}={1}&from=/protected/mes_notifications\">supprimer</a>.</li>",
-												RemoveOneIdea.IDEE_ID_PARAM,
-												ideaId);
-		String nonModif = MessageFormat.format(	"<li>Non... Je la <a href=\"protected/modifier_idee?{0}={1}\">modifie</a> de suite !</li>",
-												ModifyIdea.IDEE_ID_PARAM,
-												ideaId);
+		String param = ConfirmationEstAJour.IDEE_FIELD_PARAMETER + "=" + ideaId;
+		String oui = MessageFormat.format("<li><a href=\"protected/confirmation_est_a_jour?{0}\">Oui !</a></li>", param);
+
+		param = RemoveOneIdea.IDEE_ID_PARAM + "=" + ideaId;
+		String nonSupr = MessageFormat.format(	"<li>Non... Il faudrait la <a href=\"protected/remove_an_idea?{0}&from=/protected/mes_notifications\">supprimer</a>.</li>",
+												param);
+
+		param = ModifyIdea.IDEE_ID_PARAM + "=" + ideaId;
+		String nonModif = MessageFormat.format(	"<li>Non... Je la <a href=\"protected/modifier_idee?{0}\">modifie</a> de suite !</li>",
+												param);
 
 		return MessageFormat.format("{0} souhaiterait savoir si votre idée \"{1}\" est toujours à jour. <ul> {2}{3}{4}</ul>",
 									askedUser.getName(),

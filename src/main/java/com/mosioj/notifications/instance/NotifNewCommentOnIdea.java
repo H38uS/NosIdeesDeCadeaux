@@ -42,7 +42,7 @@ public class NotifNewCommentOnIdea extends AbstractNotification implements Notif
 
 	@Override
 	public String getTextToInsert() {
-		final String link = MessageFormat.format("<a href=\"protected/idee_commentaires?idee={0}\">le lire</a>", idea.getId());
+		final String link = "<a href=\"protected/idee_commentaires?idee=" + idea.getId() + "\">le lire</a>";
 		return MessageFormat.format("{0} a ajouté un nouveau commentaire sur l''idée \"{1}\". Aller {2}.", userName, idea.getTextSummary(50), link);
 	}
 

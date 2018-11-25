@@ -32,7 +32,7 @@ public class NotifNouvelleDemandeAmi extends AbstractNotification {
 
 	@Override
 	public String getTextToInsert() {
-		final String link = MessageFormat.format("<a href=\"protected/afficher_reseau?id={0}\">Voir les demandes en cours</a>", toUserID);
+		final String link = "<a href=\"protected/afficher_reseau?id=" + toUserID + "\">Voir les demandes en cours</a>";
 		return MessageFormat.format("{0} vous a envoyé une demande d''ami ! {1}.", userName, link);
 	}
 

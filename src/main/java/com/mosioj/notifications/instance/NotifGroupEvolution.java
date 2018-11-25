@@ -56,7 +56,7 @@ public class NotifGroupEvolution extends AbstractNotification implements NotifUs
 
 	@Override
 	public String getTextToInsert() {
-		final String link = MessageFormat.format("<a href=\"protected/detail_du_groupe?groupid={0}\">ici</a>", groupId);
+		final String link = "<a href=\"protected/detail_du_groupe?groupid=" + groupId + "\">ici</a>";
 		final String action = join ? "rejoint" : "quitté";
 		return MessageFormat.format("{0} a {1} le groupe sur l''idée \"{2}\". Cliquez {3} pour voir le détail du groupe.",
 									userName,

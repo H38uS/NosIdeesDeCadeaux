@@ -43,7 +43,7 @@ public class NotifNewQuestionOnIdea extends AbstractNotification implements Noti
 
 	@Override
 	public String getTextToInsert() {
-		final String link = MessageFormat.format("<a href=\"protected/idee_questions?idee={0}\">le lire</a>", idea.getId());
+		final String link = "<a href=\"protected/idee_questions?idee=" + idea.getId() + "\">le lire</a>";
 		return MessageFormat.format("{0} a ajouté une nouvelle question / une nouvelle réponse sur l''idée \"{1}\". Aller {2}.", userName, idea.getTextSummary(50), link);
 	}
 
