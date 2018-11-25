@@ -113,14 +113,14 @@
 		</div>
 		<c:choose>
 			<c:when test="${not empty parents}">
-				<ul>
+				<ul id="parent_names_list">
 					<c:forEach var="parent" items="${parents}">
 					<li>${parent}</li>
 					</c:forEach>
 				</ul>
 			</c:when>
 			<c:otherwise>
-				Vous n'avez actuellement pas de comptes parent.
+				<span>Vous n'avez actuellement pas de comptes parent.</span>
 			</c:otherwise>
 		</c:choose>
 		<form id="ajouter_un_parent" class="form-inline" method="POST" action="protected/ajouter_parent">
@@ -132,23 +132,10 @@
 					<input type="text" class="form-control" name="name" id="input_add_parent" placeholder="Nom ou email du parent" />
 				</div>
 				<div class="col-auto">
-					<button class="btn btn-primary mx-md-2" type="submit">Ajouter</button>
+					<button id="btn_add_parent" class="btn btn-primary mx-md-2" type="submit">Ajouter</button>
 				</div>
 			</div>
 		</form>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$("#input_add_parent").autocomplete({
-					source : "protected/service/name_resolver",
-					minLength : 2,
-					select : function(event, ui) {
-						$("#input_add_parent").val(ui.item.email);
-						$("#ajouter_un_parent").submit();
-						return false;
-					}
-				});
-			});
-		</script>
 		<h3 class="mt-2">Mes comptes enfant</h3>
 		<c:choose>
 			<c:when test="${not empty children}">
@@ -165,8 +152,6 @@
 				</tr>
 				</c:forEach>
 			</table>
-				<ul>
-				</ul>
 			</c:when>
 			<c:otherwise>
 				Vous n'avez actuellement pas de comptes enfant.

@@ -53,7 +53,36 @@ function submitNotificationForm(e) {
 			"Modification sauvegardée !");
 }
 
+function addParent(e) {
+	e.preventDefault();
+	var name = $("#input_add_parent").val();
+	servicePost('protected/service/ajouter_parent',
+			{ name : name },
+			function(data) {
+				var my_ul = $("#parent_names_list");
+				if ( typeof my_ul.html() === "undefined" ) {
+					var form = $("#input_add_parent").closest( "form" );
+					form.prev().remove();
+					form.before('<ul id="parent_names_list"></ul>');
+					my_ul = form.prev();
+				}
+				my_ul.append("<li>" + data.name + "</li>");
+			},
+			"Ajout du parent en cours...",
+			"Ajout effectué avec succès !");
+}
+
 $(document).ready(function() {
 	$("#submit_main_form").click(submitMainForm);
 	$(".notification_form_submit").click(submitNotificationForm);
+	$("#btn_add_parent").click(addParent);
+	$("#input_add_parent").autocomplete({
+		source : "protected/service/name_resolver",
+		minLength : 2,
+		select : function(event, ui) {
+			$("#input_add_parent").val(ui.item.email);
+			addParent(event);
+			return false;
+		}
+	});
 });

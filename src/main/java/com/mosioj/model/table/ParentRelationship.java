@@ -92,7 +92,7 @@ public class ParentRelationship extends Table {
 			ps.bindParameters(childId);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
-				if (res.next()) {
+				while (res.next()) {
 					users.add(new User(	res.getInt(ID.name()),
 										res.getString(UsersColumns.NAME.name()),
 										res.getString(UsersColumns.EMAIL.name()),
