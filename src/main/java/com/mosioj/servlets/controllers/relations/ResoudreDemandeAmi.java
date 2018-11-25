@@ -43,12 +43,13 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																AfficherReseau.SELF_VIEW,
-																AfficherReseau.USER_ID_PARAM,
-																ParametersUtils.readInt(request, AfficherReseau.USER_ID_PARAM)),
-										request,
-										response);
+		StringBuilder sb = new StringBuilder();
+		sb.append(AfficherReseau.SELF_VIEW);
+		sb.append("?");
+		sb.append(AfficherReseau.USER_ID_PARAM);
+		sb.append("=");
+		sb.append(ParametersUtils.readInt(request, AfficherReseau.USER_ID_PARAM));
+		RootingsUtils.redirectToPage(sb.toString(), request, response);
 	}
 
 	@Override
@@ -91,33 +92,43 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 			// Si userId avait supprimé sa relation avec fromUserId
 			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, userId));
 			// Si fromUserId avait refusé la demande de userId
-			toBeRemoved.addAll(notif.getNotifications(userId, NotificationType.REJECTED_FRIENDSHIP, ParameterName.USER_ID, fromUserId));
+			toBeRemoved.addAll(notif.getNotifications(	userId,
+														NotificationType.REJECTED_FRIENDSHIP,
+														ParameterName.USER_ID,
+														fromUserId));
 			// Si userId avait supprimé sa relation avec fromUserId
-			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.REJECTED_FRIENDSHIP, ParameterName.USER_ID, userId));
-			
+			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
+														NotificationType.REJECTED_FRIENDSHIP,
+														ParameterName.USER_ID,
+														userId));
+
 			// Suppression des suggestions d'amitiés entre ces deux personnes
-			toBeRemoved.addAll(notif.getNotifications(userId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, fromUserId));
-			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userId));
-			
+			toBeRemoved.addAll(notif.getNotifications(	userId,
+														NotificationType.NEW_RELATION_SUGGESTION,
+														ParameterName.USER_ID,
+														fromUserId));
+			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
+														NotificationType.NEW_RELATION_SUGGESTION,
+														ParameterName.USER_ID,
+														userId));
+
 			// Suppression des demandes d'amis
-			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.NEW_FRIENSHIP_REQUEST, ParameterName.USER_ID, userId));
+			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
+														NotificationType.NEW_FRIENSHIP_REQUEST,
+														ParameterName.USER_ID,
+														userId));
 		}
-		
+
 		for (AbstractNotification n : toBeRemoved) {
 			notif.remove(n.id);
 		}
-		
+
 		notif.removeAllType(userId, NotificationType.NEW_FRIENSHIP_REQUEST);
 
 		// Redirection à la page d'administration
 		HttpSession session = request.getSession();
 		session.setAttribute("accepted", accepted);
-		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																AfficherReseau.SELF_VIEW,
-																AfficherReseau.USER_ID_PARAM,
-																userId),
-										request,
-										response);
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?" + AfficherReseau.USER_ID_PARAM + "=" + userId, request, response);
 	}
 
 }

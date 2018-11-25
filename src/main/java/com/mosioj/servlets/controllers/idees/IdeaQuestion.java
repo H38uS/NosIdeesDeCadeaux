@@ -1,7 +1,6 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,7 +82,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 		}
 
 		dropNotificationOnView(ParametersUtils.getUserId(request), id);
-		RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", WEB_SERVLET, IDEA_ID_PARAM, id), request, response);
+		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + id, request, response);
 	}
 
 }

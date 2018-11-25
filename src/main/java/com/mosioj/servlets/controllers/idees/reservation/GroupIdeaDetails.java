@@ -127,10 +127,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 				}
 				RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + groupId, request, response);
 			} else {
-				RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																		VoirListe.PROTECTED_VOIR_LIST,
-																		VoirListe.USER_ID_PARAM,
-																		owner.id),
+				RootingsUtils.redirectToPage(	VoirListe.PROTECTED_VOIR_LIST + "?" + VoirListe.USER_ID_PARAM + "=" + owner.id,
 												request,
 												response);
 			}

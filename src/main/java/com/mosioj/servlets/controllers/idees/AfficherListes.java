@@ -1,7 +1,6 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,12 +61,13 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																AFFICHER_LISTES,
-																NAME_OR_EMAIL,
-																request.getParameter(NAME_OR_EMAIL)),
-										request,
-										response); // Rien de spécifique pour le moment
+		StringBuilder sb = new StringBuilder();
+		sb.append(AFFICHER_LISTES);
+		sb.append("?");
+		sb.append(NAME_OR_EMAIL);
+		sb.append("=");
+		sb.append(request.getParameter(NAME_OR_EMAIL));
+		RootingsUtils.redirectToPage(sb.toString(), request, response); // Rien de spécifique pour le moment
 	}
 
 	@Override
@@ -77,7 +77,12 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 
 	@Override
 	protected String getSpecificParameters(HttpServletRequest req) {
-		return MessageFormat.format("&{0}={1}", NAME_OR_EMAIL, ParametersUtils.readAndEscape(req, NAME_OR_EMAIL));
+		StringBuilder sb = new StringBuilder();
+		sb.append("&");
+		sb.append(NAME_OR_EMAIL);
+		sb.append("=");
+		sb.append(ParametersUtils.readAndEscape(req, NAME_OR_EMAIL));
+		return sb.toString();
 	}
 
 }

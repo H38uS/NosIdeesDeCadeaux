@@ -79,13 +79,10 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 											user);
 				addModificationNotification(user, idees.getIdeaWithoutEnrichment(ideaId), true);
 				notif.removeAllType(userId, NotificationType.NO_IDEA);
-				
+
 				request.getSession().setAttribute("added_idea_id", ideaId);
 
-				RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																		VoirListe.PROTECTED_VOIR_LIST,
-																		VoirListe.USER_ID_PARAM,
-																		userId),
+				RootingsUtils.redirectToPage(	VoirListe.PROTECTED_VOIR_LIST + "?" + VoirListe.USER_ID_PARAM + "=" + userId,
 												request,
 												response);
 				return;

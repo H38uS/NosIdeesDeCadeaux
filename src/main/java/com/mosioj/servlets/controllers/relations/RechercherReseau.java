@@ -1,7 +1,6 @@
 package com.mosioj.servlets.controllers.relations;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -60,11 +59,16 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected String getSpecificParameters(HttpServletRequest req) {
-		return MessageFormat.format("&{0}={1}&{2}={3}",
-									USER_ID_PARAM,
-									ParametersUtils.readInt(req, USER_ID_PARAM),
-									SEARCH_USER_PARAM,
-									ParametersUtils.readAndEscape(req, SEARCH_USER_PARAM));
+		StringBuilder sb = new StringBuilder();
+		sb.append("&");
+		sb.append(USER_ID_PARAM);
+		sb.append("=");
+		sb.append(ParametersUtils.readInt(req, USER_ID_PARAM));
+		sb.append("&");
+		sb.append(SEARCH_USER_PARAM);
+		sb.append("=");
+		sb.append(ParametersUtils.readAndEscape(req, SEARCH_USER_PARAM));
+		return sb.toString();
 	}
 
 	@Override

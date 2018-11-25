@@ -1,7 +1,6 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,12 +29,7 @@ public class SupprimerQuestions extends IdeesCadeauxServlet<QuestionModification
 		Comment comment = policy.getComment();
 		questions.delete(id);
 
-		RootingsUtils.rootToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																IdeaQuestion.WEB_SERVLET,
-																IdeaQuestion.IDEA_ID_PARAM,
-																comment.getIdea()),
-										req,
-										resp);
+		RootingsUtils.rootToPage(IdeaQuestion.WEB_SERVLET + "?" + IdeaQuestion.IDEA_ID_PARAM + "=" + comment.getIdea(), req, resp);
 	}
 
 	@Override

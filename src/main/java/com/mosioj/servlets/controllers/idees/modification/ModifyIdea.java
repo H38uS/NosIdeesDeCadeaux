@@ -55,7 +55,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 		request.setAttribute("priorites", priorities.getPriorities());
 		request.setAttribute("idea", idea);
 		request.setAttribute("from", getFrom(request, ""));
-		
+
 		Object errors = request.getSession().getAttribute("errors");
 		if (errors != null) {
 			request.setAttribute("errors", errors);
@@ -77,12 +77,16 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 
 			if (!errors.isEmpty()) {
 				request.getSession().setAttribute("errors", errors);
-				RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?id={1}&from={2}",
-																		PROTECTED_MODIFIER_IDEE,
-																		idea.getId(),
-																		getFrom(request, "")),
-												request,
-												response);
+				StringBuilder sb = new StringBuilder();
+				sb.append(PROTECTED_MODIFIER_IDEE);
+				sb.append("?");
+				sb.append(IDEE_ID_PARAM);
+				sb.append("=");
+				sb.append(idea.getId());
+				sb.append("&");
+				sb.append("from=");
+				sb.append(getFrom(request, ""));
+				RootingsUtils.redirectToPage(sb.toString(), request, response);
 				return;
 			} else {
 				logger.info(MessageFormat.format(	"Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",

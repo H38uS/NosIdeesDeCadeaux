@@ -1,7 +1,6 @@
 package com.mosioj.servlets.controllers.relations;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -68,11 +67,12 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
 
 	@Override
 	protected String getSpecificParameters(HttpServletRequest request) {
-		return MessageFormat.format("&{0}={1}&{2}={3}",
-									"name",
-									ParametersUtils.readAndEscape(request, "name").trim(),
-									"only_non_friend",
-									ParametersUtils.readAndEscape(request, "only_non_friend").trim());
+		StringBuilder sb = new StringBuilder();
+		sb.append("&name=");
+		sb.append(ParametersUtils.readAndEscape(request, "name").trim());
+		sb.append("&only_non_friend=");
+		sb.append(ParametersUtils.readAndEscape(request, "only_non_friend").trim());
+		return sb.toString();
 	}
 
 	@Override

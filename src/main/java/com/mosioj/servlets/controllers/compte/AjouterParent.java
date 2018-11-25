@@ -42,8 +42,11 @@ public class AjouterParent extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 		int parentId;
 		try {
 			parentId = users.getIdFromNameOrEmail(nameOrEmail);
-			logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
-			parentRelationship.addProcuration(parentId, ParametersUtils.getUserId(request));
+			int userId = ParametersUtils.getUserId(request);
+			if (!parentRelationship.doesRelationExists(parentId, userId) && parentId != userId) {
+				logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
+				parentRelationship.addProcuration(parentId, userId);
+			}
 		} catch (NoRowsException e) {
 			logger.warn("L'ajout du parent a échoué : il n'existe pas de compte pour le nom ou l'email passé en paramètre.");
 		}

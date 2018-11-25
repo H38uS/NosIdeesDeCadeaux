@@ -8,6 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
@@ -18,7 +21,10 @@ import com.mosioj.utils.RootingsUtils;
 public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = 7349100644264613480L;
+	private static final Logger logger = LogManager.getLogger(SousReserverIdee.class);
+
 	private static final String IDEA_ID_PARAM = "idee";
+	public static final String URL = "/protected/sous_reserver";
 	public static final String VIEW_PAGE_URL = "/protected/sous_reservation.jsp";
 
 	/**
@@ -43,7 +49,13 @@ public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDat
 		request.setAttribute("idee", idea);
 
 		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {
-			RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", DetailSousReservation.URL, IDEA_ID_PARAM, idea.getId()), request, response);
+			String url = DetailSousReservation.URL + "?" + IDEA_ID_PARAM + "=" + idea.getId();
+			logger.info(MessageFormat.format("Succès ! Redirection vers {0}...", url));
+			RootingsUtils.redirectToPage(url, request, response);
+		} else {
+			String url = URL + "?" + IDEA_ID_PARAM + "=" + idea.getId();
+			logger.info(MessageFormat.format("Echec ! Redirection vers {0}...", url));
+			RootingsUtils.redirectToPage(url, request, response);
 		}
 
 	}

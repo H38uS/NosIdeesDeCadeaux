@@ -34,7 +34,9 @@ public class AnnulerSousReservation extends AbstractIdea<IdeaInteractionBookingU
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Idee idea = policy.getIdea();
-		RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", DetailSousReservation.URL, IDEA_ID_PARAM, idea.getId()), request, response);
+
+		
+		RootingsUtils.redirectToPage(DetailSousReservation.URL + "?" + IDEA_ID_PARAM + "=" +idea.getId(), request, response);
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class AnnulerSousReservation extends AbstractIdea<IdeaInteractionBookingU
 			idees.dereserverSousPartie(idea.getId(), userId);
 		}
 
-		RootingsUtils.redirectToPage(MessageFormat.format("{0}?{1}={2}", DetailSousReservation.URL, IDEA_ID_PARAM, idea.getId()), request, response);
+		RootingsUtils.redirectToPage(DetailSousReservation.URL + "?" + IDEA_ID_PARAM + "=" +idea.getId(), request, response);
 	}
 
 }

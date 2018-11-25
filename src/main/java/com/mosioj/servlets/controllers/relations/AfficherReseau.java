@@ -1,7 +1,6 @@
 package com.mosioj.servlets.controllers.relations;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -61,10 +60,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(	MessageFormat.format(	"{0}?{1}={2}",
-																SELF_VIEW,
-																USER_ID_PARAM,
-																ParametersUtils.readInt(request, USER_ID_PARAM)),
+		RootingsUtils.redirectToPage(	SELF_VIEW + "?" + USER_ID_PARAM + "=" + ParametersUtils.readInt(request, USER_ID_PARAM),
 										request,
 										response);
 	}
@@ -81,7 +77,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected String getSpecificParameters(HttpServletRequest req) {
-		return MessageFormat.format("&{0}={1}", USER_ID_PARAM, ParametersUtils.readInt(req, USER_ID_PARAM));
+		return "&" + USER_ID_PARAM + "=" + ParametersUtils.readInt(req, USER_ID_PARAM);
 	}
 
 	@Override
