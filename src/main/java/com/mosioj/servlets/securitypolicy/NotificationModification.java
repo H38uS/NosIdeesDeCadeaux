@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.Notifications;
+import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
@@ -41,9 +43,10 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
-	 * @throws NotLoggedInException 
+	 * @throws NotLoggedInException
 	 */
-	private boolean canModifyNotification(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	private boolean canModifyNotification(	HttpServletRequest request,
+											HttpServletResponse response) throws SQLException, NotLoggedInException {
 
 		Integer notifId = ParametersUtils.readInt(request, notifParameter);
 		if (notifId == null) {
@@ -53,27 +56,29 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 
 		int userId = ParametersUtils.getUserId(request);
 
-		AbstractNotification notification = notif.getNotification(notifId);
-		if (notification == null) {
+		AbstractNotification n = notif.getNotification(notifId);
+		if (n == null) {
 			lastReason = "Aucune notification trouvée en paramètre.";
 			return false;
 		}
 
-		boolean res = userId == notification.getOwner();
+		boolean res = userId == n.getOwner() || new ParentRelationship().getChildren(userId).contains(new User(n.getOwner(), "", ""));
 		if (!res) {
-			lastReason = "Vous ne pouvez modifier que vos notifications.";
+			lastReason = "Vous ne pouvez modifier que vos notifications ou celles de vos enfants.";
 		}
 		return res;
 
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyNotification(request, response);
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyNotification(request, response);
 	}
 

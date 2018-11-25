@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.table.Idees;
+import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
@@ -43,7 +44,7 @@ public class IdeaModification extends AllAccessToPostAndGet implements SecurityP
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
-	 * @throws NotLoggedInException 
+	 * @throws NotLoggedInException
 	 */
 	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
@@ -61,21 +62,23 @@ public class IdeaModification extends AllAccessToPostAndGet implements SecurityP
 			return false;
 		}
 
-		boolean res = userId == idea.owner.id;
+		boolean res = userId == idea.owner.id || new ParentRelationship().getChildren(userId).contains(idea.owner);
 		if (!res) {
-			lastReason = "Vous ne pouvez modifier que vos idées.";
+			lastReason = "Vous ne pouvez modifier que vos idées ou celles de vos enfants.";
 		}
 		return res;
 
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyIdea(request, response);
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyIdea(request, response);
 	}
 
