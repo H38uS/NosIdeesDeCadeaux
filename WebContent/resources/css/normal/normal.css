@@ -57,42 +57,20 @@
 /***********************************/
 /* *** Ideas with information *** */
 /***********************************/
-.ideas_square_container {
-	display: block;
-	padding: 0;
-	margin: 0 0;
-}
-
-.ideas_square_container>* {
-	vertical-align: top;
-}
-
 .idea_square {
-	list-style: none;
-	margin: 10px 20px 20px 0px;
-	padding: 20px;
 	text-align: center;
 	background-color: #eafaff;
 	border: transparent solid 1px;
 	-webkit-box-shadow: 0 1px 5px transparent;
 	box-shadow: 0 1px 5px transparent;
-	min-height: 70px;
-	min-width: 300px;
 	-moz-box-shadow: 0px 0px 5px 0px #353b43;
 	-webkit-box-shadow: 0px 0px 5px 0px #353b43;
 	-o-box-shadow: 0px 0px 5px 0px #353b43;
 	box-shadow: 0px 0px 5px 0px #353b43;
-	filter: progid:DXImageTransform.Microsoft.Shadow(color=#353b43,
-		Direction=NaN, Strength=5);
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
 }
-
-.idea_square .left {
-	padding-bottom: 10px;
-}
-
 .idea_square:hover {
 	background-color: #c1b0f8;
 	border: #353b43 solid 1px;
@@ -104,9 +82,6 @@
 	font-style: italic;
 	font-size: 60%;
 	text-align: right;
-	position: relative;
-	top:15px;
-	left:15px;
 }
 
 .booked_by_me_idea {
@@ -127,7 +102,6 @@
 .top_tooltip {
 	position: relative;
 	display: inline-block;
-	padding-top: 10px;
 }
 
 .top_tooltip .outer_top_tooltiptext {

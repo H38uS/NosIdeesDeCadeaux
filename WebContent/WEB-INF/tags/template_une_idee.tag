@@ -4,9 +4,9 @@
 <c:choose>
 	<c:when test="${userid == idee.owner.id}">
 		<!-- Début idée de la personne -->
-		<ul class="ideas_square_container">
-			<li class="idea_square top_tooltip">
-			<div>
+		<div class="container">
+			<div class="idea_square top_tooltip col-lg-12 my-3 px-2">
+			<div class="p-2">
 				<div class="modal fade" id="actions-idea-${idee.id}" tabindex="-1" role="dialog" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered" role="document">
 						<div class="modal-content">
@@ -17,7 +17,6 @@
 								</button>
 							</div>
 							<div class="modal-body">
-							
 								<div class="row align-items-center">
 									<div class="col-3">
 										<a href="protected/modifier_idee?id=${idee.id}&from=/${identic_call_back}" class="img">
@@ -62,6 +61,7 @@
 										Annuler toutes les réservations
 									</div>
 								</div>
+								
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
@@ -69,8 +69,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-start align-items-center">
-					<div class="col-auto pr-0">${idee.priorite.image}</div>
+				<div class="row justify-content-start align-items-center pb-2">
+					<div class="col-auto pr-0 pl-1">${idee.priorite.image}</div>
 					<c:if test="${not empty idee.category}">
 					<div class="col-auto px-0">
 						<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" width="${action_img_width}px" />
@@ -84,8 +84,8 @@
 					</div>
 					</c:if>
 					<c:if test="${is_mobile}">
-					<div class="col-auto ml-auto">
-						<button class="btn btn-primary mobile_actions" data-toggle="modal" data-target="#actions-idea-${idee.id}">Actions...</button>
+					<div class="col-auto ml-auto" data-toggle="modal" data-target="#actions-idea-${idee.id}">
+						<button class="btn btn-primary" >Actions...</button>
 					</div>
 					</c:if>
 					<span class="outer_top_tooltiptext">
@@ -109,28 +109,30 @@
 						</span>
 					</span>
 				</div>
-				<div class="left idea_square_text">
-					${idee.html}
-				</div>
-				<c:if test="${not empty idee.image}">
-					<div>
-						<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img" >
-							<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
-						</a>
+				<div class="row align-items-center">
+					<c:if test="${not empty idee.image}">
+						<div class="col-auto pl-2 pr-2">
+							<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img" >
+								<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+							</a>
+						</div>
+					</c:if>
+					<div class="left col word-break-all px-2">
+						${idee.html}
 					</div>
-				</c:if>
+				</div>
 				<div class="idea_square_modif_date" >
 					Mise à jour le ${idee.modificationDate}.
 				</div>
 			</div>
-			</li>
-		</ul>
+			</div>
+		</div>
 		<!-- Fin idée de la personne -->
 	</c:when>
 	<c:otherwise>
-		<ul class="ideas_square_container">
-			<li class="idea_square top_tooltip ${idee.displayClass}">
-			<div>
+		<div class="container">
+			<div class="idea_square top_tooltip ${idee.displayClass} col-lg-12 my-3 px-2">
+			<div class="p-2">
 				<div class="modal fade" id="actions-idea-${idee.id}" tabindex="-1" role="dialog" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered" role="document">
 						<div class="modal-content">
@@ -212,8 +214,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-start align-items-center">
-					<div class="col-auto pr-0">${idee.priorite.image}</div>
+				<div class="row justify-content-start align-items-center pb-2">
+					<div class="col-auto pr-0 pl-1">${idee.priorite.image}</div>
 					<c:if test="${not empty idee.category}">
 					<div class="col-auto px-0">
 						<img src="resources/image/type/${idee.category.image}" title="${idee.category.title}" alt="${idee.category.alt}" width="${action_img_width}px" />
@@ -230,7 +232,7 @@
 								<c:when test="${not empty idee.bookingOwner}">
 									<c:choose>
 										<c:when test="${userid == idee.bookingOwner.id}">
-										<div class="col-auto px-0">
+										<div class="col-auto px-0">	
 											<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_dereserver">
 												<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
 											</a>
@@ -285,8 +287,8 @@
 					</div>
 					</c:if>
 					<c:if test="${is_mobile}">
-					<div class="col-auto ml-auto">
-						<button class="btn btn-primary mobile_actions" data-toggle="modal" data-target="#actions-idea-${idee.id}">Actions...</button>
+					<div class="col-auto ml-auto" data-toggle="modal" data-target="#actions-idea-${idee.id}">
+						<button class="btn btn-primary" >Actions...</button>
 					</div>
 					</c:if>
 					<span class="outer_top_tooltiptext">
@@ -316,16 +318,18 @@
 						</span>
 					</span>
 				</div>
-				<div class="left idea_square_text">
-					${idee.html}
-				</div>
-				<c:if test="${not empty idee.image}">
-					<div>
-						<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img" >
-							<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
-						</a>
+				<div class="row align-items-center">
+					<c:if test="${not empty idee.image}">
+						<div class="col-auto pl-2 pr-2">
+							<a href="${ideas_pictures}/${idee.imageSrcLarge}" class="thickbox img" >
+								<img src="${ideas_pictures}/${idee.imageSrcSmall}" width="150" />
+							</a>
+						</div>
+					</c:if>
+					<div class="left col word-break-all px-2">
+						${idee.html}
 					</div>
-				</c:if>
+				</div>
 				<div class="idea_square_modif_date" >
 					<c:choose>
 						<c:when test="${not empty idee.surpriseBy}">
@@ -354,11 +358,11 @@
 									Réservée par un groupe (créé le ${idee.bookingDate}).
 									<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
 								</c:otherwise>
-							</c:choose><br/>
+							</c:choose>
 						</c:when>
 						<c:when test="${idee.isPartiallyBooked()}">
 							Une sous partie de l'idée est actuellement réservée.
-							<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a><br/>
+							<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a>
 						</c:when>
 						<c:otherwise>
 								Non réservée, modifiée le ${idee.modificationDate}.
@@ -366,7 +370,7 @@
 					</c:choose>
 				</div>
 			</div>
-			</li>
-		</ul>
+			</div>
+		</div>
 	</c:otherwise>
 </c:choose>

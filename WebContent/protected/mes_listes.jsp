@@ -101,11 +101,11 @@
 	
 						<h2 id="list_${user.id}" class="breadcrumb mt-2">Mes idées de cadeaux</h2>
 						<c:if test="${fn:length(user.ideas) > 0}">
-							<ul class="ideas_square_container">
+							<div class="container">
 								<c:forEach var="idea_from_liste" items="${user.ideas}">
 									<c:if test="${empty idea_from_liste.surpriseBy}">
-										<li class="idea_square top_tooltip">
-										<div>
+										<div class="idea_square top_tooltip col-lg-12 my-3 px-2">
+										<div class="p-2">
 											<div class="modal fade" id="actions-idea-${idea_from_liste.id}" tabindex="-1" role="dialog" aria-hidden="true">
 												<div class="modal-dialog modal-dialog-centered" role="document">
 													<div class="modal-content">
@@ -168,8 +168,8 @@
 													</div>
 												</div>
 											</div>
-											<div class="row justify-content-start align-items-center">
-												<div class="col-auto pr-0">${idea_from_liste.priorite.image}</div>
+											<div class="row justify-content-start align-items-center pb-2">
+												<div class="col-auto pr-0 pl-1">${idea_from_liste.priorite.image}</div>
 												<c:if test="${not empty idea_from_liste.category}">
 												<div class="col-auto px-0">
 													<img src="resources/image/type/${idea_from_liste.category.image}" title="${idea_from_liste.category.title}" alt="${idea_from_liste.category.alt}" width="${action_img_width}px" />
@@ -208,23 +208,26 @@
 													</span>
 												</span>
 											</div>
-											<div class="left idea_square_text">
-												${idea_from_liste.html}
-											</div>
-											<c:if test="${not empty idea_from_liste.image}">
-												<div>
-													<a href="${ideas_pictures}/${idea_from_liste.imageSrcLarge}" class="thickbox img" >
-														<img src="${ideas_pictures}/${idea_from_liste.imageSrcSmall}" width="150" />
-													</a>
+											<div class="row align-items-center">
+												<c:if test="${not empty idea_from_liste.image}">
+													<div class="col-auto pl-2 pr-2">
+														<a href="${ideas_pictures}/${idea_from_liste.imageSrcLarge}" class="thickbox img" >
+															<img src="${ideas_pictures}/${idea_from_liste.imageSrcSmall}" width="150" />
+														</a>
+													</div>
+												</c:if>
+												<div class="left col word-break-all px-2">
+													${idea_from_liste.html}
 												</div>
-											</c:if>
+											</div>
 											<div class="idea_square_modif_date" >
 												Mise à jour le ${idea_from_liste.modificationDate}.
 											</div>
 										</div>
-										</li>
+										</div>
 									</c:if>
 								</c:forEach>
+							</div>
 							</ul>
 						</c:if>
 						<c:if test="${fn:length(user.ideas) == 0}">
@@ -237,10 +240,10 @@
 					<c:if test="${userid != user.id}">
 						<h2 id="list_${user.id}" class="breadcrumb mt-4">Liste de cadeaux ${user.myDName}</h2>
 						<c:if test="${fn:length(user.ideas) > 0}">
-							<ul class="ideas_square_container">
+							<div class="container">
 								<c:forEach var="idea_from_liste" items="${user.ideas}">
-								<li class="idea_square top_tooltip ${idea_from_liste.displayClass}">
-								<div>
+								<div class="idea_square top_tooltip ${idea_from_liste.displayClass} col-lg-12 my-3 px-2">
+								<div class="p-2">
 									<div class="modal fade" id="actions-idea-${idea_from_liste.id}" tabindex="-1" role="dialog" aria-hidden="true">
 										<div class="modal-dialog modal-dialog-centered" role="document">
 											<div class="modal-content">
@@ -322,8 +325,8 @@
 											</div>
 										</div>
 									</div>
-									<div class="row justify-content-start align-items-center">
-										<div class="col-auto pr-0">${idea_from_liste.priorite.image}</div>
+									<div class="row justify-content-start align-items-center pb-2">
+										<div class="col-auto pr-0 pl-1">${idea_from_liste.priorite.image}</div>
 										<c:if test="${not empty idea_from_liste.category}">
 										<div class="col-auto px-0">
 											<img src="resources/image/type/${idea_from_liste.category.image}" title="${idea_from_liste.category.title}" alt="${idea_from_liste.category.alt}" width="${action_img_width}px" />
@@ -426,59 +429,61 @@
 											</span>
 										</span>
 									</div>
-									<div class="left idea_square_text">
-										${idea_from_liste.html}
-									</div>
-									<c:if test="${not empty idea_from_liste.image}">
-										<div>
-											<a href="${ideas_pictures}/${idea_from_liste.imageSrcLarge}" class="thickbox img" >
-												<img src="${ideas_pictures}/${idea_from_liste.imageSrcSmall}" width="150" />
-											</a>
+									<div class="row align-items-center">
+										<c:if test="${not empty idea_from_liste.image}">
+											<div class="col-auto pl-2 pr-2">
+												<a href="${ideas_pictures}/${idea_from_liste.imageSrcLarge}" class="thickbox img" >
+													<img src="${ideas_pictures}/${idea_from_liste.imageSrcSmall}" width="150" />
+												</a>
+											</div>
+										</c:if>
+										<div class="left col word-break-all px-2">
+											${idea_from_liste.html}
 										</div>
-									</c:if>
+									</div>
 									<div class="idea_square_modif_date" >
 										<c:choose>
-												<c:when test="${not empty idea_from_liste.surpriseBy}">
-													<c:choose>
-														<c:when test="${idea_from_liste.surpriseBy.id == userid}">
-															Idée surprise créée le ${idea_from_liste.modificationDate} par vous - l'<a href="protected/supprimer_surprise?idee=${idea_from_liste.id}&from=/${identic_call_back}">annuler</a>.
-														</c:when>
-														<c:otherwise>
-															Idée surprise créée le ${idea_from_liste.modificationDate} par ${idea_from_liste.surpriseBy.name}.
-														</c:otherwise>
-													</c:choose>
-												</c:when>
-												<c:when test="${idea_from_liste.isBooked()}">
-													<c:choose>
-														<c:when test="${not empty idea_from_liste.bookingOwner}">
-															<c:choose>
-																<c:when test="${userid == idea_from_liste.bookingOwner.id}">
-																	Réservée par vous le ${idea_from_liste.bookingDate} - <a href="protected/dereserver?idee=${idea_from_liste.id}&from=/${identic_call_back}" class="idea_dereserver">Annuler</a> !
-																</c:when>
-																<c:otherwise>
-																	Réservée par ${idea_from_liste.bookingOwner.name} le ${idea_from_liste.bookingDate}
-																</c:otherwise>
-															</c:choose>
-														</c:when>
-														<c:otherwise>
-															Réservée par un groupe (créé le ${idea_from_liste.bookingDate}).
-															<a href="protected/detail_du_groupe?groupid=${idea_from_liste.groupKDO}">Voir le détail du groupe</a>.
-														</c:otherwise>
-													</c:choose><br/>
-												</c:when>
-												<c:when test="${idea_from_liste.isPartiallyBooked()}">
-													Une sous partie de l'idée est actuellement réservée.
-													<a href="protected/detail_sous_reservation?idee=${idea_from_liste.id}">Voir le détail.</a><br/>
-												</c:when>
-												<c:otherwise>
-														Non réservée, modifiée le ${idea_from_liste.modificationDate}.
-												</c:otherwise>
-											</c:choose>
+											<c:when test="${not empty idea_from_liste.surpriseBy}">
+												<c:choose>
+													<c:when test="${idea_from_liste.surpriseBy.id == userid}">
+														Idée surprise créée le ${idea_from_liste.modificationDate} par vous - l'<a href="protected/supprimer_surprise?idee=${idea_from_liste.id}&from=/${identic_call_back}">annuler</a>.
+													</c:when>
+													<c:otherwise>
+														Idée surprise créée le ${idea_from_liste.modificationDate} par ${idea_from_liste.surpriseBy.name}.
+													</c:otherwise>
+												</c:choose>
+											</c:when>
+											<c:when test="${idea_from_liste.isBooked()}">
+												<c:choose>
+													<c:when test="${not empty idea_from_liste.bookingOwner}">
+														<c:choose>
+															<c:when test="${userid == idea_from_liste.bookingOwner.id}">
+																Réservée par vous le ${idea_from_liste.bookingDate} - <a href="protected/dereserver?idee=${idea_from_liste.id}&from=/${identic_call_back}" class="idea_dereserver">Annuler</a> !
+															</c:when>
+															<c:otherwise>
+																Réservée par ${idea_from_liste.bookingOwner.name} le ${idea_from_liste.bookingDate}
+															</c:otherwise>
+														</c:choose>
+													</c:when>
+													<c:otherwise>
+														Réservée par un groupe (créé le ${idea_from_liste.bookingDate}).
+														<a href="protected/detail_du_groupe?groupid=${idea_from_liste.groupKDO}">Voir le détail du groupe</a>.
+													</c:otherwise>
+												</c:choose>
+											</c:when>
+											<c:when test="${idea_from_liste.isPartiallyBooked()}">
+												Une sous partie de l'idée est actuellement réservée.
+												<a href="protected/detail_sous_reservation?idee=${idea_from_liste.id}">Voir le détail.</a>
+											</c:when>
+											<c:otherwise>
+													Non réservée, modifiée le ${idea_from_liste.modificationDate}.
+											</c:otherwise>
+										</c:choose>
 									</div>
 								</div>
-								</li>
+								</div>
 								</c:forEach>
-							</ul>
+							</div>
 						</c:if>
 						<c:if test="${fn:length(user.ideas) == 0}">
 							<span>${user.name} n'a pas encore d'idées.</span>

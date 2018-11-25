@@ -39,62 +39,23 @@
 /***********************************/
 /* *** Ideas with information *** */
 /***********************************/
-.ideas_square_container {
-	display: block;
-	padding: 0;
-	margin: 0 0;
-}
-
-.ideas_square_container>* {
-	vertical-align: top;
-}
-
 .idea_square {
-	list-style: none;
-	margin: 10px 20px 20px 0px;
-	text-align: center;
 	background-color: #eafaff;
 	border: transparent solid 1px;
 	-webkit-box-shadow: 0 1px 5px transparent;
 	box-shadow: 0 1px 5px transparent;
-	min-height: 70px;
-	min-width: 300px;
 	-moz-box-shadow: 0px 0px 5px 0px #353b43;
 	-webkit-box-shadow: 0px 0px 5px 0px #353b43;
 	-o-box-shadow: 0px 0px 5px 0px #353b43;
 	box-shadow: 0px 0px 5px 0px #353b43;
-	filter: progid:DXImageTransform.Microsoft.Shadow(color=#353b43,
-		Direction=NaN, Strength=5);
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
-	width: 100%;
-	padding: 0;
 }
-.idea_square > div, .idea_square > table {
-	padding: 10px;
-}
-.idea_square > table {
-	width: 100%;
-	table-layout:fixed;
-}
-.idea_square td {
-	padding: 5px;
-}
-.idea_square .right {
-	text-align: right;
-}
-
-.idea_square .left {
-	padding-bottom: 10px;
-}
-
 .idea_square_modif_date {
 	font-style: italic;
 	font-size: 70%;
 	text-align: right;
-	position: relative;
-	top:5px;
 }
 
 .booked_by_me_idea {
@@ -108,16 +69,6 @@
 .shared_booking_idea {
 	background-color: #fffac9;
 }
-.idea_square_text {
-	overflow: hidden;
-}
-td.idea_square_text {
-	
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    word-wrap: break-word;
-}
-
 .idea_square_selected {
 	background-color: #c1b0f8;
 	border: #353b43 solid 1px;

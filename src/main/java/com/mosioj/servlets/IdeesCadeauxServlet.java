@@ -47,6 +47,7 @@ import com.mosioj.model.table.Users;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.utils.Compteur;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
