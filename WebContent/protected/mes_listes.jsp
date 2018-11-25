@@ -99,7 +99,7 @@
 	
 						<!-- Début idée de la personne -->
 	
-						<h2 id="list_${user.id}">Mes idées de cadeaux</h2>
+						<h2 id="list_${user.id}" class="breadcrumb mt-2">Mes idées de cadeaux</h2>
 						<c:if test="${fn:length(user.ideas) > 0}">
 							<ul class="ideas_square_container">
 								<c:forEach var="idea_from_liste" items="${user.ideas}">
@@ -235,7 +235,7 @@
 					<!-- Fin idée de la personne -->
 	
 					<c:if test="${userid != user.id}">
-						<h2 id="list_${user.id}">Liste de cadeaux ${user.myDName}</h2>
+						<h2 id="list_${user.id}" class="breadcrumb mt-4">Liste de cadeaux ${user.myDName}</h2>
 						<c:if test="${fn:length(user.ideas) > 0}">
 							<ul class="ideas_square_container">
 								<c:forEach var="idea_from_liste" items="${user.ideas}">
