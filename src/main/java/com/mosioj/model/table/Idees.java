@@ -27,6 +27,7 @@ import org.springframework.mobile.device.Device;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.Priorite;
+import com.mosioj.model.SousReservationEntity;
 import com.mosioj.model.User;
 import com.mosioj.model.table.columns.CategoriesColumns;
 import com.mosioj.model.table.columns.CommentsColumns;
@@ -741,7 +742,7 @@ public class Idees extends Table {
 
 		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
 		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
-		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate); // FIXME : 8 gérer cela dans une table, et plus par
+		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate); // FIXME : 5 gérer cela dans une table, et plus par
 															// notification...
 
 		User surpriseBy = idee.getSurpriseBy();
@@ -762,10 +763,21 @@ public class Idees extends Table {
 				}
 			} else {
 				// Réserver par un groupe
-				idee.displayClass = "shared_booking_idea";
+				// FIXME : 8 ajouter le groupe à l'idée (et pas juste l'id...)
+				if (new GroupIdea().belongsToGroup(userId, idee.getGroupKDO())) {
+					// On fait parti du groupe
+					idee.displayClass = "booked_by_me_idea";
+				} else {
+					idee.displayClass = "shared_booking_idea";
+				}
 			}
 		} else if (idee.isPartiallyBooked()) {
+			List<SousReservationEntity> resa = new SousReservation().getSousReservation(idee.getId());
 			idee.displayClass = "shared_booking_idea";
+			User thisUser = new Users().getUser(userId);
+
+			// On fait parti de la sous-réservation
+			resa.stream().filter(r -> thisUser.equals(r.getUser())).forEach(r -> idee.displayClass = "booked_by_me_idea");
 		}
 		// Sinon, on laisse la class par défaut
 

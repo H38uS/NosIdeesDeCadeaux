@@ -77,7 +77,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// TODO : pouvoir se noter des idées en privé, puis les décaler en public
 
 	// TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
-	// FIXME : 9 remplir le gdoc + historiser la base de test
+	// FIXME : 92 remplir le gdoc + historiser la base de test
+	// FIXME : 02 le break word all dans les idées, pas forcément top...
+
+	// FIXME : 03 revoir les fichiers de log, relou là ^^
 
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
@@ -101,9 +104,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
 	// FIXME : 2 faire un service pour l'envoie de demande de réseau
-	// FIXME : 8 quand on se connecte avec quelqu'un d'autre, ça ne rafraichi pas de suite le menu, faut y recliquer
-	// FIXME : 8 pouvoir inviter des gens dans ajouter amis si on ne les trouve pas
-	// FIXME : 9 pouvoir réserver des surprises (groupe, réservation partielle, etc.)
+	// FIXME : 4 quand on se connecte avec quelqu'un d'autre, ça ne rafraichi pas de suite le menu, faut y recliquer
+	// FIXME : 6 pouvoir inviter des gens dans ajouter amis si on ne les trouve pas
+	// FIXME : 8 pouvoir réserver des surprises (groupe, réservation partielle, etc.)
 
 	/**
 	 * L'interface vers la table USER_RELATIONS. Static because it can be used in constructor for security checks.
