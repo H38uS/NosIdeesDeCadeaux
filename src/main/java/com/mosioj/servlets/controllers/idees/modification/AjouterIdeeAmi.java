@@ -36,13 +36,16 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(req, USER_PARAMETER);
+		Integer id = ParametersUtils.readInt(request, USER_PARAMETER);
 		User user = users.getUser(id);
 
-		req.setAttribute("user", user);
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
+		request.setAttribute("user", user);
+		request.setAttribute("types", categories.getCategories());
+		request.setAttribute("priorites", priorities.getPriorities());
+
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
 	@Override

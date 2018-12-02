@@ -79,8 +79,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
 	// FIXME : 92 remplir le gdoc + historiser la base de test
 
-	// FIXME : 03 revoir les fichiers de log, relou là ^^
-
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
 
