@@ -92,6 +92,8 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 
 		User user = users.getUser(id);
 		request.setAttribute("user", user);
+		request.setAttribute("types", categories.getCategories());
+		request.setAttribute("priorites", priorities.getPriorities());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
