@@ -1,5 +1,7 @@
 package com.mosioj.model;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 public class Categorie {
 
 	private final String name;
@@ -19,7 +21,7 @@ public class Categorie {
 	}
 
 	public String getAlt() {
-		return alt;
+		return WordUtils.capitalize(alt);
 	}
 
 	public String getImage() {
