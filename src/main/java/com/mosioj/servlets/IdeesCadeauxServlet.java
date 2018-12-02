@@ -78,7 +78,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
 	// FIXME : 92 remplir le gdoc + historiser la base de test
-	// FIXME : 02 le break word all dans les idées, pas forcément top...
 
 	// FIXME : 03 revoir les fichiers de log, relou là ^^
 
