@@ -79,6 +79,49 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
 	// FIXME : 92 remplir le gdoc + historiser la base de test
 
+	
+	// FIXME : 51 les grosses images il en chie... (2.8Mo)
+	/*
+	 * 02/12/2018 10h 25min 31s 600ms DEBUG IdeesCadeauxServlet - Uploading file : /home/nosidees/nosideesdecadeaux.fr/IdeesCadeauxWarWork/uploaded_pictures/ideas/large/IMG_20181202_112314_-500963197.jpg
+02/12/2018 10h 25min 31s 836ms DEBUG IdeesCadeauxServlet - File size: 2 923 kos.
+Exception in thread "ajp-bio-33187-exec-152" java.lang.OutOfMemoryError: Java heap space
+	at java.awt.image.DataBufferByte.<init>(DataBufferByte.java:92)
+	at java.awt.image.ComponentSampleModel.createDataBuffer(ComponentSampleModel.java:445)
+	at java.awt.image.Raster.createWritableRaster(Raster.java:941)
+	at javax.imageio.ImageTypeSpecifier.createBufferedImage(ImageTypeSpecifier.java:1074)
+	at javax.imageio.ImageReader.getDestination(ImageReader.java:2892)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.readInternal(JPEGImageReader.java:1082)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.read(JPEGImageReader.java:1050)
+	at javax.imageio.ImageIO.read(ImageIO.java:1448)
+	at javax.imageio.ImageIO.read(ImageIO.java:1308)
+	at com.mosioj.servlets.IdeesCadeauxServlet.readMultiFormParameters(IdeesCadeauxServlet.java:456)
+	at com.mosioj.servlets.controllers.idees.AbstractIdea.fillIdeaOrErrors(AbstractIdea.java:88)
+	at com.mosioj.servlets.controllers.idees.MaListe.ideesKDoPOST(MaListe.java:62)
+	at com.mosioj.servlets.IdeesCadeauxServlet.doPost(IdeesCadeauxServlet.java:369)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:650)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:731)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:303)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at com.mosioj.viewhelper.LoginHelper.doFilter(LoginHelper.java:129)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:317)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke(FilterSecurityInterceptor.java:127)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.doFilter(FilterSecurityInterceptor.java:91)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:331)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:114)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:331)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:137)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:331)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:111)
+	 * 
+	 * 
+	 * 
+	 */
+	
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 	// TODO : afficher le contenu des logs courant depuis l'administration ?
 
@@ -100,6 +143,15 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
+	// FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
+	// FIXME : 1 faire un appender qui envoie un mail quand y'a une erreur
+	// FIXME : 1 bug le 3 décembre You a rejoint le groupe de papa mais pas de notif à moi ??
+	// FIXME : 2 supprimer les notifications rejoindre groupe quand on va voir le groupe
+	// FIXME : 3 partage groupe: faire comme suggérer je sais plus quoi : mettre sur plusieurs colonnes ?
+	
+	// FIXME : 1 faire une table avec des messages pour la page d'acceuil et faire des différents pour Noël, l'anniv etc (ça c'est le
+	// type, et faire un random)
+	
 	// FIXME : 2 faire un service pour l'envoie de demande de réseau
 	// FIXME : 4 quand on se connecte avec quelqu'un d'autre, ça ne rafraichi pas de suite le menu, faut y recliquer
 	// FIXME : 6 pouvoir inviter des gens dans ajouter amis si on ne les trouve pas

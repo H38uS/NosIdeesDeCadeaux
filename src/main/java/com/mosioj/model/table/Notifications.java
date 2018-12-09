@@ -171,7 +171,7 @@ public class Notifications extends Table {
 	}
 
 	public void remove(int notificationId) throws SQLException {
-		logger.debug(MessageFormat.format("Suppression de la notification {0}", notificationId));
+		logger.info(MessageFormat.format("Suppression de la notification {0}", notificationId));
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, ID), notificationId);
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_PARAMS, NOTIFICATION_ID), notificationId);
 	}
@@ -238,15 +238,15 @@ public class Notifications extends Table {
 										ID,
 										PARAMETER_NAME,
 										PARAMETER_VALUE));
-		logger.debug(sb.toString());
-		logger.debug(MessageFormat.format(	"Paramètres: {0} / {1} / {2} / {3} / {4}",
+		logger.trace(sb.toString());
+		logger.trace(MessageFormat.format(	"Paramètres: {0} / {1} / {2} / {3} / {4}",
 											parameterName,
 											parameterValue,
 											type,
 											parameterName2,
 											parameterValue2));
 		int nb = getDb().executeUpdate(sb.toString(), parameterName, parameterValue, type, parameterName2, parameterValue2);
-		logger.debug(MessageFormat.format("Suppression de {0} Notifications.", nb));
+		logger.info(MessageFormat.format("Suppression de {0} Notifications.", nb));
 
 		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
 													NOTIFICATION_ID,
@@ -284,8 +284,8 @@ public class Notifications extends Table {
 		query.append(MessageFormat.format("    and npp.{0} = ''USER_ID'' \n", PARAMETER_NAME));
 		query.append(MessageFormat.format("    and npp.{0} = ? \n", PARAMETER_VALUE));
 
-		logger.debug(query.toString());
-		logger.debug(MessageFormat.format("User id: {0}", askingUser));
+		logger.trace(query.toString());
+		logger.trace(MessageFormat.format("User id: {0}", askingUser));
 		Set<Integer> userSet = new HashSet<Integer>();
 
 		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
@@ -467,8 +467,8 @@ public class Notifications extends Table {
 			query.append(MessageFormat.format(" where {0}", whereClause));
 		}
 		query.append(MessageFormat.format(" order by {0} desc", NOTIFICATION_ID));
-		logger.debug(MessageFormat.format("Query: {0}", query.toString()));
-		logger.debug(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
+		logger.trace(MessageFormat.format("Query: {0}", query.toString()));
+		logger.trace(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
 
 		return getNotificationFromQuery(query.toString(), parameters);
 	}
@@ -679,7 +679,7 @@ public class Notifications extends Table {
 											TABLE_NAME,
 											NOTIFICATION_ID,
 											ID);
-		logger.debug(query);
+		logger.trace(query);
 		getDb().executeUpdate(query);
 	}
 }

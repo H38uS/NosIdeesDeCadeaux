@@ -1,6 +1,7 @@
 package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
@@ -21,6 +25,8 @@ import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/idee_questions")
 public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
+
+	private static final Logger logger = LogManager.getLogger(IdeaQuestion.class);
 
 	private static final long serialVersionUID = -433226623397937479L;
 	public static final String IDEA_ID_PARAM = "idee";
@@ -57,6 +63,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", id));
 		String text = ParametersUtils.readAndEscape(request, "text");
 
 		int userId = ParametersUtils.getUserId(request);
@@ -77,6 +84,7 @@ public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 
 		// Removing current user, and notifying others
 		toBeNotified.remove(current);
+		logger.debug(MessageFormat.format("Personnes à prévenir : {0}", toBeNotified));
 		for (User notified : toBeNotified) {
 			notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
 		}
