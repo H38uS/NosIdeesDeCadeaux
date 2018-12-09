@@ -25,7 +25,7 @@ public class EmailSender {
 	private static void initialize() {
 		p = new Properties();
 		try {
-			InputStream input = p.getClass().getResourceAsStream("/mail.properties");
+			InputStream input = EmailSender.class.getResourceAsStream("/mail.properties");
 			p.load(new InputStreamReader(input, "UTF-8"));
 			logger.debug("host: " + p.getProperty("host"));
 			logger.debug("from: " + p.getProperty("from"));
@@ -56,10 +56,6 @@ public class EmailSender {
 	public static void sendEmail(String to, String subject, String htmlText) {
 
 		logger.info(MessageFormat.format("Sending email to {0}...", to));
-
-		// props.setProperty("mail.user", "myuser");
-		// props.setProperty("mail.password", "mypwd");
-
 		Properties properties = System.getProperties();
 		properties.setProperty("mail.smtp.host", getP().getProperty("host"));
 		Session session = Session.getDefaultInstance(properties);

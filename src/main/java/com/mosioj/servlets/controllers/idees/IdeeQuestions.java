@@ -24,16 +24,16 @@ import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/idee_questions")
-public class IdeaQuestion extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
+public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 
-	private static final Logger logger = LogManager.getLogger(IdeaQuestion.class);
+	private static final Logger logger = LogManager.getLogger(IdeeQuestions.class);
 
 	private static final long serialVersionUID = -433226623397937479L;
 	public static final String IDEA_ID_PARAM = "idee";
 	public static final String VIEW_PAGE_URL = "/protected/idee_questions.jsp";
 	public static final String WEB_SERVLET = "/protected/idee_questions";
 
-	public IdeaQuestion() {
+	public IdeeQuestions() {
 		super(new CanAskReplyToQuestions(userRelations, idees, IDEA_ID_PARAM));
 	}
 

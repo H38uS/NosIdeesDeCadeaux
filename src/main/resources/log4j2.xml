@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" packages="org.apache.logging.log4j.core">
+<Configuration status="WARN" packages="com.mosioj.utils">
 
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
@@ -12,6 +12,7 @@
 			</Policies>
 			<DefaultRolloverStrategy max="100" />
 		</RollingFile>
+		<ErrorAppender name="errorNotifier" />
 	</Appenders>
 
 	<Loggers>
@@ -20,6 +21,7 @@
 		<Root>
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="RollingFile" />
+			<AppenderRef ref="errorNotifier" level="error" />
 		</Root>
 	</Loggers>
 </Configuration>

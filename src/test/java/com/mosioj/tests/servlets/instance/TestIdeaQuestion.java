@@ -12,13 +12,13 @@ import org.junit.Test;
 import com.mosioj.model.Idee;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
-import com.mosioj.servlets.controllers.idees.IdeaQuestion;
+import com.mosioj.servlets.controllers.idees.IdeeQuestions;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestIdeaQuestion extends AbstractTestServlet {
 
 	public TestIdeaQuestion() {
-		super(new IdeaQuestion());
+		super(new IdeeQuestions());
 	}
 
 	@Test
@@ -33,8 +33,8 @@ public class TestIdeaQuestion extends AbstractTestServlet {
 		assertNotifDoesExists(addByFriend);
 		assertNotifDoesExists(newQuestion);
 
-		when(request.getRequestDispatcher(IdeaQuestion.VIEW_PAGE_URL)).thenReturn(dispatcher);
-		when(request.getParameter(IdeaQuestion.IDEA_ID_PARAM)).thenReturn(id+"");
+		when(request.getRequestDispatcher(IdeeQuestions.VIEW_PAGE_URL)).thenReturn(dispatcher);
+		when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(id+"");
 		doTestGet(request, response);
 
 		assertNotifDoesNotExists(addByFriend);

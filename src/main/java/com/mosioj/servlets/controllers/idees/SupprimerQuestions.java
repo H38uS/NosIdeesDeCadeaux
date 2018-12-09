@@ -29,7 +29,7 @@ public class SupprimerQuestions extends IdeesCadeauxServlet<QuestionModification
 		Comment comment = policy.getComment();
 		questions.delete(id);
 
-		RootingsUtils.rootToPage(IdeaQuestion.WEB_SERVLET + "?" + IdeaQuestion.IDEA_ID_PARAM + "=" + comment.getIdea(), req, resp);
+		RootingsUtils.rootToPage(IdeeQuestions.WEB_SERVLET + "?" + IdeeQuestions.IDEA_ID_PARAM + "=" + comment.getIdea(), req, resp);
 	}
 
 	@Override

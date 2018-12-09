@@ -556,20 +556,19 @@ public class Notifications extends Table {
 	}
 
 	/**
-	 * Logs an exception notifications to Admins.
+	 * Send a notification to the admin that an error has occurred.
 	 * 
-	 * @param exception
-	 * @param req
-	 * @throws SQLException
+	 * @param message
 	 */
-	public void logError(Exception exception, HttpServletRequest req) {
+	public void notifyAboutAnError(String message) {
 
+		// Insert a DB notification
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format(" insert into {0} ", TABLE_NAME));
 		query.append(MessageFormat.format("   ({0},{1},{2},{3}) ", OWNER, TEXT, TYPE, CREATION_DATE));
 		query.append(MessageFormat.format(	" select u.{0}, ''Une erreur est survenue: {1}...'', ''{2}'', now()",
 											UsersColumns.ID,
-											exception.getMessage(),
+											message,
 											NOTIF_TYPE_ADMIN_ERROR));
 		query.append(MessageFormat.format("   from {0} u ", Users.TABLE_NAME));
 		query.append(MessageFormat.format("   join USER_ROLES ur on ur.{0} = u.{1}", UserRolesColumns.EMAIL, UsersColumns.EMAIL));
@@ -579,19 +578,10 @@ public class Notifications extends Table {
 			getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			logger.error(e.getMessage());
+			logger.warn(e.getMessage());
 		}
 
-		String userEmail = null;
-		try {
-			Users users = new Users();
-			User user = users.getUser(ParametersUtils.getUserId(req));
-			userEmail = user.getEmail();
-		} catch (NotLoggedInException | SQLException e) {
-			userEmail = "Aucun, pas de connexion.";
-			logger.warn(e);
-		}
-
+		// Send emails to the ADMIN
 		query = new StringBuilder();
 		query.append(MessageFormat.format("select u.{0} ", UsersColumns.EMAIL));
 		query.append(MessageFormat.format("  from {0} u ", Users.TABLE_NAME));
@@ -614,36 +604,58 @@ public class Notifications extends Table {
 						p.load(new InputStreamReader(input, "UTF-8"));
 					} catch (IOException e) {
 						e.printStackTrace();
-						logger.error(e);
-					}
-
-					StringBuilder notifText = new StringBuilder();
-					notifText.append("L'erreur suivante est survenue: " + exception.getMessage() + "<br/>");
-					notifText.append("Email de l'utilisateur connecté: " + userEmail + "<br/>");
-					notifText.append("Stacktrace:<br/><br/>");
-					for (StackTraceElement line : exception.getStackTrace()) {
-						notifText.append(line);
-						notifText.append("<br/>");
+						logger.warn(e);
 					}
 
 					String messageTemplate = p.get("mail_template").toString();
-					String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(notifText.toString()));
+					String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
 					EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Une erreur est survenue...", body);
 
 				} catch (Exception e) {
-					logger.error(MessageFormat.format("Fail to send error email to {0}", emailAdress));
+					logger.warn(MessageFormat.format("Fail to send error email to {0}", emailAdress));
 					e.printStackTrace();
 				}
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			logger.error(e.getMessage());
+			logger.warn(e.getMessage());
 		} finally {
 			if (ps != null) {
 				ps.close();
 			}
 		}
+	}
+
+	/**
+	 * Logs an exception notifications to Admins.
+	 * 
+	 * @param exception
+	 * @param req
+	 * @throws SQLException
+	 */
+	public void logError(Exception exception, HttpServletRequest req) {
+
+		String userEmail = null;
+		try {
+			Users users = new Users();
+			User user = users.getUser(ParametersUtils.getUserId(req));
+			userEmail = user.getEmail();
+		} catch (NotLoggedInException | SQLException e) {
+			userEmail = "Aucun, pas de connexion.";
+			logger.warn(e);
+		}
+
+		StringBuilder notifText = new StringBuilder();
+		notifText.append("L'erreur suivante est survenue: " + exception.getMessage() + "<br/>");
+		notifText.append("Email de l'utilisateur connecté: " + userEmail + "<br/>");
+		notifText.append("Stacktrace:<br/><br/>");
+		for (StackTraceElement line : exception.getStackTrace()) {
+			notifText.append(line);
+			notifText.append("<br/>");
+		}
+
+		notifyAboutAnError(notifText.toString());
 	}
 
 	/**

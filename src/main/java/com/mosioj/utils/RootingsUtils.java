@@ -73,12 +73,15 @@ public class RootingsUtils {
 	/**
 	 * 
 	 * @return True if and only if the server should display technical stacks.
-	 * @throws IOException
 	 */
-	private static boolean shouldLogStack() throws IOException {
+	public static boolean shouldLogStack() {
 		if (p == null) {
 			p = new Properties();
-			p.load(p.getClass().getResourceAsStream("/application.properties"));
+			try {
+				p.load(RootingsUtils.class.getResourceAsStream("/application.properties"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		logger.trace(MessageFormat.format("shouldLogStack: {0}", p.get("shouldLogStack")));
 		return "true".equals(p.get("shouldLogStack"));
