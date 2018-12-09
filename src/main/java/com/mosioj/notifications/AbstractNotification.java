@@ -40,7 +40,7 @@ public abstract class AbstractNotification {
 	 */
 	public AbstractNotification(NotificationType type) {
 		this.type = type;
-		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("notif.properties");
+		InputStream input = getClass().getResourceAsStream("/notif.properties");
 		p = new Properties();
 		try {
 			p.load(new InputStreamReader(input, "UTF-8"));

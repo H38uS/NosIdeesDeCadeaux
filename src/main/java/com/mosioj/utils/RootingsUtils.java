@@ -78,7 +78,7 @@ public class RootingsUtils {
 	private static boolean shouldLogStack() throws IOException {
 		if (p == null) {
 			p = new Properties();
-			p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties"));
+			p.load(p.getClass().getResourceAsStream("/application.properties"));
 		}
 		logger.trace(MessageFormat.format("shouldLogStack: {0}", p.get("shouldLogStack")));
 		return "true".equals(p.get("shouldLogStack"));

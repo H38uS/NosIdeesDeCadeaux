@@ -145,7 +145,6 @@ Exception in thread "ajp-bio-33187-exec-152" java.lang.OutOfMemoryError: Java he
 
 	// FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
 	// FIXME : 1 faire un appender qui envoie un mail quand y'a une erreur
-	// FIXME : 1 bug le 3 décembre You a rejoint le groupe de papa mais pas de notif à moi ??
 	// FIXME : 2 supprimer les notifications rejoindre groupe quand on va voir le groupe
 	// FIXME : 3 partage groupe: faire comme suggérer je sais plus quoi : mettre sur plusieurs colonnes ?
 	

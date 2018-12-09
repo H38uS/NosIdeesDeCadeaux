@@ -25,7 +25,7 @@ public class EmailSender {
 	private static void initialize() {
 		p = new Properties();
 		try {
-			InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("mail.properties");
+			InputStream input = p.getClass().getResourceAsStream("/mail.properties");
 			p.load(new InputStreamReader(input, "UTF-8"));
 			logger.debug("host: " + p.getProperty("host"));
 			logger.debug("from: " + p.getProperty("from"));

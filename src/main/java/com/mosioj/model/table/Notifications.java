@@ -608,7 +608,7 @@ public class Notifications extends Table {
 			while (res.next()) {
 				String emailAdress = res.getString(UsersColumns.EMAIL.name());
 				try {
-					InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("notif.properties");
+					InputStream input = getClass().getResourceAsStream("/notif.properties");
 					Properties p = new Properties();
 					try {
 						p.load(new InputStreamReader(input, "UTF-8"));
