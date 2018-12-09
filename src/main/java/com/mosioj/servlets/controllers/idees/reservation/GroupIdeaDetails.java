@@ -71,8 +71,14 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		User user = users.getUser(ParametersUtils.getUserId(request));
 		idees.fillAUserIdea(user.id, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(user, idee)), device);
-		request.setAttribute("idee", idee);
 
+		// Suppression des notif's si y'en a
+		notif.getNotifications(	user.id,
+								NotificationType.GROUP_IDEA_SUGGESTION,
+								ParameterName.GROUP_ID,
+								groupId).forEach(n -> notif.remove(n.id));
+
+		request.setAttribute("idee", idee);
 		request.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(request), groupId));
 		request.setAttribute("group", group);
 		request.setAttribute("currentTotal", currentTotal);
@@ -94,13 +100,8 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 			boolean isThereSomeoneRemaning = groupForIdea.removeUserFromGroup(userId, groupId);
 			List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
 			notifications.parallelStream().filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name())).forEach(n -> {
-				try {
-					notif.remove(n.id);
-					logger.debug(MessageFormat.format("Notification {0} (type: {1}) dropped !", n.id, n.getType()));
-				} catch (SQLException e) {
-					e.printStackTrace();
-					logger.error(MessageFormat.format("Erreur lors de la suppression de notif de groupe => {0}", e.getMessage()));
-				}
+				notif.remove(n.id);
+				logger.debug(MessageFormat.format("Notification {0} (type: {1}) dropped !", n.id, n.getType()));
 			});
 
 			if (isThereSomeoneRemaning) {

@@ -170,7 +170,7 @@ public class Notifications extends Table {
 													TABLE_NAME));
 	}
 
-	public void remove(int notificationId) throws SQLException {
+	public void remove(int notificationId) {
 		logger.info(MessageFormat.format("Suppression de la notification {0}", notificationId));
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, ID), notificationId);
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_PARAMS, NOTIFICATION_ID), notificationId);
@@ -574,12 +574,7 @@ public class Notifications extends Table {
 		query.append(MessageFormat.format("   join USER_ROLES ur on ur.{0} = u.{1}", UserRolesColumns.EMAIL, UsersColumns.EMAIL));
 		query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
 
-		try {
-			getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.warn(e.getMessage());
-		}
+		getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
 
 		// Send emails to the ADMIN
 		query = new StringBuilder();

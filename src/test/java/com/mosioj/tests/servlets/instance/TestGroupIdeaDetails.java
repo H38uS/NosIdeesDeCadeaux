@@ -30,6 +30,25 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	}
 
 	@Test
+	public void testGet() throws SQLException, ServletException, IOException {
+
+		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
+		int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
+		idees.bookByGroup(idea, id);
+
+		int groupSuggestion = notif.addNotification(_OWNER_ID_,
+													new NotifGroupSuggestion(firefox, id, idees.getIdeaWithoutEnrichment(idea)));
+		assertNotifDoesExists(groupSuggestion);
+
+		when(request.getRequestDispatcher(GroupIdeaDetails.VIEW_PAGE_URL)).thenReturn(dispatcher);
+		when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
+		doTestGet(request, response);
+		assertNotifDoesNotExists(groupSuggestion);
+
+		idees.remove(idea);
+	}
+
+	@Test
 	public void testRejoindreGroupe() throws SQLException, ServletException, IOException {
 
 		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
@@ -59,10 +78,11 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 
 		Idee idee = idees.getIdeaWithoutEnrichment(idea);
 		int groupSuggestion = notif.addNotification(_MOI_AUTRE_, new NotifGroupSuggestion(moiAutre, id, idee));
-		int groupEvolutionShouldDisapear = notif.addNotification(_MOI_AUTRE_, new NotifGroupEvolution(friendOfFirefox, // == _OWNER_ID_
-																						id,
-																						idee,
-																						true));
+		int groupEvolutionShouldDisapear = notif.addNotification(_MOI_AUTRE_, new NotifGroupEvolution(	friendOfFirefox, // ==
+																															// _OWNER_ID_
+																										id,
+																										idee,
+																										true));
 		int groupEvolutionShouldStay = notif.addNotification(_MOI_AUTRE_, new NotifGroupEvolution(firefox, id, idee, true));
 		assertNotifDoesExists(groupSuggestion);
 		assertNotifDoesExists(groupEvolutionShouldDisapear);

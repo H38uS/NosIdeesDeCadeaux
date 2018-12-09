@@ -3,10 +3,14 @@ package com.mosioj.utils.database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Provides some method to access the database.
@@ -15,6 +19,8 @@ import javax.sql.DataSource;
  *
  */
 public class DataSourceIdKDo {
+
+	private final Logger logger = LogManager.getLogger(DataSourceIdKDo.class);
 
 	/**
 	 * The internal datasource.
@@ -29,7 +35,7 @@ public class DataSourceIdKDo {
 	protected Connection getAConnection() throws SQLException {
 		return getDatasource().getConnection();
 	}
-	
+
 	/**
 	 * 
 	 * @param query The sql query.
@@ -44,7 +50,7 @@ public class DataSourceIdKDo {
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param query The sql query.
@@ -67,7 +73,7 @@ public class DataSourceIdKDo {
 	 * @param parameters Optional bindable parameters.
 	 * @return The result of the first row on the first column.
 	 * @throws SQLException
-	 * @throws NoRowsException 
+	 * @throws NoRowsException
 	 */
 	public int selectInt(String query, Object... parameters) throws SQLException, NoRowsException {
 
@@ -98,16 +104,26 @@ public class DataSourceIdKDo {
 	 * @param query The SQL query.
 	 * @param parameters Optional bindable parameters.
 	 * @return The number of rows inserted / updated / deleted.
-	 * @throws SQLException
 	 */
-	public int executeUpdate(String query, Object... parameters) throws SQLException {
+	public int executeUpdate(String query, Object... parameters) {
 
 		int retour = 0;
 
-		PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query);
+		PreparedStatementIdKdo statement;
+		try {
+			statement = new PreparedStatementIdKdo(this, query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error(MessageFormat.format("Error while preparing the statement: {0}.", e.getMessage()));
+			return retour;
+		}
+
 		try {
 			statement.bindParameters(parameters);
 			retour = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
 		} finally {
 			statement.close();
 		}
@@ -142,7 +158,7 @@ public class DataSourceIdKDo {
 	public static void setDataSource(DataSource newDS) {
 		ds = newDS;
 	}
-	
+
 	/**
 	 * 
 	 * @return The data source to use.

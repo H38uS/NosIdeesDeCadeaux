@@ -144,7 +144,6 @@ Exception in thread "ajp-bio-33187-exec-152" java.lang.OutOfMemoryError: Java he
 	private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
 	// FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
-	// FIXME : 2 supprimer les notifications rejoindre groupe quand on va voir le groupe
 	// FIXME : 3 partage groupe: faire comme suggérer je sais plus quoi : mettre sur plusieurs colonnes ?
 	
 	// FIXME : 1 faire une table avec des messages pour la page d'acceuil et faire des différents pour Noël, l'anniv etc (ça c'est le

@@ -367,12 +367,7 @@ public class Users extends Table {
 	 * @param email
 	 */
 	public void touch(String email) {
-		try {
-			getDb().executeUpdate("update " + TABLE_NAME + " set " + LAST_LOGIN + " = now() where " + EMAIL + " = ?", email);
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage());
-			e.printStackTrace();
-		}
+		getDb().executeUpdate("update " + TABLE_NAME + " set " + LAST_LOGIN + " = now() where " + EMAIL + " = ?", email);
 	}
 
 }
