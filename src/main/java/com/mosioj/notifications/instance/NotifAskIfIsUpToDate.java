@@ -16,7 +16,6 @@ import com.mosioj.servlets.controllers.idees.modification.RemoveOneIdea;
 
 public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifUserIdParam {
 
-	private User askedUser;
 	private String ideaText;
 	private int ideaId;
 
@@ -27,7 +26,6 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 	 */
 	public NotifAskIfIsUpToDate(User askedUser, Idee idea) {
 		super(NotificationType.IS_IDEA_UP_TO_DATE);
-		this.askedUser = askedUser;
 		this.ideaText = idea.getTextSummary(50);
 		this.ideaId = idea.getId();
 		params.put(ParameterName.USER_ID, askedUser.id);
@@ -65,8 +63,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 		String nonModif = MessageFormat.format(	"<li>Non... Je la <a href=\"protected/modifier_idee?{0}\">modifie</a> de suite !</li>",
 												param);
 
-		return MessageFormat.format("{0} souhaiterait savoir si votre idée \"{1}\" est toujours à jour. <ul> {2}{3}{4}</ul>",
-									askedUser.getName(),
+		return MessageFormat.format("Quelqu''un souhaiterait savoir si votre idée \"{0}\" est toujours à jour. <ul>{1}{2}{3}</ul>",
 									ideaText,
 									oui,
 									nonSupr,
