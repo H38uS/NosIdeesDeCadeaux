@@ -3,7 +3,7 @@ package com.mosioj.model;
 import java.sql.Timestamp;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.utils.MyDateFormat;
+import com.mosioj.utils.MyDateFormatViewer;
 
 public class Comment {
 
@@ -39,6 +39,6 @@ public class Comment {
 	}
 
 	public String getTime() {
-		return new MyDateFormat(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(time);
+		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(time);
 	}
 }
