@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.model.table.Users;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.utils.MyDateFormat;
 import com.mosioj.utils.database.DataSourceIdKDo;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
@@ -96,7 +95,7 @@ public class CompteInteractions {
 	}
 
 	public java.sql.Date getAsDate(String date) {
-		SimpleDateFormat format = new MyDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
+		SimpleDateFormat format = new SimpleDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
 		Date parsed;
 		try {
 			parsed = format.parse(date);

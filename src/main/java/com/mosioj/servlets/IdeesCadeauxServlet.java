@@ -146,10 +146,6 @@ Exception in thread "ajp-bio-33187-exec-152" java.lang.OutOfMemoryError: Java he
 	// FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
 	// FIXME : 3 partage groupe: faire comme suggérer je sais plus quoi : mettre sur plusieurs colonnes ?
 	
-	// FIXME : 1 faire une table avec des messages pour la page d'acceuil et faire des différents pour Noël, l'anniv etc (ça c'est le
-	// type, et faire un random)
-	
-	// FIXME : 1bis - sauvegarde de la date de naissance ne fonctionne plus ?? ==> faire un test (au moins pour papa)
 	// FIXME : 2 faire un service pour l'envoie de demande de réseau
 	// FIXME : 4 quand on se connecte avec quelqu'un d'autre, ça ne rafraichi pas de suite le menu, faut y recliquer
 	// FIXME : 6 pouvoir inviter des gens dans ajouter amis si on ne les trouve pas
