@@ -109,14 +109,7 @@ public class DataSourceIdKDo {
 
 		int retour = 0;
 
-		PreparedStatementIdKdo statement;
-		try {
-			statement = new PreparedStatementIdKdo(this, query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error(MessageFormat.format("Error while preparing the statement: {0}.", e.getMessage()));
-			return retour;
-		}
+		PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query);
 
 		try {
 			statement.bindParameters(parameters);

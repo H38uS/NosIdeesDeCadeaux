@@ -13,35 +13,41 @@
 				Vous pouvez le faire à tout moment en suivant le lien <a href="protected/mon_compte">mon compte</a>.
 			</p>
 		</c:if>
-		<h2>Prochain anniversaire</h2>
+		<h2>Prochains évènements</h2>
 		<div class="mb-2">
 			<c:choose>
-				<c:when test="${not empty userBirthday}">
-					<table>
-						<c:forEach var="user" items="${userBirthday}" >
-						<tr>
-							<td>
-								<c:choose>
-									<c:when test="${user.nbDaysBeforeBirthday == 0}">
-										C'est l'anniversaire ${user.myDName} aujourd'hui !
-									</c:when>
-									<c:when test="${user.nbDaysBeforeBirthday == 1}">
-										L'anniversaire ${user.myDName} est demain !
-									</c:when>
-									<c:otherwise>
-										L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
-									</c:otherwise>
-								</c:choose>
-							</td>
-							<td>
-								<a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
-							</td>
-						</tr>
-						</c:forEach>
-					</table>
+				<c:when test="${empty nothingMessage}">
+					<c:if test="${not empty userBirthday}">
+						<span>${birthdayMessage}</span>
+						<table>
+							<c:forEach var="user" items="${userBirthday}" >
+							<tr>
+								<td>
+									<c:choose>
+										<c:when test="${user.nbDaysBeforeBirthday == 0}">
+											C'est l'anniversaire ${user.myDName} aujourd'hui !
+										</c:when>
+										<c:when test="${user.nbDaysBeforeBirthday == 1}">
+											L'anniversaire ${user.myDName} est demain !
+										</c:when>
+										<c:otherwise>
+											L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
+										</c:otherwise>
+									</c:choose>
+								</td>
+								<td>
+									<a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
+								</td>
+							</tr>
+							</c:forEach>
+						</table>
+					</c:if>
+					<c:if test="${not empty christmasMessage}">
+						<p>${christmasMessage}</p>
+					</c:if>
 				</c:when>
 				<c:otherwise>
-					Aucun anniversaire dans peu de temps... C'est le bon moment pour récupérer des repas !
+					${nothingMessage}
 				</c:otherwise>
 			</c:choose>
 		</div>

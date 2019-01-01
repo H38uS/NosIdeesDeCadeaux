@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,8 +15,21 @@ public class PreparedStatementIdKdo implements Closeable {
 	private static final Logger LOGGER = LogManager.getLogger(PreparedStatementIdKdo.class);
 	private final PreparedStatement ps;
 
-	public PreparedStatementIdKdo(DataSourceIdKDo ds, String query) throws SQLException {
-		ps = ds.getAConnection().prepareStatement(query);
+	/**
+	 * Does not throw but log an exception if any.
+	 * 
+	 * @param ds
+	 * @param query
+	 */
+	public PreparedStatementIdKdo(DataSourceIdKDo ds, String query) {
+		PreparedStatement temp = null;
+		try {
+			temp = ds.getAConnection().prepareStatement(query);
+		} catch (SQLException e) {
+			LOGGER.error(MessageFormat.format("Error while opening the statement: {0}", e.getMessage()));
+			e.printStackTrace();
+		}
+		ps = temp;
 	}
 
 	/**
@@ -32,6 +46,11 @@ public class PreparedStatementIdKdo implements Closeable {
 
 	@Override
 	public void close() {
+
+		if (ps == null) {
+			return;
+		}
+
 		try {
 			Connection con = ps.getConnection();
 			ps.close();
