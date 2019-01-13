@@ -30,6 +30,20 @@ function doSearch(value, only_non_friend) {
 
 }
 
+function sendRequest(e) {
+
+	e.preventDefault();
+
+	var form = $(this).closest("form");
+	var userId = form.find("input[name=user_id]").val();
+
+	servicePost('protected/service/demande_rejoindre_reseau',
+				{ user_id : userId },
+				function(data) {},
+				"Envoie d'une demande en cours...",
+				"Envoie de la demande avec succès.");
+}
+
 $(document).ready(function() {
 	$("#name").keyup(function() {
 		var text = $(this).val();
@@ -43,4 +57,5 @@ $(document).ready(function() {
 	$("#span_only_non_friend").click(function() {
 		doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
 	});
+	$(".envoyer_demande_reseau").click(sendRequest);
 });
