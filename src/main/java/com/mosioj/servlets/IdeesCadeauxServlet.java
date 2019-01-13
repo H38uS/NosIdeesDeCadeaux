@@ -147,11 +147,12 @@ Exception in thread "ajp-bio-33187-exec-152" java.lang.OutOfMemoryError: Java he
 	// FIXME : 3 partage groupe: faire comme suggérer je sais plus quoi : mettre sur plusieurs colonnes ?
 	
 	// FIXME : 4 quand on se connecte avec quelqu'un d'autre, ça ne rafraichi pas de suite le menu, faut y recliquer
-	// FIXME : 6 pouvoir inviter des gens dans ajouter amis si on ne les trouve pas
+	// FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
 	// FIXME : 8 pouvoir réserver des surprises (groupe, réservation partielle, etc.)
 	
 	// FIXME : 99 en mode mobile, réduire le haut quand on clique sur le champs de recherche
 	// FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
+	// FIXME : 99 ajouter les images des gens dans les recherches, en petit
 
 	/**
 	 * L'interface vers la table USER_RELATIONS. Static because it can be used in constructor for security checks.

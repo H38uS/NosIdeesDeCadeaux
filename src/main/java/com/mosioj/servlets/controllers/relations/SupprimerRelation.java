@@ -7,11 +7,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.User;
-import com.mosioj.notifications.NotificationType;
-import com.mosioj.notifications.ParameterName;
-import com.mosioj.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.logichelpers.NetworkInteractions;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -28,25 +25,15 @@ public class SupprimerRelation extends IdeesCadeauxServlet<NetworkAccess> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		Integer user = ParametersUtils.readInt(request, USER_PARAMETER);
-		int currentId = ParametersUtils.getUserId(request);
-		
-		// Drops it
-		userRelations.deleteAssociation(user, currentId);
-		notif.removeAllType(currentId, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
-		notif.removeAllType(user, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, currentId);
-		
-		// Send a notification
-		User me = users.getUser(currentId);
-		notif.addNotification(user, new NotifFriendshipDropped(currentId, me.getName()));
-		
-		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, request, response);
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + ParametersUtils.getUserId(request), request, response);
-		// FIXME : 3 utiliser le post, mais faut faire un service !!!
+		Integer user = ParametersUtils.readInt(request, USER_PARAMETER);
+		int currentId = ParametersUtils.getUserId(request);
+		new NetworkInteractions().deleteRelationship(currentId, user);
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?id=" + currentId, request, response);
 	}
 
 }

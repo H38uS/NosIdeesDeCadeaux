@@ -12,6 +12,7 @@ import com.mosioj.model.table.UserRelations;
 import com.mosioj.model.table.Users;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
+import com.mosioj.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
@@ -53,6 +54,22 @@ public class NetworkInteractions {
 		userRelationRequests.insert(userId, userToSendInvitation.id);
 		notif.addNotification(	userToSendInvitation.id,
 								new NotifNouvelleDemandeAmi(userId, userToSendInvitation.id, users.getUser(userId).getName()));
+	}
+
+	/**
+	 * 
+	 * @param currentId The one that triggers the relation removal.
+	 * @param otherOne The relationship being dropped.
+	 * @throws SQLException 
+	 */
+	public void deleteRelationship(int currentId, int otherOne) throws SQLException {
+		userRelations.deleteAssociation(otherOne, currentId);
+		notif.removeAllType(currentId, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, otherOne);
+		notif.removeAllType(otherOne, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, currentId);
+		
+		// Send a notification
+		User me = users.getUser(currentId);
+		notif.addNotification(otherOne, new NotifFriendshipDropped(currentId, me.getName()));
 	}
 
 }

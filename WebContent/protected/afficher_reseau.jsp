@@ -2,7 +2,12 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<t:normal_protected>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<t:template_head_includes>
+	<script src="resources/js/afficher_reseau.js" type="text/javascript"></script>
+</t:template_head_includes>
+<t:template_body_protected>
 	<jsp:body>
 		<c:choose>
 			<c:when test="${is_mobile}">
@@ -172,7 +177,7 @@
 										Aller voir <a href="protected/voir_liste?id=${relation.second.id}">sa liste</a>.<br/>
 										<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
 										Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
-										<a href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
+										<a class="drop_relationship" href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
 									</c:when>
 									<c:when test="${relation.second.id == userid}">
 										Vous ne pouvez pas intéragir avec vous-même !
@@ -244,4 +249,5 @@
 			</div>
 		</c:if>
 	</jsp:body>
-</t:normal_protected>
+</t:template_body_protected>
+</html>
