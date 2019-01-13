@@ -94,7 +94,7 @@ public abstract class AbstractNotification {
 	 * @return The notification type.
 	 */
 	public String getType() {
-		return type.name();
+		return type == null ? "" : type.name();
 	}
 
 	/**
@@ -132,7 +132,7 @@ public abstract class AbstractNotification {
 	 * @return The notification type description.
 	 */
 	public String getDescription() {
-		return type.getDescription();
+		return type == null ? "" : type.getDescription();
 	}
 
 	/**

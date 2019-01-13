@@ -150,6 +150,8 @@ Exception in thread "ajp-bio-33187-exec-152" java.lang.OutOfMemoryError: Java he
 	// FIXME : 4 quand on se connecte avec quelqu'un d'autre, ça ne rafraichi pas de suite le menu, faut y recliquer
 	// FIXME : 6 pouvoir inviter des gens dans ajouter amis si on ne les trouve pas
 	// FIXME : 8 pouvoir réserver des surprises (groupe, réservation partielle, etc.)
+	
+	// FIXME : en mode mobile, réduire le haut quand on clique sur le champs de recherche
 
 	/**
 	 * L'interface vers la table USER_RELATIONS. Static because it can be used in constructor for security checks.

@@ -30,7 +30,7 @@
 						</div>
 						<div class="col-auto mx-auto my-3 my-sm-0 mx-md-0 justify-content-md-end  d-md-flex">
 							<a href="protected/mes_notifications" class="btn btn-secondary ml-2" style="color:white" >
-								Notifications <span class="badge badge-light">${notif_count}</span>
+								Notifications <span id="my_notif_count" class="badge badge-light">${notif_count}</span>
 							</a>
 						</div>
 					</div>

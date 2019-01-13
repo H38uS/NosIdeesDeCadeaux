@@ -12,27 +12,36 @@
 <t:template_body_protected>
 	<jsp:body>
 		<h3>Mes notifications</h3>
-		<div class="container">
-			<div class="row align-items-start mx-0 justify-content-around">
-				<c:forEach var="notif" items="${unread_notifications}">
-					<div class="card my-3" style="width:300px">
-						<div class="card-header bg-dark" style="color:white">
-							${notif.description}
-						</div>
-						<div class="card-body">${notif.text}</div>
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item center">
-								<a class="btn btn-primary" href="protected/notification_lue?notif_id=${notif.id}">Notification lue</a>
-								<a class="btn btn-secondary notif_delete" href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
-							</li>
-						</ul>
-						<div class="card-footer text-muted text-right">
-							${notif.creationTime}
-						</div>
+		<c:choose>
+			<c:when test="${empty unread_notifications}">
+				<div class="alert alert-info">
+					Vous n'avez aucune notification pour le moment.
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div class="container">
+					<div class="row align-items-start mx-0 justify-content-around">
+						<c:forEach var="notif" items="${unread_notifications}">
+							<div class="card my-3" style="width:300px">
+								<div class="card-header bg-dark" style="color:white">
+									${notif.description}
+								</div>
+								<div class="card-body">${notif.text}</div>
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item center">
+										<a class="btn btn-primary" href="protected/notification_lue?notif_id=${notif.id}">Notification lue</a>
+										<a class="btn btn-secondary notif_delete" href="protected/supprimer_notification?notif_id=${notif.id}">Supprimer</a>
+									</li>
+								</ul>
+								<div class="card-footer text-muted text-right">
+									${notif.creationTime}
+								</div>
+							</div>
+						</c:forEach>
 					</div>
-				</c:forEach>
-			</div>
-		</div>
+				</div>
+			</c:otherwise>
+		</c:choose>
 		<c:if test="${not empty child_notifications}">
 		<h3 class="my-2">Les notifications de mes comptes enfants</h3>
 			<c:forEach var="child" items="${child_notifications}">
@@ -61,6 +70,7 @@
 				</c:if>
 			</c:forEach>
 		</c:if>
+		<c:if test="${not empty read_notifications}">
 		<h3 class="my-2">Mes anciennes notifications</h3>
 		<div class="container">
 			<div class="card-deck">
@@ -83,6 +93,7 @@
 				</c:forEach>
 			</div>
 		</div>
+		</c:if>
 	</jsp:body>
 </t:template_body_protected>
 </html>
