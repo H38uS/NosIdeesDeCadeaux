@@ -21,6 +21,8 @@ function doSearch(value, only_non_friend) {
 			$("#res li").each(function(i) {
 			    $(this).delay(100 * i).fadeIn('slow');
 			});
+			$(".envoyer_demande_reseau").off("click");
+			$(".envoyer_demande_reseau").click(sendRequest);
 			completed = true;
 		}, minTempsReflexion);
 		actionDone('<img src="resources/image/ok.png" width="' + getPictureWidth() + '" />' + 'Recherche terminée');

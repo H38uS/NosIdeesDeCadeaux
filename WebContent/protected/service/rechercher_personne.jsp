@@ -72,7 +72,7 @@
 									<c:otherwise>
 										<form method="POST" action="protected/demande_rejoindre_reseau">
 											<input type="hidden" name="user_id" value="${user.id}" >
-											<button class="btn btn-primary" type="submit" name="submit" id="submit">Envoyer une demande</button>
+											<button class="envoyer_demande_reseau btn btn-primary" type="submit" name="submit" id="submit">Envoyer une demande</button>
 											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 										</form>
 									</c:otherwise>
