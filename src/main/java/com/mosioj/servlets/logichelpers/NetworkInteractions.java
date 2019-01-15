@@ -25,6 +25,8 @@ public class NetworkInteractions {
 	private final Users users = new Users();
 	private final UserRelationRequests userRelationRequests = new UserRelationRequests();
 	private final UserRelations userRelations = new UserRelations();
+	
+	// FIXME : 0 arrêter de tout dupliquer, et supprimer celui qui ne sert plus
 
 	/**
 	 * 
