@@ -61,7 +61,15 @@ import com.mosioj.viewhelper.Escaper;
  */
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
+	
+	// FIXME : 99 faire un auto publish comme pour JDitto
+	// FIXME : 99 mettre du bootstrap dans le site impulsion ?
+	// FIXME : 99 voir la conf snowcamp sur les images pour optimiser ??
+	// FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
+	// TODO : voir la conf machine learning pour faire des trucs ??
 
+	// TODO : voir pour utiliser hibernate, et/ou spring mvc (restful pour plus tard)
+	
 	// TODO : notification followers quand on ajoute des idées, les modifie etc.
 
 	// TODO : configurer le nombre de jour pour le rappel d'anniversaire
