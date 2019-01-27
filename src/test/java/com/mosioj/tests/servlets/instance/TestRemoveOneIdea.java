@@ -22,13 +22,13 @@ import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
-import com.mosioj.servlets.controllers.idees.modification.RemoveOneIdea;
+import com.mosioj.servlets.service.ServiceDeleteIdea;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestRemoveOneIdea extends AbstractTestServlet {
 
 	public TestRemoveOneIdea() {
-		super(new RemoveOneIdea());
+		super(new ServiceDeleteIdea());
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 		assertEquals(0, ds.selectCountStar("select count(*) from IDEES_HIST where id = ?", id));
 
-		when(request.getParameter(RemoveOneIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+		when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
 		doTestPost(request, response);
 
 		assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
@@ -64,7 +64,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
 
 		// Suppression
-		when(request.getParameter(RemoveOneIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+		when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
 		doTestPost(request, response);
 
 		// Validation que cela supprime tout
@@ -102,7 +102,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 		assertNotifDoesExists(recurentUnbook);
 
 		// Suppression
-		when(request.getParameter(RemoveOneIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+		when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
 		doTestPost(request, response);
 
 		assertNotifDoesNotExists(isUpToDate);

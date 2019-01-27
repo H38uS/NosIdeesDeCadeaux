@@ -12,13 +12,13 @@ import javax.servlet.ServletException;
 import org.junit.Test;
 
 import com.mosioj.notifications.instance.NotifDemandeAcceptee;
-import com.mosioj.servlets.controllers.relations.SupprimerRelation;
+import com.mosioj.servlets.service.ServiceSupprimerRelation;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestSupprimerRelation extends AbstractTestServlet {
 
 	public TestSupprimerRelation() {
-		super(new SupprimerRelation());
+		super(new ServiceSupprimerRelation());
 	}
 
 	@Test
@@ -32,7 +32,7 @@ public class TestSupprimerRelation extends AbstractTestServlet {
 		int notifId = notif.addNotification(_OWNER_ID_, new NotifDemandeAcceptee(_MOI_AUTRE_, "Moi Autre"));
 		assertNotifDoesExists(notifId);
 		
-		when(request.getParameter(SupprimerRelation.USER_PARAMETER)).thenReturn(_MOI_AUTRE_ + "");
+		when(request.getParameter(ServiceSupprimerRelation.USER_PARAMETER)).thenReturn(_MOI_AUTRE_ + "");
 		doTestPost(request, response);
 
 		assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));

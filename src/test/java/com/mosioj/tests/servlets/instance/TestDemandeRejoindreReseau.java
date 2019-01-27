@@ -3,7 +3,6 @@ package com.mosioj.tests.servlets.instance;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,20 +16,18 @@ import org.junit.Test;
 
 import com.mosioj.model.table.UserRelationRequests;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.servlets.controllers.relations.DemandeRejoindreReseau;
+import com.mosioj.servlets.service.DemandeRejoindreReseauService;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.RootingsUtils;
 
 public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 
 	public TestDemandeRejoindreReseau() {
-		super(new DemandeRejoindreReseau());
+		super(new DemandeRejoindreReseauService());
 	}
 
 	@Before
 	public void before() {
-		when(request.getRequestDispatcher(DemandeRejoindreReseau.SUCCESS_URL)).thenReturn(dispatcher);
-		when(request.getRequestDispatcher(DemandeRejoindreReseau.ERROR_URL)).thenReturn(dispatcher);
 		when(request.getRequestDispatcher(RootingsUtils.PUBLIC_SERVER_ERROR_JSP)).thenReturn(dispatcher);
 	}
 
@@ -43,9 +40,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 		// Test parameters call
 		verify(request).getParameter(eq("user_id"));
 		verify(request, atMost(1)).getParameter(anyString());
-
-		// Error in processing
-		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 	}
 
 	@Test
@@ -66,8 +60,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 
 		assertNotifDoesNotExists(suggestionAndAsk);
 		assertNotifDoesNotExists(suggestionAndAsked);
-		verify(request).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
-		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.ERROR_URL));
 	}
 	
 	@Test
@@ -79,7 +71,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 		doTestPost(request, response);
 
 		verify(request).setAttribute(eq("error_message"), eq("Vous avez déjà envoyé une demande pour cette personne."));
-		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 	}
 
 	@Test
@@ -91,7 +82,6 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 		doTestPost(request, response);
 		
 		verify(request).setAttribute(eq("error_message"), eq("Vous faites déjà parti du même réseau."));
-		verify(request, never()).getRequestDispatcher(eq(DemandeRejoindreReseau.SUCCESS_URL));
 	}
 
 }

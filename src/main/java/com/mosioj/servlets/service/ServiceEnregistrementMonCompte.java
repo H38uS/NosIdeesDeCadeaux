@@ -3,7 +3,11 @@ package com.mosioj.servlets.service;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,9 +19,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
+import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
+import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
+import com.mosioj.utils.validators.ParameterValidator;
+import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/service/enregistrement_mon_compte")
 public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToPostAndGet> {
@@ -57,8 +65,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 			readMultiFormParameters(request, filePath);
 			int userId = ParametersUtils.getUserId(request);
 
-			CompteInteractions helper = new CompteInteractions();
-			List<String> errors = helper.processSave(filePath, parameters, userId);
+			List<String> errors = processSave(filePath, parameters, userId);
 			if (errors == null || errors.isEmpty()) {
 				status = "ok";
 				message = "";
@@ -85,6 +92,84 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 								makeJSonPair("avatarLarge", avatarLarge),
 								makeJSonPair("avatarSmall", avatarSmall),
 								makeJSonPair("avatars", request.getAttribute("avatars").toString()));
+	}
+
+	public java.sql.Date getAsDate(String date) {
+		SimpleDateFormat format = new SimpleDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
+		Date parsed;
+		try {
+			parsed = format.parse(date);
+		} catch (ParseException e) {
+			return null;
+		}
+		java.sql.Date sql = new java.sql.Date(parsed.getTime());
+		return sql;
+	}
+	
+	public List<String> processSave(File filePath, Map<String, String> parameters, int userId) throws SQLException {
+
+		CompteInteractions ci = new CompteInteractions();
+		String info = parameters.get("modif_info_gen");
+		List<String> errors = null;
+
+		if ("true".equals(info)) {
+
+			String email = parameters.get("email").trim();
+			String name = parameters.get("name").trim();
+
+			errors = ci.checkEmail(ci.getValidatorEmail(email), userId, true);
+
+			String birthday = parameters.get("birthday");
+			if (!birthday.isEmpty()) {
+				logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
+				ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
+				val.checkDateFormat();
+				errors.addAll(val.getErrors());
+			}
+
+			String newPwd = parameters.get("new_password").trim();
+			String confPwd = parameters.get("conf_password").trim();
+
+			if (newPwd != null && !newPwd.isEmpty()) {
+				List<String> pwdErrors1 = ci.checkPwd(ci.getValidatorPwd(newPwd));
+				List<String> pwdErrors2 = ci.checkPwd(ci.getValidatorPwd(confPwd));
+				if (!newPwd.equals(confPwd)) {
+					errors.add("Les deux mots de passe entrés ne correspondent pas.");
+				}
+				errors.addAll(pwdErrors1);
+				errors.addAll(pwdErrors2);
+			}
+
+			User user = users.getUser(userId);
+			user.email = email;
+			user.name = name;
+			user.birthday = getAsDate(birthday);
+
+			String image = parameters.get("image");
+			String old = parameters.get("old_picture");
+			if (image == null || image.isEmpty()) {
+				image = old;
+			} else {
+				// Modification de l'image
+				// On supprime la précédente
+				if (!"default.png".equals(old)) {
+					IdeaInteractions helper = new IdeaInteractions();
+					helper.removeUploadedImage(filePath, old);
+				}
+				logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
+			}
+			user.avatar = image;
+
+			if (errors.isEmpty()) {
+				users.update(user);
+				if (!newPwd.isEmpty()) {
+					String digested = ci.hashPwd(newPwd, errors);
+					users.updatePassword(userId, digested);
+				}
+			}
+
+		}
+		return errors;
 	}
 
 }

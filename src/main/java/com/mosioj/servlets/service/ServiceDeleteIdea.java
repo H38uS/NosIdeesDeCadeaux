@@ -1,19 +1,34 @@
 package com.mosioj.servlets.service;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.Idee;
+import com.mosioj.model.User;
+import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.notifications.ParameterName;
+import com.mosioj.notifications.instance.NotifBookedRemove;
+import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
+import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/delete_idea")
 public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 
+	private static final Logger logger = LogManager.getLogger(ServiceDeleteIdea.class);
 	private static final long serialVersionUID = 2642366164643542379L;
 	public static final String IDEE_ID_PARAM = "ideeId";
 
@@ -31,7 +46,38 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 
 		IdeaInteractions logic = new IdeaInteractions();
 		Idee idea = policy.getIdea();
-		logic.removeIt(idea, getIdeaPicturePath(), request);
+		// Reading parameters
+		logger.debug(MessageFormat.format("Deleting idea {0}.", idea.getId()));
+		
+		Set<Integer> notified = new HashSet<>();
+		for (User user : idea.getBookers(groupForIdea, sousReservation)) {
+			notif.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
+			notified.add(user.id);
+		}
+		
+		String image = idea.getImage();
+		logger.debug(MessageFormat.format("Image: {0}.", image));
+		logic.removeUploadedImage(getIdeaPicturePath(), image);
+		
+		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, idea.getId());
+		for (AbstractNotification notification : notifications) {
+			if (notification instanceof NotifUserIdParam) {
+				NotifUserIdParam notifUserId = (NotifUserIdParam) notification;
+				if (!notified.contains(notifUserId.getUserIdParam())) {
+					notif.addNotification(	notifUserId.getUserIdParam(),
+											new NotifBookedRemove(idea, ParametersUtils.getUserName(request)));
+					notified.add(notifUserId.getUserIdParam());
+				}
+			}
+			notif.remove(notification.id);
+		}
+		
+		int userId = ParametersUtils.getUserId(request);
+		idees.remove(idea.getId());
+		
+		if (!idees.hasIdeas(userId)) {
+			notif.addNotification(userId, new NotifNoIdea());
+		}
 
 		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}

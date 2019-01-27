@@ -12,7 +12,7 @@ import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.servlets.controllers.idees.ConfirmationEstAJour;
 import com.mosioj.servlets.controllers.idees.modification.ModifyIdea;
-import com.mosioj.servlets.controllers.idees.modification.RemoveOneIdea;
+import com.mosioj.servlets.service.ServiceEstAJour;
 
 public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifUserIdParam {
 
@@ -55,7 +55,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
 		String param = ConfirmationEstAJour.IDEE_FIELD_PARAMETER + "=" + ideaId;
 		String oui = MessageFormat.format("<li><a href=\"protected/confirmation_est_a_jour?{0}\">Oui !</a></li>", param);
 
-		param = RemoveOneIdea.IDEE_ID_PARAM + "=" + ideaId;
+		param = ServiceEstAJour.IDEE_FIELD_PARAMETER + "=" + ideaId;
 		String nonSupr = MessageFormat.format(	"<li>Non... Il faudrait la <a href=\"protected/remove_an_idea?{0}&from=/protected/mes_notifications\">supprimer</a>.</li>",
 												param);
 
