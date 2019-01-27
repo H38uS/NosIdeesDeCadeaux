@@ -33,7 +33,7 @@ public class Idee {
 	public boolean hasComment = false;
 	public boolean hasQuestion = false;
 	private User surpriseBy;
-	private boolean hasAskedIfUpToDate = false;
+	public boolean hasAskedIfUpToDate = false;
 
 	public Idee(int pId,
 				User owner,
@@ -70,13 +70,6 @@ public class Idee {
 	 */
 	public boolean hasAskedIfUpToDate() {
 		return hasAskedIfUpToDate;
-	}
-
-	/**
-	 * @param hasAskedIfUpToDate the hasAskedIfUpToDate to set
-	 */
-	public void setHasAskedIfUpToDate(boolean hasAskedIfUpToDate) {
-		this.hasAskedIfUpToDate = hasAskedIfUpToDate;
 	}
 	
 	/**

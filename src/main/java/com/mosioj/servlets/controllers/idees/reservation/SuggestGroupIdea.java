@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
-import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
@@ -51,7 +50,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 
 		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		User user = users.getUser(ParametersUtils.getUserId(request));
-		idees.fillAUserIdea(user.id, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(user, idee)), device);
+		idees.fillAUserIdea(user.id, idee, device);
 
 		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, user.id);
 		logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
@@ -77,7 +76,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		User thisOne = users.getUser(ParametersUtils.getUserId(request));
-		idees.fillAUserIdea(thisOne.id, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(thisOne, idee)), device);
+		idees.fillAUserIdea(thisOne.id, idee, device);
 
 		List<Integer> selectedUsers = new ArrayList<Integer>();
 		Map<String, String[]> params = request.getParameterMap();

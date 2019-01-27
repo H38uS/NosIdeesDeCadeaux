@@ -20,7 +20,6 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
-import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifGroupEvolution;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
@@ -70,7 +69,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
 		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		User user = users.getUser(ParametersUtils.getUserId(request));
-		idees.fillAUserIdea(user.id, idee, notif.hasNotification(idee.owner.id, new NotifAskIfIsUpToDate(user, idee)), device);
+		idees.fillAUserIdea(user.id, idee, device);
 
 		// Suppression des notif's si y'en a
 		notif.getNotifications(	user.id,

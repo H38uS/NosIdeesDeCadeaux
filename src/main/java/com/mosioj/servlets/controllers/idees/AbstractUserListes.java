@@ -2,7 +2,6 @@ package com.mosioj.servlets.controllers.idees;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,14 +35,11 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
 	 * @throws SQLException
 	 */
 	protected void fillsUserIdeas(int userId, List<User> ids) throws SQLException {
-
-		Set<Integer> ideas = notif.getIdeasOnWhichWeHaveAskedIfUpToDate(userId);
-
 		logger.trace("Getting all ideas for all users...");
 		for (User user : ids) {
 			List<Idee> ownerIdeas = idees.getIdeasOf(user.id);
 			for (Idee idee : ownerIdeas) {
-				idees.fillAUserIdea(userId, idee, ideas.contains(idee.getId()), device);
+				idees.fillAUserIdea(userId, idee, device);
 			}
 			user.addIdeas(ownerIdeas);
 		}

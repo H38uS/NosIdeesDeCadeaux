@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.table.IsUpToDateQuestions;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
@@ -51,11 +52,14 @@ public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToD
 
 		int userId = ParametersUtils.getUserId(request);
 		logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
-
-		NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(users.getUser(userId), idea);
-		if (!notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
-			notif.addNotification(idea.owner.id, isUpToDateNotif);
-			return true;
+		
+		IsUpToDateQuestions ask = new IsUpToDateQuestions();
+		if (ask.addAssociation(idea.getId(), userId) == 1) {
+			NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(users.getUser(userId), idea);
+			if (!notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
+				notif.addNotification(idea.owner.id, isUpToDateNotif);
+				return true;
+			}
 		}
 
 		return false;

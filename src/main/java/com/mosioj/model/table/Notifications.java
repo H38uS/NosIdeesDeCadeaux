@@ -21,11 +21,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.regex.Matcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -261,44 +259,6 @@ public class Notifications extends Table {
 	 */
 	public int getUserNotificationCount(int userId) throws SQLException {
 		return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, OWNER), userId);
-	}
-
-	/**
-	 * 
-	 * @param askingUser The user who has asked if the idea is up to date.
-	 * @return The set of idea id's on which the given user has asked if it is up to date.
-	 * @throws SQLException
-	 */
-	public Set<Integer> getIdeasOnWhichWeHaveAskedIfUpToDate(int askingUser) throws SQLException {
-
-		StringBuilder query = new StringBuilder();
-
-		query.append(MessageFormat.format("select np.{0} \n", PARAMETER_VALUE));
-		query.append(MessageFormat.format("  from {0} np \n", TABLE_PARAMS));
-		query.append(MessageFormat.format("  inner join {0} n  \n", TABLE_NAME));
-		query.append(MessageFormat.format("     on n.{0} = np.{1} \n", ID, NOTIFICATION_ID));
-		query.append(MessageFormat.format("    and np.{0} = ''IDEA_ID'' \n", PARAMETER_NAME));
-		query.append(MessageFormat.format("    and n.{0} = ''IS_IDEA_UP_TO_DATE'' \n", TYPE));
-		query.append(MessageFormat.format("  inner join {0} npp \n", TABLE_PARAMS));
-		query.append(MessageFormat.format("     on n.{0} = npp.{1} \n", ID, NOTIFICATION_ID));
-		query.append(MessageFormat.format("    and npp.{0} = ''USER_ID'' \n", PARAMETER_NAME));
-		query.append(MessageFormat.format("    and npp.{0} = ? \n", PARAMETER_VALUE));
-
-		logger.trace(query.toString());
-		logger.trace(MessageFormat.format("User id: {0}", askingUser));
-		Set<Integer> userSet = new HashSet<Integer>();
-
-		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
-			ps.bindParameters(askingUser);
-			if (ps.execute()) {
-				ResultSet res = ps.getResultSet();
-				while (res.next()) {
-					userSet.add(res.getInt(PARAMETER_VALUE.name()));
-				}
-			}
-		}
-
-		return userSet;
 	}
 
 	/**

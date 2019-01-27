@@ -34,6 +34,7 @@ import com.mosioj.model.table.columns.CommentsColumns;
 import com.mosioj.model.table.columns.GroupIdeaColumns;
 import com.mosioj.model.table.columns.GroupIdeaContentColumns;
 import com.mosioj.model.table.columns.IdeeColumns;
+import com.mosioj.model.table.columns.IsUpToDateColumns;
 import com.mosioj.model.table.columns.PrioritesColumns;
 import com.mosioj.model.table.columns.SousReservationColumns;
 import com.mosioj.model.table.columns.UserRelationsColumns;
@@ -359,10 +360,10 @@ public class Idees extends Table {
 	 * @throws NoRowsException
 	 */
 	public boolean isSubBookBy(int ideaId, int userId) throws SQLException {
-		return getDb().selectCountStar(	MessageFormat.format(	"select count(*) from {0} where {1} = ? and {2} = ?",
-																SousReservation.TABLE_NAME,
-																SousReservationColumns.IDEE_ID,
-																SousReservationColumns.USER_ID),
+		return getDb().selectCountStar(	MessageFormat.format("select count(*) from {0} where {1} = ? and {2} = ?",
+															SousReservation.TABLE_NAME,
+															SousReservationColumns.IDEE_ID,
+															SousReservationColumns.USER_ID),
 										ideaId,
 										userId) > 0;
 	}
@@ -483,11 +484,11 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void bookByGroup(int id, int groupId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = now() where {3} = ?",
-														TABLE_NAME,
-														GROUPE_KDO_ID,
-														RESERVE_LE,
-														ID),
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ?",
+													TABLE_NAME,
+													GROUPE_KDO_ID,
+													RESERVE_LE,
+													ID),
 								groupId,
 								id);
 	}
@@ -524,10 +525,10 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void dereserverSousPartie(int ideaId, int userId) throws SQLException {
-		int nb = getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
-																SousReservation.TABLE_NAME,
-																SousReservationColumns.IDEE_ID,
-																SousReservationColumns.USER_ID),
+		int nb = getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
+															SousReservation.TABLE_NAME,
+															SousReservationColumns.IDEE_ID,
+															SousReservationColumns.USER_ID),
 										ideaId,
 										userId);
 		if (nb > 0 && getDb().selectCountStar(
@@ -535,10 +536,7 @@ public class Idees extends Table {
 																		SousReservation.TABLE_NAME,
 																		SousReservationColumns.IDEE_ID),
 												ideaId) == 0) {
-			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ''N'' where {2} = ?",
-															TABLE_NAME,
-															A_SOUS_RESERVATION,
-															ID),
+			getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ''N'' where {2} = ?", TABLE_NAME, A_SOUS_RESERVATION, ID),
 									ideaId);
 		}
 	}
@@ -622,9 +620,9 @@ public class Idees extends Table {
 		int groupId;
 		try {
 			groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?", idea);
-			getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
-															GroupIdea.TABLE_NAME_CONTENT,
-															GroupIdeaContentColumns.GROUP_ID),
+			getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ?",
+														GroupIdea.TABLE_NAME_CONTENT,
+														GroupIdeaContentColumns.GROUP_ID),
 									groupId);
 			getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? ", GroupIdea.TABLE_NAME, GroupIdeaColumns.ID),
 									groupId);
@@ -633,19 +631,19 @@ public class Idees extends Table {
 		}
 
 		// Des sous-reservations
-		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ?",
-														SousReservation.TABLE_NAME,
-														SousReservationColumns.IDEE_ID),
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ?",
+													SousReservation.TABLE_NAME,
+													SousReservationColumns.IDEE_ID),
 								idea);
 
 		// Mise a zero des flags
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {2} = ''N'', {3} = null, {4} = null, {5} = null where {1} = ?",
-														TABLE_NAME,
-														ID,
-														A_SOUS_RESERVATION,
-														RESERVE,
-														RESERVE_LE,
-														GROUPE_KDO_ID),
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {2} = ''N'', {3} = null, {4} = null, {5} = null where {1} = ?",
+													TABLE_NAME,
+													ID,
+													A_SOUS_RESERVATION,
+													RESERVE,
+													RESERVE_LE,
+													GROUPE_KDO_ID),
 								idea);
 
 	}
@@ -658,9 +656,9 @@ public class Idees extends Table {
 	 */
 	public void remove(int idea) throws SQLException {
 		try {
-			int nb = getDb().executeUpdate(	MessageFormat.format(	"insert into IDEES_HIST select * from {0} where {1} = ?",
-																	TABLE_NAME,
-																	ID),
+			int nb = getDb().executeUpdate(	MessageFormat.format("insert into IDEES_HIST select * from {0} where {1} = ?",
+																TABLE_NAME,
+																ID),
 											idea);
 			if (nb != 1) {
 				logger.warn(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}", nb, idea));
@@ -710,14 +708,14 @@ public class Idees extends Table {
 	 */
 	public void modifier(int id, String text, String type, String priority, String image) throws SQLException {
 		text = Escaper.textToHtml(text);
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
-														TABLE_NAME,
-														IDEE,
-														TYPE,
-														PRIORITE,
-														IMAGE,
-														MODIFICATION_DATE,
-														ID),
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
+													TABLE_NAME,
+													IDEE,
+													TYPE,
+													PRIORITE,
+													IMAGE,
+													MODIFICATION_DATE,
+													ID),
 								text,
 								type,
 								priority,
@@ -732,18 +730,32 @@ public class Idees extends Table {
 
 	/**
 	 * 
+	 * @param ideeId The idee to look.
 	 * @param userId
+	 * @return True if this user has asked about this idea.
+	 * @throws SQLException
+	 */
+	public boolean hasUserAskedIfUpToDate(int ideeId, int userId) throws SQLException {
+		return getDb().doesReturnRows(	MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
+															IsUpToDateQuestions.TABLE_NAME,
+															IsUpToDateColumns.IDEE_ID,
+															IsUpToDateColumns.USER_ID),
+										ideeId,
+										userId);
+	}
+
+	/**
+	 * 
+	 * @param userId The connected user.
 	 * @param idee
-	 * @param hasUserAskedIfUpToDate
 	 * @param device
 	 * @throws SQLException
 	 */
-	public void fillAUserIdea(int userId, Idee idee, boolean hasUserAskedIfUpToDate, Device device) throws SQLException {
+	public void fillAUserIdea(int userId, Idee idee, Device device) throws SQLException {
 
 		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
 		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
-		idee.setHasAskedIfUpToDate(hasUserAskedIfUpToDate); // FIXME : 5 gérer cela dans une table, et plus par
-															// notification...
+		idee.hasAskedIfUpToDate = hasUserAskedIfUpToDate(idee.getId(), userId);
 
 		User surpriseBy = idee.getSurpriseBy();
 		if (surpriseBy != null) {

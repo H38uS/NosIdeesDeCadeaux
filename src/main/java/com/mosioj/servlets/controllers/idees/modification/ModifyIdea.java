@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
+import com.mosioj.model.table.IsUpToDateQuestions;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
@@ -112,6 +113,9 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 				// Ajout de notification aux amis si l'anniversaire approche
 				addModificationNotification(user, policy.getIdea(), false);
 
+				// Suppression des demandes si y'en avait
+				new IsUpToDateQuestions().deleteAssociations(idea.getId());
+				
 				List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, idea.getId());
 				for (AbstractNotification notification : notifications) {
 					if (notification instanceof NotifAskIfIsUpToDate) {

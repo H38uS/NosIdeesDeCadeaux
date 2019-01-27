@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.table.IsUpToDateQuestions;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
@@ -32,17 +33,21 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+
 		Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
 		idees.touch(id);
 
 		Idee idea = policy.getIdea();
+		int userId = ParametersUtils.getUserId(request);
+		new IsUpToDateQuestions().deleteAssociation(idea.getId(), userId);
+		
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
 		Set<Integer> ids = new HashSet<>();
 		for (AbstractNotification notification : notifications) {
 			if (notification instanceof NotifAskIfIsUpToDate) {
 				NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
 				notif.addNotification(	isUpToDate.getUserIdParam(),
-				                      	new NotifConfirmedUpToDate(users.getUser(ParametersUtils.getUserId(request)), idea));
+				                      	new NotifConfirmedUpToDate(users.getUser(userId), idea));
 				notif.remove(notification.id);
 				ids.add(isUpToDate.getUserIdParam());
 			}

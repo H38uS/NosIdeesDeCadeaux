@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
-import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
@@ -48,11 +47,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxServlet<IdeaInteraction>
 
 		logger.debug(MessageFormat.format("Getting idea {0} from service call (from {1})...", idee.getId(), from));
 
-		idees.fillAUserIdea(ParametersUtils.getUserId(request),
-							idee,
-							notif.hasNotification(	idee.owner.id,
-													new NotifAskIfIsUpToDate(users.getUser(ParametersUtils.getUserId(request)), idee)),
-							device);
+		idees.fillAUserIdea(ParametersUtils.getUserId(request), idee, device);
 
 		request.setAttribute("idee", idee);
 		request.setAttribute("identic_call_back", from);
