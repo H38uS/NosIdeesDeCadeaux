@@ -48,7 +48,7 @@ public class CachingFilter implements Filter {
 		HttpServletRequest detailRequest = (HttpServletRequest) request;
 
 		String url = detailRequest.getRequestURL().toString();
-		logger.debug(MessageFormat.format("Adding {0} to the cache...", url));
+		logger.trace(MessageFormat.format("Adding {0} to the cache...", url));
 		long expiry = new Date().getTime() + cacheAgeInMillis;
 		httpResponse.setDateHeader("Expires", expiry);
 		httpResponse.setHeader("Cache-Control", "max-age=" + cacheAgeInSeconds);
