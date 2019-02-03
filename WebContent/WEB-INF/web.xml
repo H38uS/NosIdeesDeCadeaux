@@ -48,6 +48,19 @@
 		<url-pattern>/protected/*</url-pattern>
 		<url-pattern>/public/*</url-pattern>
 	</filter-mapping>
+	
+	<filter>
+		<filter-name>Caching</filter-name>
+		<filter-class>com.mosioj.viewhelper.CachingFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Caching</filter-name>
+		<url-pattern>/resources/css/lib/*</url-pattern>
+		<url-pattern>/resources/css/BAUHS93.TTF</url-pattern>
+		<url-pattern>/resources/image/*</url-pattern>
+		<url-pattern>/resources/js/lib/*</url-pattern>
+		<url-pattern>/protected/files/*</url-pattern>
+	</filter-mapping>
 
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
