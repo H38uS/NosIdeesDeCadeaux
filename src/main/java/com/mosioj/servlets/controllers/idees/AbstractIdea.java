@@ -135,6 +135,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 			birthday.add(Calendar.YEAR, 1);
 		}
 		today.add(Calendar.DAY_OF_YEAR, NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY);
+		logger.debug(MessageFormat.format("Resovled birthday: {0}", birthday));
 
 		return birthday.before(today);
 	}

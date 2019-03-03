@@ -50,7 +50,9 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 		logger.debug(MessageFormat.format("Deleting idea {0}.", idea.getId()));
 		
 		Set<Integer> notified = new HashSet<>();
-		for (User user : idea.getBookers(groupForIdea, sousReservation)) {
+		List<User> bookers = idea.getBookers(groupForIdea, sousReservation);
+		logger.debug(MessageFormat.format("Liste des personnes qui ont réservé au moment de la suppression: {0}", bookers));
+		for (User user : bookers) {
 			notif.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
 			notified.add(user.id);
 		}
@@ -60,15 +62,22 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 		logic.removeUploadedImage(getIdeaPicturePath(), image);
 		
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, idea.getId());
+		// Pour chaque notification qui concerne cette idée
 		for (AbstractNotification notification : notifications) {
+			
+			// Pour chaque notification qui a un user
 			if (notification instanceof NotifUserIdParam) {
+
 				NotifUserIdParam notifUserId = (NotifUserIdParam) notification;
-				if (!notified.contains(notifUserId.getUserIdParam())) {
+				// Si la personne n'a pas déjà été notifié, et n'est pas le owner de l'idée
+				// On lui envoie une notif
+				if (!notified.contains(notifUserId.getUserIdParam()) && idea.owner.id != notifUserId.getUserIdParam()) {
 					notif.addNotification(	notifUserId.getUserIdParam(),
 											new NotifBookedRemove(idea, ParametersUtils.getUserName(request)));
 					notified.add(notifUserId.getUserIdParam());
 				}
 			}
+
 			notif.remove(notification.id);
 		}
 		

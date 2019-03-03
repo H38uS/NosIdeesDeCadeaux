@@ -49,7 +49,10 @@ public class NotificationFactory {
 
 		AbstractNotification notification = null;
 		try {
-			LOGGER.debug(MessageFormat.format("Creation d''une notification  de type {0} avec les paramètres: {1}", type, params));
+			LOGGER.debug(MessageFormat.format(	"Creation d''une notification en mémoire de type {0} avec les paramètres: {1} pour le user {2}",
+												type,
+												params,
+												owner));
 			Constructor<? extends AbstractNotification> ctor = clazz.getConstructor(int.class,
 																					int.class,
 																					String.class,
