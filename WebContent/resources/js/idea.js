@@ -95,9 +95,37 @@ function setIdeaActionsToJs(my_idea) {
 	});
 }
 
+var postIdea = function(form) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', form.attr("action"));
+	xhr.onload = function() {
+		actionDone("L'idée a bien été crée ou mise à jour sur le serveur.");
+	};
+	xhr.onerror = function() {
+		actionError(this.responseText)
+	};
+	xhr.upload.onprogress = function(event) {
+		var percent = (event.loaded / event.total) * 100;
+		doLoading("Envoie en cours (" + percent + "%)...")
+	}
+
+	var formData = new FormData();
+	formData.append('myfile', selectedPicture);
+	formData.append('text', form.find("#text").val());
+	formData.append('type', form.find("#type").val());
+	formData.append('priority', form.find("#priority").val());
+	formData.append('old_picture', form.find("#old_picture").val());
+	xhr.send(formData);
+};
+
 $(document).ready(function() {
 	$("a.idea_remove").click(deleteIdea);
 	$("a.idea_est_a_jour").click(estAJourIdea);
 	$("a.idea_reserver").click(reserverIdea);
 	$("a.idea_dereserver").click(dereserverIdea);
+	$(".post_idea").click(function (e) {
+		e.preventDefault();
+		var form = $(this).closest('form');
+		postIdea(form);
+	});
 });

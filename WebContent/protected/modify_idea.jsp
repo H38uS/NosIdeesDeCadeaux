@@ -86,12 +86,12 @@
 						<div class="form-group">
 							<span>Image actuelle</span>
 							<img class="form_img" src="${ideas_pictures}/${idea.imageSrcSmall}" width="150" />
-							<input type="hidden" name="old_picture" value="${idea.image}" />
+							<input type="hidden" id="old_picture" name="old_picture" value="${idea.image}" />
 						</div>
 						</c:if>
 						
 						<div class="center">
-							<button type="submit" class="btn btn-primary" name="submit" id="submit">Modifier</button>
+							<button type="submit" class="btn btn-primary post_idea" name="submit" id="submit">Modifier</button>
 						</div>
 					</form>
 				</div>

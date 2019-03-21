@@ -11,7 +11,7 @@ function doSearch(value, only_non_friend) {
 	completed = false;
 	if (only_non_friend) only_non_friend = "on";
 	
-	doLoading('<img src="resources/image/loading.gif" width="' + getPictureWidth() + '" />' + "Recherche en cours...");
+	doLoading("Recherche en cours...");
 	$("#res").html();
 
 	$.post('protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
@@ -25,9 +25,9 @@ function doSearch(value, only_non_friend) {
 			$(".envoyer_demande_reseau").click(sendRequest);
 			completed = true;
 		}, minTempsReflexion);
-		actionDone('<img src="resources/image/ok.png" width="' + getPictureWidth() + '" />' + 'Recherche terminée');
+		actionDone('Recherche terminée');
 	}).fail(function() {
-		actionError('<img src="resources/image/ko.png" width="' + getPictureWidth() + '" />' + "Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
+		actionError("Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
 	});
 
 }

@@ -442,6 +442,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			newHeight = maxHeight;
 		}
 
+		logger.debug("Resizing picture from (" + width + "x" + height + ") to (" + newWidth + "x" + newHeight + ")...");
 		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, type);
 		Graphics2D g = resizedImage.createGraphics();
 		g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
@@ -450,6 +451,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		logger.debug("Resize done!");
 
 		return resizedImage;
 	}

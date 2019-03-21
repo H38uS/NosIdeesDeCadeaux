@@ -30,7 +30,7 @@ $(document).ready(function() {
 				var name = files[0].name;
 				var ext = name.split('.').reverse()[0].toLowerCase();
 				if (jQuery.inArray(ext, ['jpg', 'jpeg', 'png']) < 0) {
-					alert('bad ext !');
+					alert("L'extension n'est pas supportée !");
 					return;
 				}
 
@@ -44,9 +44,6 @@ $(document).ready(function() {
 				loadPreview();
 			}
 		});
-	
-	
-	
 });
 
 //Copy / paste
