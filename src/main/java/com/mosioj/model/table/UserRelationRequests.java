@@ -64,7 +64,7 @@ public class UserRelationRequests extends Table {
 		PreparedStatementIdKdo ps = null;
 		try {
 			StringBuilder query = new StringBuilder();
-			query.append("select {0},{1},{2},u1.{5} as by_name,u1.{6} as by_email,u2.{5} as to_name,u2.{6} as to_email ");
+			query.append("select {0},{1},{2},u1.{5} as by_name,u1.{6} as by_email,u1.{7} as by_avatar,u2.{5} as to_name,u2.{6} as to_email,u2.{7} as to_avatar ");
 			query.append("from {3} urr ");
 			query.append("left join {4} u1 on u1.id = urr.{0} ");
 			query.append("left join {4} u2 on u2.id = urr.{1} ");
@@ -76,18 +76,21 @@ public class UserRelationRequests extends Table {
 																	REQUEST_DATE,
 																	TABLE_NAME,
 																	Users.TABLE_NAME,
-																	UsersColumns.NAME.name(),
-																	UsersColumns.EMAIL.name()));
+																	UsersColumns.NAME,
+																	UsersColumns.EMAIL,
+																	UsersColumns.AVATAR));
 			ps.bindParameters(userId);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
 					requests.add(new RelationRequest(	new User(	res.getInt(SENT_BY_USER.name()),
 																	res.getString("by_name"),
-																	res.getString("by_email")),
+																	res.getString("by_email"),
+																	res.getString("by_avatar")),
 														new User(	res.getInt(SENT_TO_USER.name()),
 																	res.getString("to_name"),
-																	res.getString("to_email")),
+																	res.getString("to_email"),
+																	res.getString("to_avatar")),
 														res.getDate(REQUEST_DATE.name())));
 				}
 			}

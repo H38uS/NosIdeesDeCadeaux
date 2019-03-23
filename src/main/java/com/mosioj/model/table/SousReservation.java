@@ -38,14 +38,15 @@ public class SousReservation extends Table {
 		List<SousReservationEntity> reservations = new ArrayList<SousReservationEntity>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select t.{0},t.{1},t.{2},t.{3},t.{4},u.{5},u.{6}",
+		query.append(MessageFormat.format(	"select t.{0},t.{1},t.{2},t.{3},t.{4},u.{5},u.{6},u.{7}",
 											ID,
 											IDEE_ID,
 											USER_ID,
 											COMMENT,
 											DATE_RESERVATION,
 											UsersColumns.NAME,
-											UsersColumns.EMAIL));
+											UsersColumns.EMAIL,
+											UsersColumns.AVATAR));
 		query.append(MessageFormat.format("  from {0} t ", TABLE_NAME));
 		query.append(MessageFormat.format("  inner join {0} u on t.{1} = u.{2} ", Users.TABLE_NAME, USER_ID, UsersColumns.ID));
 		query.append(MessageFormat.format(" where t.{0} = ? ", IDEE_ID));
@@ -60,7 +61,8 @@ public class SousReservation extends Table {
 																res.getInt(IDEE_ID.name()),
 																new User(	res.getInt(USER_ID.name()),
 																			res.getString(UsersColumns.NAME.name()),
-																			res.getString(UsersColumns.EMAIL.name())),
+																			res.getString(UsersColumns.EMAIL.name()),
+																			res.getString(UsersColumns.AVATAR.name())),
 																res.getString(COMMENT.name()),
 																res.getTimestamp(DATE_RESERVATION.name())));
 				}

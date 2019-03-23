@@ -62,7 +62,7 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 			return false;
 		}
 
-		boolean res = userId == n.getOwner() || new ParentRelationship().getChildren(userId).contains(new User(n.getOwner(), "", ""));
+		boolean res = userId == n.getOwner() || new ParentRelationship().getChildren(userId).contains(new User(n.getOwner(), "", "", ""));
 		if (!res) {
 			lastReason = "Vous ne pouvez modifier que vos notifications ou celles de vos enfants.";
 		}

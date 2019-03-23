@@ -102,11 +102,12 @@ public class UserRelationsSuggestion extends Table {
 
 		List<RelationSuggestion> suggestions = new ArrayList<RelationSuggestion>();
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select u1.{0} by_id,u1.{1} by_name,u1.{2} by_email,u2.{0} to_id,u2.{1} to_name,u2.{2} to_email,u3.{0} user_id,u3.{1} user_name,u3.{2} user_email,{3} ",
+		query.append(MessageFormat.format(	"select u1.{0} by_id,u1.{1} by_name,u1.{2} by_email,u1.{4} by_avatar,u2.{0} to_id,u2.{1} to_name,u2.{2} to_email,u2.{4} to_avatar,u3.{0} user_id,u3.{1} user_name,u3.{2} user_email,u3.{4} user_avatar,{3} ",
 											UsersColumns.ID,
 											UsersColumns.NAME,
 											UsersColumns.EMAIL,
-											SUGGESTION_DATE));
+											SUGGESTION_DATE,
+											UsersColumns.AVATAR));
 		query.append(MessageFormat.format("  from {0} urs ", TABLE_NAME));
 		query.append(MessageFormat.format(" inner join {0} u1 on u1.{1} = urs.{2} ", Users.TABLE_NAME, UsersColumns.ID, SUGGESTED_BY));
 		query.append(MessageFormat.format(" inner join {0} u2 on u2.{1} = urs.{2} ", Users.TABLE_NAME, UsersColumns.ID, SUGGESTED_TO));
@@ -128,9 +129,9 @@ public class UserRelationsSuggestion extends Table {
 				while (res.next()) {
 
 					time = res.getTime(SUGGESTION_DATE.name());
-					User from = new User(res.getInt("by_id"), res.getString("by_name"), res.getString("by_email"));
-					to = new User(res.getInt("to_id"), res.getString("to_name"), res.getString("to_email"));
-					userSuggestions.add(new User(res.getInt("user_id"), res.getString("user_name"), res.getString("user_email")));
+					User from = new User(res.getInt("by_id"), res.getString("by_name"), res.getString("by_email"), res.getString("by_avatar"));
+					to = new User(res.getInt("to_id"), res.getString("to_name"), res.getString("to_email"), res.getString("to_avatar"));
+					userSuggestions.add(new User(res.getInt("user_id"), res.getString("user_name"), res.getString("user_email"), res.getString("user_avatar")));
 
 					if (currentFrom == null) {
 						currentFrom = from;

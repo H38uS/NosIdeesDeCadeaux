@@ -75,7 +75,7 @@ public class GroupIdea extends Table {
 
 		Optional<IdeaGroup> group = Optional.empty();
 		StringBuilder q = new StringBuilder();
-		q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9} \n ");
+		q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9}, u.{10} \n ");
 		q.append("  from {3} gi, {4} gic \n ");
 		q.append("  left join {7} u on u.id = gic.{1} \n ");
 		q.append(" where gi.{5} = gic.{6} and gi.{5} = ? ");
@@ -92,7 +92,8 @@ public class GroupIdea extends Table {
 											GROUP_ID,
 											Users.TABLE_NAME,
 											UsersColumns.NAME,
-											UsersColumns.EMAIL);
+											UsersColumns.EMAIL,
+											UsersColumns.AVATAR);
 
 		PreparedStatementIdKdo ps = null;
 		try {
@@ -105,14 +106,16 @@ public class GroupIdea extends Table {
 					group = Optional.of(new IdeaGroup(groupId, res.getDouble(NEEDED_PRICE.name())));
 					group.get().addUser(	new User(	res.getInt(USER_ID.name()),
 												res.getString(UsersColumns.NAME.name()),
-												res.getString(UsersColumns.EMAIL.name())),
+												res.getString(UsersColumns.EMAIL.name()),
+												res.getString(UsersColumns.AVATAR.name())),
 									res.getDouble(PRICE.name()));
 				}
 
 				while (res.next()) {
 					group.get().addUser(	new User(	res.getInt(USER_ID.name()),
 												res.getString(UsersColumns.NAME.name()),
-												res.getString(UsersColumns.EMAIL.name())),
+												res.getString(UsersColumns.EMAIL.name()),
+												res.getString(UsersColumns.AVATAR.name())),
 									res.getDouble(PRICE.name()));
 				}
 			}

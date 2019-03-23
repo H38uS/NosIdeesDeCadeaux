@@ -323,10 +323,10 @@ public class UserRelations extends Table {
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format("select res.{0}, res.{1}, res.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format("select res.{0}, res.{1}, res.{2}, res.{3} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.AVATAR));
 		query.append("  from ( \n ");
 		
-		query.append(MessageFormat.format("select 10 as pertinence, u.{0}, u.{1}, u.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format("select 10 as pertinence, u.{0}, u.{1}, u.{2}, u.{3} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.AVATAR));
 		query.append(MessageFormat.format("  from {0} u, {1} r \n ", Users.TABLE_NAME, TABLE_NAME));
 		query.append(MessageFormat.format(" where u.{0} = r.{1} \n ", UsersColumns.ID, FIRST_USER));
 		query.append(MessageFormat.format("   and r.{0} = ? \n ", SECOND_USER));
@@ -337,7 +337,7 @@ public class UserRelations extends Table {
 		if (length > 0) {
 			query.append(" union \n ");
 			
-			query.append(MessageFormat.format("select 2 as pertinence, u.{0}, u.{1}, u.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+			query.append(MessageFormat.format("select 2 as pertinence, u.{0}, u.{1}, u.{2}, u.{3} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.AVATAR));
 			query.append(MessageFormat.format("  from {0} u, {1} r \n ", Users.TABLE_NAME, TABLE_NAME));
 			query.append(MessageFormat.format(" where u.{0} = r.{1} \n ", UsersColumns.ID, FIRST_USER));
 			query.append(MessageFormat.format("   and r.{0} = ? \n ", SECOND_USER));
@@ -356,7 +356,7 @@ public class UserRelations extends Table {
 		if (length > 1) {
 			query.append(" union \n ");
 			
-			query.append(MessageFormat.format("select 1 as pertinence, u.{0}, u.{1}, u.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+			query.append(MessageFormat.format("select 1 as pertinence, u.{0}, u.{1}, u.{2}, u.{3} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.AVATAR));
 			query.append(MessageFormat.format("  from {0} u, {1} r \n ", Users.TABLE_NAME, TABLE_NAME));
 			query.append(MessageFormat.format(" where u.{0} = r.{1} \n ", UsersColumns.ID, FIRST_USER));
 			query.append(MessageFormat.format("   and r.{0} = ? \n ", SECOND_USER));
@@ -372,7 +372,7 @@ public class UserRelations extends Table {
 		}
 
 		query.append("       ) res \n ");
-		query.append(MessageFormat.format(" group by res.{0}, res.{1}, res.{2} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format(" group by res.{0}, res.{1}, res.{2}, res.{3} \n ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.AVATAR));
 		query.append(" order by sum(pertinence) desc, 2, 3 \n ");
 		query.append(" LIMIT ?, ? \n ");
 		logger.trace(query.toString());
@@ -416,7 +416,8 @@ public class UserRelations extends Table {
 				while (res.next()) {
 					users.add(new User(	res.getInt(UsersColumns.ID.name()),
 										res.getString(UsersColumns.NAME.name()),
-										res.getString(UsersColumns.EMAIL.name())));
+										res.getString(UsersColumns.EMAIL.name()),
+										res.getString(UsersColumns.AVATAR.name())));
 				}
 			}
 		} finally {
@@ -449,7 +450,7 @@ public class UserRelations extends Table {
 		logger.debug(suggestedBy + " / " + suggestedTo + " / " + userNameOrEmail);
 
 		StringBuilder query = new StringBuilder();
-		query.append("select u.{0}, u.{1}, u.{2} ");
+		query.append("select u.{0}, u.{1}, u.{2}, u.{7} ");
 		query.append("  from {3} u, {4} r ");
 		query.append(" where u.{0} = r.{6} and r.{5} = ? ");
 		query.append("   and (lower(u.{1}) like ? ESCAPE ''!'' or lower(u.{2}) like ? ESCAPE ''!'') ");
@@ -473,7 +474,8 @@ public class UserRelations extends Table {
 														Users.TABLE_NAME,
 														TABLE_NAME,
 														FIRST_USER,
-														SECOND_USER);
+														SECOND_USER,
+														UsersColumns.AVATAR);
 
 			ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
 			userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
@@ -490,7 +492,8 @@ public class UserRelations extends Table {
 				while (res.next()) {
 					users.add(new User(	res.getInt(UsersColumns.ID.name()),
 										res.getString(UsersColumns.NAME.name()),
-										res.getString(UsersColumns.EMAIL.name())));
+										res.getString(UsersColumns.EMAIL.name()),
+										res.getString(UsersColumns.AVATAR.name())));
 				}
 			}
 		} finally {
@@ -508,7 +511,7 @@ public class UserRelations extends Table {
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
-		query.append("select u.{0}, u.{1}, u.{2} ");
+		query.append("select u.{0}, u.{1}, u.{2}, u.{7} ");
 		query.append("from {3} u, {4} r ");
 		query.append("where u.{0} = r.{6} and r.{5} = ? ");
 		query.append("  and (lower(u.{1}) like ? ESCAPE ''!'' or lower(u.{2}) like ? ESCAPE ''!'') ");
@@ -524,7 +527,8 @@ public class UserRelations extends Table {
 																	Users.TABLE_NAME,
 																	TABLE_NAME,
 																	FIRST_USER,
-																	SECOND_USER));
+																	SECOND_USER,
+																	UsersColumns.AVATAR));
 			userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
 			ps.bindParameters(userId, userNameOrEmail, userNameOrEmail, firstRow, limit);
 			if (ps.execute()) {
@@ -532,7 +536,8 @@ public class UserRelations extends Table {
 				while (res.next()) {
 					users.add(new User(	res.getInt(UsersColumns.ID.name()),
 										res.getString(UsersColumns.NAME.name()),
-										res.getString(UsersColumns.EMAIL.name())));
+										res.getString(UsersColumns.EMAIL.name()),
+										res.getString(UsersColumns.AVATAR.name())));
 				}
 			}
 		} finally {
@@ -598,7 +603,7 @@ public class UserRelations extends Table {
 		PreparedStatementIdKdo ps = null;
 
 		StringBuilder query = new StringBuilder();
-		query.append("select u.{0}, u.{1}, u.{2} ");
+		query.append("select u.{0}, u.{1}, u.{2}, u.{7} ");
 		query.append("from {3} u, {4} r ");
 		query.append("where u.{0} = r.{6} and r.{5} = ? ");
 		query.append("order by {1}, {2}, {0}");
@@ -614,7 +619,8 @@ public class UserRelations extends Table {
 											Users.TABLE_NAME,
 											TABLE_NAME,
 											FIRST_USER,
-											SECOND_USER);
+											SECOND_USER,
+											UsersColumns.AVATAR);
 			logger.trace(q);
 			ps = new PreparedStatementIdKdo(getDb(), q);
 			if (firstRow > -1 && limit > 0) {
@@ -627,7 +633,8 @@ public class UserRelations extends Table {
 				while (res.next()) {
 					users.add(new User(	res.getInt(UsersColumns.ID.name()),
 										res.getString(UsersColumns.NAME.name()),
-										res.getString(UsersColumns.EMAIL.name())));
+										res.getString(UsersColumns.EMAIL.name()),
+										res.getString(UsersColumns.AVATAR.name())));
 				}
 			}
 		} finally {

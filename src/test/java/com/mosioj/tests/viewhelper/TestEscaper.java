@@ -42,7 +42,7 @@ public class TestEscaper {
 
 		String[] expected = new String[] {
 				"mon_fichier.png",
-				"avec_accentéèêîûôù.jpg"
+				"avec_accenteeeiuou.jpg"
 		};
 
 		for (int i = 0; i < sources.length; i++) {

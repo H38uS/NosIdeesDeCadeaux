@@ -68,13 +68,22 @@ public class Idees extends Table {
 	private Idee createIdeaFromQuery(ResultSet rs) throws SQLException {
 		User bookingOwner = null;
 		if (rs.getString(RESERVE.name()) != null) {
-			bookingOwner = new User(rs.getInt("userId"), rs.getString("userName"), rs.getString(UsersColumns.EMAIL.name()));
+			bookingOwner = new User(rs.getInt("userId"),
+									rs.getString("userName"),
+									rs.getString(UsersColumns.EMAIL.name()),
+									rs.getString(UsersColumns.AVATAR.name()));
 		}
-		User owner = new User(rs.getInt("ownerId"), rs.getString("ownerName"), rs.getString("ownerEmail"));
+		User owner = new User(	rs.getInt("ownerId"),
+								rs.getString("ownerName"),
+								rs.getString("ownerEmail"),
+								rs.getString("ownerAvatar"));
 
 		User surpriseBy = null;
 		if (rs.getString("surpriseName") != null) {
-			surpriseBy = new User(rs.getInt("surpriseId"), rs.getString("surpriseName"), rs.getString("surpriseEmail"));
+			surpriseBy = new User(	rs.getInt("surpriseId"),
+									rs.getString("surpriseName"),
+									rs.getString("surpriseEmail"),
+									rs.getString("surpriseAvatar"));
 		}
 
 		Idee idea = new Idee(	rs.getInt(ID.name()),
@@ -126,12 +135,15 @@ public class Idees extends Table {
 		columns.append(MessageFormat.format("       u.{0} as userId, ", UsersColumns.ID));
 		columns.append(MessageFormat.format("       u.{0} as userName, ", UsersColumns.NAME));
 		columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.EMAIL));
+		columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.AVATAR));
 		columns.append(MessageFormat.format("       u1.{0} as ownerId, ", UsersColumns.ID));
 		columns.append(MessageFormat.format("       u1.{0} as ownerName, ", UsersColumns.NAME));
 		columns.append(MessageFormat.format("       u1.{0} as ownerEmail, ", UsersColumns.EMAIL));
+		columns.append(MessageFormat.format("       u1.{0} as ownerAvatar, ", UsersColumns.AVATAR));
 		columns.append(MessageFormat.format("       u2.{0} as surpriseId, ", UsersColumns.ID));
 		columns.append(MessageFormat.format("       u2.{0} as surpriseName, ", UsersColumns.NAME));
-		columns.append(MessageFormat.format("       u2.{0} as surpriseEmail ", UsersColumns.EMAIL));
+		columns.append(MessageFormat.format("       u2.{0} as surpriseEmail, ", UsersColumns.EMAIL));
+		columns.append(MessageFormat.format("       u2.{0} as surpriseAvatar ", UsersColumns.AVATAR));
 
 		StringBuilder query = new StringBuilder(columns);
 		query.append(MessageFormat.format("  from {0} i ", TABLE_NAME));
@@ -247,7 +259,11 @@ public class Idees extends Table {
 	public User getIdeaOwnerFromGroup(int groupId) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format(	"select u.{0}, u.{1}, u.{2}, u.{3} ",
+											UsersColumns.ID,
+											UsersColumns.NAME,
+											UsersColumns.EMAIL,
+											UsersColumns.AVATAR));
 		query.append(MessageFormat.format("from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("inner join {0} u on i.{1} = u.{2} ", Users.TABLE_NAME, OWNER, UsersColumns.ID));
 		query.append(MessageFormat.format(" where i.{0} = ?", GROUPE_KDO_ID));
@@ -261,7 +277,8 @@ public class Idees extends Table {
 				if (rs.next()) {
 					return new User(rs.getInt(UsersColumns.ID.name()),
 									rs.getString(UsersColumns.NAME.name()),
-									rs.getString(UsersColumns.EMAIL.name()));
+									rs.getString(UsersColumns.EMAIL.name()),
+									rs.getString(UsersColumns.AVATAR.name()));
 				}
 			}
 		} finally {
@@ -286,7 +303,11 @@ public class Idees extends Table {
 		StringBuilder query = new StringBuilder();
 
 		query.append("\n");
-		query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2} \n", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL));
+		query.append(MessageFormat.format(	"select u.{0}, u.{1}, u.{2}, u.{3} \n",
+											UsersColumns.ID,
+											UsersColumns.NAME,
+											UsersColumns.EMAIL,
+											UsersColumns.AVATAR));
 
 		// On sélectionne toutes les relations (= second_user) du owner (= first_user) de l'idée...
 		query.append(MessageFormat.format("  from {0} ur \n", UserRelations.TABLE_NAME));
@@ -326,7 +347,8 @@ public class Idees extends Table {
 				while (rs.next()) {
 					users.add(new User(	rs.getInt(UsersColumns.ID.name()),
 										rs.getString(UsersColumns.NAME.name()),
-										rs.getString(UsersColumns.EMAIL.name())));
+										rs.getString(UsersColumns.EMAIL.name()),
+										rs.getString(UsersColumns.AVATAR.name())));
 				}
 			}
 		} finally {

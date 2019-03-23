@@ -52,10 +52,11 @@ public class Questions extends Table {
 		List<User> users = new ArrayList<User>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select distinct u.{0},u.{1},u.{2} ",
+		query.append(MessageFormat.format(	"select distinct u.{0},u.{1},u.{2},u.{3}",
 											UsersColumns.ID,
 											UsersColumns.NAME,
-											UsersColumns.EMAIL));
+											UsersColumns.EMAIL,
+											UsersColumns.AVATAR));
 		query.append(MessageFormat.format("  from {0} q ", TABLE_NAME));
 		query.append(MessageFormat.format("  join {0} u ", Users.TABLE_NAME));
 		query.append(MessageFormat.format("    on q.{0} = u.{1} ", WRITTEN_BY, UsersColumns.ID));
@@ -69,7 +70,8 @@ public class Questions extends Table {
 				while (res.next()) {
 					users.add(new User(	res.getInt(UsersColumns.ID.name()),
 										res.getString(UsersColumns.NAME.name()),
-										res.getString(UsersColumns.EMAIL.name())));
+										res.getString(UsersColumns.EMAIL.name()),
+										res.getString(UsersColumns.AVATAR.name())));
 				}
 			}
 		} finally {
@@ -94,14 +96,15 @@ public class Questions extends Table {
 		List<Comment> comments = new ArrayList<Comment>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6} ",
+		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, u.{7}, c.{6} ",
 											ID,
 											IDEA_ID,
 											TEXT,
 											UsersColumns.NAME,
 											UsersColumns.EMAIL,
 											UsersColumns.ID,
-											WRITTEN_ON));
+											WRITTEN_ON,
+											UsersColumns.AVATAR));
 		query.append(MessageFormat.format("  from {0} c ", TABLE_NAME));
 		query.append(MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ", Users.TABLE_NAME, UsersColumns.ID, WRITTEN_BY));
 		query.append(MessageFormat.format(" where c.{0} = ? ", IDEA_ID));
@@ -117,7 +120,8 @@ public class Questions extends Table {
 												res.getString(TEXT.name()),
 												new User(	res.getInt("userId"),
 															res.getString(UsersColumns.NAME.name()),
-															res.getString(UsersColumns.EMAIL.name())),
+															res.getString(UsersColumns.EMAIL.name()),
+															res.getString(UsersColumns.AVATAR.name())),
 												res.getInt(IDEA_ID.name()),
 												res.getTimestamp(WRITTEN_ON.name())));
 				}
@@ -138,14 +142,15 @@ public class Questions extends Table {
 	public Comment getComment(Integer commentId) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6} ",
+		query.append(MessageFormat.format(	"select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, u.{7}, c.{6} ",
 											ID,
 											IDEA_ID,
 											TEXT,
 											UsersColumns.NAME,
 											UsersColumns.EMAIL,
 											UsersColumns.ID,
-											WRITTEN_ON));
+											WRITTEN_ON,
+											UsersColumns.AVATAR));
 		query.append(MessageFormat.format("  from {0} c ", TABLE_NAME));
 		query.append(MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ", Users.TABLE_NAME, UsersColumns.ID, WRITTEN_BY));
 		query.append(MessageFormat.format(" where c.{0} = ? ", ID));
@@ -161,7 +166,8 @@ public class Questions extends Table {
 										res.getString(TEXT.name()),
 										new User(	res.getInt("userId"),
 													res.getString(UsersColumns.NAME.name()),
-													res.getString(UsersColumns.EMAIL.name())),
+													res.getString(UsersColumns.EMAIL.name()),
+													res.getString(UsersColumns.AVATAR.name())),
 										res.getInt(IDEA_ID.name()),
 										res.getTimestamp(WRITTEN_ON.name()));
 				}
