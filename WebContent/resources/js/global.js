@@ -3,6 +3,7 @@ myTooltipsterPrioParam={delay: 800, position: 'bottom', contentAsHTML: true, the
 
 pictureNeedsRefresh = false;
 selectedPicture = null;
+selectedPictureName = null;
 
 var dataURLToBlob = function(dataURL) {
 	var BASE64_MARKER = ';base64,';
@@ -40,7 +41,7 @@ function loadPreview(e) {
 	var inputFile = inputFiles[0];
 	
 	var fileName = inputFile.name;
-	lastFilePreview = fileName;
+	selectedPictureName = fileName;
 	$('#newImage').text(fileName);
 
 	var reader = new FileReader();

@@ -110,11 +110,12 @@ var postIdea = function(form) {
 	}
 
 	var formData = new FormData();
-	formData.append('myfile', selectedPicture);
+	formData.append('fileName', selectedPictureName);
 	formData.append('text', form.find("#text").val());
 	formData.append('type', form.find("#type").val());
 	formData.append('priority', form.find("#priority").val());
 	formData.append('old_picture', form.find("#old_picture").val());
+	formData.append('myfile', selectedPicture);
 	xhr.send(formData);
 };
 
