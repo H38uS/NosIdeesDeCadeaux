@@ -173,6 +173,7 @@
 	margin-left: 200px;
 }
 #mes_listes_list_users {
+	position: -webkit-sticky; /* Safari */
 	position: sticky;
 	overflow: auto;
 	left: 0;

@@ -121,16 +121,19 @@ td > #imageFilePreview {
 }
 
 #loading_message_container {
+	position: -webkit-sticky; /* Safari */
 	position:sticky;
-	top: 0;
+	top: 10px;
 	left: 0;
-	height: 20px;
+	height: 1px;
+	margin-top: 10px;
 	z-index: 999;
 }
 #loading_message_div {
 	text-align: left;
 	padding:10px;
 	padding-left: 20px;
+	border-radius: 10px;
 }
 #loading_message_div > img {
 	vertical-align: middle;

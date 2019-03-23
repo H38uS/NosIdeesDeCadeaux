@@ -19,3 +19,8 @@ div#content {
 	width: 94%;
 	left: 3%;
 }
+
+#loading_message_div {
+	margin-left: 10px;
+	margin-right: 10px;
+}
