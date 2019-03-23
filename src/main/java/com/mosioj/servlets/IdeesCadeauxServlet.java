@@ -91,6 +91,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 
 	// TODO stocker l'objet User quand on se connecte
+	// TODO bug avec l'IPhone, pas assez de padding sous le champs recherche
+	// TODO pouvoir déréserver toutes ses idées
 
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!

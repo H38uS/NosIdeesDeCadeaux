@@ -25,7 +25,7 @@
 				<t:template_une_idee></t:template_une_idee>
 			</div>
 		</c:if>
-		<h3>Ajouter une nouvelle idée à ${user.name}</h3>
+		<h3>Ajouter une nouvelle idée à <a href="protected/voir_liste?id=${user.id}">${user.name}</a></h3>
 		<div class="container border border-info bg-light rounded mb-2 p-3">
 			<form class="mw-50" action="protected/ajouter_idee_ami?id=${user.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 				<div class="form-group">

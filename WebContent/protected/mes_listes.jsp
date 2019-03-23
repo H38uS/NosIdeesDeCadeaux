@@ -238,7 +238,18 @@
 					<!-- Fin idée de la personne -->
 	
 					<c:if test="${userid != user.id}">
-						<h2 id="list_${user.id}" class="breadcrumb mt-4">Liste de cadeaux ${user.myDName}</h2>
+						<h2 id="list_${user.id}" class="breadcrumb mt-4 h2_list">Liste <span class="d-none d-lg-inline-block">&nbsp;de cadeaux&nbsp;</span> ${user.myDName}
+							<a href="protected/ajouter_idee_ami?id=${user.id}" class="img">
+								<c:choose>
+									<c:when test="${is_mobile}">
+										<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: -2px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
+									</c:when>
+									<c:otherwise>
+										<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: 1px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
+									</c:otherwise>
+								</c:choose>
+							</a>
+						</h2>
 						<c:if test="${fn:length(user.ideas) > 0}">
 							<div class="container">
 								<c:forEach var="idea_from_liste" items="${user.ideas}">
