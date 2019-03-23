@@ -23,6 +23,7 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	private static final String NAME_OR_EMAIL = "term";
+	private static final String OF_USER_ID = "userId";
 
 	public NameService() {
 		super(new AllAccessToPostAndGet());
@@ -32,10 +33,19 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		try {
 
-			int userId = ParametersUtils.getUserId(request);
+			Integer userIdParam = ParametersUtils.readInt(request, OF_USER_ID);
+			int connectedUserId = ParametersUtils.getUserId(request);
+			int userId = userIdParam == null ? connectedUserId : userIdParam;
+			if (userId != connectedUserId && !userRelations.associationExists(userId, connectedUserId)) {
+				// On regarde
+				//	Soit son propre réseau
+				//	Soit celui d'un ami
+				userId = connectedUserId;
+			}
+
 			User current = users.getUser(userId);
 			String param = ParametersUtils.readAndEscape(request, NAME_OR_EMAIL).toLowerCase();
-
+			
 			List<User> res = new ArrayList<User>();
 			int MAX = 5;
 			if (current.getEmail().toLowerCase().contains(param)
@@ -51,9 +61,15 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 			String[] resp = new String[res.size()];
 			int i = 0;
 			for (User user : res) {
-				resp[i] = MessageFormat.format(	"{0},{1}",
+				resp[i] = MessageFormat.format(	"{0},{1},{2},{3}",
 												JSONObject.toString("value", StringEscapeUtils.unescapeHtml4(user.getLongNameEmail())),
-												JSONObject.toString("email", StringEscapeUtils.unescapeHtml4(user.getEmail())));
+												JSONObject.toString("email", StringEscapeUtils.unescapeHtml4(user.getEmail())),
+
+												// nécessaire pour l'autocomplete...
+												JSONObject.toString("label", StringEscapeUtils.unescapeHtml4(user.getEmail())),
+												JSONObject.toString("imgsrc",
+																	"protected/files/uploaded_pictures/avatars/"
+																			+ user.getAvatarSrcSmall()));
 				i++;
 			}
 

@@ -32,7 +32,12 @@
 									$("#afficherliste_topmeslistes").submit();
 									return false;
 								}
-							});
+							}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+								return $( "<li class=\"ui-menu-item\"></li>" )
+								.data( "item.autocomplete", item )  
+								.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+								.appendTo( ul );
+							};
 						});
 					</script>
 					<div class="row align-items-center pb-2">
@@ -567,12 +572,18 @@
 						$("#bottom_mes_listes_search").autocomplete({
 							source : "protected/service/name_resolver",
 							minLength : 2,
+							position: { my : "left bottom", at: "left top", of : "#bottom_mes_listes_search" },
 							select : function(event, ui) {
 								$("#bottom_mes_listes_search").val(ui.item.email);
 								$("#afficherliste_bottommeslistes").submit();
 								return false;
 							}
-						});
+						}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+							return $( "<li class=\"ui-menu-item\"></li>" )
+							.data( "item.autocomplete", item )  
+							.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+							.appendTo( ul );
+						};
 					});
 				</script>
 				<div class="row align-items-center pb-5">

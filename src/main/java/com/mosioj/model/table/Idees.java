@@ -104,7 +104,6 @@ public class Idees extends Table {
 	 */
 	private StringBuilder getIdeaBasedSelect() {
 
-		String cTableName = Categories.TABLE_NAME;
 		CategoriesColumns cNom = CategoriesColumns.NOM;
 
 		StringBuilder columns = new StringBuilder();
@@ -137,7 +136,7 @@ public class Idees extends Table {
 		StringBuilder query = new StringBuilder(columns);
 		query.append(MessageFormat.format("  from {0} i ", TABLE_NAME));
 		query.append(MessageFormat.format("  left join {0} p on i.{1} = p.{2} ", Priorites.TABLE_NAME, PRIORITE, PrioritesColumns.ID));
-		query.append(MessageFormat.format("  left join {0} c on i.{1} = c.{2} ", cTableName, TYPE, cNom));
+		query.append(MessageFormat.format("  left join {0} c on i.{1} = c.{2} ", Categories.TABLE_NAME, TYPE, cNom));
 		query.append(MessageFormat.format("  left join {0} u on u.id = i.{1} ", Users.TABLE_NAME, RESERVE));
 		query.append(MessageFormat.format("  left join {0} u1 on u1.id = i.{1} ", Users.TABLE_NAME, OWNER));
 		query.append(MessageFormat.format("  left join {0} u2 on u2.id = i.{1} ", Users.TABLE_NAME, SURPRISE_PAR));

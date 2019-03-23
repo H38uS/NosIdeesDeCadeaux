@@ -19,15 +19,18 @@ public class User {
 	public String avatar;
 
 	private final List<Idee> ideas = new ArrayList<Idee>();
-
+	
 	public User(int id, String name, String email) {
 		this.id = id;
 		this.name = name == null ? null : name.trim();
 		this.email = email;
+		this.avatar = "default.png"; // FIXME : 0 gérer
 	}
 
 	public User(int id, String name, String email, String avatar) {
-		this(id, name, email);
+		this.id = id;
+		this.name = name == null ? null : name.trim();
+		this.email = email;
 		this.avatar = avatar == null ? "default.png" : avatar;
 	}
 

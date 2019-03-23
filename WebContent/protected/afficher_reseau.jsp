@@ -9,6 +9,7 @@
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
+		<span id="userId" class="d-none">${id}</span>
 		<c:choose>
 			<c:when test="${is_mobile}">
 				<script type="text/javascript">
@@ -20,7 +21,13 @@
 								);
 						}
 						$("#looking_for").autocomplete({
-							source : "protected/service/name_resolver",
+							source: function(request, response) {
+								$.getJSON(
+									"protected/service/name_resolver",
+									{ term: $("#looking_for").val(), userId: $("#userId").html() },
+									response
+								);
+							},
 							minLength : 2,
 							appendTo: "#mobile_res_search_afficher_reseau",
 							position: { my : "left top", at: "left top", of : "#mobile_res_search_afficher_reseau" },
@@ -29,7 +36,12 @@
 								$("#form_rechercher_dans_reseau").submit();
 								return false;
 							}
-						});
+						}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+							return $( "<li class=\"ui-menu-item\"></li>" )
+								.data( "item.autocomplete", item )  
+								.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+								.appendTo( ul );
+						};
 					});
 				</script>
 			</c:when>
@@ -37,14 +49,25 @@
 				<script type="text/javascript">
 					$(document).ready(function() {
 						$("#looking_for").autocomplete({
-							source : "protected/service/name_resolver",
+							source: function(request, response) {
+								$.getJSON(
+									"protected/service/name_resolver",
+									{ term: $("#looking_for").val(), userId: $("#userId").html() },
+									response
+								);
+							},
 							minLength : 2,
 							select : function(event, ui) {
 								$("#looking_for").val(ui.item.email);
 								$("#form_rechercher_dans_reseau").submit();
 								return false;
 							}
-						});
+						}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+							return $( "<li class=\"ui-menu-item\"></li>" )
+							.data( "item.autocomplete", item )  
+							.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+							.appendTo( ul );
+						};
 					});
 				</script>
 			</c:otherwise>
