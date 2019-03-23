@@ -18,7 +18,7 @@
 <t:template_body_protected>
 	<jsp:body>
 		<div class="mb-3">
-			Avant d'ajouter une idée, je voudrai consulter <a href="protected/voir_liste?id=${userid}">ma liste</a>.
+			Avant d'ajouter une idée, je voudrais consulter <a href="protected/voir_liste?id=${userid}">ma liste</a>.
 		</div>
 		<div class="container border border-info bg-light rounded mb-2 p-3">
 			<form class="mw-50" action="protected/ma_liste" method="post" enctype="multipart/form-data">

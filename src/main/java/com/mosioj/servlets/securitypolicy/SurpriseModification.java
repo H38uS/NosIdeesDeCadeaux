@@ -67,7 +67,7 @@ public class SurpriseModification extends AllAccessToPostAndGet implements Secur
 		}
 		
 		if (idea.getSurpriseBy() == null || idea.getSurpriseBy().id != userId) {
-			lastReason = "Vous n'avez pas créer cette surprise.";
+			lastReason = "Vous n'avez pas créé cette surprise.";
 			return false;
 		}
 

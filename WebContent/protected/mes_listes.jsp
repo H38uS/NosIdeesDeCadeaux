@@ -265,7 +265,7 @@
 													</button>
 												</div>
 												<div class="modal-body">
-													<c:if test="${empty idea_from_liste.surpriseBy && not idea_from_liste.isBooked() && not idea_from_liste.isPartiallyBooked()}">
+													<c:if test="${not idea_from_liste.isBooked() && not idea_from_liste.isPartiallyBooked()}">
 														<div class="row align-items-center">
 															<div class="col-3 pr-0">
 																<a href="protected/reserver?idee=${idea_from_liste.id}&from=/${identic_call_back}" class="img idea_reserver">
@@ -343,12 +343,12 @@
 											<img src="resources/image/type/${idea_from_liste.category.image}" title="${idea_from_liste.category.title}" alt="${idea_from_liste.category.alt}" width="${action_img_width}px" />
 										</div>
 										</c:if>
-										<c:choose>
-											<c:when test="${not empty idea_from_liste.surpriseBy}">
+										<c:if test="${not empty idea_from_liste.surpriseBy}">
 											<div class="col-auto px-0">
 												<img src="resources/image/surprise.png" title="Idée surprise" width="${action_img_width}px" />
 											</div>
-											</c:when>
+										</c:if>
+										<c:choose>
 											<c:when test="${idea_from_liste.isBooked()}">
 												<c:choose>
 													<c:when test="${not empty idea_from_liste.bookingOwner}">
@@ -415,7 +415,7 @@
 										</c:if>
 										<span class="outer_top_tooltiptext">
 											<span class="top_tooltiptext">
-												<c:if test="${empty idea_from_liste.surpriseBy && not idea_from_liste.isBooked() && not idea_from_liste.isPartiallyBooked()}">
+												<c:if test="${not idea_from_liste.isBooked() && not idea_from_liste.isPartiallyBooked()}">
 													<a href="protected/reserver?idee=${idea_from_liste.id}&from=/${identic_call_back}" class="img idea_reserver">
 														<img src="resources/image/reserver.png" class="clickable" title="Réserver l'idée" width="${action_img_width}px" />
 													</a>
@@ -454,16 +454,7 @@
 									</div>
 									<div class="idea_square_modif_date" >
 										<c:choose>
-											<c:when test="${not empty idea_from_liste.surpriseBy}">
-												<c:choose>
-													<c:when test="${idea_from_liste.surpriseBy.id == userid}">
-														Idée surprise créée le ${idea_from_liste.modificationDate} par vous - l'<a href="protected/supprimer_surprise?idee=${idea_from_liste.id}&from=/${identic_call_back}">annuler</a>.
-													</c:when>
-													<c:otherwise>
-														Idée surprise créée le ${idea_from_liste.modificationDate} par ${idea_from_liste.surpriseBy.name}.
-													</c:otherwise>
-												</c:choose>
-											</c:when>
+											
 											<c:when test="${idea_from_liste.isBooked()}">
 												<c:choose>
 													<c:when test="${not empty idea_from_liste.bookingOwner}">
@@ -490,6 +481,18 @@
 													Non réservée, modifiée le ${idea_from_liste.modificationDate}.
 											</c:otherwise>
 										</c:choose>
+										<c:if test="${not empty idea_from_liste.surpriseBy}">
+											<div>
+												<c:choose>
+													<c:when test="${idea_from_liste.surpriseBy.id == userid}">
+														Idée surprise créée le ${idea_from_liste.modificationDate} par vous - la <a href="protected/supprimer_surprise?idee=${idea_from_liste.id}&from=/${identic_call_back}">supprimer</a>.
+													</c:when>
+													<c:otherwise>
+														Idée surprise créée le ${idea_from_liste.modificationDate} par ${idea_from_liste.surpriseBy.name}.
+													</c:otherwise>
+												</c:choose>
+											</div>
+										</c:if>
 									</div>
 								</div>
 								</div>

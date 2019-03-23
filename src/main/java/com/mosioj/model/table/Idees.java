@@ -757,14 +757,7 @@ public class Idees extends Table {
 		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
 		idee.hasAskedIfUpToDate = hasUserAskedIfUpToDate(idee.getId(), userId);
 
-		User surpriseBy = idee.getSurpriseBy();
-		if (surpriseBy != null) {
-			if (surpriseBy.id == userId) {
-				idee.displayClass = "booked_by_me_idea";
-			} else {
-				idee.displayClass = "booked_by_others_idea";
-			}
-		} else if (idee.isBooked()) {
+		if (idee.isBooked()) {
 			if (idee.getBookingOwner() != null) {
 				if (idee.getBookingOwner().id == userId) {
 					// Réservé par soit !
