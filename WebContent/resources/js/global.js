@@ -109,6 +109,11 @@ $(document).ready(function() {
 	$('.modal').on('show.bs.modal', function (e) {
 		lastModalOpened = $(this);
 	});
+	
+	// Mode mobile
+	if ( $("#mobile_res_search").css('display') == 'none' ) {
+		$("#header_name").focus();
+	}
 });
 
 function getPictureWidth() {
