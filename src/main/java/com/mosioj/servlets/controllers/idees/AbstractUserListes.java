@@ -30,16 +30,16 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
 	/**
 	 * Fills in the user ideas.
 	 * 
-	 * @param userId The connected user.
+	 * @param user The connected user.
 	 * @param ids We want the ideas of those user list.
 	 * @throws SQLException
 	 */
-	protected void fillsUserIdeas(int userId, List<User> ids) throws SQLException {
+	protected void fillsUserIdeas(User connectedUser, List<User> ids) throws SQLException {
 		logger.trace("Getting all ideas for all users...");
 		for (User user : ids) {
 			List<Idee> ownerIdeas = idees.getIdeasOf(user.id);
 			for (Idee idee : ownerIdeas) {
-				idees.fillAUserIdea(userId, idee, device);
+				idees.fillAUserIdea(connectedUser, idee, device);
 			}
 			user.addIdeas(ownerIdeas);
 		}

@@ -49,8 +49,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(request.getSession()).thenReturn(session);
 		when(request.getRequestURL()).thenReturn(new StringBuffer(CreationCompte.HTTP_LOCALHOST_8080));
 		when(request.getContextPath()).thenReturn("");
-		when(session.getAttribute("userid")).thenReturn(_OWNER_ID_);
-		when(session.getAttribute("username")).thenReturn("Firefox");
+		when(session.getAttribute("connected_user")).thenReturn(firefox);
 		when(session.getAttributeNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
 		when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
 		when(request.getAttribute("device")).thenReturn(device);

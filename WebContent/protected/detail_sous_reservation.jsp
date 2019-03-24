@@ -17,12 +17,12 @@
 						<div class="col-auto">
 							<span class="badge badge-info">
 								<c:choose>
-									<c:when test="${resa.user.id == userid}">Vous</c:when>
+									<c:when test="${resa.user.id == connected_user.id}">Vous</c:when>
 									<c:otherwise>${resa.user.name}</c:otherwise>
 								</c:choose>
 							</span>
 						</div>
-						<c:if test="${resa.user.id == userid}">
+						<c:if test="${resa.user.id == connected_user.id}">
 							<div class="col-auto">
 								<form class="form-inline" action="protected/annuler_sous_reservation" method="post" >
 									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

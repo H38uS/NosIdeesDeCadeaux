@@ -71,7 +71,7 @@
 					<span class="ml-3 d-none d-lg-inline">Compléter ma liste</span>
 				</div>
 				<div class="col-auto col-sm-4 col-lg-5 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
-					<a href="protected/afficher_reseau?id=${userid}" class="img">
+					<a href="protected/afficher_reseau?id=${connected_user.id}" class="img">
 						<img class="clickable" alt="Mes amis" title="Mes amis" src="resources/image/index/CreerGroupeOUT.png"
 											onmouseout="this.src='resources/image/index/CreerGroupeOUT.png'"
 											onmouseover="this.src='resources/image/index/CreerGroupeOVER.png'" />

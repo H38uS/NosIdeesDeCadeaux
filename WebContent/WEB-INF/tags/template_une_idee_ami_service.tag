@@ -101,7 +101,7 @@
 					<c:choose>
 						<c:when test="${not empty idee.bookingOwner}">
 							<c:choose>
-								<c:when test="${userid == idee.bookingOwner.id}">
+								<c:when test="${connected_user.id == idee.bookingOwner.id}">
 								<div class="col-auto px-0">	
 									<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_dereserver">
 										<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
@@ -207,7 +207,7 @@
 					<c:choose>
 						<c:when test="${not empty idee.bookingOwner}">
 							<c:choose>
-								<c:when test="${userid == idee.bookingOwner.id}">
+								<c:when test="${connected_user.id == idee.bookingOwner.id}">
 									Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="idea_dereserver">Annuler</a> !
 								</c:when>
 								<c:otherwise>
@@ -232,7 +232,7 @@
 			<c:if test="${not empty idee.surpriseBy}">
 				<div>
 					<c:choose>
-						<c:when test="${idee.surpriseBy.id == userid}">
+						<c:when test="${idee.surpriseBy.id == connected_user.id}">
 							Idée surprise créée le ${idee.modificationDate} par vous - la <a href="protected/supprimer_surprise?idee=${idee.id}&from=/${identic_call_back}">supprimer</a>.
 						</c:when>
 						<c:otherwise>

@@ -34,12 +34,12 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 	/**
 	 * Drops all notification linked to questions of the given owner links to the given idea.
 	 * 
-	 * @param ownerId
+	 * @param owner
 	 * @param ideaId
 	 * @throws SQLException
 	 */
-	private void dropNotificationOnView(int ownerId, int ideaId) throws SQLException {
-		notif.removeAllType(ownerId, NotificationType.NEW_COMMENT_ON_IDEA, ParameterName.IDEA_ID, ideaId);
+	private void dropNotificationOnView(User owner, int ideaId) throws SQLException {
+		notif.removeAllType(owner, NotificationType.NEW_COMMENT_ON_IDEA, ParameterName.IDEA_ID, ideaId);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
 		request.setAttribute("comments", comments.getCommentsOn(idea.getId()));
-		dropNotificationOnView(ParametersUtils.getUserId(request), idea.getId());
+		dropNotificationOnView(ParametersUtils.getConnectedUser(request), idea.getId());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
@@ -57,14 +57,13 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
 		String text = ParametersUtils.readAndEscape(request, "text");
 
-		int userId = ParametersUtils.getUserId(request);
-		comments.addComment(userId, id, text);
+		User current = ParametersUtils.getConnectedUser(request);
+		comments.addComment(current.id, id, text);
 		Idee idea = policy.getIdea();
 
 		Set<User> toBeNotified = new HashSet<User>();
 
 		// If the idea is booked, we notify the bookers
-		User current = users.getUser(userId);
 		toBeNotified.addAll(idea.getBookers(groupForIdea, sousReservation));
 
 		// Notifying at least all people in the thread
@@ -77,7 +76,7 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 			notif.addNotification(notified.id, new NotifNewCommentOnIdea(current, idea));
 		}
 
-		dropNotificationOnView(ParametersUtils.getUserId(request), id);
+		dropNotificationOnView(ParametersUtils.getConnectedUser(request), id);
 		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + id, request, response);
 	}
 

@@ -94,11 +94,11 @@ public class UserRelationsSuggestion extends Table {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param user
 	 * @return The suggestions for this user.
 	 * @throws SQLException
 	 */
-	public List<RelationSuggestion> getUserSuggestions(int userId) throws SQLException {
+	public List<RelationSuggestion> getUserSuggestions(User user) throws SQLException {
 
 		List<RelationSuggestion> suggestions = new ArrayList<RelationSuggestion>();
 		StringBuilder query = new StringBuilder();
@@ -117,7 +117,7 @@ public class UserRelationsSuggestion extends Table {
 
 		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
 		try {
-			ps.bindParameters(userId);
+			ps.bindParameters(user.id);
 			if (ps.execute()) {
 
 				ResultSet res = ps.getResultSet();

@@ -37,9 +37,9 @@ public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
 		toBeNotified.addAll(idea.getBookers(groupForIdea, sousReservation));
 
 		// Puis si l'anniversaire est proche, tous les amis !
-		User current = users.getUser(ParametersUtils.getUserId(request));
+		User current = ParametersUtils.getConnectedUser(request);
 		if (isBirthdayClose(current)) {
-			toBeNotified.addAll(userRelations.getAllUsersInRelation(current.id));
+			toBeNotified.addAll(userRelations.getAllUsersInRelation(current));
 		}
 
 		// Notification

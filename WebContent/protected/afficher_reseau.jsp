@@ -196,13 +196,13 @@
 							</div>
 							<div class="card-footer">
 								<c:choose>
-									<c:when test="${relation.second.id != userid && relation.secondIsInMyNetwork}">
+									<c:when test="${relation.second.id != connected_user.id && relation.secondIsInMyNetwork}">
 										Aller voir <a href="protected/voir_liste?id=${relation.second.id}">sa liste</a>.<br/>
 										<a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
 										Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
 										<a class="drop_relationship" href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
 									</c:when>
-									<c:when test="${relation.second.id == userid}">
+									<c:when test="${relation.second.id == connected_user.id}">
 										Vous ne pouvez pas intéragir avec vous-même !
 									</c:when>
 									<c:otherwise>

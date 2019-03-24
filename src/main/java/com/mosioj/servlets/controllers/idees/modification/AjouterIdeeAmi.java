@@ -65,14 +65,15 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 													parameters.get("text"),
 													parameters.get("type"),
 													parameters.get("priority")));
-				User currentUser = users.getUser(ParametersUtils.getUserId(request));
+				User currentUser = ParametersUtils.getConnectedUser(request);
 				boolean estSurprise = false;
 				if ("on".equals(parameters.get("est_surprise"))) {
 					if (id != currentUser.id) {
 						estSurprise = true;
 					}
 				}
-				int ideaId = idees.addIdea(	id,
+				User addedToUser = users.getUser(id);
+				int ideaId = idees.addIdea(	addedToUser,
 											parameters.get("text"),
 											parameters.get("type"),
 											Integer.parseInt(parameters.get("priority")),
@@ -84,7 +85,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 
 				if (!estSurprise) {
 					notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));
-					notif.removeAllType(id, NotificationType.NO_IDEA);
+					notif.removeAllType(addedToUser, NotificationType.NO_IDEA);
 				}
 			}
 

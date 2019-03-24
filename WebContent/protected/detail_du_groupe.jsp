@@ -47,7 +47,7 @@
 			</c:when>
 			<c:otherwise>
 				<c:forEach var="share" items="${group.shares}">
-					<c:if test="${userid == share.user.id}">
+					<c:if test="${connected_user.id == share.user.id}">
 						<form class="form-inline d-inline" method="POST" action="protected/detail_du_groupe">
 							<label for="amount" class="d-none d-lg-inline-block">Modifier le montant :</label> 
 							<input id="amount" class="form-control mt-2 mt-md-0" name="amount" type="text" value="${share.shareAmount}" />

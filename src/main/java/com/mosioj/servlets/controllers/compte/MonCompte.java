@@ -37,8 +37,7 @@ public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
 		logger.debug("Displaying mon compte page...");
-		int userId = ParametersUtils.getUserId(request);
-		User current = users.getUser(userId);
+		User current = ParametersUtils.getConnectedUser(request);
 		request.setAttribute("user", current);
 
 		HttpSession session = request.getSession();
@@ -51,11 +50,11 @@ public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			session.removeAttribute("errors_info_gen");
 		}
 		
-		List<UserParameter> userNotificationParameters = userParameters.getUserNotificationParameters(userId);
+		List<UserParameter> userNotificationParameters = userParameters.getUserNotificationParameters(current.id);
 		request.setAttribute("notif_types", userNotificationParameters);
 		
-		request.setAttribute("parents", parentRelationship.getParents(userId));
-		request.setAttribute("children", parentRelationship.getChildren(userId));
+		request.setAttribute("parents", parentRelationship.getParents(current.id));
+		request.setAttribute("children", parentRelationship.getChildren(current.id));
 
 		request.setAttribute("possible_values", NotificationActivation.values());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);

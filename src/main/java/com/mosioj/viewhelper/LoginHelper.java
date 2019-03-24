@@ -37,15 +37,6 @@ public class LoginHelper implements Filter {
 	 */
 	private static final Logger logger = LogManager.getLogger(LoginHelper.class);
 
-	/**
-	 * 
-	 * @param userName The user name not formatted.
-	 * @return The formatted username.
-	 */
-	public static String formatUserName(String userName) {
-		return userName.substring(0, 1).toUpperCase() + userName.substring(1).toLowerCase();
-	}
-
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -58,60 +49,26 @@ public class LoginHelper implements Filter {
 		if (name != null) {
 
 			name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-			request.setAttribute("username", name);
-			session.setAttribute("username", name);
 
 			// Storing the Id if not stored yet
-			Integer userId = (Integer) session.getAttribute("userid");
-			if (userId == null) {
+			User user = (User) session.getAttribute("connected_user");
+			if (user == null) {
 				try {
-					// Getting the id
-					Users user = new Users();
-					try {
-						userId = user.getId(name);
-						User connected = user.getUser(userId);
-						// Storing the new one
-						session.setAttribute("userid", userId);
-						session.setAttribute("emailorname", connected.getName());
-					} catch (NoRowsException e) {
-						// Impossible: le nom existe forcément
-						// Sait-on jamais, on le log
-						logger.fatal(MessageFormat.format("L''utilisateur {0} est connecté mais n''a pas de compte...", name));
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			Object emailorname = session.getAttribute("emailorname");
-			if (emailorname == null) {
-				try {
-					Users user = new Users();
-					User connected = user.getUser(userId);
-					session.setAttribute("emailorname", connected.getName());
-					emailorname = connected.getName();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-
-			// FIXME : 0 faut vraiment stocker le user...
-			Object avatar = session.getAttribute("connected_user_avatar");
-			if (avatar == null) {
-				try {
-					Users user = new Users();
-					User connected = user.getUser(userId);
-					session.setAttribute("connected_user_avatar", connected.getAvatarSrcSmall());
-					avatar = connected.getAvatarSrcSmall();
-				} catch (SQLException e) {
+					user = new Users().getUser(new Users().getId(name));
+					// Storing the new one
+					session.setAttribute("connected_user", user);
+					session.setAttribute("userid", user.id); // FIXME : 0 supprimer en vérifiant toutes les pages...
+				} catch (NoRowsException | SQLException e) {
+					// Impossible: le nom existe forcément
+					// Sait-on jamais, on le log
+					logger.fatal(MessageFormat.format("L''utilisateur {0} est connecté mais n''a pas de compte...", name));
 					e.printStackTrace();
 				}
 			}
 
 			String workDir = session.getServletContext().getInitParameter("work_dir");
 			request.setAttribute("work_dir", workDir);
-			request.setAttribute("userid", userId);
-			request.setAttribute("emailorname", emailorname);
-			request.setAttribute("connected_user_avatar", avatar);
+			request.setAttribute("connected_user", user);
 
 			File work = new File(workDir);
 			if (!work.exists()) {
@@ -128,17 +85,11 @@ public class LoginHelper implements Filter {
 			request.setAttribute("ideas_pictures", "protected/files/uploaded_pictures/ideas");
 
 			// Child connection
-			Object initial = session.getAttribute("initial_user_id");
+			Object initial = session.getAttribute("initial_connected_user");
 			if (initial != null) {
-				try {
-					int initial_id = Integer.parseInt(initial.toString());
-					request.setAttribute("initial_user_id", initial_id);
-					Users users = new Users();
-					request.setAttribute("initial_user_name", users.getUser(initial_id).getName());
-				} catch (Exception e) {
-				}
+				request.setAttribute("initial_connected_user", initial);
 			}
-			
+
 			request.setAttribute("is_admin", httpServletRequest.isUserInRole("ROLE_ADMIN"));
 		}
 

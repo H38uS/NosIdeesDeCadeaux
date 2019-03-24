@@ -49,7 +49,7 @@ public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet implements S
 				return false;
 			}
 
-			int userId = ParametersUtils.getUserId(request);
+			int userId = ParametersUtils.getConnectedUser(request).id;
 			for (int user : ids.toArray(new Integer[ids.size()])) {
 				if (user == userId) {
 					lastReason = "Vous ne pouvez pas être ami avec vous-même...";

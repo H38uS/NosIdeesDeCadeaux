@@ -54,12 +54,12 @@ public class GroupIdea extends Table {
 	 * @throws SQLException
 	 */
 	private int addNewAmount(double amount, int userId, int groupId) throws SQLException {
-		return getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
-																			TABLE_NAME_CONTENT,
-																			GROUP_ID,
-																			USER_ID,
-																			PRICE,
-																			JOIN_DATE),
+		return getDb().executeUpdateGeneratedKey(	MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
+																		TABLE_NAME_CONTENT,
+																		GROUP_ID,
+																		USER_ID,
+																		PRICE,
+																		JOIN_DATE),
 													groupId,
 													userId,
 													amount);
@@ -79,7 +79,7 @@ public class GroupIdea extends Table {
 		q.append("  from {3} gi, {4} gic \n ");
 		q.append("  left join {7} u on u.id = gic.{1} \n ");
 		q.append(" where gi.{5} = gic.{6} and gi.{5} = ? ");
-		
+
 		LOGGER.debug(q.toString());
 
 		String query = MessageFormat.format(q.toString(),
@@ -104,19 +104,19 @@ public class GroupIdea extends Table {
 
 				if (res.next()) {
 					group = Optional.of(new IdeaGroup(groupId, res.getDouble(NEEDED_PRICE.name())));
-					group.get().addUser(	new User(	res.getInt(USER_ID.name()),
-												res.getString(UsersColumns.NAME.name()),
-												res.getString(UsersColumns.EMAIL.name()),
-												res.getString(UsersColumns.AVATAR.name())),
-									res.getDouble(PRICE.name()));
+					group.get().addUser(new User(	res.getInt(USER_ID.name()),
+													res.getString(UsersColumns.NAME.name()),
+													res.getString(UsersColumns.EMAIL.name()),
+													res.getString(UsersColumns.AVATAR.name())),
+										res.getDouble(PRICE.name()));
 				}
 
 				while (res.next()) {
-					group.get().addUser(	new User(	res.getInt(USER_ID.name()),
-												res.getString(UsersColumns.NAME.name()),
-												res.getString(UsersColumns.EMAIL.name()),
-												res.getString(UsersColumns.AVATAR.name())),
-									res.getDouble(PRICE.name()));
+					group.get().addUser(new User(	res.getInt(USER_ID.name()),
+													res.getString(UsersColumns.NAME.name()),
+													res.getString(UsersColumns.EMAIL.name()),
+													res.getString(UsersColumns.AVATAR.name())),
+										res.getDouble(PRICE.name()));
 				}
 			}
 		} finally {
@@ -130,23 +130,23 @@ public class GroupIdea extends Table {
 	/**
 	 * 
 	 * @param groupId
-	 * @param userId
+	 * @param user
 	 * @param newAmount
 	 * @return True if and only if the user is a new participant.
 	 * @throws SQLException
 	 */
-	public boolean updateAmount(Integer groupId, int userId, double newAmount) throws SQLException {
+	public boolean updateAmount(Integer groupId, User user, double newAmount) throws SQLException {
 		try {
-			addNewAmount(newAmount, userId, groupId);
+			addNewAmount(newAmount, user.id, groupId);
 			return true;
 		} catch (SQLException e) {
-			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? and {3} = ?",
-															TABLE_NAME_CONTENT,
-															PRICE,
-															USER_ID,
-															GROUP_ID),
+			getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ? where {2} = ? and {3} = ?",
+														TABLE_NAME_CONTENT,
+														PRICE,
+														USER_ID,
+														GROUP_ID),
 									newAmount,
-									userId,
+									user.id,
 									groupId);
 			return false;
 		}
@@ -154,48 +154,45 @@ public class GroupIdea extends Table {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param user
 	 * @param groupId
 	 * @return true if there is at least one member left
 	 * @throws SQLException
 	 */
-	public boolean removeUserFromGroup(int userId, Integer groupId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"delete from {0} where {1} = ? and {2} = ?",
-														TABLE_NAME_CONTENT,
-														USER_ID,
-														GROUP_ID),
-								userId,
+	public boolean removeUserFromGroup(User user, Integer groupId) throws SQLException {
+		getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? and {2} = ?", TABLE_NAME_CONTENT, USER_ID, GROUP_ID),
+								user.id,
 								groupId);
 		if (!getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? ", TABLE_NAME_CONTENT, GROUP_ID), groupId)) {
 			getDb().executeUpdate("delete from " + TABLE_NAME + " where " + ID + " = ?", groupId);
-			getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = null, {2} = null where {1} = ?",
-															Idees.TABLE_NAME,
-															IdeeColumns.GROUPE_KDO_ID,
-															IdeeColumns.RESERVE_LE),
+			getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = null, {2} = null where {1} = ?",
+														Idees.TABLE_NAME,
+														IdeeColumns.GROUPE_KDO_ID,
+														IdeeColumns.RESERVE_LE),
 									groupId);
 			return false;
 		}
 		return true;
 	}
 
-	public void removeUserFromAllGroups(int userId) throws SQLException {
+	public void removeUserFromAllGroups(User user) throws SQLException {
 
 		String query = MessageFormat.format("select distinct {0} from {1} where {2} = ? ", GROUP_ID, TABLE_NAME_CONTENT, USER_ID);
 
 		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
 
-			ps.bindParameters(userId);
+			ps.bindParameters(user.id);
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
 				while (res.next()) {
-					removeUserFromGroup(userId, res.getInt(GROUP_ID.name()));
+					removeUserFromGroup(user, res.getInt(GROUP_ID.name()));
 				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.error(MessageFormat.format(	"Error while fetching query to remove user id {0} from groups. Exception: {1}",
-												userId,
+												user,
 												e.getMessage()));
 		}
 
@@ -203,17 +200,17 @@ public class GroupIdea extends Table {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param user
 	 * @param groupId
 	 * @return True if and only if this user belongs to this group.
 	 * @throws SQLException
 	 */
-	public boolean belongsToGroup(int userId, int groupId) throws SQLException {
-		return getDb().doesReturnRows(	MessageFormat.format(	"select 1 from {0} where {1} = ? and {2} = ?",
-																TABLE_NAME_CONTENT,
-																USER_ID,
-																GROUP_ID),
-										userId,
+	public boolean belongsToGroup(User user, int groupId) throws SQLException {
+		return getDb().doesReturnRows(	MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
+															TABLE_NAME_CONTENT,
+															USER_ID,
+															GROUP_ID),
+										user.id,
 										groupId);
 	}
 

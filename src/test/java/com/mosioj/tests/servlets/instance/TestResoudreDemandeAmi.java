@@ -52,10 +52,10 @@ public class TestResoudreDemandeAmi extends AbstractTestServlet {
 
 		// Ajout des notifs
 		int n1 = notif.addNotification(_OWNER_ID_, new NotifDemandeRefusee(_MOI_AUTRE_, "Moi Autre"));
-		int n2 = notif.addNotification(_MOI_AUTRE_, new NotifFriendshipDropped(_OWNER_ID_, "Firefox"));
+		int n2 = notif.addNotification(_MOI_AUTRE_, new NotifFriendshipDropped(firefox));
 		int newRelationSuggestion = notif.addNotification(_OWNER_ID_, new NotifNewRelationSuggestion(_MOI_AUTRE_, "Friend of firefox"));
 		int notRemoved = notif.addNotification(_OWNER_ID_, new NotifNewRelationSuggestion(_FRIEND_ID_, "Friend of firefox"));
-		int newFriendshipRequest = notif.addNotification(_OWNER_ID_, new NotifNouvelleDemandeAmi(_MOI_AUTRE_, _OWNER_ID_, "Moi autre"));
+		int newFriendshipRequest = notif.addNotification(_OWNER_ID_, new NotifNouvelleDemandeAmi(moiAutre, _OWNER_ID_, "Moi autre"));
 		assertNotifDoesExists(n1);
 		assertNotifDoesExists(n2);
 		assertNotifDoesExists(newRelationSuggestion);
@@ -63,7 +63,7 @@ public class TestResoudreDemandeAmi extends AbstractTestServlet {
 		assertNotifDoesExists(newFriendshipRequest);
 		
 		// Ajout de la demande d'ami
-		userRelationRequests.insert(_MOI_AUTRE_, _OWNER_ID_);
+		userRelationRequests.insert(moiAutre, firefox);
 
 		when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
 		Map<String, String[]> params = new HashMap<String, String[]>();

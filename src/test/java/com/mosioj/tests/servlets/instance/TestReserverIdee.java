@@ -25,7 +25,7 @@ public class TestReserverIdee extends AbstractTestServlet {
 	@Test
 	public void test() throws SQLException, NoRowsException, ServletException, IOException {
 
-		int id = idees.addIdea(_FRIEND_ID_, "reservation", "", 0, null, null, null);
+		int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 		Idee idee = idees.getIdeaWithoutEnrichment(id);
 
 		int recurentUnbook = notif.addNotification(_OWNER_ID_, new NotifRecurentIdeaUnbook(friendOfFirefox, idee));

@@ -66,8 +66,8 @@ public class TemplateTest {
 	
 	public TemplateTest() {
 		try {
-			friendOfFirefox = users.getUser(_OWNER_ID_);
-			firefox = users.getUser(_FRIEND_ID_);
+			friendOfFirefox = users.getUser(_FRIEND_ID_);
+			firefox = users.getUser(_OWNER_ID_);
 			moiAutre = users.getUser(_MOI_AUTRE_);
 		} catch (SQLException e) {
 			fail("Fail to retrieve the friend of Firefox");
@@ -98,9 +98,9 @@ public class TemplateTest {
 		assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 		
 		for (NotificationType type : NotificationType.values()) {
-			userParameters.insertUpdateParameter(_OWNER_ID_, type.name(), NotificationActivation.SITE.name());
-			userParameters.insertUpdateParameter(_FRIEND_ID_, type.name(), NotificationActivation.SITE.name());
-			userParameters.insertUpdateParameter(_MOI_AUTRE_, type.name(), NotificationActivation.SITE.name());
+			userParameters.insertUpdateParameter(new User(_OWNER_ID_,"","",""), type.name(), NotificationActivation.SITE.name());
+			userParameters.insertUpdateParameter(new User(_FRIEND_ID_,"","",""), type.name(), NotificationActivation.SITE.name());
+			userParameters.insertUpdateParameter(new User(_MOI_AUTRE_,"","",""), type.name(), NotificationActivation.SITE.name());
 		}
 	}
 

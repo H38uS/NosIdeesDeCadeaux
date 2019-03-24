@@ -33,7 +33,7 @@ public class MesNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		int userId = ParametersUtils.getUserId(req);
+		int userId = ParametersUtils.getConnectedUser(req).id;
 		req.setAttribute("unread_notifications", notif.getUserUnReadNotifications(userId));
 		req.setAttribute("read_notifications", notif.getUserReadNotifications(userId));
 

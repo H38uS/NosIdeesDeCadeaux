@@ -58,7 +58,7 @@ public class CanAskReplyToQuestions extends AllAccessToPostAndGet implements Sec
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		idea = idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {

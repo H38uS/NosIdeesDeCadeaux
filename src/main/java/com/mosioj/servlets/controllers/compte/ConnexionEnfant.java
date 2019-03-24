@@ -38,29 +38,26 @@ public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		if (request.getAttribute("initial_user_name") != null) {
+		if (request.getAttribute("initial_connected_user") != null) {
 			request.setAttribute(	"error_message",
 									"Vous vous êtes déjà connecté à un autre utilisateur. Revenez d'abord à votre compte.");
 			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
 			return;
 		}
 
-		int currentUserId = ParametersUtils.getUserId(request);
 		Integer childId = ParametersUtils.readInt(request, CHILD_ID_PARAM);
-		User current = users.getUser(currentUserId);
+		User current = ParametersUtils.getConnectedUser(request);
 		User newOne = users.getUser(childId);
 
-		logger.info(MessageFormat.format("Connection depuis {0} en tant que {1}.", currentUserId, childId));
+		logger.info(MessageFormat.format("Connection depuis {0} en tant que {1}.", current.id, childId));
 		HttpSession session = request.getSession();
-		session.setAttribute("initial_user_id", currentUserId);
-		request.setAttribute("initial_user_name", current.getName());
-		session.setAttribute("userid", childId);
-		session.setAttribute("emailorname", newOne.getName());
-		request.setAttribute("emailorname", newOne.getName());
-		session.setAttribute("connected_user_avatar", newOne.getAvatarSrcSmall());
-		request.setAttribute("connected_user_avatar", newOne.getAvatarSrcSmall());
 
+		session.setAttribute("connected_user", newOne);
+		request.setAttribute("connected_user", newOne);
 		request.setAttribute("new_name", newOne.getName());
+
+		session.setAttribute("initial_connected_user", current);
+		request.setAttribute("initial_connected_user", current);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 

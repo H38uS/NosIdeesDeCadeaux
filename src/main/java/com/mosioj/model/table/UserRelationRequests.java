@@ -42,14 +42,14 @@ public class UserRelationRequests extends Table {
 	 * @param sent_to
 	 * @throws SQLException
 	 */
-	public void insert(int sent_by, int sent_to) throws SQLException {
+	public void insert(User sent_by, User sent_to) throws SQLException {
 		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3}) values (?,?,now())",
 																	TABLE_NAME,
 																	SENT_BY_USER,
 																	SENT_TO_USER,
 																	REQUEST_DATE),
-											sent_by,
-											sent_to);
+											sent_by.id,
+											sent_to.id);
 	}
 
 	/**

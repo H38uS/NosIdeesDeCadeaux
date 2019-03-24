@@ -43,14 +43,13 @@ public class ServiceSupprimerRelation extends AbstractService<AllAccessToPostAnd
 
 		try {
 			Integer user = ParametersUtils.readInt(request, USER_PARAMETER);
-			int currentId = ParametersUtils.getUserId(request);
-			userRelations.deleteAssociation(user, currentId);
-			notif.removeAllType(currentId, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
-			notif.removeAllType(user, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, currentId);
+			User thisOne = ParametersUtils.getConnectedUser(request);
+			userRelations.deleteAssociation(user, thisOne.id);
+			notif.removeAllType(thisOne, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
+			notif.removeAllType(users.getUser(user), NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, thisOne);
 
 			// Send a notification
-			User me = users.getUser(currentId);
-			notif.addNotification(user, new NotifFriendshipDropped(currentId, me.getName()));
+			notif.addNotification(user, new NotifFriendshipDropped(thisOne));
 		} catch (SQLException | NotLoggedInException e) {
 			status = "ko";
 			message = e.getMessage();

@@ -42,7 +42,7 @@ public class AjouterParent extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 		int parentId;
 		try {
 			parentId = users.getIdFromNameOrEmail(nameOrEmail);
-			int userId = ParametersUtils.getUserId(request);
+			int userId = ParametersUtils.getConnectedUser(request).id;
 			if (!parentRelationship.doesRelationExists(parentId, userId) && parentId != userId) {
 				logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
 				parentRelationship.addProcuration(parentId, userId);

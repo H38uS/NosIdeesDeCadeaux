@@ -42,7 +42,7 @@
 				<c:otherwise>
 					<c:forEach var="comment" items="${comments}" >
 						<c:choose>
-							<c:when test="${userid == comment.writtenBy.id}">
+							<c:when test="${connected_user.id == comment.writtenBy.id}">
 								<div class="comment comment_mine">
 									<div class="comment_header_mine">Posté par vous le ${comment.time} - le <a href="protected/supprimer_commentaire?id=${comment.id}">supprimer</a></div>
 									<div class="comment_text">${comment.text}</div>

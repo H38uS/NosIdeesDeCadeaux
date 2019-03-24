@@ -54,7 +54,7 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		AbstractNotification n = notif.getNotification(notifId);
 		if (n == null) {

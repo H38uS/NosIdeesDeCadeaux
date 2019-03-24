@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
 import com.mosioj.model.UserParameter;
 import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.notifications.NotificationType;
@@ -28,14 +29,14 @@ public class UserParameters extends Table {
 		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, USER_ID), userId);
 	}
 
-	public void insertUpdateParameter(int userId, String paramName, String paramValue) throws SQLException {
+	public void insertUpdateParameter(User user, String paramName, String paramValue) throws SQLException {
 		int nb = getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ? where {2} = ? and {3} = ?",
 																TABLE_NAME,
 																PARAMETER_VALUE,
 																USER_ID,
 																PARAMETER_NAME),
 										paramValue,
-										userId,
+										user.id,
 										paramName);
 		if (nb == 0) {
 			getDb().executeUpdate(	MessageFormat.format(	"insert into {0} ({1}, {2}, {3}) values (?, ?, ?)",
@@ -44,7 +45,7 @@ public class UserParameters extends Table {
 															USER_ID,
 															PARAMETER_NAME),
 									paramValue,
-									userId,
+									user.id,
 									paramName);
 		}
 	}

@@ -79,7 +79,7 @@ public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 		Double amount = ParametersUtils.readDouble(request, "amount");
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 		Integer groupId = null;
 		if (idees.canBook(idea.getId(), userId)) {
 			groupId = groupForIdea.createAGroup(total, amount, userId);

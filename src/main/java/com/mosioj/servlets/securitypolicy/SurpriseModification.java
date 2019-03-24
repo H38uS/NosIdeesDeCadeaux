@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.User;
 import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.UserRelations;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
@@ -58,7 +59,7 @@ public class SurpriseModification extends AllAccessToPostAndGet implements Secur
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		User thisOne = ParametersUtils.getConnectedUser(request);
 
 		idea = idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {
@@ -66,12 +67,12 @@ public class SurpriseModification extends AllAccessToPostAndGet implements Secur
 			return false;
 		}
 		
-		if (idea.getSurpriseBy() == null || idea.getSurpriseBy().id != userId) {
+		if (idea.getSurpriseBy() == null || !idea.getSurpriseBy().equals(thisOne)) {
 			lastReason = "Vous n'avez pas créé cette surprise.";
 			return false;
 		}
 
-		boolean res = userRelations.associationExists(userId, idea.owner.id);
+		boolean res = userRelations.associationExists(thisOne.id, idea.owner.id);
 		if (!res) {
 			lastReason = "Vous n'avez pas accès aux idées de cette personne.";
 		}

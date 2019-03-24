@@ -150,7 +150,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 	 */
 	protected void addModificationNotification(User user, Idee idea, boolean isNew) throws SQLException {
 		if (isBirthdayClose(user)) {
-			for (User friend : userRelations.getAllUsersInRelation(user.id)) {
+			for (User friend : userRelations.getAllUsersInRelation(user)) {
 				notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
 			}
 		}
@@ -160,7 +160,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 	 * 
 	 * @param request
 	 * @param response
-	 * @param userId
+	 * @param user
 	 * @param idea
 	 * @param landingURL
 	 * @return True in case of success, false otherwise.
@@ -169,7 +169,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 	 */
 	protected boolean sousReserver(	HttpServletRequest request,
 									HttpServletResponse response,
-									int userId,
+									User user,
 									Idee idea,
 									String landingURL) throws SQLException, ServletException {
 
@@ -179,7 +179,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 			errors.add("Le commentaire ne peut pas être vide !");
 		}
 
-		if (!idees.canSubBook(idea.getId(), userId)) {
+		if (!idees.canSubBook(idea.getId(), user.id)) {
 			errors.add("L'idée a déjà été réservée, ou vous en avez déjà réservé une sous partie.");
 		}
 
@@ -189,8 +189,8 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 			return false;
 		}
 
-		idees.sousReserver(idea.getId(), userId, comment);
-		sousReservation.sousReserver(idea.getId(), userId, comment);
+		idees.sousReserver(idea.getId(), user.id, comment);
+		sousReservation.sousReserver(idea.getId(), user.id, comment);
 		return true;
 	}
 

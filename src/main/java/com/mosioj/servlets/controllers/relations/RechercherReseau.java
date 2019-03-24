@@ -85,7 +85,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 																nameOrEmail,
 																firstRow,
 																maxNumberOfResults);
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		// Ajout du flag network
 		for (Relation r : relations) {

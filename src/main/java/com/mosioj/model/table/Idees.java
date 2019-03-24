@@ -375,24 +375,24 @@ public class Idees extends Table {
 	/**
 	 * 
 	 * @param ideaId
-	 * @param userId
+	 * @param user
 	 * @return True if and only if the user has sub booked the idea.
 	 * @throws SQLException
 	 * @throws NoRowsException
 	 */
-	public boolean isSubBookBy(int ideaId, int userId) throws SQLException {
+	public boolean isSubBookBy(int ideaId, User user) throws SQLException {
 		return getDb().selectCountStar(	MessageFormat.format("select count(*) from {0} where {1} = ? and {2} = ?",
 															SousReservation.TABLE_NAME,
 															SousReservationColumns.IDEE_ID,
 															SousReservationColumns.USER_ID),
 										ideaId,
-										userId) > 0;
+										user.id) > 0;
 	}
 
 	/**
 	 * Add a new idea in the IDEES table.
 	 * 
-	 * @param ownerId
+	 * @param owner
 	 * @param text
 	 * @param type
 	 * @param priorite
@@ -401,7 +401,7 @@ public class Idees extends Table {
 	 * @param createdBy
 	 * @throws SQLException
 	 */
-	public int addIdea(	int ownerId,
+	public int addIdea(	User owner,
 						String text,
 						String type,
 						int priorite,
@@ -410,7 +410,7 @@ public class Idees extends Table {
 						User createdBy) throws SQLException {
 
 		type = type == null ? "" : type;
-		int createdById = createdBy == null ? ownerId : createdBy.id;
+		int createdById = createdBy == null ? owner.id : createdBy.id;
 
 		StringBuilder insert = new StringBuilder();
 		insert.append("insert into ");
@@ -432,13 +432,13 @@ public class Idees extends Table {
 		try {
 			text = Escaper.textToHtml(text);
 			logger.info(MessageFormat.format(	"Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
-												ownerId,
+			                                 	owner.id,
 												text,
 												type,
 												image,
 												surprisePar,
 												priorite));
-			ps.bindParameters(ownerId, text, type, image, surprisePar == null ? null : surprisePar.id, createdById, priorite);
+			ps.bindParameters(owner, text, type, image, surprisePar == null ? null : surprisePar.id, createdById, priorite);
 
 			return ps.executeUpdate();
 
@@ -542,16 +542,16 @@ public class Idees extends Table {
 	 * Supprime la sous réservation de la personne.
 	 * 
 	 * @param ideaId
-	 * @param userId
+	 * @param user
 	 * @throws SQLException
 	 */
-	public void dereserverSousPartie(int ideaId, int userId) throws SQLException {
+	public void dereserverSousPartie(int ideaId, User user) throws SQLException {
 		int nb = getDb().executeUpdate(	MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
 															SousReservation.TABLE_NAME,
 															SousReservationColumns.IDEE_ID,
 															SousReservationColumns.USER_ID),
 										ideaId,
-										userId);
+										user.id);
 		if (nb > 0 && getDb().selectCountStar(
 												MessageFormat.format(	"select count(*) from {0} where {1} = ?",
 																		SousReservation.TABLE_NAME,
@@ -767,20 +767,20 @@ public class Idees extends Table {
 
 	/**
 	 * 
-	 * @param userId The connected user.
+	 * @param user The connected user.
 	 * @param idee
 	 * @param device
 	 * @throws SQLException
 	 */
-	public void fillAUserIdea(int userId, Idee idee, Device device) throws SQLException {
+	public void fillAUserIdea(User user, Idee idee, Device device) throws SQLException {
 
 		idee.hasComment = comments.getNbComments(idee.getId()) > 0;
 		idee.hasQuestion = questions.getNbQuestions(idee.getId()) > 0;
-		idee.hasAskedIfUpToDate = hasUserAskedIfUpToDate(idee.getId(), userId);
+		idee.hasAskedIfUpToDate = hasUserAskedIfUpToDate(idee.getId(), user.id);
 
 		if (idee.isBooked()) {
 			if (idee.getBookingOwner() != null) {
-				if (idee.getBookingOwner().id == userId) {
+				if (idee.getBookingOwner() == user) {
 					// Réservé par soit !
 					idee.displayClass = "booked_by_me_idea";
 				} else {
@@ -790,7 +790,7 @@ public class Idees extends Table {
 			} else {
 				// Réserver par un groupe
 				// FIXME : 8 ajouter le groupe à l'idée (et pas juste l'id...)
-				if (new GroupIdea().belongsToGroup(userId, idee.getGroupKDO())) {
+				if (new GroupIdea().belongsToGroup(user, idee.getGroupKDO())) {
 					// On fait parti du groupe
 					idee.displayClass = "booked_by_me_idea";
 				} else {
@@ -800,10 +800,9 @@ public class Idees extends Table {
 		} else if (idee.isPartiallyBooked()) {
 			List<SousReservationEntity> resa = new SousReservation().getSousReservation(idee.getId());
 			idee.displayClass = "shared_booking_idea";
-			User thisUser = new Users().getUser(userId);
 
 			// On fait parti de la sous-réservation
-			resa.stream().filter(r -> thisUser.equals(r.getUser())).forEach(r -> idee.displayClass = "booked_by_me_idea");
+			resa.stream().filter(r -> user.equals(r.getUser())).forEach(r -> idee.displayClass = "booked_by_me_idea");
 		}
 		// Sinon, on laisse la class par défaut
 

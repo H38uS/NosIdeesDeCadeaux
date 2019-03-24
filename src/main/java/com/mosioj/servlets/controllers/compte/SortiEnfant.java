@@ -33,34 +33,22 @@ public class SortiEnfant extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		// Récupération des variables
-		int childId = ParametersUtils.getUserId(request);
 		HttpSession session = request.getSession();
-		Object initial = session.getAttribute("initial_user_id");
+		Object initial = session.getAttribute("initial_connected_user");
 		if (initial == null) {
 			RootingsUtils.redirectToPage(MonCompte.URL, request, response);
 			return;
 		}
-		Integer initialAccountId = null;
-		try {
-			initialAccountId = Integer.parseInt(initial.toString());
-		} catch (Exception e) {
-			RootingsUtils.redirectToPage(MonCompte.URL, request, response);
-			return;
-		}
 		
-		User childAccount = users.getUser(childId);
-		User oldOne = users.getUser(initialAccountId);
+		User childAccount = ParametersUtils.getConnectedUser(request);
 		
-		logger.info(MessageFormat.format("Retour à {0} depuis {1}.", initialAccountId, childId));
-		session.removeAttribute("initial_user_id");
-		session.removeAttribute("initial_user_name");
-		session.setAttribute("userid", initialAccountId);
-		session.setAttribute("emailorname", oldOne.getName());
-		request.setAttribute("emailorname", oldOne.getName());
-		session.setAttribute("connected_user_avatar", oldOne.getAvatarSrcSmall());
-		request.setAttribute("connected_user_avatar", oldOne.getAvatarSrcSmall());
+		logger.info(MessageFormat.format("Retour à {0} depuis {1}.", initial, childAccount));
+		session.removeAttribute("initial_connected_user");
+		request.removeAttribute("initial_connected_user");
+
+		session.setAttribute("connected_user", initial);
+		request.setAttribute("connected_user", initial);
 		request.setAttribute("old_name", childAccount.getName());
-		request.removeAttribute("initial_user_name");
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}

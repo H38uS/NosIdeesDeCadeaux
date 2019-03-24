@@ -128,11 +128,11 @@ public class ParentRelationship extends Table {
 	/**
 	 * Deletes all the parents of the given child if it exists.
 	 * 
-	 * @param childId
+	 * @param child
 	 * @throws SQLException
 	 */
-	public void deleteParents(int childId) throws SQLException {
-		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, CHILD_ID), childId);
+	public void deleteParents(User child) throws SQLException {
+		getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, CHILD_ID), child.id);
 	}
 
 	/**

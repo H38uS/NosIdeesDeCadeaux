@@ -20,11 +20,11 @@
 								<div class="row align-items-center">
 									Bonjour, 
 									<c:if test="${ not is_mobile}">
-									<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user_avatar}" alt="" />
+									<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user.avatarSrcSmall}" alt="" />
 									</c:if>
-									${emailorname} 
-									<c:if test="${not empty initial_user_name}">
-										(depuis le compte de ${initial_user_name},&nbsp;<a href="protected/sorti_enfant">y retourner</a>)
+									${connected_user.name} 
+									<c:if test="${not empty initial_connected_user}">
+										(depuis le compte de ${initial_connected_user.name},&nbsp;<a href="protected/sorti_enfant">y retourner</a>)
 									</c:if> -&nbsp;<a href="<c:url value="/logout" />">me deconnecter</a>
 								</div>
 								<div class="row align-items-center">
@@ -34,7 +34,7 @@
 						</div>
 						<div class="col-auto mx-auto my-3 my-sm-0 mx-md-0 justify-content-md-end  d-md-flex">
 							<c:if test="${is_mobile}">
-								<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user_avatar}" alt="" style="width:50px;height:50px;" />
+								<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user.avatarSrcSmall}" alt="" style="width:50px;height:50px;" />
 							</c:if>
 							<a href="protected/mes_notifications" class="btn btn-secondary ml-2" style="color:white" >
 								Notifications <span id="my_notif_count" class="badge badge-light">${notif_count}</span>
@@ -56,7 +56,7 @@
 							<a href="protected/mes_listes" class="btn btn-light">Afficher mes listes partagées</a>
 						</li>
 						<li class="nav-item m-2">
-							<a href="protected/afficher_reseau?id=${userid}" class="btn btn-light">Mes amis</a>
+							<a href="protected/afficher_reseau?id=${connected_user.id}" class="btn btn-light">Mes amis</a>
 						</li>
 						<li class="nav-item m-2">
 							<a href="protected/rechercher_personne.jsp" class="btn btn-light">Ajouter un ami</a>
@@ -79,9 +79,9 @@
 							</c:otherwise>
 						</c:choose>
 						</li>
-						<c:if test="${not empty initial_user_name}">
+						<c:if test="${not empty initial_connected_user}">
 						<li class="nav-item m-2">
-							<a href="protected/sorti_enfant" class="btn btn-light">Reconnexion en ${initial_user_name}</a>
+							<a href="protected/sorti_enfant" class="btn btn-light">Reconnexion en ${initial_connected_user.name}</a>
 						</li>
 						</c:if>
 						<li class="nav-item m-2">
@@ -116,7 +116,7 @@
 							<a href="protected/mes_listes" class="fl_blue">Afficher mes listes partagées</a>
 						</li>
 						<li class="nav-item">
-							<a href="protected/afficher_reseau?id=${userid}" class="fl_purple">Mes amis</a>
+							<a href="protected/afficher_reseau?id=${connected_user.id}" class="fl_purple">Mes amis</a>
 						</li>
 						<li class="nav-item">
 							<a href="protected/rechercher_personne.jsp" class="fl_purple">Ajouter un ami</a>

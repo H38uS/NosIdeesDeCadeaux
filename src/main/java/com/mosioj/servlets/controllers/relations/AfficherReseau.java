@@ -37,7 +37,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer user = ParametersUtils.readInt(request, USER_ID_PARAM);
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		if (userId == user) {
 			// Uniquement sur notre compte
@@ -82,24 +82,24 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
-		return userRelations.getRelationsCount(ParametersUtils.readInt(req, USER_ID_PARAM));
+		return userRelations.getRelationsCount(users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM)));
 	}
 
 	@Override
 	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 
-		int userId = ParametersUtils.getUserId(req);
+		User user = ParametersUtils.getConnectedUser(req);
 		List<Relation> relations = userRelations.getRelations(	ParametersUtils.readInt(req, USER_ID_PARAM),
 																firstRow,
 																maxNumberOfResults);
 
 		// Ajout du flag network
 		for (Relation r : relations) {
-			if (userRelations.associationExists(r.getSecond().id, userId)) {
+			if (userRelations.associationExists(r.getSecond().id, user.id)) {
 				r.secondIsInMyNetwork = true;
 			} else {
 				User other = r.getSecond();
-				if (userRelationRequests.associationExists(userId, other.id)) {
+				if (userRelationRequests.associationExists(user.id, other.id)) {
 					other.freeComment = "Vous avez déjà envoyé une demande à " + other.getName();
 				}
 			}

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.SousReservationEntity;
+import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
@@ -37,7 +38,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUp
 
 	// TODO : Pouvoir suggérer de sous réserver cette idée
 
-	private void setupCommon(HttpServletRequest req, Idee idea, int userId) throws SQLException {
+	private void setupCommon(HttpServletRequest req, Idee idea, User user) throws SQLException {
 
 		logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
 		req.setAttribute("idee", idea);
@@ -46,7 +47,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUp
 		req.setAttribute("sous_reservation_existantes", reservations);
 		boolean isInThere = false;
 		for (SousReservationEntity entity : reservations) {
-			if (entity.user.id == userId) {
+			if (entity.user == user) {
 				isInThere = true;
 				break;
 			}
@@ -55,26 +56,18 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUp
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-
+	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Idee idea = policy.getIdea();
-		int userId = ParametersUtils.getUserId(req);
-
-		setupCommon(req, idea, userId);
-
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
-
+		setupCommon(request, idea, ParametersUtils.getConnectedUser(request));
+		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-
-		int userId = ParametersUtils.getUserId(request);
 		Idee idea = policy.getIdea();
-
-		setupCommon(request, idea, userId);
-
-		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {
+		User thisOne = ParametersUtils.getConnectedUser(request);
+		setupCommon(request, idea, thisOne);
+		if (sousReserver(request, response, thisOne, idea, VIEW_PAGE_URL)) {
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 		}
 	}

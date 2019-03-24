@@ -34,7 +34,7 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 		try {
 
 			Integer userIdParam = ParametersUtils.readInt(request, OF_USER_ID);
-			int connectedUserId = ParametersUtils.getUserId(request);
+			int connectedUserId = ParametersUtils.getConnectedUser(request).id;
 			int userId = userIdParam == null ? connectedUserId : userIdParam;
 			if (userId != connectedUserId && !userRelations.associationExists(userId, connectedUserId)) {
 				// On regarde

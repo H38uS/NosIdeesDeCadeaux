@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.User;
 import com.mosioj.model.table.Categories;
 import com.mosioj.model.table.Comments;
 import com.mosioj.model.table.GroupIdea;
@@ -119,6 +120,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	/**
 	 * L'interface vers la table USER_RELATIONS. Static because it can be used in constructor for security checks.
 	 */
+	// FIXME : 0 mettre tout ça dans un helper
+	// Utiliser le helper dans les security, comme ça plus besoin de static
 	protected static UserRelations userRelations = new UserRelations();
 
 	/**
@@ -207,6 +210,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		userRelationsSuggestion = new UserRelationsSuggestion();
 		this.policy = policy;
 	}
+	
+	// FIXME : 0 ajouter une variable thisUser ici -- et supprimer les appels à ParameterUtils
 
 	/**
 	 * Internal class for GET processing, post security checks.
@@ -234,7 +239,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 				int userId;
 				try {
-					userId = ParametersUtils.getUserId(request);
+					userId = ParametersUtils.getConnectedUser(request).id;
 				} catch (Exception e) {
 					userId = -1;
 				}
@@ -256,9 +261,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			if (request.getRemoteUser() != null) {
 				try {
 					// Mise à jour du nombre de notifications
-					int userId = ParametersUtils.getUserId(request);
-					final Compteur count = new Compteur(notif.getUserNotificationCount(userId));
-					parentRelationship.getChildren(userId).forEach(c -> {
+					User thisUser = ParametersUtils.getConnectedUser(request);
+					final Compteur count = new Compteur(notif.getUserNotificationCount(thisUser.id));
+					parentRelationship.getChildren(thisUser.id).forEach(c -> {
 						try {
 							count.add(notif.getUserNotificationCount(c.id));
 						} catch (Exception e) {
@@ -272,7 +277,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
 						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-						idees.fillAUserIdea(userId, idee, device);
+						idees.fillAUserIdea(thisUser, idee, device);
 					}
 
 				} catch (Exception e) {
@@ -320,7 +325,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 				int userId;
 				try {
-					userId = ParametersUtils.getUserId(request);
+					userId = ParametersUtils.getConnectedUser(request).id;
 				} catch (Exception e) {
 					userId = -1;
 				}
@@ -342,9 +347,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			if (request.getRemoteUser() != null) {
 				try {
 					// Mise à jour du nombre de notifications
-					int userId = ParametersUtils.getUserId(request);
-					final Compteur count = new Compteur(notif.getUserNotificationCount(userId));
-					parentRelationship.getChildren(userId).forEach(c -> {
+					User thisUser = ParametersUtils.getConnectedUser(request);
+					final Compteur count = new Compteur(notif.getUserNotificationCount(thisUser.id));
+					parentRelationship.getChildren(thisUser.id).forEach(c -> {
 						try {
 							count.add(notif.getUserNotificationCount(c.id));
 						} catch (Exception e) {
@@ -358,7 +363,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
 						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-						idees.fillAUserIdea(userId, idee, device);
+						idees.fillAUserIdea(thisUser, idee, device);
 					}
 
 				} catch (Exception e) {
@@ -553,8 +558,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 */
 	protected Idee getIdeaAndEnrichIt(HttpServletRequest request, int ideaId) throws SQLException, NotLoggedInException {
 		Idee idee = idees.getIdeaWithoutEnrichment(ideaId);
-		int userId = ParametersUtils.getUserId(request);
-		idees.fillAUserIdea(userId, idee, device);
+		idees.fillAUserIdea(ParametersUtils.getConnectedUser(request), idee, device);
 		return idee;
 	}
 }

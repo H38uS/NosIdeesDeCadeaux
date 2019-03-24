@@ -3,6 +3,7 @@ package com.mosioj.notifications.instance;
 import java.sql.Timestamp;
 import java.util.Map;
 
+import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
@@ -14,10 +15,10 @@ public class NotifFriendshipDropped extends AbstractNotification {
 	/**
 	 * 
 	 */
-	public NotifFriendshipDropped(int fromUser, String userName) {
+	public NotifFriendshipDropped(User fromUser) {
 		super(NotificationType.FRIENDSHIP_DROPPED);
-		this.userName = userName;
-		params.put(ParameterName.USER_ID, fromUser);
+		this.userName = fromUser.getName();
+		params.put(ParameterName.USER_ID, fromUser.id);
 	}
 
 	/**

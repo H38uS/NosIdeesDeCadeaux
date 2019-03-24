@@ -33,27 +33,25 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
-		int userId = ParametersUtils.getUserId(req);
 		String nameOrEmail = readNameOrEmail(req, NAME_OR_EMAIL);
 		List<User> ids = new ArrayList<User>();
 		int MAX = maxNumberOfResults;
-		User connected = users.getUser(userId);
+		User connected = ParametersUtils.getConnectedUser(req);
 		if (connected.matchNameOrEmail(nameOrEmail)) {
 			ids.add(connected);
 			MAX--;
 		}
-		ids.addAll(userRelations.getAllUsersInRelation(userId, nameOrEmail, firstRow, MAX));
-		fillsUserIdeas(userId, ids);
+		ids.addAll(userRelations.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
+		fillsUserIdeas(connected, ids);
 		return ids;
 	}
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException, NotLoggedInException {
-		int userId = ParametersUtils.getUserId(request);
+		User user = ParametersUtils.getConnectedUser(request);
 		String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
-		int size = userRelations.getAllUsersInRelationCount(userId, nameOrEmail);
-		User connected = users.getUser(userId);
-		if (connected.matchNameOrEmail(nameOrEmail)) {
+		int size = userRelations.getAllUsersInRelationCount(user, nameOrEmail);
+		if (user.matchNameOrEmail(nameOrEmail)) {
 			return size + 1;
 		}
 		return size;

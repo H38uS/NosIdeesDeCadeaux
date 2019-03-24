@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -32,7 +33,7 @@ public class ServiceUpdateNotificationParameter extends AbstractService<AllAcces
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
+		User thisOne = ParametersUtils.getConnectedUser(request);
 		String name = ParametersUtils.readAndEscape(request, "name");
 		String value = ParametersUtils.readAndEscape(request, "value");
 
@@ -41,7 +42,7 @@ public class ServiceUpdateNotificationParameter extends AbstractService<AllAcces
 		try {
 			if (name != null && value != null) {
 				NotificationType.valueOf(name);
-				userParameters.insertUpdateParameter(userId, name, value);
+				userParameters.insertUpdateParameter(thisOne, name, value);
 				statut = "ok";
 			}
 		} catch (IllegalArgumentException e) {

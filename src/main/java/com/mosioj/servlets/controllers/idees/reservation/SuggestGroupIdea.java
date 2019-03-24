@@ -49,8 +49,8 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 		IdeaGroup group = groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
 
 		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-		User user = users.getUser(ParametersUtils.getUserId(request));
-		idees.fillAUserIdea(user.id, idee, device);
+		User user = ParametersUtils.getConnectedUser(request);
+		idees.fillAUserIdea(user, idee, device);
 
 		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, user.id);
 		logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
@@ -75,8 +75,8 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-		User thisOne = users.getUser(ParametersUtils.getUserId(request));
-		idees.fillAUserIdea(thisOne.id, idee, device);
+		User thisOne = ParametersUtils.getConnectedUser(request);
+		idees.fillAUserIdea(thisOne, idee, device);
 
 		List<Integer> selectedUsers = new ArrayList<Integer>();
 		Map<String, String[]> params = request.getParameterMap();

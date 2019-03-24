@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
@@ -42,12 +43,12 @@ public class AnnulerSousReservation extends AbstractIdea<IdeaInteractionBookingU
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
+		User user = ParametersUtils.getConnectedUser(request);
 		Idee idea = policy.getIdea();
 
-		if (idees.isSubBookBy(idea.getId(), userId)) {
-			logger.debug(MessageFormat.format("Suppression des sous réservations de {0} sur l''idée {1}", userId, idea.getId()));
-			idees.dereserverSousPartie(idea.getId(), userId);
+		if (idees.isSubBookBy(idea.getId(), user)) {
+			logger.debug(MessageFormat.format("Suppression des sous réservations de {0} sur l''idée {1}", user, idea.getId()));
+			idees.dereserverSousPartie(idea.getId(), user);
 		}
 
 		RootingsUtils.redirectToPage(DetailSousReservation.URL + "?" + IDEA_ID_PARAM + "=" +idea.getId(), request, response);

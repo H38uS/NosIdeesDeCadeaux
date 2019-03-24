@@ -69,7 +69,7 @@ public class Notifications extends Table {
 	/**
 	 * Save and send a notification.
 	 * 
-	 * @param userId The user id that will receive this notification.
+	 * @param userId The user that will receive this notification.
 	 * @param notif The notification.
 	 * @return The id of the notification created, or -1 if none were created.
 	 * @throws SQLException
@@ -151,16 +151,16 @@ public class Notifications extends Table {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param user
 	 * @param notif
 	 * @throws SQLException
 	 */
-	public void removeAllType(int userId, NotificationType notifType) throws SQLException {
+	public void removeAllType(User user, NotificationType notifType) throws SQLException {
 
-		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notifType.name(), userId));
+		logger.info(MessageFormat.format("Delete notification {0} for user {1}", notifType.name(), user));
 
 		getDb().executeUpdate(	MessageFormat.format("delete from {0} where owner = ? and type = ?", TABLE_NAME),
-								userId,
+								user.id,
 								notifType.name());
 		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
 													NOTIFICATION_ID,
@@ -183,7 +183,7 @@ public class Notifications extends Table {
 	 * @param parameterValue
 	 * @throws SQLException
 	 */
-	public void removeAllType(	int owner,
+	public void removeAllType(	User owner,
 								NotificationType type,
 								ParameterName parameterName,
 								Object parameterValue) throws SQLException {
@@ -198,7 +198,8 @@ public class Notifications extends Table {
 										OWNER,
 										TYPE));
 		logger.trace(sb.toString());
-		getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner, type);
+		int res = getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner.id, type);
+		logger.debug(MessageFormat.format("{0} notifications supprimées !", res));
 
 		getDb().executeUpdate(MessageFormat.format(	"delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
 													NOTIFICATION_ID,
@@ -593,10 +594,9 @@ public class Notifications extends Table {
 
 		String userEmail = null;
 		try {
-			Users users = new Users();
-			User user = users.getUser(ParametersUtils.getUserId(req));
+			User user = ParametersUtils.getConnectedUser(req);
 			userEmail = user.getEmail();
-		} catch (NotLoggedInException | SQLException e) {
+		} catch (NotLoggedInException e) {
 			userEmail = "Aucun, pas de connexion.";
 			logger.warn(e);
 		}
@@ -620,11 +620,11 @@ public class Notifications extends Table {
 	 * @throws SQLException
 	 */
 	public void setRead(int notifId) throws SQLException {
-		getDb().executeUpdate(	MessageFormat.format(	"update {0} set {1} = ?, {2} = now() where {3} = ? ",
-														TABLE_NAME,
-														IS_UNREAD,
-														READ_ON,
-														ID),
+		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ? ",
+													TABLE_NAME,
+													IS_UNREAD,
+													READ_ON,
+													ID),
 								"N",
 								notifId);
 	}

@@ -55,8 +55,8 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
-		User user = users.getUser(userId);
+		User thisOne = ParametersUtils.getConnectedUser(request);
+		int thisUserId = thisOne.id;
 
 		List<User> accepted = new ArrayList<User>();
 		Map<String, String[]> params = request.getParameterMap();
@@ -68,7 +68,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 			}
 
 			int fromUserId = Integer.parseInt(key.substring("choix_".length()));
-			if (!userRelationRequests.associationExists(fromUserId, userId)) {
+			if (!userRelationRequests.associationExists(fromUserId, thisUserId)) {
 				// On ne traite que les demandes réellement envoyées...
 				continue;
 			}
@@ -76,23 +76,23 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 			boolean accept = "Accepter".equals(params.get(key)[0]);
 
 			if (accept) {
-				logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.", userId, fromUserId));
-				userRelations.addAssociation(fromUserId, userId);
-				userRelationRequests.cancelRequest(fromUserId, userId);
+				logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.", thisUserId, fromUserId));
+				userRelations.addAssociation(fromUserId, thisUserId);
+				userRelationRequests.cancelRequest(fromUserId, thisUserId);
 				accepted.add(users.getUser(fromUserId));
-				notif.addNotification(fromUserId, new NotifDemandeAcceptee(user.id, user.getName()));
+				notif.addNotification(fromUserId, new NotifDemandeAcceptee(thisOne.id, thisOne.getName()));
 			} else {
-				logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", userId, fromUserId));
-				userRelationRequests.cancelRequest(fromUserId, userId);
-				notif.addNotification(fromUserId, new NotifDemandeRefusee(user.id, user.getName()));
+				logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", thisUserId, fromUserId));
+				userRelationRequests.cancelRequest(fromUserId, thisUserId);
+				notif.addNotification(fromUserId, new NotifDemandeRefusee(thisOne.id, thisOne.getName()));
 			}
 
 			// Si fromUserId avait supprimé sa relation avec userId
-			toBeRemoved.addAll(notif.getNotifications(userId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, fromUserId));
+			toBeRemoved.addAll(notif.getNotifications(thisUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, fromUserId));
 			// Si userId avait supprimé sa relation avec fromUserId
-			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, userId));
+			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, thisUserId));
 			// Si fromUserId avait refusé la demande de userId
-			toBeRemoved.addAll(notif.getNotifications(	userId,
+			toBeRemoved.addAll(notif.getNotifications(	thisUserId,
 														NotificationType.REJECTED_FRIENDSHIP,
 														ParameterName.USER_ID,
 														fromUserId));
@@ -100,35 +100,35 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
 														NotificationType.REJECTED_FRIENDSHIP,
 														ParameterName.USER_ID,
-														userId));
+														thisUserId));
 
 			// Suppression des suggestions d'amitiés entre ces deux personnes
-			toBeRemoved.addAll(notif.getNotifications(	userId,
+			toBeRemoved.addAll(notif.getNotifications(	thisUserId,
 														NotificationType.NEW_RELATION_SUGGESTION,
 														ParameterName.USER_ID,
 														fromUserId));
 			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
 														NotificationType.NEW_RELATION_SUGGESTION,
 														ParameterName.USER_ID,
-														userId));
+														thisUserId));
 
 			// Suppression des demandes d'amis
 			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
 														NotificationType.NEW_FRIENSHIP_REQUEST,
 														ParameterName.USER_ID,
-														userId));
+														thisUserId));
 		}
 
 		for (AbstractNotification n : toBeRemoved) {
 			notif.remove(n.id);
 		}
 
-		notif.removeAllType(userId, NotificationType.NEW_FRIENSHIP_REQUEST);
+		notif.removeAllType(thisOne, NotificationType.NEW_FRIENSHIP_REQUEST);
 
 		// Redirection à la page d'administration
 		HttpSession session = request.getSession();
 		session.setAttribute("accepted", accepted);
-		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?" + AfficherReseau.USER_ID_PARAM + "=" + userId, request, response);
+		RootingsUtils.redirectToPage(AfficherReseau.SELF_VIEW + "?" + AfficherReseau.USER_ID_PARAM + "=" + thisUserId, request, response);
 	}
 
 }

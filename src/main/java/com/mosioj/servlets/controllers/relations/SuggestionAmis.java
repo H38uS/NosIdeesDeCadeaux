@@ -31,14 +31,15 @@ public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		req.setAttribute("suggestions", userRelationsSuggestion.getUserSuggestions(ParametersUtils.getUserId(req)));
+		req.setAttribute("suggestions", userRelationsSuggestion.getUserSuggestions(ParametersUtils.getConnectedUser(req)));
 		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
+		User thisOne = ParametersUtils.getConnectedUser(request);
+		int userId = thisOne.id;
 
 		Map<String, String[]> params = request.getParameterMap();
 
@@ -63,7 +64,7 @@ public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			}
 			
 			// On ajoute l'association
-			userRelationRequests.insert(userId, userToSendInvitation.id);
+			userRelationRequests.insert(thisOne, userToSendInvitation);
 		}
 		
 		for (int ignore : toIgnore) {
@@ -80,7 +81,7 @@ public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			}
 		}
 		
-		request.setAttribute("suggestions", userRelationsSuggestion.getUserSuggestions(userId));
+		request.setAttribute("suggestions", userRelationsSuggestion.getUserSuggestions(thisOne));
 		request.setAttribute("error_messages", errors);
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
 	}

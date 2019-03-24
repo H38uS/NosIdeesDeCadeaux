@@ -32,7 +32,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	@Test
 	public void testGet() throws SQLException, ServletException, IOException {
 
-		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
+		int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
 		int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
 		idees.bookByGroup(idea, id);
 
@@ -51,7 +51,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	@Test
 	public void testRejoindreGroupe() throws SQLException, ServletException, IOException {
 
-		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
+		int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
 		int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
 		idees.bookByGroup(idea, id);
 
@@ -70,20 +70,19 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	@Test
 	public void testAnnulerParticipation() throws SQLException, ServletException, IOException, NoRowsException {
 
-		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
+		int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
 		int id = groupIdea.createAGroup(300, 250, _OWNER_ID_);
-		groupIdea.updateAmount(id, _MOI_AUTRE_, 25);
+		groupIdea.updateAmount(id, moiAutre, 25);
 		idees.bookByGroup(idea, id);
 		assertGroupExists(id);
 
 		Idee idee = idees.getIdeaWithoutEnrichment(idea);
 		int groupSuggestion = notif.addNotification(_MOI_AUTRE_, new NotifGroupSuggestion(moiAutre, id, idee));
-		int groupEvolutionShouldDisapear = notif.addNotification(_MOI_AUTRE_, new NotifGroupEvolution(	friendOfFirefox, // ==
-																															// _OWNER_ID_
+		int groupEvolutionShouldDisapear = notif.addNotification(_MOI_AUTRE_, new NotifGroupEvolution(	firefox, // == _OWNER_ID_
 																										id,
 																										idee,
 																										true));
-		int groupEvolutionShouldStay = notif.addNotification(_MOI_AUTRE_, new NotifGroupEvolution(firefox, id, idee, true));
+		int groupEvolutionShouldStay = notif.addNotification(_MOI_AUTRE_, new NotifGroupEvolution(friendOfFirefox, id, idee, true));
 		assertNotifDoesExists(groupSuggestion);
 		assertNotifDoesExists(groupEvolutionShouldDisapear);
 		assertNotifDoesExists(groupEvolutionShouldStay);
@@ -109,7 +108,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 	public void testRejoindrePuisAnnuler() throws SQLException, ServletException, IOException, NoRowsException {
 
 		// On crée un groupe sur une idée
-		int idea = idees.addIdea(_FRIEND_ID_, "toto", null, 0, null, null, null);
+		int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
 		int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
 		idees.bookByGroup(idea, id);
 		assertGroupExists(id);
@@ -121,7 +120,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 		when(request.getParameter("amount")).thenReturn(32 + "");
 		doTestPost(request, response);
 		assertEquals(1, notif.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea).size());
-		notif.removeAllType(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION);
+		notif.removeAllType(moiAutre, NotificationType.GROUP_EVOLUTION);
 
 		// Annulation de la participation
 		when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");

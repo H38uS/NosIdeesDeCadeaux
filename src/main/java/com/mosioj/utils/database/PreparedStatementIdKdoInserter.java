@@ -10,13 +10,15 @@ import java.sql.Statement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
+
 public class PreparedStatementIdKdoInserter implements Closeable {
 
 	private static final Logger LOGGER = LogManager.getLogger(PreparedStatementIdKdoInserter.class);
 	private final PreparedStatement ps;
 
 	public PreparedStatementIdKdoInserter(DataSourceIdKDo ds, String query) throws SQLException {
-		ps = ds.getAConnection().prepareStatement(query,  Statement.RETURN_GENERATED_KEYS);
+		ps = ds.getAConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	}
 
 	@Override
@@ -49,6 +51,16 @@ public class PreparedStatementIdKdoInserter implements Closeable {
 			LOGGER.trace("Binding parameter " + i + " to " + parameter);
 			if (parameter == null) {
 				ps.setString(i + 1, null);
+				continue;
+			}
+
+			if (parameter instanceof User) {
+				ps.setInt(i + 1, ((User) parameter).getId());
+				continue;
+			}
+
+			if (parameter instanceof Double) {
+				ps.setDouble(i + 1, (Double) parameter);
 				continue;
 			}
 

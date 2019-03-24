@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
@@ -19,11 +20,11 @@ public class NotifNouvelleDemandeAmi extends AbstractNotification {
 	 * @param toUserID La personne à qui on demande d'être ami
 	 * @param userName Le nom de fromUser
 	 */
-	public NotifNouvelleDemandeAmi(int fromUser, int toUserID, String userName) {
+	public NotifNouvelleDemandeAmi(User fromUser, int toUserID, String userName) {
 		super(NotificationType.NEW_FRIENSHIP_REQUEST);
-		this.userName = userName;
+		this.userName = fromUser.getName();
 		this.toUserID = toUserID;
-		params.put(ParameterName.USER_ID, fromUser);
+		params.put(ParameterName.USER_ID, fromUser.id);
 	}
 
 	public NotifNouvelleDemandeAmi(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {

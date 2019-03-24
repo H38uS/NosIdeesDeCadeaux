@@ -23,7 +23,7 @@ public class TestIdeaComment extends AbstractTestServlet {
 	@Test
 	public void test() throws SQLException, ServletException, IOException {
 		
-		int id = idees.addIdea(_FRIEND_ID_, "avec commentaire", null, 0, null, null, null);
+		int id = idees.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
 		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		comments.addComment(_OWNER_ID_, id, "mon pti com'");
 

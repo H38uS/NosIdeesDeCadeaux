@@ -36,21 +36,20 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
 
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
-		int userId = ParametersUtils.getUserId(req);
+		User user = ParametersUtils.getConnectedUser(req);
 		List<User> ids = new ArrayList<User>();
 		if (firstRow == 0) {
-			ids.add(users.getUser(userId));
+			ids.add(user);
 		}
-		ids.addAll(userRelations.getAllUsersInRelation(userId, firstRow, maxNumberOfResults));
-		fillsUserIdeas(userId, ids);
+		ids.addAll(userRelations.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
+		fillsUserIdeas(user, ids);
 		return ids;
 	}
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
-		int userId = ParametersUtils.getUserId(req);
 		// On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
-		return userRelations.getRelationsCount(userId);
+		return userRelations.getRelationsCount(ParametersUtils.getConnectedUser(req));
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.relations.RechercherPersonne;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
@@ -29,7 +30,7 @@ public class TestRecherchePersonne extends AbstractTestServlet {
 
 	@Test
 	public void testPost() throws ServletException, IOException, SQLException {
-		when(session.getAttribute("userid")).thenReturn(-1);
+		when(session.getAttribute("connected_user")).thenReturn(new User(-1,"","",""));
 		when(request.getParameter("name")).thenReturn("monGroupe");
 		instance.doPost(request, response);
 		verify(request).getRequestDispatcher(eq(RechercherPersonne.DEFAULT_FORM_URL));

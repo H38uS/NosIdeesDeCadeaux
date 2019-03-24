@@ -47,7 +47,7 @@ public class CommentModification extends AllAccessToPostAndGet implements Securi
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		comment = comments.getComment(commentId);
 		if (comment == null) {

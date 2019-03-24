@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
+import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.utils.ParametersUtils;
@@ -44,11 +45,11 @@ public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDat
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
+		User thisOne = ParametersUtils.getConnectedUser(request);
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
 
-		if (sousReserver(request, response, userId, idea, VIEW_PAGE_URL)) {
+		if (sousReserver(request, response, thisOne, idea, VIEW_PAGE_URL)) {
 			String url = DetailSousReservation.URL + "?" + IDEA_ID_PARAM + "=" + idea.getId();
 			logger.info(MessageFormat.format("Succès ! Redirection vers {0}...", url));
 			RootingsUtils.redirectToPage(url, request, response);

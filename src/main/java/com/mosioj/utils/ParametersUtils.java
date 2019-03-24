@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
+
 public class ParametersUtils {
 
 	private static final Logger logger = LogManager.getLogger(ParametersUtils.class);
@@ -75,30 +77,16 @@ public class ParametersUtils {
 	/**
 	 * 
 	 * @param request
-	 * @return The current user name, or null if no user is logged in.
-	 * @throws NotLoggedInException If requested and the user is not logged in.
-	 */
-	public static String getUserName(HttpServletRequest request) throws NotLoggedInException {
-		HttpSession session = request.getSession();
-		Object name = session.getAttribute("username");
-		if (name == null) {
-			throw new NotLoggedInException("Call on getUserName, but username was not found in the session.");
-		}
-		return (String) name;
-	}
-
-	/**
-	 * 
-	 * @param request
 	 * @return The current user id, or null if no user is logged in.
 	 * @throws NotLoggedInException If requested and the user is not logged in.
 	 */
-	public static int getUserId(HttpServletRequest request) throws NotLoggedInException {
+	// FIXME : 0 : supprimer et mettre dans la class root
+	public static User getConnectedUser(HttpServletRequest request) throws NotLoggedInException {
 		HttpSession session = request.getSession();
-		Object id = session.getAttribute("userid");
-		if (id == null) {
+		Object thisOne = session.getAttribute("connected_user");
+		if (thisOne == null) {
 			throw new NotLoggedInException("Call on getUserId, but userid was not found in the session.");
 		}
-		return (Integer) id;
+		return (User) thisOne;
 	}
 }

@@ -105,7 +105,7 @@
 			<c:if test="${not empty entities}">
 				
 				<c:forEach var="user" items="${entities}">
-					<c:if test="${userid == user.id}">
+					<c:if test="${connected_user.id == user.id}">
 	
 						<!-- Début idée de la personne -->
 	
@@ -247,7 +247,7 @@
 	
 					<!-- Fin idée de la personne -->
 	
-					<c:if test="${userid != user.id}">
+					<c:if test="${connected_user.id != user.id}">
 						<h2 id="list_${user.id}" class="breadcrumb mt-4 h2_list">
 							<div class="row align-items-center">
 								<div class="col-auto mx-auto my-1">
@@ -373,7 +373,7 @@
 												<c:choose>
 													<c:when test="${not empty idea_from_liste.bookingOwner}">
 														<c:choose>
-															<c:when test="${userid == idea_from_liste.bookingOwner.id}">
+															<c:when test="${connected_user.id == idea_from_liste.bookingOwner.id}">
 															<div class="col-auto px-0">	
 																<a href="protected/dereserver?idee=${idea_from_liste.id}&from=/${identic_call_back}" class="img idea_dereserver">
 																	<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
@@ -479,7 +479,7 @@
 												<c:choose>
 													<c:when test="${not empty idea_from_liste.bookingOwner}">
 														<c:choose>
-															<c:when test="${userid == idea_from_liste.bookingOwner.id}">
+															<c:when test="${connected_user.id == idea_from_liste.bookingOwner.id}">
 																Réservée par vous le ${idea_from_liste.bookingDate} - <a href="protected/dereserver?idee=${idea_from_liste.id}&from=/${identic_call_back}" class="idea_dereserver">Annuler</a> !
 															</c:when>
 															<c:otherwise>
@@ -504,7 +504,7 @@
 										<c:if test="${not empty idea_from_liste.surpriseBy}">
 											<div>
 												<c:choose>
-													<c:when test="${idea_from_liste.surpriseBy.id == userid}">
+													<c:when test="${idea_from_liste.surpriseBy.id == connected_user.id}">
 														Idée surprise créée le ${idea_from_liste.modificationDate} par vous - la <a href="protected/supprimer_surprise?idee=${idea_from_liste.id}&from=/${identic_call_back}">supprimer</a>.
 													</c:when>
 													<c:otherwise>

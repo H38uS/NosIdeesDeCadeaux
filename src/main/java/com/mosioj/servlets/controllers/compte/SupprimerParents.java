@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -34,9 +35,9 @@ public class SupprimerParents extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
-		logger.debug(MessageFormat.format("Suppression des parents de {0}.", userId));
-		parentRelationship.deleteParents(userId);
+		User user = ParametersUtils.getConnectedUser(request);
+		logger.debug(MessageFormat.format("Suppression des parents de {0}.", user));
+		parentRelationship.deleteParents(user);
 
 		RootingsUtils.redirectToPage(MonCompte.URL, request, response);
 		}

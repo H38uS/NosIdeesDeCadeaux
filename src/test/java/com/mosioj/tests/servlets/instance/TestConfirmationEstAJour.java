@@ -43,8 +43,8 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
 	@Test
 	public void testOnANewIdea() throws SQLException, NoRowsException, ServletException, IOException {
 
-		when(session.getAttribute("userid")).thenReturn(_FRIEND_ID_);
-		int id = idees.addIdea(_FRIEND_ID_, "ma nouvelle idée", "", 1, null, null, null);
+		when(session.getAttribute("connected_user")).thenReturn(friendOfFirefox);
+		int id = idees.addIdea(friendOfFirefox, "ma nouvelle idée", "", 1, null, null, null);
 		Idee idee = idees.getIdeaWithoutEnrichment(id);
 		int notifId = notif.addNotification(_FRIEND_ID_, new NotifAskIfIsUpToDate(firefox, idee));
 

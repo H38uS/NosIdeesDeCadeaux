@@ -55,7 +55,7 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet implements Se
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		User ideaOwner = idees.getIdeaOwnerFromGroup(groupId);
 		if (ideaOwner == null) {

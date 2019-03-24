@@ -50,7 +50,7 @@ public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToD
 	 */
 	public boolean askIfUpToDate(Idee idea, HttpServletRequest request) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 		logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
 		
 		IsUpToDateQuestions ask = new IsUpToDateQuestions();

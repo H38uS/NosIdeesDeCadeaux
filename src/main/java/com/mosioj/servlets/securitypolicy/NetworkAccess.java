@@ -35,7 +35,7 @@ public class NetworkAccess extends AllAccessToPostAndGet implements SecurityPoli
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 		boolean res = user == userId || userRelations.associationExists(user, userId);
 		if (!res) {
 			lastReason = "Vous n'êtes pas ami avec cette personne.";

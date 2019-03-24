@@ -58,7 +58,7 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		idea = idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {

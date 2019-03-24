@@ -42,7 +42,7 @@ public class ReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea, userId));
 		
 		if (idees.canBook(idea, userId)) {

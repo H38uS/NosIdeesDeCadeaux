@@ -109,7 +109,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 				}
 
 				idees.modifier(idea.getId(), parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
-				User user = users.getUser(ParametersUtils.getUserId(request));
+				User user = ParametersUtils.getConnectedUser(request);
 
 				// Ajout de notification aux amis si l'anniversaire approche
 				addModificationNotification(user, policy.getIdea(), false);

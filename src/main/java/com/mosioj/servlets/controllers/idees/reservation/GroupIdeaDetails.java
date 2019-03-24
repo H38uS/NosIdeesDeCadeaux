@@ -68,8 +68,8 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 		}
 
 		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-		User user = users.getUser(ParametersUtils.getUserId(request));
-		idees.fillAUserIdea(user.id, idee, device);
+		User user = ParametersUtils.getConnectedUser(request);
+		idees.fillAUserIdea(user, idee, device);
 
 		// Suppression des notif's si y'en a
 		notif.getNotifications(	user.id,
@@ -78,7 +78,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 								groupId).forEach(n -> notif.remove(n.id));
 
 		request.setAttribute("idee", idee);
-		request.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getUserId(request), groupId));
+		request.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getConnectedUser(request), groupId));
 		request.setAttribute("group", group);
 		request.setAttribute("currentTotal", currentTotal);
 		request.setAttribute("remaining", String.format("%1$,.2f", remaining));
@@ -89,14 +89,14 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getUserId(request);
+		User thisUser = ParametersUtils.getConnectedUser(request);
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
 		if ("annulation".equals(amount)) {
 
 			User owner = idees.getIdeaOwnerFromGroup(groupId);
-			boolean isThereSomeoneRemaning = groupForIdea.removeUserFromGroup(userId, groupId);
+			boolean isThereSomeoneRemaning = groupForIdea.removeUserFromGroup(thisUser, groupId);
 			List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
 			notifications.parallelStream().filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name())).forEach(n -> {
 				notif.remove(n.id);
@@ -112,13 +112,12 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 										ParameterName.GROUP_ID,
 										groupId,
 										ParameterName.USER_ID,
-										userId);
+										thisUser);
 
-					final User from = users.getUser(userId);
 					final Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 					group.get().getShares().parallelStream().forEach(s -> {
 						try {
-							notif.addNotification(s.getUser().id, new NotifGroupEvolution(from, groupId, idee, false));
+							notif.addNotification(s.getUser().id, new NotifGroupEvolution(thisUser, groupId, idee, false));
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.error("Fail to send group evolution notification => " + e.getMessage());
@@ -145,11 +144,11 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 			request.getSession().setAttribute("errors", errorsAmount);
 		} else {
 			// Modification de la participation
-			boolean newMember = groupForIdea.updateAmount(groupId, userId, Double.parseDouble(amount));
+			boolean newMember = groupForIdea.updateAmount(groupId, thisUser, Double.parseDouble(amount));
 			if (newMember) {
 				List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
 				for (AbstractNotification notification : notifications) {
-					if (notification instanceof NotifGroupSuggestion && notification.owner == userId) {
+					if (notification instanceof NotifGroupSuggestion && notification.owner == thisUser.id) {
 						notif.remove(notification.id);
 					}
 				}
@@ -161,13 +160,12 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 										ParameterName.GROUP_ID,
 										groupId,
 										ParameterName.USER_ID,
-										userId);
+										thisUser);
 
-					final User from = users.getUser(userId);
 					final Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-					group.get().getShares().parallelStream().filter(s -> s.getUser().id != userId).forEach(s -> {
+					group.get().getShares().parallelStream().filter(s -> !s.getUser().equals(thisUser)).forEach(s -> {
 						try {
-							notif.addNotification(s.getUser().id, new NotifGroupEvolution(from, groupId, idee, true));
+							notif.addNotification(s.getUser().id, new NotifGroupEvolution(thisUser, groupId, idee, true));
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.error("Fail to send group evolution notification => " + e.getMessage());

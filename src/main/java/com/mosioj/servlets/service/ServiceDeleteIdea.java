@@ -73,7 +73,7 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 				// On lui envoie une notif
 				if (!notified.contains(notifUserId.getUserIdParam()) && idea.owner.id != notifUserId.getUserIdParam()) {
 					notif.addNotification(	notifUserId.getUserIdParam(),
-											new NotifBookedRemove(idea, ParametersUtils.getUserName(request)));
+											new NotifBookedRemove(idea, ParametersUtils.getConnectedUser(request).getName()));
 					notified.add(notifUserId.getUserIdParam());
 				}
 			}
@@ -81,7 +81,7 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 			notif.remove(notification.id);
 		}
 		
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 		idees.remove(idea.getId());
 		
 		if (!idees.hasIdeas(userId)) {

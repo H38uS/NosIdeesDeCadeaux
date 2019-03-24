@@ -68,9 +68,8 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 													parameters.get("text"),
 													parameters.get("type"),
 													parameters.get("priority")));
-				int userId = ParametersUtils.getUserId(request);
-				User user = users.getUser(userId);
-				int ideaId = idees.addIdea(	userId,
+				User user = ParametersUtils.getConnectedUser(request);
+				int ideaId = idees.addIdea(	user,
 											parameters.get("text"),
 											parameters.get("type"),
 											Integer.parseInt(parameters.get("priority")),
@@ -78,11 +77,11 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 											null,
 											user);
 				addModificationNotification(user, idees.getIdeaWithoutEnrichment(ideaId), true);
-				notif.removeAllType(userId, NotificationType.NO_IDEA);
+				notif.removeAllType(user, NotificationType.NO_IDEA);
 
 				request.getSession().setAttribute("added_idea_id", ideaId);
 
-				RootingsUtils.redirectToPage(	VoirListe.PROTECTED_VOIR_LIST + "?" + VoirListe.USER_ID_PARAM + "=" + userId,
+				RootingsUtils.redirectToPage(	VoirListe.PROTECTED_VOIR_LIST + "?" + VoirListe.USER_ID_PARAM + "=" + user.id,
 												request,
 												response);
 				return;

@@ -10,6 +10,8 @@ import java.text.MessageFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
+
 public class PreparedStatementIdKdo implements Closeable {
 
 	private static final Logger LOGGER = LogManager.getLogger(PreparedStatementIdKdo.class);
@@ -77,6 +79,11 @@ public class PreparedStatementIdKdo implements Closeable {
 			LOGGER.trace("Binding parameter " + i + " to " + parameter);
 			if (parameter == null) {
 				ps.setString(i + 1, null);
+				continue;
+			}
+			
+			if (parameter instanceof User) {
+				ps.setInt(i + 1, ((User) parameter).getId());
 				continue;
 			}
 

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Comment;
+import com.mosioj.model.User;
 import com.mosioj.model.table.Questions;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
@@ -47,7 +48,7 @@ public class QuestionModification extends AllAccessToPostAndGet implements Secur
 			return false;
 		}
 
-		int userId = ParametersUtils.getUserId(request);
+		User thisOne = ParametersUtils.getConnectedUser(request);
 
 		comment = questions.getComment(commentId);
 		if (comment == null) {
@@ -55,7 +56,7 @@ public class QuestionModification extends AllAccessToPostAndGet implements Secur
 			return false;
 		}
 
-		boolean res = userId == comment.getWrittenBy().id;
+		boolean res = thisOne == comment.getWrittenBy();
 		if (!res) {
 			lastReason = "Vous ne pouvez modifier que vos commentaires.";
 		}

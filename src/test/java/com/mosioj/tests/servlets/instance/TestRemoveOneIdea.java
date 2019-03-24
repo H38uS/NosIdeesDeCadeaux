@@ -34,7 +34,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 	@Test
 	public void testDelete() throws SQLException, ServletException, IOException {
 
-		int id = idees.addIdea(_OWNER_ID_, "generated", "", 0, null, null, null);
+		int id = idees.addIdea(firefox, "generated", "", 0, null, null, null);
 		assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 		assertEquals(0, ds.selectCountStar("select count(*) from IDEES_HIST where id = ?", id));
 
@@ -49,7 +49,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 	public void testDeleteWithGroupBooking() throws SQLException, ServletException, IOException {
 
 		// Creation de l'idée
-		int id = idees.addIdea(_OWNER_ID_, "generated", "", 0, null, null, null);
+		int id = idees.addIdea(firefox, "generated", "", 0, null, null, null);
 		assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 
 		// Creation du groupe
@@ -77,7 +77,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 	@Test
 	public void testUnderlyingNotificationAreWellRemoved() throws SQLException, ServletException, IOException {
 
-		int id = idees.addIdea(_OWNER_ID_, "generated", "", 0, null, null, null);
+		int id = idees.addIdea(firefox, "generated", "", 0, null, null, null);
 		assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 
 		Idee idee = idees.getIdeaWithoutEnrichment(id);

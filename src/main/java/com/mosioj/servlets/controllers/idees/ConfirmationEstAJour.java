@@ -38,7 +38,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 		idees.touch(id);
 
 		Idee idea = policy.getIdea();
-		int userId = ParametersUtils.getUserId(request);
+		int userId = ParametersUtils.getConnectedUser(request).id;
 		new IsUpToDateQuestions().deleteAssociation(idea.getId(), userId);
 		
 		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);

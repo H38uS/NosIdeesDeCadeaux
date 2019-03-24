@@ -40,22 +40,22 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	/**
 	 * Drops all notification linked to questions of the given owner links to the given idea.
 	 * 
-	 * @param ownerId
+	 * @param owner
 	 * @param ideaId
 	 * @throws SQLException
 	 */
-	private void dropNotificationOnView(int ownerId, int ideaId) throws SQLException {
-		notif.removeAllType(ownerId, NotificationType.IDEA_ADDED_BY_FRIEND, ParameterName.IDEA_ID, ideaId);
-		notif.removeAllType(ownerId, NotificationType.NEW_QUESTION_ON_IDEA, ParameterName.IDEA_ID, ideaId);
+	private void dropNotificationOnView(User owner, int ideaId) throws SQLException {
+		notif.removeAllType(owner, NotificationType.IDEA_ADDED_BY_FRIEND, ParameterName.IDEA_ID, ideaId);
+		notif.removeAllType(owner, NotificationType.NEW_QUESTION_ON_IDEA, ParameterName.IDEA_ID, ideaId);
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
-		request.setAttribute("isOwner", idea.owner.id == ParametersUtils.getUserId(request));
+		request.setAttribute("isOwner", idea.owner == ParametersUtils.getConnectedUser(request));
 		request.setAttribute("comments", questions.getCommentsOn(idea.getId()));
-		dropNotificationOnView(ParametersUtils.getUserId(request), idea.getId());
+		dropNotificationOnView(ParametersUtils.getConnectedUser(request), idea.getId());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
@@ -66,14 +66,13 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 		logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", id));
 		String text = ParametersUtils.readAndEscape(request, "text");
 
-		int userId = ParametersUtils.getUserId(request);
-		questions.addComment(userId, id, text);
+		User current = ParametersUtils.getConnectedUser(request);
+		questions.addComment(current.id, id, text);
 		Idee idea = policy.getIdea();
 
 		Set<User> toBeNotified = new HashSet<User>();
 
 		// If the idea is booked, we notify the bookers
-		User current = users.getUser(userId);
 		toBeNotified.addAll(idea.getBookers(groupForIdea, sousReservation));
 
 		// Notifying at least all people in the thread
@@ -89,7 +88,7 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 			notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
 		}
 
-		dropNotificationOnView(ParametersUtils.getUserId(request), id);
+		dropNotificationOnView(ParametersUtils.getConnectedUser(request), id);
 		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + id, request, response);
 	}
 

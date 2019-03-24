@@ -63,7 +63,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 			}
 
 			readMultiFormParameters(request, filePath);
-			int userId = ParametersUtils.getUserId(request);
+			int userId = ParametersUtils.getConnectedUser(request).id;
 
 			List<String> errors = processSave(filePath, parameters, userId);
 			if (errors == null || errors.isEmpty()) {

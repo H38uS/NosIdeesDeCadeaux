@@ -115,12 +115,12 @@ public class UserRelations extends Table {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param user
 	 * @return The number of user in this user network.
 	 * @throws SQLException
 	 */
-	public int getRelationsCount(int userId) throws SQLException {
-		return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, FIRST_USER), userId);
+	public int getRelationsCount(User user) throws SQLException {
+		return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?", TABLE_NAME, FIRST_USER), user.id);
 	}
 
 	/**
@@ -183,12 +183,12 @@ public class UserRelations extends Table {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param user
 	 * @param inNbDaysMax
 	 * @return The list of users with birthday coming (less than 30 days).
 	 * @throws SQLException
 	 */
-	public List<User> getCloseBirthday(int userId, int inNbDaysMax) throws SQLException {
+	public List<User> getCloseBirthday(User user, int inNbDaysMax) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
 		PreparedStatementIdKdo ps = null;
@@ -222,7 +222,7 @@ public class UserRelations extends Table {
 													UsersColumns.AVATAR);
 			logger.trace(realQuery);
 			ps = new PreparedStatementIdKdo(getDb(), realQuery);
-			ps.bindParameters(userId, inNbDaysMax, inNbDaysMax);
+			ps.bindParameters(user.id, inNbDaysMax, inNbDaysMax);
 
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
@@ -551,12 +551,12 @@ public class UserRelations extends Table {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param user
 	 * @param userNameOrEmail
 	 * @return The number of users belonging to userId network and matching name/email
 	 * @throws SQLException
 	 */
-	public int getAllUsersInRelationCount(int userId, String userNameOrEmail) throws SQLException {
+	public int getAllUsersInRelationCount(User user, String userNameOrEmail) throws SQLException {
 
 		StringBuilder query = new StringBuilder();
 		query.append("select count(*) ");
@@ -581,9 +581,9 @@ public class UserRelations extends Table {
 
 		if (userNameOrEmail != null && !userNameOrEmail.isEmpty()) {
 			userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
-			return getDb().selectCountStar(formatQuery, userId, userNameOrEmail, userNameOrEmail);
+			return getDb().selectCountStar(formatQuery, user.id, userNameOrEmail, userNameOrEmail);
 		} else {
-			return getDb().selectCountStar(formatQuery, userId);
+			return getDb().selectCountStar(formatQuery, user.id);
 		}
 	}
 
@@ -593,11 +593,11 @@ public class UserRelations extends Table {
 	 * @return All user friends, without him.
 	 * @throws SQLException
 	 */
-	public List<User> getAllUsersInRelation(int userId) throws SQLException {
-		return getAllUsersInRelation(userId, -1, -1);
+	public List<User> getAllUsersInRelation(User user) throws SQLException {
+		return getAllUsersInRelation(user, -1, -1);
 	}
 
-	public List<User> getAllUsersInRelation(int userId, int firstRow, int limit) throws SQLException {
+	public List<User> getAllUsersInRelation(User user, int firstRow, int limit) throws SQLException {
 
 		List<User> users = new ArrayList<User>();
 		PreparedStatementIdKdo ps = null;
@@ -624,9 +624,9 @@ public class UserRelations extends Table {
 			logger.trace(q);
 			ps = new PreparedStatementIdKdo(getDb(), q);
 			if (firstRow > -1 && limit > 0) {
-				ps.bindParameters(userId, firstRow, limit);
+				ps.bindParameters(user.id, firstRow, limit);
 			} else {
-				ps.bindParameters(userId);
+				ps.bindParameters(user.id);
 			}
 			if (ps.execute()) {
 				ResultSet res = ps.getResultSet();
