@@ -18,7 +18,11 @@
 						<div class="col-auto justify-content-end d-none d-lg-flex">
 							<div class="container">
 								<div class="row align-items-center">
-									Bonjour, ${emailorname} 
+									Bonjour, 
+									<c:if test="${ not is_mobile}">
+									<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user_avatar}" alt="" />
+									</c:if>
+									${emailorname} 
 									<c:if test="${not empty initial_user_name}">
 										(depuis le compte de ${initial_user_name},&nbsp;<a href="protected/sorti_enfant">y retourner</a>)
 									</c:if> -&nbsp;<a href="<c:url value="/logout" />">me deconnecter</a>
@@ -29,6 +33,9 @@
 							</div>
 						</div>
 						<div class="col-auto mx-auto my-3 my-sm-0 mx-md-0 justify-content-md-end  d-md-flex">
+							<c:if test="${is_mobile}">
+								<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user_avatar}" alt="" style="width:50px;height:50px;" />
+							</c:if>
 							<a href="protected/mes_notifications" class="btn btn-secondary ml-2" style="color:white" >
 								Notifications <span id="my_notif_count" class="badge badge-light">${notif_count}</span>
 							</a>

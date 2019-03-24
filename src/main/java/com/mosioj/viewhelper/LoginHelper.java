@@ -88,14 +88,30 @@ public class LoginHelper implements Filter {
 					Users user = new Users();
 					User connected = user.getUser(userId);
 					session.setAttribute("emailorname", connected.getName());
+					emailorname = connected.getName();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
+
+			// FIXME : 0 faut vraiment stocker le user...
+			Object avatar = session.getAttribute("connected_user_avatar");
+			if (avatar == null) {
+				try {
+					Users user = new Users();
+					User connected = user.getUser(userId);
+					session.setAttribute("connected_user_avatar", connected.getAvatarSrcSmall());
+					avatar = connected.getAvatarSrcSmall();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
 			String workDir = session.getServletContext().getInitParameter("work_dir");
 			request.setAttribute("work_dir", workDir);
 			request.setAttribute("userid", userId);
 			request.setAttribute("emailorname", emailorname);
+			request.setAttribute("connected_user_avatar", avatar);
 
 			File work = new File(workDir);
 			if (!work.exists()) {

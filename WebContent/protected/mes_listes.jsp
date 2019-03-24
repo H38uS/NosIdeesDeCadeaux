@@ -13,7 +13,12 @@
 
 		<div id="mes_listes_list_users">
 			<c:forEach var="user" items="${entities}">
-				<a href="${identic_call_back}#list_${user.id}">${user.name}</a>
+				<a href="${identic_call_back}#list_${user.id}">
+					<c:if test="${not is_mobile}">
+					<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" style='width:80px;height:80px' alt="" />
+					</c:if>
+					${user.name}
+				</a>
 				<c:if test="${is_mobile}"> | </c:if>
 			</c:forEach>
 		</div>
@@ -42,7 +47,7 @@
 					</script>
 					<div class="row align-items-center pb-2">
 						<div class="col-auto">
-							Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
+							Vous ne trouvez pas votre bonheur ?<br/> Recherchez une liste particulière : 
 						</div>
 						<form id="afficherliste_topmeslistes" class="form-inline" method="POST" action="protected/afficher_listes">
 							<input type="text" class="form-control" name="name" id="top_mes_listes_search" placeholder="Entrez un nom ou un email" />
@@ -243,17 +248,27 @@
 					<!-- Fin idée de la personne -->
 	
 					<c:if test="${userid != user.id}">
-						<h2 id="list_${user.id}" class="breadcrumb mt-4 h2_list">Liste <span class="d-none d-lg-inline-block">&nbsp;de cadeaux&nbsp;</span> ${user.myDName}
-							<a href="protected/ajouter_idee_ami?id=${user.id}" class="img">
-								<c:choose>
-									<c:when test="${is_mobile}">
-										<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: -2px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
-									</c:when>
-									<c:otherwise>
-										<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: 1px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
-									</c:otherwise>
-								</c:choose>
-							</a>
+						<h2 id="list_${user.id}" class="breadcrumb mt-4 h2_list">
+							<div class="row align-items-center">
+								<div class="col-auto mx-auto my-1">
+									<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" alt="" style="height:50px;width:50px" />
+								</div>
+								<div class="mx-1">
+									Liste <span class="d-none d-lg-inline-block">&nbsp;de cadeaux&nbsp;</span> ${user.myDName}
+								</div>
+								<div class="mx-auto">
+									<a href="protected/ajouter_idee_ami?id=${user.id}" class="img">
+										<c:choose>
+											<c:when test="${is_mobile}">
+												<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: -2px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
+											</c:when>
+											<c:otherwise>
+												<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: 1px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
+											</c:otherwise>
+										</c:choose>
+									</a>
+								</div>
+							</div>
 						</h2>
 						<c:if test="${fn:length(user.ideas) > 0}">
 							<div class="container">
@@ -599,7 +614,7 @@
 					</c:when>
 					<c:otherwise>
 						<div class="col-auto">
-							Vous ne trouvez pas votre bonheur ? Recherchez une liste particulière : 
+							Vous ne trouvez pas votre bonheur ?<br/> Recherchez une liste particulière : 
 						</div>
 						<form id="afficherliste_bottommeslistes" class="form-inline" method="POST" action="protected/afficher_listes">
 							<input type="text" class="form-control" name="name" id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email" />
@@ -610,5 +625,10 @@
 				</div>
 			</c:if>
 		</div>
+		<c:if test="${not is_mobile}">
+		<script>
+			$("#mes_listes_entities_container").css("marginLeft", $("#mes_listes_list_users").width() + "px");
+		</script>
+		</c:if>
 	</jsp:body>
 </t:normal_protected>

@@ -57,6 +57,8 @@ public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
 		session.setAttribute("userid", childId);
 		session.setAttribute("emailorname", newOne.getName());
 		request.setAttribute("emailorname", newOne.getName());
+		session.setAttribute("connected_user_avatar", newOne.getAvatarSrcSmall());
+		request.setAttribute("connected_user_avatar", newOne.getAvatarSrcSmall());
 
 		request.setAttribute("new_name", newOne.getName());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);

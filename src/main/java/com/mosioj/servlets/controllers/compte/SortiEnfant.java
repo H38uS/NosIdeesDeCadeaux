@@ -57,6 +57,8 @@ public class SortiEnfant extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 		session.setAttribute("userid", initialAccountId);
 		session.setAttribute("emailorname", oldOne.getName());
 		request.setAttribute("emailorname", oldOne.getName());
+		session.setAttribute("connected_user_avatar", oldOne.getAvatarSrcSmall());
+		request.setAttribute("connected_user_avatar", oldOne.getAvatarSrcSmall());
 		request.setAttribute("old_name", childAccount.getName());
 		request.removeAttribute("initial_user_name");
 

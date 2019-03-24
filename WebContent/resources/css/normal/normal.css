@@ -183,7 +183,6 @@
 #mes_listes_list_users > a {
 	display: block;
 	padding: 25px 15px;
-	text-align: center;
 }
 #mes_listes_list_users > a:hover {
 	text-decoration: none;
