@@ -254,7 +254,7 @@
 									<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" alt="" style="height:50px;width:50px" />
 								</div>
 								<div class="mx-1">
-									Liste <span class="d-none d-lg-inline-block">&nbsp;de cadeaux&nbsp;</span> ${user.myDName}
+									Liste <span class="d-none d-lg-inline-block">de cadeaux</span> ${user.myDName}
 								</div>
 								<div class="mx-auto">
 									<a href="protected/ajouter_idee_ami?id=${user.id}" class="img">
