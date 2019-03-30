@@ -7,10 +7,16 @@
 
 <t:normal_protected>
 	<jsp:body>
+		<c:if test="${!connected_user.hasSetUpAnAvatar()}">
+			<p class="alert alert-warning">
+				Vous n'avez pas encore d'image de profile. Cela aidera vos amis à vous trouver parmi leur liste !<br/>
+				Vous pouvez le faire à tout moment dans votre compte en suivant ce lien <a href="protected/mon_compte">mon compte</a>.
+			</p>
+		</c:if>
 		<c:if test="${no_birth_date_set}">
 			<p class="alert alert-warning">
 				Vous n'avez pas encore entré votre date de naissance... Vous devez le faire pour apparaitre ici auprès de vos amis !<br/>
-				Vous pouvez le faire à tout moment en suivant le lien <a href="protected/mon_compte">mon compte</a>.
+				Vous pouvez le faire à tout moment dans votre compte en suivant ce lien <a href="protected/mon_compte">mon compte</a>.
 			</p>
 		</c:if>
 		<h2>Prochains évènements</h2>

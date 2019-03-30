@@ -57,7 +57,6 @@ public class LoginHelper implements Filter {
 					user = new Users().getUser(new Users().getId(name));
 					// Storing the new one
 					session.setAttribute("connected_user", user);
-					session.setAttribute("userid", user.id); // FIXME : 0 supprimer en vérifiant toutes les pages...
 				} catch (NoRowsException | SQLException e) {
 					// Impossible: le nom existe forcément
 					// Sait-on jamais, on le log

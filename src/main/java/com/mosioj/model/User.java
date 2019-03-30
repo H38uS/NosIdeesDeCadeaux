@@ -49,6 +49,14 @@ public class User {
 		return avatar;
 	}
 
+	/**
+	 * 
+	 * @return True if the user has already set up an avatar.
+	 */
+	public boolean hasSetUpAnAvatar() {
+		return !"default.png".equals(getAvatar());
+	}
+
 	public String getAvatarSrcSmall() {
 		return MessageFormat.format("small/{0}", avatar);
 	}
