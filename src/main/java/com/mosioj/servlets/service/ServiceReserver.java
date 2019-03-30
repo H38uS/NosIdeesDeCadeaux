@@ -35,7 +35,7 @@ public class ServiceReserver extends AbstractService<IdeaInteractionBookingUpToD
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea, userId));
 
 		if (model.idees.canBook(idea, userId)) {

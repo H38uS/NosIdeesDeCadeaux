@@ -38,7 +38,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 		model.idees.touch(id);
 
 		Idee idea = policy.getIdea();
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 		new IsUpToDateQuestions().deleteAssociation(idea.getId(), userId);
 		
 		List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.IDEA_ID, id);

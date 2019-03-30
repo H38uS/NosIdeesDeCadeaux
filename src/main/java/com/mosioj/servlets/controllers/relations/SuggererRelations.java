@@ -43,7 +43,7 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 		User suggestToUser = model.users.getUser(suggestTo);
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 
-		int suggestedBy = ParametersUtils.getConnectedUser(request).id;
+		int suggestedBy = thisOne.id;
 		List<User> toBeSuggested = model.userRelations.getAllUsersInRelationNotInOtherNetwork(suggestedBy,
 																						suggestTo,
 																						userNameOrEmail,

@@ -23,7 +23,6 @@ import com.mosioj.notifications.instance.NotifNoIdea;
 import com.mosioj.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
-import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/delete_idea")
 public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
@@ -73,7 +72,7 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 				// On lui envoie une notif
 				if (!notified.contains(notifUserId.getUserIdParam()) && idea.owner.id != notifUserId.getUserIdParam()) {
 					model.notif.addNotification(	notifUserId.getUserIdParam(),
-											new NotifBookedRemove(idea, ParametersUtils.getConnectedUser(request).getName()));
+											new NotifBookedRemove(idea, thisOne.getName()));
 					notified.add(notifUserId.getUserIdParam());
 				}
 			}
@@ -81,7 +80,7 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 			model.notif.remove(notification.id);
 		}
 		
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 		model.idees.remove(idea.getId());
 		
 		if (!model.idees.hasIdeas(userId)) {

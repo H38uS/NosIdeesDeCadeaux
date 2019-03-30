@@ -49,7 +49,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 		IdeaGroup group = model.groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
 
 		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-		User user = ParametersUtils.getConnectedUser(request);
+		User user = thisOne;
 		model.idees.fillAUserIdea(user, idee, device);
 
 		List<User> potentialGroupUser = model.idees.getPotentialGroupUser(groupId, user.id);
@@ -75,7 +75,6 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-		User thisOne = ParametersUtils.getConnectedUser(request);
 		model.idees.fillAUserIdea(thisOne, idee, device);
 
 		List<Integer> selectedUsers = new ArrayList<Integer>();

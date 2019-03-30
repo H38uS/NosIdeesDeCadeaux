@@ -15,7 +15,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/annuler_sous_reservation")
@@ -43,7 +42,7 @@ public class AnnulerSousReservation extends AbstractIdea<IdeaInteractionBookingU
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User user = ParametersUtils.getConnectedUser(request);
+		User user = thisOne;
 		Idee idea = policy.getIdea();
 
 		if (model.idees.isSubBookBy(idea.getId(), user)) {

@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.notifications.ChildNotifications;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_notifications")
@@ -33,7 +32,7 @@ public class MesNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		int userId = ParametersUtils.getConnectedUser(req).id;
+		int userId = thisOne.id;
 		req.setAttribute("unread_notifications", model.notif.getUserUnReadNotifications(userId));
 		req.setAttribute("read_notifications", model.notif.getUserReadNotifications(userId));
 

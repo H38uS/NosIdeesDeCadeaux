@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.Notifications;
 
 public class RootingsUtils {
@@ -89,16 +90,17 @@ public class RootingsUtils {
 
 	/**
 	 * Set the error text, and root the request to the generic error page.
-	 * 
+	 * @param thisOne The current connected user.
 	 * @param exception
 	 * @param req
 	 * @param resp
+	 * 
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void rootToGenericSQLError(	Exception exception,
-												HttpServletRequest req,
-												HttpServletResponse resp) throws ServletException, IOException {
+	public static void rootToGenericSQLError(	User thisOne,
+												Exception exception,
+												HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		logger.error(MessageFormat.format(	"An error occured: {0}. StackTrace: {1}",
 											exception.getMessage(),
@@ -110,7 +112,7 @@ public class RootingsUtils {
 			req.setAttribute("error", exception.getMessage());
 		} else {
 			Notifications notif = new Notifications();
-			notif.logError(exception, req);
+			notif.logError(thisOne, exception, req);
 		}
 		req.setAttribute("shouldLogStack", shouldLogStack);
 

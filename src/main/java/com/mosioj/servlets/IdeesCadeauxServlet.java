@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -115,6 +116,11 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 * Interface to the DB model.
 	 */
 	protected final ModelAccessor model = new ModelAccessor();
+
+	/**
+	 * The connected user, or null if the user is not logged in.
+	 */
+	protected User thisOne = null; // TODO mettre un user fake ?
 	
 	protected Map<String, String> parameters;
 	protected Device device;
@@ -129,8 +135,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		this.policy = policy;
 	}
 	
-	// FIXME : 0 ajouter une variable thisUser ici -- et supprimer les appels à ParameterUtils
-
 	/**
 	 * Internal class for GET processing, post security checks.
 	 * 
@@ -145,6 +149,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	public void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
 
 		Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
+		fillConnectedUserIfPossible(request);
+		policy.setConnectedUser(thisOne);
 
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(request, resp);
@@ -157,7 +163,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 				int userId;
 				try {
-					userId = ParametersUtils.getConnectedUser(request).id;
+					userId = thisOne.id;
 				} catch (Exception e) {
 					userId = -1;
 				}
@@ -179,7 +185,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			if (request.getRemoteUser() != null) {
 				try {
 					// Mise à jour du nombre de notifications
-					User thisUser = ParametersUtils.getConnectedUser(request);
+					User thisUser = thisOne;
 					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
 					model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
 						try {
@@ -213,7 +219,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			RootingsUtils.redirectToPage("/public/login.jsp", request, resp);
 		} catch (SQLException e) {
 			// Default error management
-			RootingsUtils.rootToGenericSQLError(e, request, resp);
+			RootingsUtils.rootToGenericSQLError(thisOne, e, request, resp);
 		}
 	};
 
@@ -231,6 +237,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
+		fillConnectedUserIfPossible(request);
+		policy.setConnectedUser(thisOne);
 
 		if (!policy.isGetRequestAllowed()) {
 			super.doGet(request, response);
@@ -243,7 +251,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 				int userId;
 				try {
-					userId = ParametersUtils.getConnectedUser(request).id;
+					userId = thisOne.id;
 				} catch (Exception e) {
 					userId = -1;
 				}
@@ -265,7 +273,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			if (request.getRemoteUser() != null) {
 				try {
 					// Mise à jour du nombre de notifications
-					User thisUser = ParametersUtils.getConnectedUser(request);
+					User thisUser = thisOne;
 					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
 					model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
 						try {
@@ -298,7 +306,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			// Redirection vers l'emplacement de login
 			RootingsUtils.redirectToPage("/public/login.jsp", request, response);
 		} catch (SQLException e) {
-			RootingsUtils.rootToGenericSQLError(e, request, response);
+			RootingsUtils.rootToGenericSQLError(thisOne, e, request, response);
 		}
 	}
 
@@ -476,7 +484,20 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 */
 	protected Idee getIdeaAndEnrichIt(HttpServletRequest request, int ideaId) throws SQLException, NotLoggedInException {
 		Idee idee = model.idees.getIdeaWithoutEnrichment(ideaId);
-		model.idees.fillAUserIdea(ParametersUtils.getConnectedUser(request), idee, device);
+		model.idees.fillAUserIdea(thisOne, idee, device);
 		return idee;
+	}
+
+	/**
+	 * If the user is connected, sets up the field.
+	 * 
+	 * @param request
+	 */
+	private void fillConnectedUserIfPossible(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		Object connectedUser = session.getAttribute("connected_user");
+		if (connectedUser != null) {
+			thisOne = (User) connectedUser;
+		}
 	}
 }

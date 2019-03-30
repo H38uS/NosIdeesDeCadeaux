@@ -49,7 +49,7 @@ public class CanAskReplyToQuestions extends AllAccessToPostAndGet implements Ide
 			return false;
 		}
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = connectedUser.id;
 
 		idea = model.idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {

@@ -30,7 +30,7 @@ public class NetworkAccess extends AllAccessToPostAndGet {
 			return false;
 		}
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = connectedUser.id;
 		boolean res = user == userId || model.userRelations.associationExists(user, userId);
 		if (!res) {
 			lastReason = "Vous n'êtes pas ami avec cette personne.";

@@ -103,7 +103,7 @@ public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			throw new ServletException(e.getMessage());
 		}
 
-		model.notif.addNotification(ParametersUtils.getConnectedUser(request).id, new NotifNoIdea());
+		model.notif.addNotification(thisOne.id, new NotifNoIdea());
 		RootingsUtils.rootToPage(SUCCES_URL, request, response);
 	}
 }

@@ -14,7 +14,6 @@ import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_listes")
@@ -36,7 +35,7 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
 
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
-		User user = ParametersUtils.getConnectedUser(req);
+		User user = thisOne;
 		List<User> ids = new ArrayList<User>();
 		if (firstRow == 0) {
 			ids.add(user);
@@ -49,7 +48,7 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
 		// On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
-		return model.userRelations.getRelationsCount(ParametersUtils.getConnectedUser(req));
+		return model.userRelations.getRelationsCount(thisOne);
 	}
 
 	@Override

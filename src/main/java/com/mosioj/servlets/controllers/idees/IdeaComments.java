@@ -47,7 +47,7 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
 		request.setAttribute("comments", model.comments.getCommentsOn(idea.getId()));
-		dropNotificationOnView(ParametersUtils.getConnectedUser(request), idea.getId());
+		dropNotificationOnView(thisOne, idea.getId());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
@@ -57,7 +57,7 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
 		String text = ParametersUtils.readAndEscape(request, "text");
 
-		User current = ParametersUtils.getConnectedUser(request);
+		User current = thisOne;
 		model.comments.addComment(current.id, id, text);
 		Idee idea = policy.getIdea();
 
@@ -76,7 +76,7 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 			model.notif.addNotification(notified.id, new NotifNewCommentOnIdea(current, idea));
 		}
 
-		dropNotificationOnView(ParametersUtils.getConnectedUser(request), id);
+		dropNotificationOnView(thisOne, id);
 		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + id, request, response);
 	}
 

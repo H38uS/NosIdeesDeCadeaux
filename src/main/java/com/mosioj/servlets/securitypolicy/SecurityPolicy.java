@@ -5,13 +5,25 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.User;
 import com.mosioj.servlets.logichelpers.ModelAccessor;
 import com.mosioj.utils.NotLoggedInException;
 
 public abstract class SecurityPolicy {
 	
 	protected final ModelAccessor model = new ModelAccessor();
+	
+	protected User connectedUser;
 
+	/**
+	 * Sets up a new connected user. May be null.
+	 * 
+	 * @param user
+	 */
+	public void setConnectedUser(User user) {
+		connectedUser = user;
+	}
+	
 	/**
 	 * 
 	 * @param request

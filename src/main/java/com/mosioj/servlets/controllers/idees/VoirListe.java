@@ -42,7 +42,7 @@ public class VoirListe extends MesListes {
 			request.getSession().removeAttribute("added_idea_id");
 			try {
 				Idee idea = getIdeaAndEnrichIt(request, Integer.parseInt(ideaId.toString()));
-				if (idea.owner == ParametersUtils.getConnectedUser(request)) {
+				if (idea.owner == thisOne) {
 					request.setAttribute("idee", idea);
 				}
 			} catch (Exception e) {
@@ -60,7 +60,7 @@ public class VoirListe extends MesListes {
 		List<User> ids = new ArrayList<User>();
 		User user = model.users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM));
 		ids.add(user);
-		fillsUserIdeas(ParametersUtils.getConnectedUser(req), ids);
+		fillsUserIdeas(thisOne, ids);
 		return ids;
 	}
 

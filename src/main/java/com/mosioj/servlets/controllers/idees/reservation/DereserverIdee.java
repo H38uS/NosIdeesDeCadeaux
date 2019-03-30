@@ -35,7 +35,7 @@ public class DereserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate>
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 
 		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea, userId));
 		model.idees.dereserver(idea, userId);

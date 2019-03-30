@@ -55,7 +55,6 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User thisOne = ParametersUtils.getConnectedUser(request);
 		int thisUserId = thisOne.id;
 
 		List<User> accepted = new ArrayList<User>();

@@ -46,7 +46,7 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet  {
 			return false;
 		}
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = connectedUser.id;
 
 		User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupId);
 		if (ideaOwner == null) {

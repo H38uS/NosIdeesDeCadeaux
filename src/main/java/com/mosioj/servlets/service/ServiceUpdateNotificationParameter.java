@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
@@ -33,7 +32,6 @@ public class ServiceUpdateNotificationParameter extends AbstractService<AllAcces
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User thisOne = ParametersUtils.getConnectedUser(request);
 		String name = ParametersUtils.readAndEscape(request, "name");
 		String value = ParametersUtils.readAndEscape(request, "value");
 

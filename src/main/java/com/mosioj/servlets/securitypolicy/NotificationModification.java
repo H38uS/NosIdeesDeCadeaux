@@ -49,7 +49,7 @@ public class NotificationModification extends AllAccessToPostAndGet {
 			return false;
 		}
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = connectedUser.id;
 
 		AbstractNotification n = model.notif.getNotification(notifId);
 		if (n == null) {

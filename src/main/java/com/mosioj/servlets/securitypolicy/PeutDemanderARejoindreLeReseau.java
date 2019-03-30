@@ -26,7 +26,7 @@ public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet {
 	private boolean hasAccess(HttpServletRequest request) throws SQLException, NotLoggedInException {
 
 		try {
-			int userId = ParametersUtils.getConnectedUser(request).id;
+			int userId = connectedUser.id;
 
 			// Y a-t-il un utilisateur ?
 			Integer toBeSentTo = ParametersUtils.readInt(request, userParameter);

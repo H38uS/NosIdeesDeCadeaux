@@ -15,7 +15,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.table.IsUpToDateQuestions;
 import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
-import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/est_a_jour")
 public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToDate> {
@@ -50,7 +49,7 @@ public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToD
 	 */
 	public boolean askIfUpToDate(Idee idea, HttpServletRequest request) throws ServletException, SQLException {
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 		logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
 		
 		IsUpToDateQuestions ask = new IsUpToDateQuestions();

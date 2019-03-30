@@ -53,9 +53,9 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
-		request.setAttribute("isOwner", idea.owner == ParametersUtils.getConnectedUser(request));
+		request.setAttribute("isOwner", idea.owner == thisOne);
 		request.setAttribute("comments", model.questions.getCommentsOn(idea.getId()));
-		dropNotificationOnView(ParametersUtils.getConnectedUser(request), idea.getId());
+		dropNotificationOnView(thisOne, idea.getId());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
@@ -66,7 +66,7 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 		logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", id));
 		String text = ParametersUtils.readAndEscape(request, "text");
 
-		User current = ParametersUtils.getConnectedUser(request);
+		User current = thisOne;
 		model.questions.addComment(current.id, id, text);
 		Idee idea = policy.getIdea();
 
@@ -88,7 +88,7 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 			model.notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
 		}
 
-		dropNotificationOnView(ParametersUtils.getConnectedUser(request), id);
+		dropNotificationOnView(thisOne, id);
 		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + id, request, response);
 	}
 

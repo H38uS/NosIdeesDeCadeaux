@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_parents")
@@ -35,7 +34,7 @@ public class SupprimerParents extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User user = ParametersUtils.getConnectedUser(request);
+		User user = thisOne;
 		logger.debug(MessageFormat.format("Suppression des parents de {0}.", user));
 		model.parentRelationship.deleteParents(user);
 

@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.NoRowsException;
 
@@ -42,7 +41,7 @@ public class AjouterParent extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 		int parentId;
 		try {
 			parentId = model.users.getIdFromNameOrEmail(nameOrEmail);
-			int userId = ParametersUtils.getConnectedUser(request).id;
+			int userId = thisOne.id;
 			if (!model.parentRelationship.doesRelationExists(parentId, userId) && parentId != userId) {
 				logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
 				model.parentRelationship.addProcuration(parentId, userId);

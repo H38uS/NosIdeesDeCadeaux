@@ -43,7 +43,7 @@ public class CommentModification extends AllAccessToPostAndGet implements Commen
 			return false;
 		}
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = connectedUser.id;
 
 		comment = model.comments.getComment(commentId);
 		if (comment == null) {

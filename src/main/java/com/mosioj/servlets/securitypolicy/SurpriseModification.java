@@ -50,7 +50,7 @@ public class SurpriseModification extends AllAccessToPostAndGet implements IdeaS
 			return false;
 		}
 
-		User thisOne = ParametersUtils.getConnectedUser(request);
+		User thisOne = connectedUser;
 
 		idea = model.idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {

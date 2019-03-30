@@ -68,7 +68,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 		}
 
 		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-		User user = ParametersUtils.getConnectedUser(request);
+		User user = thisOne;
 		model.idees.fillAUserIdea(user, idee, device);
 
 		// Suppression des notif's si y'en a
@@ -78,7 +78,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 								groupId).forEach(n -> model.notif.remove(n.id));
 
 		request.setAttribute("idee", idee);
-		request.setAttribute("is_in_group", model.groupForIdea.belongsToGroup(ParametersUtils.getConnectedUser(request), groupId));
+		request.setAttribute("is_in_group", model.groupForIdea.belongsToGroup(thisOne, groupId));
 		request.setAttribute("group", group);
 		request.setAttribute("currentTotal", currentTotal);
 		request.setAttribute("remaining", String.format("%1$,.2f", remaining));
@@ -89,7 +89,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User thisUser = ParametersUtils.getConnectedUser(request);
+		User thisUser = thisOne;
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 

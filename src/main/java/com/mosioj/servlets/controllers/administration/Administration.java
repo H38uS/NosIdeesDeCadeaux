@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/administration/administration")
@@ -34,7 +33,7 @@ public class Administration extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		logger.info("Getting administration page from user: " + ParametersUtils.getConnectedUser(request));
+		logger.info("Getting administration page from user: " + thisOne);
 		List<User> allUsers = model.users.getAllUsers();
 		request.setAttribute("users", allUsers);
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);

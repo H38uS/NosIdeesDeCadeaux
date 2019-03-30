@@ -77,7 +77,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException, NotLoggedInException {
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
 		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
@@ -87,7 +87,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException, NotLoggedInException {
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();

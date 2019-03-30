@@ -40,8 +40,6 @@ import com.mosioj.notifications.NotificationFactory;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.utils.EmailSender;
-import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.database.PreparedStatementIdKdo;
 import com.mosioj.utils.database.PreparedStatementIdKdoInserter;
 
@@ -586,24 +584,21 @@ public class Notifications extends Table {
 	/**
 	 * Logs an exception notifications to Admins.
 	 * 
+	 * @param thisOne The current connected user.
 	 * @param exception
 	 * @param req
 	 * @throws SQLException
 	 */
-	public void logError(Exception exception, HttpServletRequest req) {
-
-		String userEmail = null;
-		try {
-			User user = ParametersUtils.getConnectedUser(req);
-			userEmail = user.getEmail();
-		} catch (NotLoggedInException e) {
-			userEmail = "Aucun, pas de connexion.";
-			logger.warn(e);
-		}
+	public void logError(User thisOne, Exception exception, HttpServletRequest req) {
 
 		StringBuilder notifText = new StringBuilder();
 		notifText.append("L'erreur suivante est survenue: " + exception.getMessage() + "<br/>");
-		notifText.append("Email de l'utilisateur connecté: " + userEmail + "<br/>");
+		if (thisOne != null) {
+			notifText.append("Email de l'utilisateur connecté: " + thisOne.getEmail() + "<br/>");
+		} else {
+			notifText.append("Aucun utilisateur connecté.<br/>");
+		}
+
 		notifText.append("Stacktrace:<br/><br/>");
 		for (StackTraceElement line : exception.getStackTrace()) {
 			notifText.append(line);

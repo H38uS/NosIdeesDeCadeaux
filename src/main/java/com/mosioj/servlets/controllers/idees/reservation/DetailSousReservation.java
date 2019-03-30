@@ -16,7 +16,6 @@ import com.mosioj.model.SousReservationEntity;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/detail_sous_reservation")
@@ -58,14 +57,13 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUp
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Idee idea = policy.getIdea();
-		setupCommon(request, idea, ParametersUtils.getConnectedUser(request));
+		setupCommon(request, idea, thisOne);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Idee idea = policy.getIdea();
-		User thisOne = ParametersUtils.getConnectedUser(request);
 		setupCommon(request, idea, thisOne);
 		if (sousReserver(request, response, thisOne, idea, VIEW_PAGE_URL)) {
 			RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);

@@ -13,7 +13,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/je_le_veux_encore")
@@ -37,7 +36,7 @@ public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
 		toBeNotified.addAll(idea.getBookers(model.groupForIdea, model.sousReservation));
 
 		// Puis si l'anniversaire est proche, tous les amis !
-		User current = ParametersUtils.getConnectedUser(request);
+		User current = thisOne;
 		if (isBirthdayClose(current)) {
 			toBeNotified.addAll(model.userRelations.getAllUsersInRelation(current));
 		}

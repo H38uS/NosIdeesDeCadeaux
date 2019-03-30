@@ -50,7 +50,7 @@ public class IdeaModification extends AllAccessToPostAndGet implements IdeaSecur
 			return false;
 		}
 
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = connectedUser.id;
 
 		idea = model.idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {

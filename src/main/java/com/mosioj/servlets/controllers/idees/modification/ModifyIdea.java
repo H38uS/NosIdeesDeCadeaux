@@ -25,7 +25,6 @@ import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.viewhelper.Escaper;
 
@@ -109,7 +108,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 				}
 
 				model.idees.modifier(idea.getId(), parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
-				User user = ParametersUtils.getConnectedUser(request);
+				User user = thisOne;
 
 				// Ajout de notification aux amis si l'anniversaire approche
 				addModificationNotification(user, policy.getIdea(), false);

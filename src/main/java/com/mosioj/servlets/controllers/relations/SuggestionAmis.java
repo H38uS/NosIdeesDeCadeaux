@@ -16,7 +16,6 @@ import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggestion_amis")
@@ -31,14 +30,13 @@ public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		req.setAttribute("suggestions", model.userRelationsSuggestion.getUserSuggestions(ParametersUtils.getConnectedUser(req)));
+		req.setAttribute("suggestions", model.userRelationsSuggestion.getUserSuggestions(thisOne));
 		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User thisOne = ParametersUtils.getConnectedUser(request);
 		int userId = thisOne.id;
 
 		Map<String, String[]> params = request.getParameterMap();

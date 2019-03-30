@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/service/ajouter_parent")
@@ -44,7 +43,7 @@ public class AjouterParentService extends AbstractService<AllAccessToPostAndGet>
 
 		try {
 			parentId = model.users.getIdFromNameOrEmail(nameOrEmail);
-			int userId = ParametersUtils.getConnectedUser(request).id;
+			int userId = thisOne.id;
 			if (!model.parentRelationship.doesRelationExists(parentId, userId) && parentId != userId) {
 				logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
 				model.parentRelationship.addProcuration(parentId, userId);

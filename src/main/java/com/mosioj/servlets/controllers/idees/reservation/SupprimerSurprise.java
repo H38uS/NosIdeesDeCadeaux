@@ -34,7 +34,7 @@ public class SupprimerSurprise extends AbstractIdea<SurpriseModification> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
-		logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea, ParametersUtils.getConnectedUser(request)));
+		logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea, thisOne));
 		model.idees.remove(idea);
 		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp);
 	}

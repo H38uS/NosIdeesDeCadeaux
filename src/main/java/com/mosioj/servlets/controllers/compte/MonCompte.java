@@ -17,7 +17,6 @@ import com.mosioj.model.UserParameter;
 import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mon_compte")
@@ -37,7 +36,7 @@ public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
 		logger.debug("Displaying mon compte page...");
-		User current = ParametersUtils.getConnectedUser(request);
+		User current = thisOne;
 		request.setAttribute("user", current);
 
 		HttpSession session = request.getSession();

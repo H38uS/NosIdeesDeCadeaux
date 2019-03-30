@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet {
 
@@ -34,7 +33,7 @@ public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet {
 				return false;
 			}
 
-			int userId = ParametersUtils.getConnectedUser(request).id;
+			int userId = connectedUser.id;
 			for (int user : ids.toArray(new Integer[ids.size()])) {
 				if (user == userId) {
 					lastReason = "Vous ne pouvez pas être ami avec vous-même...";

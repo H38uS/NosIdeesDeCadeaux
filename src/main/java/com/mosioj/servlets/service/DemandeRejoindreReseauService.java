@@ -17,7 +17,6 @@ import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
-import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
@@ -45,7 +44,6 @@ public class DemandeRejoindreReseauService extends AbstractService<AllAccessToPo
 
 		try {
 			User userToSendInvitation = model.users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM));
-			User thisOne = ParametersUtils.getConnectedUser(request);
 			request.setAttribute("name", userToSendInvitation.getName());
 
 			if (model.userRelationRequests.associationExists(thisOne.id, userToSendInvitation.id)) {
@@ -65,7 +63,7 @@ public class DemandeRejoindreReseauService extends AbstractService<AllAccessToPo
 			model.userRelationRequests.insert(thisOne, userToSendInvitation);
 			model.notif.addNotification(	userToSendInvitation.id,
 									new NotifNouvelleDemandeAmi(thisOne, userToSendInvitation.id, thisOne.getName()));
-		} catch (SQLException | NotLoggedInException e) {
+		} catch (SQLException e) {
 			status = "ko";
 			message = e.getMessage();
 			logger.warn(e);

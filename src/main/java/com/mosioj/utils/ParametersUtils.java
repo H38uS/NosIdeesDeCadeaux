@@ -4,13 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.mosioj.model.User;
 
 public class ParametersUtils {
 
@@ -72,21 +69,5 @@ public class ParametersUtils {
 	 */
 	public static String readAndEscape(HttpServletRequest request, String name) {
 		return StringEscapeUtils.escapeHtml4(readIt(request, name));
-	}
-
-	/**
-	 * 
-	 * @param request
-	 * @return The current user id, or null if no user is logged in.
-	 * @throws NotLoggedInException If requested and the user is not logged in.
-	 */
-	// FIXME : 0 : supprimer et mettre dans la class root
-	public static User getConnectedUser(HttpServletRequest request) throws NotLoggedInException {
-		HttpSession session = request.getSession();
-		Object thisOne = session.getAttribute("connected_user");
-		if (thisOne == null) {
-			throw new NotLoggedInException("Call on getUserId, but userid was not found in the session.");
-		}
-		return (User) thisOne;
 	}
 }

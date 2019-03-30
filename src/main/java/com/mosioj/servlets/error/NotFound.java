@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/public/NotFound")
@@ -27,7 +26,6 @@ public class NotFound extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		try {
-			ParametersUtils.getConnectedUser(request);
 			RootingsUtils.rootToPage(VIEW_PROTECTED_URL, request, response);
 		} catch (NotLoggedInException e) {
 			RootingsUtils.rootToPage(VIEW_PUBLIC_URL, request, response);

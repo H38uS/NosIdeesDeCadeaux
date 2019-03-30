@@ -44,7 +44,7 @@ public class QuestionModification extends AllAccessToPostAndGet implements Comme
 			return false;
 		}
 
-		User thisOne = ParametersUtils.getConnectedUser(request);
+		User thisOne = connectedUser;
 
 		comment = model.questions.getComment(commentId);
 		if (comment == null) {

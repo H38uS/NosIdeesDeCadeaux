@@ -65,7 +65,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 													parameters.get("text"),
 													parameters.get("type"),
 													parameters.get("priority")));
-				User currentUser = ParametersUtils.getConnectedUser(request);
+				User currentUser = thisOne;
 				boolean estSurprise = false;
 				if ("on".equals(parameters.get("est_surprise"))) {
 					if (id != currentUser.id) {

@@ -37,7 +37,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer user = ParametersUtils.readInt(request, USER_ID_PARAM);
-		int userId = ParametersUtils.getConnectedUser(request).id;
+		int userId = thisOne.id;
 
 		if (userId == user) {
 			// Uniquement sur notre compte
@@ -88,7 +88,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 	@Override
 	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 
-		User user = ParametersUtils.getConnectedUser(req);
+		User user = thisOne;
 		List<Relation> relations = model.userRelations.getRelations(	ParametersUtils.readInt(req, USER_ID_PARAM),
 																firstRow,
 																maxNumberOfResults);

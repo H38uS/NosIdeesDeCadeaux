@@ -12,10 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
-import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/sous_reserver")
@@ -45,7 +43,6 @@ public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDat
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User thisOne = ParametersUtils.getConnectedUser(request);
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
 

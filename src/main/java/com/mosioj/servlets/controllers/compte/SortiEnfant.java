@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/sorti_enfant")
@@ -40,7 +39,7 @@ public class SortiEnfant extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			return;
 		}
 		
-		User childAccount = ParametersUtils.getConnectedUser(request);
+		User childAccount = thisOne;
 		
 		logger.info(MessageFormat.format("Retour à {0} depuis {1}.", initial, childAccount));
 		session.removeAttribute("initial_connected_user");

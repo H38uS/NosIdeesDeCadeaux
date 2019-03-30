@@ -46,7 +46,7 @@ public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
 		}
 
 		Integer childId = ParametersUtils.readInt(request, CHILD_ID_PARAM);
-		User current = ParametersUtils.getConnectedUser(request);
+		User current = thisOne;
 		User newOne = model.users.getUser(childId);
 
 		logger.info(MessageFormat.format("Connection depuis {0} en tant que {1}.", current.id, childId));

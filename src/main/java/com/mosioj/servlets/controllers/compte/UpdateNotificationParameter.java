@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/update_notification_parameter")
@@ -30,7 +29,7 @@ public class UpdateNotificationParameter extends IdeesCadeauxServlet<AllAccessTo
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		
-		User user = ParametersUtils.getConnectedUser(request);
+		User user = thisOne;
 		String name = request.getParameter("name");
 		String value = request.getParameter("value");
 		

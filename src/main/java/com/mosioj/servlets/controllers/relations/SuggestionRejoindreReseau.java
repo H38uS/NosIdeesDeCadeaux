@@ -36,7 +36,7 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet<NetworkAccess
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User suggestedBy = ParametersUtils.getConnectedUser(request);
+		User suggestedBy = thisOne;
 		int suggestTo = ParametersUtils.readInt(request, USER_PARAMETER);
 
 		List<Integer> suggestedUsers = getSelectedChoices(request.getParameterMap(), "selected_");

@@ -23,7 +23,6 @@ import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
@@ -63,7 +62,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 			}
 
 			readMultiFormParameters(request, filePath);
-			int userId = ParametersUtils.getConnectedUser(request).id;
+			int userId = thisOne.id;
 
 			List<String> errors = processSave(filePath, parameters, userId);
 			if (errors == null || errors.isEmpty()) {

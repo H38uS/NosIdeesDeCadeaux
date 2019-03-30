@@ -18,7 +18,6 @@ import com.mosioj.model.Priorite;
 import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/ma_liste")
@@ -68,7 +67,7 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 													parameters.get("text"),
 													parameters.get("type"),
 													parameters.get("priority")));
-				User user = ParametersUtils.getConnectedUser(request);
+				User user = thisOne;
 				int ideaId = model.idees.addIdea(	user,
 											parameters.get("text"),
 											parameters.get("type"),

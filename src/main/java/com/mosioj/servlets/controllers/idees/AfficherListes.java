@@ -36,7 +36,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 		String nameOrEmail = readNameOrEmail(req, NAME_OR_EMAIL);
 		List<User> ids = new ArrayList<User>();
 		int MAX = maxNumberOfResults;
-		User connected = ParametersUtils.getConnectedUser(req);
+		User connected = thisOne;
 		if (connected.matchNameOrEmail(nameOrEmail)) {
 			ids.add(connected);
 			MAX--;
@@ -48,7 +48,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException, NotLoggedInException {
-		User user = ParametersUtils.getConnectedUser(request);
+		User user = thisOne;
 		String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
 		int size = model.userRelations.getAllUsersInRelationCount(user, nameOrEmail);
 		if (user.matchNameOrEmail(nameOrEmail)) {
