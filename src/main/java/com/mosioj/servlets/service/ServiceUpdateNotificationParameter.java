@@ -42,7 +42,7 @@ public class ServiceUpdateNotificationParameter extends AbstractService<AllAcces
 		try {
 			if (name != null && value != null) {
 				NotificationType.valueOf(name);
-				userParameters.insertUpdateParameter(thisOne, name, value);
+				model.userParameters.insertUpdateParameter(thisOne, name, value);
 				statut = "ok";
 			}
 		} catch (IllegalArgumentException e) {

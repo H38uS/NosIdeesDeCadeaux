@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.table.Idees;
-import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.NotLoggedInException;
 
 /**
@@ -17,8 +15,8 @@ import com.mosioj.utils.NotLoggedInException;
  */
 public class IdeaInteractionBookingUpToDate extends IdeaInteraction {
 
-	public IdeaInteractionBookingUpToDate(UserRelations userRelations, Idees idees, String ideaParameter) {
-		super(userRelations, idees, ideaParameter);
+	public IdeaInteractionBookingUpToDate(String ideaParameter) {
+		super(ideaParameter);
 	}
 
 	/**

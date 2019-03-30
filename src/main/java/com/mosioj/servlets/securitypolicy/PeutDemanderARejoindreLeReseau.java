@@ -8,30 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.table.UserRelationRequests;
-import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet implements SecurityPolicy {
+public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet {
 
 	private static final Logger logger = LogManager.getLogger(PeutDemanderARejoindreLeReseau.class);
-
-	private final UserRelations userRelations;
-	private final UserRelationRequests userRelationRequests;
 
 	private final String userParameter;
 
 	/**
-	 * 
-	 * @param userRelations
-	 * @param userRelationRequests
 	 */
-	public PeutDemanderARejoindreLeReseau(	UserRelations userRelations,
-											UserRelationRequests userRelationRequests,
-											String userParameter) {
-		this.userRelations = userRelations;
-		this.userRelationRequests = userRelationRequests;
+	public PeutDemanderARejoindreLeReseau(	String userParameter) {
 		this.userParameter = userParameter;
 	}
 
@@ -47,12 +35,12 @@ public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet implem
 				return false;
 			}
 
-			if (toBeSentTo == userId || userRelations.associationExists(toBeSentTo, userId)) {
+			if (toBeSentTo == userId || model.userRelations.associationExists(toBeSentTo, userId)) {
 				lastReason = "Vous faites déjà parti du même réseau.";
 				return false;
 			}
 
-			if (userRelationRequests.associationExists(userId, toBeSentTo)) {
+			if (model.userRelationRequests.associationExists(userId, toBeSentTo)) {
 				lastReason = "Vous avez déjà envoyé une demande pour cette personne.";
 				return false;
 			}

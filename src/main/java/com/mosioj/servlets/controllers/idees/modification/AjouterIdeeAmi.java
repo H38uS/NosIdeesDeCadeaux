@@ -32,18 +32,18 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 	public static final String VIEW_PAGE_URL = "/protected/ajouter_idee_ami.jsp";
 
 	public AjouterIdeeAmi() {
-		super(new NetworkAccess(userRelations, USER_PARAMETER));
+		super(new NetworkAccess(USER_PARAMETER));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer id = ParametersUtils.readInt(request, USER_PARAMETER);
-		User user = users.getUser(id);
+		User user = model.users.getUser(id);
 
 		request.setAttribute("user", user);
-		request.setAttribute("types", categories.getCategories());
-		request.setAttribute("priorites", priorities.getPriorities());
+		request.setAttribute("types", model.categories.getCategories());
+		request.setAttribute("priorites", model.priorities.getPriorities());
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
@@ -72,8 +72,8 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 						estSurprise = true;
 					}
 				}
-				User addedToUser = users.getUser(id);
-				int ideaId = idees.addIdea(	addedToUser,
+				User addedToUser = model.users.getUser(id);
+				int ideaId = model.idees.addIdea(	addedToUser,
 											parameters.get("text"),
 											parameters.get("type"),
 											Integer.parseInt(parameters.get("priority")),
@@ -84,17 +84,17 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 				request.setAttribute("idee", idea);
 
 				if (!estSurprise) {
-					notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));
-					notif.removeAllType(addedToUser, NotificationType.NO_IDEA);
+					model.notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));
+					model.notif.removeAllType(addedToUser, NotificationType.NO_IDEA);
 				}
 			}
 
 		}
 
-		User user = users.getUser(id);
+		User user = model.users.getUser(id);
 		request.setAttribute("user", user);
-		request.setAttribute("types", categories.getCategories());
-		request.setAttribute("priorites", priorities.getPriorities());
+		request.setAttribute("types", model.categories.getCategories());
+		request.setAttribute("priorites", model.priorities.getPriorities());
 
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}

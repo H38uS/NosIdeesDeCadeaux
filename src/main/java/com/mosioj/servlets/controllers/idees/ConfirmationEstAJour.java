@@ -28,27 +28,27 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 	public static final String IDEE_FIELD_PARAMETER = "idee";
 
 	public ConfirmationEstAJour() {
-		super(new IdeaModification(idees, IDEE_FIELD_PARAMETER));
+		super(new IdeaModification(IDEE_FIELD_PARAMETER));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
-		idees.touch(id);
+		model.idees.touch(id);
 
 		Idee idea = policy.getIdea();
 		int userId = ParametersUtils.getConnectedUser(request).id;
 		new IsUpToDateQuestions().deleteAssociation(idea.getId(), userId);
 		
-		List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, id);
+		List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.IDEA_ID, id);
 		Set<Integer> ids = new HashSet<>();
 		for (AbstractNotification notification : notifications) {
 			if (notification instanceof NotifAskIfIsUpToDate) {
 				NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
-				notif.addNotification(	isUpToDate.getUserIdParam(),
-				                      	new NotifConfirmedUpToDate(users.getUser(userId), idea));
-				notif.remove(notification.id);
+				model.notif.addNotification(	isUpToDate.getUserIdParam(),
+				                      	new NotifConfirmedUpToDate(model.users.getUser(userId), idea));
+				model.notif.remove(notification.id);
 				ids.add(isUpToDate.getUserIdParam());
 			}
 		}
@@ -57,7 +57,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 			if (notification instanceof NotifConfirmedUpToDate) {
 				NotifConfirmedUpToDate confirmed = (NotifConfirmedUpToDate) notification;
 				if (ids.contains(confirmed.owner)) {
-					notif.remove(notification.id);
+					model.notif.remove(notification.id);
 				}
 			}
 		}

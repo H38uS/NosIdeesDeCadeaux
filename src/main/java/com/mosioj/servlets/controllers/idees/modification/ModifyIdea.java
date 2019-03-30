@@ -43,7 +43,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 	 * Class constructor.
 	 */
 	public ModifyIdea() {
-		super(new IdeaModification(idees, IDEE_ID_PARAM));
+		super(new IdeaModification(IDEE_ID_PARAM));
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 		Idee idea = policy.getIdea();
 		idea.text = Escaper.htmlToText(idea.text);
 
-		request.setAttribute("types", categories.getCategories());
-		request.setAttribute("priorites", priorities.getPriorities());
+		request.setAttribute("types", model.categories.getCategories());
+		request.setAttribute("priorites", model.priorities.getPriorities());
 		request.setAttribute("idea", idea);
 		request.setAttribute("from", getFrom(request, ""));
 
@@ -108,7 +108,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
 
-				idees.modifier(idea.getId(), parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
+				model.idees.modifier(idea.getId(), parameters.get("text"), parameters.get("type"), parameters.get("priority"), image);
 				User user = ParametersUtils.getConnectedUser(request);
 
 				// Ajout de notification aux amis si l'anniversaire approche
@@ -117,15 +117,15 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 				// Suppression des demandes si y'en avait
 				new IsUpToDateQuestions().deleteAssociations(idea.getId());
 				
-				List<AbstractNotification> notifications = notif.getNotification(ParameterName.IDEA_ID, idea.getId());
+				List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.IDEA_ID, idea.getId());
 				for (AbstractNotification notification : notifications) {
 					if (notification instanceof NotifAskIfIsUpToDate) {
 						NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
-						notif.addNotification(isUpToDate.getUserIdParam(), new NotifConfirmedUpToDate(user, idea));
-						notif.remove(notification.id);
+						model.notif.addNotification(isUpToDate.getUserIdParam(), new NotifConfirmedUpToDate(user, idea));
+						model.notif.remove(notification.id);
 					}
 					if (notification instanceof NotifIdeaAddedByFriend) {
-						notif.remove(notification.id);
+						model.notif.remove(notification.id);
 					}
 				}
 			}

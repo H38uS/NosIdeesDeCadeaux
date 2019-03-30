@@ -65,7 +65,7 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordC
 
 		UserChangePwdRequest changePwdRequest = new UserChangePwdRequest();
 		changePwdRequest.deleteAssociation(userId);
-		users.updatePassword(userId, digested);
+		model.users.updatePassword(userId, digested);
 
 		RootingsUtils.rootToPage(SUCCES_PAGE_URL, request, response);
 	}

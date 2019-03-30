@@ -27,7 +27,7 @@ public class ServiceSupprimerRelation extends AbstractService<AllAccessToPostAnd
 	public static final String USER_PARAMETER = "id";
 
 	public ServiceSupprimerRelation() {
-		super(new NetworkAccess(userRelations, USER_PARAMETER));
+		super(new NetworkAccess(USER_PARAMETER));
 	}
 
 	@Override
@@ -44,12 +44,12 @@ public class ServiceSupprimerRelation extends AbstractService<AllAccessToPostAnd
 		try {
 			Integer user = ParametersUtils.readInt(request, USER_PARAMETER);
 			User thisOne = ParametersUtils.getConnectedUser(request);
-			userRelations.deleteAssociation(user, thisOne.id);
-			notif.removeAllType(thisOne, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
-			notif.removeAllType(users.getUser(user), NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, thisOne);
+			model.userRelations.deleteAssociation(user, thisOne.id);
+			model.notif.removeAllType(thisOne, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
+			model.notif.removeAllType(model.users.getUser(user), NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, thisOne);
 
 			// Send a notification
-			notif.addNotification(user, new NotifFriendshipDropped(thisOne));
+			model.notif.addNotification(user, new NotifFriendshipDropped(thisOne));
 		} catch (SQLException | NotLoggedInException e) {
 			status = "ko";
 			message = e.getMessage();

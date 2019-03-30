@@ -36,14 +36,14 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 			Integer userIdParam = ParametersUtils.readInt(request, OF_USER_ID);
 			int connectedUserId = ParametersUtils.getConnectedUser(request).id;
 			int userId = userIdParam == null ? connectedUserId : userIdParam;
-			if (userId != connectedUserId && !userRelations.associationExists(userId, connectedUserId)) {
+			if (userId != connectedUserId && !model.userRelations.associationExists(userId, connectedUserId)) {
 				// On regarde
 				//	Soit son propre réseau
 				//	Soit celui d'un ami
 				userId = connectedUserId;
 			}
 
-			User current = users.getUser(userId);
+			User current = model.users.getUser(userId);
 			String param = ParametersUtils.readAndEscape(request, NAME_OR_EMAIL).toLowerCase();
 			
 			List<User> res = new ArrayList<User>();
@@ -55,7 +55,7 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 				MAX--;
 			}
 
-			res.addAll(userRelations.getAllNamesOrEmailsInRelation(userId, param, 0, MAX));
+			res.addAll(model.userRelations.getAllNamesOrEmailsInRelation(userId, param, 0, MAX));
 
 			// Building the JSON answer
 			String[] resp = new String[res.size()];

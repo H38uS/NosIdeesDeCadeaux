@@ -33,7 +33,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUp
 	 * Class constructor.
 	 */
 	public DetailSousReservation() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
 	}
 
 	// TODO : Pouvoir suggérer de sous réserver cette idée
@@ -43,7 +43,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUp
 		logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
 		req.setAttribute("idee", idea);
 
-		List<SousReservationEntity> reservations = sousReservation.getSousReservation(idea.getId());
+		List<SousReservationEntity> reservations = model.sousReservation.getSousReservation(idea.getId());
 		req.setAttribute("sous_reservation_existantes", reservations);
 		boolean isInThere = false;
 		for (SousReservationEntity entity : reservations) {

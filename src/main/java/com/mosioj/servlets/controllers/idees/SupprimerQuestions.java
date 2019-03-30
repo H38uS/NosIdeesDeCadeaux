@@ -20,14 +20,14 @@ public class SupprimerQuestions extends IdeesCadeauxServlet<QuestionModification
 	private static final String COMMENT_ID_PARAMETER = "id";
 
 	public SupprimerQuestions() {
-		super(new QuestionModification(questions, COMMENT_ID_PARAMETER));
+		super(new QuestionModification(COMMENT_ID_PARAMETER));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER);
 		Comment comment = policy.getComment();
-		questions.delete(id);
+		model.questions.delete(id);
 
 		RootingsUtils.rootToPage(IdeeQuestions.WEB_SERVLET + "?" + IdeeQuestions.IDEA_ID_PARAM + "=" + comment.getIdea(), req, resp);
 	}

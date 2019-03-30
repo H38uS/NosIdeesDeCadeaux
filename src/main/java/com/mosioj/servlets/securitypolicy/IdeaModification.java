@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
-import com.mosioj.model.table.Idees;
 import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
@@ -18,23 +17,20 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class IdeaModification extends AllAccessToPostAndGet implements SecurityPolicy, IdeaSecurityChecker {
+public class IdeaModification extends AllAccessToPostAndGet implements IdeaSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
 	private final String ideaParameter;
 
-	private final Idees idees;
 	private Idee idea;
 
 	/**
 	 * 
-	 * @param idees
 	 * @param ideaParameter Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
-	public IdeaModification(Idees idees, String ideaParameter) {
-		this.idees = idees;
+	public IdeaModification(String ideaParameter) {
 		this.ideaParameter = ideaParameter;
 	}
 
@@ -56,7 +52,7 @@ public class IdeaModification extends AllAccessToPostAndGet implements SecurityP
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
 
-		idea = idees.getIdeaWithoutEnrichment(ideaId);
+		idea = model.idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;

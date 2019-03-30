@@ -37,7 +37,7 @@ public class SupprimerParents extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 
 		User user = ParametersUtils.getConnectedUser(request);
 		logger.debug(MessageFormat.format("Suppression des parents de {0}.", user));
-		parentRelationship.deleteParents(user);
+		model.parentRelationship.deleteParents(user);
 
 		RootingsUtils.redirectToPage(MonCompte.URL, request, response);
 		}

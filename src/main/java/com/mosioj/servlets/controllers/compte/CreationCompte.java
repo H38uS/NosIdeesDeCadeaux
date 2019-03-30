@@ -93,7 +93,7 @@ public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 		// Les paramètres sont ok, on s'occupe de la requête
 		name = name.trim().isEmpty() ? email : name;
-		users.addNewPersonne(email, hashPwd, name);
+		model.users.addNewPersonne(email, hashPwd, name);
 		session.invalidate();
 		request.login(email, pwd);
 		request.setAttribute("user", name);
@@ -103,7 +103,7 @@ public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			throw new ServletException(e.getMessage());
 		}
 
-		notif.addNotification(ParametersUtils.getConnectedUser(request).id, new NotifNoIdea());
+		model.notif.addNotification(ParametersUtils.getConnectedUser(request).id, new NotifNoIdea());
 		RootingsUtils.rootToPage(SUCCES_URL, request, response);
 	}
 }

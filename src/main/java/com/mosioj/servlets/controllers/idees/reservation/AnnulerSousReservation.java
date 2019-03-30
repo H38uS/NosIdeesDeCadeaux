@@ -29,7 +29,7 @@ public class AnnulerSousReservation extends AbstractIdea<IdeaInteractionBookingU
 	 * Class constructor.
 	 */
 	public AnnulerSousReservation() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
 	}
 
 	@Override
@@ -46,9 +46,9 @@ public class AnnulerSousReservation extends AbstractIdea<IdeaInteractionBookingU
 		User user = ParametersUtils.getConnectedUser(request);
 		Idee idea = policy.getIdea();
 
-		if (idees.isSubBookBy(idea.getId(), user)) {
+		if (model.idees.isSubBookBy(idea.getId(), user)) {
 			logger.debug(MessageFormat.format("Suppression des sous réservations de {0} sur l''idée {1}", user, idea.getId()));
-			idees.dereserverSousPartie(idea.getId(), user);
+			model.idees.dereserverSousPartie(idea.getId(), user);
 		}
 
 		RootingsUtils.redirectToPage(DetailSousReservation.URL + "?" + IDEA_ID_PARAM + "=" +idea.getId(), request, response);

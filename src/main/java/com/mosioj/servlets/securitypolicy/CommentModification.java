@@ -6,28 +6,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Comment;
-import com.mosioj.model.table.Comments;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class CommentModification extends AllAccessToPostAndGet implements SecurityPolicy, CommentSecurityChecker {
+public class CommentModification extends AllAccessToPostAndGet implements CommentSecurityChecker {
 	
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the comment id.
 	 */
 	private final String commentParameter;
 
-	private final Comments comments;
 	private Comment comment;
 
 	/**
 	 * 
-	 * @param comments
 	 * @param commentParameter Defines the string used in HttpServletRequest to retrieve the comment id.
 	 */
-	public CommentModification(Comments comments, String commentParameter) {
-		this.comments = comments;
+	public CommentModification(String commentParameter) {
 		this.commentParameter = commentParameter;
 	}
 
@@ -49,7 +45,7 @@ public class CommentModification extends AllAccessToPostAndGet implements Securi
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
 
-		comment = comments.getComment(commentId);
+		comment = model.comments.getComment(commentId);
 		if (comment == null) {
 			lastReason = "Aucun commentaire trouvé en paramètre.";
 			return false;

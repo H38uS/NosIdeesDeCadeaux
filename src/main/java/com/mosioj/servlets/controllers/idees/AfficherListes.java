@@ -41,7 +41,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 			ids.add(connected);
 			MAX--;
 		}
-		ids.addAll(userRelations.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
+		ids.addAll(model.userRelations.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
 		fillsUserIdeas(connected, ids);
 		return ids;
 	}
@@ -50,7 +50,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 	protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException, NotLoggedInException {
 		User user = ParametersUtils.getConnectedUser(request);
 		String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
-		int size = userRelations.getAllUsersInRelationCount(user, nameOrEmail);
+		int size = model.userRelations.getAllUsersInRelationCount(user, nameOrEmail);
 		if (user.matchNameOrEmail(nameOrEmail)) {
 			return size + 1;
 		}

@@ -34,13 +34,13 @@ public class MesNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		int userId = ParametersUtils.getConnectedUser(req).id;
-		req.setAttribute("unread_notifications", notif.getUserUnReadNotifications(userId));
-		req.setAttribute("read_notifications", notif.getUserReadNotifications(userId));
+		req.setAttribute("unread_notifications", model.notif.getUserUnReadNotifications(userId));
+		req.setAttribute("read_notifications", model.notif.getUserReadNotifications(userId));
 
 		List<ChildNotifications> children = new ArrayList<ChildNotifications>();
-		parentRelationship.getChildren(userId).forEach(c -> {
+		model.parentRelationship.getChildren(userId).forEach(c -> {
 			try {
-				children.add(new ChildNotifications(c, notif.getUserNotifications(c.id)));
+				children.add(new ChildNotifications(c, model.notif.getUserNotifications(c.id)));
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 				e.printStackTrace();

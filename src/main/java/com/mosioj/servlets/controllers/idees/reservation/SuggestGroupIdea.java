@@ -37,7 +37,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 	 * 
 	 */
 	public SuggestGroupIdea() {
-		super(new BookingGroupInteraction(userRelations, idees, GROUP_ID_PARAM));
+		super(new BookingGroupInteraction(GROUP_ID_PARAM));
 	}
 
 	@Override
@@ -46,18 +46,18 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 		logger.debug("Getting details for idea group " + groupId + "...");
 
-		IdeaGroup group = groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
+		IdeaGroup group = model.groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
 
-		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		User user = ParametersUtils.getConnectedUser(request);
-		idees.fillAUserIdea(user, idee, device);
+		model.idees.fillAUserIdea(user, idee, device);
 
-		List<User> potentialGroupUser = idees.getPotentialGroupUser(groupId, user.id);
+		List<User> potentialGroupUser = model.idees.getPotentialGroupUser(groupId, user.id);
 		logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
 		List<User> removable = new ArrayList<User>();
 		for (User toRemove : potentialGroupUser) {
 			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(user, groupId, idee);
-			if (notif.hasNotification(toRemove.id, suggestion)) {
+			if (model.notif.hasNotification(toRemove.id, suggestion)) {
 				removable.add(toRemove);
 			}
 		}
@@ -74,9 +74,9 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
-		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		User thisOne = ParametersUtils.getConnectedUser(request);
-		idees.fillAUserIdea(thisOne, idee, device);
+		model.idees.fillAUserIdea(thisOne, idee, device);
 
 		List<Integer> selectedUsers = new ArrayList<Integer>();
 		Map<String, String[]> params = request.getParameterMap();
@@ -95,10 +95,10 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 
 		logger.debug("Selected users : " + selectedUsers);
 		for (int userId : selectedUsers) {
-			User user = users.getUser(userId);
+			User user = model.users.getUser(userId);
 			NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, groupId, idee);
-			if (!notif.hasNotification(userId, suggestion)) {
-				notif.addNotification(userId, suggestion);
+			if (!model.notif.hasNotification(userId, suggestion)) {
+				model.notif.addNotification(userId, suggestion);
 			}
 			successTo.add(user);
 		}

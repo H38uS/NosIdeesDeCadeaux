@@ -27,7 +27,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 	 * Class constructor.
 	 */
 	public RechercherReseau() {
-		super(new NetworkAccess(userRelations, USER_ID_PARAM));
+		super(new NetworkAccess(USER_ID_PARAM));
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 		String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
 		int networkOwner = ParametersUtils.readInt(request, USER_ID_PARAM);
 		request.setAttribute("id", networkOwner);
-		request.setAttribute("name", users.getUser(networkOwner).getName());
+		request.setAttribute("name", model.users.getUser(networkOwner).getName());
 		request.setAttribute(SEARCH_USER_PARAM, nameOrEmail);
 
 		super.ideesKDoGET(request, response);
@@ -73,7 +73,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
-		return userRelations.getRelationsCount(	ParametersUtils.readInt(req, USER_ID_PARAM),
+		return model.userRelations.getRelationsCount(	ParametersUtils.readInt(req, USER_ID_PARAM),
 												ParametersUtils.readAndEscape(req, SEARCH_USER_PARAM));
 	}
 
@@ -81,7 +81,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException, NotLoggedInException {
 
 		String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
-		List<Relation> relations = userRelations.getRelations(	ParametersUtils.readInt(request, USER_ID_PARAM),
+		List<Relation> relations = model.userRelations.getRelations(	ParametersUtils.readInt(request, USER_ID_PARAM),
 																nameOrEmail,
 																firstRow,
 																maxNumberOfResults);
@@ -89,11 +89,11 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 		// Ajout du flag network
 		for (Relation r : relations) {
-			if (userRelations.associationExists(r.getSecond().id, userId)) {
+			if (model.userRelations.associationExists(r.getSecond().id, userId)) {
 				r.secondIsInMyNetwork = true;
 			} else {
 				User other = r.getSecond();
-				if (userRelationRequests.associationExists(userId, other.id)) {
+				if (model.userRelationRequests.associationExists(userId, other.id)) {
 					other.freeComment = "Vous avez déjà envoyé une demande à " + other.getName();
 				}
 			}

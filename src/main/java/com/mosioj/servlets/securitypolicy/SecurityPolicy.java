@@ -5,9 +5,12 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.servlets.logichelpers.ModelAccessor;
 import com.mosioj.utils.NotLoggedInException;
 
-public interface SecurityPolicy {
+public abstract class SecurityPolicy {
+	
+	protected final ModelAccessor model = new ModelAccessor();
 
 	/**
 	 * 
@@ -17,13 +20,13 @@ public interface SecurityPolicy {
 	 * @throws SQLException 
 	 * @throws NotLoggedInException 
 	 */
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException;
+	public abstract boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException;
 
 	/**
 	 * 
 	 * @return True if and only if GET are allowed on this context.
 	 */
-	public boolean isGetRequestAllowed();
+	public abstract boolean isGetRequestAllowed();
 
 	/**
 	 * 
@@ -33,17 +36,17 @@ public interface SecurityPolicy {
 	 * @throws SQLException 
 	 * @throws NotLoggedInException 
 	 */
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException;
+	public abstract boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException;
 
 	/**
 	 * 
 	 * @return True if and only if POST are allowed on this context.
 	 */
-	public boolean isPostRequestAllowed();
+	public abstract boolean isPostRequestAllowed();
 
 	/**
 	 * 
 	 * @return The last reason for a forbidden access.
 	 */
-	public String getLastReason();
+	public abstract String getLastReason();
 }

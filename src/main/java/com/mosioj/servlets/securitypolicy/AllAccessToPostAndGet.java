@@ -12,7 +12,7 @@ import com.mosioj.utils.NotLoggedInException;
  * @author Jordan Mosio
  *
  */
-public class AllAccessToPostAndGet implements SecurityPolicy {
+public class AllAccessToPostAndGet extends SecurityPolicy {
 	
 	protected String lastReason = "";
 

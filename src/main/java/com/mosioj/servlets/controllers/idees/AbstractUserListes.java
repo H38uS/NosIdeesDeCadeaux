@@ -37,9 +37,9 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
 	protected void fillsUserIdeas(User connectedUser, List<User> ids) throws SQLException {
 		logger.trace("Getting all ideas for all users...");
 		for (User user : ids) {
-			List<Idee> ownerIdeas = idees.getIdeasOf(user.id);
+			List<Idee> ownerIdeas = model.idees.getIdeasOf(user.id);
 			for (Idee idee : ownerIdeas) {
-				idees.fillAUserIdea(connectedUser, idee, device);
+				model.idees.fillAUserIdea(connectedUser, idee, device);
 			}
 			user.addIdeas(ownerIdeas);
 		}

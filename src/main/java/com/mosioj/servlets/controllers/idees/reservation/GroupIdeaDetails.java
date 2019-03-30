@@ -45,7 +45,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 	 * Class constructor.
 	 */
 	public GroupIdeaDetails() {
-		super(new BookingGroupInteraction(userRelations, idees, GROUP_ID_PARAM));
+		super(new BookingGroupInteraction(GROUP_ID_PARAM));
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 		int groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
 
 		logger.debug("Getting details for idea group " + groupId + "...");
-		IdeaGroup group = groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
+		IdeaGroup group = model.groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
 		double currentTotal = 0;
 		for (Share share : group.getShares()) {
 			currentTotal += share.getAmount();
@@ -67,18 +67,18 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 			request.getSession().removeAttribute("errors");
 		}
 
-		Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		User user = ParametersUtils.getConnectedUser(request);
-		idees.fillAUserIdea(user, idee, device);
+		model.idees.fillAUserIdea(user, idee, device);
 
 		// Suppression des notif's si y'en a
-		notif.getNotifications(	user.id,
+		model.notif.getNotifications(	user.id,
 								NotificationType.GROUP_IDEA_SUGGESTION,
 								ParameterName.GROUP_ID,
-								groupId).forEach(n -> notif.remove(n.id));
+								groupId).forEach(n -> model.notif.remove(n.id));
 
 		request.setAttribute("idee", idee);
-		request.setAttribute("is_in_group", groupForIdea.belongsToGroup(ParametersUtils.getConnectedUser(request), groupId));
+		request.setAttribute("is_in_group", model.groupForIdea.belongsToGroup(ParametersUtils.getConnectedUser(request), groupId));
 		request.setAttribute("group", group);
 		request.setAttribute("currentTotal", currentTotal);
 		request.setAttribute("remaining", String.format("%1$,.2f", remaining));
@@ -95,29 +95,29 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
 		if ("annulation".equals(amount)) {
 
-			User owner = idees.getIdeaOwnerFromGroup(groupId);
-			boolean isThereSomeoneRemaning = groupForIdea.removeUserFromGroup(thisUser, groupId);
-			List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
+			User owner = model.idees.getIdeaOwnerFromGroup(groupId);
+			boolean isThereSomeoneRemaning = model.groupForIdea.removeUserFromGroup(thisUser, groupId);
+			List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID, groupId);
 			notifications.parallelStream().filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name())).forEach(n -> {
-				notif.remove(n.id);
+				model.notif.remove(n.id);
 				logger.debug(MessageFormat.format("Notification {0} (type: {1}) dropped !", n.id, n.getType()));
 			});
 
 			if (isThereSomeoneRemaning) {
-				Optional<IdeaGroup> group = groupForIdea.getGroupDetails(groupId);
+				Optional<IdeaGroup> group = model.groupForIdea.getGroupDetails(groupId);
 				if (group.isPresent()) {
 
 					// On supprime les notifications précédentes de cette personne si y'en a
-					notif.removeAllType(NotificationType.GROUP_EVOLUTION,
+					model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
 										ParameterName.GROUP_ID,
 										groupId,
 										ParameterName.USER_ID,
 										thisUser);
 
-					final Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+					final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 					group.get().getShares().parallelStream().forEach(s -> {
 						try {
-							notif.addNotification(s.getUser().id, new NotifGroupEvolution(thisUser, groupId, idee, false));
+							model.notif.addNotification(s.getUser().id, new NotifGroupEvolution(thisUser, groupId, idee, false));
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.error("Fail to send group evolution notification => " + e.getMessage());
@@ -144,28 +144,28 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 			request.getSession().setAttribute("errors", errorsAmount);
 		} else {
 			// Modification de la participation
-			boolean newMember = groupForIdea.updateAmount(groupId, thisUser, Double.parseDouble(amount));
+			boolean newMember = model.groupForIdea.updateAmount(groupId, thisUser, Double.parseDouble(amount));
 			if (newMember) {
-				List<AbstractNotification> notifications = notif.getNotification(ParameterName.GROUP_ID, groupId);
+				List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID, groupId);
 				for (AbstractNotification notification : notifications) {
 					if (notification instanceof NotifGroupSuggestion && notification.owner == thisUser.id) {
-						notif.remove(notification.id);
+						model.notif.remove(notification.id);
 					}
 				}
-				Optional<IdeaGroup> group = groupForIdea.getGroupDetails(groupId);
+				Optional<IdeaGroup> group = model.groupForIdea.getGroupDetails(groupId);
 				if (group.isPresent()) {
 
 					// On supprime les notifications précédentes de cette personne si y'en a
-					notif.removeAllType(NotificationType.GROUP_EVOLUTION,
+					model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
 										ParameterName.GROUP_ID,
 										groupId,
 										ParameterName.USER_ID,
 										thisUser);
 
-					final Idee idee = idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+					final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 					group.get().getShares().parallelStream().filter(s -> !s.getUser().equals(thisUser)).forEach(s -> {
 						try {
-							notif.addNotification(s.getUser().id, new NotifGroupEvolution(thisUser, groupId, idee, true));
+							model.notif.addNotification(s.getUser().id, new NotifGroupEvolution(thisUser, groupId, idee, true));
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.error("Fail to send group evolution notification => " + e.getMessage());

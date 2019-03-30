@@ -150,8 +150,8 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 	 */
 	protected void addModificationNotification(User user, Idee idea, boolean isNew) throws SQLException {
 		if (isBirthdayClose(user)) {
-			for (User friend : userRelations.getAllUsersInRelation(user)) {
-				notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
+			for (User friend : model.userRelations.getAllUsersInRelation(user)) {
+				model.notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
 			}
 		}
 	}
@@ -179,7 +179,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 			errors.add("Le commentaire ne peut pas être vide !");
 		}
 
-		if (!idees.canSubBook(idea.getId(), user.id)) {
+		if (!model.idees.canSubBook(idea.getId(), user.id)) {
 			errors.add("L'idée a déjà été réservée, ou vous en avez déjà réservé une sous partie.");
 		}
 
@@ -189,8 +189,8 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 			return false;
 		}
 
-		idees.sousReserver(idea.getId(), user.id, comment);
-		sousReservation.sousReserver(idea.getId(), user.id, comment);
+		model.idees.sousReserver(idea.getId(), user.id, comment);
+		model.sousReservation.sousReserver(idea.getId(), user.id, comment);
 		return true;
 	}
 

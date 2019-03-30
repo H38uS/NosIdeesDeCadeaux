@@ -41,7 +41,7 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
 		if (firstRow == 0) {
 			ids.add(user);
 		}
-		ids.addAll(userRelations.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
+		ids.addAll(model.userRelations.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
 		fillsUserIdeas(user, ids);
 		return ids;
 	}
@@ -49,7 +49,7 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
 		// On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
-		return userRelations.getRelationsCount(ParametersUtils.getConnectedUser(req));
+		return model.userRelations.getRelationsCount(ParametersUtils.getConnectedUser(req));
 	}
 
 	@Override

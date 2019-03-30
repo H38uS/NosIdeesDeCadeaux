@@ -24,7 +24,7 @@ public class ServiceGetUserNameFromID extends AbstractService<NetworkAccess> {
 	private static final String USER_ID_PARAM = "userId";
 
 	public ServiceGetUserNameFromID() {
-		super(new NetworkAccess(userRelations, USER_ID_PARAM));
+		super(new NetworkAccess(USER_ID_PARAM));
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ServiceGetUserNameFromID extends AbstractService<NetworkAccess> {
 			if (userId == null) {
 				throw new SQLException("User id is null...");
 			}
-			User user = users.getUser(userId);
+			User user = model.users.getUser(userId);
 			res = user.getEmail();
 			status = "ok";
 		} catch (SQLException e) {

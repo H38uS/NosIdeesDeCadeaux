@@ -50,11 +50,11 @@ public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 			session.removeAttribute("errors_info_gen");
 		}
 		
-		List<UserParameter> userNotificationParameters = userParameters.getUserNotificationParameters(current.id);
+		List<UserParameter> userNotificationParameters = model.userParameters.getUserNotificationParameters(current.id);
 		request.setAttribute("notif_types", userNotificationParameters);
 		
-		request.setAttribute("parents", parentRelationship.getParents(current.id));
-		request.setAttribute("children", parentRelationship.getChildren(current.id));
+		request.setAttribute("parents", model.parentRelationship.getParents(current.id));
+		request.setAttribute("children", model.parentRelationship.getChildren(current.id));
 
 		request.setAttribute("possible_values", NotificationActivation.values());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);

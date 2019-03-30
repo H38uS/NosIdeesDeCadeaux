@@ -5,26 +5,21 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class NetworkAccess extends AllAccessToPostAndGet implements SecurityPolicy {
+public class NetworkAccess extends AllAccessToPostAndGet {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
 	 */
 	private final String userParameter;
 
-	private final UserRelations userRelations;
-
 	/**
 	 * 
-	 * @param userRelations
 	 * @param userParameter
 	 */
-	public NetworkAccess(UserRelations userRelations, String userParameter) {
-		this.userRelations = userRelations;
+	public NetworkAccess(String userParameter) {
 		this.userParameter = userParameter;
 	}
 
@@ -36,7 +31,7 @@ public class NetworkAccess extends AllAccessToPostAndGet implements SecurityPoli
 		}
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
-		boolean res = user == userId || userRelations.associationExists(user, userId);
+		boolean res = user == userId || model.userRelations.associationExists(user, userId);
 		if (!res) {
 			lastReason = "Vous n'êtes pas ami avec cette personne.";
 		}

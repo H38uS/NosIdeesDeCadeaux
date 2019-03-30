@@ -38,7 +38,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 	 * Class constructor.
 	 */
 	public ResoudreDemandeAmi() {
-		super(new PeutResoudreDemandesAmis(userRelations, userRelationRequests));
+		super(new PeutResoudreDemandesAmis());
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 			}
 
 			int fromUserId = Integer.parseInt(key.substring("choix_".length()));
-			if (!userRelationRequests.associationExists(fromUserId, thisUserId)) {
+			if (!model.userRelationRequests.associationExists(fromUserId, thisUserId)) {
 				// On ne traite que les demandes réellement envoyées...
 				continue;
 			}
@@ -77,53 +77,53 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 
 			if (accept) {
 				logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.", thisUserId, fromUserId));
-				userRelations.addAssociation(fromUserId, thisUserId);
-				userRelationRequests.cancelRequest(fromUserId, thisUserId);
-				accepted.add(users.getUser(fromUserId));
-				notif.addNotification(fromUserId, new NotifDemandeAcceptee(thisOne.id, thisOne.getName()));
+				model.userRelations.addAssociation(fromUserId, thisUserId);
+				model.userRelationRequests.cancelRequest(fromUserId, thisUserId);
+				accepted.add(model.users.getUser(fromUserId));
+				model.notif.addNotification(fromUserId, new NotifDemandeAcceptee(thisOne.id, thisOne.getName()));
 			} else {
 				logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.", thisUserId, fromUserId));
-				userRelationRequests.cancelRequest(fromUserId, thisUserId);
-				notif.addNotification(fromUserId, new NotifDemandeRefusee(thisOne.id, thisOne.getName()));
+				model.userRelationRequests.cancelRequest(fromUserId, thisUserId);
+				model.notif.addNotification(fromUserId, new NotifDemandeRefusee(thisOne.id, thisOne.getName()));
 			}
 
 			// Si fromUserId avait supprimé sa relation avec userId
-			toBeRemoved.addAll(notif.getNotifications(thisUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, fromUserId));
+			toBeRemoved.addAll(model.notif.getNotifications(thisUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, fromUserId));
 			// Si userId avait supprimé sa relation avec fromUserId
-			toBeRemoved.addAll(notif.getNotifications(fromUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, thisUserId));
+			toBeRemoved.addAll(model.notif.getNotifications(fromUserId, NotificationType.FRIENDSHIP_DROPPED, ParameterName.USER_ID, thisUserId));
 			// Si fromUserId avait refusé la demande de userId
-			toBeRemoved.addAll(notif.getNotifications(	thisUserId,
+			toBeRemoved.addAll(model.notif.getNotifications(	thisUserId,
 														NotificationType.REJECTED_FRIENDSHIP,
 														ParameterName.USER_ID,
 														fromUserId));
 			// Si userId avait supprimé sa relation avec fromUserId
-			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
+			toBeRemoved.addAll(model.notif.getNotifications(	fromUserId,
 														NotificationType.REJECTED_FRIENDSHIP,
 														ParameterName.USER_ID,
 														thisUserId));
 
 			// Suppression des suggestions d'amitiés entre ces deux personnes
-			toBeRemoved.addAll(notif.getNotifications(	thisUserId,
+			toBeRemoved.addAll(model.notif.getNotifications(	thisUserId,
 														NotificationType.NEW_RELATION_SUGGESTION,
 														ParameterName.USER_ID,
 														fromUserId));
-			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
+			toBeRemoved.addAll(model.notif.getNotifications(	fromUserId,
 														NotificationType.NEW_RELATION_SUGGESTION,
 														ParameterName.USER_ID,
 														thisUserId));
 
 			// Suppression des demandes d'amis
-			toBeRemoved.addAll(notif.getNotifications(	fromUserId,
+			toBeRemoved.addAll(model.notif.getNotifications(	fromUserId,
 														NotificationType.NEW_FRIENSHIP_REQUEST,
 														ParameterName.USER_ID,
 														thisUserId));
 		}
 
 		for (AbstractNotification n : toBeRemoved) {
-			notif.remove(n.id);
+			model.notif.remove(n.id);
 		}
 
-		notif.removeAllType(thisOne, NotificationType.NEW_FRIENSHIP_REQUEST);
+		model.notif.removeAllType(thisOne, NotificationType.NEW_FRIENSHIP_REQUEST);
 
 		// Redirection à la page d'administration
 		HttpSession session = request.getSession();

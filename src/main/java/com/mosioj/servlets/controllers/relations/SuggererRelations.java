@@ -23,7 +23,7 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 	private static final String DISPATCH_URL = "/protected/suggerer_relations.jsp";
 
 	public SuggererRelations() {
-		super(new NetworkAccess(userRelations, USER_PARAMETER));
+		super(new NetworkAccess(USER_PARAMETER));
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 
 		int suggestTo = ParametersUtils.readInt(req, USER_PARAMETER);
 
-		req.setAttribute("user", users.getUser(suggestTo));
+		req.setAttribute("user", model.users.getUser(suggestTo));
 
 		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
 	}
@@ -40,11 +40,11 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		int suggestTo = ParametersUtils.readInt(request, USER_PARAMETER);
-		User suggestToUser = users.getUser(suggestTo);
+		User suggestToUser = model.users.getUser(suggestTo);
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 
 		int suggestedBy = ParametersUtils.getConnectedUser(request).id;
-		List<User> toBeSuggested = userRelations.getAllUsersInRelationNotInOtherNetwork(suggestedBy,
+		List<User> toBeSuggested = model.userRelations.getAllUsersInRelationNotInOtherNetwork(suggestedBy,
 																						suggestTo,
 																						userNameOrEmail,
 																						0,
@@ -52,13 +52,13 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 		toBeSuggested.remove(suggestToUser);
 
 		for (User u : toBeSuggested) {
-			if (userRelationsSuggestion.hasReceivedSuggestionOf(suggestTo, u.id)) {
+			if (model.userRelationsSuggestion.hasReceivedSuggestionOf(suggestTo, u.id)) {
 				u.freeComment = MessageFormat.format("{0} a déjà reçu une suggestion pour {1}.", suggestToUser.getName(), u.getName());
 			}
-			if (userRelationRequests.associationExists(suggestTo, u.id)) {
+			if (model.userRelationRequests.associationExists(suggestTo, u.id)) {
 				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", suggestToUser.getName(), u.getName());
 			}
-			if (userRelationRequests.associationExists(u.id, suggestTo)) {
+			if (model.userRelationRequests.associationExists(u.id, suggestTo)) {
 				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", u.getName(), suggestToUser.getName());
 			}
 		}

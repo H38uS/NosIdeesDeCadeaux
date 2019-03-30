@@ -29,7 +29,7 @@ public class DemandeRejoindreReseauService extends AbstractService<AllAccessToPo
 	public static final String USER_ID_PARAM = "user_id";
 
 	public DemandeRejoindreReseauService() {
-		super(new PeutDemanderARejoindreLeReseau(userRelations, userRelationRequests, USER_ID_PARAM));
+		super(new PeutDemanderARejoindreLeReseau(USER_ID_PARAM));
 	}
 
 	@Override
@@ -44,26 +44,26 @@ public class DemandeRejoindreReseauService extends AbstractService<AllAccessToPo
 		String message = "";
 
 		try {
-			User userToSendInvitation = users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM));
+			User userToSendInvitation = model.users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM));
 			User thisOne = ParametersUtils.getConnectedUser(request);
 			request.setAttribute("name", userToSendInvitation.getName());
 
-			if (userRelationRequests.associationExists(thisOne.id, userToSendInvitation.id)) {
+			if (model.userRelationRequests.associationExists(thisOne.id, userToSendInvitation.id)) {
 				throw new SQLException(MessageFormat.format("vous avez déjà envoyé une demande à {0}.",
 															userToSendInvitation.getName()));
 			}
 
-			if (userRelations.associationExists(thisOne.id, userToSendInvitation.id)) {
+			if (model.userRelations.associationExists(thisOne.id, userToSendInvitation.id)) {
 				throw new SQLException(MessageFormat.format("vous êtes déjà ami avec {0}.", userToSendInvitation.getName()));
 			}
 
 			// Suppression des notifications
-			notif.removeAllType(thisOne, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userToSendInvitation.id);
-			notif.removeAllType(userToSendInvitation, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, thisOne);
+			model.notif.removeAllType(thisOne, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, userToSendInvitation.id);
+			model.notif.removeAllType(userToSendInvitation, NotificationType.NEW_RELATION_SUGGESTION, ParameterName.USER_ID, thisOne);
 
 			// On ajoute l'association
-			userRelationRequests.insert(thisOne, userToSendInvitation);
-			notif.addNotification(	userToSendInvitation.id,
+			model.userRelationRequests.insert(thisOne, userToSendInvitation);
+			model.notif.addNotification(	userToSendInvitation.id,
 									new NotifNouvelleDemandeAmi(thisOne, userToSendInvitation.id, thisOne.getName()));
 		} catch (SQLException | NotLoggedInException e) {
 			status = "ko";

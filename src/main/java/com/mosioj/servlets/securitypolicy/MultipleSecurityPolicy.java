@@ -13,7 +13,7 @@ import com.mosioj.utils.NotLoggedInException;
  * @author Jordan Mosio
  *
  */
-public class MultipleSecurityPolicy implements SecurityPolicy {
+public class MultipleSecurityPolicy extends SecurityPolicy {
 
 	private SecurityPolicy[] policies;
 

@@ -31,7 +31,7 @@ public class ReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 	 * Class constructor
 	 */
 	public ReserverIdee() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
 	}
 
 	@Override
@@ -45,11 +45,11 @@ public class ReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 		int userId = ParametersUtils.getConnectedUser(request).id;
 		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea, userId));
 		
-		if (idees.canBook(idea, userId)) {
-			idees.reserver(idea, userId);
-			for (AbstractNotification n : notif.getNotification(ParameterName.IDEA_ID, idea)) {
+		if (model.idees.canBook(idea, userId)) {
+			model.idees.reserver(idea, userId);
+			for (AbstractNotification n : model.notif.getNotification(ParameterName.IDEA_ID, idea)) {
 				if (n instanceof NotifRecurentIdeaUnbook) {
-					notif.remove(n.id);
+					model.notif.remove(n.id);
 				}
 			}
 		}

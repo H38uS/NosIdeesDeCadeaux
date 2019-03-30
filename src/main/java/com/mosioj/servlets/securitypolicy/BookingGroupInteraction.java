@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.model.table.Idees;
-import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
@@ -17,25 +15,18 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class BookingGroupInteraction extends AllAccessToPostAndGet implements SecurityPolicy {
+public class BookingGroupInteraction extends AllAccessToPostAndGet  {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
 	private final String groupParameter;
 
-	private final UserRelations userRelations;
-	private final Idees idees;
-
 	/**
 	 * 
-	 * @param userRelations
-	 * @param idees
 	 * @param groupParameter Defines the string used in HttpServletRequest to retrieve the group id.
 	 */
-	public BookingGroupInteraction(UserRelations userRelations, Idees idees, String groupParameter) {
-		this.userRelations = userRelations;
-		this.idees = idees;
+	public BookingGroupInteraction(String groupParameter) {
 		this.groupParameter = groupParameter;
 	}
 
@@ -57,13 +48,13 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet implements Se
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
 
-		User ideaOwner = idees.getIdeaOwnerFromGroup(groupId);
+		User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupId);
 		if (ideaOwner == null) {
 			lastReason = "Ce groupe appartient à personne.";
 			return false;
 		}
 
-		boolean res = userRelations.associationExists(userId, ideaOwner.id);
+		boolean res = model.userRelations.associationExists(userId, ideaOwner.id);
 		if (!res) {
 			lastReason = "Vous n'avez pas accès aux idées de cette personne.";
 		}

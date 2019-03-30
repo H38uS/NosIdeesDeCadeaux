@@ -31,7 +31,7 @@ public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		req.setAttribute("suggestions", userRelationsSuggestion.getUserSuggestions(ParametersUtils.getConnectedUser(req)));
+		req.setAttribute("suggestions", model.userRelationsSuggestion.getUserSuggestions(ParametersUtils.getConnectedUser(req)));
 		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
 	}
 
@@ -50,38 +50,38 @@ public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 		for (int userToAsk : toBeAsked) {
 			
-			User userToSendInvitation = users.getUser(userToAsk);
-			userRelationsSuggestion.removeIfExists(userId, userToAsk);
+			User userToSendInvitation = model.users.getUser(userToAsk);
+			model.userRelationsSuggestion.removeIfExists(userId, userToAsk);
 			
-			if (userToSendInvitation.id == userId || userRelations.associationExists(userToSendInvitation.id, userId)) {
+			if (userToSendInvitation.id == userId || model.userRelations.associationExists(userToSendInvitation.id, userId)) {
 				errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", userToSendInvitation.getName()));
 				continue;
 			}
 			
-			if (userRelationRequests.associationExists(userId, userToSendInvitation.id)) {
+			if (model.userRelationRequests.associationExists(userId, userToSendInvitation.id)) {
 				errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.", userToSendInvitation.getName()));
 				continue;
 			}
 			
 			// On ajoute l'association
-			userRelationRequests.insert(thisOne, userToSendInvitation);
+			model.userRelationRequests.insert(thisOne, userToSendInvitation);
 		}
 		
 		for (int ignore : toIgnore) {
-			userRelationsSuggestion.removeIfExists(userId, ignore);
+			model.userRelationsSuggestion.removeIfExists(userId, ignore);
 		}
 
-		List<AbstractNotification> notifications = notif.getUserNotifications(userId);
+		List<AbstractNotification> notifications = model.notif.getUserNotifications(userId);
 		for (AbstractNotification n : notifications) {
 			if (n instanceof NotifNewRelationSuggestion) {
 				NotifNewRelationSuggestion notification = (NotifNewRelationSuggestion) n;
-				if (!userRelationsSuggestion.hasReceivedSuggestionFrom(userId, notification.getUserIdParam())) {
-					notif.remove(notification.id);
+				if (!model.userRelationsSuggestion.hasReceivedSuggestionFrom(userId, notification.getUserIdParam())) {
+					model.notif.remove(notification.id);
 				}
 			}
 		}
 		
-		request.setAttribute("suggestions", userRelationsSuggestion.getUserSuggestions(thisOne));
+		request.setAttribute("suggestions", model.userRelationsSuggestion.getUserSuggestions(thisOne));
 		request.setAttribute("error_messages", errors);
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
 	}

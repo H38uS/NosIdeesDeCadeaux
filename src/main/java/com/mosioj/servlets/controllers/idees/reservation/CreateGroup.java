@@ -34,7 +34,7 @@ public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 	 * Class contructor
 	 */
 	public CreateGroup() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEE_FIELD_PARAMETER));
+		super(new IdeaInteractionBookingUpToDate(IDEE_FIELD_PARAMETER));
 	}
 
 	@Override
@@ -81,9 +81,9 @@ public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
 		Integer groupId = null;
-		if (idees.canBook(idea.getId(), userId)) {
-			groupId = groupForIdea.createAGroup(total, amount, userId);
-			idees.bookByGroup(id, groupId);
+		if (model.idees.canBook(idea.getId(), userId)) {
+			groupId = model.groupForIdea.createAGroup(total, amount, userId);
+			model.idees.bookByGroup(id, groupId);
 		}
 
 		if (groupId == null) {

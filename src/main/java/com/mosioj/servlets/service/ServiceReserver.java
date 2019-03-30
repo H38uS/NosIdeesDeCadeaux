@@ -23,7 +23,7 @@ public class ServiceReserver extends AbstractService<IdeaInteractionBookingUpToD
 	private static final Logger logger = LogManager.getLogger(ServiceReserver.class);
 
 	public ServiceReserver() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
 	}
 
 	@Override
@@ -38,8 +38,8 @@ public class ServiceReserver extends AbstractService<IdeaInteractionBookingUpToD
 		int userId = ParametersUtils.getConnectedUser(request).id;
 		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea, userId));
 
-		if (idees.canBook(idea, userId)) {
-			idees.reserver(idea, userId);
+		if (model.idees.canBook(idea, userId)) {
+			model.idees.reserver(idea, userId);
 		}
 
 		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));

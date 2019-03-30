@@ -35,7 +35,7 @@ public class Administration extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		logger.info("Getting administration page from user: " + ParametersUtils.getConnectedUser(request));
-		List<User> allUsers = users.getAllUsers();
+		List<User> allUsers = model.users.getAllUsers();
 		request.setAttribute("users", allUsers);
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
 	}

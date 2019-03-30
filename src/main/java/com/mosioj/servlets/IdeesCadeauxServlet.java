@@ -31,20 +31,7 @@ import org.springframework.mobile.device.Device;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
-import com.mosioj.model.table.Categories;
-import com.mosioj.model.table.Comments;
-import com.mosioj.model.table.GroupIdea;
-import com.mosioj.model.table.Idees;
-import com.mosioj.model.table.Notifications;
-import com.mosioj.model.table.ParentRelationship;
-import com.mosioj.model.table.Priorites;
-import com.mosioj.model.table.Questions;
-import com.mosioj.model.table.SousReservation;
-import com.mosioj.model.table.UserParameters;
-import com.mosioj.model.table.UserRelationRequests;
-import com.mosioj.model.table.UserRelations;
-import com.mosioj.model.table.UserRelationsSuggestion;
-import com.mosioj.model.table.Users;
+import com.mosioj.servlets.logichelpers.ModelAccessor;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.Compteur;
@@ -117,82 +104,18 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
 	// FIXME : 99 ajouter les images des gens dans les recherches, en petit
 
-	/**
-	 * L'interface vers la table USER_RELATIONS. Static because it can be used in constructor for security checks.
-	 */
-	// FIXME : 0 mettre tout ça dans un helper
-	// Utiliser le helper dans les security, comme ça plus besoin de static
-	protected static UserRelations userRelations = new UserRelations();
 
-	/**
-	 * Interface vers la table USER_RELATION_REQUESTS.
-	 */
-	protected static UserRelationRequests userRelationRequests = new UserRelationRequests();;
-
-	/**
-	 * Interface vers la table USERS.
-	 */
-	protected Users users;
-
-	/**
-	 * The connections to the IDEES table. Static because it can be used in constructor for security checks.
-	 */
-	protected static Idees idees = new Idees();
-
-	/**
-	 * The connections to the CATEGORIES table.
-	 */
-	protected Categories categories;
-
-	/**
-	 * The connections to the PRIORITIES table.
-	 */
-	protected Priorites priorities;
-
-	/**
-	 * The connections to the NOTIFICATION table. Static because it can be used in constructor for security checks.
-	 */
-	protected static Notifications notif = new Notifications();
-
-	/**
-	 * The connections to the GROUP_IDEA and GROUP_IDEA_CONTENT tables.
-	 */
-	protected GroupIdea groupForIdea;
-
-	/**
-	 * The connections to the USER_RELATIONS_SUGGESTION table.
-	 */
-	protected UserRelationsSuggestion userRelationsSuggestion;
-
-	/**
-	 * The connections to the COMMENTS table. Static because it can be used in constructor for security checks.
-	 */
-	protected static Comments comments = new Comments();
-
-	/**
-	 * The connections to the QUESTIONS table. Static because it can be used in constructor for security checks.
-	 */
-	protected static Questions questions = new Questions();
-
-	/**
-	 * The connections to the USER_PARAMETERS table.
-	 */
-	protected UserParameters userParameters = new UserParameters();
-
-	/**
-	 * The connections to the SOUS_RESERVATION table.
-	 */
-	protected SousReservation sousReservation = new SousReservation();
-
-	/**
-	 * The connection to the PARENT_RELATIONSHIP table.
-	 */
-	protected static ParentRelationship parentRelationship = new ParentRelationship();
 
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
 	protected final P policy;
+
+	/**
+	 * Interface to the DB model.
+	 */
+	protected final ModelAccessor model = new ModelAccessor();
+	
 	protected Map<String, String> parameters;
 	protected Device device;
 	private File ideasPicturePath;
@@ -203,11 +126,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 * @param policy The security policy defining whether we can interact with the parameters, etc.
 	 */
 	public IdeesCadeauxServlet(P policy) {
-		users = new Users();
-		categories = new Categories();
-		priorities = new Priorites();
-		groupForIdea = new GroupIdea();
-		userRelationsSuggestion = new UserRelationsSuggestion();
 		this.policy = policy;
 	}
 	
@@ -254,7 +172,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			}
 
 			String fullURL = request.getRequestURL().toString();
-			notif.setURL(fullURL);
+			model.notif.setURL(fullURL);
 
 			device = (Device) request.getAttribute("device");
 
@@ -262,10 +180,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				try {
 					// Mise à jour du nombre de notifications
 					User thisUser = ParametersUtils.getConnectedUser(request);
-					final Compteur count = new Compteur(notif.getUserNotificationCount(thisUser.id));
-					parentRelationship.getChildren(thisUser.id).forEach(c -> {
+					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
+					model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
 						try {
-							count.add(notif.getUserNotificationCount(c.id));
+							count.add(model.notif.getUserNotificationCount(c.id));
 						} catch (Exception e) {
 							logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
 																c.getName(),
@@ -277,7 +195,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
 						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-						idees.fillAUserIdea(thisUser, idee, device);
+						model.idees.fillAUserIdea(thisUser, idee, device);
 					}
 
 				} catch (Exception e) {
@@ -340,7 +258,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			}
 
 			String fullURL = request.getRequestURL().toString();
-			notif.setURL(fullURL);
+			model.notif.setURL(fullURL);
 
 			device = (Device) request.getAttribute("device");
 
@@ -348,10 +266,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				try {
 					// Mise à jour du nombre de notifications
 					User thisUser = ParametersUtils.getConnectedUser(request);
-					final Compteur count = new Compteur(notif.getUserNotificationCount(thisUser.id));
-					parentRelationship.getChildren(thisUser.id).forEach(c -> {
+					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
+					model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
 						try {
-							count.add(notif.getUserNotificationCount(c.id));
+							count.add(model.notif.getUserNotificationCount(c.id));
 						} catch (Exception e) {
 							logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
 																c.getName(),
@@ -363,7 +281,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
 						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-						idees.fillAUserIdea(thisUser, idee, device);
+						model.idees.fillAUserIdea(thisUser, idee, device);
 					}
 
 				} catch (Exception e) {
@@ -557,8 +475,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 * @throws NotLoggedInException
 	 */
 	protected Idee getIdeaAndEnrichIt(HttpServletRequest request, int ideaId) throws SQLException, NotLoggedInException {
-		Idee idee = idees.getIdeaWithoutEnrichment(ideaId);
-		idees.fillAUserIdea(ParametersUtils.getConnectedUser(request), idee, device);
+		Idee idee = model.idees.getIdeaWithoutEnrichment(ideaId);
+		model.idees.fillAUserIdea(ParametersUtils.getConnectedUser(request), idee, device);
 		return idee;
 	}
 }

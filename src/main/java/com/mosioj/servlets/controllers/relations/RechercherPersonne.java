@@ -81,7 +81,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
 		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
-		return users.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
+		return model.users.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
 	}
 
 	@Override
@@ -92,16 +92,16 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 		String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
 		boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
-		List<User> foundUsers = users.getUsers(userNameOrEmail, userId, onlyNonFriend, firstRow, maxNumberOfResults);
+		List<User> foundUsers = model.users.getUsers(userNameOrEmail, userId, onlyNonFriend, firstRow, maxNumberOfResults);
 
 		if (!onlyNonFriend) {
 			for (User user : foundUsers) {
-				user.isInMyNetwork = userRelations.associationExists(user.id, userId);
+				user.isInMyNetwork = model.userRelations.associationExists(user.id, userId);
 			}
 		}
 
 		for (User user : foundUsers) {
-			if (userRelationRequests.associationExists(userId, user.id)) {
+			if (model.userRelationRequests.associationExists(userId, user.id)) {
 				user.freeComment = "Vous avez déjà envoyé une demande à " + user.getName();
 			}
 		}

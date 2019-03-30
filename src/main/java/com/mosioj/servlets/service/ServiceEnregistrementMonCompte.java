@@ -69,7 +69,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 			if (errors == null || errors.isEmpty()) {
 				status = "ok";
 				message = "";
-				User user = users.getUser(userId);
+				User user = model.users.getUser(userId);
 				avatar = user.getAvatar();
 				avatarLarge = user.getAvatarSrcLarge();
 				avatarSmall = user.getAvatarSrcSmall();
@@ -140,7 +140,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 				errors.addAll(pwdErrors2);
 			}
 
-			User user = users.getUser(userId);
+			User user = model.users.getUser(userId);
 			user.email = email;
 			user.name = name;
 			user.birthday = getAsDate(birthday);
@@ -161,10 +161,10 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 			user.avatar = image;
 
 			if (errors.isEmpty()) {
-				users.update(user);
+				model.users.update(user);
 				if (!newPwd.isEmpty()) {
 					String digested = ci.hashPwd(newPwd, errors);
-					users.updatePassword(userId, digested);
+					model.users.updatePassword(userId, digested);
 				}
 			}
 

@@ -28,7 +28,7 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 	public static final String WEB_SERVLET = "/protected/idee_commentaires";
 
 	public IdeaComments() {
-		super(new IdeaInteraction(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	/**
@@ -39,14 +39,14 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 	 * @throws SQLException
 	 */
 	private void dropNotificationOnView(User owner, int ideaId) throws SQLException {
-		notif.removeAllType(owner, NotificationType.NEW_COMMENT_ON_IDEA, ParameterName.IDEA_ID, ideaId);
+		model.notif.removeAllType(owner, NotificationType.NEW_COMMENT_ON_IDEA, ParameterName.IDEA_ID, ideaId);
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
-		request.setAttribute("comments", comments.getCommentsOn(idea.getId()));
+		request.setAttribute("comments", model.comments.getCommentsOn(idea.getId()));
 		dropNotificationOnView(ParametersUtils.getConnectedUser(request), idea.getId());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
@@ -58,22 +58,22 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 		String text = ParametersUtils.readAndEscape(request, "text");
 
 		User current = ParametersUtils.getConnectedUser(request);
-		comments.addComment(current.id, id, text);
+		model.comments.addComment(current.id, id, text);
 		Idee idea = policy.getIdea();
 
 		Set<User> toBeNotified = new HashSet<User>();
 
 		// If the idea is booked, we notify the bookers
-		toBeNotified.addAll(idea.getBookers(groupForIdea, sousReservation));
+		toBeNotified.addAll(idea.getBookers(model.groupForIdea, model.sousReservation));
 
 		// Notifying at least all people in the thread
-		toBeNotified.addAll(comments.getUserListOnComment(idea.getId()));
+		toBeNotified.addAll(model.comments.getUserListOnComment(idea.getId()));
 
 		// Removing current user, and notifying others
 		toBeNotified.remove(current);
 
 		for (User notified : toBeNotified) {
-			notif.addNotification(notified.id, new NotifNewCommentOnIdea(current, idea));
+			model.notif.addNotification(notified.id, new NotifNewCommentOnIdea(current, idea));
 		}
 
 		dropNotificationOnView(ParametersUtils.getConnectedUser(request), id);

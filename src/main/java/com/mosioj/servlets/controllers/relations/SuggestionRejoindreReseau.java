@@ -25,7 +25,7 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet<NetworkAccess
 	private static final String URL_ERROR = "suggerer_relations_error.jsp";
 
 	public SuggestionRejoindreReseau() {
-		super(new NetworkAccess(userRelations, USER_PARAMETER));
+		super(new NetworkAccess(USER_PARAMETER));
 	}
 
 	@Override
@@ -44,18 +44,18 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet<NetworkAccess
 		// Persist suggestion
 		List<User> sent = new ArrayList<User>();
 		for (int toBeAdded : suggestedUsers) {
-			if (userRelationsSuggestion.newSuggestion(suggestedBy.id, suggestTo, toBeAdded)) {
-				sent.add(users.getUser(toBeAdded));
+			if (model.userRelationsSuggestion.newSuggestion(suggestedBy.id, suggestTo, toBeAdded)) {
+				sent.add(model.users.getUser(toBeAdded));
 			}
 		}
 		if (sent.size() > 0) {
 			// Send a notification
-			notif.addNotification(suggestTo, new NotifNewRelationSuggestion(suggestedBy.id, suggestedBy.getName()));
-			request.setAttribute("user", users.getUser(suggestTo));
+			model.notif.addNotification(suggestTo, new NotifNewRelationSuggestion(suggestedBy.id, suggestedBy.getName()));
+			request.setAttribute("user", model.users.getUser(suggestTo));
 			request.setAttribute("users", sent);
 			RootingsUtils.rootToPage(URL_SUCCESS, request, response);
 		} else {
-			request.setAttribute("user", users.getUser(suggestTo));
+			request.setAttribute("user", model.users.getUser(suggestTo));
 			RootingsUtils.rootToPage(URL_ERROR, request, response);
 		}
 	}

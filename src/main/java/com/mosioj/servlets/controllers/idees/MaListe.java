@@ -44,8 +44,8 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-		List<Categorie> cat = categories.getCategories();
-		List<Priorite> prio = priorities.getPriorities();
+		List<Categorie> cat = model.categories.getCategories();
+		List<Priorite> prio = model.priorities.getPriorities();
 
 		request.setAttribute("types", cat);
 		request.setAttribute("priorites", prio);
@@ -69,15 +69,15 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 													parameters.get("type"),
 													parameters.get("priority")));
 				User user = ParametersUtils.getConnectedUser(request);
-				int ideaId = idees.addIdea(	user,
+				int ideaId = model.idees.addIdea(	user,
 											parameters.get("text"),
 											parameters.get("type"),
 											Integer.parseInt(parameters.get("priority")),
 											parameters.get("image"),
 											null,
 											user);
-				addModificationNotification(user, idees.getIdeaWithoutEnrichment(ideaId), true);
-				notif.removeAllType(user, NotificationType.NO_IDEA);
+				addModificationNotification(user, model.idees.getIdeaWithoutEnrichment(ideaId), true);
+				model.notif.removeAllType(user, NotificationType.NO_IDEA);
 
 				request.getSession().setAttribute("added_idea_id", ideaId);
 

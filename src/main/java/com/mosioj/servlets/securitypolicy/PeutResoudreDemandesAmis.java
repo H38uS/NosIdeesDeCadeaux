@@ -11,27 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.model.table.UserRelationRequests;
-import com.mosioj.model.table.UserRelations;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet implements SecurityPolicy {
+public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet {
 
 	private static final Logger logger = LogManager.getLogger(PeutResoudreDemandesAmis.class);
-
-	private final UserRelations userRelations;
-	private final UserRelationRequests userRelationRequests;
-
-	/**
-	 * 
-	 * @param userRelations
-	 * @param userRelationRequests
-	 */
-	public PeutResoudreDemandesAmis(UserRelations userRelations, UserRelationRequests userRelationRequests) {
-		this.userRelations = userRelations;
-		this.userRelationRequests = userRelationRequests;
-	}
 
 	private boolean hasAccess(HttpServletRequest request) throws SQLException, NotLoggedInException {
 		try {
@@ -55,11 +40,11 @@ public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet implements S
 					lastReason = "Vous ne pouvez pas être ami avec vous-même...";
 					return false;
 				}
-				if (userRelations.associationExists(userId, user)) {
+				if (model.userRelations.associationExists(userId, user)) {
 					lastReason = "Vous êtes déjà ami avec l'une des personnes...";
 					return false;
 				}
-				if (!userRelationRequests.associationExists(user, userId)) {
+				if (!model.userRelationRequests.associationExists(user, userId)) {
 					lastReason = "Au moins une personne ne vous a jamais fait de demande...";
 					return false;
 				}

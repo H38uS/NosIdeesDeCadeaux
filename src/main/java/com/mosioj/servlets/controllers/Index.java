@@ -36,7 +36,7 @@ public class Index extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 		req.setAttribute("no_birth_date_set", me.getBirthday() == null);
 
 		// Birthday messages
-		List<User> friends = userRelations.getCloseBirthday(ParametersUtils.getConnectedUser(req), NB_DAYS_MAX_BEFORE_BIRTHDAY);
+		List<User> friends = model.userRelations.getCloseBirthday(ParametersUtils.getConnectedUser(req), NB_DAYS_MAX_BEFORE_BIRTHDAY);
 		req.setAttribute("userBirthday", friends);
 		if (!friends.isEmpty()) {
 			req.setAttribute("birthdayMessage", MessagesAccueil.getOneBirthdayMessage());

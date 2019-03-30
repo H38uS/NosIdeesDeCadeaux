@@ -25,7 +25,7 @@ public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToD
 	private static final Logger logger = LogManager.getLogger(ServiceEstAJour.class);
 
 	public ServiceEstAJour() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEE_FIELD_PARAMETER));
+		super(new IdeaInteractionBookingUpToDate(IDEE_FIELD_PARAMETER));
 	}
 
 	@Override
@@ -55,9 +55,9 @@ public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToD
 		
 		IsUpToDateQuestions ask = new IsUpToDateQuestions();
 		if (ask.addAssociation(idea.getId(), userId) == 1) {
-			NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(users.getUser(userId), idea);
-			if (!notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
-				notif.addNotification(idea.owner.id, isUpToDateNotif);
+			NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(model.users.getUser(userId), idea);
+			if (!model.notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
+				model.notif.addNotification(idea.owner.id, isUpToDateNotif);
 				return true;
 			}
 		}

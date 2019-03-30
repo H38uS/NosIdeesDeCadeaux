@@ -28,7 +28,7 @@ public class DereserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate>
 	 * Class constructor
 	 */
 	public DereserverIdee() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class DereserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate>
 		int userId = ParametersUtils.getConnectedUser(request).id;
 
 		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea, userId));
-		idees.dereserver(idea, userId);
+		model.idees.dereserver(idea, userId);
 
 		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp); // TODO doit être fait en post
 	}

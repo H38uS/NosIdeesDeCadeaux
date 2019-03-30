@@ -43,12 +43,12 @@ public class AjouterParentService extends AbstractService<AllAccessToPostAndGet>
 		String name = "";
 
 		try {
-			parentId = users.getIdFromNameOrEmail(nameOrEmail);
+			parentId = model.users.getIdFromNameOrEmail(nameOrEmail);
 			int userId = ParametersUtils.getConnectedUser(request).id;
-			if (!parentRelationship.doesRelationExists(parentId, userId) && parentId != userId) {
+			if (!model.parentRelationship.doesRelationExists(parentId, userId) && parentId != userId) {
 				logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
-				parentRelationship.addProcuration(parentId, userId);
-				name = users.getUser(parentId).getName();
+				model.parentRelationship.addProcuration(parentId, userId);
+				name = model.users.getUser(parentId).getName();
 			} else {
 				messageErreur = "L'ajout du parent a échoué : il existe déjà.";
 				status = "ko";

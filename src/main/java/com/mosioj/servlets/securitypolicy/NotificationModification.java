@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.model.table.Notifications;
 import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.utils.NotLoggedInException;
@@ -18,22 +17,18 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class NotificationModification extends AllAccessToPostAndGet implements SecurityPolicy {
+public class NotificationModification extends AllAccessToPostAndGet {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the notification id.
 	 */
 	private final String notifParameter;
 
-	private final Notifications notif;
-
 	/**
 	 * 
-	 * @param notif
 	 * @param ideaParameter Defines the string used in HttpServletRequest to retrieve the notification id.
 	 */
-	public NotificationModification(Notifications notif, String notifParameter) {
-		this.notif = notif;
+	public NotificationModification(String notifParameter) {
 		this.notifParameter = notifParameter;
 	}
 
@@ -56,7 +51,7 @@ public class NotificationModification extends AllAccessToPostAndGet implements S
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
 
-		AbstractNotification n = notif.getNotification(notifId);
+		AbstractNotification n = model.notif.getNotification(notifId);
 		if (n == null) {
 			lastReason = "Aucune notification trouvée en paramètre.";
 			return false;

@@ -66,7 +66,7 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxServlet<AllAccessToP
 
 		int userId;
 		try {
-			userId = users.getId(email1);
+			userId = model.users.getId(email1);
 		} catch (NoRowsException e) {
 			// L'email n'existe pas. On affiche la page de base pour éviter plus d'info aux pirates.
 			ideesKDoGET(request, response);

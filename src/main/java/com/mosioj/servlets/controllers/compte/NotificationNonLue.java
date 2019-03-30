@@ -19,12 +19,12 @@ public class NotificationNonLue extends IdeesCadeauxServlet<NotificationModifica
 	private static final String NOTIFICATION_PARAMETER = "notif_id";
 
 	public NotificationNonLue() {
-		super(new NotificationModification(notif, NOTIFICATION_PARAMETER));
+		super(new NotificationModification(NOTIFICATION_PARAMETER));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		notif.setUnread(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER));
+		model.notif.setUnread(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER));
 		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
 	}
 

@@ -32,7 +32,7 @@ public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDat
 	 * Class constructor
 	 */
 	public SousReserverIdee() {
-		super(new IdeaInteractionBookingUpToDate(userRelations, idees, IDEA_ID_PARAM));
+		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
 	}
 
 	@Override

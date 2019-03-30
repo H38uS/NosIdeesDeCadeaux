@@ -23,7 +23,7 @@ public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
 	public static final String IDEA_ID_PARAM = "idee";
 
 	public JeLaVeuxEncore() {
-		super(new IdeaModification(idees, IDEA_ID_PARAM));
+		super(new IdeaModification(IDEA_ID_PARAM));
 	}
 
 	@Override
@@ -34,21 +34,21 @@ public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
 		Set<User> toBeNotified = new HashSet<User>();
 
 		// On notifie toujours ceux qui ont réservé
-		toBeNotified.addAll(idea.getBookers(groupForIdea, sousReservation));
+		toBeNotified.addAll(idea.getBookers(model.groupForIdea, model.sousReservation));
 
 		// Puis si l'anniversaire est proche, tous les amis !
 		User current = ParametersUtils.getConnectedUser(request);
 		if (isBirthdayClose(current)) {
-			toBeNotified.addAll(userRelations.getAllUsersInRelation(current));
+			toBeNotified.addAll(model.userRelations.getAllUsersInRelation(current));
 		}
 
 		// Notification
 		for (User user : toBeNotified) {
-			notif.addNotification(user.id, new NotifRecurentIdeaUnbook(current, idea));
+			model.notif.addNotification(user.id, new NotifRecurentIdeaUnbook(current, idea));
 		}
 
 		// On supprime les réservations
-		idees.toutDereserver(idea.getId());
+		model.idees.toutDereserver(idea.getId());
 
 		request.setAttribute("from", getFrom(request, MaListe.PROTECTED_MA_LISTE).substring(1));
 		RootingsUtils.rootToPage("/protected/je_le_veux_encore.jsp", request, response);

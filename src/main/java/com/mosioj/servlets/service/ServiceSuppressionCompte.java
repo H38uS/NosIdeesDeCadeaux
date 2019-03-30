@@ -49,9 +49,9 @@ public class ServiceSuppressionCompte extends AbstractService<AllAccessToPostAnd
 
 		if (userId != null) {
 			try {
-				User user = users.getUser(userId);
+				User user = model.users.getUser(userId);
 				logger.info(MessageFormat.format("Suppression du compte {0} (id: {1})", user, userId));
-				users.deleteUser(user);
+				model.users.deleteUser(user);
 				status = "ok";
 			} catch (Exception e) {
 				messageErreur = e.getMessage();

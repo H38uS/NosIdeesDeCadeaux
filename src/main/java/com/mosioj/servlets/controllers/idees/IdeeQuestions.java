@@ -34,7 +34,7 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	public static final String WEB_SERVLET = "/protected/idee_questions";
 
 	public IdeeQuestions() {
-		super(new CanAskReplyToQuestions(userRelations, idees, IDEA_ID_PARAM));
+		super(new CanAskReplyToQuestions(IDEA_ID_PARAM));
 	}
 
 	/**
@@ -45,8 +45,8 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	 * @throws SQLException
 	 */
 	private void dropNotificationOnView(User owner, int ideaId) throws SQLException {
-		notif.removeAllType(owner, NotificationType.IDEA_ADDED_BY_FRIEND, ParameterName.IDEA_ID, ideaId);
-		notif.removeAllType(owner, NotificationType.NEW_QUESTION_ON_IDEA, ParameterName.IDEA_ID, ideaId);
+		model.notif.removeAllType(owner, NotificationType.IDEA_ADDED_BY_FRIEND, ParameterName.IDEA_ID, ideaId);
+		model.notif.removeAllType(owner, NotificationType.NEW_QUESTION_ON_IDEA, ParameterName.IDEA_ID, ideaId);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 		Idee idea = policy.getIdea();
 		request.setAttribute("idee", idea);
 		request.setAttribute("isOwner", idea.owner == ParametersUtils.getConnectedUser(request));
-		request.setAttribute("comments", questions.getCommentsOn(idea.getId()));
+		request.setAttribute("comments", model.questions.getCommentsOn(idea.getId()));
 		dropNotificationOnView(ParametersUtils.getConnectedUser(request), idea.getId());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
@@ -67,16 +67,16 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 		String text = ParametersUtils.readAndEscape(request, "text");
 
 		User current = ParametersUtils.getConnectedUser(request);
-		questions.addComment(current.id, id, text);
+		model.questions.addComment(current.id, id, text);
 		Idee idea = policy.getIdea();
 
 		Set<User> toBeNotified = new HashSet<User>();
 
 		// If the idea is booked, we notify the bookers
-		toBeNotified.addAll(idea.getBookers(groupForIdea, sousReservation));
+		toBeNotified.addAll(idea.getBookers(model.groupForIdea, model.sousReservation));
 
 		// Notifying at least all people in the thread
-		toBeNotified.addAll(questions.getUserListOnComment(idea.getId()));
+		toBeNotified.addAll(model.questions.getUserListOnComment(idea.getId()));
 
 		// Faut que le owner soit au courant des questions :)
 		toBeNotified.add(idea.owner);
@@ -85,7 +85,7 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 		toBeNotified.remove(current);
 		logger.debug(MessageFormat.format("Personnes à prévenir : {0}", toBeNotified));
 		for (User notified : toBeNotified) {
-			notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
+			model.notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
 		}
 
 		dropNotificationOnView(ParametersUtils.getConnectedUser(request), id);

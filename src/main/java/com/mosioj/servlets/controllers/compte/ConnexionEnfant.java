@@ -27,7 +27,7 @@ public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
 	public static final String VIEW_PAGE_URL = "/protected/child_success.jsp";
 
 	public ConnexionEnfant() {
-		super(new ChildAdministration(parentRelationship, CHILD_ID_PARAM));
+		super(new ChildAdministration(CHILD_ID_PARAM));
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
 
 		Integer childId = ParametersUtils.readInt(request, CHILD_ID_PARAM);
 		User current = ParametersUtils.getConnectedUser(request);
-		User newOne = users.getUser(childId);
+		User newOne = model.users.getUser(childId);
 
 		logger.info(MessageFormat.format("Connection depuis {0} en tant que {1}.", current.id, childId));
 		HttpSession session = request.getSession();

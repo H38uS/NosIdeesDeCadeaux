@@ -31,7 +31,7 @@ public class VoirListe extends MesListes {
 	 * 
 	 */
 	public VoirListe() {
-		super(new NetworkAccess(userRelations, USER_ID_PARAM));
+		super(new NetworkAccess(USER_ID_PARAM));
 	}
 	
 	@Override
@@ -58,7 +58,7 @@ public class VoirListe extends MesListes {
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		List<User> ids = new ArrayList<User>();
-		User user = users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM));
+		User user = model.users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM));
 		ids.add(user);
 		fillsUserIdeas(ParametersUtils.getConnectedUser(req), ids);
 		return ids;

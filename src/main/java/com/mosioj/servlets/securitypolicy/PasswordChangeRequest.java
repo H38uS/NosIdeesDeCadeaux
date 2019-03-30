@@ -14,7 +14,7 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class PasswordChangeRequest extends AllAccessToPostAndGet implements SecurityPolicy {
+public class PasswordChangeRequest extends AllAccessToPostAndGet {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the token id.
@@ -30,7 +30,7 @@ public class PasswordChangeRequest extends AllAccessToPostAndGet implements Secu
 
 	/**
 	 * 
-	 * @param idees
+	 * @param ucpr
 	 * @param tokenParameter Defines the string used in HttpServletRequest to retrieve the token id.
 	 * @param userIdParameter Defines the string used in HttpServletRequest to retrieve the user id.
 	 */

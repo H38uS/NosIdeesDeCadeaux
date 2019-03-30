@@ -23,7 +23,7 @@ public class NotificationDeleteService extends AbstractService<NotificationModif
 	private static final Logger logger = LogManager.getLogger(NotificationDeleteService.class);
 
 	public NotificationDeleteService() {
-		super(new NotificationModification(notif, NOTIFICATION_PARAMETER));
+		super(new NotificationModification(NOTIFICATION_PARAMETER));
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class NotificationDeleteService extends AbstractService<NotificationModif
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		notif.remove(ParametersUtils.readInt(request, NOTIFICATION_PARAMETER));
+		model.notif.remove(ParametersUtils.readInt(request, NOTIFICATION_PARAMETER));
 		logger.info(MessageFormat.format(	"Suppression de la notification {0}",
 											ParametersUtils.readInt(request, NOTIFICATION_PARAMETER)));
 		

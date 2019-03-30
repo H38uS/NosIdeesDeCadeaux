@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
-import com.mosioj.model.table.Idees;
-import com.mosioj.model.table.UserRelations;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
@@ -18,27 +16,20 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPolicy, IdeaSecurityChecker {
+public class IdeaInteraction extends AllAccessToPostAndGet implements IdeaSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
 	private final String ideaParameter;
 
-	private final UserRelations userRelations;
-	private final Idees idees;
-
 	protected Idee idea;
 
 	/**
 	 * 
-	 * @param userRelations
-	 * @param idees
 	 * @param ideaParameter Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
-	public IdeaInteraction(UserRelations userRelations, Idees idees, String ideaParameter) {
-		this.userRelations = userRelations;
-		this.idees = idees;
+	public IdeaInteraction(String ideaParameter) {
 		this.ideaParameter = ideaParameter;
 	}
 
@@ -60,13 +51,13 @@ public class IdeaInteraction extends AllAccessToPostAndGet implements SecurityPo
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
 
-		idea = idees.getIdeaWithoutEnrichment(ideaId);
+		idea = model.idees.getIdeaWithoutEnrichment(ideaId);
 		if (idea == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
 		}
 
-		boolean res = userRelations.associationExists(userId, idea.owner.id);
+		boolean res = model.userRelations.associationExists(userId, idea.owner.id);
 		if (!res) {
 			lastReason = "Vous n'avez pas accès aux idées de cette personne.";
 		}

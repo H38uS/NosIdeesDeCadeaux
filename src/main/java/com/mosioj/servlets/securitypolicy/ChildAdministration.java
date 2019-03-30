@@ -5,26 +5,21 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class ChildAdministration extends AllAccessToPostAndGet implements SecurityPolicy {
+public class ChildAdministration extends AllAccessToPostAndGet {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
 	 */
 	private final String childParameter;
 
-	private final ParentRelationship parentRelationship;
-
 	/**
 	 * 
-	 * @param parentRelationship
 	 * @param childParameter
 	 */
-	public ChildAdministration(ParentRelationship parentRelationship, String childParameter) {
-		this.parentRelationship = parentRelationship;
+	public ChildAdministration(String childParameter) {
 		this.childParameter = childParameter;
 	}
 
@@ -37,7 +32,7 @@ public class ChildAdministration extends AllAccessToPostAndGet implements Securi
 		}
 
 		int userId = ParametersUtils.getConnectedUser(request).id;
-		boolean res = parentRelationship.doesRelationExists(userId, child);
+		boolean res = model.parentRelationship.doesRelationExists(userId, child);
 		if (!res) {
 			lastReason = "Vous n'êtes pas un parent de cette personne...";
 		}

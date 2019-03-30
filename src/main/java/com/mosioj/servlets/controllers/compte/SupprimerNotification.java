@@ -19,12 +19,12 @@ public class SupprimerNotification extends IdeesCadeauxServlet<NotificationModif
 	private static final String NOTIFICATION_PARAMETER = "notif_id";
 
 	public SupprimerNotification() {
-		super(new NotificationModification(notif, NOTIFICATION_PARAMETER));
+		super(new NotificationModification(NOTIFICATION_PARAMETER));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		notif.remove(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER));
+		model.notif.remove(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER));
 		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
 	}
 

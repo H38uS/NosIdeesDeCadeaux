@@ -30,7 +30,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 	 * Class constructor.
 	 */
 	public AfficherReseau() {
-		super(new NetworkAccess(userRelations, USER_ID_PARAM));
+		super(new NetworkAccess(USER_ID_PARAM));
 	}
 
 	@Override
@@ -41,12 +41,12 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 		if (userId == user) {
 			// Uniquement sur notre compte
-			request.setAttribute("demandes", userRelationRequests.getRequests(userId));
-			request.setAttribute("suggestions", userRelationsSuggestion.hasReceivedSuggestion(userId));
+			request.setAttribute("demandes", model.userRelationRequests.getRequests(userId));
+			request.setAttribute("suggestions", model.userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
 
 		request.setAttribute("id", user);
-		request.setAttribute("name", users.getUser(user).getMyDName());
+		request.setAttribute("name", model.users.getUser(user).getMyDName());
 
 		HttpSession session = request.getSession();
 		Object accepted = session.getAttribute("accepted");
@@ -82,24 +82,24 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
-		return userRelations.getRelationsCount(users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM)));
+		return model.userRelations.getRelationsCount(model.users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM)));
 	}
 
 	@Override
 	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 
 		User user = ParametersUtils.getConnectedUser(req);
-		List<Relation> relations = userRelations.getRelations(	ParametersUtils.readInt(req, USER_ID_PARAM),
+		List<Relation> relations = model.userRelations.getRelations(	ParametersUtils.readInt(req, USER_ID_PARAM),
 																firstRow,
 																maxNumberOfResults);
 
 		// Ajout du flag network
 		for (Relation r : relations) {
-			if (userRelations.associationExists(r.getSecond().id, user.id)) {
+			if (model.userRelations.associationExists(r.getSecond().id, user.id)) {
 				r.secondIsInMyNetwork = true;
 			} else {
 				User other = r.getSecond();
-				if (userRelationRequests.associationExists(user.id, other.id)) {
+				if (model.userRelationRequests.associationExists(user.id, other.id)) {
 					other.freeComment = "Vous avez déjà envoyé une demande à " + other.getName();
 				}
 			}

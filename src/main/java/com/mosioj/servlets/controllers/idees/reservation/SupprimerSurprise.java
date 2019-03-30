@@ -28,14 +28,14 @@ public class SupprimerSurprise extends AbstractIdea<SurpriseModification> {
 	 * Class constructor
 	 */
 	public SupprimerSurprise() {
-		super(new SurpriseModification(userRelations, idees, IDEA_ID_PARAM));
+		super(new SurpriseModification(IDEA_ID_PARAM));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
 		logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea, ParametersUtils.getConnectedUser(request)));
-		idees.remove(idea);
+		model.idees.remove(idea);
 		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp);
 	}
 
