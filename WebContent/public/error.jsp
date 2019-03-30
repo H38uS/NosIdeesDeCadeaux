@@ -7,7 +7,7 @@
 			<div>
 				<form method="POST" action="login">
 					<div class="form-group">
-						<label for="username" class="required fl_green">Identifiant</label>
+						<label for="username" class="required fl_green">Adresse Mail (courriel)</label>
 						<input type="text" class="form-control is-invalid" name="j_username" id="username" value="" />
 					</div>
 
@@ -18,7 +18,7 @@
 							<a href="public/reinitialiser_mot_de_passe">Mot de passe oublié ?</a>
 						</small>
 						<div class="invalid-feedback">
-							L'identifiant ou le mot de passe est incorrect.
+							L'Adresse Mail (courriel) ou le mot de passe est incorrect.
 						</div>
 					</div>
 

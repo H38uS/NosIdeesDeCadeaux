@@ -7,7 +7,7 @@
 			<div>
 				<form method="POST" action="login">
 					<div class="form-group">
-						<label for="username" class="required fl_green">Identifiant</label>
+						<label for="username" class="required fl_green">Adresse Mail (courriel)</label>
 						<input type="text" class="form-control" name="j_username" id="username" value="" />
 					</div>
 
