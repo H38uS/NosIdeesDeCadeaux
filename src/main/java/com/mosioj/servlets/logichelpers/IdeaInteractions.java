@@ -1,6 +1,7 @@
 package com.mosioj.servlets.logichelpers;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -26,7 +27,14 @@ public class IdeaInteractions {
 	public void removeUploadedImage(File path, String image) {
 		if (image != null && !image.isEmpty()) {
 			image = StringEscapeUtils.unescapeHtml4(image);
-			logger.debug(MessageFormat.format("Deleting pictures ({1}) in {0} folder...", path, image));
+			String imageName = path.toString();
+			try {
+				imageName = path.getCanonicalPath();
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.warn(e.getMessage());
+			}
+			logger.debug(MessageFormat.format("Deleting pictures ({1}) in {0} folder...", imageName, image));
 			File small = new File(path, "small/" + image);
 			small.delete();
 			File large = new File(path, "large/" + image);

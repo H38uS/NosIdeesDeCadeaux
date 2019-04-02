@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -105,8 +106,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
 	// FIXME : 99 ajouter les images des gens dans les recherches, en petit
 
-
-
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
 	 */
@@ -121,7 +120,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 * The connected user, or null if the user is not logged in.
 	 */
 	protected User thisOne = null; // TODO mettre un user fake ?
-	
+
 	protected Map<String, String> parameters;
 	protected Device device;
 	private File ideasPicturePath;
@@ -134,7 +133,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	public IdeesCadeauxServlet(P policy) {
 		this.policy = policy;
 	}
-	
+
 	/**
 	 * Internal class for GET processing, post security checks.
 	 * 
@@ -329,15 +328,20 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			newHeight = maxHeight;
 		}
 
+		if (width == newWidth && height == newHeight) {
+			// No resize needed
+			return originalImage;
+		}
+
 		logger.debug("Resizing picture from (" + width + "x" + height + ") to (" + newWidth + "x" + newHeight + ")...");
 		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, type);
 		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-		g.dispose();
 		g.setComposite(AlphaComposite.Src);
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+		g.dispose();
 		logger.debug("Resize done!");
 
 		return resizedImage;
@@ -381,26 +385,42 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 						}
 
 						File tmpUploadedFile = new File(largeFolder, "TMP_" + image);
-						logger.debug("Uploading file : " + tmpUploadedFile);
+						logger.debug("Uploading file : " + tmpUploadedFile.getCanonicalPath());
 						fi.write(tmpUploadedFile);
 						logger.debug(MessageFormat.format("File size: {0} kos.", (tmpUploadedFile.length() / 1024)));
+						logger.debug(MessageFormat.format(	"Memory (free / total): ( {0} Ko / {1} Ko ). Max: {2} Ko.",
+															Runtime.getRuntime().freeMemory() / 1024,
+															Runtime.getRuntime().totalMemory() / 1024,
+															Runtime.getRuntime().maxMemory() / 1024));
 
-						// Creation de la vignette
-						BufferedImage originalImage = ImageIO.read(tmpUploadedFile);
-						int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+						try {
+							// Creation de la vignette
+							BufferedImage originalImage = ImageIO.read(tmpUploadedFile);
 
-						BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_WIDTH, MAX_WIDTH);
-						ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
+							int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 
-						// On l'écrit tout le temps pour avoir un PNG
-						if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
-							resizeImageJpg = resizeImage(originalImage, originalType, 1920, 1080);
-						} else {
-							resizeImageJpg = originalImage;
+							BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_WIDTH, MAX_WIDTH);
+							ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
+
+							// On l'écrit tout le temps pour avoir un PNG
+							if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
+								resizeImageJpg = resizeImage(originalImage, originalType, 1920, 1080);
+							} else {
+								resizeImageJpg = originalImage;
+							}
+							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
+
+							logger.debug("Releasing the image resources...");
+							originalImage.flush();
+
+						} catch (OutOfMemoryError e) {
+							logger.error(e);
+							// On copy juste le fichier
+							FileUtils.copyFile(tmpUploadedFile, new File(largeFolder, image));
+							FileUtils.copyFile(tmpUploadedFile, new File(smallFolder, image));
 						}
-						ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
-						tmpUploadedFile.delete();
 
+						tmpUploadedFile.delete();
 						parameters.put("image", image);
 					}
 				} else {
@@ -409,6 +429,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 				}
 			}
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			e.printStackTrace();
 			throw new ServletException(e.getMessage());
 		}
