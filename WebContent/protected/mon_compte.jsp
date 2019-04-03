@@ -48,7 +48,7 @@
 					<a id="avatar_picture" href="${avatars}/${user.avatarSrcLarge}" class="thickbox img">
 						<img src="${avatars}/${user.avatarSrcSmall}" width="150" class="input" />
 					</a>
-					<input type="hidden" name="old_picture" value="${user.avatar}" />
+					<input type="hidden" name="old_picture" id="old_picture" value="${user.avatar}" />
 				</div>
 			</c:if>
 			

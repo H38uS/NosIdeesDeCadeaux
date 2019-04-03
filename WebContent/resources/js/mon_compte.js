@@ -6,7 +6,18 @@ function submitMainForm(e) {
 		doLoading('Enregistrement en cours...');
 		
 		var my_form = $("#form_main_change_mon_compte");
-		var formData = new FormData(my_form[0]);
+		
+		var formData = new FormData();
+		formData.append('fileName', selectedPictureName);
+		formData.append('email', my_form.find("#email").val());
+		formData.append('name', my_form.find("#name").val());
+		formData.append('birthday', my_form.find("#birthday").val());
+		formData.append('old_picture', my_form.find("#old_picture").val());
+		formData.append('new_password', my_form.find("#new_password").val());
+		formData.append('conf_password', my_form.find("#conf_password").val());
+		formData.append('modif_info_gen', "true");
+		formData.append('image', selectedPicture);
+		
 		$.ajax({
 			url : 'protected/service/enregistrement_mon_compte',
 			type : 'POST',

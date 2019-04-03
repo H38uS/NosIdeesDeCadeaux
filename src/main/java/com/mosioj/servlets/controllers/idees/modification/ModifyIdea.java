@@ -97,7 +97,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 				String image = parameters.get("image");
 				String old = parameters.get("old_picture");
 				logger.debug("Image précédente: " + old + " / Nouvelle image: " + image);
-				if (image == null || image.isEmpty()) {
+				if (image == null || image.isEmpty() || "null".equals(image)) {
 					image = old;
 				} else {
 					// Modification de l'image

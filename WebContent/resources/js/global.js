@@ -2,8 +2,8 @@ myTooltipsterInfoParam={delay: 200, position: 'bottom', theme: 'tooltipster-defa
 myTooltipsterPrioParam={delay: 800, position: 'bottom', contentAsHTML: true, theme: 'tooltipster-html'};
 
 pictureNeedsRefresh = false;
-selectedPicture = null;
-selectedPictureName = null;
+selectedPicture = "";
+selectedPictureName = "";
 
 var dataURLToBlob = function(dataURL) {
 	var BASE64_MARKER = ';base64,';

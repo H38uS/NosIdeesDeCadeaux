@@ -409,6 +409,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 								resizeImageJpg = originalImage;
 							}
 							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
+							
+							// FIXME : 0 taille des images: mettre une hauteur fixe, et un <span> qui englobe avec une largeur ?
+							// FIXME : 1 ajouter une taille mini ou une marge pour les icones dans mes listes
 
 							logger.debug("Releasing the image resources...");
 							originalImage.flush();

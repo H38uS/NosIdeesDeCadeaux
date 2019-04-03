@@ -69,6 +69,8 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 				status = "ok";
 				message = "";
 				User user = model.users.getUser(userId);
+				request.setAttribute("connected_user", user);
+				request.getSession().setAttribute("connected_user", user);
 				avatar = user.getAvatar();
 				avatarLarge = user.getAvatarSrcLarge();
 				avatarSmall = user.getAvatarSrcSmall();
@@ -104,7 +106,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 		java.sql.Date sql = new java.sql.Date(parsed.getTime());
 		return sql;
 	}
-	
+
 	public List<String> processSave(File filePath, Map<String, String> parameters, int userId) throws SQLException {
 
 		CompteInteractions ci = new CompteInteractions();
@@ -146,7 +148,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 
 			String image = parameters.get("image");
 			String old = parameters.get("old_picture");
-			if (image == null || image.isEmpty()) {
+			if (image == null || image.isEmpty() || "null".equals(image)) {
 				image = old;
 			} else {
 				// Modification de l'image
@@ -160,6 +162,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 			user.avatar = image;
 
 			if (errors.isEmpty()) {
+				logger.debug(MessageFormat.format("Updating user {0}. Email: {1}, name: {2}", user, email, name));
 				model.users.update(user);
 				if (!newPwd.isEmpty()) {
 					String digested = ci.hashPwd(newPwd, errors);
