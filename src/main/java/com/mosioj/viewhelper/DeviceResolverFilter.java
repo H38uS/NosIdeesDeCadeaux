@@ -17,6 +17,7 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.Idees;
 
 /**
@@ -57,7 +58,9 @@ public class DeviceResolverFilter implements Filter {
 		request.setAttribute("is_normal", device.isNormal());
 		request.setAttribute("action_img_width", device.isMobile() ? Idees.MOBILE_PICTURE_WIDTH : PICTURE_PC_WIDTH);
 
-		logger.debug(MessageFormat.format("URL: {0}. Is mobile: {1}.", url, device.isMobile()));
+		User user = (User) ((HttpServletRequest) request).getSession().getAttribute("connected_user");
+		String name = user == null ? "anonymous" : user.getName();
+		logger.debug(MessageFormat.format("URL: {0}, demandée par {1}. Is mobile: {2}.", url, name, device.isMobile()));
 		chain.doFilter(request, response);
 	}
 

@@ -20,7 +20,7 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
 		if (appEvent instanceof AuthenticationSuccessEvent) {
 			AuthenticationSuccessEvent event = (AuthenticationSuccessEvent) appEvent;
 			String email = event.getAuthentication().getName();
-			logger.info(MessageFormat.format("{0} vient de se connecter.", email));
+			logger.info(MessageFormat.format("{0} vient de se connecter. Détails: {1}", email, event.getAuthentication().getDetails()));
 			new Users().touch(email);
 		} else if (appEvent instanceof AuthorizationFailureEvent) {
 			AuthorizationFailureEvent event = (AuthorizationFailureEvent) appEvent;
