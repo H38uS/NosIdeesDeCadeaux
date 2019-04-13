@@ -1,7 +1,11 @@
 package com.mosioj.servlets.controllers.administration;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,9 +37,26 @@ public class Administration extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+
 		logger.info("Getting administration page from user: " + thisOne);
 		List<User> allUsers = model.users.getAllUsers();
 		request.setAttribute("users", allUsers);
+
+		File logDir = new File(getServletContext().getInitParameter("work_dir"), "logs");
+		try {
+			request.setAttribute("log_folder", logDir.getCanonicalPath());
+			List<File> logFiles = Arrays.asList(logDir.listFiles())
+										.stream()
+										.filter(f -> f.getName().endsWith(".log"))
+										.sorted((left, right) -> right.compareTo(left))
+										.limit(10)
+										.collect(Collectors.toList());
+			request.setAttribute("log_files", logFiles);
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error(e);
+		}
+
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
 	}
 

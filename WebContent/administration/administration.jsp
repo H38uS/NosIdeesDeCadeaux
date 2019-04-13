@@ -10,6 +10,16 @@
 <t:template_body_protected>
 	<jsp:body>
 		<div class="container">
+			<div class="alert alert-info">
+				Logs: ${log_folder}
+				<ul>
+					<c:forEach var="log" items="${log_files}">
+						<li>
+							<a href="protected/files/logs/${log.name}">${log.name}</a>
+						</li>
+					</c:forEach>
+				</ul>
+			</div>
 			<c:forEach var="user" items="${users}">
 				<div class="row my-4 align-items-center">
 					<div class="col-12 col-lg-6">

@@ -22,8 +22,28 @@ public class FileServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		String filename = new String(request.getPathInfo().substring(1).getBytes("ISO-8859-1"), "UTF-8");
 		logger.trace(MessageFormat.format("Requesting file: {0}, {1}", filename, request.getCharacterEncoding()));
+
+		// Invalid file
+		if (filename == null || filename.trim().isEmpty()) {
+			return;
+		}
+
+		// Admin files
+		if (!filename.startsWith("uploaded_pictures")) {
+			// Only for admins
+			if (!request.isUserInRole("ROLE_ADMIN")) {
+				return;
+			}
+		}
+
+		// Avatar etc are only for connected users
+		if (!request.isUserInRole("ROLE_USER")) {
+			return;
+		}
+
 		File file = new File(getServletContext().getInitParameter("work_dir"), filename);
 		response.setHeader("Content-Type", getServletContext().getMimeType(filename));
 		response.setHeader("Content-Length", String.valueOf(file.length()));

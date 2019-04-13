@@ -413,9 +413,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 							// FIXME : 0 taille des images: mettre une hauteur fixe, et un <span> qui englobe avec une largeur ?
 							// FIXME : 1 ajouter une taille mini ou une marge pour les icones dans mes listes
 							// FIXME : 2 dans l'administration, mettre les images + la date de création du user
-							// FIXME : 2 dans l'administration, pouvoir voir le log dir, et les logs
 							// FIXME : 3 gerer les emoticons (idée de Sonia)
-
+							
 							logger.debug("Releasing the image resources...");
 							originalImage.flush();
 
