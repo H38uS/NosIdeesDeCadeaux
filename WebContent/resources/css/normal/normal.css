@@ -175,6 +175,7 @@
 	overflow: auto;
 	left: 0;
 	top: 0;
+	float:left;
 }
 #mes_listes_list_users a {
 	display: block;

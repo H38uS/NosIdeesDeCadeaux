@@ -11,34 +11,33 @@
 			<t:template_une_idee />
 		</c:if>
 		
-		<div class="row mx-0 justify-content-around">
-			<c:choose>
-				<c:when test="${is_mobile}">
-					<div id="mes_listes_list_users">
-						<c:forEach var="user" items="${entities}">
-							<a href="${identic_call_back}#list_${user.id}">${user.name}</a> | 
-						</c:forEach>
-					</div>
-				</c:when>
-				<c:otherwise>
-					<div id="mes_listes_list_users" class="d-none d-xl-inline-block col-xl-auto">
-						<c:forEach var="user" items="${entities}">
-							<div class="row align-items-center mx-0">
-								<a href="${identic_call_back}#list_${user.id}" class=" col-12 p-2">
-									<div class="center">
-										<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" style='height:80px' alt="" />
-									</div>
-									<div class="center">
-										${user.name}
-									</div>
-								</a>
+		<c:choose>
+			<c:when test="${is_mobile}">
+				<div id="mes_listes_list_users">
+					<c:forEach var="user" items="${entities}">
+						<a href="${identic_call_back}#list_${user.id}">${user.name}</a> | 
+					</c:forEach>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div id="mes_listes_list_users" class="d-none d-xl-inline-block col-xl-2">
+					<c:forEach var="user" items="${entities}">
+						<a href="${identic_call_back}#list_${user.id}" class="col-12 p-2">
+							<div class="center">
+								<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" style='height:80px' alt="" />
 							</div>
-						</c:forEach>
-					</div>
-				</c:otherwise>
-			</c:choose>
+							<div class="center">
+								${user.name}
+							</div>
+						</a>
+					</c:forEach>
+				</div>
+			</c:otherwise>
+		</c:choose>
 	
-			<div id="mes_listes_entities_container" class="col-12 col-xl-9 center">
+		<div class="row justify-content-around">
+		
+			<div id="mes_listes_entities_container" class="col-12 col-xl-9">
 				
 				<c:if test="${not is_mobile}">
 					<c:if test="${fn:length(entities) gt 1}">
