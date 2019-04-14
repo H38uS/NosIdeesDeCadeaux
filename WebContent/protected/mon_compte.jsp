@@ -120,7 +120,7 @@
 				</ul>
 			</c:when>
 			<c:otherwise>
-				<span>Vous n'avez actuellement pas de comptes parent.</span>
+				<div class="alert alert-info">Vous n'avez actuellement pas de comptes parent.</div>
 			</c:otherwise>
 		</c:choose>
 		<form id="ajouter_un_parent" class="form-inline" method="POST" action="protected/ajouter_parent">
@@ -136,7 +136,7 @@
 				</div>
 			</div>
 		</form>
-		<h3 class="mt-2">Mes comptes enfant</h3>
+		<h3 id="mes_comptes_enfants_h3" class="mt-2">Mes comptes enfant</h3>
 		<c:choose>
 			<c:when test="${not empty children}">
 			<table>

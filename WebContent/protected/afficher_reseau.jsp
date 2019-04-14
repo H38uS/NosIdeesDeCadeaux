@@ -39,7 +39,7 @@
 						}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
 							return $( "<li class=\"ui-menu-item\"></li>" )
 								.data( "item.autocomplete", item )  
-								.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+								.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
 								.appendTo( ul );
 						};
 					});
@@ -65,7 +65,7 @@
 						}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
 							return $( "<li class=\"ui-menu-item\"></li>" )
 							.data( "item.autocomplete", item )  
-							.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+							.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
 							.appendTo( ul );
 						};
 					});
@@ -188,7 +188,9 @@
 				<div class="row align-items-start mx-0 justify-content-around">
 					<c:forEach var="relation" items="${entities}">
 						<div class="card col-auto px-0 m-2" style="width:280px">
-							<img class="card-img-top" src="${avatars}/${relation.second.avatarSrcSmall}">
+							<div class="row align-items-center mx-0" style="height:280px">
+								<img style="width:279px" src="${avatars}/${relation.second.avatarSrcLarge}">
+							</div>
 							<div class="card-body">
 								<h5 class="card-title">
 									<a href="protected/afficher_reseau?id=${relation.second.id}">${relation.second.name}</a>

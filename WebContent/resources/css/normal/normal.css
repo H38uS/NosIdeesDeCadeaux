@@ -281,3 +281,10 @@
 	background-color: #e0ebfc;
 	color: black;
 }
+
+.ui-autocomplete
+{
+	width: 800px;
+}
+
+

@@ -20,7 +20,7 @@
 								<div class="row align-items-center">
 									Bonjour, 
 									<c:if test="${ not is_mobile}">
-									<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user.avatarSrcSmall}" alt="" />
+									<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user.avatarSrcSmall}" alt="" style="height:30px;" />
 									</c:if>
 									${connected_user.name} 
 									<c:if test="${not empty initial_connected_user}">
@@ -34,7 +34,7 @@
 						</div>
 						<div class="col-auto mx-auto my-3 my-sm-0 mx-md-0 justify-content-md-end  d-md-flex">
 							<c:if test="${is_mobile}">
-								<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user.avatarSrcSmall}" alt="" style="width:50px;height:50px;" />
+								<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user.avatarSrcSmall}" alt="" style="height:50px;" />
 							</c:if>
 							<a href="protected/mes_notifications" class="btn btn-secondary ml-2" style="color:white" >
 								Notifications <span id="my_notif_count" class="badge badge-light">${notif_count}</span>
@@ -152,33 +152,33 @@
 							}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
 								return $( "<li class=\"ui-menu-item\"></li>" )
 									.data( "item.autocomplete", item )  
-									.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+									.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
 									.appendTo( ul );
 							};
 						});
 					</script>
 				</c:when>
-			<c:otherwise>
-				<script type="text/javascript">
-					$(document).ready(function() {
-						$("#header_name").autocomplete({
-							source : "protected/service/name_resolver",
-							minLength : 2,
-							position: { my : "right top", at: "right bottom", of : "#header_name" },
-							select : function(event, ui) {
-								$("#header_name").val(ui.item.email);
-								$("#afficherliste").submit();
-								return false;
-							}
-						}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-							return $( "<li class=\"ui-menu-item\"></li>" )
-							.data( "item.autocomplete", item )  
-							.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
-							.appendTo( ul );
-						};
-					});
-				</script>
-			</c:otherwise>
+				<c:otherwise>
+					<script type="text/javascript">
+						$(document).ready(function() {
+							$("#header_name").autocomplete({
+								source : "protected/service/name_resolver",
+								minLength : 2,
+								position: { my : "right top", at: "right bottom", of : "#header_name" },
+								select : function(event, ui) {
+									$("#header_name").val(ui.item.email);
+									$("#afficherliste").submit();
+									return false;
+								}
+							}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+								return $( "<li class=\"ui-menu-item\"></li>" )
+									.data( "item.autocomplete", item )
+									.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
+									.appendTo( ul );
+							};
+						});
+					</script>
+				</c:otherwise>
 			</c:choose>
 		</header>
 		<div id="loading_message_container"><div id="loading_message_div"></div></div>

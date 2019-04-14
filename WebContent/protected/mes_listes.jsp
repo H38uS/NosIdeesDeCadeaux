@@ -40,7 +40,7 @@
 							}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
 								return $( "<li class=\"ui-menu-item\"></li>" )
 								.data( "item.autocomplete", item )  
-								.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+								.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
 								.appendTo( ul );
 							};
 						});
@@ -598,7 +598,7 @@
 						}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
 							return $( "<li class=\"ui-menu-item\"></li>" )
 							.data( "item.autocomplete", item )  
-							.append( "<div class=\"ui-menu-item-wrapper\"> <div class=\"row align-items-center\"> <div class=\"col-2\"><img style='width:50px;height:50px' src='" + item.imgsrc + "' /></div><div class=\"col-9\">" + item.value + "</div></div></div>" )  
+							.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
 							.appendTo( ul );
 						};
 					});
