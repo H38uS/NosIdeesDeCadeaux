@@ -20,7 +20,7 @@
 				</div>
 			</c:when>
 			<c:otherwise>
-				<div id="mes_listes_list_users" class="d-none d-xl-inline-block col-xl-2">
+				<div id="mes_listes_list_users" class="d-none d-xl-inline-block col-xl-3">
 					<c:forEach var="user" items="${entities}">
 						<a href="${identic_call_back}#list_${user.id}" class="col-12 p-2">
 							<div class="center">
@@ -37,7 +37,7 @@
 	
 		<div class="row justify-content-around">
 		
-			<div id="mes_listes_entities_container" class="col-12 col-xl-9">
+			<div id="mes_listes_entities_container" class="col-12">
 				
 				<c:if test="${not is_mobile}">
 					<c:if test="${fn:length(entities) gt 1}">
