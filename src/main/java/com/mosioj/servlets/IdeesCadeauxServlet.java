@@ -184,9 +184,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			if (request.getRemoteUser() != null) {
 				try {
 					// Mise à jour du nombre de notifications
-					User thisUser = thisOne;
-					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
-					model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
+					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisOne.id));
+					model.parentRelationship.getChildren(thisOne.id).forEach(c -> {
 						try {
 							count.add(model.notif.getUserNotificationCount(c.id));
 						} catch (Exception e) {
@@ -200,7 +199,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 					// Ajout d'information sur l'idée du Security check
 					if (policy instanceof IdeaSecurityChecker) {
 						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-						model.idees.fillAUserIdea(thisUser, idee, device);
+						model.idees.fillAUserIdea(thisOne, idee, device);
 					}
 
 				} catch (Exception e) {
@@ -410,10 +409,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 							}
 							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
 							
-							// FIXME : 0 le réservé n'est plus vert - faire un test
-							// FIXME : 1 le sticky ne marche plus...
 							// FIXME : 2 dans l'administration, mettre les images + la date de création du user
-							// FIXME : 3 gerer les emoticons (dans une idée de Sonia)
+							// FIXME : 3 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
 							
 							logger.debug("Releasing the image resources...");
 							originalImage.flush();

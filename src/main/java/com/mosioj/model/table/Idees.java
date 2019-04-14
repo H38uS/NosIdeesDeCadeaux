@@ -780,7 +780,7 @@ public class Idees extends Table {
 
 		if (idee.isBooked()) {
 			if (idee.getBookingOwner() != null) {
-				if (idee.getBookingOwner() == user) {
+				if (user.equals(idee.getBookingOwner())) {
 					// Réservé par soit !
 					idee.displayClass = "booked_by_me_idea";
 				} else {
