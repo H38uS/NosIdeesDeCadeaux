@@ -97,7 +97,8 @@ public class User {
 		return name != null && !name.isEmpty() ? WordUtils.capitalize(name) : email;
 	}
 
-	public void addIdeas(List<Idee> ownerIdeas) {
+	public void setIdeas(List<Idee> ownerIdeas) {
+		ideas.clear();
 		ideas.addAll(ownerIdeas);
 	}
 

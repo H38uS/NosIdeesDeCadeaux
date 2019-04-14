@@ -410,10 +410,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 							}
 							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
 							
-							// FIXME : 0 taille des images: mettre une hauteur fixe, et un <span> qui englobe avec une largeur ?
-							// FIXME : 1 ajouter une taille mini ou une marge pour les icones dans mes listes
+							// FIXME : 0 le réservé n'est plus vert - faire un test
+							// FIXME : 1 le sticky ne marche plus...
 							// FIXME : 2 dans l'administration, mettre les images + la date de création du user
-							// FIXME : 3 gerer les emoticons (idée de Sonia)
+							// FIXME : 3 gerer les emoticons (dans une idée de Sonia)
 							
 							logger.debug("Releasing the image resources...");
 							originalImage.flush();

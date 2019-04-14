@@ -41,7 +41,7 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
 			for (Idee idee : ownerIdeas) {
 				model.idees.fillAUserIdea(connectedUser, idee, device);
 			}
-			user.addIdeas(ownerIdeas);
+			user.setIdeas(ownerIdeas);
 		}
 	}
 }
