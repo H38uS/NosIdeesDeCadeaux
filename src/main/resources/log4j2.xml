@@ -8,7 +8,7 @@
 		<RollingFile name="RollingFile" fileName="${work_dir}/logs/IdeesDeCadeaux.log" append="true" filePattern="${work_dir}/logs/%d{yyyy-MM-dd}-IdeesDeCadeaux-%i.log" >
 			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
 			<Policies>
-				<SizeBasedTriggeringPolicy size="1MB" />
+				<SizeBasedTriggeringPolicy size="300KB" />
 			</Policies>
 			<DefaultRolloverStrategy max="100" />
 		</RollingFile>
