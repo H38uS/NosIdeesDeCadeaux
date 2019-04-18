@@ -106,8 +106,10 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 				} else {
 					// Modification de l'image
 					// On supprime la précédente
-					IdeaInteractions helper = new IdeaInteractions();
-					helper.removeUploadedImage(getIdeaPicturePath(), old);
+					if (!"default.png".equals(old)) {
+						IdeaInteractions helper = new IdeaInteractions();
+						helper.removeUploadedImage(getIdeaPicturePath(), old);
+					}
 					logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
 				}
 

@@ -149,7 +149,11 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 			String image = parameters.get("image");
 			String old = parameters.get("old_picture");
 			if (image == null || image.isEmpty() || "null".equals(image)) {
-				image = old;
+				if (old != null && !old.equals("undefined")) {
+					image = old;
+				} else {
+					image = null;
+				}
 			} else {
 				// Modification de l'image
 				// On supprime la précédente
