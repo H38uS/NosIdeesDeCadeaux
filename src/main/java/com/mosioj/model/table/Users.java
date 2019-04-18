@@ -1,16 +1,17 @@
 package com.mosioj.model.table;
 
+import static com.mosioj.model.table.columns.UsersColumns.AVATAR;
+import static com.mosioj.model.table.columns.UsersColumns.BIRTHDAY;
 import static com.mosioj.model.table.columns.UsersColumns.CREATION_DATE;
 import static com.mosioj.model.table.columns.UsersColumns.EMAIL;
 import static com.mosioj.model.table.columns.UsersColumns.ID;
+import static com.mosioj.model.table.columns.UsersColumns.LAST_LOGIN;
 import static com.mosioj.model.table.columns.UsersColumns.NAME;
 import static com.mosioj.model.table.columns.UsersColumns.PASSWORD;
-import static com.mosioj.model.table.columns.UsersColumns.BIRTHDAY;
-import static com.mosioj.model.table.columns.UsersColumns.AVATAR;
-import static com.mosioj.model.table.columns.UsersColumns.LAST_LOGIN;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,19 +46,19 @@ public class Users extends Table {
 	 * @throws SQLException
 	 */
 	public int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
-		int userId = getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
-																				TABLE_NAME,
-																				EMAIL,
-																				PASSWORD,
-																				LAST_LOGIN,
-																				CREATION_DATE,
-																				NAME),
+		int userId = getDb().executeUpdateGeneratedKey(	MessageFormat.format("insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
+																			TABLE_NAME,
+																			EMAIL,
+																			PASSWORD,
+																			LAST_LOGIN,
+																			CREATION_DATE,
+																			NAME),
 														email,
 														digestedPwd,
 														name);
-		getDb().executeUpdateGeneratedKey(	MessageFormat.format(	"insert into USER_ROLES ({0},{1}) values (?, ?)",
-																	UserRolesColumns.EMAIL,
-																	UserRolesColumns.ROLE),
+		getDb().executeUpdateGeneratedKey(	MessageFormat.format("insert into USER_ROLES ({0},{1}) values (?, ?)",
+																UserRolesColumns.EMAIL,
+																UserRolesColumns.ROLE),
 											email,
 											"ROLE_USER");
 		return userId;
@@ -118,11 +119,11 @@ public class Users extends Table {
 	 * @throws NoRowsException
 	 */
 	public int getIdFromNameOrEmail(String nameOrEmail) throws SQLException, NoRowsException {
-		return getDb().selectInt(	MessageFormat.format(	"select {0} from {1} where {2} = ? or {3} = ? limit 1",
-															ID,
-															TABLE_NAME,
-															EMAIL,
-															NAME),
+		return getDb().selectInt(	MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1",
+														ID,
+														TABLE_NAME,
+														EMAIL,
+														NAME),
 									nameOrEmail,
 									nameOrEmail);
 	}
@@ -146,9 +147,9 @@ public class Users extends Table {
 											AVATAR);
 		getDb().executeUpdate(query, user.email, user.name, user.birthday, user.avatar, user.id);
 		if (!previousEmail.equals(user.email)) {
-			getDb().executeUpdate(	MessageFormat.format(	"update USER_ROLES set {0} = ? where {1} = ? ",
-															UserRolesColumns.EMAIL,
-															UserRolesColumns.EMAIL),
+			getDb().executeUpdate(	MessageFormat.format("update USER_ROLES set {0} = ? where {1} = ? ",
+														UserRolesColumns.EMAIL,
+														UserRolesColumns.EMAIL),
 									user.email,
 									previousEmail);
 		}
@@ -164,7 +165,7 @@ public class Users extends Table {
 		List<User> users = new ArrayList<User>();
 
 		StringBuilder query = new StringBuilder();
-		query.append(MessageFormat.format("select {0},{1},{2},{3} ", ID, NAME, EMAIL, AVATAR));
+		query.append(MessageFormat.format("select {0},{1},{2},{3},{4},{5} ", ID, NAME, EMAIL, AVATAR, CREATION_DATE, LAST_LOGIN));
 		query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
 		query.append(MessageFormat.format(" order by {0}, {1}, {2} ", NAME, EMAIL, ID));
 
@@ -177,10 +178,25 @@ public class Users extends Table {
 
 			ResultSet res = ps.getResultSet();
 			while (res.next()) {
+
+				Timestamp creation = null;
+				try {
+					creation = res.getTimestamp(CREATION_DATE.name());
+				} catch (SQLException e) {
+				}
+
+				Timestamp lastLogin = null;
+				try {
+					lastLogin = res.getTimestamp(LAST_LOGIN.name());
+				} catch (SQLException e) {
+				}
+
 				users.add(new User(	res.getInt(ID.name()),
 									res.getString(NAME.name()),
 									res.getString(EMAIL.name()),
-									res.getString(AVATAR.name())));
+									res.getString(AVATAR.name()),
+									creation,
+									lastLogin));
 			}
 
 		} finally {

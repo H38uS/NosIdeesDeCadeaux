@@ -1,11 +1,15 @@
 package com.mosioj.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
+
+import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.utils.MyDateFormatViewer;
 
 public class User {
 
@@ -17,9 +21,12 @@ public class User {
 	public int nbDaysBeforeBirthday;
 	public String freeComment;
 	public String avatar;
+	private Timestamp creationDate;
+
+	private Timestamp lastLogin;
 
 	private final List<Idee> ideas = new ArrayList<Idee>();
-	
+
 	public User(int id, String name, String email, String avatar) {
 		this.id = id;
 		this.name = name == null ? null : name.trim();
@@ -37,6 +44,22 @@ public class User {
 		this.nbDaysBeforeBirthday = nbDaysBeforeBirthday;
 	}
 
+	/**
+	 * Administration constructor.
+	 * 
+	 * @param id
+	 * @param name
+	 * @param email
+	 * @param avatar
+	 * @param creationDate
+	 * @param lastLogin
+	 */
+	public User(int id, String name, String email, String avatar, Timestamp creationDate, Timestamp lastLogin) {
+		this(id, name, email, avatar);
+		this.creationDate = creationDate;
+		this.lastLogin = lastLogin;
+	}
+
 	public boolean getIsInMyNetwork() {
 		return isInMyNetwork;
 	}
@@ -47,6 +70,26 @@ public class User {
 
 	public String getAvatar() {
 		return avatar;
+	}
+
+	/**
+	 * @return the creationDate
+	 */
+	public String getCreationDate() {
+		if (creationDate == null) {
+			return "";
+		}
+		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(creationDate);
+	}
+
+	/**
+	 * @return the lastLogin
+	 */
+	public String getLastLogin() {
+		if (lastLogin == null) {
+			return "";
+		}
+		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(lastLogin);
 	}
 
 	/**
@@ -110,6 +153,23 @@ public class User {
 		return freeComment;
 	}
 
+	/**
+	 * 
+	 * @return The name with the email or the name with the email between parenthesis.
+	 */
+	public String getLongNameEmail() {
+		return name != null && !name.isEmpty() ? MessageFormat.format("{0} ({1})", WordUtils.capitalize(name), email) : email;
+	}
+
+	public String getMyDName() {
+		if (name == null || name.isEmpty()) {
+			return MessageFormat.format("de {0}", email);
+		}
+		String vowel = "aeiuoyéè";
+		return vowel.indexOf(Character.toLowerCase(name.charAt(0))) == -1 ? MessageFormat.format("de {0}", getName())
+				: MessageFormat.format("d''{0}", getName());
+	}
+
 	@Override
 	public int hashCode() {
 		return id;
@@ -132,23 +192,6 @@ public class User {
 	@Override
 	public String toString() {
 		return getName() + " (" + email + ")";
-	}
-
-	/**
-	 * 
-	 * @return The name with the email or the name with the email between parenthesis.
-	 */
-	public String getLongNameEmail() {
-		return name != null && !name.isEmpty() ? MessageFormat.format("{0} ({1})", WordUtils.capitalize(name), email) : email;
-	}
-
-	public String getMyDName() {
-		if (name == null || name.isEmpty()) {
-			return MessageFormat.format("de {0}", email);
-		}
-		String vowel = "aeiuoyéè";
-		return vowel.indexOf(Character.toLowerCase(name.charAt(0))) == -1 ? MessageFormat.format("de {0}", getName())
-				: MessageFormat.format("d''{0}", getName());
 	}
 
 }

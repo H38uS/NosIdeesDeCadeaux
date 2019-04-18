@@ -20,25 +20,47 @@
 					</c:forEach>
 				</ul>
 			</div>
-			<c:forEach var="user" items="${users}">
-				<div class="row my-4 align-items-center">
-					<div class="col-12 col-lg-6">
-						${user}
-					</div>
-					<div class="col-auto">
-						<form method="POST" action="protected/connexion_enfant">
-							<input type="hidden" name="name" value="${user.id}" />
-							<button class="btn btn-primary" type="submit">Se connecter avec ce compte</button>
-						</form>
-					</div>
-					<div class="col-auto">
-						<form class="form_suppression_compte" method="POST" action="administration/suppression_compte">
-							<input type="hidden" name="name" value="${user.id}" />
-							<button class="btn btn-primary form_suppression_compte_submit" type="submit">Supprimer ce compte</button>
-						</form>
-					</div>
-				</div>
-			</c:forEach>
 		</div>
+			<div class="row align-items-start mx-0 justify-content-around">
+				<c:forEach var="user" items="${users}">
+					<div class="card col-auto px-0 m-2 person_card">
+						<div class="row align-items-center mx-auto person_card_pic">
+							<img src="${avatars}/${user.avatarSrcLarge}">
+						</div>
+						<div class="card-body">
+							<h5 class="card-title">
+								<div>${user.name}</div>
+								<div>${user.email}</div>
+							</h5>
+							<div>
+								Dernière connexion:
+							</div>
+							<div>
+								${user.lastLogin}&nbsp;
+							</div>
+							<div class="mt-1">
+								Inscription:
+							</div>
+							<div>
+								${user.creationDate}&nbsp;
+							</div>
+						</div>
+						<div class="card-footer center">
+							<div>
+								<form method="POST" action="protected/connexion_enfant">
+									<input type="hidden" name="name" value="${user.id}" />
+									<button class="btn btn-primary" type="submit">Se connecter avec ce compte</button>
+								</form>
+							</div>
+							<div class="mt-2">
+								<form class="form_suppression_compte" method="POST" action="administration/suppression_compte">
+									<input type="hidden" name="name" value="${user.id}" />
+									<button class="btn btn-secondary form_suppression_compte_submit" type="submit">Supprimer ce compte</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
 	</jsp:body>
 </t:template_body_protected>
