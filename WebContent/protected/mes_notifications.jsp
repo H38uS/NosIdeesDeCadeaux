@@ -73,9 +73,9 @@
 		<c:if test="${not empty read_notifications}">
 		<h3 class="my-2">Mes anciennes notifications</h3>
 		<div class="container">
-			<div class="card-deck">
+			<div class="row align-items-start mx-0 justify-content-around">
 				<c:forEach var="notif" items="${read_notifications}">
-					<div class="card my-2">
+					<div class="card my-3" style="width:320px">
 						<div class="card-header bg-dark" style="color:white">
 							${notif.description}
 						</div>

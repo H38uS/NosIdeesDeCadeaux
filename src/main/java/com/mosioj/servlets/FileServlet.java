@@ -51,7 +51,14 @@ public class FileServlet extends HttpServlet {
 		if (file.exists()) {
 			Files.copy(file.toPath(), response.getOutputStream());
 		} else {
-			logger.error(MessageFormat.format("File {0} does not exist.", file));
+			String fileName = file.toString();
+			try {
+				fileName = file.getCanonicalPath();
+			} catch (Exception e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
+			logger.error(MessageFormat.format("File {0} does not exist.", fileName));
 		}
 	}
 
