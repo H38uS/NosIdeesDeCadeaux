@@ -187,9 +187,9 @@
 			<c:otherwise>
 				<div class="row align-items-start mx-0 justify-content-around">
 					<c:forEach var="relation" items="${entities}">
-						<div class="card col-auto px-0 m-2" style="width:280px">
-							<div class="row align-items-center mx-0" style="height:280px">
-								<img style="width:279px" src="${avatars}/${relation.second.avatarSrcLarge}">
+						<div class="card col-auto px-0 m-2 person_card">
+							<div class="row align-items-center mx-auto person_card_pic">
+								<img src="${avatars}/${relation.second.avatarSrcLarge}">
 							</div>
 							<div class="card-body">
 								<h5 class="card-title">

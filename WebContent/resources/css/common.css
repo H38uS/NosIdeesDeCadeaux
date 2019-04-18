@@ -156,6 +156,21 @@ td > #imageFilePreview {
 	border-left: #ff0000 8px solid;	
 }
 
+/****************************/
+/* *** Card with people *** */
+/****************************/
+
+.person_card {
+	width:280px;
+}
+.person_card_pic {
+	height:310px;
+	overflow: hidden;
+}
+.person_card_pic > img {
+	width:278px;
+}
+
 /**********************/
 /* *** Formulaire *** */
 /**********************/
