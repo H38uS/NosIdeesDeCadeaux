@@ -100,11 +100,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
 
 	// FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
-	// FIXME : 8 pouvoir réserver des surprises (groupe, réservation partielle, etc.)
 
-	// FIXME : 99 en mode mobile, réduire le haut quand on clique sur le champs de recherche
 	// FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
-	// FIXME : 99 ajouter les images des gens dans les recherches, en petit
 
 	/**
 	 * The security policy defining whether we can interact with the parameters, etc.
@@ -409,7 +406,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 							}
 							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
 							
-							// FIXME : 2 dans l'administration, mettre les images + la date de création du user
+							// FIXME : 5 lazy loading pour les idées et les images
 							// FIXME : 3 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
 							
 							logger.debug("Releasing the image resources...");
