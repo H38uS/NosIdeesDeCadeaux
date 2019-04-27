@@ -166,6 +166,7 @@ td > #imageFilePreview {
 .person_card_pic {
 	height:310px;
 	overflow: hidden;
+	background-color: whitesmoke;
 }
 .person_card_pic > img {
 	width:278px;
