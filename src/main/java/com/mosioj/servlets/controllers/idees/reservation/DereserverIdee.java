@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/dereserver")
@@ -34,11 +34,11 @@ public class DereserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate>
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		Idee idea = policy.getIdea();
 		int userId = thisOne.id;
 
-		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea, userId));
-		model.idees.dereserver(idea, userId);
+		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea.getId(), userId));
+		model.idees.dereserver(idea.getId(), userId);
 
 		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp); // TODO doit être fait en post
 	}

@@ -1,6 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,15 +44,15 @@ public class NotificationModification extends AllAccessToPostAndGet {
 	private boolean canModifyNotification(	HttpServletRequest request,
 											HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Integer notifId = ParametersUtils.readInt(request, notifParameter);
-		if (notifId == null) {
+		Optional<Integer> notifId = ParametersUtils.readInt(request, notifParameter);
+		if (!notifId.isPresent()) {
 			lastReason = "Aucune notification trouvée en paramètre.";
 			return false;
 		}
 
 		int userId = connectedUser.id;
 
-		AbstractNotification n = model.notif.getNotification(notifId);
+		AbstractNotification n = model.notif.getNotification(notifId.get());
 		if (n == null) {
 			lastReason = "Aucune notification trouvée en paramètre.";
 			return false;

@@ -38,7 +38,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, USER_PARAMETER);
+		Integer id = ParametersUtils.readInt(request, USER_PARAMETER).get();
 		User user = model.users.getUser(id);
 
 		request.setAttribute("user", user);
@@ -51,7 +51,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, USER_PARAMETER);
+		Integer id = ParametersUtils.readInt(request, USER_PARAMETER).get();
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {

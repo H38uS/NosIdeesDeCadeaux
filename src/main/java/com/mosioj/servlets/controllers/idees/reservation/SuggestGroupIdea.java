@@ -43,7 +43,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
+		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM).get();
 		logger.debug("Getting details for idea group " + groupId + "...");
 
 		IdeaGroup group = model.groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
@@ -73,7 +73,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM);
+		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM).get();
 		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		model.idees.fillAUserIdea(thisOne, idee, device);
 

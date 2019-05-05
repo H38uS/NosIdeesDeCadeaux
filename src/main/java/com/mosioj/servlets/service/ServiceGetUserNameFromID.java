@@ -32,7 +32,7 @@ public class ServiceGetUserNameFromID extends AbstractService<NetworkAccess> {
 
 		logger.debug(MessageFormat.format(	"Récupération du nom de l''utilisateur numéro {0}",
 											ParametersUtils.readIt(request, USER_ID_PARAM)));
-		Integer userId = ParametersUtils.readInt(request, USER_ID_PARAM);
+		Integer userId = ParametersUtils.readInt(request, USER_ID_PARAM).get();
 		String status = "ko";
 		String res;
 

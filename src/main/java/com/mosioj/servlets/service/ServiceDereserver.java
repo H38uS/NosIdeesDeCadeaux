@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.reservation.DereserverIdee;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
-import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/dereserver")
 public class ServiceDereserver extends AbstractService<IdeaInteractionBookingUpToDate> {
@@ -37,11 +37,11 @@ public class ServiceDereserver extends AbstractService<IdeaInteractionBookingUpT
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		Idee idea = policy.getIdea();
 		int userId = thisOne.id;
 
-		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea, userId));
-		model.idees.dereserver(idea, userId);
+		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea.getId(), userId));
+		model.idees.dereserver(idea.getId(), userId);
 
 		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}

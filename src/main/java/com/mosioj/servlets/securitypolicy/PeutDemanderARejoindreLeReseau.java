@@ -1,6 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,18 +30,18 @@ public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet {
 			int userId = connectedUser.id;
 
 			// Y a-t-il un utilisateur ?
-			Integer toBeSentTo = ParametersUtils.readInt(request, userParameter);
-			if (toBeSentTo == null) {
+			Optional<Integer> toBeSentTo = ParametersUtils.readInt(request, userParameter);
+			if (!toBeSentTo.isPresent()) {
 				lastReason = "Aucun utilisateur trouvé en paramètre.";
 				return false;
 			}
 
-			if (toBeSentTo == userId || model.userRelations.associationExists(toBeSentTo, userId)) {
+			if (toBeSentTo.get() == userId || model.userRelations.associationExists(toBeSentTo.get(), userId)) {
 				lastReason = "Vous faites déjà parti du même réseau.";
 				return false;
 			}
 
-			if (model.userRelationRequests.associationExists(userId, toBeSentTo)) {
+			if (model.userRelationRequests.associationExists(userId, toBeSentTo.get())) {
 				lastReason = "Vous avez déjà envoyé une demande pour cette personne.";
 				return false;
 			}

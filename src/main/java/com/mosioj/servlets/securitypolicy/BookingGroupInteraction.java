@@ -1,6 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,15 +41,15 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet  {
 	 */
 	private boolean canInteractWithGroup(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Integer groupId = ParametersUtils.readInt(request, groupParameter);
-		if (groupId == null) {
+		Optional<Integer> groupId = ParametersUtils.readInt(request, groupParameter);
+		if (!groupId.isPresent()) {
 			lastReason = "Aucun groupe trouvé en paramètre.";
 			return false;
 		}
 
 		int userId = connectedUser.id;
 
-		User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupId);
+		User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupId.get());
 		if (ideaOwner == null) {
 			lastReason = "Ce groupe appartient à personne.";
 			return false;

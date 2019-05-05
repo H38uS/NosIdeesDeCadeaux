@@ -24,7 +24,7 @@ public class NotificationNonLue extends IdeesCadeauxServlet<NotificationModifica
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		model.notif.setUnread(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER));
+		model.notif.setUnread(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER).get());
 		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
 	}
 

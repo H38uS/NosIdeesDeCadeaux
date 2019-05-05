@@ -47,9 +47,7 @@ public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
 		Idee idea = policy.getIdea();
-
 		logger.debug("Create a new group for idea : " + idea.getId());
 
 		ParameterValidator valTot = ValidatorFactory.getMascValidator(ParametersUtils.readIt(request, "total"), "total");
@@ -83,7 +81,7 @@ public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 		Integer groupId = null;
 		if (model.idees.canBook(idea.getId(), userId)) {
 			groupId = model.groupForIdea.createAGroup(total, amount, userId);
-			model.idees.bookByGroup(id, groupId);
+			model.idees.bookByGroup(idea.getId(), groupId);
 		}
 
 		if (groupId == null) {

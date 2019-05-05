@@ -18,7 +18,6 @@ import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.servlets.controllers.compte.MesNotifications;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/confirmation_est_a_jour")
@@ -34,14 +33,12 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, IDEE_FIELD_PARAMETER);
-		model.idees.touch(id);
-
 		Idee idea = policy.getIdea();
+		model.idees.touch(idea.getId());
 		int userId = thisOne.id;
 		new IsUpToDateQuestions().deleteAssociation(idea.getId(), userId);
 		
-		List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.IDEA_ID, id);
+		List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.IDEA_ID, idea.getId());
 		Set<Integer> ids = new HashSet<>();
 		for (AbstractNotification notification : notifications) {
 			if (notification instanceof NotifAskIfIsUpToDate) {

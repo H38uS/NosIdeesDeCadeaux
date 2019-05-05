@@ -40,7 +40,7 @@ public class ServiceSupprimerRelation extends AbstractService<AllAccessToPostAnd
 		String message = "";
 
 		try {
-			Integer user = ParametersUtils.readInt(request, USER_PARAMETER);
+			Integer user = ParametersUtils.readInt(request, USER_PARAMETER).get();
 			model.userRelations.deleteAssociation(user, thisOne.id);
 			model.notif.removeAllType(thisOne, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user);
 			model.notif.removeAllType(model.users.getUser(user), NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, thisOne);

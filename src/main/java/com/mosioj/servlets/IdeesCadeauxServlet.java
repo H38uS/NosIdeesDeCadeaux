@@ -402,8 +402,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 							}
 							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
 
-							// FIXME : 5 lazy loading pour les idées et les images - voir sur impulsion dans la galerie
-							// FIXME : 3 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
+							// FIXME : 9 lazy loading pour les idées (image c'est déjà le cas)
+							// FIXME : 9 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
 
 							logger.debug("Releasing the image resources...");
 							originalImage.flush();

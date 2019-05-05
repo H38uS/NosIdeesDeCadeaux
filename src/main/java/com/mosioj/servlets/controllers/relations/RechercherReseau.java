@@ -34,7 +34,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
-		int networkOwner = ParametersUtils.readInt(request, USER_ID_PARAM);
+		int networkOwner = ParametersUtils.readInt(request, USER_ID_PARAM).get();
 		request.setAttribute("id", networkOwner);
 		request.setAttribute("name", model.users.getUser(networkOwner).getName());
 		request.setAttribute(SEARCH_USER_PARAM, nameOrEmail);
@@ -73,18 +73,18 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
-		return model.userRelations.getRelationsCount(	ParametersUtils.readInt(req, USER_ID_PARAM),
-												ParametersUtils.readAndEscape(req, SEARCH_USER_PARAM));
+		return model.userRelations.getRelationsCount(	ParametersUtils.readInt(req, USER_ID_PARAM).get(),
+														ParametersUtils.readAndEscape(req, SEARCH_USER_PARAM));
 	}
 
 	@Override
 	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException, NotLoggedInException {
 
 		String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
-		List<Relation> relations = model.userRelations.getRelations(	ParametersUtils.readInt(request, USER_ID_PARAM),
-																nameOrEmail,
-																firstRow,
-																maxNumberOfResults);
+		List<Relation> relations = model.userRelations.getRelations(ParametersUtils.readInt(request, USER_ID_PARAM).get(),
+																	nameOrEmail,
+																	firstRow,
+																	maxNumberOfResults);
 		int userId = thisOne.id;
 
 		// Ajout du flag network

@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.SurpriseModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_surprise")
@@ -33,9 +33,9 @@ public class SupprimerSurprise extends AbstractIdea<SurpriseModification> {
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
-		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
-		logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea, thisOne));
-		model.idees.remove(idea);
+		Idee idea = policy.getIdea();
+		logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea.getId(), thisOne));
+		model.idees.remove(idea.getId());
 		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp);
 	}
 

@@ -1,6 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,15 +38,15 @@ public class CommentModification extends AllAccessToPostAndGet implements Commen
 	 */
 	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Integer commentId = ParametersUtils.readInt(request, commentParameter);
-		if (commentId == null) {
+		Optional<Integer> commentId = ParametersUtils.readInt(request, commentParameter);
+		if (!commentId.isPresent()) {
 			lastReason = "Aucun commentaire trouvé en paramètre.";
 			return false;
 		}
 
 		int userId = connectedUser.id;
 
-		comment = model.comments.getComment(commentId);
+		comment = model.comments.getComment(commentId.get());
 		if (comment == null) {
 			lastReason = "Aucun commentaire trouvé en paramètre.";
 			return false;

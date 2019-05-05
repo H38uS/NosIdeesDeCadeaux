@@ -36,7 +36,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer user = ParametersUtils.readInt(request, USER_ID_PARAM);
+		Integer user = ParametersUtils.readInt(request, USER_ID_PARAM).get();
 		int userId = thisOne.id;
 
 		if (userId == user) {
@@ -82,16 +82,16 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
-		return model.userRelations.getRelationsCount(model.users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM)));
+		return model.userRelations.getRelationsCount(model.users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM).get()));
 	}
 
 	@Override
 	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 
 		User user = thisOne;
-		List<Relation> relations = model.userRelations.getRelations(	ParametersUtils.readInt(req, USER_ID_PARAM),
-																firstRow,
-																maxNumberOfResults);
+		List<Relation> relations = model.userRelations.getRelations(ParametersUtils.readInt(req, USER_ID_PARAM).get(),
+																	firstRow,
+																	maxNumberOfResults);
 
 		// Ajout du flag network
 		for (Relation r : relations) {

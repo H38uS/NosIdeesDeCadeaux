@@ -33,7 +33,7 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		try {
 
-			Integer userIdParam = ParametersUtils.readInt(request, OF_USER_ID);
+			Integer userIdParam = ParametersUtils.readInt(request, OF_USER_ID).get();
 			int connectedUserId = thisOne.id;
 			int userId = userIdParam == null ? connectedUserId : userIdParam;
 			if (userId != connectedUserId && !model.userRelations.associationExists(userId, connectedUserId)) {

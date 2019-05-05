@@ -24,7 +24,7 @@ public class SupprimerNotification extends IdeesCadeauxServlet<NotificationModif
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		model.notif.remove(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER));
+		model.notif.remove(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER).get());
 		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
 	}
 

@@ -62,7 +62,7 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM).get();
 		logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", id));
 		String text = ParametersUtils.readAndEscape(request, "text");
 

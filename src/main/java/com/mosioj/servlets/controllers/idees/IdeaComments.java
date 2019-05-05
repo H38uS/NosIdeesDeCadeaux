@@ -54,12 +54,11 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM);
 		String text = ParametersUtils.readAndEscape(request, "text");
 
 		User current = thisOne;
-		model.comments.addComment(current.id, id, text);
 		Idee idea = policy.getIdea();
+		model.comments.addComment(current.id, idea.getId(), text);
 
 		Set<User> toBeNotified = new HashSet<User>();
 
@@ -76,8 +75,8 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 			model.notif.addNotification(notified.id, new NotifNewCommentOnIdea(current, idea));
 		}
 
-		dropNotificationOnView(thisOne, id);
-		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + id, request, response);
+		dropNotificationOnView(thisOne, idea.getId());
+		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + idea.getId(), request, response);
 	}
 
 }

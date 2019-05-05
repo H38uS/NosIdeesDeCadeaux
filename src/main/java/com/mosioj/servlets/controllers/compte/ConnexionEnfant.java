@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.ChildAdministration;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/connexion_enfant")
@@ -45,11 +44,10 @@ public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
 			return;
 		}
 
-		Integer childId = ParametersUtils.readInt(request, CHILD_ID_PARAM);
 		User current = thisOne;
-		User newOne = model.users.getUser(childId);
+		User newOne = policy.getUser();
 
-		logger.info(MessageFormat.format("Connection depuis {0} en tant que {1}.", current.id, childId));
+		logger.info(MessageFormat.format("Connection depuis {0} en tant que {1}.", current.id, newOne.getId()));
 		HttpSession session = request.getSession();
 
 		session.setAttribute("connected_user", newOne);

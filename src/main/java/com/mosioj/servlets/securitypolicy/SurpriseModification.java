@@ -1,6 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,15 +45,15 @@ public class SurpriseModification extends AllAccessToPostAndGet implements IdeaS
 	 */
 	protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Integer ideaId = ParametersUtils.readInt(request, ideaParameter);
-		if (ideaId == null) {
+		Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
+		if (!ideaId.isPresent()) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;
 		}
 
 		User thisOne = connectedUser;
 
-		idea = model.idees.getIdeaWithoutEnrichment(ideaId);
+		idea = model.idees.getIdeaWithoutEnrichment(ideaId.get());
 		if (idea == null) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;

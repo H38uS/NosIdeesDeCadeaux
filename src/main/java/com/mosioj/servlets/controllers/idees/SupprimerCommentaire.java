@@ -25,7 +25,7 @@ public class SupprimerCommentaire extends IdeesCadeauxServlet<CommentModificatio
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER);
+		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER).get();
 		Comment comment = policy.getComment();
 		model.comments.delete(id);
 

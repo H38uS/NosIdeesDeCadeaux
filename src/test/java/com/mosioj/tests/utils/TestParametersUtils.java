@@ -35,9 +35,9 @@ public class TestParametersUtils {
 
 	@Test
 	public void testValidTest() {
-		assertEquals(new Integer(32), ParametersUtils.readInt(new TestHttpServletRequest("32"), "toto"));
-		assertEquals(new Integer(32), ParametersUtils.readInt(new TestHttpServletRequest(MessageFormat.format("{0}", 32)), "toto"));
-		assertEquals(new Integer(1032), ParametersUtils.readInt(new TestHttpServletRequest("1032"), "toto"));
+		assertEquals(new Integer(32), ParametersUtils.readInt(new TestHttpServletRequest("32"), "toto").get());
+		assertEquals(new Integer(32), ParametersUtils.readInt(new TestHttpServletRequest(MessageFormat.format("{0}", 32)), "toto").get());
+		assertEquals(new Integer(1032), ParametersUtils.readInt(new TestHttpServletRequest("1032"), "toto").get());
 		assertEquals(new Double(32), ParametersUtils.readDouble(new TestHttpServletRequest(MessageFormat.format("{0}", 32)), "toto"));
 		assertEquals(new Double(32.15), ParametersUtils.readDouble(new TestHttpServletRequest("32.15"), "toto"));
 		assertEquals(new Double(32.15), ParametersUtils.readDouble(new TestHttpServletRequest(MessageFormat.format("{0}.15", 32)), "toto"));

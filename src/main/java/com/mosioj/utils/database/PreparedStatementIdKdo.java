@@ -10,6 +10,7 @@ import java.text.MessageFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 
 public class PreparedStatementIdKdo implements Closeable {
@@ -82,18 +83,23 @@ public class PreparedStatementIdKdo implements Closeable {
 				continue;
 			}
 			
+			if (parameter instanceof Double) {
+				ps.setDouble(i + 1, (Double) parameter);
+				continue;
+			}
+			
+			if (parameter instanceof Integer) {
+				ps.setInt(i + 1, (Integer) parameter);
+				continue;
+			}
+
 			if (parameter instanceof User) {
 				ps.setInt(i + 1, ((User) parameter).getId());
 				continue;
 			}
 
-			if (parameter instanceof Double) {
-				ps.setDouble(i + 1, (Double) parameter);
-				continue;
-			}
-
-			if (parameter instanceof Integer) {
-				ps.setInt(i + 1, (Integer) parameter);
+			if (parameter instanceof Idee) {
+				ps.setInt(i + 1, ((Idee) parameter).getId());
 				continue;
 			}
 

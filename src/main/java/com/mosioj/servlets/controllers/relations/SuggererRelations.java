@@ -29,7 +29,7 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
-		int suggestTo = ParametersUtils.readInt(req, USER_PARAMETER);
+		int suggestTo = ParametersUtils.readInt(req, USER_PARAMETER).get();
 
 		req.setAttribute("user", model.users.getUser(suggestTo));
 
@@ -39,7 +39,7 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int suggestTo = ParametersUtils.readInt(request, USER_PARAMETER);
+		int suggestTo = ParametersUtils.readInt(request, USER_PARAMETER).get();
 		User suggestToUser = model.users.getUser(suggestTo);
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 

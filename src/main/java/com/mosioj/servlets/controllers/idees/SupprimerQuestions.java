@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Comment;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.QuestionModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_question")
@@ -25,10 +24,8 @@ public class SupprimerQuestions extends IdeesCadeauxServlet<QuestionModification
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER);
 		Comment comment = policy.getComment();
-		model.questions.delete(id);
-
+		model.questions.delete(comment.getId());
 		RootingsUtils.rootToPage(IdeeQuestions.WEB_SERVLET + "?" + IdeeQuestions.IDEA_ID_PARAM + "=" + comment.getIdea(), req, resp);
 	}
 

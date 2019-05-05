@@ -43,7 +43,7 @@ public class DemandeRejoindreReseauService extends AbstractService<AllAccessToPo
 		String message = "";
 
 		try {
-			User userToSendInvitation = model.users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM));
+			User userToSendInvitation = model.users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM).get());
 			request.setAttribute("name", userToSendInvitation.getName());
 
 			if (model.userRelationRequests.associationExists(thisOne.id, userToSendInvitation.id)) {

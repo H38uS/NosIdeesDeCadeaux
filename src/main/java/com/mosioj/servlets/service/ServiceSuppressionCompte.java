@@ -42,7 +42,7 @@ public class ServiceSuppressionCompte extends AbstractService<AllAccessToPostAnd
 			return;
 		}
 
-		Integer userId = ParametersUtils.readInt(request, USER_ID_PARAM);
+		Integer userId = ParametersUtils.readInt(request, USER_ID_PARAM).get();
 		String status = "ko";
 		String messageErreur = "";
 

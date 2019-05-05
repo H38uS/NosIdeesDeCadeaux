@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.Idee;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/reserver")
@@ -41,13 +41,13 @@ public class ReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		Integer idea = ParametersUtils.readInt(request, IDEA_ID_PARAM);
+		Idee idea = policy.getIdea();
 		int userId = thisOne.id;
-		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea, userId));
+		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea.getId(), userId));
 		
-		if (model.idees.canBook(idea, userId)) {
-			model.idees.reserver(idea, userId);
-			for (AbstractNotification n : model.notif.getNotification(ParameterName.IDEA_ID, idea)) {
+		if (model.idees.canBook(idea.getId(), userId)) {
+			model.idees.reserver(idea.getId(), userId);
+			for (AbstractNotification n : model.notif.getNotification(ParameterName.IDEA_ID, idea.getId())) {
 				if (n instanceof NotifRecurentIdeaUnbook) {
 					model.notif.remove(n.id);
 				}

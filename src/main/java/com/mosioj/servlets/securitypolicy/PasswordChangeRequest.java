@@ -1,6 +1,7 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,15 +50,15 @@ public class PasswordChangeRequest extends AllAccessToPostAndGet {
 	 */
 	private boolean isUserIdTokenValid(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-		Integer userId = ParametersUtils.readInt(request, userIdParameter);
-		Integer tokenId = ParametersUtils.readInt(request, tokenParameter);
+		Optional<Integer> userId = ParametersUtils.readInt(request, userIdParameter);
+		Optional<Integer> tokenId = ParametersUtils.readInt(request, tokenParameter);
 
-		if (userId == null || tokenId == null) {
+		if (!userId.isPresent() || !tokenId.isPresent()) {
 			lastReason = "Aucune demande trouvée pour cet utilisateur.";
 			return false;
 		}
 
-		if (!ucpr.isAValidCombinaison(userId, tokenId)) {
+		if (!ucpr.isAValidCombinaison(userId.get(), tokenId.get())) {
 			lastReason = "Aucune demande trouvée pour cet utilisateur.";
 			return false;
 		}

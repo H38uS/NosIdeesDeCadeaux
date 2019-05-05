@@ -42,7 +42,7 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordC
 		CompteInteractions helper = new CompteInteractions();
 
 		request.setAttribute(tokenParameter, ParametersUtils.readInt(request, tokenParameter));
-		int userId = ParametersUtils.readInt(request, userIdParameter);
+		int userId = ParametersUtils.readInt(request, userIdParameter).get();
 		request.setAttribute(userIdParameter, userId);
 		
 		String pwd1 = ParametersUtils.readAndEscape(request, "pwd1").trim();

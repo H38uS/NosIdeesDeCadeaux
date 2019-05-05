@@ -2,6 +2,7 @@ package com.mosioj.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,15 +39,12 @@ public class ParametersUtils {
 	 * @param name
 	 * @return The parameter, as an integer. If it is not possible, returns null.
 	 */
-	public static Integer readInt(HttpServletRequest request, String name) {
-		int param = -1;
+	public static Optional<Integer> readInt(HttpServletRequest request, String name) {
 		try {
-			param = Integer.parseInt(readIt(request, name).replaceAll("[  ]", "").replaceAll("%C2%A0", ""));
+			return Optional.of(Integer.parseInt(readIt(request, name).replaceAll("[  ]", "").replaceAll("%C2%A0", "")));
 		} catch (NumberFormatException e) {
-			return null;
+			return Optional.empty();
 		}
-		// FIXME : 9 faire une Optional<>
-		return param;
 	}
 
 	public static Double readDouble(HttpServletRequest request, String name) {
