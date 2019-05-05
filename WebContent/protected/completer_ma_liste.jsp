@@ -15,7 +15,7 @@
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
-		<h3>Ajouter une novuelle idée</h3>
+		<h3>Ajouter une nouvelle idée</h3>
 		<div class="alert alert-info">
 			Avant d'ajouter une idée, je voudrais consulter <a href="protected/voir_liste?id=${connected_user.id}">ma liste</a>.
 		</div>
