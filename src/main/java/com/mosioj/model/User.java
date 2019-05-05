@@ -22,8 +22,8 @@ public class User {
 	public String freeComment;
 	public String avatar;
 	private Timestamp creationDate;
-
 	private Timestamp lastLogin;
+	public boolean hasBookedOneOfItsIdeas = false;
 
 	private final List<Idee> ideas = new ArrayList<Idee>();
 
@@ -70,6 +70,14 @@ public class User {
 
 	public String getAvatar() {
 		return avatar;
+	}
+
+	/**
+	 * 
+	 * @return True if the connected user has booked one of this user ideas, or is participating to a group.
+	 */
+	public boolean getHasBookedOneOfItsIdeas() {
+		return hasBookedOneOfItsIdeas;
 	}
 
 	/**

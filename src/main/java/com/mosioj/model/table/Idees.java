@@ -195,6 +195,67 @@ public class Idees extends Table {
 
 	/**
 	 * 
+	 * @param thisOne
+	 * @return All the ideas where this user has a booking, or belongs to a group or a sub part.
+	 * @throws SQLException
+	 */
+	public List<Idee> getIdeasWhereIDoParticipateIn(User thisOne) throws SQLException {
+
+		List<Idee> ideas = new ArrayList<Idee>();
+
+		StringBuilder query = getIdeaBasedSelect();
+
+		// Toutes les sous-réservations
+		query.append(MessageFormat.format(	" left join {0} s on i.{1} = s.{2} and s.{3} = ? \n",
+											SousReservation.TABLE_NAME,
+											ID,
+											SousReservationColumns.IDEE_ID,
+											SousReservationColumns.USER_ID));
+
+		// Les groupes
+		query.append(MessageFormat.format(	" left join {0} g on i.{1} = g.{2} \n",
+											GroupIdea.TABLE_NAME,
+											GROUPE_KDO_ID,
+											GroupIdeaColumns.ID));
+		query.append(MessageFormat.format(	" left join {0} gc on g.{1} = gc.{2} and gc.{3} = ? \n",
+											GroupIdea.TABLE_NAME_CONTENT,
+											GroupIdeaColumns.ID,
+											GroupIdeaContentColumns.GROUP_ID,
+											GroupIdeaContentColumns.USER_ID));
+
+		// On sélectionne uniquement les idées
+		// - Qu'on a réservé
+		// - Qu'on a sous-réservé
+		// - Dont on fait parti d'un groupe
+		query.append(MessageFormat.format(	" where i.{0} = ? or s.{1} is not null or gc.{2} is not null \n",
+											RESERVE,
+											SousReservationColumns.ID,
+											GroupIdeaContentColumns.GROUP_ID));
+
+		String queryText = query.toString();
+		logger.trace(MessageFormat.format("{0}, {1}", queryText, thisOne.id));
+		long start = System.nanoTime();
+		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), queryText);
+
+		try {
+			ps.bindParameters(thisOne.id, thisOne.id, thisOne.id);
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				while (rs.next()) {
+					ideas.add(createIdeaFromQuery(rs));
+				}
+			}
+		} finally {
+			ps.close();
+		}
+		long end = System.nanoTime();
+		logger.debug(MessageFormat.format("Query executed in {0} ms for user {1}", (end - start) / 1000000L, thisOne));
+
+		return ideas;
+	}
+
+	/**
+	 * 
 	 * @param idIdee
 	 * @return All fields for this idea.
 	 * @throws SQLException
@@ -434,7 +495,7 @@ public class Idees extends Table {
 			text = StringEscapeUtils.unescapeHtml4(text);
 			text = Escaper.escapeIdeaText(text);
 			logger.info(MessageFormat.format(	"Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
-			                                 	owner.id,
+												owner.id,
 												text,
 												type,
 												image,
@@ -554,10 +615,9 @@ public class Idees extends Table {
 															SousReservationColumns.USER_ID),
 										ideaId,
 										user.id);
-		if (nb > 0 && getDb().selectCountStar(
-												MessageFormat.format(	"select count(*) from {0} where {1} = ?",
-																		SousReservation.TABLE_NAME,
-																		SousReservationColumns.IDEE_ID),
+		if (nb > 0 && getDb().selectCountStar(	MessageFormat.format("select count(*) from {0} where {1} = ?",
+																	SousReservation.TABLE_NAME,
+																	SousReservationColumns.IDEE_ID),
 												ideaId) == 0) {
 			getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ''N'' where {2} = ?", TABLE_NAME, A_SOUS_RESERVATION, ID),
 									ideaId);

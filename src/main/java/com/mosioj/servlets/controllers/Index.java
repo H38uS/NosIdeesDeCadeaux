@@ -2,7 +2,9 @@ package com.mosioj.servlets.controllers;
 
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,8 +23,6 @@ public class Index extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	public static final int NB_DAYS_MAX_BEFORE_BIRTHDAY = 20;
 	private static final long serialVersionUID = -8386214705432810179L;
 	private static final String VIEW_URL = "/protected/index.jsp";
-	
-	
 
 	public Index() {
 		super(new AllAccessToPostAndGet());
@@ -36,11 +36,15 @@ public class Index extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 		// Birthday messages
 		List<User> friends = model.userRelations.getCloseBirthday(thisOne, NB_DAYS_MAX_BEFORE_BIRTHDAY);
+		Set<User> listIBookedSomething = new HashSet<User>();
+		model.idees.getIdeasWhereIDoParticipateIn(thisOne).parallelStream().forEach(i -> listIBookedSomething.add(i.owner));
+		friends.parallelStream().filter(f -> listIBookedSomething.contains(f)).forEach(f -> f.hasBookedOneOfItsIdeas = true);
+
 		req.setAttribute("userBirthday", friends);
 		if (!friends.isEmpty()) {
 			req.setAttribute("birthdayMessage", MessagesAccueil.getOneBirthdayMessage());
 		}
-		
+
 		// Christmas
 		Calendar now = Calendar.getInstance();
 		if (now.after(startOfNotification()) && now.before(thisYearChristmas())) {
@@ -58,7 +62,7 @@ public class Index extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		ideesKDoGET(request, response);
 	}
-	
+
 	/**
 	 * 
 	 * @return The date from which we start notifying people about Christmas

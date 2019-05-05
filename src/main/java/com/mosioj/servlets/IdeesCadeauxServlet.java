@@ -53,7 +53,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// FIXME : 99 mettre du bootstrap dans le site impulsion ?
 	// FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
-	// TODO : voir la conf machine learning pour faire des trucs ??
 
 	// TODO : voir pour utiliser hibernate ou jpa, et/ou spring mvc (restful pour plus tard)
 
@@ -75,18 +74,15 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// FIXME : 92 remplir le gdoc + historiser la base de test
 
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
-	// TODO : afficher le contenu des logs courant depuis l'administration ?
 
 	// TODO : faire un seul repo git ? -- Faire que le task dépende d'impulsion ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 
-	// TODO stocker l'objet User quand on se connecte
 	// TODO bug avec l'IPhone, pas assez de padding sous le champs recherche
 	// TODO pouvoir déréserver toutes ses idées
 
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
-	// TODO pour tous les noms faire une tooltip pour avoir l'email, la photo etc.
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -405,10 +401,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 								resizeImageJpg = originalImage;
 							}
 							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
-							
+
 							// FIXME : 5 lazy loading pour les idées et les images - voir sur impulsion dans la galerie
 							// FIXME : 3 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
-							
+
 							logger.debug("Releasing the image resources...");
 							originalImage.flush();
 
@@ -434,9 +430,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			throw new ServletException(e.getMessage());
 		}
 	}
-	
-	// FIXME : 1 ajouter la date de création modif des idées avec les résa etc.
-	// FIXME : 2 dans l'acceuil, mettre si on a déjà réservé ou pas 
 
 	protected File getIdeaPicturePath() {
 		if (ideasPicturePath == null) {

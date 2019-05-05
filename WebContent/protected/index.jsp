@@ -28,7 +28,7 @@
 						<table>
 							<c:forEach var="user" items="${userBirthday}" >
 							<tr>
-								<td>
+								<td class="px-1">
 									<c:choose>
 										<c:when test="${user.nbDaysBeforeBirthday == 0}">
 											C'est l'anniversaire ${user.myDName} aujourd'hui !
@@ -41,8 +41,21 @@
 										</c:otherwise>
 									</c:choose>
 								</td>
-								<td>
+								<td class="px-1 d-none d-lg-table-cell">
 									<a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
+								</td>
+								<td class="px-1 d-lg-none" style="width:65px">
+									<a href="protected/voir_liste?id=${user.id}">Sa liste</a>
+								</td>
+								<td class="px-1 center">
+									<c:choose>
+										<c:when test="${user.hasBookedOneOfItsIdeas}">
+											<span title="Vous avez déjà réservé des idées" class="badge badge-success">Réservé</span>
+										</c:when>
+										<c:otherwise>
+											<span title="Vous n'avez pas encore réservé d'idée !" class="badge badge-warning">Non réservé</span>
+										</c:otherwise>
+									</c:choose>
 								</td>
 							</tr>
 							</c:forEach>

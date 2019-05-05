@@ -156,6 +156,10 @@ td > #imageFilePreview {
 	border-left: #ff0000 8px solid;	
 }
 
+.tooltipster-base {
+	box-sizing: initial;
+}
+
 /****************************/
 /* *** Card with people *** */
 /****************************/
