@@ -201,8 +201,20 @@
 			</div>
 		</div>
 		<div class="idea_square_modif_date" >
+			Dernière modification le ${idee.modificationDate}.<br/>
+			<c:if test="${not empty idee.surpriseBy}">
+				<div>
+					<c:choose>
+						<c:when test="${idee.surpriseBy.id == connected_user.id}">
+							Idée surprise créée le ${idee.modificationDate} par vous - la <a href="protected/supprimer_surprise?idee=${idee.id}&from=/${identic_call_back}">supprimer</a>.
+						</c:when>
+						<c:otherwise>
+							Idée surprise créée le ${idee.modificationDate} par ${idee.surpriseBy.name}.
+						</c:otherwise>
+					</c:choose>
+				</div>
+			</c:if>
 			<c:choose>
-				
 				<c:when test="${idee.isBooked()}">
 					<c:choose>
 						<c:when test="${not empty idee.bookingOwner}">
@@ -226,21 +238,9 @@
 					<a href="protected/detail_sous_reservation?idee=${idee.id}">Voir le détail.</a>
 				</c:when>
 				<c:otherwise>
-						Non réservée, modifiée le ${idee.modificationDate}.
+						Non réservée.
 				</c:otherwise>
 			</c:choose>
-			<c:if test="${not empty idee.surpriseBy}">
-				<div>
-					<c:choose>
-						<c:when test="${idee.surpriseBy.id == connected_user.id}">
-							Idée surprise créée le ${idee.modificationDate} par vous - la <a href="protected/supprimer_surprise?idee=${idee.id}&from=/${identic_call_back}">supprimer</a>.
-						</c:when>
-						<c:otherwise>
-							Idée surprise créée le ${idee.modificationDate} par ${idee.surpriseBy.name}.
-						</c:otherwise>
-					</c:choose>
-				</div>
-			</c:if>
 		</div>
 	</div>
 </div>

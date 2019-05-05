@@ -490,8 +490,20 @@
 											</div>
 										</div>
 										<div class="idea_square_modif_date" >
+											Dernière modification le ${idea_from_liste.modificationDate}.<br/>
+											<c:if test="${not empty idea_from_liste.surpriseBy}">
+												<div>
+													<c:choose>
+														<c:when test="${idea_from_liste.surpriseBy.id == connected_user.id}">
+															Idée surprise créée le ${idea_from_liste.modificationDate} par vous - la <a href="protected/supprimer_surprise?idee=${idea_from_liste.id}&from=/${identic_call_back}">supprimer</a>.
+														</c:when>
+														<c:otherwise>
+															Idée surprise créée le ${idea_from_liste.modificationDate} par ${idea_from_liste.surpriseBy.name}.
+														</c:otherwise>
+													</c:choose>
+												</div>
+											</c:if>
 											<c:choose>
-												
 												<c:when test="${idea_from_liste.isBooked()}">
 													<c:choose>
 														<c:when test="${not empty idea_from_liste.bookingOwner}">
@@ -515,21 +527,9 @@
 													<a href="protected/detail_sous_reservation?idee=${idea_from_liste.id}">Voir le détail.</a>
 												</c:when>
 												<c:otherwise>
-														Non réservée, modifiée le ${idea_from_liste.modificationDate}.
+														Non réservée.
 												</c:otherwise>
 											</c:choose>
-											<c:if test="${not empty idea_from_liste.surpriseBy}">
-												<div>
-													<c:choose>
-														<c:when test="${idea_from_liste.surpriseBy.id == connected_user.id}">
-															Idée surprise créée le ${idea_from_liste.modificationDate} par vous - la <a href="protected/supprimer_surprise?idee=${idea_from_liste.id}&from=/${identic_call_back}">supprimer</a>.
-														</c:when>
-														<c:otherwise>
-															Idée surprise créée le ${idea_from_liste.modificationDate} par ${idea_from_liste.surpriseBy.name}.
-														</c:otherwise>
-													</c:choose>
-												</div>
-											</c:if>
 										</div>
 									</div>
 									</div>
