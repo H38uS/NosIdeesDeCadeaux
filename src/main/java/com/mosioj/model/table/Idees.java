@@ -1,6 +1,8 @@
 package com.mosioj.model.table;
 
 import static com.mosioj.model.table.columns.IdeeColumns.A_SOUS_RESERVATION;
+import static com.mosioj.model.table.columns.IdeeColumns.CREE_LE;
+import static com.mosioj.model.table.columns.IdeeColumns.CREE_PAR;
 import static com.mosioj.model.table.columns.IdeeColumns.GROUPE_KDO_ID;
 import static com.mosioj.model.table.columns.IdeeColumns.ID;
 import static com.mosioj.model.table.columns.IdeeColumns.IDEE;
@@ -11,8 +13,6 @@ import static com.mosioj.model.table.columns.IdeeColumns.PRIORITE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE;
 import static com.mosioj.model.table.columns.IdeeColumns.RESERVE_LE;
 import static com.mosioj.model.table.columns.IdeeColumns.SURPRISE_PAR;
-import static com.mosioj.model.table.columns.IdeeColumns.CREE_LE;
-import static com.mosioj.model.table.columns.IdeeColumns.CREE_PAR;
 import static com.mosioj.model.table.columns.IdeeColumns.TYPE;
 
 import java.sql.ResultSet;
@@ -21,6 +21,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
@@ -430,7 +431,8 @@ public class Idees extends Table {
 		logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
 		PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), insert.toString());
 		try {
-			text = Escaper.textToHtml(text);
+			text = StringEscapeUtils.unescapeHtml4(text);
+			text = Escaper.escapeIdeaText(text);
 			logger.info(MessageFormat.format(	"Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
 			                                 	owner.id,
 												text,
@@ -728,7 +730,8 @@ public class Idees extends Table {
 	 * @throws SQLException
 	 */
 	public void modifier(int id, String text, String type, String priority, String image) throws SQLException {
-		text = Escaper.textToHtml(text);
+		text = StringEscapeUtils.unescapeHtml4(text);
+		text = Escaper.escapeIdeaText(text);
 		getDb().executeUpdate(	MessageFormat.format("update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
 													TABLE_NAME,
 													IDEE,

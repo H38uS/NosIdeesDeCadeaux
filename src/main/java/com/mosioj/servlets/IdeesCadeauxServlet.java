@@ -406,7 +406,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 							}
 							ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
 							
-							// FIXME : 5 lazy loading pour les idées et les images
+							// FIXME : 5 lazy loading pour les idées et les images - voir sur impulsion dans la galerie
 							// FIXME : 3 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
 							
 							logger.debug("Releasing the image resources...");
@@ -434,6 +434,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			throw new ServletException(e.getMessage());
 		}
 	}
+	
+	// FIXME : 1 ajouter la date de création modif des idées avec les résa etc.
+	// FIXME : 2 dans l'acceuil, mettre si on a déjà réservé ou pas 
 
 	protected File getIdeaPicturePath() {
 		if (ideasPicturePath == null) {

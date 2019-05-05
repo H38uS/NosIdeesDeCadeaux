@@ -26,7 +26,6 @@ import com.mosioj.servlets.controllers.idees.MaListe;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 import com.mosioj.utils.RootingsUtils;
-import com.mosioj.viewhelper.Escaper;
 
 @WebServlet("/protected/modifier_idee")
 public class ModifyIdea extends AbstractIdea<IdeaModification> {
@@ -49,7 +48,6 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Idee idea = policy.getIdea();
-		idea.text = Escaper.htmlToText(idea.text);
 
 		request.setAttribute("types", model.categories.getCategories());
 		request.setAttribute("priorites", model.priorities.getPriorities());

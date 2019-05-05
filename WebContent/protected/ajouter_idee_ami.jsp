@@ -31,6 +31,9 @@
 				<div class="form-group">
 					<label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
 					<textarea id="text" class="form-control" name="text" cols="70" rows="6"></textarea>
+					<script type="text/javascript">
+						$("#text").jqte();
+					</script>
 				</div>
 				<div class="form-group">
 					<label for="type" class="d-none d-md-inline-block">Type</label>

@@ -6,7 +6,9 @@
 <html>
 <t:template_head_includes>
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/thickbox.css" />
+	<link rel="stylesheet" type="text/css" href="resources/css/lib/jquery-te-1.4.0.css" />
 	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
+	<script src="resources/js/lib/jquery-te-1.4.0.min.js" type="text/javascript"></script>
 	<c:choose>
 		<c:when test="${is_mobile}">
 		</c:when>
@@ -30,12 +32,18 @@
 		</c:if>
 		<div>
 			<c:if test="${not empty idea}">
+				<div class="alert alert-info">
+					Modifications finies ! Aller voir ce que ça donne sur <a href="protected/voir_liste?id=${connected_user.id}">ma liste</a>...
+				</div>
 				<div class="container border border-info bg-light rounded mb-2 p-3">
 					<form class="mw-50" action="protected/modifier_idee?id=${idea.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="from" value="${from}" />
 						<div class="form-group">
 							<label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
 							<textarea id="text" class="form-control" name="text" cols="70" rows="6">${idea.text}</textarea>
+							<script type="text/javascript">
+								$("#text").jqte();
+							</script>
 						</div>
 						<div class="form-group">
 							<label for="type" class="d-none d-md-inline-block">Type</label>

@@ -53,4 +53,29 @@ public class TestEscaper {
 		}
 	}
 
+	@Test
+	public void testIdeaEscape() {
+
+		String[] sources = new String[] {
+				"<a href=\"http://tutu.com\">tutu.com</a>",
+				"<a hReF=\"http://tutu.com\">tutu.com</a>toto<a href=\"http://tutu.com\">tutu.com</a><a href=\"http://tutu.com\">tutu.com</a>",
+				"<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
+				"<script>alert('toto');</script>",
+				"<sCrIpt>alert('toto');</sCripT>",
+				"http://www.amazon.fr", "http://www.amazon.fr http://www.amazon.fr http://www.amazon.fr"
+		};
+
+		String[] expected = new String[] {
+				"<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
+				"<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>toto<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a><a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
+				"<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
+				">alert('toto');>",
+				">alert('toto');>",
+				"http://www.amazon.fr", "http://www.amazon.fr http://www.amazon.fr http://www.amazon.fr"
+		};
+
+		for (int i = 0; i < sources.length; i++) {
+			assertEquals(expected[i], Escaper.escapeIdeaText(sources[i]));
+		}
+	}
 }

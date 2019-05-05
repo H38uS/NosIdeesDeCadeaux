@@ -11,7 +11,6 @@ import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.SousReservation;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.MyDateFormatViewer;
-import com.mosioj.viewhelper.Escaper;
 
 public class Idee {
 
@@ -183,7 +182,7 @@ public class Idee {
 	 */
 	public String getTextSummary(int maxLength) {
 
-		String initial = Escaper.htmlToText(getText());
+		String initial = getText();
 		if (initial.length() > maxLength) {
 			StringBuilder sb = new StringBuilder();
 			boolean needSemiColon = false;

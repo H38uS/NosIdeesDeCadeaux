@@ -9,17 +9,14 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/jquery-te-1.4.0.css" />
 	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
 	<script src="resources/js/lib/jquery-te-1.4.0.min.js" type="text/javascript"></script>
-	<c:choose>
-		<c:when test="${is_mobile}">
-		</c:when>
-		<c:otherwise>
-			<script src="resources/js/browser/pictures.js" type="text/javascript"></script>
-		</c:otherwise>
-	</c:choose>
+	<c:if test="${not is_mobile}">
+		<script src="resources/js/browser/pictures.js" type="text/javascript"></script>
+	</c:if>
 </t:template_head_includes>
 <t:template_body_protected>
 	<jsp:body>
-		<div class="mb-3">
+		<h3>Ajouter une novuelle idée</h3>
+		<div class="alert alert-info">
 			Avant d'ajouter une idée, je voudrais consulter <a href="protected/voir_liste?id=${connected_user.id}">ma liste</a>.
 		</div>
 		<div class="container border border-info bg-light rounded mb-2 p-3">
