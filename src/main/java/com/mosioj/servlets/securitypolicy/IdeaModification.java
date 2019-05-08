@@ -10,7 +10,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -45,7 +44,7 @@ public class IdeaModification extends AllAccessToPostAndGet implements IdeaSecur
 	 */
 	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
+		Optional<Integer> ideaId = readInt(request, ideaParameter);
 		if (!ideaId.isPresent()) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;

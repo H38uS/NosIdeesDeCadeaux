@@ -12,11 +12,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
-import com.mosioj.utils.ParametersUtils;
+import com.mosioj.servlets.securitypolicy.SuppressionCompte;
 
 @WebServlet("/protected/administration/service/supprimer_compte")
-public class ServiceSuppressionCompte extends AbstractService<AllAccessToPostAndGet> {
+public class ServiceSuppressionCompte extends AbstractService<SuppressionCompte> {
 
 	private static final long serialVersionUID = -8612163046284587669L;
 	private static final Logger logger = LogManager.getLogger(ServiceSuppressionCompte.class);
@@ -27,7 +26,7 @@ public class ServiceSuppressionCompte extends AbstractService<AllAccessToPostAnd
 	 * Seuls les admins peuvent le faire
 	 */
 	public ServiceSuppressionCompte() {
-		super(new AllAccessToPostAndGet());
+		super(new SuppressionCompte(USER_ID_PARAM));
 	}
 
 	@Override
@@ -37,29 +36,19 @@ public class ServiceSuppressionCompte extends AbstractService<AllAccessToPostAnd
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		
-		if (!request.isUserInRole("ROLE_ADMIN")) { // FIXME 1 : faire ça dans une police
-			return;
-		}
 
-		Integer userId = ParametersUtils.readInt(request, USER_ID_PARAM).get();
 		String status = "ko";
 		String messageErreur = "";
 
-
-		if (userId != null) {
-			try {
-				User user = model.users.getUser(userId);
-				logger.info(MessageFormat.format("Suppression du compte {0} (id: {1})", user, userId));
-				model.users.deleteUser(user);
-				status = "ok";
-			} catch (Exception e) {
-				messageErreur = e.getMessage();
-				logger.error(e.getMessage());
-				e.printStackTrace();
-			}
-		} else {
-			messageErreur = "L'utilisateur n'existe pas";
+		try {
+			User user = policy.getUserToDelete();
+			logger.info(MessageFormat.format("Suppression du compte {0} (id: {1})", user, user.id));
+			model.users.deleteUser(user);
+			status = "ok";
+		} catch (Exception e) {
+			messageErreur = e.getMessage();
+			logger.error(e.getMessage());
+			e.printStackTrace();
 		}
 
 		writter.writeJSonOutput(response, makeJSonPair("status", status), makeJSonPair("error_message", messageErreur));

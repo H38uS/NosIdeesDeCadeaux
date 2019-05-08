@@ -10,7 +10,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 /**
  * A policy to make sure we can interact with an idea : forbids the owner of the idea.
@@ -45,7 +44,7 @@ public class SurpriseModification extends AllAccessToPostAndGet implements IdeaS
 	 */
 	protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
+		Optional<Integer> ideaId = readInt(request, ideaParameter);
 		if (!ideaId.isPresent()) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;

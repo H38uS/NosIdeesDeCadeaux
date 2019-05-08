@@ -15,36 +15,25 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.simple.JSONObject;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.NameServicePolicy;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/name_resolver")
-public class NameService extends AbstractService<AllAccessToPostAndGet> {
+public class NameService extends AbstractService<NameServicePolicy> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	private static final String NAME_OR_EMAIL = "term";
 	private static final String OF_USER_ID = "userId";
 
 	public NameService() {
-		super(new AllAccessToPostAndGet());
+		super(new NameServicePolicy(OF_USER_ID));
 	}
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		try {
-
-			int connectedUserId = thisOne.id;
-			// FIXME : 1 faire cela dans une police
-			// FIXME : 1 faire un test où y'a pas de paramètre + un test où c'est pas dans le réseau
-			int userId = ParametersUtils.readInt(request, OF_USER_ID).orElse(connectedUserId);
-			if (userId != connectedUserId && !model.userRelations.associationExists(userId, connectedUserId)) {
-				// On regarde
-				//	Soit son propre réseau
-				//	Soit celui d'un ami
-				userId = connectedUserId;
-			}
-
-			User current = model.users.getUser(userId);
+			// FIXME : 1 faire un test où y'a pas de paramètre + un test où c'est pas dans le réseau + quand ça trouve personne
+			User current = policy.getRootNetwork();
 			String param = ParametersUtils.readAndEscape(request, NAME_OR_EMAIL).toLowerCase();
 			
 			List<User> res = new ArrayList<User>();
@@ -56,7 +45,7 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 				MAX--;
 			}
 
-			res.addAll(model.userRelations.getAllNamesOrEmailsInRelation(userId, param, 0, MAX));
+			res.addAll(model.userRelations.getAllNamesOrEmailsInRelation(current.id, param, 0, MAX));
 
 			// Building the JSON answer
 			String[] resp = new String[res.size()];

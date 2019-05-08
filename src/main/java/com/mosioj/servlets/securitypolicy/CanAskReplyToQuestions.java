@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 /**
  * A policy to make sure we can interact with an idea : forbids the owner of the idea.
@@ -44,7 +43,7 @@ public class CanAskReplyToQuestions extends AllAccessToPostAndGet implements Ide
 	 */
 	private boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
+		Optional<Integer> ideaId = readInt(request, ideaParameter);
 		if (!ideaId.isPresent()) {
 			lastReason = "Aucune idée trouvée en paramètre.";
 			return false;

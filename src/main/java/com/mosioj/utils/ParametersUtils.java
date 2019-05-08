@@ -2,7 +2,6 @@ package com.mosioj.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,21 +29,6 @@ public class ParametersUtils {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return null;
-		}
-	}
-
-	/**
-	 * 
-	 * @param request
-	 * @param name
-	 * @return The parameter, as an integer. If it is not possible, returns null.
-	 */
-	// FIXME : 0 déplacer dans les polices
-	public static Optional<Integer> readInt(HttpServletRequest request, String name) {
-		try {
-			return Optional.of(Integer.parseInt(readIt(request, name).replaceAll("[  ]", "").replaceAll("%C2%A0", "")));
-		} catch (NumberFormatException e) {
-			return Optional.empty();
 		}
 	}
 

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Comment;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 public class CommentModification extends AllAccessToPostAndGet implements CommentSecurityChecker {
 	
@@ -38,7 +37,7 @@ public class CommentModification extends AllAccessToPostAndGet implements Commen
 	 */
 	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Optional<Integer> commentId = ParametersUtils.readInt(request, commentParameter);
+		Optional<Integer> commentId = readInt(request, commentParameter);
 		if (!commentId.isPresent()) {
 			lastReason = "Aucun commentaire trouvé en paramètre.";
 			return false;

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 /**
  * A policy to make sure we can interact with a group.
@@ -43,7 +42,7 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet  {
 	 */
 	private boolean canInteractWithGroup(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Optional<Integer> groupIdParam = ParametersUtils.readInt(request, groupParameter);
+		Optional<Integer> groupIdParam = readInt(request, groupParameter);
 		if (!groupIdParam.isPresent()) {
 			lastReason = "Aucun groupe trouvé en paramètre.";
 			return false;

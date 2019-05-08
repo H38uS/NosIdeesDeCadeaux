@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 public class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements UserSecurityChecker {
 
@@ -35,7 +34,7 @@ public class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements Us
 			// Y a-t-il un utilisateur ?
 			// FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour
 			// USERS)
-			Optional<Integer> toBeSentTo = ParametersUtils.readInt(request, userParameter);
+			Optional<Integer> toBeSentTo = readInt(request, userParameter);
 			if (!toBeSentTo.isPresent()) {
 				lastReason = "Aucun utilisateur trouvé en paramètre.";
 				return false;

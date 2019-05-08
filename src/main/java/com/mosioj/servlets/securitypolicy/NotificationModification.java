@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -45,7 +44,7 @@ public class NotificationModification extends AllAccessToPostAndGet {
 	private boolean canModifyNotification(	HttpServletRequest request,
 											HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Optional<Integer> notifId = ParametersUtils.readInt(request, notifParameter);
+		Optional<Integer> notifId = readInt(request, notifParameter);
 		if (!notifId.isPresent()) {
 			lastReason = "Aucune notification trouvée en paramètre.";
 			return false;

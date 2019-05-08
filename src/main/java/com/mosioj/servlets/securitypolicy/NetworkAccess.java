@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 public class NetworkAccess extends AllAccessToPostAndGet implements UserSecurityChecker {
 
@@ -29,7 +28,7 @@ public class NetworkAccess extends AllAccessToPostAndGet implements UserSecurity
 	}
 
 	private boolean hasAccess(HttpServletRequest request) throws SQLException, NotLoggedInException {
-		Optional<Integer> user = ParametersUtils.readInt(request, userParameter);
+		Optional<Integer> user = readInt(request, userParameter);
 		if (!user.isPresent()) {
 			lastReason = "Aucun utilisateur trouvé en paramètre.";
 			return false;

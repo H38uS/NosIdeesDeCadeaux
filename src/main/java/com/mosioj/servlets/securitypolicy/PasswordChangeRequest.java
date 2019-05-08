@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.model.table.UserChangePwdRequest;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
-import com.mosioj.utils.ParametersUtils;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -55,8 +54,8 @@ public class PasswordChangeRequest extends AllAccessToPostAndGet implements User
 	 */
 	private boolean isUserIdTokenValid(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-		Optional<Integer> userId = ParametersUtils.readInt(request, userIdParameter);
-		Optional<Integer> tokenIdParam = ParametersUtils.readInt(request, tokenParameter);
+		Optional<Integer> userId = readInt(request, userIdParameter);
+		Optional<Integer> tokenIdParam = readInt(request, tokenParameter);
 
 		if (!userId.isPresent() || !tokenIdParam.isPresent()) {
 			lastReason = "Aucune demande trouvée pour cet utilisateur.";

@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
@@ -29,18 +30,29 @@ import javax.servlet.http.Part;
 
 import org.junit.Test;
 
+import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
 public class TestParametersUtils {
 
 	@Test
 	public void testValidTest() {
-		assertEquals(new Integer(32), ParametersUtils.readInt(new TestHttpServletRequest("32"), "toto").get());
-		assertEquals(new Integer(32), ParametersUtils.readInt(new TestHttpServletRequest(MessageFormat.format("{0}", 32)), "toto").get());
-		assertEquals(new Integer(1032), ParametersUtils.readInt(new TestHttpServletRequest("1032"), "toto").get());
 		assertEquals(new Double(32), ParametersUtils.readDouble(new TestHttpServletRequest(MessageFormat.format("{0}", 32)), "toto"));
 		assertEquals(new Double(32.15), ParametersUtils.readDouble(new TestHttpServletRequest("32.15"), "toto"));
-		assertEquals(new Double(32.15), ParametersUtils.readDouble(new TestHttpServletRequest(MessageFormat.format("{0}.15", 32)), "toto"));
+		assertEquals(	new Double(32.15),
+						ParametersUtils.readDouble(new TestHttpServletRequest(MessageFormat.format("{0}.15", 32)), "toto"));
+
+		TestAllGetAndPost p = new TestAllGetAndPost();
+
+		assertEquals(new Integer(32), p.readIntTest(new TestHttpServletRequest("32"), "toto").get());
+		assertEquals(new Integer(32), p.readIntTest(new TestHttpServletRequest(MessageFormat.format("{0}", 32)), "toto").get());
+		assertEquals(new Integer(1032), p.readIntTest(new TestHttpServletRequest("1032"), "toto").get());
+	}
+
+	private class TestAllGetAndPost extends AllAccessToPostAndGet {
+		public Optional<Integer> readIntTest(HttpServletRequest request, String name) {
+			return readInt(request, name);
+		}
 	}
 
 	private class TestHttpServletRequest implements HttpServletRequest {
