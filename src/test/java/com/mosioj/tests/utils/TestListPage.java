@@ -13,7 +13,9 @@ import org.junit.Test;
 
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.controllers.idees.MesListes;
+import com.mosioj.servlets.controllers.idees.VoirListe;
 import com.mosioj.servlets.controllers.relations.Page;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
@@ -32,7 +34,7 @@ public class TestListPage {
 
 	@Test
 	public void testMesListesList() {
-		TestMesListes maListe = new TestMesListes();
+		TestMesListes maListe = new TestMesListes(new NetworkAccess(VoirListe.USER_ID_PARAM));
 		int maxNumberOfResults = maListe.getMaxNumberOfResults();
 		System.out.println(maListe.getClass().getName() + " " + maxNumberOfResults);
 		assertEquals(6, maListe.getPages(maxNumberOfResults*5 +1).size());
@@ -44,6 +46,10 @@ public class TestListPage {
 	
 	private class TestMesListes extends MesListes {
 		
+		public TestMesListes(NetworkAccess policy) {
+			super(policy);
+		}
+
 		private static final long serialVersionUID = 1L;
 		
 		public int getMaxNumberOfResults() {

@@ -18,7 +18,6 @@ import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/ajouter_idee_ami")
@@ -38,9 +37,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, USER_PARAMETER).get();
-		User user = model.users.getUser(id);
-
+		User user = policy.getUser();
 		request.setAttribute("user", user);
 		request.setAttribute("types", model.categories.getCategories());
 		request.setAttribute("priorites", model.priorities.getPriorities());
@@ -51,7 +48,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, USER_PARAMETER).get();
+		User addedToUser = policy.getUser();
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {
@@ -68,11 +65,10 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 				User currentUser = thisOne;
 				boolean estSurprise = false;
 				if ("on".equals(parameters.get("est_surprise"))) {
-					if (id != currentUser.id) {
+					if (addedToUser.id != currentUser.id) {
 						estSurprise = true;
 					}
 				}
-				User addedToUser = model.users.getUser(id);
 				int ideaId = model.idees.addIdea(	addedToUser,
 											parameters.get("text"),
 											parameters.get("type"),
@@ -84,15 +80,14 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 				request.setAttribute("idee", idea);
 
 				if (!estSurprise) {
-					model.notif.addNotification(id, new NotifIdeaAddedByFriend(currentUser, idea));
+					model.notif.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
 					model.notif.removeAllType(addedToUser, NotificationType.NO_IDEA);
 				}
 			}
 
 		}
 
-		User user = model.users.getUser(id);
-		request.setAttribute("user", user);
+		request.setAttribute("user", addedToUser);
 		request.setAttribute("types", model.categories.getCategories());
 		request.setAttribute("priorites", model.priorities.getPriorities());
 

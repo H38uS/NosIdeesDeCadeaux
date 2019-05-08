@@ -62,13 +62,12 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer id = ParametersUtils.readInt(request, IDEA_ID_PARAM).get();
-		logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", id));
+		Idee idea = policy.getIdea();
+		logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", idea.getId()));
 		String text = ParametersUtils.readAndEscape(request, "text");
 
 		User current = thisOne;
-		model.questions.addComment(current.id, id, text);
-		Idee idea = policy.getIdea();
+		model.questions.addComment(current.id, idea.getId(), text);
 
 		Set<User> toBeNotified = new HashSet<User>();
 
@@ -88,8 +87,8 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
 			model.notif.addNotification(notified.id, new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
 		}
 
-		dropNotificationOnView(thisOne, id);
-		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + id, request, response);
+		dropNotificationOnView(thisOne, idea.getId());
+		RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + idea.getId(), request, response);
 	}
 
 }

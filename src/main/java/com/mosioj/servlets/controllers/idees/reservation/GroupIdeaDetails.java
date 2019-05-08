@@ -51,7 +51,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM).get();
+		int groupId = policy.getGroupId();
 
 		logger.debug("Getting details for idea group " + groupId + "...");
 		IdeaGroup group = model.groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
@@ -90,7 +90,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		User thisUser = thisOne;
-		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM).get();
+		int groupId = policy.getGroupId();
 		String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
 		if ("annulation".equals(amount)) {

@@ -33,9 +33,10 @@ public class NameService extends AbstractService<AllAccessToPostAndGet> {
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		try {
 
-			Integer userIdParam = ParametersUtils.readInt(request, OF_USER_ID).get();
 			int connectedUserId = thisOne.id;
-			int userId = userIdParam == null ? connectedUserId : userIdParam;
+			// FIXME : 1 faire cela dans une police
+			// FIXME : 1 faire un test où y'a pas de paramètre + un test où c'est pas dans le réseau
+			int userId = ParametersUtils.readInt(request, OF_USER_ID).orElse(connectedUserId);
 			if (userId != connectedUserId && !model.userRelations.associationExists(userId, connectedUserId)) {
 				// On regarde
 				//	Soit son propre réseau

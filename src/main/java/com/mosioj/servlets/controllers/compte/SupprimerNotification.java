@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.NotificationModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_notification")
@@ -24,7 +23,7 @@ public class SupprimerNotification extends IdeesCadeauxServlet<NotificationModif
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		model.notif.remove(ParametersUtils.readInt(req, NOTIFICATION_PARAMETER).get());
+		model.notif.remove(policy.getNotificationId());
 		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
 	}
 

@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Comment;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.CommentModification;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_commentaire")
@@ -25,10 +24,8 @@ public class SupprimerCommentaire extends IdeesCadeauxServlet<CommentModificatio
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		Integer id = ParametersUtils.readInt(req, COMMENT_ID_PARAMETER).get();
 		Comment comment = policy.getComment();
-		model.comments.delete(id);
-
+		model.comments.delete(comment.getId());
 		RootingsUtils.rootToPage(IdeaComments.WEB_SERVLET + "?" + IdeaComments.IDEA_ID_PARAM + "=" + comment.getIdea(), req, resp);
 	}
 

@@ -231,8 +231,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		fillConnectedUserIfPossible(request);
 		policy.setConnectedUser(thisOne);
 
-		if (!policy.isGetRequestAllowed()) {
-			super.doGet(request, response);
+		if (!policy.isPostRequestAllowed()) {
+			super.doPost(request, response);
 			return;
 		}
 

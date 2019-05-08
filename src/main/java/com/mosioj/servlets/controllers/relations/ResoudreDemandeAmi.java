@@ -25,7 +25,6 @@ import com.mosioj.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.PeutResoudreDemandesAmis;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/resoudre_demande_ami")
@@ -43,13 +42,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		StringBuilder sb = new StringBuilder();
-		sb.append(AfficherReseau.SELF_VIEW);
-		sb.append("?");
-		sb.append(AfficherReseau.USER_ID_PARAM);
-		sb.append("=");
-		sb.append(ParametersUtils.readInt(request, AfficherReseau.USER_ID_PARAM));
-		RootingsUtils.redirectToPage(sb.toString(), request, response);
+		// Impossible - rien à faire
 	}
 
 	@Override
@@ -60,7 +53,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 		List<User> accepted = new ArrayList<User>();
 		Map<String, String[]> params = request.getParameterMap();
 		Set<AbstractNotification> toBeRemoved = new HashSet<AbstractNotification>();
-		for (String key : params.keySet()) {
+		for (String key : params.keySet()) { // FIXME : 1 déjà fait dans la police, faire un objet pour le passer
 
 			if (!key.startsWith("choix_")) {
 				continue;

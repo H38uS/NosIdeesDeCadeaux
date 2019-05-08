@@ -13,8 +13,6 @@ import com.mosioj.utils.NotLoggedInException;
  *
  */
 public class AllAccessToPostAndGet extends SecurityPolicy {
-	
-	protected String lastReason = "";
 
 	@Override
 	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
@@ -34,11 +32,6 @@ public class AllAccessToPostAndGet extends SecurityPolicy {
 	@Override
 	public boolean isPostRequestAllowed() {
 		return true;
-	}
-
-	@Override
-	public String getLastReason() {
-		return lastReason;
 	}
 
 }

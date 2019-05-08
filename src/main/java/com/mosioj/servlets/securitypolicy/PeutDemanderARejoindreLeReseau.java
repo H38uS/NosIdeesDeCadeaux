@@ -9,18 +9,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mosioj.model.User;
+import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet {
+public class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements UserSecurityChecker {
 
 	private static final Logger logger = LogManager.getLogger(PeutDemanderARejoindreLeReseau.class);
 
 	private final String userParameter;
+	private User potentialFriend;
 
 	/**
 	 */
-	public PeutDemanderARejoindreLeReseau(	String userParameter) {
+	public PeutDemanderARejoindreLeReseau(String userParameter) {
 		this.userParameter = userParameter;
 	}
 
@@ -30,6 +33,8 @@ public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet {
 			int userId = connectedUser.id;
 
 			// Y a-t-il un utilisateur ?
+			// FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour
+			// USERS)
 			Optional<Integer> toBeSentTo = ParametersUtils.readInt(request, userParameter);
 			if (!toBeSentTo.isPresent()) {
 				lastReason = "Aucun utilisateur trouvé en paramètre.";
@@ -46,6 +51,7 @@ public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet {
 				return false;
 			}
 
+			potentialFriend = model.users.getUser(toBeSentTo.get());
 			return true;
 
 		} catch (Exception e) {
@@ -66,6 +72,21 @@ public class PeutDemanderARejoindreLeReseau extends AllAccessToPostAndGet {
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		lastReason = "L'accès en GET est interdit.";
 		return false;
+	}
+
+	@Override
+	public boolean isGetRequestAllowed() { // FIXME : 0 faire un que get, ou que post. Ou faire 2 sous object à IdeesCadeauxServlet ??
+		return false;
+	}
+
+	@Override
+	public boolean isPostRequestAllowed() {
+		return true;
+	}
+
+	@Override
+	public User getUser() {
+		return potentialFriend;
 	}
 
 }

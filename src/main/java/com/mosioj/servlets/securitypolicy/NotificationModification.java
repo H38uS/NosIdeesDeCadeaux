@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.model.table.ParentRelationship;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
@@ -24,6 +23,8 @@ public class NotificationModification extends AllAccessToPostAndGet {
 	 * Defines the string used in HttpServletRequest to retrieve the notification id.
 	 */
 	private final String notifParameter;
+
+	private Integer notificationId;
 
 	/**
 	 * 
@@ -58,11 +59,16 @@ public class NotificationModification extends AllAccessToPostAndGet {
 			return false;
 		}
 
-		boolean res = userId == n.getOwner() || new ParentRelationship().getChildren(userId).contains(new User(n.getOwner(), "", "", ""));
+		boolean res = userId == n.getOwner()
+				|| model.parentRelationship.getChildren(userId).contains(new User(n.getOwner(), "", "", ""));
 		if (!res) {
 			lastReason = "Vous ne pouvez modifier que vos notifications ou celles de vos enfants.";
+			return false;
 		}
-		return res;
+
+		notificationId = notifId.get();
+
+		return true;
 
 	}
 
@@ -78,4 +84,11 @@ public class NotificationModification extends AllAccessToPostAndGet {
 		return canModifyNotification(request, response);
 	}
 
+	/**
+	 * 
+	 * @return The notification id, or null if the checks fail.
+	 */
+	public Integer getNotificationId() {
+		return notificationId;
+	}
 }

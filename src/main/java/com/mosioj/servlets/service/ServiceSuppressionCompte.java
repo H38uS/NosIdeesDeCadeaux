@@ -38,7 +38,7 @@ public class ServiceSuppressionCompte extends AbstractService<AllAccessToPostAnd
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		
-		if (!request.isUserInRole("ROLE_ADMIN")) {
+		if (!request.isUserInRole("ROLE_ADMIN")) { // FIXME 1 : faire ça dans une police
 			return;
 		}
 

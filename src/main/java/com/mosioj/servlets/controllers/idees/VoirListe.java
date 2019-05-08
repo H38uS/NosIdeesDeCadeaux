@@ -16,7 +16,6 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/voir_liste")
 public class VoirListe extends MesListes {
@@ -58,7 +57,7 @@ public class VoirListe extends MesListes {
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		List<User> ids = new ArrayList<User>();
-		User user = model.users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM).get());
+		User user = policy.getUser();
 		ids.add(user);
 		fillsUserIdeas(thisOne, ids);
 		return ids;

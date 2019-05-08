@@ -15,12 +15,10 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
-import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
-public class DemandeRejoindreReseauService extends AbstractService<AllAccessToPostAndGet> {
+public class DemandeRejoindreReseauService extends AbstractService<PeutDemanderARejoindreLeReseau> {
 
 	private static final long serialVersionUID = 3683476983071872342L;
 	private static final Logger logger = LogManager.getLogger(DemandeRejoindreReseauService.class);
@@ -43,7 +41,7 @@ public class DemandeRejoindreReseauService extends AbstractService<AllAccessToPo
 		String message = "";
 
 		try {
-			User userToSendInvitation = model.users.getUser(ParametersUtils.readInt(request, USER_ID_PARAM).get());
+			User userToSendInvitation = policy.getUser();
 			request.setAttribute("name", userToSendInvitation.getName());
 
 			if (model.userRelationRequests.associationExists(thisOne.id, userToSendInvitation.id)) {

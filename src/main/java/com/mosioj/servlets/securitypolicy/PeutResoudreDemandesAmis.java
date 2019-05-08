@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.utils.NotLoggedInException;
 
-public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet {
+public class PeutResoudreDemandesAmis extends SecurityPolicy {
 
 	private static final Logger logger = LogManager.getLogger(PeutResoudreDemandesAmis.class);
 
@@ -67,7 +67,18 @@ public class PeutResoudreDemandesAmis extends AllAccessToPostAndGet {
 	@Override
 	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return hasAccess(request);
+		lastReason = "Mais qu'est-ce que vous essayez de faire ?!";
+		return false;
+	}
+
+	@Override
+	public boolean isGetRequestAllowed() {
+		return false;
+	}
+
+	@Override
+	public boolean isPostRequestAllowed() {
+		return true;
 	}
 
 }

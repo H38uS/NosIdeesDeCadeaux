@@ -22,6 +22,8 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet  {
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
 	private final String groupParameter;
+	
+	private Integer groupId;
 
 	/**
 	 * 
@@ -41,25 +43,27 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet  {
 	 */
 	private boolean canInteractWithGroup(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
-		Optional<Integer> groupId = ParametersUtils.readInt(request, groupParameter);
-		if (!groupId.isPresent()) {
+		Optional<Integer> groupIdParam = ParametersUtils.readInt(request, groupParameter);
+		if (!groupIdParam.isPresent()) {
 			lastReason = "Aucun groupe trouvé en paramètre.";
 			return false;
 		}
 
 		int userId = connectedUser.id;
 
-		User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupId.get());
+		User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupIdParam.get());
 		if (ideaOwner == null) {
 			lastReason = "Ce groupe appartient à personne.";
 			return false;
 		}
 
-		boolean res = model.userRelations.associationExists(userId, ideaOwner.id);
-		if (!res) {
+		if (!model.userRelations.associationExists(userId, ideaOwner.id)) {
 			lastReason = "Vous n'avez pas accès aux idées de cette personne.";
+			return false;
 		}
-		return res;
+
+		groupId = groupIdParam.get();
+		return true;
 
 	}
 
@@ -73,4 +77,11 @@ public class BookingGroupInteraction extends AllAccessToPostAndGet  {
 		return canInteractWithGroup(request, response);
 	}
 
+	/**
+	 * 
+	 * @return The resolved group id, or null if the checks failed.
+	 */
+	public Integer getGroupId() {
+		return groupId;
+	}
 }

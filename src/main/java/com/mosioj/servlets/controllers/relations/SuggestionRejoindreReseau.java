@@ -13,7 +13,6 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggestion_rejoindre_reseau")
@@ -37,25 +36,25 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet<NetworkAccess
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		User suggestedBy = thisOne;
-		int suggestTo = ParametersUtils.readInt(request, USER_PARAMETER).get();
+		User suggestTo = policy.getUser();
 
 		List<Integer> suggestedUsers = getSelectedChoices(request.getParameterMap(), "selected_");
 
 		// Persist suggestion
 		List<User> sent = new ArrayList<User>();
 		for (int toBeAdded : suggestedUsers) {
-			if (model.userRelationsSuggestion.newSuggestion(suggestedBy.id, suggestTo, toBeAdded)) {
+			if (model.userRelationsSuggestion.newSuggestion(suggestedBy.id, suggestTo.id, toBeAdded)) {
 				sent.add(model.users.getUser(toBeAdded));
 			}
 		}
 		if (sent.size() > 0) {
 			// Send a notification
-			model.notif.addNotification(suggestTo, new NotifNewRelationSuggestion(suggestedBy.id, suggestedBy.getName()));
-			request.setAttribute("user", model.users.getUser(suggestTo));
+			model.notif.addNotification(suggestTo.id, new NotifNewRelationSuggestion(suggestedBy.id, suggestedBy.getName()));
+			request.setAttribute("user", model.users.getUser(suggestTo.id));
 			request.setAttribute("users", sent);
 			RootingsUtils.rootToPage(URL_SUCCESS, request, response);
 		} else {
-			request.setAttribute("user", model.users.getUser(suggestTo));
+			request.setAttribute("user", model.users.getUser(suggestTo.id));
 			RootingsUtils.rootToPage(URL_ERROR, request, response);
 		}
 	}

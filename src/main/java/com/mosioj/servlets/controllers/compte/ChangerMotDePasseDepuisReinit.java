@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.UserChangePwdRequest;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
@@ -40,10 +41,10 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordC
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		
 		CompteInteractions helper = new CompteInteractions();
+		User user = policy.getUser();
 
-		request.setAttribute(tokenParameter, ParametersUtils.readInt(request, tokenParameter));
-		int userId = ParametersUtils.readInt(request, userIdParameter).get();
-		request.setAttribute(userIdParameter, userId);
+		request.setAttribute(tokenParameter, policy.getTokenId());
+		request.setAttribute(userIdParameter, user.id);
 		
 		String pwd1 = ParametersUtils.readAndEscape(request, "pwd1").trim();
 		String pwd2 = ParametersUtils.readAndEscape(request, "pwd2").trim();
@@ -64,8 +65,8 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordC
 		}
 
 		UserChangePwdRequest changePwdRequest = new UserChangePwdRequest();
-		changePwdRequest.deleteAssociation(userId);
-		model.users.updatePassword(userId, digested);
+		changePwdRequest.deleteAssociation(user.id);
+		model.users.updatePassword(user.id, digested);
 
 		RootingsUtils.rootToPage(SUCCES_PAGE_URL, request, response);
 	}

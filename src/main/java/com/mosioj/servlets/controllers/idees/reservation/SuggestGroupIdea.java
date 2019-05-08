@@ -20,7 +20,6 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggerer_groupe_idee")
@@ -43,7 +42,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM).get();
+		int groupId = policy.getGroupId();
 		logger.debug("Getting details for idea group " + groupId + "...");
 
 		IdeaGroup group = model.groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
@@ -73,7 +72,7 @@ public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteractio
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer groupId = ParametersUtils.readInt(request, GROUP_ID_PARAM).get();
+		int groupId = policy.getGroupId();
 		Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
 		model.idees.fillAUserIdea(thisOne, idee, device);
 

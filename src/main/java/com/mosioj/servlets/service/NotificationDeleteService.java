@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.securitypolicy.NotificationModification;
-import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/notification_delete")
 public class NotificationDeleteService extends AbstractService<NotificationModification> {
@@ -33,10 +32,8 @@ public class NotificationDeleteService extends AbstractService<NotificationModif
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		model.notif.remove(ParametersUtils.readInt(request, NOTIFICATION_PARAMETER).get());
-		logger.info(MessageFormat.format(	"Suppression de la notification {0}",
-											ParametersUtils.readInt(request, NOTIFICATION_PARAMETER)));
-		
+		model.notif.remove(policy.getNotificationId());
+		logger.info(MessageFormat.format("Suppression de la notification {0}", policy.getNotificationId()));
 		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
 	}
 }

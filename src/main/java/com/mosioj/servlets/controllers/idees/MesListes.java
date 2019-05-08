@@ -10,14 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.servlets.securitypolicy.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_listes")
-public class MesListes extends AbstractUserListes<SecurityPolicy> {
+public class MesListes extends AbstractUserListes<NetworkAccess> {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
@@ -26,9 +24,6 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
 	 * Class constructor.
 	 * 
 	 */
-	public MesListes() {
-		super(new AllAccessToPostAndGet());
-	}
 	public MesListes(NetworkAccess policy) {
 		super(policy);
 	}

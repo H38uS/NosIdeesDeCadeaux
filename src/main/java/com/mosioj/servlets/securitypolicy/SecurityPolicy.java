@@ -12,7 +12,7 @@ import com.mosioj.utils.NotLoggedInException;
 public abstract class SecurityPolicy {
 	
 	protected final ModelAccessor model = new ModelAccessor();
-	
+	protected String lastReason = "";
 	protected User connectedUser;
 
 	/**
@@ -60,5 +60,7 @@ public abstract class SecurityPolicy {
 	 * 
 	 * @return The last reason for a forbidden access.
 	 */
-	public abstract String getLastReason();
+	public String getLastReason() {
+		return lastReason;
+	}
 }

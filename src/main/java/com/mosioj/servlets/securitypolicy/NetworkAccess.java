@@ -6,15 +6,19 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.User;
+import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
-public class NetworkAccess extends AllAccessToPostAndGet {
+public class NetworkAccess extends AllAccessToPostAndGet implements UserSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
 	 */
 	private final String userParameter;
+
+	private User friend;
 
 	/**
 	 * 
@@ -35,8 +39,11 @@ public class NetworkAccess extends AllAccessToPostAndGet {
 		boolean res = user.get() == userId || model.userRelations.associationExists(user.get(), userId);
 		if (!res) {
 			lastReason = "Vous n'êtes pas ami avec cette personne.";
+			return false;
 		}
-		return res;
+
+		friend = model.users.getUser(user.get());
+		return true;
 	}
 
 	@Override
@@ -49,6 +56,11 @@ public class NetworkAccess extends AllAccessToPostAndGet {
 	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return hasAccess(request);
+	}
+
+	@Override
+	public User getUser() {
+		return friend;
 	}
 
 }

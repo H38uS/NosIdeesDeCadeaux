@@ -6,7 +6,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.model.User;
 import com.mosioj.model.table.UserChangePwdRequest;
+import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.utils.ParametersUtils;
 
 /**
@@ -15,7 +17,7 @@ import com.mosioj.utils.ParametersUtils;
  * @author Jordan Mosio
  *
  */
-public class PasswordChangeRequest extends AllAccessToPostAndGet {
+public class PasswordChangeRequest extends AllAccessToPostAndGet implements UserSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the token id.
@@ -28,6 +30,9 @@ public class PasswordChangeRequest extends AllAccessToPostAndGet {
 	private final String userIdParameter;
 
 	private final UserChangePwdRequest ucpr;
+
+	private User user;
+	private Integer tokenId;
 
 	/**
 	 * 
@@ -51,18 +56,21 @@ public class PasswordChangeRequest extends AllAccessToPostAndGet {
 	private boolean isUserIdTokenValid(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
 		Optional<Integer> userId = ParametersUtils.readInt(request, userIdParameter);
-		Optional<Integer> tokenId = ParametersUtils.readInt(request, tokenParameter);
+		Optional<Integer> tokenIdParam = ParametersUtils.readInt(request, tokenParameter);
 
-		if (!userId.isPresent() || !tokenId.isPresent()) {
+		if (!userId.isPresent() || !tokenIdParam.isPresent()) {
 			lastReason = "Aucune demande trouvée pour cet utilisateur.";
 			return false;
 		}
 
-		if (!ucpr.isAValidCombinaison(userId.get(), tokenId.get())) {
+		if (!ucpr.isAValidCombinaison(userId.get(), tokenIdParam.get())) {
 			lastReason = "Aucune demande trouvée pour cet utilisateur.";
 			return false;
 		}
 
+		user = model.users.getUser(userId.get());
+		tokenId = tokenIdParam.get();
+		
 		return true;
 
 	}
@@ -77,4 +85,16 @@ public class PasswordChangeRequest extends AllAccessToPostAndGet {
 		return isUserIdTokenValid(request, response);
 	}
 
+	@Override
+	public User getUser() {
+		return user;
+	}
+
+	/**
+	 * 
+	 * @return The valid token id in case the checks have succeeded.
+	 */
+	public Integer getTokenId() {
+		return tokenId;
+	}
 }

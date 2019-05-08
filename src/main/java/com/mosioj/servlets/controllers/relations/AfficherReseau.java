@@ -14,7 +14,6 @@ import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_reseau")
@@ -36,17 +35,17 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Integer user = ParametersUtils.readInt(request, USER_ID_PARAM).get();
+		User friend = policy.getUser();
 		int userId = thisOne.id;
 
-		if (userId == user) {
+		if (userId == friend.id) {
 			// Uniquement sur notre compte
 			request.setAttribute("demandes", model.userRelationRequests.getRequests(userId));
 			request.setAttribute("suggestions", model.userRelationsSuggestion.hasReceivedSuggestion(userId));
 		}
 
-		request.setAttribute("id", user);
-		request.setAttribute("name", model.users.getUser(user).getMyDName());
+		request.setAttribute("id", friend.id);
+		request.setAttribute("name", friend.getMyDName());
 
 		HttpSession session = request.getSession();
 		Object accepted = session.getAttribute("accepted");
@@ -60,9 +59,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(	SELF_VIEW + "?" + USER_ID_PARAM + "=" + ParametersUtils.readInt(request, USER_ID_PARAM),
-										request,
-										response);
+		RootingsUtils.redirectToPage(SELF_VIEW + "?" + USER_ID_PARAM + "=" + policy.getUser().id, request, response);
 	}
 
 	@Override
@@ -77,19 +74,19 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	@Override
 	protected String getSpecificParameters(HttpServletRequest req) {
-		return "&" + USER_ID_PARAM + "=" + ParametersUtils.readInt(req, USER_ID_PARAM);
+		return "&" + USER_ID_PARAM + "=" + policy.getUser().id;
 	}
 
 	@Override
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
-		return model.userRelations.getRelationsCount(model.users.getUser(ParametersUtils.readInt(req, USER_ID_PARAM).get()));
+		return model.userRelations.getRelationsCount(policy.getUser());
 	}
 
 	@Override
 	protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 
 		User user = thisOne;
-		List<Relation> relations = model.userRelations.getRelations(ParametersUtils.readInt(req, USER_ID_PARAM).get(),
+		List<Relation> relations = model.userRelations.getRelations(policy.getUser().id,
 																	firstRow,
 																	maxNumberOfResults);
 

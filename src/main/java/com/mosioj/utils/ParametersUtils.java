@@ -39,6 +39,7 @@ public class ParametersUtils {
 	 * @param name
 	 * @return The parameter, as an integer. If it is not possible, returns null.
 	 */
+	// FIXME : 0 déplacer dans les polices
 	public static Optional<Integer> readInt(HttpServletRequest request, String name) {
 		try {
 			return Optional.of(Integer.parseInt(readIt(request, name).replaceAll("[  ]", "").replaceAll("%C2%A0", "")));
