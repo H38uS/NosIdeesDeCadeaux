@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Comment;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.servlets.securitypolicy.CommentModification;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_commentaire")
-public class SupprimerCommentaire extends IdeesCadeauxServlet<CommentModification> {
+public class SupprimerCommentaire extends IdeesCadeauxGetServlet<CommentModification> {
 
 	private static final long serialVersionUID = 7722016569684838786L;
 	private static final String COMMENT_ID_PARAMETER = "id";

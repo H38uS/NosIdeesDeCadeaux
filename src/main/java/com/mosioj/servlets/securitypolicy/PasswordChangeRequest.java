@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.model.table.UserChangePwdRequest;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -16,7 +17,7 @@ import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
  * @author Jordan Mosio
  *
  */
-public class PasswordChangeRequest extends AllAccessToPostAndGet implements UserSecurityChecker {
+public final class PasswordChangeRequest extends SecurityPolicyGetAndPost implements UserSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the token id.

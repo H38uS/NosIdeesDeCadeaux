@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyPost;
 import com.mosioj.utils.NotLoggedInException;
 
-public class SuppressionCompte extends SecurityPolicy {
+public class SuppressionCompte extends SecurityPolicyOnlyPost {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -21,12 +21,6 @@ public class SuppressionCompte extends SecurityPolicy {
 	
 	public SuppressionCompte(String userParameter) {
 		this.userParameter = userParameter;
-	}
-
-	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return false;
 	}
 
 	@Override
@@ -47,16 +41,6 @@ public class SuppressionCompte extends SecurityPolicy {
 		user = model.users.getUser(userId.get());
 		
 		return false;
-	}
-
-	@Override
-	public boolean isGetRequestAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean isPostRequestAllowed() {
-		return true;
 	}
 
 	/**

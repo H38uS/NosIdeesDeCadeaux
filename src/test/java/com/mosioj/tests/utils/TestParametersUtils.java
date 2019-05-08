@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -30,7 +31,8 @@ import javax.servlet.http.Part;
 
 import org.junit.Test;
 
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
+import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 public class TestParametersUtils {
@@ -49,9 +51,21 @@ public class TestParametersUtils {
 		assertEquals(new Integer(1032), p.readIntTest(new TestHttpServletRequest("1032"), "toto").get());
 	}
 
-	private class TestAllGetAndPost extends AllAccessToPostAndGet {
+	private class TestAllGetAndPost extends SecurityPolicyGetAndPost {
 		public Optional<Integer> readIntTest(HttpServletRequest request, String name) {
 			return readInt(request, name);
+		}
+
+		@Override
+		public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
+														HttpServletResponse response) throws SQLException, NotLoggedInException {
+			return true;
+		}
+
+		@Override
+		public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+														HttpServletResponse response) throws SQLException, NotLoggedInException {
+			return true;
 		}
 	}
 

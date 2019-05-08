@@ -8,9 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
 import com.mosioj.utils.NotLoggedInException;
 
-public class ChildAdministration extends AllAccessToPostAndGet implements UserSecurityChecker {
+public final class ChildAdministration extends SecurityPolicyGetAndPost implements UserSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.

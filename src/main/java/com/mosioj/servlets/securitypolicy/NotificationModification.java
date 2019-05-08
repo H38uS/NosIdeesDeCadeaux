@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
 import com.mosioj.utils.NotLoggedInException;
 
 /**
@@ -16,7 +17,7 @@ import com.mosioj.utils.NotLoggedInException;
  * @author Jordan Mosio
  *
  */
-public class NotificationModification extends AllAccessToPostAndGet {
+public class NotificationModification extends SecurityPolicyGetAndPost {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the notification id.

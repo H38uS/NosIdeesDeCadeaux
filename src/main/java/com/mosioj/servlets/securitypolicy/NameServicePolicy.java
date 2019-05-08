@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
 import com.mosioj.utils.NotLoggedInException;
 
-public class NameServicePolicy extends SecurityPolicy {
+public final class NameServicePolicy extends SecurityPolicyOnlyGet {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -37,22 +37,6 @@ public class NameServicePolicy extends SecurityPolicy {
 		user = model.users.getUser(userId);
 
 		return true;
-	}
-
-	@Override
-	public boolean isGetRequestAllowed() {
-		return true;
-	}
-
-	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return false;
-	}
-
-	@Override
-	public boolean isPostRequestAllowed() {
-		return false;
 	}
 
 	/**

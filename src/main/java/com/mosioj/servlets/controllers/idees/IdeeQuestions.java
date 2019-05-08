@@ -18,13 +18,13 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.CanAskReplyToQuestions;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/idee_questions")
-public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
+public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQuestions> {
 
 	private static final Logger logger = LogManager.getLogger(IdeeQuestions.class);
 

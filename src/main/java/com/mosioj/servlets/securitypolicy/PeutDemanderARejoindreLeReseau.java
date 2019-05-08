@@ -11,10 +11,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyPost;
 import com.mosioj.utils.NotLoggedInException;
 
-public class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements UserSecurityChecker {
+public final class PeutDemanderARejoindreLeReseau extends SecurityPolicyOnlyPost implements UserSecurityChecker {
 
 	private static final Logger logger = LogManager.getLogger(PeutDemanderARejoindreLeReseau.class);
 
@@ -65,23 +65,6 @@ public class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements Us
 	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return hasAccess(request);
-	}
-
-	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		lastReason = "L'accès en GET est interdit.";
-		return false;
-	}
-
-	@Override
-	public boolean isGetRequestAllowed() { // FIXME : 0 faire un que get, ou que post. Ou faire 2 sous object à IdeesCadeauxServlet ??
-		return false;
-	}
-
-	@Override
-	public boolean isPostRequestAllowed() {
-		return true;
 	}
 
 	@Override

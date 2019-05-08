@@ -8,9 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Comment;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
 import com.mosioj.utils.NotLoggedInException;
 
-public class CommentModification extends AllAccessToPostAndGet implements CommentSecurityChecker {
+public final class CommentModification extends SecurityPolicyOnlyGet implements CommentSecurityChecker {
 	
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the comment id.
@@ -61,11 +62,6 @@ public class CommentModification extends AllAccessToPostAndGet implements Commen
 
 	@Override
 	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canModifyIdea(request, response);
-	}
-
-	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyIdea(request, response);
 	}
 

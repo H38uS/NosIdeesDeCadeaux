@@ -13,12 +13,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.ChildAdministration;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/connexion_enfant")
-public class ConnexionEnfant extends IdeesCadeauxServlet<ChildAdministration> {
+public class ConnexionEnfant extends IdeesCadeauxGetAndPostServlet<ChildAdministration> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(ConnexionEnfant.class);

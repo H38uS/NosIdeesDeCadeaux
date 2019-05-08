@@ -57,6 +57,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxServlet<IdeaInteraction>
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		// Do nothing
+		// TODO : si on veut être plus fin, faire une autre police
 	}
 
 }

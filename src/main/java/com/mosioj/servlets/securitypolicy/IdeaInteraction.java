@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
 import com.mosioj.utils.NotLoggedInException;
 
 /**
@@ -16,7 +17,7 @@ import com.mosioj.utils.NotLoggedInException;
  * @author Jordan Mosio
  *
  */
-public class IdeaInteraction extends AllAccessToPostAndGet implements IdeaSecurityChecker {
+public class IdeaInteraction extends SecurityPolicyGetAndPost implements IdeaSecurityChecker {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.

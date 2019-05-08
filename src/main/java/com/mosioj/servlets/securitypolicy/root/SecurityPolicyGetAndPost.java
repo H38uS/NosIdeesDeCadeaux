@@ -2,6 +2,14 @@ package com.mosioj.servlets.securitypolicy.root;
 
 public abstract class SecurityPolicyGetAndPost extends SecurityPolicy {
 
-	// FIXME : 0 utiliser l'un des trois pour toutes les SecurityPolicy
+	@Override
+	public final boolean isGetRequestAllowed() {
+		return true;
+	}
+
+	@Override
+	public final boolean isPostRequestAllowed() {
+		return true;
+	}
 
 }
