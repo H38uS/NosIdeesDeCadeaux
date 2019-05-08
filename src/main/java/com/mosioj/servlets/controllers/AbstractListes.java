@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.relations.Page;
-import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

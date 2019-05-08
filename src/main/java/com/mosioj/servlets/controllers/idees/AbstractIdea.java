@@ -18,7 +18,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;

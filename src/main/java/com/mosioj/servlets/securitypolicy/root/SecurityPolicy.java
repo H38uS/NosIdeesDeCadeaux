@@ -1,4 +1,4 @@
-package com.mosioj.servlets.securitypolicy;
+package com.mosioj.servlets.securitypolicy.root;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -50,6 +50,7 @@ public abstract class SecurityPolicy {
 	 * @throws SQLException
 	 * @throws NotLoggedInException
 	 */
+	// FIXME : 1 il ne faut pas que cela renvoie d'exception
 	public abstract boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
 															HttpServletResponse response) throws SQLException, NotLoggedInException;
 

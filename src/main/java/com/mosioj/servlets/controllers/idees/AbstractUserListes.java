@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 
 public abstract class AbstractUserListes<P extends SecurityPolicy> extends AbstractListes<User, P> {
 

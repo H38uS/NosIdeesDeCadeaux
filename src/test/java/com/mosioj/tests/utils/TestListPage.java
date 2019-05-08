@@ -16,7 +16,7 @@ import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.controllers.idees.VoirListe;
 import com.mosioj.servlets.controllers.relations.Page;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
 public class TestListPage {

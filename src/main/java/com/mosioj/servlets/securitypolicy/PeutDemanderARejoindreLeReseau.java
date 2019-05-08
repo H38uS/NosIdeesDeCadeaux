@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
 public class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements UserSecurityChecker {

@@ -1,7 +1,7 @@
 package com.mosioj.servlets.service;
 
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.viewhelper.JSonResponseWriter;
 import com.mosioj.viewhelper.JSonResponseWriter.JSonPair;
 
