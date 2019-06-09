@@ -7,12 +7,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.servlets.securitypolicy.NotificationModification;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_notification")
-public class SupprimerNotification extends IdeesCadeauxServlet<NotificationModification> {
+public class SupprimerNotification extends IdeesCadeauxGetServlet<NotificationModification> {
 
 	private static final long serialVersionUID = -5381776220247069645L;
 	private static final String NOTIFICATION_PARAMETER = "notif_id";
@@ -25,11 +25,6 @@ public class SupprimerNotification extends IdeesCadeauxServlet<NotificationModif
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 		model.notif.remove(policy.getNotificationId());
 		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(MesNotifications.URL, request, response);
 	}
 
 }

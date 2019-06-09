@@ -15,12 +15,12 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.User;
 import com.mosioj.model.UserParameter;
 import com.mosioj.notifications.NotificationActivation;
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mon_compte")
-public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToGet> {
 
 	private static final long serialVersionUID = -101081965549681889L;
 	private static final Logger logger = LogManager.getLogger(MonCompte.class);
@@ -29,7 +29,7 @@ public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	public static final String URL = "/protected/mon_compte";
 
 	public MonCompte() {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToGet());
 	}
 	
 	@Override
@@ -58,10 +58,4 @@ public class MonCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 		request.setAttribute("possible_values", NotificationActivation.values());
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);
 	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(URL, request, response);
-	}
-	
 }

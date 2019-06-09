@@ -12,8 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.servlets.securitypolicy.IdeaInteractionOnlyGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -24,7 +24,7 @@ import com.mosioj.utils.RootingsUtils;
  *
  */
 @WebServlet("/protected/service/get_idea_of_friend")
-public class GetIdeaOfFriendService extends IdeesCadeauxServlet<IdeaInteraction> {
+public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteractionOnlyGet> {
 
 	private static final long serialVersionUID = -3425240682690763149L;
 	private static final Logger logger = LogManager.getLogger(GetIdeaOfFriendService.class);
@@ -34,7 +34,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxServlet<IdeaInteraction>
 	public static final String VIEW_PAGE_URL = "/protected/service/get_idea_of_friend.jsp";
 
 	public GetIdeaOfFriendService() {
-		super(new IdeaInteraction(IDEA_ID_PARAM));
+		super(new IdeaInteractionOnlyGet(IDEA_ID_PARAM));
 	}
 
 	@Override
@@ -53,11 +53,4 @@ public class GetIdeaOfFriendService extends IdeesCadeauxServlet<IdeaInteraction>
 		request.setAttribute("identic_call_back", from);
 		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
 	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Do nothing
-		// TODO : si on veut être plus fin, faire une autre police
-	}
-
 }

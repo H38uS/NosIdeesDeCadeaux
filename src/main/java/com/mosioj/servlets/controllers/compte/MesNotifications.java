@@ -13,12 +13,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.notifications.ChildNotifications;
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_notifications")
-public class MesNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class MesNotifications extends IdeesCadeauxGetServlet<AllAccessToGet> {
 
 	private static final Logger logger = LogManager.getLogger(MesNotifications.class);
 	
@@ -27,7 +27,7 @@ public class MesNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 	private static final String VIEW_URL = "/protected/mes_notifications.jsp";
 
 	public MesNotifications() {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToGet());
 	}
 
 	@Override
@@ -49,10 +49,4 @@ public class MesNotifications extends IdeesCadeauxServlet<AllAccessToPostAndGet>
 
 		RootingsUtils.rootToPage(VIEW_URL, req, resp);
 	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		ideesKDoGET(request, response);
-	}
-
 }

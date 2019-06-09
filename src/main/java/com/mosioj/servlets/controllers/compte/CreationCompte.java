@@ -15,8 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.notifications.instance.NotifNoIdea;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -25,7 +25,7 @@ import com.mosioj.viewhelper.EmptyFilter;
 import com.mosioj.viewhelper.LoginHelper;
 
 @WebServlet("/public/creation_compte")
-public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
 	public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
 	public static final String SUCCES_URL = "/public/succes_creation.jsp";

@@ -14,13 +14,13 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/idee_commentaires")
-public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
+public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction> {
 
 	private static final long serialVersionUID = -433226623397937479L;
 	public static final String IDEA_ID_PARAM = "idee";

@@ -14,8 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.table.UserChangePwdRequest;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.EmailSender;
 import com.mosioj.utils.ParametersUtils;
@@ -23,7 +23,7 @@ import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
-public class ReinitialisationMotDePasse extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 5998641192324526001L;
 	public static final String VIEW_PAGE_URL = "/public/reinitialiser_mot_de_passe.jsp";

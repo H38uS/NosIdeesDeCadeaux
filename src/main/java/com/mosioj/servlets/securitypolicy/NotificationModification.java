@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
 import com.mosioj.utils.NotLoggedInException;
 
 /**
@@ -17,7 +17,7 @@ import com.mosioj.utils.NotLoggedInException;
  * @author Jordan Mosio
  *
  */
-public class NotificationModification extends SecurityPolicyGetAndPost {
+public class NotificationModification extends SecurityPolicyOnlyGet {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the notification id.
@@ -74,12 +74,6 @@ public class NotificationModification extends SecurityPolicyGetAndPost {
 
 	@Override
 	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canModifyNotification(request, response);
-	}
-
-	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyNotification(request, response);
 	}

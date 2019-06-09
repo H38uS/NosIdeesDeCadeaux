@@ -12,23 +12,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPost;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/supprimer_parents")
-public class SupprimerParents extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class SupprimerParents extends IdeesCadeauxPostServlet<AllAccessToPost> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(SupprimerParents.class);
 
 	public SupprimerParents() {
-		super(new AllAccessToPostAndGet());
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(MonCompte.URL, request, response);
+		super(new AllAccessToPost());
 	}
 
 	@Override
