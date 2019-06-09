@@ -19,7 +19,7 @@
 		<logger name="org" level="warn" />
 		<logger name="com.mosioj" level="debug" />
 		<Root>
-			<AppenderRef ref="Console" />
+			<AppenderRef ref="Console" level="${console_log_level}" />
 			<AppenderRef ref="RollingFile" />
 			<AppenderRef ref="errorNotifier" level="error" />
 		</Root>
