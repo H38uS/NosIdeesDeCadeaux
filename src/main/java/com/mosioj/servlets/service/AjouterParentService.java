@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/service/ajouter_parent")

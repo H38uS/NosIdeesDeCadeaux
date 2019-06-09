@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.table.UserChangePwdRequest;
 import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.EmailSender;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;

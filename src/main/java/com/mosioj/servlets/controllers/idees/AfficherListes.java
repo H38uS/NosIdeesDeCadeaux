@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 

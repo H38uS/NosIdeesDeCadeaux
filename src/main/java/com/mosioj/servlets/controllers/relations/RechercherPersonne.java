@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.securitypolicy.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 

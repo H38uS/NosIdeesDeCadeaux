@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.notifications.NotificationType;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/update_notification_parameter")

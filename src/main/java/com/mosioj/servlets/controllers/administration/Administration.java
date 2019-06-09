@@ -16,12 +16,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/administration/administration")
-public class Administration extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class Administration extends IdeesCadeauxGetServlet<AllAccessToGet> {
 
 	private static final long serialVersionUID = 1944117196491457908L;
 	private static final Logger logger = LogManager.getLogger(Administration.class);
@@ -32,7 +32,7 @@ public class Administration extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 	 * Class constructor.
 	 */
 	public Administration() {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToGet());
 	}
 
 	@Override
@@ -59,10 +59,4 @@ public class Administration extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
 	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		ideesKDoGET(request, response);
-	}
-
 }

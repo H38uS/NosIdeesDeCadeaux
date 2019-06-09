@@ -17,7 +17,7 @@ import com.mosioj.model.Categorie;
 import com.mosioj.model.Priorite;
 import com.mosioj.model.User;
 import com.mosioj.notifications.NotificationType;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/ma_liste")

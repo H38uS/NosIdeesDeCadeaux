@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.model.table.MessagesAccueil;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/index")

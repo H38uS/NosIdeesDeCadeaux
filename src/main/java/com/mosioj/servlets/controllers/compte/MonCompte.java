@@ -16,7 +16,7 @@ import com.mosioj.model.User;
 import com.mosioj.model.UserParameter;
 import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mon_compte")

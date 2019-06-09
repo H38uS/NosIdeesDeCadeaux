@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.notifications.ChildNotifications;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_notifications")

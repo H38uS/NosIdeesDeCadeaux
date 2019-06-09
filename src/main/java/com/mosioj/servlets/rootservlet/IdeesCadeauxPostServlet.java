@@ -18,7 +18,7 @@ public abstract class IdeesCadeauxPostServlet<P extends SecurityPolicyOnlyPost> 
 	}
 
 	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+	public final void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		throw new ServletException("Method not supported");
 	}
 

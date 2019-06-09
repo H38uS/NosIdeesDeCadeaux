@@ -1,4 +1,4 @@
-package com.mosioj.servlets.securitypolicy;
+package com.mosioj.servlets.securitypolicy.generic;
 
 import java.sql.SQLException;
 

@@ -15,7 +15,7 @@ import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggestion_amis")

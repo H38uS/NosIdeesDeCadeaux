@@ -11,25 +11,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPost;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/ajouter_parent")
-public class AjouterParent extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class AjouterParent extends IdeesCadeauxPostServlet<AllAccessToPost> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(AjouterParent.class);
 	private static final String NAME_OR_EMAIL = "name";
 
 	public AjouterParent() {
-		super(new AllAccessToPostAndGet());
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(MonCompte.URL, request, response);
+		super(new AllAccessToPost());
 	}
 
 	@Override

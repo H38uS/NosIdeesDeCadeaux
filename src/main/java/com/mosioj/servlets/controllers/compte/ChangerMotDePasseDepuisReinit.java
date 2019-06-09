@@ -10,14 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.model.table.UserChangePwdRequest;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.PasswordChangeRequest;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/public/changer_mot_de_passe_depuis_reinit")
-public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordChangeRequest> {
+public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet<PasswordChangeRequest> {
 
 	private static final long serialVersionUID = 5998641192324526001L;
 	public static final String VIEW_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit.jsp";
