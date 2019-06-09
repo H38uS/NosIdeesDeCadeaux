@@ -55,26 +55,22 @@ function loadPreview(e) {
 
 			var maxWidth = 1920, maxHeight = 1080;
 			var imageWidth = image.width, imageHeight = image.height;
-
-			if (imageWidth > imageHeight) {
-				if (imageWidth > maxWidth) {
-					imageHeight *= maxWidth / imageWidth;
-					imageWidth = maxWidth;
-				}
-			} else {
-				if (imageHeight > maxHeight) {
-					imageWidth *= maxHeight / imageHeight;
-					imageHeight = maxHeight;
-				}
+			
+			// Calcul de la nouvelle taille
+			var newWidth = imageWidth > maxWidth ? maxWidth : imageWidth;
+			var newHeight = (newWidth * imageHeight) / imageWidth;
+			if (newHeight > maxHeight) {
+				newWidth = (maxHeight * newWidth) / newHeight;
+				newHeight = maxHeight;
 			}
 		
 			var canvas = document.createElement('canvas');
-			canvas.width = imageWidth;
-			canvas.height = imageHeight;
-			image.width = imageWidth;
-			image.height = imageHeight;
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			image.width = newWidth;
+			image.height = newHeight;
 			var ctx = canvas.getContext("2d");
-			ctx.drawImage(this, 0, 0, imageWidth, imageHeight);
+			ctx.drawImage(this, 0, 0, newWidth, newHeight);
 				
 			$("#imageFilePreview").attr("src", canvas.toDataURL(inputFile.type));
 			selectedPicture = dataURLToBlob(canvas.toDataURL(inputFile.type));
