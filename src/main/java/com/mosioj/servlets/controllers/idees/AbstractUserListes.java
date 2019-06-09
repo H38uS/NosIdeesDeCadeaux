@@ -9,9 +9,9 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 
-public abstract class AbstractUserListes<P extends SecurityPolicyOnlyGet> extends AbstractListes<User, P> {
+public abstract class AbstractUserListes<P extends SecurityPolicy> extends AbstractListes<User, P> {
 
 	private static final long serialVersionUID = 1638868138216657989L;
 	private static final Logger logger = LogManager.getLogger(AbstractUserListes.class);

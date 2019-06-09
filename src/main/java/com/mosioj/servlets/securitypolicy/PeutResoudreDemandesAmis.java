@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
-public final class PeutResoudreDemandesAmis extends SecurityPolicyOnlyPost {
+public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 
 	private static final Logger logger = LogManager.getLogger(PeutResoudreDemandesAmis.class);
 
@@ -61,6 +61,12 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicyOnlyPost {
 
 	@Override
 	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
+		return hasAccess(request);
+	}
+
+	@Override
+	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return hasAccess(request);
 	}

@@ -56,12 +56,6 @@ public abstract class SecurityPolicy {
 
 	/**
 	 * 
-	 * @return True if and only if GET are allowed on this context.
-	 */
-	public abstract boolean isGetRequestAllowed();
-
-	/**
-	 * 
 	 * @param request
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
@@ -71,11 +65,6 @@ public abstract class SecurityPolicy {
 	public abstract boolean hasRightToInteractInPostRequest(HttpServletRequest request,
 															HttpServletResponse response) throws SQLException, NotLoggedInException;
 
-	/**
-	 * 
-	 * @return True if and only if POST are allowed on this context.
-	 */
-	public abstract boolean isPostRequestAllowed();
 
 	/**
 	 * 

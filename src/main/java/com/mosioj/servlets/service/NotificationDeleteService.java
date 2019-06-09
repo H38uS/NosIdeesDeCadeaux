@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.servlets.securitypolicy.NotificationModification;
 
 @WebServlet("/protected/service/notification_delete")
-public class NotificationDeleteService extends AbstractService<NotificationModification> {
+public class NotificationDeleteService extends AbstractServicePost<NotificationModification> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	private static final String NOTIFICATION_PARAMETER = "notif_id";
@@ -23,11 +23,6 @@ public class NotificationDeleteService extends AbstractService<NotificationModif
 
 	public NotificationDeleteService() {
 		super(new NotificationModification(NOTIFICATION_PARAMETER));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Do nothing
 	}
 
 	@Override

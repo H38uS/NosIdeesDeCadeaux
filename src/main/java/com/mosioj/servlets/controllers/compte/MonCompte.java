@@ -16,11 +16,11 @@ import com.mosioj.model.User;
 import com.mosioj.model.UserParameter;
 import com.mosioj.notifications.NotificationActivation;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mon_compte")
-public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToGet> {
+public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -101081965549681889L;
 	private static final Logger logger = LogManager.getLogger(MonCompte.class);
@@ -29,7 +29,7 @@ public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToGet> {
 	public static final String URL = "/protected/mon_compte";
 
 	public MonCompte() {
-		super(new AllAccessToGet());
+		super(new AllAccessToPostAndGet());
 	}
 	
 	@Override

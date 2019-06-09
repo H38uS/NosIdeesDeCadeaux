@@ -15,7 +15,7 @@ import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.SuppressionCompte;
 
 @WebServlet("/protected/administration/service/supprimer_compte")
-public class ServiceSuppressionCompte extends AbstractService<SuppressionCompte> {
+public class ServiceSuppressionCompte extends AbstractServicePost<SuppressionCompte> {
 
 	private static final long serialVersionUID = -8612163046284587669L;
 	private static final Logger logger = LogManager.getLogger(ServiceSuppressionCompte.class);
@@ -27,11 +27,6 @@ public class ServiceSuppressionCompte extends AbstractService<SuppressionCompte>
 	 */
 	public ServiceSuppressionCompte() {
 		super(new SuppressionCompte(USER_ID_PARAM));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Rien à faire
 	}
 
 	@Override

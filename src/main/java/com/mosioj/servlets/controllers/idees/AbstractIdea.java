@@ -18,13 +18,13 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
-public abstract class AbstractIdea<P extends SecurityPolicyGetAndPost> extends IdeesCadeauxGetAndPostServlet<P> {
+public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeauxGetAndPostServlet<P> {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	private static final Logger logger = LogManager.getLogger(AbstractIdea.class);

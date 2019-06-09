@@ -6,10 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 
-public abstract class IdeesCadeauxGetServlet<P extends SecurityPolicyOnlyGet> extends IdeesCadeauxServlet<P> {
+public abstract class IdeesCadeauxGetServlet<P extends SecurityPolicy> extends IdeesCadeauxGetAndPostServlet<P> {
 
 	private static final long serialVersionUID = -1513319177739695079L;
 

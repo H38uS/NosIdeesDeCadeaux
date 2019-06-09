@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
 /**
@@ -16,7 +16,7 @@ import com.mosioj.utils.NotLoggedInException;
  * @author Jordan Mosio
  *
  */
-public final class BookingGroupInteraction extends SecurityPolicyGetAndPost {
+public final class BookingGroupInteraction extends SecurityPolicy {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.

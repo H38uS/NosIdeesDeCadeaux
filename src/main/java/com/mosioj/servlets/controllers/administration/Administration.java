@@ -17,11 +17,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/administration/administration")
-public class Administration extends IdeesCadeauxGetServlet<AllAccessToGet> {
+public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 1944117196491457908L;
 	private static final Logger logger = LogManager.getLogger(Administration.class);
@@ -32,7 +32,7 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToGet> {
 	 * Class constructor.
 	 */
 	public Administration() {
-		super(new AllAccessToGet());
+		super(new AllAccessToPostAndGet());
 	}
 
 	@Override

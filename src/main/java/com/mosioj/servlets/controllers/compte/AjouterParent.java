@@ -12,19 +12,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToPost;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/ajouter_parent")
-public class AjouterParent extends IdeesCadeauxPostServlet<AllAccessToPost> {
+public class AjouterParent extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(AjouterParent.class);
 	private static final String NAME_OR_EMAIL = "name";
 
 	public AjouterParent() {
-		super(new AllAccessToPost());
+		super(new AllAccessToPostAndGet());
 	}
 
 	@Override

@@ -11,10 +11,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
-public final class PeutDemanderARejoindreLeReseau extends SecurityPolicyOnlyPost implements UserSecurityChecker {
+public final class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements UserSecurityChecker {
 
 	private static final Logger logger = LogManager.getLogger(PeutDemanderARejoindreLeReseau.class);
 
@@ -63,6 +63,12 @@ public final class PeutDemanderARejoindreLeReseau extends SecurityPolicyOnlyPost
 
 	@Override
 	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
+		return hasAccess(request);
+	}
+
+	@Override
+	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
 													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return hasAccess(request);
 	}

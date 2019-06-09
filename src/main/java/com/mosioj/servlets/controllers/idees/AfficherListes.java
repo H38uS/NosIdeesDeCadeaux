@@ -8,12 +8,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/afficher_listes")
-public class AfficherListes extends AbstractUserListes<AllAccessToGet> {
+public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 1209953017190072617L;
 
@@ -25,7 +25,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToGet> {
 	 * 
 	 */
 	public AfficherListes() {
-		super(new AllAccessToGet());
+		super(new AllAccessToPostAndGet());
 	}
 
 	@Override

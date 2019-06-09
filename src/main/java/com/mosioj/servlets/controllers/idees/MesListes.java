@@ -8,11 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyGet;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.NotLoggedInException;
 
 @WebServlet("/protected/mes_listes")
-public class MesListes extends AbstractUserListes<NetworkAccessOnlyGet> {
+public class MesListes extends AbstractUserListes<NetworkAccess> {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
@@ -21,7 +21,7 @@ public class MesListes extends AbstractUserListes<NetworkAccessOnlyGet> {
 	 * Class constructor.
 	 * 
 	 */
-	public MesListes(NetworkAccessOnlyGet policy) {
+	public MesListes(NetworkAccess policy) {
 		super(policy);
 	}
 

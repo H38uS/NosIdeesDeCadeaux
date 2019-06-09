@@ -13,8 +13,8 @@ import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.controllers.idees.VoirListe;
 import com.mosioj.servlets.controllers.relations.Page;
-import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyGet;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
 public class TestListPage {
@@ -32,7 +32,7 @@ public class TestListPage {
 
 	@Test
 	public void testMesListesList() {
-		TestMesListes maListe = new TestMesListes(new NetworkAccessOnlyGet(VoirListe.USER_ID_PARAM));
+		TestMesListes maListe = new TestMesListes(new NetworkAccess(VoirListe.USER_ID_PARAM));
 		int maxNumberOfResults = maListe.getMaxNumberOfResults();
 		System.out.println(maListe.getClass().getName() + " " + maxNumberOfResults);
 		assertEquals(6, maListe.getPages(maxNumberOfResults*5 +1).size());
@@ -44,7 +44,7 @@ public class TestListPage {
 	
 	private class TestMesListes extends MesListes {
 		
-		public TestMesListes(NetworkAccessOnlyGet policy) {
+		public TestMesListes(NetworkAccess policy) {
 			super(policy);
 		}
 
@@ -81,7 +81,7 @@ public class TestListPage {
 		
 	}
 
-	private class TestList extends AbstractListes<Object, SecurityPolicyOnlyGet> {
+	private class TestList extends AbstractListes<Object, SecurityPolicy> {
 		
 		private static final long serialVersionUID = 1L;
 

@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
-public final class NameServicePolicy extends SecurityPolicyOnlyGet {
+public final class NameServicePolicy extends SecurityPolicy {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -22,10 +22,7 @@ public final class NameServicePolicy extends SecurityPolicyOnlyGet {
 		this.userParameter = userParameter;
 	}
 
-	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-
+	protected boolean hasRight(HttpServletRequest request) throws SQLException {
 		int userId = readInt(request, userParameter).orElse(connectedUser.id);
 		if (userId != connectedUser.id && !model.userRelations.associationExists(userId, connectedUser.id)) {
 			// On regarde
@@ -33,10 +30,23 @@ public final class NameServicePolicy extends SecurityPolicyOnlyGet {
 			// Soit celui d'un ami
 			userId = connectedUser.id;
 		}
-
+		
 		user = model.users.getUser(userId);
-
+		
 		return true;
+	}
+
+	@Override
+	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
+
+		return hasRight(request);
+	}
+
+	@Override
+	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
+		return hasRight(request);
 	}
 
 	/**

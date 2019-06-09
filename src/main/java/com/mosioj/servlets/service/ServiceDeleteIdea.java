@@ -25,7 +25,7 @@ import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.IdeaModification;
 
 @WebServlet("/protected/service/delete_idea")
-public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
+public class ServiceDeleteIdea extends AbstractServicePost<IdeaModification> {
 
 	private static final Logger logger = LogManager.getLogger(ServiceDeleteIdea.class);
 	private static final long serialVersionUID = 2642366164643542379L;
@@ -33,11 +33,6 @@ public class ServiceDeleteIdea extends AbstractService<IdeaModification> {
 
 	public ServiceDeleteIdea() {
 		super(new IdeaModification(IDEE_ID_PARAM));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Do nothing
 	}
 
 	@Override

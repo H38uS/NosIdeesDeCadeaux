@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/rechercher_personne")
-public class RechercherPersonne extends AbstractListes<User, AllAccessToGet> {
+public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	public static final String DEFAULT_FORM_URL = "/protected/rechercher_personne.jsp";
@@ -25,7 +25,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToGet> {
 	 * Class constructor.
 	 */
 	public RechercherPersonne() {
-		super(new AllAccessToGet());
+		super(new AllAccessToPostAndGet());
 		formUrl = DEFAULT_FORM_URL;
 	}
 
@@ -33,7 +33,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToGet> {
 	 * Class constructor.
 	 */
 	public RechercherPersonne(String dispatchURL) {
-		super(new AllAccessToGet());
+		super(new AllAccessToPostAndGet());
 		formUrl = dispatchURL;
 	}
 

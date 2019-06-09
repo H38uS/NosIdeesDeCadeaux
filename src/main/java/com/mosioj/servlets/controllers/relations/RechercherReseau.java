@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Relation;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyGet;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/rechercher_reseau")
-public class RechercherReseau extends AbstractListes<Relation, NetworkAccessOnlyGet> {
+public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 
@@ -27,7 +27,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccessOnly
 	 * Class constructor.
 	 */
 	public RechercherReseau() {
-		super(new NetworkAccessOnlyGet(USER_ID_PARAM));
+		super(new NetworkAccess(USER_ID_PARAM));
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
 /**
@@ -18,10 +18,8 @@ import com.mosioj.utils.NotLoggedInException;
  * @author Jordan Mosio
  *
  */
-public final class SurpriseModification extends SecurityPolicyGetAndPost implements IdeaSecurityChecker {
+public final class SurpriseModification extends SecurityPolicy implements IdeaSecurityChecker {
 	
-	// FIXME : 1 splitter abstract idea pour pouvoir faire que un get ici
-
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */

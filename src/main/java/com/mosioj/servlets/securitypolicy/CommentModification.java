@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.Comment;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
-public final class CommentModification extends SecurityPolicyOnlyGet implements CommentSecurityChecker {
-	
+public final class CommentModification extends SecurityPolicy implements CommentSecurityChecker {
+
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the comment id.
 	 */
@@ -34,7 +34,7 @@ public final class CommentModification extends SecurityPolicyOnlyGet implements 
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
-	 * @throws NotLoggedInException 
+	 * @throws NotLoggedInException
 	 */
 	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
 
@@ -61,7 +61,14 @@ public final class CommentModification extends SecurityPolicyOnlyGet implements 
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
+		return canModifyIdea(request, response);
+	}
+
+	@Override
+	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
 		return canModifyIdea(request, response);
 	}
 

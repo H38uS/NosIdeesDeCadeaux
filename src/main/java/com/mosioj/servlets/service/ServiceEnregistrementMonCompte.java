@@ -19,15 +19,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.utils.MyDateFormatViewer;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/service/enregistrement_mon_compte")
-public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToPostAndGet> {
+public class ServiceEnregistrementMonCompte extends AbstractServicePost<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -3371121559895996016L;
 	private static final Logger logger = LogManager.getLogger(ServiceEnregistrementMonCompte.class);
@@ -36,11 +36,6 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 
 	public ServiceEnregistrementMonCompte() {
 		super(new AllAccessToPostAndGet());
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Do nothing
 	}
 
 	@Override
@@ -98,7 +93,7 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 	// La base est en UTC, il faut donc ne pas utiliser MySimpleDateFormat.
 	// Ou alors, avec Hibernate et que la base soit en Europe/Paris.
 	public java.sql.Date getAsDate(String date) {
-		SimpleDateFormat format = new SimpleDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
+		SimpleDateFormat format = new SimpleDateFormat(MyDateFormatViewer.DATE_FORMAT);
 		Date parsed;
 		try {
 			parsed = format.parse(date);

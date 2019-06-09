@@ -14,18 +14,18 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/sorti_enfant")
-public class SortiEnfant extends IdeesCadeauxGetServlet<AllAccessToGet> {
+public class SortiEnfant extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(SortiEnfant.class);
 	public static final String VIEW_PAGE_URL = "/protected/child_exit_success.jsp";
 
 	public SortiEnfant() {
-		super(new AllAccessToGet());
+		super(new AllAccessToPostAndGet());
 	}
 
 	@Override

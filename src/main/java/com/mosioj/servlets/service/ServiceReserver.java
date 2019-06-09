@@ -15,7 +15,7 @@ import com.mosioj.model.Idee;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 
 @WebServlet("/protected/service/reserver")
-public class ServiceReserver extends AbstractService<IdeaInteractionBookingUpToDate> {
+public class ServiceReserver extends AbstractServicePost<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	private static final String IDEA_ID_PARAM = "idee";
@@ -24,11 +24,6 @@ public class ServiceReserver extends AbstractService<IdeaInteractionBookingUpToD
 
 	public ServiceReserver() {
 		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Do nothing
 	}
 
 	@Override

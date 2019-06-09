@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionOnlyGet;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
@@ -24,7 +24,7 @@ import com.mosioj.utils.RootingsUtils;
  *
  */
 @WebServlet("/protected/service/get_idea_of_friend")
-public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteractionOnlyGet> {
+public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteraction> {
 
 	private static final long serialVersionUID = -3425240682690763149L;
 	private static final Logger logger = LogManager.getLogger(GetIdeaOfFriendService.class);
@@ -34,7 +34,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteracti
 	public static final String VIEW_PAGE_URL = "/protected/service/get_idea_of_friend.jsp";
 
 	public GetIdeaOfFriendService() {
-		super(new IdeaInteractionOnlyGet(IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	@Override

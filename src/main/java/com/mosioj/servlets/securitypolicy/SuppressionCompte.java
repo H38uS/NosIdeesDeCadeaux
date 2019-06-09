@@ -7,26 +7,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
-public class SuppressionCompte extends SecurityPolicyOnlyPost {
+public class SuppressionCompte extends SecurityPolicy {
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
 	 */
 	private final String userParameter;
-	
+
 	private User user;
-	
+
 	public SuppressionCompte(String userParameter) {
 		this.userParameter = userParameter;
 	}
 
-	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		
+	protected boolean canInteract(HttpServletRequest request) throws SQLException {
 		if (!request.isUserInRole("ROLE_ADMIN")) {
 			lastReason = "Non, mais non.";
 			return false;
@@ -43,6 +40,19 @@ public class SuppressionCompte extends SecurityPolicyOnlyPost {
 		return false;
 	}
 
+	@Override
+	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
+
+		return canInteract(request);
+	}
+
+	@Override
+	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
+													HttpServletResponse response) throws SQLException, NotLoggedInException {
+		return canInteract(request);
+	}
+
 	/**
 	 * 
 	 * @return The user to delete, or null if the checks have not passed.
@@ -50,4 +60,5 @@ public class SuppressionCompte extends SecurityPolicyOnlyPost {
 	public User getUserToDelete() {
 		return user;
 	}
+
 }

@@ -16,7 +16,7 @@ import com.mosioj.servlets.controllers.idees.reservation.DereserverIdee;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 
 @WebServlet("/protected/service/dereserver")
-public class ServiceDereserver extends AbstractService<IdeaInteractionBookingUpToDate> {
+public class ServiceDereserver extends AbstractServicePost<IdeaInteractionBookingUpToDate> {
 
 	private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
 	private static final long serialVersionUID = -8244829899125982644L;
@@ -27,11 +27,6 @@ public class ServiceDereserver extends AbstractService<IdeaInteractionBookingUpT
 	 */
 	public ServiceDereserver() {
 		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
-		// Do nothing
 	}
 
 	@Override

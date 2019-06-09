@@ -2,7 +2,6 @@ package com.mosioj.servlets.service;
 
 import java.sql.SQLException;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +16,7 @@ import com.mosioj.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 
 @WebServlet("/protected/service/supprimer_relation")
-public class ServiceSupprimerRelation extends AbstractService<NetworkAccess> {
+public class ServiceSupprimerRelation extends AbstractServicePost<NetworkAccess> {
 
 	private static final long serialVersionUID = -4896678945281607617L;
 	private static final Logger logger = LogManager.getLogger(ServiceSupprimerRelation.class);
@@ -25,11 +24,6 @@ public class ServiceSupprimerRelation extends AbstractService<NetworkAccess> {
 
 	public ServiceSupprimerRelation() {
 		super(new NetworkAccess(USER_PARAMETER));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// RAS
 	}
 
 	@Override

@@ -17,7 +17,7 @@ import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 
 @WebServlet("/protected/service/est_a_jour")
-public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToDate> {
+public class ServiceEstAJour extends AbstractServicePost<IdeaInteractionBookingUpToDate> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	public static final String IDEE_FIELD_PARAMETER = "idee";
@@ -25,11 +25,6 @@ public class ServiceEstAJour extends AbstractService<IdeaInteractionBookingUpToD
 
 	public ServiceEstAJour() {
 		super(new IdeaInteractionBookingUpToDate(IDEE_FIELD_PARAMETER));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Do nothing
 	}
 
 	@Override

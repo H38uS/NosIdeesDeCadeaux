@@ -15,7 +15,7 @@ import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 
 @WebServlet("/protected/service/get_user_name")
-public class ServiceGetUserNameFromID extends AbstractService<NetworkAccess> {
+public class ServiceGetUserNameFromID extends AbstractServiceGet<NetworkAccess> {
 
 	private static final long serialVersionUID = 8894577701063844430L;
 	private static final Logger logger = LogManager.getLogger(ServiceGetUserNameFromID.class);
@@ -32,10 +32,5 @@ public class ServiceGetUserNameFromID extends AbstractService<NetworkAccess> {
 		logger.debug(MessageFormat.format("Récupération du nom de l''utilisateur numéro {0}", user.id));
 		writter.writeJSonOutput(response, makeJSonPair("status", "ok"), makeJSonPair("message", user.getEmail()));
 		// FIXME : 1 tester les services quand on a pas les droits
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Do nothing
 	}
 }

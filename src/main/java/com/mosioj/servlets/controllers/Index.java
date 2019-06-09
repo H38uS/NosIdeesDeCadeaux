@@ -14,18 +14,18 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.model.table.MessagesAccueil;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.servlets.securitypolicy.generic.AllAccessToGet;
+import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/index")
-public class Index extends IdeesCadeauxGetServlet<AllAccessToGet> {
+public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
 	public static final int NB_DAYS_MAX_BEFORE_BIRTHDAY = 20;
 	private static final long serialVersionUID = -8386214705432810179L;
 	private static final String VIEW_URL = "/protected/index.jsp";
 
 	public Index() {
-		super(new AllAccessToGet());
+		super(new AllAccessToPostAndGet());
 	}
 
 	@Override

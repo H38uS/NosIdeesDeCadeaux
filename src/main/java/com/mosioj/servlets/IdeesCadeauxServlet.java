@@ -83,9 +83,11 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
+	
+	// FIXME : 0 ajouter la mémoire dans l'admin
+	// FIXME : 0 utiliser GSon ?
 
 	private static final int MAX_WIDTH = 150;
-	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	// Maximum 10M
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
@@ -141,11 +143,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
 		fillConnectedUserIfPossible(request);
 		policy.setConnectedUser(thisOne);
-
-		if (!policy.isGetRequestAllowed()) {
-			super.doGet(request, resp);
-			return;
-		}
 
 		try {
 
@@ -228,11 +225,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
 		fillConnectedUserIfPossible(request);
 		policy.setConnectedUser(thisOne);
-
-		if (!policy.isPostRequestAllowed()) {
-			super.doPost(request, response);
-			return;
-		}
 
 		try {
 

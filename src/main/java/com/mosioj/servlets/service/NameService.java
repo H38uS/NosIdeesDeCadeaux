@@ -19,7 +19,7 @@ import com.mosioj.servlets.securitypolicy.NameServicePolicy;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/service/name_resolver")
-public class NameService extends AbstractService<NameServicePolicy> {
+public class NameService extends AbstractServiceGet<NameServicePolicy> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	private static final String NAME_OR_EMAIL = "term";
@@ -68,11 +68,6 @@ public class NameService extends AbstractService<NameServicePolicy> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		ideesKDoGET(request, response);
 	}
 
 }

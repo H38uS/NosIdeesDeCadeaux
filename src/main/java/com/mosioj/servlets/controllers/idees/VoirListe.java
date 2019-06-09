@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyGet;
+import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.NotLoggedInException;
 
 @WebServlet("/protected/voir_liste")
@@ -30,7 +30,7 @@ public class VoirListe extends MesListes {
 	 * 
 	 */
 	public VoirListe() {
-		super(new NetworkAccessOnlyGet(USER_ID_PARAM));
+		super(new NetworkAccess(USER_ID_PARAM));
 	}
 	
 	@Override

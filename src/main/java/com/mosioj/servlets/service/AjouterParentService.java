@@ -15,7 +15,7 @@ import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.database.NoRowsException;
 
 @WebServlet("/protected/service/ajouter_parent")
-public class AjouterParentService extends AbstractService<AllAccessToPostAndGet> {
+public class AjouterParentService extends AbstractServicePost<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 7598797241503497392L;
 	private static final Logger logger = LogManager.getLogger(AjouterParentService.class);
@@ -23,11 +23,6 @@ public class AjouterParentService extends AbstractService<AllAccessToPostAndGet>
 
 	public AjouterParentService() {
 		super(new AllAccessToPostAndGet());
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// RAS
 	}
 
 	@Override
