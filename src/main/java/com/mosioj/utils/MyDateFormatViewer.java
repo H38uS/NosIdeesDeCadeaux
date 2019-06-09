@@ -11,6 +11,7 @@ public class MyDateFormatViewer extends SimpleDateFormat {
 
 	private static final long serialVersionUID = 3200032903715571847L;
 	private static final Logger logger = LogManager.getLogger(MyDateFormatViewer.class);
+	public static final String DATETIME_DISPLAY_FORMAT = "d MMMM yyyy à HH'h'mm";
 	
 	/**
 	 * Attention: n'utiliser que pour visualiser !!

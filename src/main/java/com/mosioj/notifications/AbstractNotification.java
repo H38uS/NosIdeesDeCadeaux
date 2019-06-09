@@ -12,7 +12,6 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.EmailSender;
 import com.mosioj.utils.MyDateFormatViewer;
 
@@ -85,7 +84,7 @@ public abstract class AbstractNotification {
 	}
 
 	public String getReadOn() {
-		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(readOn);
+		return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(readOn);
 	}
 
 	/**
@@ -152,7 +151,7 @@ public abstract class AbstractNotification {
 	}
 
 	public String getCreationTime() {
-		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(creationTime);
+		return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(creationTime);
 	}
 
 }

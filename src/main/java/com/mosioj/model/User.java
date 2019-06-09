@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.MyDateFormatViewer;
 
 public class User {
@@ -87,7 +86,7 @@ public class User {
 		if (creationDate == null) {
 			return "";
 		}
-		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(creationDate);
+		return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(creationDate);
 	}
 
 	/**
@@ -97,7 +96,7 @@ public class User {
 		if (lastLogin == null) {
 			return "";
 		}
-		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(lastLogin);
+		return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(lastLogin);
 	}
 
 	/**

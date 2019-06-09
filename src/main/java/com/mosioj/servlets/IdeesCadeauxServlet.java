@@ -86,8 +86,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	private static final int MAX_WIDTH = 150;
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
-	public static final String DATETIME_DISPLAY_FORMAT = "d MMMM yyyy à HH'h'mm";
-
 	// Maximum 10M
 	private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 

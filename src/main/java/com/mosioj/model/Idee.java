@@ -9,12 +9,11 @@ import java.util.List;
 
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.SousReservation;
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.utils.MyDateFormatViewer;
 
 public class Idee {
 
-	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT);
+	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT);
 
 	private final int id;
 	public String text;
@@ -158,7 +157,7 @@ public class Idee {
 	public String getBookingDate() {
 		if (bookedOn == null)
 			return null;
-		return new MyDateFormatViewer(IdeesCadeauxServlet.DATETIME_DISPLAY_FORMAT).format(bookedOn);
+		return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(bookedOn);
 	}
 
 	public String getModificationDate() {
