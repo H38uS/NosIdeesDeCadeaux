@@ -23,12 +23,12 @@ import com.mosioj.notifications.NotificationType;
 import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.notifications.instance.NotifDemandeRefusee;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.servlets.securitypolicy.PeutResoudreDemandesAmis;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/resoudre_demande_ami")
-public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandesAmis> {
+public class ResoudreDemandeAmi extends IdeesCadeauxPostServlet<PeutResoudreDemandesAmis> {
 
 	private static final long serialVersionUID = 454017088023043164L;
 	private static final Logger logger = LogManager.getLogger(ResoudreDemandeAmi.class);
@@ -38,11 +38,6 @@ public class ResoudreDemandeAmi extends IdeesCadeauxServlet<PeutResoudreDemandes
 	 */
 	public ResoudreDemandeAmi() {
 		super(new PeutResoudreDemandesAmis());
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		// Impossible - rien à faire
 	}
 
 	@Override

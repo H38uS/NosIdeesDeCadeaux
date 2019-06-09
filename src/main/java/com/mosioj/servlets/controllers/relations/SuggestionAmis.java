@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggestion_amis")
-public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = -8566629037022016825L;
 	private static final String DISPATCH_URL = "suggestion_amis.jsp";

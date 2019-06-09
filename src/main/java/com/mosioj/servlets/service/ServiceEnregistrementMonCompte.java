@@ -95,6 +95,8 @@ public class ServiceEnregistrementMonCompte extends AbstractService<AllAccessToP
 								makeJSonPair("avatars", request.getAttribute("avatars").toString()));
 	}
 
+	// La base est en UTC, il faut donc ne pas utiliser MySimpleDateFormat.
+	// Ou alors, avec Hibernate et que la base soit en Europe/Paris.
 	public java.sql.Date getAsDate(String date) {
 		SimpleDateFormat format = new SimpleDateFormat(IdeesCadeauxServlet.DATE_FORMAT);
 		Date parsed;

@@ -10,6 +10,4 @@ public abstract class IdeesCadeauxGetAndPostServlet<P extends SecurityPolicyGetA
 	public IdeesCadeauxGetAndPostServlet(P policy) {
 		super(policy);
 	}
-
-	// FIXME : 0 utiliser l'un des trois pour toutes les servlets
 }

@@ -7,13 +7,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/public/NotFound")
-public class NotFound extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class NotFound extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 936404523785343564L;
 	private static final String VIEW_PROTECTED_URL = "/protected/NotFound.jsp";

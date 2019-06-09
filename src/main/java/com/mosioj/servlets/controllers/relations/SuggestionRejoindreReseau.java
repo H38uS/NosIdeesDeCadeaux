@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyPost;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggestion_rejoindre_reseau")
-public class SuggestionRejoindreReseau extends IdeesCadeauxServlet<NetworkAccess> {
+public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAccessOnlyPost> {
 
 	private static final long serialVersionUID = 5529157183937072477L;
 	private static final String USER_PARAMETER = "userId";
@@ -24,12 +24,7 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxServlet<NetworkAccess
 	private static final String URL_ERROR = "suggerer_relations_error.jsp";
 
 	public SuggestionRejoindreReseau() {
-		super(new NetworkAccess(USER_PARAMETER));
-	}
-
-	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		RootingsUtils.rootToPage("/protected", req, resp);
+		super(new NetworkAccessOnlyPost(USER_PARAMETER));
 	}
 
 	@Override

@@ -18,12 +18,12 @@ import com.mosioj.model.IdeaGroup;
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
 import com.mosioj.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.servlets.IdeesCadeauxServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggerer_groupe_idee")
-public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteraction> {
+public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroupInteraction> {
 
 	private static final Logger logger = LogManager.getLogger(SuggestGroupIdea.class);
 	private static final long serialVersionUID = 5094570058900475394L;
