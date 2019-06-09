@@ -11,14 +11,19 @@
 	<jsp:body>
 		<div class="container">
 			<div class="alert alert-info">
-				Logs: ${log_folder}
-				<ul>
-					<c:forEach var="log" items="${log_files}">
-						<li>
-							<a href="protected/files/logs/${log.name}">${log.name}</a>
-						</li>
-					</c:forEach>
-				</ul>
+				<div>
+					${memory}
+				</div>
+				<div>
+					Logs: ${log_folder}
+					<ul>
+						<c:forEach var="log" items="${log_files}">
+							<li>
+								<a href="protected/files/logs/${log.name}">${log.name}</a>
+							</li>
+						</c:forEach>
+					</ul>
+				</div>
 			</div>
 		</div>
 			<div class="row align-items-start mx-0 justify-content-around">

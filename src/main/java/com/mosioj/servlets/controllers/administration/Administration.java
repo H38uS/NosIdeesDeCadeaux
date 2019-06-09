@@ -3,6 +3,7 @@ package com.mosioj.servlets.controllers.administration;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,6 +57,12 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
 			e.printStackTrace();
 			logger.error(e);
 		}
+		
+		String memory = MessageFormat.format(	"Memory (free / total): ({0} Ko / {1} Ko). Max: {2} Ko.",
+												Runtime.getRuntime().freeMemory() / 1024,
+												Runtime.getRuntime().totalMemory() / 1024,
+												Runtime.getRuntime().maxMemory() / 1024);
+		request.setAttribute("memory", memory);
 
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
 	}
