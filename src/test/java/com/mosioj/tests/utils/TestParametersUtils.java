@@ -31,7 +31,7 @@ import javax.servlet.http.Part;
 
 import org.junit.Test;
 
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicyGetAndPost;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
@@ -51,7 +51,7 @@ public class TestParametersUtils {
 		assertEquals(new Integer(1032), p.readIntTest(new TestHttpServletRequest("1032"), "toto").get());
 	}
 
-	private class TestAllGetAndPost extends SecurityPolicyGetAndPost {
+	private class TestAllGetAndPost extends SecurityPolicy {
 		public Optional<Integer> readIntTest(HttpServletRequest request, String name) {
 			return readInt(request, name);
 		}

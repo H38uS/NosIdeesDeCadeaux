@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.controllers.relations.Page;
-import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
@@ -26,7 +26,7 @@ import com.mosioj.utils.RootingsUtils;
  *
  * @param <T> The entity types displayed.
  */
-public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesCadeauxGetServlet<P> {
+public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesCadeauxGetAndPostServlet<P> {
 
 	private static final long serialVersionUID = -3557546858990933563L;
 	private static final Logger LOGGER = LogManager.getLogger(AbstractListes.class);
@@ -38,6 +38,7 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
 		super(policy);
 		this.maxNumberOfResults = maxNumberOfResults;
 	}
+
 	public AbstractListes(P policy) {
 		this(policy, 20); // Default max number
 	}
@@ -55,7 +56,9 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
 	protected abstract String getCallingURL();
 
 	protected abstract String getSpecificParameters(HttpServletRequest req);
+
 	protected abstract int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException;
+
 	protected abstract List<T> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException;
 
 	/**
@@ -90,11 +93,17 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
 		int firstRow = (pageNumber - 1) * MAX_NUMBER_OF_RESULT;
 		return firstRow;
 	}
+
 	protected int getFirstRow(HttpServletRequest req) {
 		int pageNumber = getPageNumber(req, PAGE_ARG);
 		return getFirstRow(pageNumber, maxNumberOfResults);
 	}
-	
+
+	@Override
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+		ideesKDoGET(request, response); // default behavior
+	}
+
 	@Override
 	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
