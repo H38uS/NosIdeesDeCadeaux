@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.controllers.AbstractListes;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/suggerer_relations")
-public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
+public class SuggererRelations extends IdeesCadeauxGetAndPostServlet<NetworkAccess> {
 
 	private static final long serialVersionUID = -5480617244868517709L;
 	private static final String USER_PARAMETER = "id";
@@ -43,7 +43,7 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 																								suggestToUser.id,
 																								userNameOrEmail,
 																								0,
-																								maxNumberOfResults);
+																								50);
 		toBeSuggested.remove(suggestToUser);
 
 		for (User u : toBeSuggested) {
@@ -63,31 +63,6 @@ public class SuggererRelations extends AbstractListes<User, NetworkAccess> {
 		request.setAttribute("users", toBeSuggested);
 
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
-	}
-
-	@Override
-	protected String getViewPageURL() {
-		return null;
-	}
-
-	@Override
-	protected String getCallingURL() {
-		return null;
-	}
-
-	@Override
-	protected String getSpecificParameters(HttpServletRequest req) {
-		return null;
-	}
-
-	@Override
-	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
-		return 0;
-	}
-
-	@Override
-	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
-		return null;
 	}
 
 }

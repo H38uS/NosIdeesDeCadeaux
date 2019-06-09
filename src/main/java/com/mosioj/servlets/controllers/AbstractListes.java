@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.servlets.IdeesCadeauxServlet;
 import com.mosioj.servlets.controllers.relations.Page;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
@@ -26,7 +26,7 @@ import com.mosioj.utils.RootingsUtils;
  *
  * @param <T> The entity types displayed.
  */
-public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
+public abstract class AbstractListes<T, P extends SecurityPolicyOnlyGet> extends IdeesCadeauxGetServlet<P> {
 
 	private static final long serialVersionUID = -3557546858990933563L;
 	private static final Logger LOGGER = LogManager.getLogger(AbstractListes.class);

@@ -29,9 +29,4 @@ public class SupprimerCommentaire extends IdeesCadeauxGetServlet<CommentModifica
 		RootingsUtils.rootToPage(IdeaComments.WEB_SERVLET + "?" + IdeaComments.IDEA_ID_PARAM + "=" + comment.getIdea(), req, resp);
 	}
 
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
-	}
-
 }

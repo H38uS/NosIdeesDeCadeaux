@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.AllAccessToGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 @WebServlet("/protected/rechercher_personne")
-public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndGet> {
+public class RechercherPersonne extends AbstractListes<User, AllAccessToGet> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 	public static final String DEFAULT_FORM_URL = "/protected/rechercher_personne.jsp";
@@ -25,7 +25,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
 	 * Class constructor.
 	 */
 	public RechercherPersonne() {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToGet());
 		formUrl = DEFAULT_FORM_URL;
 	}
 
@@ -33,13 +33,8 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
 	 * Class constructor.
 	 */
 	public RechercherPersonne(String dispatchURL) {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToGet());
 		formUrl = dispatchURL;
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		ideesKDoGET(request, response);
 	}
 
 	@Override

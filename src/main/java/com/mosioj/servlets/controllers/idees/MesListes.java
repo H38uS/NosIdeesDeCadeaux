@@ -4,18 +4,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyGet;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/mes_listes")
-public class MesListes extends AbstractUserListes<NetworkAccess> {
+public class MesListes extends AbstractUserListes<NetworkAccessOnlyGet> {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";
@@ -24,7 +21,7 @@ public class MesListes extends AbstractUserListes<NetworkAccess> {
 	 * Class constructor.
 	 * 
 	 */
-	public MesListes(NetworkAccess policy) {
+	public MesListes(NetworkAccessOnlyGet policy) {
 		super(policy);
 	}
 
@@ -44,11 +41,6 @@ public class MesListes extends AbstractUserListes<NetworkAccess> {
 	protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
 		// On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
 		return model.userRelations.getRelationsCount(thisOne);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		RootingsUtils.redirectToPage(PROTECTED_MES_LISTES, request, response); // Rien de spécifique pour le moment
 	}
 
 	@Override

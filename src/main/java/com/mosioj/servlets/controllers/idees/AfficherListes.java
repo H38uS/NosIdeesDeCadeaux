@@ -4,19 +4,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.securitypolicy.AllAccessToGet;
 import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
-import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_listes")
-public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
+public class AfficherListes extends AbstractUserListes<AllAccessToGet> {
 
 	private static final long serialVersionUID = 1209953017190072617L;
 
@@ -28,7 +25,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 	 * 
 	 */
 	public AfficherListes() {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToGet());
 	}
 
 	@Override
@@ -55,17 +52,6 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
 			return size + 1;
 		}
 		return size;
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		StringBuilder sb = new StringBuilder();
-		sb.append(AFFICHER_LISTES);
-		sb.append("?");
-		sb.append(NAME_OR_EMAIL);
-		sb.append("=");
-		sb.append(request.getParameter(NAME_OR_EMAIL));
-		RootingsUtils.redirectToPage(sb.toString(), request, response); // Rien de spécifique pour le moment
 	}
 
 	@Override

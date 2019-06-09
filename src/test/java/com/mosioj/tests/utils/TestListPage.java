@@ -5,9 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
@@ -15,8 +13,8 @@ import com.mosioj.servlets.controllers.AbstractListes;
 import com.mosioj.servlets.controllers.idees.MesListes;
 import com.mosioj.servlets.controllers.idees.VoirListe;
 import com.mosioj.servlets.controllers.relations.Page;
-import com.mosioj.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyGet;
+import com.mosioj.servlets.securitypolicy.root.SecurityPolicyOnlyGet;
 import com.mosioj.utils.NotLoggedInException;
 
 public class TestListPage {
@@ -34,7 +32,7 @@ public class TestListPage {
 
 	@Test
 	public void testMesListesList() {
-		TestMesListes maListe = new TestMesListes(new NetworkAccess(VoirListe.USER_ID_PARAM));
+		TestMesListes maListe = new TestMesListes(new NetworkAccessOnlyGet(VoirListe.USER_ID_PARAM));
 		int maxNumberOfResults = maListe.getMaxNumberOfResults();
 		System.out.println(maListe.getClass().getName() + " " + maxNumberOfResults);
 		assertEquals(6, maListe.getPages(maxNumberOfResults*5 +1).size());
@@ -46,7 +44,7 @@ public class TestListPage {
 	
 	private class TestMesListes extends MesListes {
 		
-		public TestMesListes(NetworkAccess policy) {
+		public TestMesListes(NetworkAccessOnlyGet policy) {
 			super(policy);
 		}
 
@@ -83,7 +81,7 @@ public class TestListPage {
 		
 	}
 
-	private class TestList extends AbstractListes<Object, SecurityPolicy> {
+	private class TestList extends AbstractListes<Object, SecurityPolicyOnlyGet> {
 		
 		private static final long serialVersionUID = 1L;
 
@@ -123,10 +121,6 @@ public class TestListPage {
 		@Override
 		protected List<Object> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 			return null;
-		}
-
-		@Override
-		public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		}
 
 	}

@@ -12,12 +12,11 @@ import javax.servlet.http.HttpSession;
 import com.mosioj.model.Relation;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.servlets.securitypolicy.NetworkAccessOnlyGet;
 import com.mosioj.utils.NotLoggedInException;
-import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/afficher_reseau")
-public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
+public class AfficherReseau extends AbstractListes<Relation, NetworkAccessOnlyGet> {
 
 	private static final long serialVersionUID = 9147880158497428623L;
 
@@ -29,7 +28,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 	 * Class constructor.
 	 */
 	public AfficherReseau() {
-		super(new NetworkAccess(USER_ID_PARAM));
+		super(new NetworkAccessOnlyGet(USER_ID_PARAM));
 	}
 
 	@Override
@@ -55,11 +54,6 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 		}
 
 		super.ideesKDoGET(request, response);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		RootingsUtils.redirectToPage(SELF_VIEW + "?" + USER_ID_PARAM + "=" + policy.getUser().id, request, response);
 	}
 
 	@Override

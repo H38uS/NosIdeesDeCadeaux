@@ -13,19 +13,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.model.table.MessagesAccueil;
-import com.mosioj.servlets.IdeesCadeauxServlet;
-import com.mosioj.servlets.securitypolicy.AllAccessToPostAndGet;
+import com.mosioj.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.servlets.securitypolicy.AllAccessToGet;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/index")
-public class Index extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class Index extends IdeesCadeauxGetServlet<AllAccessToGet> {
 
 	public static final int NB_DAYS_MAX_BEFORE_BIRTHDAY = 20;
 	private static final long serialVersionUID = -8386214705432810179L;
 	private static final String VIEW_URL = "/protected/index.jsp";
 
 	public Index() {
-		super(new AllAccessToPostAndGet());
+		super(new AllAccessToGet());
 	}
 
 	@Override
@@ -56,11 +56,6 @@ public class Index extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 		}
 
 		RootingsUtils.rootToPage(VIEW_URL, req, resp);
-	}
-
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		ideesKDoGET(request, response);
 	}
 
 	/**
