@@ -57,7 +57,7 @@ public class VoirListe extends MesListes {
 	@Override
 	protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
 		List<User> ids = new ArrayList<User>();
-		User user = policy.getUser();
+		User user = ((NetworkAccess) policy).getUser();
 		ids.add(user);
 		fillsUserIdeas(thisOne, ids);
 		return ids;
