@@ -106,10 +106,7 @@ $(document).ready(function() {
 		lastModalOpened = $(this);
 	});
 	
-	if ( $("#mobile_res_search").css('display') == 'none' ) {
-		// Mode normal, on sélectionne le champs recherche par défaut
-		$("#header_name").focus();
-	} else {
+	if ( $("#mobile_res_search").css('display') !== 'none' ) {
 		// Mode mobile, on masque le reste quand on gagne le focus
 		$("#header_name").focus(function () {
 			$("nav").slideUp("fast");

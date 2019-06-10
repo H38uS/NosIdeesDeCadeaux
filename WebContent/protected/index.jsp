@@ -7,6 +7,12 @@
 
 <t:normal_protected>
 	<jsp:body>
+		<script>
+			if ( $("#mobile_res_search").css('display') == 'none' ) {
+				// Mode normal, on sélectionne le champs recherche par défaut sur l'index
+				$("#header_name").focus();
+			}
+		</script>
 		<c:if test="${!connected_user.hasSetUpAnAvatar()}">
 			<p class="alert alert-warning">
 				Vous n'avez pas encore d'image de profile. Cela aidera vos amis à vous trouver parmi leur liste !<br/>
