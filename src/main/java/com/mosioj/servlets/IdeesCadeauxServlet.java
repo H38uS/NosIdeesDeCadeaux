@@ -84,7 +84,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
 	
-	// FIXME : 0 ajouter la mémoire dans l'admin
 	// FIXME : 0 utiliser GSon ?
 
 	private static final int MAX_WIDTH = 150;

@@ -11,29 +11,31 @@
 			<t:template_une_idee />
 		</c:if>
 		
-		<c:choose>
-			<c:when test="${is_mobile}">
-				<div id="mes_listes_list_users">
-					<c:forEach var="user" items="${entities}">
-						<a href="${identic_call_back}#list_${user.id}">${user.name}</a> | 
-					</c:forEach>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div id="mes_listes_list_users" class="d-none d-xl-inline-block col-xl-3">
-					<c:forEach var="user" items="${entities}">
-						<a href="${identic_call_back}#list_${user.id}" class="col-12 p-2">
-							<div class="center">
-								<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" style='height:80px' alt="" />
-							</div>
-							<div class="center">
-								${user.name}
-							</div>
-						</a>
-					</c:forEach>
-				</div>
-			</c:otherwise>
-		</c:choose>
+		<c:if test="${fn:length(entities) gt 1}">
+			<c:choose>
+				<c:when test="${is_mobile}">
+					<div id="mes_listes_list_users">
+						<c:forEach var="user" items="${entities}">
+							<a href="${identic_call_back}#list_${user.id}">${user.name}</a> | 
+						</c:forEach>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div id="mes_listes_list_users" class="d-none d-xl-inline-block col-xl-3">
+						<c:forEach var="user" items="${entities}">
+							<a href="${identic_call_back}#list_${user.id}" class="col-12 p-2">
+								<div class="center">
+									<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" style='height:80px' alt="" />
+								</div>
+								<div class="center">
+									${user.name}
+								</div>
+							</a>
+						</c:forEach>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
 	
 		<div class="row justify-content-around">
 		
@@ -124,10 +126,19 @@
 						<c:if test="${connected_user.id == user.id}">
 		
 							<!-- Début idée de la personne -->
-		
-							<h2 id="list_${user.id}" class="breadcrumb mt-2">Mes idées de cadeaux</h2>
-							<c:if test="${fn:length(user.ideas) > 0}">
-								<div class="container">
+							<div class="container">
+								<h2 id="list_${user.id}" class="breadcrumb mt-4 h2_list">
+									<div class="row align-items-center">
+										<div class="col-auto mx-auto my-1">
+											<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" alt="" style="height:50px;" />
+										</div>
+										<div class="mx-1">
+											<span class="d-none d-lg-inline-block">Mes idées de cadeaux</span>
+											<span class="d-inline-block d-lg-none">Mes idées</span>
+										</div>
+									</div>
+								</h2>
+								<c:if test="${fn:length(user.ideas) > 0}">
 									<c:forEach var="idea_from_liste" items="${user.ideas}">
 										<c:if test="${empty idea_from_liste.surpriseBy}">
 											<div class="idea_square top_tooltip col-lg-12 my-3 px-2">
@@ -253,9 +264,8 @@
 											</div>
 										</c:if>
 									</c:forEach>
-								</div>
-								</ul>
-							</c:if>
+								</c:if>
+							</div>
 							<c:if test="${fn:length(user.ideas) == 0}">
 								<span>Vous n'avez pas encore d'idées. Cliquez <a href="protected/ma_liste">ici</a> pour en ajouter.</span>
 							</c:if>
@@ -264,31 +274,31 @@
 						<!-- Fin idée de la personne -->
 		
 						<c:if test="${connected_user.id != user.id}">
-							<h2 id="list_${user.id}" class="breadcrumb mt-4 h2_list">
-								<div class="row align-items-center">
-									<div class="col-auto mx-auto my-1">
-										<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" alt="" style="height:50px;" />
+							<div class="container">
+								<h2 id="list_${user.id}" class="breadcrumb mt-4 h2_list">
+									<div class="row align-items-center">
+										<div class="col-auto mx-auto my-1">
+											<img src="protected/files/uploaded_pictures/avatars/${user.avatarSrcSmall}" alt="" style="height:50px;" />
+										</div>
+										<div class="mx-1">
+											<span class="d-none d-lg-inline-block">Liste de cadeaux ${user.myDName}</span>
+											<span class="d-inline-block d-lg-none">${user.name}</span>
+										</div>
+										<div class="mx-auto">
+											<a href="protected/ajouter_idee_ami?id=${user.id}" class="img">
+												<c:choose>
+													<c:when test="${is_mobile}">
+														<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: -2px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
+													</c:when>
+													<c:otherwise>
+														<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: 1px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
+													</c:otherwise>
+												</c:choose>
+											</a>
+										</div>
 									</div>
-									<div class="mx-1">
-										<span class="d-none d-lg-inline-block">Liste de cadeaux ${user.myDName}</span>
-										<span class="d-inline-block d-lg-none">${user.name}</span>
-									</div>
-									<div class="mx-auto">
-										<a href="protected/ajouter_idee_ami?id=${user.id}" class="img">
-											<c:choose>
-												<c:when test="${is_mobile}">
-													<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: -2px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
-												</c:when>
-												<c:otherwise>
-													<img src="resources/image/ajouter_champs.png" style="margin-left: 10px;margin-top: 1px;" class="clickable" title="Lui ajouter une idée" width="${action_img_width}px" />
-												</c:otherwise>
-											</c:choose>
-										</a>
-									</div>
-								</div>
-							</h2>
-							<c:if test="${fn:length(user.ideas) > 0}">
-								<div class="container">
+								</h2>
+								<c:if test="${fn:length(user.ideas) > 0}">
 									<c:forEach var="idea_from_liste" items="${user.ideas}">
 									<div class="idea_square top_tooltip ${idea_from_liste.displayClass} col-lg-12 my-3 px-2">
 									<div class="p-2">
@@ -534,8 +544,8 @@
 									</div>
 									</div>
 									</c:forEach>
-								</div>
-							</c:if>
+								</c:if>
+							</div>
 							<c:if test="${fn:length(user.ideas) == 0}">
 								<span>${user.name} n'a pas encore d'idées.</span>
 							</c:if>

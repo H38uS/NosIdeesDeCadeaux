@@ -74,12 +74,12 @@
 		<div class="container-fluid mt-sm-3 mt-lg-5">
 			<div class="row justify-content-center">
 				<div class="col-auto col-sm-4 col-lg-5 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
-					<a href="protected/mes_listes" class="img">
-						<img class="clickable" alt="Afficher mes listes partagées" title="Afficher mes listes partagées"
+					<a href="protected/voir_liste?id=${connected_user.id}" class="img">
+						<img class="clickable" alt="Afficher mes listes partagées" title="Afficher ma liste"
 											src="resources/image/index/CheckListeOUT.png" onmouseout="this.src='resources/image/index/CheckListeOUT.png'"
 											onmouseover="this.src='resources/image/index/CheckListeOVER.png'" />
 					</a>
-					<span class="ml-3 d-none d-lg-inline">Afficher mes listes partagées</span>
+					<span class="ml-3 d-none d-lg-inline">Afficher ma liste</span>
 				</div>
 				<div class="col-auto col-sm-5 col-xl-5 mr-sm-auto mr-lg-0 mb-2">
 					<a href="protected/ma_liste" class="img">
