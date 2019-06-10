@@ -81,7 +81,6 @@ function loadPreview(e) {
 	reader.readAsDataURL(inputFile);
 }
 
-var timer;
 var lastModalOpened;
 
 $(document).ready(function() {
@@ -125,6 +124,10 @@ function getPictureWidth() {
 	}
 }
 
+/* ********************* */
+/* *** Loading Stuff *** */
+/* ********************* */
+
 function closeModal() {
 	if (typeof lastModalOpened != 'undefined') {
 		lastModalOpened.modal('hide');
@@ -133,17 +136,24 @@ function closeModal() {
 	$(".modal-backdrop").remove();
 }
 
+var loadingTimeout; // Time before we display the loading animation
+var timer;
+
 function doLoading(message) {
 	closeModal();
+	clearTimeout(loadingTimeout);
 	clearTimeout(timer);
 	$("#loading_message_div").hide()
-							 .removeClass()
-							 .html('<img src="resources/image/loading.gif" width="' + getPictureWidth() + '" />' + message)
-							 .addClass('loading')
-							 .slideDown();
+							 .removeClass();
+	loadingTimeout = setTimeout(function() {
+		$("#loading_message_div").html('<img src="resources/image/loading.gif" width="' + getPictureWidth() + '" />' + message)
+								 .addClass('loading')
+								 .slideDown();
+	}, 400);
 }
 function actionDone(message) {
 	closeModal();
+	clearTimeout(loadingTimeout);
 	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()
@@ -156,6 +166,7 @@ function actionDone(message) {
 }
 function actionError(message) {
 	closeModal();
+	clearTimeout(loadingTimeout);
 	clearTimeout(timer);
 	$("#loading_message_div").hide()
 							 .removeClass()
@@ -166,6 +177,10 @@ function actionError(message) {
 		$("#loading_message_div").fadeOut('slow');
 	}, 5000);
 }
+
+/* ************************ */
+/* *** Post / URL Stuff *** */
+/* ************************ */
 
 function servicePost(url, params, successHandler, loadingMessage, successMessage, errorMessage) {
 
