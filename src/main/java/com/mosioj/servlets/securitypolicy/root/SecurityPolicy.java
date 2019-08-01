@@ -46,7 +46,6 @@ public abstract class SecurityPolicy {
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
 	 */
-	// FIXME : 1 il ne faut pas que cela renvoie d'exception
 	public abstract boolean hasRightToInteractInGetRequest(	HttpServletRequest request, HttpServletResponse response);
 
 	/**
