@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.Comment;
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.CommentSecurityChecker;
@@ -13,6 +16,8 @@ import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
 
 public class QuestionModification extends SecurityPolicy implements CommentSecurityChecker {
+
+	private static final Logger logger = LogManager.getLogger(QuestionModification.class);
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the comment id.
@@ -37,7 +42,7 @@ public class QuestionModification extends SecurityPolicy implements CommentSecur
 	 * @throws SQLException
 	 * @throws NotLoggedInException
 	 */
-	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	private boolean canModifyIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
 		Optional<Integer> commentId = readInt(request, questionParameter);
 		if (!commentId.isPresent()) {
@@ -63,14 +68,23 @@ public class QuestionModification extends SecurityPolicy implements CommentSecur
 
 	@Override
 	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canModifyIdea(request, response);
+													HttpServletResponse response) {
+		try {
+			return canModifyIdea(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canModifyIdea(request, response);
+	public boolean hasRightToInteractInPostRequest(	final HttpServletRequest request,
+													final HttpServletResponse response) {
+		try {
+			return canModifyIdea(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override

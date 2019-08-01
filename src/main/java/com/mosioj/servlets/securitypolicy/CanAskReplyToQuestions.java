@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
@@ -18,6 +21,8 @@ import com.mosioj.utils.NotLoggedInException;
  *
  */
 public final class CanAskReplyToQuestions extends SecurityPolicy implements IdeaSecurityChecker {
+
+	private static final Logger logger = LogManager.getLogger(CanAskReplyToQuestions.class);
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
@@ -40,9 +45,9 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
-	 * @throws NotLoggedInException 
+	 * @throws NotLoggedInException
 	 */
-	private boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	private boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
 		Optional<Integer> ideaId = readInt(request, ideaParameter);
 		if (!ideaId.isPresent()) {
@@ -73,13 +78,23 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canInteractWithIdea(request, response);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return canInteractWithIdea(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canInteractWithIdea(request, response);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return canInteractWithIdea(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override

@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.utils.NotLoggedInException;
@@ -18,11 +21,13 @@ import com.mosioj.utils.NotLoggedInException;
  */
 public final class BookingGroupInteraction extends SecurityPolicy {
 
+	private static final Logger logger = LogManager.getLogger(BookingGroupInteraction.class);
+
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the idea id.
 	 */
 	private final String groupParameter;
-	
+
 	private Integer groupId;
 
 	/**
@@ -39,10 +44,9 @@ public final class BookingGroupInteraction extends SecurityPolicy {
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
-	 * @throws NotLoggedInException 
+	 * @throws NotLoggedInException
 	 */
-	private boolean canInteractWithGroup(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
-
+	private boolean canInteractWithGroup(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		Optional<Integer> groupIdParam = readInt(request, groupParameter);
 		if (!groupIdParam.isPresent()) {
 			lastReason = "Aucun groupe trouvé en paramètre.";
@@ -68,13 +72,23 @@ public final class BookingGroupInteraction extends SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canInteractWithGroup(request, response);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return canInteractWithGroup(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canInteractWithGroup(request, response);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return canInteractWithGroup(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	/**

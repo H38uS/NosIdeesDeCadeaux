@@ -12,13 +12,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.utils.NotLoggedInException;
 
 public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 
 	private static final Logger logger = LogManager.getLogger(PeutResoudreDemandesAmis.class);
 
-	private boolean hasAccess(HttpServletRequest request) throws SQLException, NotLoggedInException {
+	private boolean hasAccess(HttpServletRequest request) throws SQLException {
 		try {
 			Set<Integer> ids = new HashSet<Integer>();
 			Map<String, String[]> params = request.getParameterMap();
@@ -60,15 +59,23 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return hasAccess(request);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return hasAccess(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return hasAccess(request);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return hasAccess(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 }

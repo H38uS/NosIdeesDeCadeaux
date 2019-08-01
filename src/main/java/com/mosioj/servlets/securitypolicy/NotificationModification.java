@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
 import com.mosioj.notifications.AbstractNotification;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
@@ -18,6 +21,8 @@ import com.mosioj.utils.NotLoggedInException;
  *
  */
 public class NotificationModification extends SecurityPolicy {
+
+	private static final Logger logger = LogManager.getLogger(NotificationModification.class);
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the notification id.
@@ -42,8 +47,7 @@ public class NotificationModification extends SecurityPolicy {
 	 * @throws SQLException
 	 * @throws NotLoggedInException
 	 */
-	private boolean canModifyNotification(	HttpServletRequest request,
-											HttpServletResponse response) throws SQLException, NotLoggedInException {
+	private boolean canModifyNotification(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
 		Optional<Integer> notifId = readInt(request, notifParameter);
 		if (!notifId.isPresent()) {
@@ -73,15 +77,23 @@ public class NotificationModification extends SecurityPolicy {
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canModifyNotification(request, response);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return canModifyNotification(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canModifyNotification(request, response);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return canModifyNotification(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	/**

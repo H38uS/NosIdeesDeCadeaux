@@ -1,6 +1,5 @@
 package com.mosioj.servlets.securitypolicy.root;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.model.User;
 import com.mosioj.servlets.logichelpers.ModelAccessor;
-import com.mosioj.utils.NotLoggedInException;
 import com.mosioj.utils.ParametersUtils;
 
 public abstract class SecurityPolicy {
@@ -47,23 +45,17 @@ public abstract class SecurityPolicy {
 	 * @param request
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
-	 * @throws SQLException
-	 * @throws NotLoggedInException
 	 */
 	// FIXME : 1 il ne faut pas que cela renvoie d'exception
-	public abstract boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-															HttpServletResponse response) throws SQLException, NotLoggedInException;
+	public abstract boolean hasRightToInteractInGetRequest(	HttpServletRequest request, HttpServletResponse response);
 
 	/**
 	 * 
 	 * @param request
 	 * @param response
 	 * @return True if and only if the current connected user can perform a Get request with embedded parameters.
-	 * @throws SQLException
-	 * @throws NotLoggedInException
 	 */
-	public abstract boolean hasRightToInteractInPostRequest(HttpServletRequest request,
-															HttpServletResponse response) throws SQLException, NotLoggedInException;
+	public abstract boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response);
 
 
 	/**

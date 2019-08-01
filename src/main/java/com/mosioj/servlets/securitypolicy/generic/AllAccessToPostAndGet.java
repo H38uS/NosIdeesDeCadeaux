@@ -1,12 +1,9 @@
 package com.mosioj.servlets.securitypolicy.generic;
 
-import java.sql.SQLException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.utils.NotLoggedInException;
 
 /**
  * A basic policy that allow all connection to the POST URL.
@@ -16,12 +13,12 @@ import com.mosioj.utils.NotLoggedInException;
 public final class AllAccessToPostAndGet extends SecurityPolicy {
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
 		return true;
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
 		return true;
 	}
 

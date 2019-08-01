@@ -5,11 +5,15 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.utils.NotLoggedInException;
 
 public final class NameServicePolicy extends SecurityPolicy {
+
+	private static final Logger logger = LogManager.getLogger(NameServicePolicy.class);
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -30,23 +34,31 @@ public final class NameServicePolicy extends SecurityPolicy {
 			// Soit celui d'un ami
 			userId = connectedUser.id;
 		}
-		
+
 		user = model.users.getUser(userId);
-		
+
 		return true;
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
 
-		return hasRight(request);
+		try {
+			return hasRight(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return hasRight(request);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return hasRight(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	/**

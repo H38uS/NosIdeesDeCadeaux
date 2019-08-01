@@ -6,11 +6,15 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.utils.NotLoggedInException;
 
 public class SuppressionCompte extends SecurityPolicy {
+
+	private static final Logger logger = LogManager.getLogger(SuppressionCompte.class);
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -28,29 +32,37 @@ public class SuppressionCompte extends SecurityPolicy {
 			lastReason = "Non, mais non.";
 			return false;
 		}
-		
+
 		Optional<Integer> userId = readInt(request, userParameter);
 		if (!userId.isPresent()) {
 			lastReason = "Le paramètre est manquant.";
 			return false;
 		}
-		
+
 		user = model.users.getUser(userId.get());
-		
+
 		return false;
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
 
-		return canInteract(request);
+		try {
+			return canInteract(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return canInteract(request);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return canInteract(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	/**

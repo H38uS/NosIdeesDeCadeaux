@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
 import com.mosioj.model.table.UserChangePwdRequest;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
@@ -18,6 +21,8 @@ import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
  *
  */
 public final class PasswordChangeRequest extends SecurityPolicy implements UserSecurityChecker {
+
+	private static final Logger logger = LogManager.getLogger(PasswordChangeRequest.class);
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the token id.
@@ -76,13 +81,23 @@ public final class PasswordChangeRequest extends SecurityPolicy implements UserS
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
-		return isUserIdTokenValid(request, response);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return isUserIdTokenValid(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) throws SQLException {
-		return isUserIdTokenValid(request, response);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return isUserIdTokenValid(request, response);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override

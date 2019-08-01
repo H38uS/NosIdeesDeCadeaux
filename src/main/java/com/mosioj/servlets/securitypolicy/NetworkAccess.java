@@ -6,12 +6,16 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mosioj.model.User;
 import com.mosioj.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.utils.NotLoggedInException;
 
 public final class NetworkAccess extends SecurityPolicy implements UserSecurityChecker {
+
+	private static final Logger logger = LogManager.getLogger(NetworkAccess.class);
 
 	/**
 	 * Defines the string used in HttpServletRequest to retrieve the user id.
@@ -28,7 +32,7 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 		this.userParameter = userParameter;
 	}
 
-	private boolean hasAccess(HttpServletRequest request) throws SQLException, NotLoggedInException {
+	private boolean hasAccess(HttpServletRequest request) throws SQLException {
 		Optional<Integer> user = readInt(request, userParameter);
 		if (!user.isPresent()) {
 			lastReason = "Aucun utilisateur trouvé en paramètre.";
@@ -47,15 +51,23 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 	}
 
 	@Override
-	public boolean hasRightToInteractInPostRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return hasAccess(request);
+	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return hasAccess(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override
-	public boolean hasRightToInteractInGetRequest(	HttpServletRequest request,
-													HttpServletResponse response) throws SQLException, NotLoggedInException {
-		return hasAccess(request);
+	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return hasAccess(request);
+		} catch (SQLException e) {
+			logger.error("Cannot process checking, SQLException: " + e);
+			return false;
+		}
 	}
 
 	@Override

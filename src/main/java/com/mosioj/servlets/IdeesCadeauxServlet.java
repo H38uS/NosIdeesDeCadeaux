@@ -83,7 +83,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
-	
+
 	// FIXME : 0 utiliser GSon ?
 
 	private static final int MAX_WIDTH = 150;
@@ -143,65 +143,60 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		fillConnectedUserIfPossible(request);
 		policy.setConnectedUser(thisOne);
 
-		try {
+		if (!policy.hasRightToInteractInGetRequest(request, resp) && !request.isUserInRole("ROLE_ADMIN")) {
 
-			if (!policy.hasRightToInteractInGetRequest(request, resp) && !request.isUserInRole("ROLE_ADMIN")) {
-
-				int userId;
-				try {
-					userId = thisOne.id;
-				} catch (Exception e) {
-					userId = -1;
-				}
-
-				request.setAttribute("error_message", policy.getLastReason());
-				logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0} on {1}. Reason: {2}",
-													userId,
-													request.getRequestURL(),
-													policy.getLastReason()));
-				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, resp);
-				return;
+			int userId;
+			try {
+				userId = thisOne.id;
+			} catch (Exception e) {
+				userId = -1;
 			}
 
-			String fullURL = request.getRequestURL().toString();
-			model.notif.setURL(fullURL);
+			request.setAttribute("error_message", policy.getLastReason());
+			logger.warn(MessageFormat.format(	"Inapropriate GET access from user {0} on {1}. Reason: {2}",
+												userId,
+												request.getRequestURL(),
+												policy.getLastReason()));
+			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, resp);
+			return;
+		}
 
-			device = (Device) request.getAttribute("device");
+		String fullURL = request.getRequestURL().toString();
+		model.notif.setURL(fullURL);
 
-			if (request.getRemoteUser() != null) {
-				try {
-					// Mise à jour du nombre de notifications
-					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisOne.id));
-					model.parentRelationship.getChildren(thisOne.id).forEach(c -> {
-						try {
-							count.add(model.notif.getUserNotificationCount(c.id));
-						} catch (Exception e) {
-							logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
-																c.getName(),
-																c.id));
-						}
-					});
-					request.setAttribute("notif_count", count.getValue());
+		device = (Device) request.getAttribute("device");
 
-					// Ajout d'information sur l'idée du Security check
-					if (policy instanceof IdeaSecurityChecker) {
-						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-						model.idees.fillAUserIdea(thisOne, idee, device);
+		if (request.getRemoteUser() != null) {
+			try {
+				// Mise à jour du nombre de notifications
+				final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisOne.id));
+				model.parentRelationship.getChildren(thisOne.id).forEach(c -> {
+					try {
+						count.add(model.notif.getUserNotificationCount(c.id));
+					} catch (Exception e) {
+						logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
+															c.getName(),
+															c.id));
 					}
+				});
+				request.setAttribute("notif_count", count.getValue());
 
-				} catch (Exception e) {
-					// Osef
-					logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
-					logger.warn(Arrays.toString(e.getStackTrace()));
+				// Ajout d'information sur l'idée du Security check
+				if (policy instanceof IdeaSecurityChecker) {
+					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
+					model.idees.fillAUserIdea(thisOne, idee, device);
 				}
-			}
 
+			} catch (Exception e) {
+				// Osef
+				logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
+				logger.warn(Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		try {
 			// Security has passed, perform the logic
 			ideesKDoGET(request, resp);
-
-		} catch (NotLoggedInException e) {
-			// Redirection vers l'emplacement de login
-			RootingsUtils.redirectToPage("/public/login.jsp", request, resp);
 		} catch (SQLException e) {
 			// Default error management
 			RootingsUtils.rootToGenericSQLError(thisOne, e, request, resp);
@@ -225,66 +220,61 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		fillConnectedUserIfPossible(request);
 		policy.setConnectedUser(thisOne);
 
-		try {
+		if (!policy.hasRightToInteractInPostRequest(request, response) && !request.isUserInRole("ROLE_ADMIN")) {
 
-			if (!policy.hasRightToInteractInPostRequest(request, response) && !request.isUserInRole("ROLE_ADMIN")) {
-
-				int userId;
-				try {
-					userId = thisOne.id;
-				} catch (Exception e) {
-					userId = -1;
-				}
-
-				request.setAttribute("error_message", policy.getLastReason());
-				logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0} on {1}. Reason: {2}",
-													userId,
-													request.getRequestURL(),
-													policy.getLastReason()));
-				RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
-				return;
+			int userId;
+			try {
+				userId = thisOne.id;
+			} catch (Exception e) {
+				userId = -1;
 			}
 
-			String fullURL = request.getRequestURL().toString();
-			model.notif.setURL(fullURL);
+			request.setAttribute("error_message", policy.getLastReason());
+			logger.warn(MessageFormat.format(	"Inapropriate POST access from user {0} on {1}. Reason: {2}",
+												userId,
+												request.getRequestURL(),
+												policy.getLastReason()));
+			RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
+			return;
+		}
 
-			device = (Device) request.getAttribute("device");
+		String fullURL = request.getRequestURL().toString();
+		model.notif.setURL(fullURL);
 
-			if (request.getRemoteUser() != null) {
-				try {
-					// Mise à jour du nombre de notifications
-					User thisUser = thisOne;
-					final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
-					model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
-						try {
-							count.add(model.notif.getUserNotificationCount(c.id));
-						} catch (Exception e) {
-							logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
-																c.getName(),
-																c.id));
-						}
-					});
-					request.setAttribute("notif_count", count.getValue());
+		device = (Device) request.getAttribute("device");
 
-					// Ajout d'information sur l'idée du Security check
-					if (policy instanceof IdeaSecurityChecker) {
-						Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-						model.idees.fillAUserIdea(thisUser, idee, device);
+		if (request.getRemoteUser() != null) {
+			try {
+				// Mise à jour du nombre de notifications
+				User thisUser = thisOne;
+				final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
+				model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
+					try {
+						count.add(model.notif.getUserNotificationCount(c.id));
+					} catch (Exception e) {
+						logger.warn(MessageFormat.format(	"Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
+															c.getName(),
+															c.id));
 					}
+				});
+				request.setAttribute("notif_count", count.getValue());
 
-				} catch (Exception e) {
-					// Osef
-					logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
-					logger.warn(Arrays.toString(e.getStackTrace()));
+				// Ajout d'information sur l'idée du Security check
+				if (policy instanceof IdeaSecurityChecker) {
+					Idee idee = ((IdeaSecurityChecker) policy).getIdea();
+					model.idees.fillAUserIdea(thisUser, idee, device);
 				}
-			}
 
+			} catch (Exception e) {
+				// Osef
+				logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
+				logger.warn(Arrays.toString(e.getStackTrace()));
+			}
+		}
+
+		try {
 			// Security has passed, perform the logic
 			ideesKDoPOST(request, response);
-
-		} catch (NotLoggedInException e) {
-			// Redirection vers l'emplacement de login
-			RootingsUtils.redirectToPage("/public/login.jsp", request, response);
 		} catch (SQLException e) {
 			RootingsUtils.rootToGenericSQLError(thisOne, e, request, response);
 		}

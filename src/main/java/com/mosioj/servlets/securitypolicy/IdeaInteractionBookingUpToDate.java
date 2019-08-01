@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.utils.NotLoggedInException;
-
 /**
  * A policy to make sure we can interact with an idea : forbids the owner of the idea.
  * 
@@ -25,9 +23,8 @@ public final class IdeaInteractionBookingUpToDate extends IdeaInteraction {
 	 * @param response
 	 * @return True if the current user can interact with the idea.
 	 * @throws SQLException
-	 * @throws NotLoggedInException 
 	 */
-	protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException, NotLoggedInException {
+	protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		if (super.canInteractWithIdea(request, response)) {
 			if (idea.getSurpriseBy() != null) {
 				lastReason = "Impossible de réserver / demander des nouvelles sur cette idée... Il s'agit d'une surprise !";
