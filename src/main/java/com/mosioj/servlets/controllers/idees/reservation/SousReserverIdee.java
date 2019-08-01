@@ -13,11 +13,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/sous_reserver")
-public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
+public class SousReserverIdee extends AbstractIdea<IdeaInteraction> {
 
 	private static final long serialVersionUID = 7349100644264613480L;
 	private static final Logger logger = LogManager.getLogger(SousReserverIdee.class);
@@ -30,7 +30,7 @@ public class SousReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDat
 	 * Class constructor
 	 */
 	public SousReserverIdee() {
-		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	@Override

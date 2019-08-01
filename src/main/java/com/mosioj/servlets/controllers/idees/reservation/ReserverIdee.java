@@ -17,11 +17,11 @@ import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/reserver")
-public class ReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
+public class ReserverIdee extends AbstractIdea<IdeaInteraction> {
 
 	private static final Logger logger = LogManager.getLogger(ReserverIdee.class);
 	private static final long serialVersionUID = 7349100644264613480L;
@@ -31,7 +31,7 @@ public class ReserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 	 * Class constructor
 	 */
 	public ReserverIdee() {
-		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	@Override

@@ -15,11 +15,11 @@ import com.mosioj.model.Idee;
 import com.mosioj.model.SousReservationEntity;
 import com.mosioj.model.User;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/detail_sous_reservation")
-public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUpToDate> {
+public class DetailSousReservation extends AbstractIdea<IdeaInteraction> {
 
 	private static final long serialVersionUID = -2188278918134412556L;
 	private static final Logger logger = LogManager.getLogger(DetailSousReservation.class);
@@ -32,7 +32,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteractionBookingUp
 	 * Class constructor.
 	 */
 	public DetailSousReservation() {
-		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	// TODO : Pouvoir suggérer de sous réserver cette idée

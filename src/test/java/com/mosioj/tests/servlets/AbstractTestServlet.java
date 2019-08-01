@@ -107,9 +107,14 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	protected void doTestPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doTestPost(HttpServletRequest request, HttpServletResponse response) {
 		when(request.getMethod()).thenReturn("POST");
-		instance.doPost(request, response);
+		try {
+			instance.doPost(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+			fail("Servlet error.");
+		}
 	}
 
 	/**
@@ -120,9 +125,14 @@ public abstract class AbstractTestServlet extends TemplateTest {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	protected void doTestGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doTestGet(HttpServletRequest request, HttpServletResponse response) {
 		when(request.getMethod()).thenReturn("GET");
-		instance.doGet(request, response);
+		try {
+			instance.doGet(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+			fail("Servlet error.");
+		}
 	}
 
 	protected void createMultiPartRequest(Map<String,String> parameters) throws IOException {

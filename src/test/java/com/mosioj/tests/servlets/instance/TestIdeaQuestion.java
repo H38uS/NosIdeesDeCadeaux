@@ -1,5 +1,6 @@
 package com.mosioj.tests.servlets.instance;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -40,6 +41,34 @@ public class TestIdeaQuestion extends AbstractTestServlet {
 		assertNotifDoesNotExists(addByFriend);
 		assertNotifDoesNotExists(newQuestion);
 		idees.remove(id);
+	}
+
+	@Test
+	public void testAjouterQuestion() throws SQLException, ServletException, IOException {
+		
+		int ideaId = idees.addIdea(friendOfFirefox, "sans questions", null, 0, null, null, null);
+		assertEquals(0, questions.getCommentsOn(ideaId).size());
+		
+		when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId+"");
+		when(request.getParameter("text")).thenReturn("Voilou voilou");
+		doTestPost(request, response);
+		
+		assertEquals(1, questions.getCommentsOn(ideaId).size());
+		idees.remove(ideaId);
+	}
+
+	@Test
+	public void testAjouterQuestionSurUneSurprise() throws SQLException, ServletException, IOException {
+		
+		int ideaId = idees.addIdea(friendOfFirefox, "sans questions", null, 0, null, firefox, firefox);
+		assertEquals(0, questions.getCommentsOn(ideaId).size());
+		
+		when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId+"");
+		when(request.getParameter("text")).thenReturn("Voilou voilou");
+		doTestPost(request, response);
+		
+		assertEquals(0, questions.getCommentsOn(ideaId).size()); // Impossible de poser une question sur une surprise !
+		idees.remove(ideaId);
 	}
 
 }

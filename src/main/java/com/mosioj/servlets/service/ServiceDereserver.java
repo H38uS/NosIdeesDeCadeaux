@@ -13,10 +13,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.reservation.DereserverIdee;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 
 @WebServlet("/protected/service/dereserver")
-public class ServiceDereserver extends AbstractServicePost<IdeaInteractionBookingUpToDate> {
+public class ServiceDereserver extends AbstractServicePost<IdeaInteraction> {
 
 	private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
 	private static final long serialVersionUID = -8244829899125982644L;
@@ -26,7 +26,7 @@ public class ServiceDereserver extends AbstractServicePost<IdeaInteractionBookin
 	 * Class constructor
 	 */
 	public ServiceDereserver() {
-		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	@Override

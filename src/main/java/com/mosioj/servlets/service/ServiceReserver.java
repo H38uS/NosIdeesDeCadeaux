@@ -12,10 +12,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 
 @WebServlet("/protected/service/reserver")
-public class ServiceReserver extends AbstractServicePost<IdeaInteractionBookingUpToDate> {
+public class ServiceReserver extends AbstractServicePost<IdeaInteraction> {
 
 	private static final long serialVersionUID = 2642366164643542379L;
 	private static final String IDEA_ID_PARAM = "idee";
@@ -23,18 +23,17 @@ public class ServiceReserver extends AbstractServicePost<IdeaInteractionBookingU
 	private static final Logger logger = LogManager.getLogger(ServiceReserver.class);
 
 	public ServiceReserver() {
-		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	@Override
 	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
 		Idee idea = policy.getIdea();
-		int userId = thisOne.id;
-		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea.getId(), userId));
+		logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea.getId(), thisOne));
 
-		if (model.idees.canBook(idea.getId(), userId)) {
-			model.idees.reserver(idea.getId(), userId);
+		if (model.idees.canBook(idea.getId(), thisOne.id)) {
+			model.idees.reserver(idea.getId(), thisOne.id);
 		}
 
 		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));

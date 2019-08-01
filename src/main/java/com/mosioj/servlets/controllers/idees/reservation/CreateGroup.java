@@ -15,14 +15,14 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.ParametersUtils;
 import com.mosioj.utils.RootingsUtils;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/create_a_group")
-public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
+public class CreateGroup extends AbstractIdea<IdeaInteraction> {
 
 	private static final long serialVersionUID = -1774633803227715931L;
 	private static final Logger logger = LogManager.getLogger(CreateGroup.class);
@@ -34,7 +34,7 @@ public class CreateGroup extends AbstractIdea<IdeaInteractionBookingUpToDate> {
 	 * Class contructor
 	 */
 	public CreateGroup() {
-		super(new IdeaInteractionBookingUpToDate(IDEE_FIELD_PARAMETER));
+		super(new IdeaInteraction(IDEE_FIELD_PARAMETER));
 	}
 
 	@Override

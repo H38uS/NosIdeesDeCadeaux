@@ -14,11 +14,11 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.model.Idee;
 import com.mosioj.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.servlets.controllers.idees.MesListes;
-import com.mosioj.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
+import com.mosioj.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.utils.RootingsUtils;
 
 @WebServlet("/protected/dereserver")
-public class DereserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate> {
+public class DereserverIdee extends AbstractIdea<IdeaInteraction> {
 
 	private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
 	private static final long serialVersionUID = -8244829899125982644L;
@@ -28,7 +28,7 @@ public class DereserverIdee extends AbstractIdea<IdeaInteractionBookingUpToDate>
 	 * Class constructor
 	 */
 	public DereserverIdee() {
-		super(new IdeaInteractionBookingUpToDate(IDEA_ID_PARAM));
+		super(new IdeaInteraction(IDEA_ID_PARAM));
 	}
 
 	@Override

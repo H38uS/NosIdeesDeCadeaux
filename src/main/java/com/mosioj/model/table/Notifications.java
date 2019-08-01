@@ -448,6 +448,16 @@ public class Notifications extends Table {
 	 * @return All notifications for this user.
 	 * @throws SQLException
 	 */
+	public List<AbstractNotification> getUserNotifications(int userId, NotificationType type) throws SQLException {
+		return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", OWNER, TYPE), userId, type.name());
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @return All notifications for this user.
+	 * @throws SQLException
+	 */
 	public List<AbstractNotification> getUserReadNotifications(int userId) throws SQLException {
 		return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", OWNER, IS_UNREAD), userId, "N");
 	}

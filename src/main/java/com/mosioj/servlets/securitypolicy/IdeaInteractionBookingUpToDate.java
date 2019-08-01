@@ -35,9 +35,7 @@ public final class IdeaInteractionBookingUpToDate extends IdeaInteraction {
 			}
 			return true;
 		}
-		return true; 
-		// FIXME : 0 truc pas logique... On peut réserver des surprises. Et pourquoi c'est true à la fin si super.canInteractWithIdea
-		// est false ??
+		return false; 
 	}
 
 }

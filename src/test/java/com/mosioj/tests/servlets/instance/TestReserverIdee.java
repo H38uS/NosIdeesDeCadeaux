@@ -3,10 +3,7 @@ package com.mosioj.tests.servlets.instance;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.sql.SQLException;
-
-import javax.servlet.ServletException;
 
 import org.junit.Test;
 
@@ -23,7 +20,7 @@ public class TestReserverIdee extends AbstractTestServlet {
 	}
 
 	@Test
-	public void test() throws SQLException, NoRowsException, ServletException, IOException {
+	public void test() throws SQLException, NoRowsException {
 
 		int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 		Idee idee = idees.getIdeaWithoutEnrichment(id);
@@ -36,6 +33,19 @@ public class TestReserverIdee extends AbstractTestServlet {
 		idee = idees.getIdeaWithoutEnrichment(id);
 
 		assertNotifDoesNotExists(recurentUnbook);
+		assertTrue(idee.isBooked());
+	}
+
+	@Test
+	public void testReservationSurprise() throws SQLException {
+		
+		int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
+		Idee idee = idees.getIdeaWithoutEnrichment(id);
+		
+		when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
+		doTestPost(request, response);
+		idee = idees.getIdeaWithoutEnrichment(id);
+		
 		assertTrue(idee.isBooked());
 	}
 
