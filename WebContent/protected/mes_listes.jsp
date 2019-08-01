@@ -265,10 +265,13 @@
 										</c:if>
 									</c:forEach>
 								</c:if>
+								<c:if test="${fn:length(user.ideas) == 0}">
+									<div class="alert alert-primary">
+										Vous n'avez pas encore d'idées. 
+										Cliquez <a href="protected/ma_liste">ici</a> pour en ajouter.
+									</div>
+								</c:if>
 							</div>
-							<c:if test="${fn:length(user.ideas) == 0}">
-								<span>Vous n'avez pas encore d'idées. Cliquez <a href="protected/ma_liste">ici</a> pour en ajouter.</span>
-							</c:if>
 						</c:if>
 		
 						<!-- Fin idée de la personne -->
@@ -545,10 +548,14 @@
 									</div>
 									</c:forEach>
 								</c:if>
+								<c:if test="${fn:length(user.ideas) == 0}">
+									<div class="alert alert-primary">
+										${user.name} n'a pas encore d'idées. Pour lui en ajouter (surprise ou pas), cliquer 
+										<a href="protected/ajouter_idee_ami?id=${user.id}">ici</a>
+										ou sur le plus blanc ci-dessus.
+									</div>
+								</c:if>
 							</div>
-							<c:if test="${fn:length(user.ideas) == 0}">
-								<span>${user.name} n'a pas encore d'idées.</span>
-							</c:if>
 						</c:if>
 					</c:forEach>
 		

@@ -38,7 +38,7 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
 	 * 
 	 * @param request
 	 * @param response
-	 * @return True if the current user can interact with the idea.
+	 * @return True if the current user can interact with the idea. False for the current user.
 	 * @throws SQLException
 	 * @throws NotLoggedInException 
 	 */
