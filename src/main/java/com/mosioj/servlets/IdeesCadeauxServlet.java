@@ -111,7 +111,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	/**
 	 * The connected user, or null if the user is not logged in.
 	 */
-	protected User thisOne = null; // TODO mettre un user fake ?
+	protected User thisOne = null;
 
 	protected Map<String, String> parameters;
 	protected Device device;

@@ -307,9 +307,8 @@ public class Notifications extends Table {
 	 * @param userId
 	 * @param parameters
 	 * @return
-	 * @throws SQLException
 	 */
-	private List<AbstractNotification> getNotificationFromQuery(String query, Object... parameters) throws SQLException {
+	private List<AbstractNotification> getNotificationFromQuery(String query, Object... parameters) {
 
 		PreparedStatementIdKdo ps = null;
 		List<AbstractNotification> notifications = new ArrayList<AbstractNotification>();
@@ -388,6 +387,9 @@ public class Notifications extends Table {
 				}
 
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error(e);
 		} finally {
 			if (ps != null) {
 				ps.close();
@@ -403,9 +405,8 @@ public class Notifications extends Table {
 	 * @param parameters
 	 * 
 	 * @return The notifications matched by this where clause or all.
-	 * @throws SQLException
 	 */
-	private List<AbstractNotification> getNotificationWithWhereClause(String whereClause, Object... parameters) throws SQLException {
+	private List<AbstractNotification> getNotificationWithWhereClause(String whereClause, Object... parameters) {
 
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format(	"select {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8} ",
@@ -479,12 +480,11 @@ public class Notifications extends Table {
 	 * @param parameterName
 	 * @param parameterValue
 	 * @return The list of notification having the given parameter name equals to this value.
-	 * @throws SQLException
 	 */
 	public List<AbstractNotification> getNotifications(	int owner,
 														NotificationType type,
 														ParameterName parameterName,
-														Object parameterValue) throws SQLException {
+														Object parameterValue) {
 		String whereClause = MessageFormat.format(	" exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?) and {5} = ? and {6} = ?",
 													TABLE_PARAMS,
 													NOTIFICATION_ID,

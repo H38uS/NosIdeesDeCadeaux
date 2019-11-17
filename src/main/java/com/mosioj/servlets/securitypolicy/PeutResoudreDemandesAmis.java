@@ -1,9 +1,8 @@
 package com.mosioj.servlets.securitypolicy;
 
 import java.sql.SQLException;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,24 +16,31 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 
 	private static final Logger logger = LogManager.getLogger(PeutResoudreDemandesAmis.class);
 
+	/**
+	 * The user answer for each friendship request.
+	 */
+	private Map<Integer, Boolean> choiceParameters;
+
 	private boolean hasAccess(HttpServletRequest request) throws SQLException {
 		try {
-			Set<Integer> ids = new HashSet<Integer>();
+			choiceParameters = new HashMap<>();
 			Map<String, String[]> params = request.getParameterMap();
 			for (String key : params.keySet()) {
 				if (!key.startsWith("choix_")) {
 					continue;
 				}
-				ids.add(Integer.parseInt(key.substring("choix_".length())));
+				if (params.get(key).length > 0) {
+					choiceParameters.put(Integer.parseInt(key.substring("choix_".length())), "Accepter".equals(params.get(key)[0]));
+				}
 			}
 
-			if (ids.isEmpty()) {
+			if (choiceParameters.isEmpty()) {
 				lastReason = "Aucun utilisateur trouvé en paramètre.";
 				return false;
 			}
 
 			int userId = connectedUser.id;
-			for (int user : ids.toArray(new Integer[ids.size()])) {
+			for (int user : choiceParameters.keySet()) {
 				if (user == userId) {
 					lastReason = "Vous ne pouvez pas être ami avec vous-même...";
 					return false;
@@ -76,6 +82,13 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 			logger.error("Cannot process checking, SQLException: " + e);
 			return false;
 		}
+	}
+
+	/**
+	 * @return the choiceParameters
+	 */
+	public Map<Integer, Boolean> getChoiceParameters() {
+		return choiceParameters;
 	}
 
 }
