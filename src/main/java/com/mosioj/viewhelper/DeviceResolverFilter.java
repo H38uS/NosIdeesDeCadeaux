@@ -59,7 +59,7 @@ public class DeviceResolverFilter implements Filter {
 		request.setAttribute("action_img_width", device.isMobile() ? Idees.MOBILE_PICTURE_WIDTH : PICTURE_PC_WIDTH);
 
 		User user = (User) ((HttpServletRequest) request).getSession().getAttribute("connected_user");
-		String name = user == null ? "anonymous" : user.getName();
+		String name = user == null ? "anonymous" : user.getEmail();
 		logger.debug(MessageFormat.format("URL: {0}, demandée par {1}. Is mobile: {2}.", url, name, device.isMobile()));
 		chain.doFilter(request, response);
 	}

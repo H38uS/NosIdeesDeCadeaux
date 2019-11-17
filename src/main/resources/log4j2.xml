@@ -12,12 +12,29 @@
 			</Policies>
 			<DefaultRolloverStrategy max="100" />
 		</RollingFile>
+		<RollingFile name="AccessLogs" fileName="${work_dir}/logs/Access.log" append="true" filePattern="${work_dir}/logs/%d{yyyy-MM-dd}-Access-%i.log" >
+			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="3000KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="100" />
+		</RollingFile>
 		<ErrorAppender name="errorNotifier" />
 	</Appenders>
 
 	<Loggers>
 		<logger name="org" level="warn" />
 		<logger name="com.mosioj" level="debug" />
+		<logger name="com.mosioj.viewhelper.DeviceResolverFilter" level="error"/>
+		<logger name="com.mosioj.utils.AuthenticationListener" level="error"/>
+
+		<logger name="com.mosioj.utils.AuthenticationListener" level="debug" additivity="false">
+			<AppenderRef ref="AccessLogs" />
+		</logger>
+		<logger name="com.mosioj.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
+			<AppenderRef ref="AccessLogs" />
+		</logger>
+		
 		<Root>
 			<AppenderRef ref="Console" level="${console_log_level}" />
 			<AppenderRef ref="RollingFile" />
