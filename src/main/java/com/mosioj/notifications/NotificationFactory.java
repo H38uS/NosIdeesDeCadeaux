@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.table.Notifications;
-import com.mosioj.notifications.instance.NotifErrorOccured;
+import com.mosioj.notifications.instance.NotifAdministration;
 
 public class NotificationFactory {
 
@@ -41,7 +41,9 @@ public class NotificationFactory {
 												Map<ParameterName, Object> params) throws SQLException {
 
 		if (Notifications.NOTIF_TYPE_ADMIN_ERROR.equals(type)) {
-			return new NotifErrorOccured(id, owner, text, params, creationTime, isUnread, readOn);
+			return new NotifAdministration(id, owner, text, params, creationTime, isUnread, readOn);
+		} else if (Notifications.NOTIF_TYPE_NEW_INSCRIPTION.equals(type)) {
+			return new NotifAdministration(id, owner, text, params, creationTime, isUnread, readOn);
 		}
 
 		NotificationType t = NotificationType.valueOf(type);

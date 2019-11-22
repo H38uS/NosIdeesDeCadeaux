@@ -51,6 +51,11 @@ public class TemplateTest {
 	 */
 	protected static final int _MOI_AUTRE_ = 8;
 	protected User moiAutre;
+	
+	/**
+	 * The admin user.
+	 */
+	protected static final int _ADMIN_ID_ = 1;
 
 	protected final Idees idees = new Idees();
 	protected final Users users = new Users();

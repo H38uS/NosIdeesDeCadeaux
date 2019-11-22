@@ -3,6 +3,7 @@ package com.mosioj.servlets.controllers.compte;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -64,7 +65,8 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
 		List<String> pwdErrors = helper.checkPwd(helper.getValidatorPwd(pwd));
 		request.setAttribute("pwd_errors", pwdErrors);
 
-		List<String> emailErrors = helper.checkEmail(helper.getValidatorEmail(email), -1, false); // The user does not exist yet
+		List<String> emailErrors = helper.checkEmail(helper.getValidatorEmail(email), -1, false); // The user does not
+																									// exist yet
 		request.setAttribute("email_errors", emailErrors);
 
 		try {
@@ -77,11 +79,11 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
 		String captchaResponse = ParametersUtils.readIt(request, "g-recaptcha-response");
 		String urlCalled = request.getRequestURL().toString();
 		logger.debug(captchaResponse + " / " + request.getRequestURL());
-		boolean captchaOk = urlCalled.startsWith(HTTP_LOCALHOST_8080) || CaptchaHandler.resolveIt(captchaResponse); 
+		boolean captchaOk = urlCalled.startsWith(HTTP_LOCALHOST_8080) || CaptchaHandler.resolveIt(captchaResponse);
 		if (!captchaOk) {
 			request.setAttribute("captcha_errors", "Erreur lors de la validation du Captcha.");
 		}
-		
+
 		// Password hash
 		String hashPwd = helper.hashPwd(pwd, pwdErrors);
 
@@ -103,6 +105,7 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
 			throw new ServletException(e.getMessage());
 		}
 
+		model.notif.notifyAboutANewInscription(MessageFormat.format("A person within the site !! This is {0}.", email));
 		model.notif.addNotification(thisOne.id, new NotifNoIdea());
 		RootingsUtils.rootToPage(SUCCES_URL, request, response);
 	}

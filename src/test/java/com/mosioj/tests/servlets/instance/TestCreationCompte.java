@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.mosioj.notifications.instance.NotifAdministration;
 import com.mosioj.servlets.controllers.compte.CreationCompte;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 import com.mosioj.utils.RootingsUtils;
@@ -59,6 +60,7 @@ public class TestCreationCompte extends AbstractTestServlet {
 	@Test
 	public void testSuccess() throws ServletException, IOException, SQLException {
 
+		long count = countNewInscriptionNotification();
 		ds.executeUpdate("delete from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr");
 		assertEquals(0, ds.selectCountStar("select count(*) from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr"));
 		when(request.getParameter("email")).thenReturn("tartenpiontoto@hotmaildzndqudn.fr");
@@ -72,6 +74,14 @@ public class TestCreationCompte extends AbstractTestServlet {
 		verify(request).getRequestDispatcher(eq(CreationCompte.SUCCES_URL));
 		verify(request, never()).getRequestDispatcher(eq(RootingsUtils.PUBLIC_SERVER_ERROR_JSP));
 		verify(request, never()).getRequestDispatcher(eq(CreationCompte.FORM_URL));
+		assertEquals(count + 1, countNewInscriptionNotification());
+	}
+
+	protected long countNewInscriptionNotification() throws SQLException {
+		return notif.getUserNotifications(_ADMIN_ID_)
+					.stream()
+					.filter(n -> NotifAdministration.class.equals(n.getClass()))
+					.count();
 	}
 
 }

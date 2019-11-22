@@ -49,6 +49,7 @@ public class Notifications extends Table {
 	public static final String TABLE_PARAMS = "NOTIFICATION_PARAMETERS";
 
 	public static final String NOTIF_TYPE_ADMIN_ERROR = "ADMIN_ERROR";
+	public static final String NOTIF_TYPE_NEW_INSCRIPTION = "NEW_INSCRIPTION";
 
 	private final Logger logger = LogManager.getLogger(Notifications.class);
 	private final UserParameters userParameters = new UserParameters();
@@ -525,40 +526,41 @@ public class Notifications extends Table {
 	}
 
 	/**
-	 * Send a notification to the admin that an error has occurred.
+	 * Manually sends a new notification to the ADMIN.
 	 * 
+	 * @param type
 	 * @param message
 	 */
-	public void notifyAboutAnError(String message) {
+	private void sendAdminNotification(String type, String message) {
 
 		// Insert a DB notification
 		StringBuilder query = new StringBuilder();
 		query.append(MessageFormat.format(" insert into {0} ", TABLE_NAME));
 		query.append(MessageFormat.format("   ({0},{1},{2},{3}) ", OWNER, TEXT, TYPE, CREATION_DATE));
-		query.append(MessageFormat.format(	" select u.{0}, ''Une erreur est survenue: {1}...'', ''{2}'', now()",
-											UsersColumns.ID,
-											message,
-											NOTIF_TYPE_ADMIN_ERROR));
+		query.append(MessageFormat.format(	" select u.{0}, ''{1}'', ''{2}'', now()",
+		                                  	UsersColumns.ID,
+		                                  	message,
+		                                  	type));
 		query.append(MessageFormat.format("   from {0} u ", Users.TABLE_NAME));
 		query.append(MessageFormat.format("   join USER_ROLES ur on ur.{0} = u.{1}", UserRolesColumns.EMAIL, UsersColumns.EMAIL));
 		query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
-
+		
 		getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
-
+		
 		// Send emails to the ADMIN
 		query = new StringBuilder();
 		query.append(MessageFormat.format("select u.{0} ", UsersColumns.EMAIL));
 		query.append(MessageFormat.format("  from {0} u ", Users.TABLE_NAME));
 		query.append(MessageFormat.format("  join USER_ROLES ur on ur.{0} = u.{1} ", UserRolesColumns.EMAIL, UsersColumns.EMAIL));
 		query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
-
+		
 		PreparedStatementIdKdo ps = null;
 		try {
 			ps = new PreparedStatementIdKdo(getDb(), query.toString());
 			ps.bindParameters("ROLE_ADMIN");
 			ps.execute();
 			ResultSet res = ps.getResultSet();
-
+			
 			while (res.next()) {
 				String emailAdress = res.getString(UsersColumns.EMAIL.name());
 				try {
@@ -570,17 +572,17 @@ public class Notifications extends Table {
 						e.printStackTrace();
 						logger.warn(e);
 					}
-
+					
 					String messageTemplate = p.get("mail_template").toString();
 					String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
-					EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Une erreur est survenue...", body);
-
+					EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Admin notification...", body);
+					
 				} catch (Exception e) {
 					logger.warn(MessageFormat.format("Fail to send error email to {0}", emailAdress));
 					e.printStackTrace();
 				}
 			}
-
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.warn(e.getMessage());
@@ -589,6 +591,25 @@ public class Notifications extends Table {
 				ps.close();
 			}
 		}
+	}
+
+	/**
+	 * Send a notification to the admin that a new person has signed in.
+	 * 
+	 * @param message
+	 */
+	public void notifyAboutANewInscription(String message) {
+		logger.info(MessageFormat.format("New person nofication ! Message: {0}", message));
+		sendAdminNotification(NOTIF_TYPE_NEW_INSCRIPTION, message);
+	}
+
+	/**
+	 * Send a notification to the admin that an error has occurred.
+	 * 
+	 * @param message
+	 */
+	public void notifyAboutAnError(String message) {
+		sendAdminNotification(NOTIF_TYPE_ADMIN_ERROR, message);
 	}
 
 	/**
