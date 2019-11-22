@@ -25,7 +25,7 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
 	public void onApplicationEvent(ApplicationEvent appEvent) {
 
 		Class<? extends ApplicationEvent> clazz = appEvent.getClass();
-		logger.debug("Event => " + clazz);
+		logger.trace("Event => " + clazz);
 
 		if (!AbstractAuthenticationEvent.class.isAssignableFrom(clazz) && !AbstractAuthorizationEvent.class.isAssignableFrom(clazz)) {
 			// Only interesting into authorization / authentication

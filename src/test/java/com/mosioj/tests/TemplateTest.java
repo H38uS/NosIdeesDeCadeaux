@@ -35,13 +35,13 @@ public class TemplateTest {
 	protected final File root = new File(getClass().getResource("/").getFile()).getParentFile().getParentFile();
 
 	/**
-	 * firefox@toto.com
+	 * firefox@toto.com aka firefox
 	 */
 	protected static final int _OWNER_ID_ = 26;
 	protected User firefox;
 	
 	/**
-	 * test@toto.com
+	 * test@toto.com aka friend of Firefox
 	 */
 	protected static final int _FRIEND_ID_ = 4;
 	protected User friendOfFirefox;
@@ -98,9 +98,15 @@ public class TemplateTest {
 		assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 		
 		for (NotificationType type : NotificationType.values()) {
+			new UserRelations().getAllUsersInRelation(new Users().getUser(_OWNER_ID_)).forEach(u -> {
+				try {
+					userParameters.insertUpdateParameter(u, type.name(), NotificationActivation.SITE.name());
+				} catch (SQLException e) {
+					e.printStackTrace();
+					fail();
+				}
+			});
 			userParameters.insertUpdateParameter(new User(_OWNER_ID_,"","",""), type.name(), NotificationActivation.SITE.name());
-			userParameters.insertUpdateParameter(new User(_FRIEND_ID_,"","",""), type.name(), NotificationActivation.SITE.name());
-			userParameters.insertUpdateParameter(new User(_MOI_AUTRE_,"","",""), type.name(), NotificationActivation.SITE.name());
 		}
 	}
 

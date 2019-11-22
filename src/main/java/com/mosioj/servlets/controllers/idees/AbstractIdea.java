@@ -16,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.model.Idee;
 import com.mosioj.model.User;
+import com.mosioj.notifications.NotificationType;
+import com.mosioj.notifications.ParameterName;
 import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
@@ -150,9 +152,21 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 	 */
 	protected void addModificationNotification(User user, Idee idea, boolean isNew) throws SQLException {
 		if (isBirthdayClose(user)) {
-			for (User friend : model.userRelations.getAllUsersInRelation(user)) {
-				model.notif.addNotification(friend.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
-			}
+			// Send a notification for each user that has no such modification notification yet
+			model.userRelations.getAllUsersInRelation(user).parallelStream().filter(u -> {
+				return model.notif	.getNotifications(u.id,
+													NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
+													ParameterName.IDEA_ID,
+													idea.getId())
+									.size() == 0;
+			}).forEach(u -> {
+				try {
+					model.notif.addNotification(u.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
+				} catch (SQLException e) {
+					e.printStackTrace();
+					logger.warn("Fail to send a notification... Error: " + e);
+				}
+			});
 		}
 	}
 
