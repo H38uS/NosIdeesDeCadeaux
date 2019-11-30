@@ -1,6 +1,7 @@
 package com.mosioj.tests.viewhelper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -62,6 +63,7 @@ public class TestEscaper {
 				"<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
 				"<script>alert('toto');</script>",
 				"<sCrIpt>alert('toto');</sCripT>",
+				"un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra et voilà",
 				"http://www.amazon.fr", "http://www.amazon.fr http://www.amazon.fr http://www.amazon.fr"
 		};
 
@@ -71,7 +73,9 @@ public class TestEscaper {
 				"<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
 				">alert('toto');>",
 				">alert('toto');>",
-				"http://www.amazon.fr", "http://www.amazon.fr http://www.amazon.fr http://www.amazon.fr"
+				"un lien <a href=\"https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra\" target=\"_blank\">https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra</a> et voilà",
+				"<a href=\"http://www.amazon.fr\" target=\"_blank\">http://www.amazon.fr</a>",
+				"<a href=\"http://www.amazon.fr\" target=\"_blank\">http://www.amazon.fr</a> <a href=\"http://www.amazon.fr\" target=\"_blank\">http://www.amazon.fr</a> <a href=\"http://www.amazon.fr\" target=\"_blank\">http://www.amazon.fr</a>"
 		};
 
 		for (int i = 0; i < sources.length; i++) {

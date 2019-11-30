@@ -18,6 +18,8 @@ public class Escaper {
 	}
 
 	private static final int MAX_LENGTH = 30;
+	private static final String HTTPS_REGEX = "(^|[^\"])(https?://[^\\s]*)";
+	private static final String HTTPS_REPLACEMENT = "$1<a href=\"$2\" target=\"_blank\">$2</a>";
 
 	private static final String[] UNSUPPORTED_TAGS = new String[] { "applet", "area", "audio", "base", "canvas", "data", "datalist",
 			"embed", "figcaption", "figure", "form", "frame", "frameset", "html", "iframe", "img", "link", "meta", "nav", "object",
@@ -30,7 +32,8 @@ public class Escaper {
 	 * @return The html equivalent of this text.
 	 */
 	public static String textToHtml(String text) {
-		String res = text.replaceAll("\n", "<br/>").replaceAll("(https?://[^\\s]*)", "<a href=\"$0\" target=\"_blank\">$0</a>");
+
+		String res = text.replaceAll("\n", "<br/>").replaceAll(HTTPS_REGEX, HTTPS_REPLACEMENT);
 
 		List<String> tmp = new ArrayList<String>(Arrays.asList(res.split("<a href=\"([^\\s]*)\" target=\"_blank\">")));
 		if (!tmp.isEmpty())
@@ -70,8 +73,7 @@ public class Escaper {
 			val = val.replaceAll("(?i)</?" + tag, "");
 		}
 
-		// FIXME : 8 interpretation auto des liens - mais faut pas le faire sur les existants
-		
+		val = val.replaceAll(HTTPS_REGEX, HTTPS_REPLACEMENT);
 		return val;
 	}
 

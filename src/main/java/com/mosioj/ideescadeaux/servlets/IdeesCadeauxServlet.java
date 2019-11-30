@@ -52,7 +52,6 @@ import com.mosioj.ideescadeaux.viewhelper.Escaper;
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
 	// FIXME : 0 utiliser GSon ?
-	// FIXME : 0 auto transform de l'email par défaut
 	// FIXME : 0 erreur le 27/11/2019
 	// FIXME : 0 faire du CSS dans les barres de statuts pour que ce soit sur plusieurs lignes
 
