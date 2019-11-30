@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,14 +89,17 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
 												.collect(Collectors.toList());
 		
 		// Remove used pictures from small and large
+		List<String> backup = new ArrayList<>(imagesInIdeas);
 		imagesInIdeas.removeAll(fileNamesInSmall);
 		imagesInIdeas.removeAll(fileNamesInLarge);
 		
 		// And if not all removed, the contrary
-		if (imagesInIdeas.size() > 0) {
-			fileNamesInSmall.removeAll(imagesInIdeas);
-			fileNamesInLarge.removeAll(imagesInIdeas);
-		}
+		fileNamesInSmall.removeAll(backup);
+		fileNamesInLarge.removeAll(backup);
+		
+		Collections.sort(imagesInIdeas);
+		Collections.sort(fileNamesInSmall);
+		Collections.sort(fileNamesInLarge);
 		
 		// Sending info to the view
 		request.setAttribute("missing_files_for_ideas", imagesInIdeas);
