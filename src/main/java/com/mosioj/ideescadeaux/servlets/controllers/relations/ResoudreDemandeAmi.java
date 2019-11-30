@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;

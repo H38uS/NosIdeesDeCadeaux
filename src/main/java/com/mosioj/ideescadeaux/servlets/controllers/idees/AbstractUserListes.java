@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.Idee;
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.controllers.AbstractListes;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 

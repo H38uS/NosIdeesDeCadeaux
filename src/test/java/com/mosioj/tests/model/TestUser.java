@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.User;
-import com.mosioj.ideescadeaux.model.table.columns.UserRolesColumns;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNoIdea;
 import com.mosioj.tests.TemplateTest;
 

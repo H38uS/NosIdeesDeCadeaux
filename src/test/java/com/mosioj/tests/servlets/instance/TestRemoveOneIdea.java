@@ -11,8 +11,8 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.Idee;
-import com.mosioj.ideescadeaux.model.table.GroupIdea;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.GroupIdea;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.ideescadeaux.notifications.instance.NotifGroupEvolution;

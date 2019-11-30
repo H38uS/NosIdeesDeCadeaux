@@ -8,8 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.Relation;
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.Relation;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.controllers.AbstractListes;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.utils.NotLoggedInException;

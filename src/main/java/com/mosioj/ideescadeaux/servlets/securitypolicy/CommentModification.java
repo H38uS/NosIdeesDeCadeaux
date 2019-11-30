@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.Comment;
+import com.mosioj.ideescadeaux.model.entities.Comment;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.utils.NotLoggedInException;

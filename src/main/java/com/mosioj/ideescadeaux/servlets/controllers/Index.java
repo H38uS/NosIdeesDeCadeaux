@@ -11,8 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.User;
-import com.mosioj.ideescadeaux.model.table.MessagesAccueil;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.MessagesAccueil;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;

@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.servlets.securitypolicy.accessor;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 
 /**
  * Defines a class that aims to validate a comment parameter from a security point of view.

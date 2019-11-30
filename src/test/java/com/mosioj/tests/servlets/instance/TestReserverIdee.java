@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.ReserverIdee;
 import com.mosioj.ideescadeaux.utils.database.NoRowsException;

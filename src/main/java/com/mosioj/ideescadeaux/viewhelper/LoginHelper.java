@@ -19,8 +19,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.User;
-import com.mosioj.ideescadeaux.model.table.Users;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.Users;
 import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 
 /**

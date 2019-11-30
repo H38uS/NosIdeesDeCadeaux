@@ -17,7 +17,7 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.MaListe;
 import com.mosioj.ideescadeaux.utils.database.NoRowsException;

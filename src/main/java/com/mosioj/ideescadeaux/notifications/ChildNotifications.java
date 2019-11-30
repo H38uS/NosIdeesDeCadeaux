@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.notifications;
 
 import java.util.List;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 
 public class ChildNotifications {
 

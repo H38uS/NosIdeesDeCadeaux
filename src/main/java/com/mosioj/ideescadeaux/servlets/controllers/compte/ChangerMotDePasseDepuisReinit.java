@@ -8,8 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.User;
-import com.mosioj.ideescadeaux.model.table.UserChangePwdRequest;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.UserChangePwdRequest;
 import com.mosioj.ideescadeaux.servlets.logichelpers.CompteInteractions;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.PasswordChangeRequest;

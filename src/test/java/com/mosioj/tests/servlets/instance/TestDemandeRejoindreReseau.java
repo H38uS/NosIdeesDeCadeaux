@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.table.UserRelationRequests;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationRequests;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.servlets.service.DemandeRejoindreReseauService;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;

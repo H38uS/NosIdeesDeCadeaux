@@ -31,8 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
-import com.mosioj.ideescadeaux.model.Idee;
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.logichelpers.ModelAccessor;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
@@ -52,7 +52,6 @@ import com.mosioj.ideescadeaux.viewhelper.Escaper;
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
 	// FIXME : 0 utiliser GSon ?
-	// FIXME : 0 erreur le 27/11/2019
 	// FIXME : 0 faire du CSS dans les barres de statuts pour que ce soit sur plusieurs lignes
 
 	// FIXME : 3 vérfier que l'envoie des emails est bien asynchrone

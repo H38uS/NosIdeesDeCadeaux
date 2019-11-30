@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;

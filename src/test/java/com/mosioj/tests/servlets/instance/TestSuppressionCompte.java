@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.service.ServiceSuppressionCompte;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 

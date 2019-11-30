@@ -1,19 +1,19 @@
 package com.mosioj.ideescadeaux.servlets.logichelpers;
 
-import com.mosioj.ideescadeaux.model.table.Categories;
-import com.mosioj.ideescadeaux.model.table.Comments;
-import com.mosioj.ideescadeaux.model.table.GroupIdea;
-import com.mosioj.ideescadeaux.model.table.Idees;
-import com.mosioj.ideescadeaux.model.table.Notifications;
-import com.mosioj.ideescadeaux.model.table.ParentRelationship;
-import com.mosioj.ideescadeaux.model.table.Priorites;
-import com.mosioj.ideescadeaux.model.table.Questions;
-import com.mosioj.ideescadeaux.model.table.SousReservation;
-import com.mosioj.ideescadeaux.model.table.UserParameters;
-import com.mosioj.ideescadeaux.model.table.UserRelationRequests;
-import com.mosioj.ideescadeaux.model.table.UserRelations;
-import com.mosioj.ideescadeaux.model.table.UserRelationsSuggestion;
-import com.mosioj.ideescadeaux.model.table.Users;
+import com.mosioj.ideescadeaux.model.repositories.Categories;
+import com.mosioj.ideescadeaux.model.repositories.Comments;
+import com.mosioj.ideescadeaux.model.repositories.GroupIdea;
+import com.mosioj.ideescadeaux.model.repositories.Idees;
+import com.mosioj.ideescadeaux.model.repositories.Notifications;
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationship;
+import com.mosioj.ideescadeaux.model.repositories.Priorites;
+import com.mosioj.ideescadeaux.model.repositories.Questions;
+import com.mosioj.ideescadeaux.model.repositories.SousReservation;
+import com.mosioj.ideescadeaux.model.repositories.UserParameters;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationRequests;
+import com.mosioj.ideescadeaux.model.repositories.UserRelations;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsSuggestion;
+import com.mosioj.ideescadeaux.model.repositories.Users;
 
 public class ModelAccessor {
 	

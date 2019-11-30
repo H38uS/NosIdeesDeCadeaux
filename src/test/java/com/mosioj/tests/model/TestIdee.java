@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DevicePlatform;
 
-import com.mosioj.ideescadeaux.model.Idee;
-import com.mosioj.ideescadeaux.model.User;
-import com.mosioj.ideescadeaux.model.table.Idees;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.Idees;
 import com.mosioj.tests.TemplateTest;
 
 public class TestIdee extends TemplateTest {

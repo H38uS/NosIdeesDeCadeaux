@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.simple.JSONObject;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.NameServicePolicy;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 

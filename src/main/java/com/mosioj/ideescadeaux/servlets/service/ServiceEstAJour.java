@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.Idee;
-import com.mosioj.ideescadeaux.model.table.IsUpToDateQuestions;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.IsUpToDateQuestions;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 

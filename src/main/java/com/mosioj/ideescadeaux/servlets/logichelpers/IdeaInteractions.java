@@ -8,11 +8,11 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.table.GroupIdea;
-import com.mosioj.ideescadeaux.model.table.Idees;
-import com.mosioj.ideescadeaux.model.table.Notifications;
-import com.mosioj.ideescadeaux.model.table.SousReservation;
-import com.mosioj.ideescadeaux.model.table.Users;
+import com.mosioj.ideescadeaux.model.repositories.GroupIdea;
+import com.mosioj.ideescadeaux.model.repositories.Idees;
+import com.mosioj.ideescadeaux.model.repositories.Notifications;
+import com.mosioj.ideescadeaux.model.repositories.SousReservation;
+import com.mosioj.ideescadeaux.model.repositories.Users;
 
 public class IdeaInteractions {
 

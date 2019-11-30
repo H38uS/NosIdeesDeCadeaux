@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.ChildAdministration;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;

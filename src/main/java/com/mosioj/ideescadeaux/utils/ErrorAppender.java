@@ -10,7 +10,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-import com.mosioj.ideescadeaux.model.table.Notifications;
+import com.mosioj.ideescadeaux.model.repositories.Notifications;
 
 @Plugin(name = "ErrorAppender", category = "Core", elementType = "appender")
 public class ErrorAppender extends AbstractAppender {

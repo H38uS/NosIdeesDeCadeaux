@@ -12,8 +12,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.User;
-import com.mosioj.ideescadeaux.model.UserParameter;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.entities.UserParameter;
 import com.mosioj.ideescadeaux.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAndGet;

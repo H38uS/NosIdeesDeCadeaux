@@ -9,8 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.Idee;
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;

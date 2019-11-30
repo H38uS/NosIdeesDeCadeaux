@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.notifications.instance;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;

@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.IdeeQuestions;

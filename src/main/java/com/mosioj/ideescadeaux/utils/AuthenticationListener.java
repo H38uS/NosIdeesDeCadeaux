@@ -15,7 +15,7 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionEvent;
 
-import com.mosioj.ideescadeaux.model.table.Users;
+import com.mosioj.ideescadeaux.model.repositories.Users;
 
 public class AuthenticationListener implements ApplicationListener<ApplicationEvent> {
 

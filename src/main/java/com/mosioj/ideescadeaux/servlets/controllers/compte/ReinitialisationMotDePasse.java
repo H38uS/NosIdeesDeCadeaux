@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.table.UserChangePwdRequest;
+import com.mosioj.ideescadeaux.model.repositories.UserChangePwdRequest;
 import com.mosioj.ideescadeaux.servlets.logichelpers.CompteInteractions;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAndGet;

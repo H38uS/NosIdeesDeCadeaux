@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.servlets.controllers.compte.MesNotifications;

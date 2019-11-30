@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.servlets.securitypolicy.accessor;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 
 /**
  * Defines a class that aims to validate an idea parameter from a security point of view.

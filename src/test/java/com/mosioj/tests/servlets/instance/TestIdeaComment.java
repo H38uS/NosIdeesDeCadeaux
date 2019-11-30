@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.IdeaComments;
 import com.mosioj.tests.servlets.AbstractTestServlet;

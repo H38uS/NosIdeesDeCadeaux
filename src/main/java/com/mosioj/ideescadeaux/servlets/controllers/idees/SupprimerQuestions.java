@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.Comment;
+import com.mosioj.ideescadeaux.model.entities.Comment;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.QuestionModification;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;

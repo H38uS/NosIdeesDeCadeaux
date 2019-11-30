@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.List;
 
-import com.mosioj.ideescadeaux.model.table.Users;
+import com.mosioj.ideescadeaux.model.repositories.Users;
 import com.mosioj.ideescadeaux.utils.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.utils.validators.ValidatorFactory;

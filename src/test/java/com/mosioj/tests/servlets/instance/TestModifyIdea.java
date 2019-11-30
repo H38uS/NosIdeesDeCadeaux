@@ -16,7 +16,7 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;

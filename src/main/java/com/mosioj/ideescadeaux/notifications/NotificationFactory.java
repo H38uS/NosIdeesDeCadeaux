@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.table.Notifications;
+import com.mosioj.ideescadeaux.model.repositories.Notifications;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAdministration;
 
 public class NotificationFactory {

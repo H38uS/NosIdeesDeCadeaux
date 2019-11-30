@@ -14,9 +14,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.Idee;
-import com.mosioj.ideescadeaux.model.User;
-import com.mosioj.ideescadeaux.model.table.IsUpToDateQuestions;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.IsUpToDateQuestions;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;

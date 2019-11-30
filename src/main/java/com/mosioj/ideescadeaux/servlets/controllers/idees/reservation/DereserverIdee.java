@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.MesListes;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteraction;
