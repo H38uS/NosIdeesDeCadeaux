@@ -159,7 +159,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 			sb.append(token);
 		}
 		final String content = sb.toString();
-		final byte[] byteContent = content.getBytes();
+		final byte[] byteContent = content.getBytes("UTF-8");
 		
 		ServletInputStream sis = new ServletInputStream() {
 			
