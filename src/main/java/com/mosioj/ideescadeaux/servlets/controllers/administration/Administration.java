@@ -57,15 +57,48 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
 			e.printStackTrace();
 			logger.error(e);
 		}
-		
+
 		String memory = MessageFormat.format(	"Memory (free / total): ({0} Ko / {1} Ko). Max: {2} Ko.",
 												Runtime.getRuntime().freeMemory() / 1024,
 												Runtime.getRuntime().totalMemory() / 1024,
 												Runtime.getRuntime().maxMemory() / 1024);
 		request.setAttribute("memory", memory);
-		
-		
+
+		checkForIdeasPictures(request);
 
 		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
+	}
+
+	protected void checkForIdeasPictures(HttpServletRequest request) throws SQLException {
+		
+		// Get all pictures
+		List<String> imagesInIdeas = model.idees.getAllImages();
+		
+		// And all files
+		File smallFolder = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas/small");
+		File largeFolder = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas/large");
+		List<String> fileNamesInSmall = Arrays	.asList(smallFolder.listFiles())
+												.stream()
+												.map(f -> f.getName())
+												.collect(Collectors.toList());
+		List<String> fileNamesInLarge = Arrays	.asList(largeFolder.listFiles())
+												.stream()
+												.map(f -> f.getName())
+												.collect(Collectors.toList());
+		
+		// Remove used pictures from small and large
+		imagesInIdeas.removeAll(fileNamesInSmall);
+		imagesInIdeas.removeAll(fileNamesInLarge);
+		
+		// And if not all removed, the contrary
+		if (imagesInIdeas.size() > 0) {
+			fileNamesInSmall.removeAll(imagesInIdeas);
+			fileNamesInLarge.removeAll(imagesInIdeas);
+		}
+		
+		// Sending info to the view
+		request.setAttribute("missing_files_for_ideas", imagesInIdeas);
+		request.setAttribute("extra_small_files", fileNamesInSmall);
+		request.setAttribute("extra_large_files", fileNamesInLarge);
 	}
 }

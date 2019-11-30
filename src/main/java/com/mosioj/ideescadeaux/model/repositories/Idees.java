@@ -526,12 +526,9 @@ public class Idees extends Table {
 		query.append("where id = ? ");
 
 		logger.trace("Query: " + query.toString());
-		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString());
-		try {
+		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
 			ps.bindParameters(userId, idea);
 			ps.execute();
-		} finally {
-			ps.close();
 		}
 	}
 
@@ -826,6 +823,28 @@ public class Idees extends Table {
 															IsUpToDateColumns.USER_ID),
 										ideeId,
 										userId);
+	}
+
+	/**
+	 * 
+	 * @return All images used for ideas.
+	 * @throws SQLException
+	 */
+	public List<String> getAllImages() throws SQLException {
+
+		List<String> res = new ArrayList<>();
+		String query = "select IMAGE from " + TABLE_NAME + " where IMAGE is not null and IMAGE <> ''";
+
+		try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
+			if (ps.execute()) {
+				ResultSet rs = ps.getResultSet();
+				while (rs.next()) {
+					res.add(rs.getString("IMAGE"));
+				}
+			}
+		}
+
+		return res;
 	}
 
 	/**
