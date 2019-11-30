@@ -9,13 +9,13 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.model.Idee;
-import com.mosioj.notifications.AbstractNotification;
-import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.servlets.controllers.compte.MesNotifications;
-import com.mosioj.servlets.controllers.idees.ConfirmationEstAJour;
+import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
+import com.mosioj.ideescadeaux.servlets.controllers.compte.MesNotifications;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.ConfirmationEstAJour;
+import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.database.NoRowsException;
 
 public class TestConfirmationEstAJour extends AbstractTestServlet {
 

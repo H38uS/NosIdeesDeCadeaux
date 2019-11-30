@@ -14,11 +14,11 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.model.table.UserRelationRequests;
-import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.servlets.service.DemandeRejoindreReseauService;
+import com.mosioj.ideescadeaux.model.table.UserRelationRequests;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
+import com.mosioj.ideescadeaux.servlets.service.DemandeRejoindreReseauService;
+import com.mosioj.ideescadeaux.utils.RootingsUtils;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.RootingsUtils;
 
 public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 

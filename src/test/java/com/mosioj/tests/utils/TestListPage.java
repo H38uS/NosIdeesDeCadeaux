@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
-import com.mosioj.servlets.controllers.AbstractListes;
-import com.mosioj.servlets.controllers.idees.MesListes;
-import com.mosioj.servlets.controllers.idees.VoirListe;
-import com.mosioj.servlets.controllers.relations.Page;
-import com.mosioj.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.utils.NotLoggedInException;
+import com.mosioj.ideescadeaux.servlets.controllers.AbstractListes;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.MesListes;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.VoirListe;
+import com.mosioj.ideescadeaux.servlets.controllers.relations.Page;
+import com.mosioj.ideescadeaux.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.utils.NotLoggedInException;
 
 public class TestListPage {
 	

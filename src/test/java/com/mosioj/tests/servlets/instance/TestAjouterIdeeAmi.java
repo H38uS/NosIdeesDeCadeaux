@@ -11,8 +11,8 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.notifications.instance.NotifNoIdea;
-import com.mosioj.servlets.controllers.idees.modification.AjouterIdeeAmi;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNoIdea;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.modification.AjouterIdeeAmi;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestAjouterIdeeAmi extends AbstractTestServlet {

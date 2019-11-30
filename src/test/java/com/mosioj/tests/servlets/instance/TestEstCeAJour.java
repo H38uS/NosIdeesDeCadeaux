@@ -8,12 +8,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.mosioj.notifications.AbstractNotification;
-import com.mosioj.notifications.NotificationType;
-import com.mosioj.servlets.controllers.idees.reservation.ReserverIdee;
-import com.mosioj.servlets.service.ServiceEstAJour;
+import com.mosioj.ideescadeaux.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.notifications.NotificationType;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.ReserverIdee;
+import com.mosioj.ideescadeaux.servlets.service.ServiceEstAJour;
+import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.database.NoRowsException;
 
 public class TestEstCeAJour extends AbstractTestServlet {
 

@@ -11,8 +11,8 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.notifications.instance.NotifDemandeAcceptee;
-import com.mosioj.servlets.service.ServiceSupprimerRelation;
+import com.mosioj.ideescadeaux.notifications.instance.NotifDemandeAcceptee;
+import com.mosioj.ideescadeaux.servlets.service.ServiceSupprimerRelation;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestSupprimerRelation extends AbstractTestServlet {

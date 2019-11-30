@@ -17,10 +17,10 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mosioj.notifications.instance.NotifAdministration;
-import com.mosioj.servlets.controllers.compte.CreationCompte;
+import com.mosioj.ideescadeaux.notifications.instance.NotifAdministration;
+import com.mosioj.ideescadeaux.servlets.controllers.compte.CreationCompte;
+import com.mosioj.ideescadeaux.utils.RootingsUtils;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.RootingsUtils;
 
 public class TestCreationCompte extends AbstractTestServlet {
 

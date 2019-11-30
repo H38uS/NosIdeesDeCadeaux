@@ -16,14 +16,14 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.model.Idee;
-import com.mosioj.notifications.NotificationType;
-import com.mosioj.notifications.ParameterName;
-import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
-import com.mosioj.servlets.controllers.idees.modification.ModifyIdea;
+import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.notifications.NotificationType;
+import com.mosioj.ideescadeaux.notifications.ParameterName;
+import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
+import com.mosioj.ideescadeaux.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.modification.ModifyIdea;
+import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.database.NoRowsException;
 
 public class TestModifyIdea extends AbstractTestServlet {
 

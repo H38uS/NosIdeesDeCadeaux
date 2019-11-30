@@ -30,8 +30,8 @@ import javax.servlet.http.Part;
 
 import org.junit.Test;
 
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.utils.ParametersUtils;
 
 public class TestParametersUtils {
 

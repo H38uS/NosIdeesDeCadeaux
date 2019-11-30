@@ -8,10 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import com.mosioj.notifications.AbstractNotification;
-import com.mosioj.notifications.NotificationFactory;
-import com.mosioj.notifications.NotificationType;
-import com.mosioj.notifications.ParameterName;
+import com.mosioj.ideescadeaux.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.notifications.NotificationFactory;
+import com.mosioj.ideescadeaux.notifications.NotificationType;
+import com.mosioj.ideescadeaux.notifications.ParameterName;
 
 public class TestNotificationFactory {
 

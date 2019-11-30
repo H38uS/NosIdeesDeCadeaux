@@ -13,12 +13,12 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.notifications.instance.NotifDemandeRefusee;
-import com.mosioj.notifications.instance.NotifFriendshipDropped;
-import com.mosioj.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.notifications.instance.NotifNouvelleDemandeAmi;
-import com.mosioj.servlets.controllers.relations.AfficherReseau;
-import com.mosioj.servlets.controllers.relations.ResoudreDemandeAmi;
+import com.mosioj.ideescadeaux.notifications.instance.NotifDemandeRefusee;
+import com.mosioj.ideescadeaux.notifications.instance.NotifFriendshipDropped;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNouvelleDemandeAmi;
+import com.mosioj.ideescadeaux.servlets.controllers.relations.AfficherReseau;
+import com.mosioj.ideescadeaux.servlets.controllers.relations.ResoudreDemandeAmi;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestResoudreDemandeAmi extends AbstractTestServlet {

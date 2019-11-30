@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.servlets.controllers.compte.UpdateNotificationParameter;
+import com.mosioj.ideescadeaux.servlets.controllers.compte.UpdateNotificationParameter;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestUpdateNotificationParameter extends AbstractTestServlet {

@@ -11,18 +11,18 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.model.Idee;
-import com.mosioj.model.table.GroupIdea;
-import com.mosioj.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.notifications.instance.NotifConfirmedUpToDate;
-import com.mosioj.notifications.instance.NotifGroupEvolution;
-import com.mosioj.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.notifications.instance.NotifIdeaAddedByFriend;
-import com.mosioj.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
-import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
-import com.mosioj.notifications.instance.NotifNewQuestionOnIdea;
-import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
-import com.mosioj.servlets.service.ServiceDeleteIdea;
+import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.table.GroupIdea;
+import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
+import com.mosioj.ideescadeaux.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.ideescadeaux.notifications.instance.NotifGroupEvolution;
+import com.mosioj.ideescadeaux.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.ideescadeaux.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNewCommentOnIdea;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNewQuestionOnIdea;
+import com.mosioj.ideescadeaux.notifications.instance.NotifRecurentIdeaUnbook;
+import com.mosioj.ideescadeaux.servlets.service.ServiceDeleteIdea;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestRemoveOneIdea extends AbstractTestServlet {

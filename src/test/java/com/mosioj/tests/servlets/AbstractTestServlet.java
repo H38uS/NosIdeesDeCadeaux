@@ -23,9 +23,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.mobile.device.Device;
 
-import com.mosioj.servlets.controllers.compte.CreationCompte;
-import com.mosioj.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.servlets.controllers.compte.CreationCompte;
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.tests.TemplateTest;
 
 public abstract class AbstractTestServlet extends TemplateTest {

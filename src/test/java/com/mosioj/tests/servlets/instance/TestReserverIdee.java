@@ -7,11 +7,11 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-import com.mosioj.model.Idee;
-import com.mosioj.notifications.instance.NotifRecurentIdeaUnbook;
-import com.mosioj.servlets.controllers.idees.reservation.ReserverIdee;
+import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.notifications.instance.NotifRecurentIdeaUnbook;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.ReserverIdee;
+import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.database.NoRowsException;
 
 public class TestReserverIdee extends AbstractTestServlet {
 

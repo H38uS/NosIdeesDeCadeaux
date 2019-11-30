@@ -14,19 +14,19 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-import com.mosioj.model.User;
-import com.mosioj.model.table.Comments;
-import com.mosioj.model.table.GroupIdea;
-import com.mosioj.model.table.Idees;
-import com.mosioj.model.table.Notifications;
-import com.mosioj.model.table.Questions;
-import com.mosioj.model.table.UserParameters;
-import com.mosioj.model.table.UserRelationRequests;
-import com.mosioj.model.table.UserRelations;
-import com.mosioj.model.table.Users;
-import com.mosioj.notifications.NotificationActivation;
-import com.mosioj.notifications.NotificationType;
-import com.mosioj.utils.database.DataSourceIdKDo;
+import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.table.Comments;
+import com.mosioj.ideescadeaux.model.table.GroupIdea;
+import com.mosioj.ideescadeaux.model.table.Idees;
+import com.mosioj.ideescadeaux.model.table.Notifications;
+import com.mosioj.ideescadeaux.model.table.Questions;
+import com.mosioj.ideescadeaux.model.table.UserParameters;
+import com.mosioj.ideescadeaux.model.table.UserRelationRequests;
+import com.mosioj.ideescadeaux.model.table.UserRelations;
+import com.mosioj.ideescadeaux.model.table.Users;
+import com.mosioj.ideescadeaux.notifications.NotificationActivation;
+import com.mosioj.ideescadeaux.notifications.NotificationType;
+import com.mosioj.ideescadeaux.utils.database.DataSourceIdKDo;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 public class TemplateTest {

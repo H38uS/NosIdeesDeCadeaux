@@ -9,9 +9,9 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.model.Idee;
-import com.mosioj.notifications.instance.NotifNewCommentOnIdea;
-import com.mosioj.servlets.controllers.idees.IdeaComments;
+import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNewCommentOnIdea;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.IdeaComments;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestIdeaComment extends AbstractTestServlet {

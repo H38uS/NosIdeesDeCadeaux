@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-import com.mosioj.model.User;
-import com.mosioj.model.table.columns.UserRolesColumns;
-import com.mosioj.notifications.instance.NotifNoIdea;
+import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.model.table.columns.UserRolesColumns;
+import com.mosioj.ideescadeaux.notifications.instance.NotifNoIdea;
 import com.mosioj.tests.TemplateTest;
 
 public class TestUser extends TemplateTest {

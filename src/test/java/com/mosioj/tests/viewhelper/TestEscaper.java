@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.mosioj.viewhelper.Escaper;
+import com.mosioj.ideescadeaux.viewhelper.Escaper;
 
 public class TestEscaper {
 

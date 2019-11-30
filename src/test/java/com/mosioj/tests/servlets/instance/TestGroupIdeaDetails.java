@@ -12,16 +12,16 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.model.Idee;
-import com.mosioj.model.table.GroupIdea;
-import com.mosioj.model.table.columns.GroupIdeaColumns;
-import com.mosioj.notifications.NotificationType;
-import com.mosioj.notifications.ParameterName;
-import com.mosioj.notifications.instance.NotifGroupEvolution;
-import com.mosioj.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.servlets.controllers.idees.reservation.GroupIdeaDetails;
+import com.mosioj.ideescadeaux.model.Idee;
+import com.mosioj.ideescadeaux.model.table.GroupIdea;
+import com.mosioj.ideescadeaux.model.table.columns.GroupIdeaColumns;
+import com.mosioj.ideescadeaux.notifications.NotificationType;
+import com.mosioj.ideescadeaux.notifications.ParameterName;
+import com.mosioj.ideescadeaux.notifications.instance.NotifGroupEvolution;
+import com.mosioj.ideescadeaux.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.GroupIdeaDetails;
+import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 import com.mosioj.tests.servlets.AbstractTestServlet;
-import com.mosioj.utils.database.NoRowsException;
 
 public class TestGroupIdeaDetails extends AbstractTestServlet {
 

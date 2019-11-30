@@ -12,8 +12,8 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 
-import com.mosioj.model.User;
-import com.mosioj.servlets.service.ServiceSuppressionCompte;
+import com.mosioj.ideescadeaux.model.User;
+import com.mosioj.ideescadeaux.servlets.service.ServiceSuppressionCompte;
 import com.mosioj.tests.servlets.AbstractTestServlet;
 
 public class TestSuppressionCompte extends AbstractTestServlet {
