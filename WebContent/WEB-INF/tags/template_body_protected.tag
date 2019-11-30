@@ -56,6 +56,9 @@
 							<a href="protected/voir_liste?id=${connected_user.id}" class="btn btn-light">Ma liste</a>
 						</li>
 						<li class="nav-item m-2">
+							<a href="protected/mes_reservations.jsp" class="btn btn-light">Mes réservations</a>
+						</li>
+						<li class="nav-item m-2">
 							<a href="protected/afficher_reseau?id=${connected_user.id}" class="btn btn-light">Mes amis</a>
 						</li>
 						<li class="nav-item m-2">
@@ -114,6 +117,9 @@
 						</li>
 						<li class="nav-item">
 							<a href="protected/voir_liste?id=${connected_user.id}" class="fl_blue">Ma liste</a>
+						</li>
+						<li class="nav-item">
+							<a href="protected/mes_reservations.jsp" class="fl_yellow">Mes réservations</a>
 						</li>
 						<li class="nav-item">
 							<a href="protected/afficher_reseau?id=${connected_user.id}" class="fl_purple">Mes amis</a>

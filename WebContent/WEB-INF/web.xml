@@ -32,7 +32,7 @@
 
 	<filter>
 		<filter-name>loginHelper</filter-name>
-		<filter-class>com.mosioj.viewhelper.LoginHelper</filter-class>
+		<filter-class>com.mosioj.ideescadeaux.viewhelper.LoginHelper</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>loginHelper</filter-name>
@@ -41,7 +41,7 @@
 
 	<filter>
 		<filter-name>DeviceResolver</filter-name>
-		<filter-class>com.mosioj.viewhelper.DeviceResolverFilter</filter-class>
+		<filter-class>com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>DeviceResolver</filter-name>
@@ -51,7 +51,7 @@
 
 	<filter>
 		<filter-name>Caching</filter-name>
-		<filter-class>com.mosioj.viewhelper.CachingFilter</filter-class>
+		<filter-class>com.mosioj.ideescadeaux.viewhelper.CachingFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>Caching</filter-name>

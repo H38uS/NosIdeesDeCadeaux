@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" packages="com.mosioj.utils">
+<Configuration status="WARN" packages="com.mosioj.ideescadeaux.utils">
 
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
@@ -24,14 +24,14 @@
 
 	<Loggers>
 		<logger name="org" level="warn" />
-		<logger name="com.mosioj" level="debug" />
-		<logger name="com.mosioj.viewhelper.DeviceResolverFilter" level="error"/>
-		<logger name="com.mosioj.utils.AuthenticationListener" level="error"/>
+		<logger name="com.mosioj.ideescadeaux" level="debug" />
+		<logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="error"/>
+		<logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="error"/>
 
-		<logger name="com.mosioj.utils.AuthenticationListener" level="debug" additivity="false">
+		<logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="debug" additivity="false">
 			<AppenderRef ref="AccessLogs" />
 		</logger>
-		<logger name="com.mosioj.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
+		<logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
 			<AppenderRef ref="AccessLogs" />
 		</logger>
 		
