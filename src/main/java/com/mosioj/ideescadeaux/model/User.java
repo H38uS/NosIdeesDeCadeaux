@@ -11,7 +11,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.utils.date.MyDateFormatViewer;
 
-public class User {
+public class User implements Comparable<User> {
 
 	@Expose
 	public final int id;
@@ -37,7 +37,7 @@ public class User {
 
 	public User(int id, String name, String email, String avatar) {
 		this.id = id;
-		this.name = name == null ? null : name.trim();
+		this.name = name == null ? email : WordUtils.capitalize(name.trim());
 		this.email = email;
 		this.avatar = avatar == null ? "default.png" : avatar;
 	}
@@ -153,7 +153,7 @@ public class User {
 	 * @return The name of the person.
 	 */
 	public String getName() {
-		return name != null && !name.isEmpty() ? WordUtils.capitalize(name) : email;
+		return name;
 	}
 
 	public void setIdeas(List<Idee> ownerIdeas) {
@@ -210,4 +210,8 @@ public class User {
 		return getName() + " (" + email + ")";
 	}
 
+	@Override
+	public int compareTo(User other) {
+		return getName().compareTo(other.getName());
+	}
 }

@@ -128,23 +128,23 @@ function getPictureWidth() {
 /* *** Loading Stuff *** */
 /* ********************* */
 
+
+var loadingTimeout; // Time before we display the loading animation
+var timer;
+
 function closeModal() {
 	if (typeof lastModalOpened != 'undefined') {
 		lastModalOpened.modal('hide');
 	}
 	$("body").removeClass("modal-open");
 	$(".modal-backdrop").remove();
+	clearTimeout(loadingTimeout);
+	clearTimeout(timer);
+	$("#loading_message_div").hide().removeClass();
 }
-
-var loadingTimeout; // Time before we display the loading animation
-var timer;
 
 function doLoading(message) {
 	closeModal();
-	clearTimeout(loadingTimeout);
-	clearTimeout(timer);
-	$("#loading_message_div").hide()
-							 .removeClass();
 	loadingTimeout = setTimeout(function() {
 		$("#loading_message_div").html('<img src="resources/image/loading.gif" width="' + getPictureWidth() + '" />' + message)
 								 .addClass('loading')
@@ -153,11 +153,7 @@ function doLoading(message) {
 }
 function actionDone(message) {
 	closeModal();
-	clearTimeout(loadingTimeout);
-	clearTimeout(timer);
-	$("#loading_message_div").hide()
-							 .removeClass()
-							 .html('<img src="resources/image/ok.png" width="' + getPictureWidth() + '" />' + message)
+	$("#loading_message_div").html('<img src="resources/image/ok.png" width="' + getPictureWidth() + '" />' + message)
 							 .addClass('success')
 							 .slideDown();
 	timer = setTimeout(function() {
@@ -166,11 +162,7 @@ function actionDone(message) {
 }
 function actionError(message) {
 	closeModal();
-	clearTimeout(loadingTimeout);
-	clearTimeout(timer);
-	$("#loading_message_div").hide()
-							 .removeClass()
-							 .html('<img src="resources/image/ko.png" width="' + getPictureWidth() + '" /> ' + message)
+	$("#loading_message_div").html('<img src="resources/image/ko.png" width="' + getPictureWidth() + '" /> ' + message)
 							 .addClass('fail')
 							 .slideDown();
 	timer = setTimeout(function() {

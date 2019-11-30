@@ -51,13 +51,12 @@ import com.mosioj.ideescadeaux.viewhelper.Escaper;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
-	// FIXME : 0 faire une page avec mes réservations
 	// FIXME : 0 utiliser GSon ?
 	// FIXME : 0 auto transform de l'email par défaut
 	// FIXME : 0 erreur le 27/11/2019
 	// FIXME : 0 faire du CSS dans les barres de statuts pour que ce soit sur plusieurs lignes
-	// FIXME : 0 vérfier que l'envoie des emails est bien asynchrone
 
+	// FIXME : 3 vérfier que l'envoie des emails est bien asynchrone
 	// FIXME : 99 mettre du bootstrap dans le site impulsion ?
 	// FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
 
