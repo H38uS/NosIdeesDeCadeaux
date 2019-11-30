@@ -7,22 +7,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
 import com.mosioj.model.table.GroupIdea;
 import com.mosioj.model.table.SousReservation;
-import com.mosioj.utils.MyDateFormatViewer;
+import com.mosioj.utils.date.MyDateFormatViewer;
 
 public class Idee {
 
 	private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT);
 
+	@Expose
 	private final int id;
+	
+	@Expose
 	public String text;
+	
+	@Expose
 	private final String type;
+	@Expose
+	public final User owner;
+
 	private final Categorie cat;
 	private final User bookingOwner;
 	private final int group;
 	private final String image;
-	public final User owner;
 	private final Priorite priorite;
 	private final Timestamp bookedOn;
 	private final Timestamp lastModified;

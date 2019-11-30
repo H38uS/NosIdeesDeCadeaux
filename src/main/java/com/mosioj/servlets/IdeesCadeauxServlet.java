@@ -51,6 +51,13 @@ import com.mosioj.viewhelper.Escaper;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
+	// FIXME : 0 faire une page avec mes réservations
+	// FIXME : 0 utiliser GSon ?
+	// FIXME : 0 auto transform de l'email par défaut
+	// FIXME : 0 erreur le 27/11/2019
+	// FIXME : 0 faire du CSS dans les barres de statuts pour que ce soit sur plusieurs lignes
+	// FIXME : 0 vérfier que l'envoie des emails est bien asynchrone
+
 	// FIXME : 99 mettre du bootstrap dans le site impulsion ?
 	// FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
 
@@ -83,8 +90,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO vérifier en JS que le nombre de notification n'a pas bougé
 	// TODO faire une appli androïd !!
-
-	// FIXME : 0 utiliser GSon ?
 
 	private static final int MAX_WIDTH = 150;
 	// Maximum 10M
@@ -134,7 +139,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public abstract void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException;
+	public abstract void ideesKDoGET(	HttpServletRequest request,
+										HttpServletResponse response) throws ServletException, SQLException, IOException;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
@@ -143,7 +149,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		fillConnectedUserIfPossible(request);
 		policy.setConnectedUser(thisOne);
 
-		if (!policy.hasRightToInteractInGetRequest(request, resp) && !request.isUserInRole("ROLE_ADMIN")) {
+		if (!policy.hasRightToInteractInGetRequest(request, resp) && !isAdmin(request)) {
 
 			int userId;
 			try {
@@ -201,7 +207,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 			// Default error management
 			RootingsUtils.rootToGenericSQLError(thisOne, e, request, resp);
 		}
-	};
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @return True if the user is an admin.
+	 */
+	protected boolean isAdmin(HttpServletRequest request) {
+		return request.isUserInRole("ROLE_ADMIN");
+	}
 
 	/**
 	 * Internal class for POST processing, post security checks.
@@ -211,7 +226,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException;
+	public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -220,7 +235,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 		fillConnectedUserIfPossible(request);
 		policy.setConnectedUser(thisOne);
 
-		if (!policy.hasRightToInteractInPostRequest(request, response) && !request.isUserInRole("ROLE_ADMIN")) {
+		if (!policy.hasRightToInteractInPostRequest(request, response) && !isAdmin(request)) {
 
 			int userId;
 			try {

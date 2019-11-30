@@ -1,5 +1,6 @@
 package com.mosioj.servlets.controllers.idees;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -53,7 +54,7 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
 
 		// Check that we have a file upload request
 		if (ServletFileUpload.isMultipartContent(request)) {

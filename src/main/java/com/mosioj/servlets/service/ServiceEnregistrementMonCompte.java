@@ -22,7 +22,7 @@ import com.mosioj.model.User;
 import com.mosioj.servlets.logichelpers.CompteInteractions;
 import com.mosioj.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.utils.MyDateFormatViewer;
+import com.mosioj.utils.date.MyDateFormatViewer;
 import com.mosioj.utils.validators.ParameterValidator;
 import com.mosioj.utils.validators.ValidatorFactory;
 

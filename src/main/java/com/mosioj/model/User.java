@@ -8,18 +8,27 @@ import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import com.mosioj.utils.MyDateFormatViewer;
+import com.google.gson.annotations.Expose;
+import com.mosioj.utils.date.MyDateFormatViewer;
 
 public class User {
 
+	@Expose
 	public final int id;
+	
+	@Expose
 	public String email;
+	
+	@Expose
 	public String name;
+
+	@Expose
+	public String avatar;
+
 	public Date birthday;
 	public boolean isInMyNetwork;
 	public int nbDaysBeforeBirthday;
 	public String freeComment;
-	public String avatar;
 	private Timestamp creationDate;
 	private Timestamp lastLogin;
 	public boolean hasBookedOneOfItsIdeas = false;

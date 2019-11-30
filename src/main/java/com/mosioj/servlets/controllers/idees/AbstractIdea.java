@@ -1,5 +1,6 @@
 package com.mosioj.servlets.controllers.idees;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 		return from;
 	}
 
-	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+	protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
 
 		errors.clear();
 

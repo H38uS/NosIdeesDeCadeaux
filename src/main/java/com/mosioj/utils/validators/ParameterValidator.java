@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
-import com.mosioj.utils.MyDateFormatViewer;
 import com.mosioj.utils.database.DataSourceIdKDo;
+import com.mosioj.utils.date.MyDateFormatViewer;
 
 /**
  * Permet à l'application de vérifier la pertinence des paramètres.

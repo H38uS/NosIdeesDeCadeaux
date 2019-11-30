@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.utils.EmailSender;
-import com.mosioj.utils.MyDateFormatViewer;
+import com.mosioj.utils.date.MyDateFormatViewer;
 
 public abstract class AbstractNotification {
 

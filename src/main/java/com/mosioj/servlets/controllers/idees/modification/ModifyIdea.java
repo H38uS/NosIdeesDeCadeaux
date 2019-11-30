@@ -1,5 +1,6 @@
 package com.mosioj.servlets.controllers.idees.modification;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -64,7 +65,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 	}
 
 	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
 
 		Idee idea = policy.getIdea();
 

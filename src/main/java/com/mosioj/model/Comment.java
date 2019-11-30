@@ -2,7 +2,7 @@ package com.mosioj.model;
 
 import java.sql.Timestamp;
 
-import com.mosioj.utils.MyDateFormatViewer;
+import com.mosioj.utils.date.MyDateFormatViewer;
 
 public class Comment {
 
