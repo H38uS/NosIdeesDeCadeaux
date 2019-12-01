@@ -55,7 +55,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 	// FIXME : 0 faire du CSS dans les barres de statuts pour que ce soit sur plusieurs lignes
 
 	// FIXME : 3 vérfier que l'envoie des emails est bien asynchrone
-	// FIXME : 99 mettre du bootstrap dans le site impulsion ?
 	// FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
 
 	// TODO : voir pour utiliser hibernate ou jpa, et/ou spring mvc (restful pour plus tard)
@@ -68,7 +67,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : pouvoir éditer un commentaire
 	// TODO : mettre le focus sur le champs recherche dans mes listes
-	// FIXME : 7 vue récapitulative avec toutes les idées qu'on a réservé, les groupes, les surprises.
 
 	// TODO : faire du javascript pour les discussions
 
@@ -79,7 +77,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
 	// TODO : pouvoir modifier le niveau de log depuis l'administration
 
-	// TODO : faire un seul repo git ? -- Faire que le task dépende d'impulsion ?
 	// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
 
 	// TODO bug avec l'IPhone, pas assez de padding sous le champs recherche

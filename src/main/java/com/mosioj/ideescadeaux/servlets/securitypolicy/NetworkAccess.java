@@ -33,6 +33,8 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 	}
 
 	private boolean hasAccess(HttpServletRequest request) throws SQLException {
+		
+		friend = null; // FIXME : 0 faire un reset pour chaque police
 		Optional<Integer> user = readInt(request, userParameter);
 		if (!user.isPresent()) {
 			lastReason = "Aucun utilisateur trouvé en paramètre.";
@@ -47,7 +49,11 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 		}
 
 		friend = model.users.getUser(user.get());
-		return true;
+		if (friend == null) {
+			logger.warn("The id " + user.get() + " does not exist...");
+		}
+		
+		return friend != null;
 	}
 
 	@Override

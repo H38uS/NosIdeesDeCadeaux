@@ -42,6 +42,30 @@ public class ServiceResponse {
 	}
 
 	/**
+	 * Factory method for working answers.
+	 * 
+	 * @param message
+	 * @param isLoggedIn
+	 * @param isAdmin
+	 * @return The response built from parameters.
+	 */
+	public static ServiceResponse ok(Object message, boolean isLoggedIn, boolean isAdmin) {
+		return new ServiceResponse(true, message, isLoggedIn, isAdmin);
+	}
+
+	/**
+	 * Factory method for non working answers.
+	 * 
+	 * @param message
+	 * @param isLoggedIn
+	 * @param isAdmin
+	 * @return The response built from parameters.
+	 */
+	public static ServiceResponse ko(Object message, boolean isLoggedIn, boolean isAdmin) {
+		return new ServiceResponse(false, message, isLoggedIn, isAdmin);
+	}
+
+	/**
 	 * @return the status
 	 */
 	public String getStatus() {

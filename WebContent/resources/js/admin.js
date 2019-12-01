@@ -4,7 +4,7 @@ function submitSuppressionCompte(e) {
 	e.preventDefault();
 	
 	var userId = $(this).prev().val();
-	var tr = $(this).closest("tr");
+	var person = $(this).closest(".person_card");
 	var message;
 	var userName;
 	
@@ -13,12 +13,13 @@ function submitSuppressionCompte(e) {
 		url: 'protected/service/get_user_name',
 		data : { userId : userId },
 		success: function(data) {
-			if ( typeof data.status === "undefined" || data.status !== 'ok' ) {
+			console.log(data);
+			if ( typeof data.status === "undefined" || data.status !== 'OK' ) {
 				message = "Êtes-vous sûr de vouloire supprimer ce compte ?";
 				userName = '';
 			} else {
-				message = "Êtes-vous sûr de vouloire supprimer le compte " + data.message + " ?";
-				userName = data.message + " ";
+				message = "Êtes-vous sûr de vouloire supprimer le compte " + data.message.email + " ?";
+				userName = data.message.email + " ";
 			}
 		},
 		dataType: "json",
@@ -29,7 +30,7 @@ function submitSuppressionCompte(e) {
 		servicePost('protected/administration/service/supprimer_compte',
 				{ userId : userId },
 				function(data) {
-					tr.fadeOut('slow');
+					person.fadeOut('slow');
 				},
 				"Suppression du compte " + userName + "en cours...",
 		"Compte " + userName + "supprimé !");

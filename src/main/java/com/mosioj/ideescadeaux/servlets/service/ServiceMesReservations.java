@@ -46,6 +46,6 @@ public class ServiceMesReservations extends AbstractServiceGet<AllAccessToPostAn
 		ownerIdeas.sort((left, right) -> left.getOwner().compareTo(right.getOwner()));
 
 		// Writing answer
-		response.getOutputStream().print(new ServiceResponse(true, ownerIdeas, true, isAdmin(request)).asJSon(response));
+		buildResponse(request, response, ServiceResponse.ok(ownerIdeas, true, isAdmin(request)));
 	}
 }

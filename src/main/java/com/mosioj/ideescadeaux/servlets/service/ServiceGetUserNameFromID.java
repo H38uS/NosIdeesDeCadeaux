@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 
 @WebServlet("/protected/service/get_user_name")
 public class ServiceGetUserNameFromID extends AbstractServiceGet<NetworkAccess> {
@@ -29,8 +30,13 @@ public class ServiceGetUserNameFromID extends AbstractServiceGet<NetworkAccess> 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 		User user = policy.getUser();
-		logger.debug(MessageFormat.format("Récupération du nom de l''utilisateur numéro {0}", user.id));
-		writter.writeJSonOutput(response, makeJSonPair("status", "ok"), makeJSonPair("message", user.getEmail()));
+		logger.debug(MessageFormat.format("Récupération du nom de l''utilisateur {0}", user));
+		if (user == null) {
+			// The user does not exist in DB but the id does...
+			buildResponse(request, response, ServiceResponse.ko(user, true, isAdmin(request)));
+		} else {
+			buildResponse(request, response, ServiceResponse.ok(user, true, isAdmin(request)));
+		}
 		// FIXME : 1 tester les services quand on a pas les droits
 	}
 }

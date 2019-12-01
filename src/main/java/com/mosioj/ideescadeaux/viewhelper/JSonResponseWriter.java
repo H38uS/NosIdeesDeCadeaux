@@ -38,7 +38,6 @@ public class JSonResponseWriter {
 
 	}
 
-	// FIXME : 91 faire un objet réponse avec un statut, un message d'erreur et un objet optionnel
 	public void writeJSonOutput(HttpServletResponse response, JSonPair... values) {
 		try {
 			if (values.length > 0) {
