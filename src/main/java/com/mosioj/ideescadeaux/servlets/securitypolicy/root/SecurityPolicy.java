@@ -25,6 +25,11 @@ public abstract class SecurityPolicy {
 	}
 
 	/**
+	 * Reset the 
+	 */
+	public abstract void reset();
+
+	/**
 	 * 
 	 * @param request
 	 * @param name

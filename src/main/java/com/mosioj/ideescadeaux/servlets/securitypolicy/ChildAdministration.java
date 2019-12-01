@@ -75,4 +75,9 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
 		return user;
 	}
 
+	@Override
+	public void reset() {
+		user = null;
+	}
+
 }

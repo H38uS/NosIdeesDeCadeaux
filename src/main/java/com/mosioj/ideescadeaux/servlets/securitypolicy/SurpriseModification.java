@@ -102,4 +102,9 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
 		return idea;
 	}
 
+	@Override
+	public void reset() {
+		idea = null;
+	}
+
 }

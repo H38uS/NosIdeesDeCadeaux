@@ -69,4 +69,9 @@ public final class NameServicePolicy extends SecurityPolicy {
 		return user;
 	}
 
+	@Override
+	public void reset() {
+		user = null;
+	}
+
 }

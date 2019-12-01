@@ -112,4 +112,10 @@ public final class PasswordChangeRequest extends SecurityPolicy implements UserS
 	public Integer getTokenId() {
 		return tokenId;
 	}
+
+	@Override
+	public void reset() {
+		user = null;
+		tokenId = null;
+	}
 }

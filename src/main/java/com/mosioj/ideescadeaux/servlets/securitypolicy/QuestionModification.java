@@ -92,4 +92,8 @@ public class QuestionModification extends SecurityPolicy implements CommentSecur
 		return comment;
 	}
 
+	@Override
+	public void reset() {
+		comment = null;
+	}
 }

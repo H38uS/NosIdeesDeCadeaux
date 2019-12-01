@@ -40,7 +40,7 @@ public class VoirListe extends MesListes {
 		if (ideaId != null) {
 			request.getSession().removeAttribute("added_idea_id");
 			try {
-				Idee idea = getIdeaAndEnrichIt(request, Integer.parseInt(ideaId.toString()));
+				Idee idea = getIdeaAndEnrichIt(Integer.parseInt(ideaId.toString()));
 				if (idea.owner == thisOne) {
 					request.setAttribute("idee", idea);
 				}

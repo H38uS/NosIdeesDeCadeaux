@@ -64,6 +64,9 @@ public class TestParametersUtils {
 		public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
 			return true;
 		}
+
+		@Override
+		public void reset() { }
 	}
 
 	private class TestHttpServletRequest implements HttpServletRequest {

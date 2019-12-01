@@ -102,4 +102,9 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
 		return idea;
 	}
 
+	@Override
+	public void reset() {
+		idea = null;
+	}
+
 }

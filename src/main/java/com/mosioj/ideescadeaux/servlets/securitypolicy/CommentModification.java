@@ -90,4 +90,9 @@ public final class CommentModification extends SecurityPolicy implements Comment
 		return comment;
 	}
 
+	@Override
+	public void reset() {
+		comment = null;
+	}
+
 }

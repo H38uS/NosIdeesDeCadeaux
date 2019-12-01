@@ -97,4 +97,9 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
 		return idea;
 	}
 
+	@Override
+	public void reset() {
+		idea = null;
+	}
+
 }

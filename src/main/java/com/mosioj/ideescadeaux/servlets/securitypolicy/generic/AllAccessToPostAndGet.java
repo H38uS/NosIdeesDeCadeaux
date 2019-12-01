@@ -22,4 +22,9 @@ public final class AllAccessToPostAndGet extends SecurityPolicy {
 		return true;
 	}
 
+	@Override
+	public void reset() {
+		// Nothing to do
+	}
+
 }

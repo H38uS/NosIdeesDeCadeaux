@@ -73,4 +73,9 @@ public class SuppressionCompte extends SecurityPolicy {
 		return user;
 	}
 
+	@Override
+	public void reset() {
+		user = null;
+	}
+
 }

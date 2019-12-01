@@ -85,4 +85,8 @@ public final class PeutDemanderARejoindreLeReseau extends SecurityPolicy impleme
 		return potentialFriend;
 	}
 
+	@Override
+	public void reset() {
+		potentialFriend = null;
+	}
 }

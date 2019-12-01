@@ -96,4 +96,9 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
 		return idea;
 	}
 
+	@Override
+	public void reset() {
+		idea = null;
+	}
+
 }

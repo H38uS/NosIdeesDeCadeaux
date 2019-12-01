@@ -104,4 +104,9 @@ public class NotificationModification extends SecurityPolicy {
 		return notificationId;
 	}
 
+	@Override
+	public void reset() {
+		notificationId = null;
+	}
+
 }

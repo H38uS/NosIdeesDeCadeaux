@@ -23,7 +23,6 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 
 	private boolean hasAccess(HttpServletRequest request) throws SQLException {
 		try {
-			choiceParameters = new HashMap<>();
 			Map<String, String[]> params = request.getParameterMap();
 			for (String key : params.keySet()) {
 				if (!key.startsWith("choix_")) {
@@ -89,6 +88,11 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 	 */
 	public Map<Integer, Boolean> getChoiceParameters() {
 		return choiceParameters;
+	}
+
+	@Override
+	public void reset() {
+		choiceParameters = new HashMap<>();
 	}
 
 }

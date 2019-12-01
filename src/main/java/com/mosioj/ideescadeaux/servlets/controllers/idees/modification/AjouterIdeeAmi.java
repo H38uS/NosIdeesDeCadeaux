@@ -77,7 +77,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 											parameters.get("image"),
 											estSurprise ? currentUser : null,
 											currentUser);
-				Idee idea = getIdeaAndEnrichIt(request, ideaId);
+				Idee idea = getIdeaAndEnrichIt(ideaId);
 				request.setAttribute("idee", idea);
 
 				if (!estSurprise) {

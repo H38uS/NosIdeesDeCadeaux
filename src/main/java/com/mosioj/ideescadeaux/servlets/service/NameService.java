@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.servlets.service;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.model.entities.User;
