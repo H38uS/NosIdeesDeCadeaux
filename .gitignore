@@ -3,3 +3,4 @@ target/
 testLogs/
 .idea/
 *.iml
+${work_dir}
