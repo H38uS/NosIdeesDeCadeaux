@@ -204,7 +204,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
 			return false;
 		}
 
-		model.idees.sousReserver(idea.getId(), user.id, comment);
+		model.idees.sousReserver(idea.getId());
 		model.sousReservation.sousReserver(idea.getId(), user.id, comment);
 		return true;
 	}

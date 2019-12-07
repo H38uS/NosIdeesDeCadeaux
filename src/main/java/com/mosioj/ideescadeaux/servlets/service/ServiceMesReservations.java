@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.servlets.service;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class ServiceMesReservations extends AbstractServiceGet<AllAccessToPostAn
 		userToIdeas.forEach((u, ideas) -> ownerIdeas.add(OwnerIdeas.from(u, ideas)));
 
 		// Sorting according to owners
-		ownerIdeas.sort((left, right) -> left.getOwner().compareTo(right.getOwner()));
+		ownerIdeas.sort(Comparator.comparing(OwnerIdeas::getOwner));
 
 		// Writing answer
 		buildResponse(request, response, ServiceResponse.ok(ownerIdeas, true, isAdmin(request)));
