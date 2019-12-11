@@ -16,19 +16,19 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.NotificationModification;
 @WebServlet("/protected/service/notification_delete")
 public class NotificationDeleteService extends AbstractServicePost<NotificationModification> {
 
-	private static final long serialVersionUID = 2642366164643542379L;
-	private static final String NOTIFICATION_PARAMETER = "notif_id";
+    private static final long serialVersionUID = 2642366164643542379L;
+    private static final String NOTIFICATION_PARAMETER = "notif_id";
 
-	private static final Logger logger = LogManager.getLogger(NotificationDeleteService.class);
+    private static final Logger logger = LogManager.getLogger(NotificationDeleteService.class);
 
-	public NotificationDeleteService() {
-		super(new NotificationModification(NOTIFICATION_PARAMETER));
-	}
+    public NotificationDeleteService() {
+        super(new NotificationModification(NOTIFICATION_PARAMETER));
+    }
 
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		model.notif.remove(policy.getNotificationId());
-		logger.info(MessageFormat.format("Suppression de la notification {0}", policy.getNotificationId()));
-		writter.writeJSonOutput(response, makeJSonPair("status", "ok"));
-	}
+    @Override
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+        model.notif.remove(policy.getNotificationId());
+        logger.info(MessageFormat.format("Suppression de la notification {0}", policy.getNotificationId()));
+        writter.writeJSonOutput(response, makeJSonPair("status", "ok")); // FIXME : 0 utiliser GSon + afficher le message quand on supprime la dernière
+    }
 }

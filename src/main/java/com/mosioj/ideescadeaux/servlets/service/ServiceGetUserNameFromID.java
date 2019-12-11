@@ -16,7 +16,7 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 
 @WebServlet("/protected/service/get_user_name")
-public class ServiceGetUserNameFromID extends AbstractServiceGet<NetworkAccess> {
+public class ServiceGetUserNameFromID extends com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet<NetworkAccess> {
 
 	private static final long serialVersionUID = 8894577701063844430L;
 	private static final Logger logger = LogManager.getLogger(ServiceGetUserNameFromID.class);
@@ -24,8 +24,8 @@ public class ServiceGetUserNameFromID extends AbstractServiceGet<NetworkAccess> 
 	private static final String USER_ID_PARAM = "userId";
 
 	public ServiceGetUserNameFromID() {
-		super(new NetworkAccess(USER_ID_PARAM));
-	}
+        super(new NetworkAccess(USER_ID_PARAM));
+    }
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
@@ -33,9 +33,9 @@ public class ServiceGetUserNameFromID extends AbstractServiceGet<NetworkAccess> 
 		logger.debug(MessageFormat.format("Récupération du nom de l''utilisateur {0}", user));
 		if (user == null) {
 			// The user does not exist in DB but the id does...
-			buildResponse(request, response, ServiceResponse.ko(user, true, isAdmin(request)));
+			buildResponse(response, ServiceResponse.ko(user, true, isAdmin(request)));
 		} else {
-			buildResponse(request, response, ServiceResponse.ok(user, true, isAdmin(request)));
+			buildResponse(response, ServiceResponse.ok(user, true, isAdmin(request)));
 		}
 		// FIXME : 1 tester les services quand on a pas les droits
 	}

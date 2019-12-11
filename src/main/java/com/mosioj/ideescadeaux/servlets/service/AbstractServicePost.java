@@ -7,14 +7,16 @@ import com.mosioj.ideescadeaux.viewhelper.JSonResponseWriter.JSonPair;
 
 public abstract class AbstractServicePost<P extends SecurityPolicy> extends IdeesCadeauxPostServlet<P> {
 
-	private static final long serialVersionUID = 3014602524272535511L;
-	protected final JSonResponseWriter writter = new JSonResponseWriter();
+    // FIXME : 0 remove the entire class when the writer is removed
 
-	public AbstractServicePost(P policy) {
-		super(policy);
-	}
+    protected final JSonResponseWriter writter = new JSonResponseWriter();
 
-	protected JSonPair makeJSonPair(String key, String value) {
-		return writter.makeJSonPair(key, value);
-	}
+    public AbstractServicePost(P policy) {
+        super(policy);
+    }
+
+    // FIXME : 0 à supprimer
+    protected JSonPair makeJSonPair(String key, String value) {
+        return writter.makeJSonPair(key, value);
+    }
 }

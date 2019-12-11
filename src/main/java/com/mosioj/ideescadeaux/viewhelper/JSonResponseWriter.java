@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 
 public class JSonResponseWriter {
 
+	// FIXME : 0 classe à supprimer - utiliser GSon
 	private static final Logger logger = LogManager.getLogger(JSonResponseWriter.class);
 
 	private void buildResponse(HttpServletResponse response, String content) throws IOException {

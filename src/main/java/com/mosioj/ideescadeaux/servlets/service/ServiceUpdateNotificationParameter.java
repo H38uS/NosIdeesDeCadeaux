@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,32 +18,30 @@ import com.mosioj.ideescadeaux.utils.ParametersUtils;
 @WebServlet("/protected/service/update_notification_parameter")
 public class ServiceUpdateNotificationParameter extends AbstractServicePost<AllAccessToPostAndGet> {
 
-	private static final long serialVersionUID = 8087174276226168482L;
-	private static final Logger logger = LogManager.getLogger(ServiceUpdateNotificationParameter.class);
+    private static final long serialVersionUID = 8087174276226168482L;
+    private static final Logger logger = LogManager.getLogger(ServiceUpdateNotificationParameter.class);
 
-	public ServiceUpdateNotificationParameter() {
-		super(new AllAccessToPostAndGet());
-	}
+    public ServiceUpdateNotificationParameter() {
+        super(new AllAccessToPostAndGet());
+    }
 
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    @Override
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		String name = ParametersUtils.readAndEscape(request, "name");
-		String value = ParametersUtils.readAndEscape(request, "value");
+        String name = ParametersUtils.readAndEscape(request, "name");
+        String value = ParametersUtils.readAndEscape(request, "value");
 
-		String statut = "ko";
+        boolean status = false;
+        try {
+            if (name != null && value != null) {
+                NotificationType.valueOf(name);
+                model.userParameters.insertUpdateParameter(thisOne, name, value);
+                status = true;
+            }
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+        }
 
-		try {
-			if (name != null && value != null) {
-				NotificationType.valueOf(name);
-				model.userParameters.insertUpdateParameter(thisOne, name, value);
-				statut = "ok";
-			}
-		} catch (IllegalArgumentException e) {
-			logger.error(e.getMessage());
-		}
-
-		writter.writeJSonOutput(response, makeJSonPair("status", statut));
-	}
-
+        buildResponse(response, new ServiceResponse(status, "", true, isAdmin(request)));
+    }
 }

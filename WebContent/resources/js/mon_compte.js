@@ -28,17 +28,15 @@ function submitMainForm(e) {
 			cache : false,
 			processData : false,
 			success : function(data, textStatus, jqXHR) {
-				if ( typeof data.status === "undefined" || data.status !== 'ok' ) {
-					var errorMessage = "Echec de la mise à jour. Des erreurs ont empêché la sauvegarde:<br/>" + data.errors;
+				if ( typeof data.status === "undefined" || data.status !== 'OK' ) {
+					var errorMessage = "Echec de la mise à jour. Des erreurs ont empêché la sauvegarde:<br/>" + data.message;
 					actionError(errorMessage);
 				} else {
-					var successMessage = "Mise à jour effectuée avec succès.";
-					actionDone(successMessage);
-					
+					actionDone("Mise à jour effectuée avec succès.");
 					var my_link = my_form.find("#avatar_picture");
-					my_link.attr("href", data.avatars + "/" + data.avatarLarge);
-					my_link.children().attr("src", data.avatars + "/" + data.avatarSmall);
-					my_link.next().attr("value", data.avatar);
+					my_link.attr("href", avatarsPath + "/large/" + data.message.avatar);
+					my_link.children().attr("src", avatarsPath + "/small/" + data.message.avatar);
+					my_link.next().attr("value", data.message.avatar);
 				}
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
@@ -77,7 +75,7 @@ function addParent(e) {
 					form.before('<ul id="parent_names_list"></ul>');
 					my_ul = form.prev();
 				}
-				my_ul.append("<li>" + data.name + "</li>");
+				my_ul.append("<li>" + data.message + "</li>");
 			},
 			"Ajout du parent en cours...",
 			"Ajout effectué avec succès !");

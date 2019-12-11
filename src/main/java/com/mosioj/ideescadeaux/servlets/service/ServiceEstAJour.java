@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,43 +20,39 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteractionBookingUpT
 @WebServlet("/protected/service/est_a_jour")
 public class ServiceEstAJour extends AbstractServicePost<IdeaInteractionBookingUpToDate> {
 
-	private static final long serialVersionUID = 2642366164643542379L;
-	public static final String IDEE_FIELD_PARAMETER = "idee";
-	private static final Logger logger = LogManager.getLogger(ServiceEstAJour.class);
+    private static final long serialVersionUID = 2642366164643542379L;
+    public static final String IDEE_FIELD_PARAMETER = "idee";
+    private static final Logger logger = LogManager.getLogger(ServiceEstAJour.class);
 
-	public ServiceEstAJour() {
-		super(new IdeaInteractionBookingUpToDate(IDEE_FIELD_PARAMETER));
-	}
+    public ServiceEstAJour() {
+        super(new IdeaInteractionBookingUpToDate(IDEE_FIELD_PARAMETER));
+    }
 
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-		Idee idea = policy.getIdea();
-		String status = askIfUpToDate(idea, request) ? "ok" : "ko";
-		writter.writeJSonOutput(response, makeJSonPair("status", status));
-	}
+    @Override
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+        Idee idea = policy.getIdea();
+        boolean status = askIfUpToDate(idea);
+        buildResponse(response, new ServiceResponse(status, "", true, isAdmin(request)));
+    }
 
-	/**
-	 * 
-	 * @param idea
-	 * @param request
-	 * @return True if the notification has been added, false if already sent.
-	 * @throws ServletException
-	 * @throws SQLException
-	 */
-	public boolean askIfUpToDate(Idee idea, HttpServletRequest request) throws ServletException, SQLException {
+    /**
+     * @param idea The idea.
+     * @return True if the notification has been added, false if already sent.
+     */
+    public boolean askIfUpToDate(Idee idea) throws SQLException {
 
-		int userId = thisOne.id;
-		logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
-		
-		IsUpToDateQuestions ask = new IsUpToDateQuestions();
-		if (ask.addAssociation(idea.getId(), userId) == 1) {
-			NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(model.users.getUser(userId), idea);
-			if (!model.notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
-				model.notif.addNotification(idea.owner.id, isUpToDateNotif);
-				return true;
-			}
-		}
+        int userId = thisOne.id;
+        logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
 
-		return false;
-	}
+        IsUpToDateQuestions ask = new IsUpToDateQuestions();
+        if (ask.addAssociation(idea.getId(), userId) == 1) {
+            NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(model.users.getUser(userId), idea);
+            if (!model.notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
+                model.notif.addNotification(idea.owner.id, isUpToDateNotif);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

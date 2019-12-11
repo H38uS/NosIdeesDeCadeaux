@@ -19,7 +19,7 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAn
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 
 @WebServlet("/protected/service/mes_reservations")
-public class ServiceMesReservations extends AbstractServiceGet<AllAccessToPostAndGet> {
+public class ServiceMesReservations extends com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 2763424501732173771L;
 
@@ -27,8 +27,8 @@ public class ServiceMesReservations extends AbstractServiceGet<AllAccessToPostAn
 	 * Class constructor.
 	 */
 	public ServiceMesReservations() {
-		super(new AllAccessToPostAndGet());
-	}
+        super(new AllAccessToPostAndGet());
+    }
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
@@ -47,6 +47,6 @@ public class ServiceMesReservations extends AbstractServiceGet<AllAccessToPostAn
 		ownerIdeas.sort(Comparator.comparing(OwnerIdeas::getOwner));
 
 		// Writing answer
-		buildResponse(request, response, ServiceResponse.ok(ownerIdeas, true, isAdmin(request)));
+		buildResponse(response, ServiceResponse.ok(ownerIdeas, true, isAdmin(request)));
 	}
 }

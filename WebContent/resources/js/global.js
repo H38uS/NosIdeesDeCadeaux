@@ -1,6 +1,7 @@
 myTooltipsterInfoParam={delay: 200, position: 'bottom', theme: 'tooltipster-default'};
 myTooltipsterPrioParam={delay: 800, position: 'bottom', contentAsHTML: true, theme: 'tooltipster-html'};
 
+var avatarsPath = "protected/files/uploaded_pictures/avatars";
 pictureNeedsRefresh = false;
 selectedPicture = "";
 selectedPictureName = "";
@@ -179,13 +180,13 @@ function servicePost(url, params, successHandler, loadingMessage, successMessage
 	doLoading(loadingMessage);
 
 	$.post(url, params, function(data) {
-		if ( typeof data.status === "undefined" || data.status !== 'ok' ) {
-			if ( typeof data.error_message === "undefined" || data.error_message === '' ) {
+		if ( typeof data.status === "undefined" || data.status !== 'OK' ) {
+			if ( typeof data.message === "undefined" || data.message === '' ) {
 				if ( typeof errorMessage === "undefined" ) {
 					errorMessage = "Echec de la mise à jour, veuillez réessayer.<br/> Si cela ne fonctionne pas à nouveau, essayez de recharger la page (touche F5).";
 				}
 			} else {
-				errorMessage = 'Une erreur est survenue: ' + data.error_message;
+				errorMessage = 'Une erreur est survenue: ' + data.message;
 			}
 			actionError(errorMessage);
 		} else {

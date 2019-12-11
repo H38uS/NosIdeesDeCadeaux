@@ -38,7 +38,6 @@ import com.mosioj.ideescadeaux.servlets.logichelpers.ModelAccessor;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.utils.Compteur;
-import com.mosioj.ideescadeaux.utils.NotLoggedInException;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
 import com.mosioj.ideescadeaux.viewhelper.Escaper;
@@ -51,7 +50,6 @@ import com.mosioj.ideescadeaux.viewhelper.Escaper;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
-    // FIXME : 0 bouton pour ajouter une idée dans ma liste
     // FIXME : 0 utiliser GSon ?
     // FIXME : 0 faire du CSS dans les barres de statuts pour que ce soit sur plusieurs lignes
 
@@ -289,9 +287,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     }
 
     /**
-     * @param originalImage
-     * @param type
-     * @return
+     * @param originalImage The picture received over the network.
+     * @param type The picture file extension.
+     * @return A new picture resized for best rendering.
      */
     protected BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth, int maxHeight) {
 
@@ -327,7 +325,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
     protected void readMultiFormParameters(HttpServletRequest request, File filePath) throws ServletException {
 
-        parameters = new HashMap<String, String>();
+        parameters = new HashMap<>();
 
         DiskFileItemFactory factory = new DiskFileItemFactory();
         // maximum size that will be stored in memory
@@ -377,7 +375,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
                             int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 
-                            BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_WIDTH, MAX_WIDTH);
+                            BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_SIZE, MAX_SIZE);
                             ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
 
                             // On l'écrit tout le temps pour avoir un PNG
@@ -452,7 +450,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
     /**
      * @param request       The http request.
-     * @param parameterName
+     * @param parameterName The name of the parameter to read.
      * @return The String to pass to the database
      */
     protected String readNameOrEmail(HttpServletRequest request, String parameterName) {
@@ -476,7 +474,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     }
 
     /**
-     * @param ideaId
+     * @param ideaId The idea's id.
      * @return The idea from the DB, enriched with useful information.
      */
     protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException {

@@ -22,7 +22,7 @@ import com.mosioj.ideescadeaux.utils.GsonFactory;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 
 @WebServlet("/protected/service/name_resolver")
-public class NameService extends AbstractServiceGet<NameServicePolicy> {
+public class NameService extends com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet<NameServicePolicy> {
 
 	private static final Logger logger = LogManager.getLogger(NameService.class);
 	private static final long serialVersionUID = 9147880158497428623L;
@@ -30,8 +30,8 @@ public class NameService extends AbstractServiceGet<NameServicePolicy> {
 	private static final String OF_USER_ID = "userId";
 
 	public NameService() {
-		super(new NameServicePolicy(OF_USER_ID));
-	}
+        super(new NameServicePolicy(OF_USER_ID));
+    }
 
 	@Override
 	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
