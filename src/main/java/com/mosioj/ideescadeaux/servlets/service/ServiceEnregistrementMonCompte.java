@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ import com.mosioj.ideescadeaux.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.utils.validators.ValidatorFactory;
 
 @WebServlet("/protected/service/enregistrement_mon_compte")
-public class ServiceEnregistrementMonCompte extends AbstractServicePost<AllAccessToPostAndGet> {
+public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
 
     private static final long serialVersionUID = -3371121559895996016L;
     private static final Logger logger = LogManager.getLogger(ServiceEnregistrementMonCompte.class);

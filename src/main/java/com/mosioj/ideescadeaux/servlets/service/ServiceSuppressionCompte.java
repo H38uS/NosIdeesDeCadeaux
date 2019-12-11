@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +17,7 @@ import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.SuppressionCompte;
 
 @WebServlet("/protected/administration/service/supprimer_compte")
-public class ServiceSuppressionCompte extends AbstractServicePost<SuppressionCompte> {
+public class ServiceSuppressionCompte extends IdeesCadeauxPostServlet<SuppressionCompte> {
 
     private static final long serialVersionUID = -8612163046284587669L;
     private static final Logger logger = LogManager.getLogger(ServiceSuppressionCompte.class);

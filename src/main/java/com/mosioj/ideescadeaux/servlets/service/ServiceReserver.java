@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +17,7 @@ import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteraction;
 
 @WebServlet("/protected/service/reserver")
-public class ServiceReserver extends AbstractServicePost<IdeaInteraction> {
+public class ServiceReserver extends IdeesCadeauxPostServlet<IdeaInteraction> {
 
     private static final long serialVersionUID = 2642366164643542379L;
     private static final String IDEA_ID_PARAM = "idee";

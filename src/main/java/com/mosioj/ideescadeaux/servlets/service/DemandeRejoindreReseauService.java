@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNouvelleDemandeAmi;
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
-public class DemandeRejoindreReseauService extends AbstractServicePost<PeutDemanderARejoindreLeReseau> {
+public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutDemanderARejoindreLeReseau> {
 
     private static final long serialVersionUID = 3683476983071872342L;
     private static final Logger logger = LogManager.getLogger(DemandeRejoindreReseauService.class);

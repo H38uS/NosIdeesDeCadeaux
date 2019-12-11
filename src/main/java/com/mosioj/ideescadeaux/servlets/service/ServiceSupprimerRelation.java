@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +18,7 @@ import com.mosioj.ideescadeaux.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.NetworkAccess;
 
 @WebServlet("/protected/service/supprimer_relation")
-public class ServiceSupprimerRelation extends AbstractServicePost<NetworkAccess> {
+public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAccess> {
 
     private static final long serialVersionUID = -4896678945281607617L;
     private static final Logger logger = LogManager.getLogger(ServiceSupprimerRelation.class);

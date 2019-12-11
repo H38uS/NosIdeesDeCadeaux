@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
@@ -54,6 +55,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
 		when(request.getAttribute("device")).thenReturn(device);
 		when(request.getRequestDispatcher("/protected/erreur_parametre_ou_droit.jsp")).thenReturn(dispatcher);
+		when(response.getCharacterEncoding()).thenReturn("UTF-8");
 		try {
 			when(response.getOutputStream()).thenReturn(new MyServerOutput());
 		} catch (IOException e) {
@@ -65,10 +67,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		
 		try {
 			validateInstanceLinks();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			fail();
-		} catch (IllegalAccessException e) {
+		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -76,9 +75,6 @@ public abstract class AbstractTestServlet extends TemplateTest {
 
 	/**
 	 * Tests that all links for the current tested instance exists.
-	 * 
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
 	 */
 	private void validateInstanceLinks() throws IllegalArgumentException, IllegalAccessException {
 
@@ -101,11 +97,6 @@ public abstract class AbstractTestServlet extends TemplateTest {
 
 	/**
 	 * Performs a post to the test object.
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
 	 */
 	protected void doTestPost(HttpServletRequest request, HttpServletResponse response) {
 		when(request.getMethod()).thenReturn("POST");
@@ -119,11 +110,6 @@ public abstract class AbstractTestServlet extends TemplateTest {
 
 	/**
 	 * Performs a get to the test object.
-	 * 
-	 * @param req
-	 * @param resp
-	 * @throws ServletException
-	 * @throws IOException
 	 */
 	protected void doTestGet(HttpServletRequest request, HttpServletResponse response) {
 		when(request.getMethod()).thenReturn("GET");
@@ -159,14 +145,14 @@ public abstract class AbstractTestServlet extends TemplateTest {
 			sb.append(token);
 		}
 		final String content = sb.toString();
-		final byte[] byteContent = content.getBytes("UTF-8");
+		final byte[] byteContent = content.getBytes(StandardCharsets.UTF_8);
 		
 		ServletInputStream sis = new ServletInputStream() {
 			
 			int pos = -1;
 			
 			@Override
-			public int read() throws IOException {
+			public int read() {
 				pos++;
 				if (pos >= byteContent.length) {
 					return -1;
@@ -194,7 +180,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		when(request.getContentLength()).thenReturn(byteContent.length);
 	}
 
-	private class MyServerOutput extends ServletOutputStream {
+	private static class MyServerOutput extends ServletOutputStream {
 
 		@Override
 		public boolean isReady() {
@@ -206,7 +192,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
 		}
 
 		@Override
-		public void write(int b) throws IOException {
+		public void write(int b) {
 		}
 		
 	}

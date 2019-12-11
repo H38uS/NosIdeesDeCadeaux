@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +18,7 @@ import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.Dereserver
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteraction;
 
 @WebServlet("/protected/service/dereserver")
-public class ServiceDereserver extends AbstractServicePost<IdeaInteraction> {
+public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> {
 
     private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
     private static final long serialVersionUID = -8244829899125982644L;

@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +17,7 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAn
 import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 
 @WebServlet("/protected/service/ajouter_parent")
-public class AjouterParentService extends AbstractServicePost<AllAccessToPostAndGet> {
+public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
 
     private static final long serialVersionUID = 7598797241503497392L;
     private static final Logger logger = LogManager.getLogger(AjouterParentService.class);
@@ -55,5 +56,4 @@ public class AjouterParentService extends AbstractServicePost<AllAccessToPostAnd
 
         buildResponse(response, new ServiceResponse(status, message, true, isAdmin(request)));
     }
-
 }

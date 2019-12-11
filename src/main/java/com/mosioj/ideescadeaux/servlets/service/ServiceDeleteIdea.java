@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +27,7 @@ import com.mosioj.ideescadeaux.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaModification;
 
 @WebServlet("/protected/service/delete_idea")
-public class ServiceDeleteIdea extends AbstractServicePost<IdeaModification> {
+public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification> {
 
     private static final Logger logger = LogManager.getLogger(ServiceDeleteIdea.class);
     private static final long serialVersionUID = 2642366164643542379L;

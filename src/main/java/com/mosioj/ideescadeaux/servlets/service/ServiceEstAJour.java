@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +19,7 @@ import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 
 @WebServlet("/protected/service/est_a_jour")
-public class ServiceEstAJour extends AbstractServicePost<IdeaInteractionBookingUpToDate> {
+public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBookingUpToDate> {
 
     private static final long serialVersionUID = 2642366164643542379L;
     public static final String IDEE_FIELD_PARAMETER = "idee";
