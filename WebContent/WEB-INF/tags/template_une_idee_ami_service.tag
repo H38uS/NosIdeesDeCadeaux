@@ -104,7 +104,7 @@
 								<c:when test="${connected_user.id == idee.bookingOwner.id}">
 								<div class="col-auto px-0">	
 									<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_dereserver">
-										<img src="resources/image/reserve-moi.png" title="Une de vos généreuse réservation - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
+										<img src="resources/image/reserve-moi.png" title="Une de vos généreuses réservations - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
 									</a>
 								</div>
 								</c:when>

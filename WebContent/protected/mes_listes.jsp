@@ -506,7 +506,7 @@
                                                                                 <a href="protected/dereserver?idee=${idea_from_liste.id}&from=/${identic_call_back}"
                                                                                    class="img idea_dereserver">
                                                                                     <img src="resources/image/reserve-moi.png"
-                                                                                         title="Une de vos généreuse réservation - Cliquer pour annuler"
+                                                                                         title="Une de vos généreuses réservations - Cliquer pour annuler"
                                                                                          alt="Idée réservée par vous"
                                                                                          width="${action_img_width}px"/>
                                                                                 </a>
