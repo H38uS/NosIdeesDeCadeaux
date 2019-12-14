@@ -37,13 +37,19 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
             request.setAttribute("name", userToSendInvitation.getName());
 
             if (model.userRelationRequests.associationExists(thisOne.id, userToSendInvitation.id)) {
-                throw new SQLException(MessageFormat.format("vous avez déjà envoyé une demande à {0}.",
-                                                            userToSendInvitation.getName()));
+                buildResponse(response,
+                              ServiceResponse.ko(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.",
+                                                                      userToSendInvitation.getName()),
+                                                 isAdmin(request)));
+                return;
             }
 
             if (model.userRelations.associationExists(thisOne.id, userToSendInvitation.id)) {
-                throw new SQLException(MessageFormat.format("vous êtes déjà ami avec {0}.",
-                                                            userToSendInvitation.getName()));
+                buildResponse(response,
+                              ServiceResponse.ko(MessageFormat.format("Vous faites déjà parti du réseau de {0}.",
+                                                                      userToSendInvitation.getName()),
+                                                 isAdmin(request)));
+                return;
             }
 
             // Suppression des notifications

@@ -20,7 +20,7 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteraction;
 @WebServlet("/protected/service/dereserver")
 public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> {
 
-    private static final Logger logger = LogManager.getLogger(DereserverIdee.class);
+    private static final Logger logger = LogManager.getLogger(ServiceDereserver.class);
     private static final long serialVersionUID = -8244829899125982644L;
     private static final String IDEA_ID_PARAM = "idee";
 

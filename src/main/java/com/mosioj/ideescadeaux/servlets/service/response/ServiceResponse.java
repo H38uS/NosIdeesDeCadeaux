@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.servlets.service.response;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,7 +46,7 @@ public class ServiceResponse {
     /**
      * Factory method for working protected answers with empty message.
      *
-     * @param isAdmin    Whether the user is an admin.
+     * @param isAdmin Whether the user is an admin.
      * @return The response built from parameters.
      */
     public static ServiceResponse ok(boolean isAdmin) {
@@ -55,8 +56,8 @@ public class ServiceResponse {
     /**
      * Factory method for working protected answers.
      *
-     * @param message    The JSon response message.
-     * @param isAdmin    Whether the user is an admin.
+     * @param message The JSon response message.
+     * @param isAdmin Whether the user is an admin.
      * @return The response built from parameters.
      */
     public static ServiceResponse ok(Object message, boolean isAdmin) {
@@ -88,10 +89,21 @@ public class ServiceResponse {
     }
 
     /**
+     * Factory method for non working answers in protected sessions.
+     *
+     * @param message    The JSon response message.
+     * @param isAdmin    Whether the user is an admin.
+     * @return The response built from parameters.
+     */
+    public static ServiceResponse ko(Object message, boolean isAdmin) {
+        return new ServiceResponse(false, message, true, isAdmin);
+    }
+
+    /**
      * @return the status
      */
-    public String getStatus() {
-        return status;
+    public boolean isOK() {
+        return "OK".equals(status);
     }
 
     /**
@@ -116,8 +128,15 @@ public class ServiceResponse {
         return content;
     }
 
+
+
     @Override
     public String toString() {
-        return "ServiceResponse [status=" + status + ", message=" + message + "]";
+        return "ServiceResponse{" +
+               "status='" + status + '\'' +
+               ", message=" + message +
+               ", isAdmin=" + isAdmin +
+               ", isLoggedIn=" + isLoggedIn +
+               '}';
     }
 }
