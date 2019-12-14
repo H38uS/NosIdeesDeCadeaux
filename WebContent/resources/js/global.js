@@ -129,7 +129,6 @@ function getPictureWidth() {
 /* *** Loading Stuff *** */
 /* ********************* */
 
-
 var loadingTimeout; // Time before we display the loading animation
 var timer;
 
@@ -144,17 +143,36 @@ function closeModal() {
 	$("#loading_message_div").hide().removeClass();
 }
 
+function getHTMLPopUpMessage(image, message) {
+
+    var row = $("<div></div>");
+    row.addClass("row align-items-center");
+
+    var pic = $("<div></div>");
+    pic.addClass("col-auto");
+    pic.html('<img src="resources/image/' + image + '" width="' + getPictureWidth() + '" />');
+
+    var mess = $("<div></div>");
+    mess.addClass("col");
+    mess.html(message);
+
+    row.append(pic);
+    row.append(mess);
+
+    return row;
+}
+
 function doLoading(message) {
 	closeModal();
 	loadingTimeout = setTimeout(function() {
-		$("#loading_message_div").html('<img src="resources/image/loading.gif" width="' + getPictureWidth() + '" />' + message)
+		$("#loading_message_div").html(getHTMLPopUpMessage("loading.gif", message))
 								 .addClass('loading')
 								 .slideDown();
 	}, 400);
 }
 function actionDone(message) {
 	closeModal();
-	$("#loading_message_div").html('<img src="resources/image/ok.png" width="' + getPictureWidth() + '" />' + message)
+	$("#loading_message_div").html(getHTMLPopUpMessage("ok.png", message))
 							 .addClass('success')
 							 .slideDown();
 	timer = setTimeout(function() {
@@ -163,7 +181,7 @@ function actionDone(message) {
 }
 function actionError(message) {
 	closeModal();
-	$("#loading_message_div").html('<img src="resources/image/ko.png" width="' + getPictureWidth() + '" /> ' + message)
+	$("#loading_message_div").html(getHTMLPopUpMessage("ko.png", message))
 							 .addClass('fail')
 							 .slideDown();
 	timer = setTimeout(function() {

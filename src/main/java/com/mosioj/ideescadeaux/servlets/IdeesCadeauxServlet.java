@@ -50,8 +50,6 @@ import com.mosioj.ideescadeaux.viewhelper.Escaper;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
-    // FIXME : 0 faire du CSS dans les barres de statuts pour que ce soit sur plusieurs lignes
-
     // FIXME : 3 dans mon réseau quand on tape filtrer les cartes en dessous
     // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
     // FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
