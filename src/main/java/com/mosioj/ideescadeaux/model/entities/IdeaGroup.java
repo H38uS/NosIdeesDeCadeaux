@@ -7,7 +7,7 @@ public class IdeaGroup {
 
 	private final double total;
 	private final int id;
-	private final List<Share> shares = new ArrayList<Share>();
+	private final List<Share> shares = new ArrayList<>();
 	
 	public IdeaGroup(int id, double d) {
 		this.id = id;

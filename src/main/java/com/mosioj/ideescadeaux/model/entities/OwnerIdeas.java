@@ -20,9 +20,9 @@ public class OwnerIdeas {
 	/**
 	 * Factory method.
 	 * 
-	 * @param owner
-	 * @param idea
-	 * @return
+	 * @param owner The owner.
+	 * @param ideas His list of ideas.
+	 * @return The combined object.
 	 */
 	public static OwnerIdeas from(User owner, List<Idee> ideas) {
 		return new OwnerIdeas(owner, ideas);

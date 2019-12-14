@@ -55,12 +55,12 @@ public class User implements Comparable<User> {
     /**
      * Administration constructor.
      *
-     * @param id
-     * @param name
-     * @param email
-     * @param avatar
-     * @param creationDate
-     * @param lastLogin
+     * @param id The user's ID.
+     * @param name The user's name.
+     * @param email The user's email.
+     * @param avatar The user's avatar.
+     * @param creationDate When this user has been created.
+     * @param lastLogin When it has last logged in.
      */
     public User(int id, String name, String email, String avatar, Timestamp creationDate, Timestamp lastLogin) {
         this(id, name, email, avatar);
@@ -197,9 +197,7 @@ public class User implements Comparable<User> {
         if (!(obj instanceof User))
             return false;
         User other = (User) obj;
-        if (id != other.id)
-            return false;
-        return true;
+        return id == other.id;
     }
 
     @Override
