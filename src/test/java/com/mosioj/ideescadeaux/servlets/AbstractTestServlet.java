@@ -1,7 +1,6 @@
 package com.mosioj.ideescadeaux.servlets;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -117,7 +116,11 @@ public abstract class AbstractTestServlet extends TemplateTest {
     protected ServiceResponse doTestServicePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         when(request.getMethod()).thenReturn("POST");
         instance.doPost(request, response);
-        return GsonFactory.getIt().fromJson(responseOutput.builder.toString(), ServiceResponse.class);
+        ServiceResponse resp = GsonFactory.getIt()
+                                                     .fromJson(responseOutput.builder.toString(),
+                                                               ServiceResponse.class);
+        assertNotNull(resp);
+        return resp;
     }
 
     /**

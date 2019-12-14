@@ -40,7 +40,7 @@ public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBook
      * @param idea The idea.
      * @return True if the notification has been added, false if already sent.
      */
-    public boolean askIfUpToDate(Idee idea) throws SQLException {
+    private boolean askIfUpToDate(Idee idea) throws SQLException {
 
         int userId = thisOne.id;
         logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
