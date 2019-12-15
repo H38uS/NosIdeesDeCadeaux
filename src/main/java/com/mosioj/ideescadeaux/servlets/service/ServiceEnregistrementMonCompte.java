@@ -45,17 +45,10 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
         ServiceResponse<?> ans = ServiceResponse.ko(message, isAdmin(request));
         if (ServletFileUpload.isMultipartContent(request)) {
 
-            if (filePath == null) {
-                filePath = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/avatars");
-                logger.info(MessageFormat.format("Setting file path to: {0}", filePath.getAbsolutePath()));
-                if (!filePath.exists() && !filePath.mkdirs()) {
-                    logger.warn("Fail to create " + filePath);
-                }
-            }
+            File thePath = getFilePath(this);
+            readMultiFormParameters(request, thePath);
 
-            readMultiFormParameters(request, filePath);
-
-            List<String> errors = processSave(filePath, parameters);
+            List<String> errors = processSave(thePath, parameters);
             if (errors == null || errors.isEmpty()) {
                 request.setAttribute("connected_user", thisOne);
                 request.getSession().setAttribute("connected_user", thisOne);
@@ -73,6 +66,17 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
         }
 
         buildResponse(response, ans);
+    }
+
+    public static synchronized File getFilePath(ServiceEnregistrementMonCompte service) {
+        if (filePath == null) {
+            filePath = new File(service.getServletContext().getInitParameter("work_dir"), "uploaded_pictures/avatars");
+            logger.info(MessageFormat.format("Setting file path to: {0}", filePath.getAbsolutePath()));
+            if (!filePath.exists() && !filePath.mkdirs()) {
+                logger.warn("Fail to create " + filePath);
+            }
+        }
+        return filePath;
     }
 
     // La base est en UTC, il faut donc ne pas utiliser MySimpleDateFormat.

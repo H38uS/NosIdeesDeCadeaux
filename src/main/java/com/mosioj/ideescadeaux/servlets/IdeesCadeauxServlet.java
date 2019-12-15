@@ -53,35 +53,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     // FIXME : 3 dans mon réseau quand on tape filtrer les cartes en dessous
     // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
     // FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
-
-    // TODO : voir pour utiliser hibernate ou jpa, et/ou spring mvc (restful pour plus tard)
-
-    // TODO : notification followers quand on ajoute des idées, les modifie etc.
-
-    // TODO : configurer le nombre de jour pour le rappel d'anniversaire
-
-    // TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
-
-    // TODO : pouvoir éditer un commentaire
-    // TODO : mettre le focus sur le champs recherche dans mes listes
-
-    // TODO : faire du javascript pour les discussions
-
-    // TODO : pouvoir se noter des idées en privé, puis les décaler en public
-
-    // TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
-    // FIXME : 92 remplir le gdoc + historiser la base de test
-
-    // TODO : pouvoir modifier le niveau de log depuis l'administration
-
-    // TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
-
-    // TODO bug avec l'IPhone, pas assez de padding sous le champs recherche
-    // TODO pouvoir déréserver toutes ses idées
-
-    // TODO vérifier en JS que le nombre de notification n'a pas bougé
-    // TODO faire une appli androïd !!
-
     // FIXME : 6 revoir le CSS de la recherche en mode pc
     // FIXME : 1 utiliser le format MD pour les idées et les séances de natation
     // FIXME : 1 sur l'index mettre le nombre total de réservation si non vide et un lien vers mes réservations
