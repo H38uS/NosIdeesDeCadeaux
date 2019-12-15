@@ -1,28 +1,25 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.model.entities.Idee;
-import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.DereserverIdee;
-import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteraction;
+import java.sql.SQLException;
+import java.text.MessageFormat;
 
 @WebServlet("/protected/service/dereserver")
 public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> {
 
     private static final Logger logger = LogManager.getLogger(ServiceDereserver.class);
     private static final long serialVersionUID = -8244829899125982644L;
-    private static final String IDEA_ID_PARAM = "idee";
+    public static final String IDEA_ID_PARAM = "idee";
 
     /**
      * Class constructor
@@ -42,6 +39,6 @@ public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> 
                                           userId));
         model.idees.dereserver(idea.getId(), userId);
 
-        buildResponse(response, ServiceResponse.ok("", true, isAdmin(request)));
+        buildResponse(response, ServiceResponse.ok(isAdmin(request)));
     }
 }
