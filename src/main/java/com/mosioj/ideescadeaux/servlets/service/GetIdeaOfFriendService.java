@@ -19,38 +19,37 @@ import com.mosioj.ideescadeaux.utils.RootingsUtils;
 
 /**
  * Do not use for the users' idea.
- * 
- * @author Jordan Mosio
  *
+ * @author Jordan Mosio
  */
 @WebServlet("/protected/service/get_idea_of_friend")
 public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteraction> {
 
-	private static final long serialVersionUID = -3425240682690763149L;
-	private static final Logger logger = LogManager.getLogger(GetIdeaOfFriendService.class);
+    private static final long serialVersionUID = -3425240682690763149L;
+    private static final Logger logger = LogManager.getLogger(GetIdeaOfFriendService.class);
 
-	private static final String IDEA_ID_PARAM = "idee";
-	private static final String FROM_PARAM = "from";
-	public static final String VIEW_PAGE_URL = "/protected/service/get_idea_of_friend.jsp";
+    public static final String IDEA_ID_PARAM = "idee";
+    private static final String FROM_PARAM = "from";
+    public static final String VIEW_PAGE_URL = "/protected/service/get_idea_of_friend.jsp";
 
-	public GetIdeaOfFriendService() {
-		super(new IdeaInteraction(IDEA_ID_PARAM));
-	}
+    public GetIdeaOfFriendService() {
+        super(new IdeaInteraction(IDEA_ID_PARAM));
+    }
 
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    @Override
+    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		Idee idee = policy.getIdea();
-		String from = ParametersUtils.readIt(request, FROM_PARAM);
-		if (from.startsWith("/"))
-			from = from.substring(1);
+        Idee idee = policy.getIdea();
+        String from = ParametersUtils.readIt(request, FROM_PARAM);
+        if (from.startsWith("/"))
+            from = from.substring(1);
 
-		logger.debug(MessageFormat.format("Getting idea {0} from service call (from {1})...", idee.getId(), from));
+        logger.debug(MessageFormat.format("Getting idea {0} from service call (from {1})...", idee.getId(), from));
 
-		model.idees.fillAUserIdea(thisOne, idee, device);
+        model.idees.fillAUserIdea(thisOne, idee, device);
 
-		request.setAttribute("idee", idee);
-		request.setAttribute("identic_call_back", from);
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-	}
+        request.setAttribute("idee", idee);
+        request.setAttribute("identic_call_back", from);
+        RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response); // TODO refactor et utiliser du json
+    }
 }

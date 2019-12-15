@@ -154,7 +154,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
     /**
      * Performs a get to the test object.
      */
-    protected void doTestGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void doTestGet() {
         when(request.getMethod()).thenReturn("GET");
         try {
             instance.doGet(request, response);
