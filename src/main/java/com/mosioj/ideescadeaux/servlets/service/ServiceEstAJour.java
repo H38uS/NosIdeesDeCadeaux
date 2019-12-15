@@ -33,7 +33,7 @@ public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBook
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
         Idee idea = policy.getIdea();
         boolean status = askIfUpToDate(idea);
-        buildResponse(response, new ServiceResponse(status, "", true, isAdmin(request)));
+        buildResponse(response, new ServiceResponse<>(status, "", isAdmin(request)));
     }
 
     /**

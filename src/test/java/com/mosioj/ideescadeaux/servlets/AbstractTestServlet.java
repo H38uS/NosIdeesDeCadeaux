@@ -103,7 +103,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
     /**
      * Performs a post to the test object.
      */
-    protected void doTestPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doTestPost() {
         when(request.getMethod()).thenReturn("POST");
         try {
             instance.doPost(request, response);
@@ -114,9 +114,21 @@ public abstract class AbstractTestServlet extends TemplateTest {
     }
 
     /**
-     * Performs a post to the test object.
+     * Performs a post to the test object and assumes it should comply with the policy.
+     *
+     * @return The service response.
      */
-    protected ServiceResponse doTestServicePost() {
+    protected StringServiceResponse doTestServicePost() {
+        return doTestServicePost(true);
+    }
+
+    /**
+     * Performs a post to the test object.
+     *
+     * @param shouldPassSecurityChecks True if the parameters should be accepted by the service.
+     * @return The service response if allowed by policy, null otherwise.
+     */
+    protected StringServiceResponse doTestServicePost(boolean shouldPassSecurityChecks) {
         when(request.getMethod()).thenReturn("POST");
         responseOutput.clear();
         try {
@@ -126,13 +138,26 @@ public abstract class AbstractTestServlet extends TemplateTest {
             fail("Servlet error.");
         }
         logger.info(responseOutput.builder);
-        ServiceResponse resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), ServiceResponse.class);
-        assertNotNull(resp);
+        StringServiceResponse resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), StringServiceResponse.class);
+        if (shouldPassSecurityChecks) {
+            assertNotNull(resp);
+        } else {
+            assertNull(resp);
+        }
         return resp;
     }
 
     /**
-     * Performs a post to the test object.
+     * Performs a get to the test object.
+     *
+     * @return The service response.
+     */
+    protected StringServiceResponse doTestServiceGet() {
+        return doTestServiceGet(StringServiceResponse.class);
+    }
+
+    /**
+     * Performs a get to the test object.
      *
      * @param clazz The actual class of the response.
      */
@@ -221,6 +246,19 @@ public abstract class AbstractTestServlet extends TemplateTest {
         when(request.getContentType()).thenReturn("multipart/form-data; boundary=" + token);
         when(request.getInputStream()).thenReturn(sis);
         when(request.getContentLength()).thenReturn(byteContent.length);
+    }
+
+    protected static class StringServiceResponse extends ServiceResponse<String> {
+        /**
+         * Class constructor.
+         *
+         * @param isOK    True if there is no error.
+         * @param message The JSon response message.
+         * @param isAdmin Whether the user is an admin.
+         */
+        public StringServiceResponse(boolean isOK, String message, boolean isAdmin) {
+            super(isOK, message, isAdmin);
+        }
     }
 
     private static class MyServerOutput extends ServletOutputStream {

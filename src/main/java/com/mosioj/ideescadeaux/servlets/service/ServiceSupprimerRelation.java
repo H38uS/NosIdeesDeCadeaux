@@ -31,7 +31,7 @@ public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAcc
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
-        ServiceResponse ans;
+        ServiceResponse<String> ans;
         try {
             User user = policy.getUser();
             model.userRelations.deleteAssociation(user.id, thisOne.id);
@@ -45,7 +45,7 @@ public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAcc
             model.notif.addNotification(user.id, new NotifFriendshipDropped(thisOne));
             ans = ServiceResponse.ok(isAdmin(request));
         } catch (SQLException e) {
-            ans = ServiceResponse.ko(e.getMessage(), true, isAdmin(request));
+            ans = ServiceResponse.ko(e.getMessage(), isAdmin(request));
             logger.warn(e);
         }
 

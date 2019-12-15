@@ -4,7 +4,6 @@ import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.ReserverIdee;
-import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -30,7 +29,7 @@ public class TestEstCeAJour extends AbstractTestServlet {
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
         notifs = notif.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
@@ -48,7 +47,7 @@ public class TestEstCeAJour extends AbstractTestServlet {
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-        doTestServicePost(); // bloqué par la police, impossible en utilisation classique...
+        doTestServicePost(false); // bloqué par la police, impossible en utilisation classique...
 
         notifs = notif.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size()); // On ne peut pas demander sur une surprise
@@ -60,7 +59,7 @@ public class TestEstCeAJour extends AbstractTestServlet {
         int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         resp = doTestServicePost();
         assertFalse(resp.isOK());

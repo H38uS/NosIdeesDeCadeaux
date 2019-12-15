@@ -15,74 +15,73 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 
 public final class NetworkAccess extends SecurityPolicy implements UserSecurityChecker {
 
-	private static final Logger logger = LogManager.getLogger(NetworkAccess.class);
+    private static final Logger logger = LogManager.getLogger(NetworkAccess.class);
 
-	/**
-	 * Defines the string used in HttpServletRequest to retrieve the user id.
-	 */
-	private final String userParameter;
+    /**
+     * Defines the string used in HttpServletRequest to retrieve the user id.
+     */
+    private final String userParameter;
 
-	private User friend;
+    private User friend;
 
-	/**
-	 * 
-	 * @param userParameter
-	 */
-	public NetworkAccess(String userParameter) {
-		this.userParameter = userParameter;
-	}
+    /**
+     * @param userParameter The request parameter name.
+     */
+    public NetworkAccess(String userParameter) {
+        this.userParameter = userParameter;
+    }
 
-	private boolean hasAccess(HttpServletRequest request) throws SQLException {
-		
-		Optional<Integer> user = readInt(request, userParameter);
-		if (!user.isPresent()) {
-			lastReason = "Aucun utilisateur trouvé en paramètre.";
-			return false;
-		}
+    private boolean hasAccess(HttpServletRequest request) throws SQLException {
 
-		int userId = connectedUser.id;
-		boolean res = user.get() == userId || model.userRelations.associationExists(user.get(), userId);
-		if (!res) {
-			lastReason = "Vous n'êtes pas ami avec cette personne.";
-			return false;
-		}
+        Optional<Integer> user = readInt(request, userParameter);
+        if (!user.isPresent()) {
+            lastReason = "Aucun utilisateur trouvé en paramètre.";
+            return false;
+        }
 
-		friend = model.users.getUser(user.get());
-		if (friend == null) {
-			logger.warn("The id " + user.get() + " does not exist...");
-		}
-		
-		return friend != null;
-	}
+        int userId = connectedUser.id;
+        boolean res = user.get() == userId || model.userRelations.associationExists(user.get(), userId);
+        if (!res) {
+            lastReason = "Vous n'êtes pas ami avec cette personne.";
+            return false;
+        }
 
-	@Override
-	public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			return hasAccess(request);
-		} catch (SQLException e) {
-			logger.error("Cannot process checking, SQLException: " + e);
-			return false;
-		}
-	}
+        friend = model.users.getUser(user.get());
+        if (friend == null) {
+            logger.error("The id " + user.get() + " does not exist...");
+        }
 
-	@Override
-	public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			return hasAccess(request);
-		} catch (SQLException e) {
-			logger.error("Cannot process checking, SQLException: " + e);
-			return false;
-		}
-	}
+        return friend != null;
+    }
 
-	@Override
-	public User getUser() {
-		return friend;
-	}
+    @Override
+    public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            return hasAccess(request);
+        } catch (SQLException e) {
+            logger.error("Cannot process checking, SQLException: " + e);
+            return false;
+        }
+    }
 
-	@Override
-	public void reset() {
-		friend = null;
-	}
+    @Override
+    public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            return hasAccess(request);
+        } catch (SQLException e) {
+            logger.error("Cannot process checking, SQLException: " + e);
+            return false;
+        }
+    }
+
+    @Override
+    public User getUser() {
+        return friend;
+    }
+
+    @Override
+    public void reset() {
+        friend = null;
+    }
 
 }

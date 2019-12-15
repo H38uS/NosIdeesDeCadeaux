@@ -85,6 +85,6 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
             model.notif.addNotification(userId, new NotifNoIdea());
         }
 
-        buildResponse(response, ServiceResponse.ok("", true, isAdmin(request)));
+        buildResponse(response, ServiceResponse.ok("", isAdmin(request)));
     }
 }

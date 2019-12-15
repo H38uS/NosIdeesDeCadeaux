@@ -45,7 +45,7 @@ public class TestMaListe extends AbstractTestServlet {
         param.put("text", "Ma super idée wouhouuuu");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        doTestPost(request, response);
+        doTestPost();
 
         verify(session).setAttribute(eq("added_idea_id"), anyObject());
         verify(request, never()).setAttribute(eq("errors"), anyObject());
@@ -60,7 +60,7 @@ public class TestMaListe extends AbstractTestServlet {
                   "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra et voilà");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        doTestPost(request, response);
+        doTestPost();
 
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
         Idee idee = idees.getIdeaWithoutEnrichment(id);

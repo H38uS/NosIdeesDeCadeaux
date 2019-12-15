@@ -34,14 +34,14 @@ public class ServiceSuppressionCompte extends IdeesCadeauxPostServlet<Suppressio
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-        ServiceResponse ans;
+        ServiceResponse<String> ans;
         try {
             User user = policy.getUserToDelete();
             logger.info(MessageFormat.format("Suppression du compte {0} (id: {1})", user, user.id));
             model.users.deleteUser(user);
             ans = ServiceResponse.ok(isAdmin(request));
         } catch (Exception e) {
-            ans = ServiceResponse.ko(e.getMessage(), true, isAdmin(request));
+            ans = ServiceResponse.ko(e.getMessage(), isAdmin(request));
             logger.error(e.getMessage());
             e.printStackTrace();
         }

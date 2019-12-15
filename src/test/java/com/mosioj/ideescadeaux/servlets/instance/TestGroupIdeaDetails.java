@@ -61,7 +61,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn(32 + "");
-        doTestPost(request, response);
+        doTestPost();
 
         assertNotifDoesNotExists(groupSuggestion);
         idees.remove(idea);
@@ -92,7 +92,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         // Annulation de la participation de _OWNER_ID_ aka friendOfFirefox
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn("annulation");
-        doTestPost(request, response);
+        doTestPost();
 
         assertNotifDoesNotExists(groupEvolutionShouldDisapear);
         assertNotifDoesNotExists(groupSuggestion);
@@ -122,7 +122,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         // Participation au groupe
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn(32 + "");
-        doTestPost(request, response);
+        doTestPost();
         assertEquals(1,
                      notif.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
                           .size());
@@ -131,7 +131,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         // Annulation de la participation
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn("annulation");
-        doTestPost(request, response);
+        doTestPost();
         assertEquals(1,
                      notif.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
                           .size());
@@ -140,7 +140,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         // Finalement - re - Participation au groupe
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn(32 + "");
-        doTestPost(request, response);
+        doTestPost();
         assertEquals(1,
                      notif.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
                           .size());
@@ -149,7 +149,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn(35 + "");
-        doTestPost(request, response);
+        doTestPost();
         assertEquals(1,
                      notif.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
                           .size());
@@ -160,7 +160,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         // Finalement - re - Annulation de la participation
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn("annulation");
-        doTestPost(request, response);
+        doTestPost();
         assertEquals(1,
                      notif.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
                           .size());

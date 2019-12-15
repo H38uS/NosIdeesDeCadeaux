@@ -44,7 +44,7 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
         String message = "Le formulaire n'a pas le bon format.";
-        ServiceResponse ans = ServiceResponse.ko(message, true, isAdmin(request));
+        ServiceResponse<?> ans = ServiceResponse.ko(message, isAdmin(request));
         if (ServletFileUpload.isMultipartContent(request)) {
 
             if (filePath == null) {
@@ -72,13 +72,13 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
                 }
                 sb.append("</ul>");
                 message = sb.toString();
-                ans = ServiceResponse.ko(message, true, isAdmin(request));
+                ans = ServiceResponse.ko(message, isAdmin(request));
             }
 
         }
 
         buildResponse(response, ans);
-        // FIXME : 0 faut tester tous les services modifiés
+        // FIXME : 0 faut tester ==> ServiceEnregistrementMonCompte
     }
 
     // La base est en UTC, il faut donc ne pas utiliser MySimpleDateFormat.

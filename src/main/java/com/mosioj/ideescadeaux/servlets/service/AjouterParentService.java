@@ -54,6 +54,6 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
             status = false;
         }
 
-        buildResponse(response, new ServiceResponse(status, message, true, isAdmin(request)));
+        buildResponse(response, new ServiceResponse<>(status, message, isAdmin(request)));
     }
 }

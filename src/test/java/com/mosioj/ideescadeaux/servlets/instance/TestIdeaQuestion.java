@@ -47,7 +47,7 @@ public class TestIdeaQuestion extends AbstractTestServlet {
 
         when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId + "");
         when(request.getParameter("text")).thenReturn("Voilou voilou");
-        doTestPost(request, response);
+        doTestPost();
 
         assertEquals(1, questions.getCommentsOn(ideaId).size());
         idees.remove(ideaId);
@@ -61,7 +61,7 @@ public class TestIdeaQuestion extends AbstractTestServlet {
 
         when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId + "");
         when(request.getParameter("text")).thenReturn("Voilou voilou");
-        doTestPost(request, response);
+        doTestPost();
 
         assertEquals(0, questions.getCommentsOn(ideaId).size()); // Impossible de poser une question sur une surprise !
         idees.remove(ideaId);

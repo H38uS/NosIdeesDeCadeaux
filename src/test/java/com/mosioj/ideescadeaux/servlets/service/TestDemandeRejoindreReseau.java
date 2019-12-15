@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.servlets.service;
 import com.mosioj.ideescadeaux.model.repositories.UserRelationRequests;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
     public void testPostEmptyParameters() {
 
         // Should not throw an exception
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost(false);
 
         // Test parameters call
         verify(request).getParameter(eq("user_id"));
@@ -54,7 +53,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 
         // Should not throw an exception
         when(request.getParameter("user_id")).thenReturn("23");
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertNotifDoesNotExists(suggestionAndAsk);
         assertNotifDoesNotExists(suggestionAndAsked);
@@ -67,7 +66,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
         when(request.getParameter("user_id")).thenReturn("10");
 
         // Should not throw an exception
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
         assertEquals("Vous avez déjà envoyé une demande à The Toto.", resp.getMessage());
@@ -79,7 +78,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
         when(request.getParameter("user_id")).thenReturn("1");
 
         // Should not throw an exception
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
         assertEquals("Vous faites déjà parti du réseau de Jordan.mosio@hotmail.fr.", resp.getMessage());

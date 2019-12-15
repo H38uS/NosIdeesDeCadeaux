@@ -31,7 +31,7 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
-        ServiceResponse ans;
+        ServiceResponse<String> ans;
         try {
             User userToSendInvitation = policy.getUser();
             request.setAttribute("name", userToSendInvitation.getName());
@@ -69,9 +69,9 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
                                                                     userToSendInvitation.id,
                                                                     thisOne.getName()));
 
-            ans = ServiceResponse.ok("", true, isAdmin(request));
+            ans = ServiceResponse.ok("", isAdmin(request));
         } catch (SQLException e) {
-            ans = ServiceResponse.ko(e.getMessage(), true, isAdmin(request));
+            ans = ServiceResponse.ko(e.getMessage(), isAdmin(request));
             logger.warn(e);
         }
 
