@@ -30,7 +30,7 @@ public class TestEstCeAJour extends AbstractTestServlet {
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
         notifs = notif.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
@@ -48,7 +48,7 @@ public class TestEstCeAJour extends AbstractTestServlet {
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-        doTestServicePost(request, response); // bloqué par la police, impossible en utilisation classique...
+        doTestServicePost(); // bloqué par la police, impossible en utilisation classique...
 
         notifs = notif.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size()); // On ne peut pas demander sur une surprise
@@ -60,9 +60,9 @@ public class TestEstCeAJour extends AbstractTestServlet {
         int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
-        resp = doTestServicePost(request, response);
+        resp = doTestServicePost();
         assertFalse(resp.isOK());
     }
 }

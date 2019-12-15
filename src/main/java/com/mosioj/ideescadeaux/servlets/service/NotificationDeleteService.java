@@ -19,7 +19,7 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.NotificationModification;
 public class NotificationDeleteService extends IdeesCadeauxPostServlet<NotificationModification> {
 
     private static final long serialVersionUID = 2642366164643542379L;
-    private static final String NOTIFICATION_PARAMETER = "notif_id";
+    public static final String NOTIFICATION_PARAMETER = "notif_id";
 
     private static final Logger logger = LogManager.getLogger(NotificationDeleteService.class);
 

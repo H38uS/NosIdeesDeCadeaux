@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.servlets.service;
 
 import com.mosioj.ideescadeaux.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.servlets.service.ServiceSupprimerRelation;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
@@ -30,7 +29,7 @@ public class TestSupprimerRelation extends AbstractTestServlet {
         assertNotifDoesExists(notifId);
 
         when(request.getParameter(ServiceSupprimerRelation.USER_PARAMETER)).thenReturn(_MOI_AUTRE_ + "");
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
         assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));

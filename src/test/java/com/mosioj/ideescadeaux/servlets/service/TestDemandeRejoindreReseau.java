@@ -30,7 +30,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
     public void testPostEmptyParameters() {
 
         // Should not throw an exception
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         // Test parameters call
         verify(request).getParameter(eq("user_id"));
@@ -54,7 +54,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
 
         // Should not throw an exception
         when(request.getParameter("user_id")).thenReturn("23");
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         assertNotifDoesNotExists(suggestionAndAsk);
         assertNotifDoesNotExists(suggestionAndAsked);
@@ -67,7 +67,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
         when(request.getParameter("user_id")).thenReturn("10");
 
         // Should not throw an exception
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
         assertEquals("Vous avez déjà envoyé une demande à The Toto.", resp.getMessage());
@@ -79,7 +79,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
         when(request.getParameter("user_id")).thenReturn("1");
 
         // Should not throw an exception
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
         assertEquals("Vous faites déjà parti du réseau de Jordan.mosio@hotmail.fr.", resp.getMessage());

@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mosioj.ideescadeaux.servlets.service.ServiceEstAJour;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.utils.GsonFactory;
 import org.apache.logging.log4j.LogManager;
@@ -117,7 +116,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
     /**
      * Performs a post to the test object.
      */
-    protected ServiceResponse doTestServicePost(HttpServletRequest request, HttpServletResponse response) {
+    protected ServiceResponse doTestServicePost() {
         when(request.getMethod()).thenReturn("POST");
         responseOutput.clear();
         try {
@@ -128,6 +127,26 @@ public abstract class AbstractTestServlet extends TemplateTest {
         }
         logger.info(responseOutput.builder);
         ServiceResponse resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), ServiceResponse.class);
+        assertNotNull(resp);
+        return resp;
+    }
+
+    /**
+     * Performs a post to the test object.
+     *
+     * @param clazz The actual class of the response.
+     */
+    protected <T> T doTestServiceGet(Class<T> clazz) {
+        when(request.getMethod()).thenReturn("GET");
+        responseOutput.clear();
+        try {
+            instance.doGet(request, response);
+        } catch (ServletException | IOException e) {
+            e.printStackTrace();
+            fail("Servlet error.");
+        }
+        logger.info("Service response: " + responseOutput.builder);
+        T resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), clazz);
         assertNotNull(resp);
         return resp;
     }

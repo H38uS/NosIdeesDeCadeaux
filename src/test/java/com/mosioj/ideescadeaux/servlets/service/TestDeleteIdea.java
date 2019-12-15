@@ -13,9 +13,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class TestRemoveOneIdea extends AbstractTestServlet {
+public class TestDeleteIdea extends AbstractTestServlet {
 
-    public TestRemoveOneIdea() {
+    public TestDeleteIdea() {
         super(new ServiceDeleteIdea());
     }
 
@@ -27,7 +27,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
         assertEquals(0, ds.selectCountStar("select count(*) from IDEES_HIST where id = ?", id));
 
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
         assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
@@ -54,7 +54,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 
         // Suppression
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         // Validation que cela supprime tout
         assertTrue(resp.isOK());
@@ -93,7 +93,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
 
         // Suppression
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost(request, response);
+        ServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(isUpToDate);
