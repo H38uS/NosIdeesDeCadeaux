@@ -1,15 +1,12 @@
-package com.mosioj.ideescadeaux.servlets.instance;
+package com.mosioj.ideescadeaux.servlets.service;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.repositories.GroupIdea;
 import com.mosioj.ideescadeaux.notifications.instance.*;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.servlets.service.ServiceDeleteIdea;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +20,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testDelete() throws SQLException, ServletException, IOException {
+    public void testDelete() throws SQLException {
 
         int id = idees.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
@@ -38,7 +35,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testDeleteWithGroupBooking() throws SQLException, ServletException, IOException {
+    public void testDeleteWithGroupBooking() throws SQLException {
 
         // Creation de l'idée
         int id = idees.addIdea(firefox, "generated", "", 0, null, null, null);
@@ -68,7 +65,7 @@ public class TestRemoveOneIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testUnderlyingNotificationAreWellRemoved() throws SQLException, ServletException, IOException {
+    public void testUnderlyingNotificationAreWellRemoved() throws SQLException {
 
         int id = idees.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));

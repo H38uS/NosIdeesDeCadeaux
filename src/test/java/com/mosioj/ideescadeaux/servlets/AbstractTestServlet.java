@@ -21,8 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.ideescadeaux.servlets.service.ServiceEstAJour;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.utils.GsonFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
 import com.mosioj.ideescadeaux.servlets.controllers.compte.CreationCompte;
@@ -38,6 +41,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
     protected HttpSession session;
     protected Device device;
 
+    private static final Logger logger = LogManager.getLogger(AbstractTestServlet.class);
     protected final IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> instance;
     private final MyServerOutput responseOutput = new MyServerOutput();
 
@@ -113,12 +117,17 @@ public abstract class AbstractTestServlet extends TemplateTest {
     /**
      * Performs a post to the test object.
      */
-    protected ServiceResponse doTestServicePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected ServiceResponse doTestServicePost(HttpServletRequest request, HttpServletResponse response) {
         when(request.getMethod()).thenReturn("POST");
-        instance.doPost(request, response);
-        ServiceResponse resp = GsonFactory.getIt()
-                                                     .fromJson(responseOutput.builder.toString(),
-                                                               ServiceResponse.class);
+        responseOutput.clear();
+        try {
+            instance.doPost(request, response);
+        } catch (ServletException | IOException e) {
+            e.printStackTrace();
+            fail("Servlet error.");
+        }
+        logger.info(responseOutput.builder);
+        ServiceResponse resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), ServiceResponse.class);
         assertNotNull(resp);
         return resp;
     }
@@ -198,6 +207,10 @@ public abstract class AbstractTestServlet extends TemplateTest {
     private static class MyServerOutput extends ServletOutputStream {
 
         StringBuilder builder = new StringBuilder();
+
+        public void clear() {
+            builder = new StringBuilder();
+        }
 
         @Override
         public boolean isReady() {

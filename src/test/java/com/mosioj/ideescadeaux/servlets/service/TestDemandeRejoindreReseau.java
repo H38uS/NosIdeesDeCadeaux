@@ -1,16 +1,13 @@
-package com.mosioj.ideescadeaux.servlets.instance;
+package com.mosioj.ideescadeaux.servlets.service;
 
 import com.mosioj.ideescadeaux.model.repositories.UserRelationRequests;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.servlets.service.DemandeRejoindreReseauService;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
@@ -30,7 +27,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
     }
 
     @Test
-    public void testPostEmptyParameters() throws ServletException, IOException {
+    public void testPostEmptyParameters() {
 
         // Should not throw an exception
         ServiceResponse resp = doTestServicePost(request, response);
@@ -42,7 +39,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
     }
 
     @Test
-    public void testPostSuccess() throws ServletException, IOException, SQLException {
+    public void testPostSuccess() throws SQLException {
 
         UserRelationRequests urr = new UserRelationRequests();
         final int otherUserNotFriendYet = 23;
@@ -65,7 +62,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
     }
 
     @Test
-    public void testAlreadySent() throws ServletException, IOException {
+    public void testAlreadySent() {
 
         when(request.getParameter("user_id")).thenReturn("10");
 
@@ -77,7 +74,7 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
     }
 
     @Test
-    public void testGroupAlreadyExist() throws ServletException, IOException {
+    public void testGroupAlreadyExist() {
 
         when(request.getParameter("user_id")).thenReturn("1");
 
