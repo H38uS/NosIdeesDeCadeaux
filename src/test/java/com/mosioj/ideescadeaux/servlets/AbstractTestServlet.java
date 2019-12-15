@@ -11,12 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.servlet.ReadListener;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -43,6 +38,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
     private static final Logger logger = LogManager.getLogger(AbstractTestServlet.class);
     protected final IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> instance;
     private final MyServerOutput responseOutput = new MyServerOutput();
+    protected ServletContext config;
 
     public AbstractTestServlet(IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> pInstance) {
 
@@ -69,6 +65,16 @@ public abstract class AbstractTestServlet extends TemplateTest {
 
         instance = pInstance;
         instance.setIdeaPicturePath(new File("C:\\temp"));
+        ServletConfig servletConfig = mock(ServletConfig.class);
+        config = mock(ServletContext.class);
+        when(servletConfig.getServletContext()).thenReturn(config);
+        when(config.getInitParameter("work_dir")).thenReturn("C:\\temp");
+        try {
+            instance.init(servletConfig);
+        } catch (ServletException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
 
         try {
             validateInstanceLinks();
@@ -129,6 +135,27 @@ public abstract class AbstractTestServlet extends TemplateTest {
      * @return The service response if allowed by policy, null otherwise.
      */
     protected StringServiceResponse doTestServicePost(boolean shouldPassSecurityChecks) {
+        return doTestServicePost(StringServiceResponse.class, shouldPassSecurityChecks);
+    }
+
+    /**
+     * Performs a post to the test object.
+     *
+     * @param clazz The actual class of the response.
+     * @return The service response if allowed by policy, null otherwise.
+     */
+    protected <T> T doTestServicePost(Class<T> clazz) {
+        return doTestServicePost(clazz, true);
+    }
+
+    /**
+     * Performs a post to the test object.
+     *
+     * @param clazz The actual class of the response.
+     * @param shouldPassSecurityChecks True if the parameters should be accepted by the service.
+     * @return The service response if allowed by policy, null otherwise.
+     */
+    protected <T> T doTestServicePost(Class<T> clazz, boolean shouldPassSecurityChecks) {
         when(request.getMethod()).thenReturn("POST");
         responseOutput.clear();
         try {
@@ -138,22 +165,13 @@ public abstract class AbstractTestServlet extends TemplateTest {
             fail("Servlet error.");
         }
         logger.info(responseOutput.builder);
-        StringServiceResponse resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), StringServiceResponse.class);
+        T resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), clazz);
         if (shouldPassSecurityChecks) {
             assertNotNull(resp);
         } else {
             assertNull(resp);
         }
         return resp;
-    }
-
-    /**
-     * Performs a get to the test object.
-     *
-     * @return The service response.
-     */
-    protected StringServiceResponse doTestServiceGet() {
-        return doTestServiceGet(StringServiceResponse.class);
     }
 
     /**

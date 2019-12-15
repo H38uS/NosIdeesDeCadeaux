@@ -82,17 +82,24 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     // TODO vérifier en JS que le nombre de notification n'a pas bougé
     // TODO faire une appli androïd !!
 
-    private static final int MAX_WIDTH = 150;
+    // FIXME : 6 revoir le CSS de la recherche en mode pc
+    // FIXME : 1 utiliser le format MD pour les idées et les séances de natation
+    // FIXME : 1 sur l'index mettre le nombre total de réservation si non vide et un lien vers mes réservations
+    // + des puces pour les anniv Noel + CSS alert box
+
+    private static final int MAX_SIZE = 150;
     // Maximum 10M
     private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
     private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
+    // FIXME : 4 ajouter l'heure dans les infos de sous réservation / idem groupe
     // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
 
     // FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
 
     // FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
+    // FIXME : 7 ordonnancer les résa de plus de 3 mois ? + les mettre dans un tableau au moins en mode pc
 
     /**
      * The security policy defining whether we can interact with the parameters, etc.
@@ -150,9 +157,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
             request.setAttribute("error_message", policy.getLastReason());
             logger.warn(MessageFormat.format("Inapropriate GET access from user {0} on {1}. Reason: {2}",
-                    userId,
-                    request.getRequestURL(),
-                    policy.getLastReason()));
+                                             userId,
+                                             request.getRequestURL(),
+                                             policy.getLastReason()));
             RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, resp);
             return;
         }
@@ -170,7 +177,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                     try {
                         count.add(model.notif.getUserNotificationCount(c.id));
                     } catch (Exception e) {
-                        logger.warn(MessageFormat.format("Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
+                        logger.warn(MessageFormat.format(
+                                "Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
                                 c.getName(),
                                 c.id));
                     }
@@ -185,7 +193,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
             } catch (Exception e) {
                 // Osef
-                logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
+                logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}",
+                                                 e.getMessage()));
                 logger.warn(Arrays.toString(e.getStackTrace()));
             }
         }
@@ -221,7 +230,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
         fillConnectedUserIfPossible(request);
         policy.setConnectedUser(thisOne);
-		policy.reset();
+        policy.reset();
 
         if (!policy.hasRightToInteractInPostRequest(request, response) && !isAdmin(request)) {
 
@@ -234,9 +243,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
             request.setAttribute("error_message", policy.getLastReason());
             logger.warn(MessageFormat.format("Inapropriate POST access from user {0} on {1}. Reason: {2}",
-                    userId,
-                    request.getRequestURL(),
-                    policy.getLastReason()));
+                                             userId,
+                                             request.getRequestURL(),
+                                             policy.getLastReason()));
             RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
             return;
         }
@@ -255,7 +264,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                     try {
                         count.add(model.notif.getUserNotificationCount(c.id));
                     } catch (Exception e) {
-                        logger.warn(MessageFormat.format("Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
+                        logger.warn(MessageFormat.format(
+                                "Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
                                 c.getName(),
                                 c.id));
                     }
@@ -270,7 +280,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
             } catch (Exception e) {
                 // Osef
-                logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}", e.getMessage()));
+                logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}",
+                                                 e.getMessage()));
                 logger.warn(Arrays.toString(e.getStackTrace()));
             }
         }
@@ -285,7 +296,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
     /**
      * @param originalImage The picture received over the network.
-     * @param type The picture file extension.
+     * @param type          The picture file extension.
      * @return A new picture resized for best rendering.
      */
     protected BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth, int maxHeight) {
@@ -350,11 +361,15 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
                         File largeFolder = new File(filePath, "large/");
                         if (!largeFolder.exists()) {
-                            largeFolder.mkdirs();
+                            if (!largeFolder.mkdirs()) {
+                                logger.warn("Cannot create " + largeFolder);
+                            }
                         }
                         File smallFolder = new File(filePath, "small/");
                         if (!smallFolder.exists()) {
-                            smallFolder.mkdirs();
+                            if (!smallFolder.mkdirs()) {
+                                logger.warn("Cannot create " + smallFolder);
+                            }
                         }
 
                         File tmpUploadedFile = new File(largeFolder, "TMP_" + image);
@@ -362,15 +377,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                         fi.write(tmpUploadedFile);
                         logger.debug(MessageFormat.format("File size: {0} kos.", (tmpUploadedFile.length() / 1024)));
                         logger.debug(MessageFormat.format("Memory (free / total): ( {0} Ko / {1} Ko ). Max: {2} Ko.",
-                                Runtime.getRuntime().freeMemory() / 1024,
-                                Runtime.getRuntime().totalMemory() / 1024,
-                                Runtime.getRuntime().maxMemory() / 1024));
+                                                          Runtime.getRuntime().freeMemory() / 1024,
+                                                          Runtime.getRuntime().totalMemory() / 1024,
+                                                          Runtime.getRuntime().maxMemory() / 1024));
 
                         try {
                             // Creation de la vignette
                             BufferedImage originalImage = ImageIO.read(tmpUploadedFile);
 
-                            int originalType = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+                            int originalType = originalImage.getType() ==
+                                               0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 
                             BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_SIZE, MAX_SIZE);
                             ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
@@ -396,12 +412,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                             FileUtils.copyFile(tmpUploadedFile, new File(smallFolder, image));
                         }
 
-                        tmpUploadedFile.delete();
+                        if (!tmpUploadedFile.delete()) {
+                            logger.warn("Cannot delete " + tmpUploadedFile);
+                        }
                         logger.debug(MessageFormat.format("Passing image parameter: {0}", image));
                         parameters.put("image", image);
                     }
                 } else {
-                    String val = fi.getString() == null ? "" : new String(fi.getString().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+                    String val = fi.getString() == null ? "" : new String(fi.getString()
+                                                                            .getBytes(StandardCharsets.ISO_8859_1),
+                                                                          StandardCharsets.UTF_8);
                     parameters.put(fi.getFieldName(), StringEscapeUtils.escapeHtml4(val));
                 }
             }

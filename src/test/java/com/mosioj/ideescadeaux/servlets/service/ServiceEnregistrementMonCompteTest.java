@@ -1,0 +1,53 @@
+package com.mosioj.ideescadeaux.servlets.service;
+
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+
+public class ServiceEnregistrementMonCompteTest extends AbstractTestServlet {
+
+    public ServiceEnregistrementMonCompteTest() {
+        super(new ServiceEnregistrementMonCompte());
+    }
+
+    @Test
+    public void testSuccess() throws IOException {
+
+        Map<String, String> param = new HashMap<>();
+        param.put("modif_info_gen", "true");
+        param.put("email", firefox.email);
+        param.put("name", firefox.name);
+        param.put("birthday", "");
+        param.put("new_password", "aaaaaaaa");
+        param.put("conf_password", "aaaaaaaa");
+        param.put("image", "");
+        param.put("old_picture", "default.png");
+        createMultiPartRequest(param);
+
+        MyServiceResp resp = doTestServicePost(MyServiceResp.class);
+
+        assertTrue(resp.isOK());
+    }
+
+    private static class MyServiceResp extends ServiceResponse<User> {
+        /**
+         * Class constructor.
+         *
+         * @param isOK    True if there is no error.
+         * @param message The JSon response message.
+         * @param isAdmin Whether the user is an admin.
+         */
+        public MyServiceResp(boolean isOK, User message, boolean isAdmin) {
+            super(isOK, message, isAdmin);
+        }
+    }
+}
