@@ -21,7 +21,7 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
 
     private static final long serialVersionUID = 7598797241503497392L;
     private static final Logger logger = LogManager.getLogger(AjouterParentService.class);
-    private static final String NAME_OR_EMAIL = "name";
+    public static final String NAME_OR_EMAIL = "name";
 
     public AjouterParentService() {
         super(new AllAccessToPostAndGet());
@@ -35,12 +35,12 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
 
         int parentId;
         boolean status = true;
-        String message = "";
+        String message;
 
         try {
             parentId = model.users.getIdFromNameOrEmail(nameOrEmail);
             int userId = thisOne.id;
-            if (!model.parentRelationship.doesRelationExists(parentId, userId) && parentId != userId) {
+            if (model.parentRelationship.noRelationExists(parentId, userId) && parentId != userId) {
                 logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
                 model.parentRelationship.addProcuration(parentId, userId);
                 message = model.users.getUser(parentId).getName();
