@@ -96,14 +96,10 @@ public class TemplateTest {
         assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
         for (NotificationType type : NotificationType.values()) {
-            new UserRelations().getAllUsersInRelation(new Users().getUser(_OWNER_ID_)).forEach(u -> {
-                try {
-                    userParameters.insertUpdateParameter(u, type.name(), NotificationActivation.SITE.name());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    fail();
-                }
-            });
+            new UserRelations().getAllUsersInRelation(new Users().getUser(_OWNER_ID_))
+                               .forEach(u -> userParameters.insertUpdateParameter(u,
+                                                                                  type.name(),
+                                                                                  NotificationActivation.SITE.name()));
             userParameters.insertUpdateParameter(new User(_OWNER_ID_, "", "", ""),
                                                  type.name(),
                                                  NotificationActivation.SITE.name());

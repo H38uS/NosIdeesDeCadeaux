@@ -23,8 +23,8 @@ public class ParametersUtils {
     public static String readIt(HttpServletRequest request, String name) {
         String res = request.getParameter(name);
         logger.trace(MessageFormat.format("{0} is:{1}", name, res));
-		return res == null ? "" : new String(res.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-	}
+        return res == null ? "" : new String(res.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+    }
 
     public static Optional<Double> readDouble(HttpServletRequest request, String name) {
         double param;
@@ -40,8 +40,8 @@ public class ParametersUtils {
      * Reads and escape HTML4 caracters.
      *
      * @param request The http request.
-     * @param name The name of the parameter.
-     * @return The escaped string.
+     * @param name    The name of the parameter.
+     * @return The escaped string. Cannot be null.
      */
     public static String readAndEscape(HttpServletRequest request, String name) {
         return StringEscapeUtils.escapeHtml4(readIt(request, name));

@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -32,17 +33,27 @@ public class ServiceUpdateNotificationParameter extends IdeesCadeauxPostServlet<
         String name = ParametersUtils.readAndEscape(request, "name");
         String value = ParametersUtils.readAndEscape(request, "value");
 
-        boolean status = false;
+        String message = "";
         try {
-            if (name != null && value != null) {
-                NotificationType.valueOf(name);
-                model.userParameters.insertUpdateParameter(thisOne, name, value);
-                status = true;
-            }
+            NotificationType.valueOf(name);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
+            message = "Type de notification inconnu...";
+        }
+        try {
+            NotificationActivation.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
+            message = "Valeur inconnue...";
         }
 
-        buildResponse(response, new ServiceResponse(status, "", true, isAdmin(request)));
+        if (!message.isEmpty()) {
+            buildResponse(response, ServiceResponse.ko(message, isAdmin(request)));
+            return;
+        }
+
+        // Valid parameters, doing the update
+        model.userParameters.insertUpdateParameter(thisOne, name, value);
+        buildResponse(response, ServiceResponse.ok(isAdmin(request)));
     }
 }
