@@ -40,7 +40,7 @@ public class DereserverIdee extends AbstractIdea<IdeaInteraction> {
 		logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.", idea.getId(), userId));
 		model.idees.dereserver(idea.getId(), userId);
 
-		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp); // TODO doit être fait en post
+		RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, resp); // FIXME doit être fait en post
 	}
 
 	@Override

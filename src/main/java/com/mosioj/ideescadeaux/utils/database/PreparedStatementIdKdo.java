@@ -15,7 +15,6 @@ import com.mosioj.ideescadeaux.model.entities.User;
 
 public class PreparedStatementIdKdo implements Closeable {
 
-    // FIXME : 5 faire une passe et remplacer les exception par des Try
     private static final Logger LOGGER = LogManager.getLogger(PreparedStatementIdKdo.class);
     private final PreparedStatement ps;
 

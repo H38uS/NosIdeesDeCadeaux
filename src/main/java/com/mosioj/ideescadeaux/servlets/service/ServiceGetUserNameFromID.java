@@ -32,6 +32,5 @@ public class ServiceGetUserNameFromID extends com.mosioj.ideescadeaux.servlets.r
         User user = policy.getUser();
         logger.debug(MessageFormat.format("Récupération du nom de l''utilisateur {0}", user));
         buildResponse(response, ServiceResponse.ok(user, isAdmin(request)));
-        // FIXME : 8 tester les services quand on a pas les droits
     }
 }

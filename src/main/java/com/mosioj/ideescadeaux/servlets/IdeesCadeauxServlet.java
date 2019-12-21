@@ -50,27 +50,11 @@ import com.mosioj.ideescadeaux.viewhelper.Escaper;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
-    // FIXME : 3 dans mon réseau quand on tape filtrer les cartes en dessous
-    // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
-    // FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
-    // FIXME : 6 revoir le CSS de la recherche en mode pc
-    // FIXME : 1 utiliser le format MD pour les idées et les séances de natation
-    // FIXME : 1 sur l'index mettre le nombre total de réservation si non vide et un lien vers mes réservations
-    // + des puces pour les anniv Noel + CSS alert box
-
     private static final int MAX_SIZE = 150;
     // Maximum 10M
     private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
     private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
-
-    // FIXME : 4 ajouter l'heure dans les infos de sous réservation / idem groupe
-    // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
-
-    // FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
-
-    // FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
-    // FIXME : 7 ordonnancer les résa de plus de 3 mois ? + les mettre dans un tableau au moins en mode pc
 
     /**
      * The security policy defining whether we can interact with the parameters, etc.
@@ -369,10 +353,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                                 resizeImageJpg = originalImage;
                             }
                             ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
-
-                            // FIXME : 9 lazy loading pour les idées (image c'est déjà le cas)
-                            // FIXME : 9 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
-
                             logger.debug("Releasing the image resources...");
                             originalImage.flush();
 

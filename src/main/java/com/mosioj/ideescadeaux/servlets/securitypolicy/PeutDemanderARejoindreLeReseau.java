@@ -29,8 +29,6 @@ public final class PeutDemanderARejoindreLeReseau extends SecurityPolicy impleme
         try {
 
             // Y a-t-il un utilisateur ?
-            // FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour
-            // USERS)
             Optional<Integer> toBeSentTo = readInt(request, userParameter);
             if (!toBeSentTo.isPresent()) {
                 lastReason = "Aucun utilisateur trouvé en paramètre.";

@@ -1,3 +1,25 @@
+    // FIXME : quand on fait une recherche sur un nom, faire un redirect sur get
+    // FIXME : Pour mes réservations, faire un tableau avec nom owner (lien vers la liste) type image et texte
+    // FIXME : 1 sur l'index mettre le nombre total de réservation si non vide et un lien vers mes réservations
+    // FIXME : 6 revoir le CSS de la recherche en mode pc + des puces pour les anniv Noel + CSS alert box
+    // FIXME : 1 utiliser le format MD pour les idées, les commentaires et les séances de natation
+    // FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)
+    // FIXME : 3 dans mon réseau quand on tape filtrer les cartes en dessous
+    // FIXME : 4 ajouter l'heure dans les infos de sous réservation / idem groupe
+    // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
+    // FIXME : Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
+    // FIXME : 5 faire une passe et remplacer les exception par des Try
+    // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
+    // FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
+    // FIXME : 7 ordonnancer les résa de plus de 3 mois ? + les mettre dans un tableau au moins en mode pc
+    // FIXME : 8 tester les services quand on a pas les droits
+    // FIXME : 9 lazy loading pour les idées (image c'est déjà le cas)
+    // FIXME : 9 gerer les emoticons (dans une idée de Sonia) - JQuery TE (text editor) ??
+    // FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
+    // FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
+
+    // TODO : pouvoir mettre un rappel de date de réservation
+    // TODO : pouvoir se noter des personnes pour lesquelles on veut faire une résa
     // TODO : voir pour utiliser hibernate ou jpa, et/ou spring mvc (restful pour plus tard)
     // TODO : notification followers quand on ajoute des idées, les modifie etc.
     // TODO : configurer le nombre de jour pour le rappel d'anniversaire

@@ -50,6 +50,6 @@ public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteracti
 
         request.setAttribute("idee", idee);
         request.setAttribute("identic_call_back", from);
-        RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response); // TODO refactor et utiliser du json
+        RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response); // FIXME refactor et utiliser du json
     }
 }
