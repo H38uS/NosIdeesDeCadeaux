@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +34,7 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 
     private boolean hasAccess(HttpServletRequest request) throws SQLException {
 
-        Optional<Integer> user = readInt(request, userParameter);
+        Optional<Integer> user = ParametersUtils.readInt(request, userParameter);
         if (!user.isPresent()) {
             lastReason = "Aucun utilisateur trouvé en paramètre.";
             return false;

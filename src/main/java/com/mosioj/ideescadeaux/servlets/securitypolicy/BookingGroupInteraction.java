@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +42,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
      * @throws SQLException If an SQL error occurs.
      */
     private boolean canInteractWithGroup(HttpServletRequest request) throws SQLException {
-        Optional<Integer> groupIdParam = readInt(request, groupParameter);
+        Optional<Integer> groupIdParam = ParametersUtils.readInt(request, groupParameter);
         if (!groupIdParam.isPresent()) {
             lastReason = "Aucun groupe trouvé en paramètre.";
             return false;

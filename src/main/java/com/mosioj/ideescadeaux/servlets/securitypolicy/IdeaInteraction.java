@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.servlets.securitypolicy;
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +42,7 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
      */
     protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        Optional<Integer> ideaId = readInt(request, ideaParameter);
+        Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
         if (!ideaId.isPresent()) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;

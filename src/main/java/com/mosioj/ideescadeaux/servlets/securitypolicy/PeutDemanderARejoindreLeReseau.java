@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.servlets.securitypolicy;
 import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +30,7 @@ public final class PeutDemanderARejoindreLeReseau extends SecurityPolicy impleme
         try {
 
             // Y a-t-il un utilisateur ?
-            Optional<Integer> toBeSentTo = readInt(request, userParameter);
+            Optional<Integer> toBeSentTo = ParametersUtils.readInt(request, userParameter);
             if (!toBeSentTo.isPresent()) {
                 lastReason = "Aucun utilisateur trouvé en paramètre.";
                 return false;

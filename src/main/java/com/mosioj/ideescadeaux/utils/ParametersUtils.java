@@ -26,6 +26,22 @@ public class ParametersUtils {
         return res == null ? "" : new String(res.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
     }
 
+    /**
+     *
+     * @param request The http request.
+     * @param name The parameter name.
+     * @return The parameter, as an integer. If it is not possible, returns null.
+     */
+    public static Optional<Integer> readInt(HttpServletRequest request, String name) {
+        try {
+            return Optional.of(Integer.parseInt(ParametersUtils	.readIt(request, name)
+                                                                   .replaceAll("[  ]", "")
+                                                                   .replaceAll("%C2%A0", "")));
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
     public static Optional<Double> readDouble(HttpServletRequest request, String name) {
         double param;
         try {

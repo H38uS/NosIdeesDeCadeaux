@@ -73,14 +73,12 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
         return pages;
     }
 
+    /**
+     * @param request The http request.
+     * @return The found page number from the request, 1 if not provided.
+     */
     protected int getPageNumber(HttpServletRequest request) {
-        String pageNumberArg = ParametersUtils.readAndEscape(request, AbstractListes.PAGE_ARG).trim();
-        int pageNumber = 1;
-        try {
-            pageNumber = Integer.parseInt(pageNumberArg);
-        } catch (NumberFormatException e) {
-            // Nothing to do
-        }
+        int pageNumber = ParametersUtils.readInt(request, AbstractListes.PAGE_ARG).orElse(1);
         request.setAttribute("current", pageNumber);
         return pageNumber;
     }
@@ -96,7 +94,13 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
 
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-        ideesKDoGET(request, response); // default behavior
+        RootingsUtils.redirectToPage("/" +
+                                     getCallingURL() +
+                                     "?page=" +
+                                     getPageNumber(request) +
+                                     getSpecificParameters(request),
+                                     request,
+                                     response);
     }
 
     @Override

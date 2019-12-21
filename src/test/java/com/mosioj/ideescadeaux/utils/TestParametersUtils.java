@@ -33,7 +33,7 @@ public class TestParametersUtils {
 
     private static class TestAllGetAndPost extends SecurityPolicy {
         public Optional<Integer> readIntTest(HttpServletRequest request, String name) {
-            return readInt(request, name);
+            return ParametersUtils.readInt(request, name);
         }
 
         @Override
