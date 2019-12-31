@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
      */
     private final String groupParameter;
 
-    private Integer groupId;
+    private IdeaGroup theGroup;
 
     /**
      * @param groupParameter Defines the string used in HttpServletRequest to retrieve the group id.
@@ -48,11 +49,20 @@ public final class BookingGroupInteraction extends SecurityPolicy {
             return false;
         }
 
+        int groupId = groupIdParam.get();
         int userId = connectedUser.id;
 
-        User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupIdParam.get());
+        User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupId);
         if (ideaOwner == null) {
             lastReason = "Ce groupe appartient à personne.";
+            logger.warn("Un groupe n'appartient à aucune idée... => " + groupId);
+            return false;
+        }
+
+        Optional<IdeaGroup> g = model.groupForIdea.getGroupDetails(groupId);
+        if (!g.isPresent()) {
+            lastReason = "Le groupe est introuvable...";
+            logger.warn("Ce groupe n'existe pas... => " + groupId);
             return false;
         }
 
@@ -61,7 +71,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
             return false;
         }
 
-        groupId = groupIdParam.get();
+        theGroup = g.get();
         return true;
     }
 
@@ -88,13 +98,13 @@ public final class BookingGroupInteraction extends SecurityPolicy {
     /**
      * @return The resolved group id, or null if the checks failed.
      */
-    public Integer getGroupId() {
-        return groupId; // FIXME : 0 récupérer l'objet IdeaGroup et vérifier qu'il existe
+    public IdeaGroup getGroupId() {
+        return theGroup;
     }
 
-	@Override
-	public void reset() {
-		groupId = null;
-	}
+    @Override
+    public void reset() {
+        theGroup = null;
+    }
 
 }

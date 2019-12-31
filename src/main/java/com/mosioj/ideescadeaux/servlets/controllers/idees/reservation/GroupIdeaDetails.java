@@ -1,18 +1,5 @@
 package com.mosioj.ideescadeaux.servlets.controllers.idees.reservation;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mosioj.ideescadeaux.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.entities.Share;
@@ -29,6 +16,16 @@ import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
 import com.mosioj.ideescadeaux.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.utils.validators.ValidatorFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
 
 @WebServlet("/protected/detail_du_groupe")
 public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
@@ -51,10 +48,9 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
     @Override
     public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-        int groupId = policy.getGroupId();
+        IdeaGroup group = policy.getGroupId();
+        logger.debug("Getting details for idea group " + group + "...");
 
-        logger.debug("Getting details for idea group " + groupId + "...");
-        IdeaGroup group = model.groupForIdea.getGroupDetails(groupId).orElse(new IdeaGroup(-1, 0));
         double currentTotal = 0;
         for (Share share : group.getShares()) {
             currentTotal += share.getAmount();
@@ -67,7 +63,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
             request.getSession().removeAttribute("errors");
         }
 
-        Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
+        Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
         User user = thisOne;
         model.idees.fillAUserIdea(user, idee, device);
 
@@ -75,7 +71,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
         model.notif.getNotifications(user.id,
                                      NotificationType.GROUP_IDEA_SUGGESTION,
                                      ParameterName.GROUP_ID,
-                                     groupId).forEach(n -> model.notif.remove(n.id));
+                                     group.getId()).forEach(n -> model.notif.remove(n.id));
 
         request.setAttribute("idee", idee);
         request.setAttribute("is_in_group", group.contains(thisOne));
@@ -90,14 +86,15 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
         User thisUser = thisOne;
-        int groupId = policy.getGroupId();
+        IdeaGroup group = policy.getGroupId();
         String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
         if ("annulation".equals(amount)) {
 
-            User owner = model.idees.getIdeaOwnerFromGroup(groupId);
-            boolean isThereSomeoneRemaning = model.groupForIdea.removeUserFromGroup(thisUser, groupId);
-            List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID, groupId);
+            User owner = model.idees.getIdeaOwnerFromGroup(group.getId());
+            boolean isThereSomeoneRemaning = model.groupForIdea.removeUserFromGroup(thisUser, group.getId());
+            List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID,
+                                                                                   group.getId());
             notifications.parallelStream()
                          .filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name()))
                          .forEach(n -> {
@@ -108,28 +105,24 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                          });
 
             if (isThereSomeoneRemaning) {
-                Optional<IdeaGroup> group = model.groupForIdea.getGroupDetails(groupId);
-                if (group.isPresent()) {
+                // On supprime les notifications précédentes de cette personne si y'en a
+                model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
+                                          ParameterName.GROUP_ID,
+                                          group.getId(),
+                                          ParameterName.USER_ID,
+                                          thisUser);
 
-                    // On supprime les notifications précédentes de cette personne si y'en a
-                    model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                              ParameterName.GROUP_ID,
-                                              groupId,
-                                              ParameterName.USER_ID,
-                                              thisUser);
-
-                    final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-                    group.get().getShares().parallelStream().forEach(s -> {
-                        try {
-                            model.notif.addNotification(s.getUser().id,
-                                                        new NotifGroupEvolution(thisUser, groupId, idee, false));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            logger.error("Fail to send group evolution notification => " + e.getMessage());
-                        }
-                    });
-                }
-                RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + groupId, request, response);
+                final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
+                group.getShares().parallelStream().forEach(s -> {
+                    try {
+                        model.notif.addNotification(s.getUser().id,
+                                                    new NotifGroupEvolution(thisUser, group.getId(), idee, false));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.error("Fail to send group evolution notification => " + e.getMessage());
+                    }
+                });
+                RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
             } else {
                 RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
                                              "?" +
@@ -153,39 +146,36 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
             request.getSession().setAttribute("errors", errorsAmount);
         } else {
             // Modification de la participation
-            boolean newMember = model.groupForIdea.updateAmount(groupId, thisUser, Double.parseDouble(amount));
+            boolean newMember = model.groupForIdea.updateAmount(group.getId(), thisUser, Double.parseDouble(amount));
             if (newMember) {
-                List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID, groupId);
+                List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID,
+                                                                                       group.getId());
                 for (AbstractNotification notification : notifications) {
                     if (notification instanceof NotifGroupSuggestion && notification.owner == thisUser.id) {
                         model.notif.remove(notification.id);
                     }
                 }
-                Optional<IdeaGroup> group = model.groupForIdea.getGroupDetails(groupId);
-                if (group.isPresent()) {
+                // On supprime les notifications précédentes de cette personne si y'en a
+                model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
+                                          ParameterName.GROUP_ID,
+                                          group.getId(),
+                                          ParameterName.USER_ID,
+                                          thisUser);
 
-                    // On supprime les notifications précédentes de cette personne si y'en a
-                    model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                              ParameterName.GROUP_ID,
-                                              groupId,
-                                              ParameterName.USER_ID,
-                                              thisUser);
-
-                    final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(groupId);
-                    group.get().getShares().parallelStream().filter(s -> !s.getUser().equals(thisUser)).forEach(s -> {
-                        try {
-                            model.notif.addNotification(s.getUser().id,
-                                                        new NotifGroupEvolution(thisUser, groupId, idee, true));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            logger.error("Fail to send group evolution notification => " + e.getMessage());
-                        }
-                    });
-                }
+                final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
+                group.getShares().parallelStream().filter(s -> !s.getUser().equals(thisUser)).forEach(s -> {
+                    try {
+                        model.notif.addNotification(s.getUser().id,
+                                                    new NotifGroupEvolution(thisUser, group.getId(), idee, true));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.error("Fail to send group evolution notification => " + e.getMessage());
+                    }
+                });
             }
         }
 
-        RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + groupId, request, response);
+        RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
     }
 
 }
