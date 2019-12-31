@@ -86,15 +86,13 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
         errors.clear();
 
         // Reading parameters
-        String type = "";
-        int priority = -1;
 
         // Parse the request to get file items.
         readMultiFormParameters(request, getIdeaPicturePath());
 
         String text = parameters.get("text");
-        type = parameters.get("type");
-        priority = Integer.parseInt(parameters.get("priority"));
+        String type = parameters.get("type");
+        int priority = Integer.parseInt(parameters.get("priority"));
 
         if (text.isEmpty() && type.isEmpty() && priority == -1) {
             logger.debug("All parameters are empty.");
@@ -147,39 +145,37 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
     /**
      * Ajoute une notification au amis de la personne si son anniversaire approche.
      *
-     * @param user The user.
-     * @param idea The idea.
+     * @param user  The user.
+     * @param idea  The idea.
      * @param isNew Whether this is a new idea or not.
      */
     protected void addModificationNotification(User user, Idee idea, boolean isNew) throws SQLException {
         if (isBirthdayClose(user)) {
             // Send a notification for each user that has no such modification notification yet
-            UserRelationsRepository.getAllUsersInRelation(user).parallelStream().filter(u -> {
-                return NotificationsRepository.getNotifications(u.id,
-                                                                NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                                ParameterName.IDEA_ID,
-                                                                idea.getId())
-                                              .size() == 0;
-            }).forEach(u -> {
-                try {
-                    NotificationsRepository.addNotification(u.id, new NotifIdeaModifiedWhenBirthdayIsSoon(user, idea, isNew));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    logger.warn("Fail to send a notification... Error: " + e);
-                }
-            });
+            UserRelationsRepository.getAllUsersInRelation(user)
+                                   .parallelStream()
+                                   .filter(u -> NotificationsRepository.getNotifications(u.id,
+                                                                                         NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
+                                                                                         ParameterName.IDEA_ID,
+                                                                                         idea.getId())
+                                                                       .size() == 0)
+                                   .forEach(u ->
+                                                    NotificationsRepository.addNotification(u.id,
+                                                                                            new NotifIdeaModifiedWhenBirthdayIsSoon(
+                                                                                                    user,
+                                                                                                    idea,
+                                                                                                    isNew))
+                                   );
         }
     }
 
     /**
-     * @param request
-     * @param response
-     * @param user
-     * @param idea
-     * @param landingURL
+     * @param request    The http request.
+     * @param response   The http response.
+     * @param user       The user.
+     * @param idea       The idea.
+     * @param landingURL The url.
      * @return True in case of success, false otherwise.
-     * @throws SQLException
-     * @throws ServletException
      */
     protected boolean sousReserver(HttpServletRequest request,
                                    HttpServletResponse response,
@@ -187,7 +183,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
                                    Idee idea,
                                    String landingURL) throws SQLException, ServletException {
 
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         String comment = ParametersUtils.readAndEscape(request, "comment");
         if (comment == null || comment.isEmpty()) {
             errors.add("Le commentaire ne peut pas être vide !");

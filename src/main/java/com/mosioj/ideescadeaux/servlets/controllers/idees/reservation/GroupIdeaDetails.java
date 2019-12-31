@@ -88,97 +88,100 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-        User thisUser = thisOne;
         IdeaGroup group = policy.getGroupId();
         String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
         if ("annulation".equals(amount)) {
 
             User owner = IdeesRepository.getIdeaOwnerFromGroup(group.getId());
-            boolean isThereSomeoneRemaning = GroupIdeaRepository.removeUserFromGroup(thisUser, group.getId());
+            boolean isThereSomeoneRemaining = GroupIdeaRepository.removeUserFromGroup(thisOne, group.getId());
             List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
                                                                                                group.getId());
             notifications.parallelStream()
                          .filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name()))
-                         .forEach(n -> {
-                             NotificationsRepository.remove(n.id);
-                             logger.debug(MessageFormat.format("Notification {0} (type: {1}) dropped !",
-                                                               n.id,
-                                                               n.getType()));
-                         });
+                         .forEach(n -> NotificationsRepository.remove(n.id));
 
-            if (isThereSomeoneRemaning) {
-                // On supprime les notifications précédentes de cette personne si y'en a
-                NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                                      ParameterName.GROUP_ID,
-                                                      group.getId(),
-                                                      ParameterName.USER_ID,
-                                                      thisUser);
+        if (isThereSomeoneRemaining) {
+            // On supprime les notifications précédentes de cette personne si y'en a
+            NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
+                                                  ParameterName.GROUP_ID,
+                                                  group.getId(),
+                                                  ParameterName.USER_ID,
+                                                  thisOne);
 
-                final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
-                group.getShares().parallelStream().forEach(s -> {
-                    try {
-                        NotificationsRepository.addNotification(s.getUser().id,
-                                                                new NotifGroupEvolution(thisUser, group.getId(), idee, false));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        logger.error("Fail to send group evolution notification => " + e.getMessage());
-                    }
-                });
-                RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
-            } else {
-                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
-                                             "?" +
-                                             VoirListe.USER_ID_PARAM +
-                                             "=" +
-                                             owner.id,
-                                             request,
-                                             response);
-            }
-
-            return;
+            final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
+            group.getShares().parallelStream().forEach(s -> {
+                try {
+                    NotificationsRepository.addNotification(s.getUser().id,
+                                                            new NotifGroupEvolution(thisOne,
+                                                                                    group.getId(),
+                                                                                    idee,
+                                                                                    false));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.error("Fail to send group evolution notification => " + e.getMessage());
+                }
+            });
+            RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
+        } else {
+            RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
+                                         "?" +
+                                         VoirListe.USER_ID_PARAM +
+                                         "=" +
+                                         owner.id,
+                                         request,
+                                         response);
         }
 
-        ParameterValidator val = ValidatorFactory.getMascValidator(amount, "montant");
+        return;
+    }
+
+    ParameterValidator val = ValidatorFactory.getMascValidator(amount, "montant");
         val.checkEmpty();
         val.checkIfAmount();
         val.checkIntegerGreaterThan(1);
-        List<String> errorsAmount = val.getErrors();
+    List<String> errorsAmount = val.getErrors();
 
-        if (!errorsAmount.isEmpty()) {
-            request.getSession().setAttribute("errors", errorsAmount);
+        if(!errorsAmount.isEmpty())
+
+    {
+        request.getSession().setAttribute("errors", errorsAmount);
+    } else
+
+    {
+        // Modification de la participation
+        boolean newMember = !group.contains(thisOne);
+        if (newMember) {
+
+            GroupIdeaRepository.addNewAmount(Double.parseDouble(amount), thisOne.id, group.getId());
+            List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
+                                                                                               group.getId());
+            notifications.stream()
+                         .filter(n -> n instanceof NotifGroupSuggestion && n.owner == thisOne.id)
+                         .forEach(n -> NotificationsRepository.remove(n.id));
+
+            // On supprime les notifications précédentes de cette personne si y'en a
+            NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
+                                                  ParameterName.GROUP_ID,
+                                                  group.getId(),
+                                                  ParameterName.USER_ID,
+                                                  thisOne);
+
+            final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
+            group.getShares()
+                 .parallelStream()
+                 .filter(s -> !s.getUser().equals(thisOne))
+                 .forEach(s -> NotificationsRepository.addNotification(s.getUser().id,
+                                                                       new NotifGroupEvolution(thisOne,
+                                                                                               group.getId(),
+                                                                                               idee,
+                                                                                               true)));
         } else {
-            // Modification de la participation
-            boolean newMember = GroupIdeaRepository.updateAmount(group.getId(), thisUser, Double.parseDouble(amount));
-            if (newMember) {
-                List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
-                                                                                                   group.getId());
-                for (AbstractNotification notification : notifications) {
-                    if (notification instanceof NotifGroupSuggestion && notification.owner == thisUser.id) {
-                        NotificationsRepository.remove(notification.id);
-                    }
-                }
-                // On supprime les notifications précédentes de cette personne si y'en a
-                NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                                      ParameterName.GROUP_ID,
-                                                      group.getId(),
-                                                      ParameterName.USER_ID,
-                                                      thisUser);
-
-                final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
-                group.getShares().parallelStream().filter(s -> !s.getUser().equals(thisUser)).forEach(s -> {
-                    try {
-                        NotificationsRepository.addNotification(s.getUser().id,
-                                                                new NotifGroupEvolution(thisUser, group.getId(), idee, true));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        logger.error("Fail to send group evolution notification => " + e.getMessage());
-                    }
-                });
-            }
+            GroupIdeaRepository.updateAmount(group.getId(), thisOne, Double.parseDouble(amount));
         }
-
-        RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
     }
+
+        RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID +group.getId(),request,response);
+}
 
 }

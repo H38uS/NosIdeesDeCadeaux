@@ -74,7 +74,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 
         int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         int id = GroupIdeaRepository.createAGroup(300, 250, _OWNER_ID_);
-        GroupIdeaRepository.updateAmount(id, moiAutre, 25);
+        GroupIdeaRepository.addNewAmount(25, moiAutre.id, id);
         IdeesRepository.bookByGroup(idea, id);
         assertGroupExists(id);
 

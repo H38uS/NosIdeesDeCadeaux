@@ -31,7 +31,7 @@ public class CommentsRepository extends AbstractRepository {
      * @param ideaId The idea id.
      * @param text   The text of the comment.
      */
-    public static void addComment(int userId, Integer ideaId, String text) throws SQLException {
+    public static void addComment(int userId, Integer ideaId, String text) {
         getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
                                                                TABLE_NAME,
                                                                IDEA_ID,
@@ -47,6 +47,7 @@ public class CommentsRepository extends AbstractRepository {
      * @param ideaId The idea.
      * @return All users that have posted on this idea.
      */
+    // FIXME : 0 catcher toutes les exceptions dans les methodes et ne plus faire de throw depuis les repository
     public static List<User> getUserListOnComment(int ideaId) throws SQLException {
 
         List<User> users = new ArrayList<>();
@@ -78,7 +79,7 @@ public class CommentsRepository extends AbstractRepository {
         return users;
     }
 
-    public static int getNbComments(int ideaId) throws SQLException {
+    public static int getNbComments(int ideaId) {
         return getDb().selectCountStar("select count(*) from " + TABLE_NAME + " where " + IDEA_ID + " = ?", ideaId);
     }
 

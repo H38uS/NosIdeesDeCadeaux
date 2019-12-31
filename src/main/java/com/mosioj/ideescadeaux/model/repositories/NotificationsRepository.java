@@ -47,7 +47,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif  The notification.
      * @return The id of the notification created, or -1 if none were created.
      */
-    public static int addNotification(int userId, AbstractNotification notif) throws SQLException {
+    public static int addNotification(int userId, AbstractNotification notif) {
 
         logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
         NotificationActivation activation = getActivationType(userId, notif);
@@ -61,9 +61,6 @@ public class NotificationsRepository extends AbstractRepository {
                                                                                                 TABLE_NAME))) {
                 ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
                 id = ps.executeUpdate();
-
-            } catch (SQLException e) {
-                logger.error("Error while creating " + notif.getClass() + " : " + e.getMessage());
             }
 
             if (id > 0) {
@@ -105,7 +102,7 @@ public class NotificationsRepository extends AbstractRepository {
     private static NotificationActivation getActivationType(int userId, AbstractNotification notif) {
         try {
             return NotificationActivation.valueOf(UserParametersRepository.getParameter(userId, notif.getType()));
-        } catch (SQLException e) {
+        } catch (IllegalArgumentException e) {
             return NotificationActivation.EMAIL_SITE;
         }
     }
@@ -226,7 +223,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return The number of notification this user has.
      */
-    public static int getUserNotificationCount(int userId) throws SQLException {
+    public static int getUserNotificationCount(int userId) {
         return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                             TABLE_NAME,
                                                             OWNER), userId);
@@ -237,7 +234,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif  The notification.
      * @return True if and only if the user has already receive this notification.
      */
-    public static boolean hasNotification(int userId, AbstractNotification notif) throws SQLException {
+    public static boolean hasNotification(int userId, AbstractNotification notif) {
 
         Map<ParameterName, Object> parameters = notif.getParameters();
 
@@ -262,7 +259,7 @@ public class NotificationsRepository extends AbstractRepository {
         query.append(MessageFormat.format("  and n.{0} = ? ", OWNER));
 
         queryParameters[i++] = notif.getType();
-        queryParameters[i++] = userId;
+        queryParameters[i] = userId;
 
         logger.trace(query);
         logger.trace("Parameters => " + parameters);

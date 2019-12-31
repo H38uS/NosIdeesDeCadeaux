@@ -44,7 +44,7 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public int selectCountStar(String query, Object... parameters) throws SQLException {
+    public int selectCountStar(String query, Object... parameters) {
         try {
             return selectInt(query, parameters);
         } catch (NoRowsException e) {
@@ -52,12 +52,12 @@ public class DataSourceIdKDo {
         }
     }
 
-	/**
+    /**
      * @param query      The sql query.
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public int selectInt(String query, Object... parameters) throws SQLException, NoRowsException {
+    public int selectInt(String query, Object... parameters) throws NoRowsException {
 
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
 
@@ -74,6 +74,10 @@ public class DataSourceIdKDo {
 
             return res.getInt(1);
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(MessageFormat.format("Error while executing select: {0}.", e.getMessage()));
+            return -1;
         }
     }
 
@@ -85,18 +89,10 @@ public class DataSourceIdKDo {
      * @return The number of rows inserted / updated / deleted.
      */
     public int executeUpdate(String query, Object... parameters) {
-
-        int retour = 0;
-
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
             statement.bindParameters(parameters);
-            retour = statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
+            return statement.executeUpdate();
         }
-
-        return retour;
     }
 
     /**
@@ -106,7 +102,7 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The generated key value.
      */
-    public int executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
+    public int executeUpdateGeneratedKey(String query, Object... parameters) {
         try (PreparedStatementIdKdoInserter statement = new PreparedStatementIdKdoInserter(this, query)) {
             statement.bindParameters(parameters);
             return statement.executeUpdate();
@@ -143,18 +139,17 @@ public class DataSourceIdKDo {
      * @param parameters The query parameters.
      * @return True if and only if the query returns at least one row.
      */
-    public boolean doesReturnRows(String query, Object... parameters) throws SQLException {
+    public boolean doesReturnRows(String query, Object... parameters) {
         query = "select 1 from dual where exists ( " + query + " )";
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(this, query)) {
             ps.bindParameters(parameters);
-
-            if (!ps.execute()) {
-                throw new SQLException("No result set available.");
-            }
-
+            ps.execute();
             ResultSet res = ps.getResultSet();
             return res.first();
-
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(MessageFormat.format("Error while executing doesReturnRows: {0}.", e.getMessage()));
+            return false;
         }
     }
 
@@ -163,23 +158,21 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public String selectString(String query, Object... parameters) throws SQLException {
+    public String selectString(String query, Object... parameters) {
 
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
-
             statement.bindParameters(parameters);
-
-            if (!statement.execute()) {
-                throw new SQLException("No result set available.");
-            }
-
+            statement.execute();
             ResultSet res = statement.getResultSet();
-            if (!res.first()) {
-                throw new SQLException("No rows retrieved.");
+            if (res.first()) {
+                return res.getString(1);
+            } else {
+                return "";
             }
-
-            return res.getString(1);
-
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(MessageFormat.format("Error while executing selectString: {0}.", e.getMessage()));
+            return "";
         }
     }
 

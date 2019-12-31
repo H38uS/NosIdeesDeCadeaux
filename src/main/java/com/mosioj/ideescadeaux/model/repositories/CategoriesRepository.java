@@ -13,9 +13,12 @@ import java.util.List;
 
 import com.mosioj.ideescadeaux.model.entities.Categorie;
 import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CategoriesRepository extends AbstractRepository {
 
+    private static final Logger logger = LogManager.getLogger(CategoriesRepository.class);
     public static final String TABLE_NAME = "CATEGORIES";
 
     private CategoriesRepository() {
@@ -25,7 +28,7 @@ public class CategoriesRepository extends AbstractRepository {
     /**
      * @return The available list of categories.
      */
-    public static List<Categorie> getCategories() throws SQLException {
+    public static List<Categorie> getCategories() {
 
         List<Categorie> categories = new ArrayList<>();
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
@@ -45,6 +48,9 @@ public class CategoriesRepository extends AbstractRepository {
                                                  rs.getString(TITLE.name())));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(MessageFormat.format("Error while fetching categories: {0}.", e.getMessage()));
         }
 
         return categories;

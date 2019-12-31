@@ -40,7 +40,7 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param userId First user belonging to this new group.
      * @return The group's idea
      */
-    public static int createAGroup(double total, double amount, int userId) throws SQLException {
+    public static int createAGroup(double total, double amount, int userId) {
         int id = getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1}) values (?)",
                                                                         TABLE_NAME,
                                                                         NEEDED_PRICE),
@@ -52,11 +52,11 @@ public class GroupIdeaRepository extends AbstractRepository {
     /**
      * Adds a new participation.
      *
-     * @param amount The amount.
-     * @param userId The user id.
+     * @param amount  The amount.
+     * @param userId  The user id.
      * @param groupId The group id.
      */
-    private static void addNewAmount(double amount, int userId, int groupId) throws SQLException {
+    public static void addNewAmount(double amount, int userId, int groupId) {
         getDb().executeUpdateGeneratedKey(MessageFormat.format(
                 "insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
                 TABLE_NAME_CONTENT,
@@ -127,26 +127,19 @@ public class GroupIdeaRepository extends AbstractRepository {
     }
 
     /**
-     * @param groupId The group id.
-     * @param user The user id.
+     * @param groupId   The group id.
+     * @param user      The user id.
      * @param newAmount The new amount
-     * @return True if and only if the user is a new participant.
      */
-    public static boolean updateAmount(Integer groupId, User user, double newAmount) {
-        try {
-            addNewAmount(newAmount, user.id, groupId);
-            return true;
-        } catch (SQLException e) {
-            getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? and {3} = ?",
-                                                       TABLE_NAME_CONTENT,
-                                                       PRICE,
-                                                       USER_ID,
-                                                       GROUP_ID),
-                                  newAmount,
-                                  user.id,
-                                  groupId);
-            return false;
-        }
+    public static void updateAmount(Integer groupId, User user, double newAmount) {
+        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? and {3} = ?",
+                                                   TABLE_NAME_CONTENT,
+                                                   PRICE,
+                                                   USER_ID,
+                                                   GROUP_ID),
+                              newAmount,
+                              user.id,
+                              groupId);
     }
 
     /**
@@ -154,7 +147,7 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param groupId The group id.
      * @return true if there is at least one member left
      */
-    public static boolean removeUserFromGroup(User user, Integer groupId) throws SQLException {
+    public static boolean removeUserFromGroup(User user, Integer groupId) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
                                                    TABLE_NAME_CONTENT,
                                                    USER_ID,

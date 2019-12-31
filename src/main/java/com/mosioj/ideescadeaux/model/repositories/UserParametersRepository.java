@@ -57,12 +57,14 @@ public class UserParametersRepository extends AbstractRepository {
         }
     }
 
-    public static String getParameter(int userId, String paramName) throws SQLException {
-        return getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ? and {3} = ?",
-                                                         PARAMETER_VALUE,
-                                                         TABLE_NAME,
-                                                         PARAMETER_NAME,
-                                                         USER_ID),
+    public static String getParameter(int userId, String paramName) {
+        String query = MessageFormat.format("select {0} from {1} where {2} = ? and {3} = ?",
+                                            PARAMETER_VALUE,
+                                            TABLE_NAME,
+                                            PARAMETER_NAME,
+                                            USER_ID);
+        logger.trace(query);
+        return getDb().selectString(query,
                                     paramName,
                                     userId);
     }

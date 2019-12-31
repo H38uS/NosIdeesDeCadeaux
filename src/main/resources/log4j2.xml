@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" packages="com.mosioj.ideescadeaux.utils">
 
-	<Appenders>
-		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
-		</Console>
-		<RollingFile name="RollingFile" fileName="${work_dir}/logs/IdeesDeCadeaux.log" append="true" filePattern="${work_dir}/logs/%d{yyyy-MM-dd}-IdeesDeCadeaux-%i.log" >
-			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
-			<Policies>
-				<SizeBasedTriggeringPolicy size="300KB" />
-			</Policies>
-			<DefaultRolloverStrategy max="100" />
-		</RollingFile>
-		<RollingFile name="AccessLogs" fileName="${work_dir}/logs/Access.log" append="true" filePattern="${work_dir}/logs/%d{yyyy-MM-dd}-Access-%i.log" >
-			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
-			<Policies>
-				<SizeBasedTriggeringPolicy size="3000KB" />
-			</Policies>
-			<DefaultRolloverStrategy max="100" />
-		</RollingFile>
-		<ErrorAppender name="errorNotifier" />
-	</Appenders>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n"/>
+        </Console>
+        <RollingFile name="RollingFile" fileName="${work_dir}/logs/IdeesDeCadeaux.log" append="true"
+                     filePattern="${work_dir}/logs/%d{yyyy-MM-dd}-IdeesDeCadeaux-%i.log">
+            <PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="300KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+        <RollingFile name="AccessLogs" fileName="${work_dir}/logs/Access.log" append="true"
+                     filePattern="${work_dir}/logs/%d{yyyy-MM-dd}-Access-%i.log">
+            <PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="3000KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+        <ErrorAppender name="errorNotifier"/>
+    </Appenders>
 
-	<Loggers>
-		<logger name="org" level="warn" />
-		<logger name="com.mosioj.ideescadeaux" level="debug" />
-		<logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="error"/>
-		<logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="error"/>
+    <Loggers>
+        <logger name="org" level="warn"/>
+        <logger name="com.mosioj.ideescadeaux" level="debug"/>
+        <logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="error"/>
+        <logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="error"/>
 
-		<logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="debug" additivity="false">
-			<AppenderRef ref="AccessLogs" />
-		</logger>
-		<logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
-			<AppenderRef ref="AccessLogs" />
-		</logger>
-		
-		<Root>
-			<AppenderRef ref="Console" level="${console_log_level}" />
-			<AppenderRef ref="RollingFile" />
-			<AppenderRef ref="errorNotifier" level="error" />
-		</Root>
-	</Loggers>
+        <logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="debug" additivity="false">
+            <AppenderRef ref="AccessLogs"/>
+        </logger>
+        <logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
+            <AppenderRef ref="AccessLogs"/>
+        </logger>
+
+        <Root>
+            <AppenderRef ref="Console" level="${console_log_level}"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="errorNotifier" level="error"/>
+        </Root>
+    </Loggers>
 </Configuration>

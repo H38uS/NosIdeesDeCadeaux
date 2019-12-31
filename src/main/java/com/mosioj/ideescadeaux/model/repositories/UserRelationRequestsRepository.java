@@ -29,17 +29,12 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @return True if and only if sent_by has sent a request to sent_to.
      */
     public static boolean associationExists(int sent_by, int sent_to) {
-        try {
-            return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
-                                                               TABLE_NAME,
-                                                               SENT_BY_USER,
-                                                               SENT_TO_USER),
-                                          sent_by,
-                                          sent_to);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
+                                                           TABLE_NAME,
+                                                           SENT_BY_USER,
+                                                           SENT_TO_USER),
+                                      sent_by,
+                                      sent_to);
     }
 
     /**
@@ -48,7 +43,7 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param sent_by Sent by this user.
      * @param sent_to Sent to this user.
      */
-    public static void insert(User sent_by, User sent_to) throws SQLException {
+    public static void insert(User sent_by, User sent_to) {
         getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
                                                                TABLE_NAME,
                                                                SENT_BY_USER,

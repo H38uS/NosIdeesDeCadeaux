@@ -47,7 +47,7 @@ public class UsersRepository extends AbstractRepository {
      * @param name        The user name.
      * @return the created user id.
      */
-    public static int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
+    public static int addNewPersonne(String email, String digestedPwd, String name) {
         int userId = getDb().executeUpdateGeneratedKey(MessageFormat.format(
                 "insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
                 TABLE_NAME,
@@ -103,7 +103,7 @@ public class UsersRepository extends AbstractRepository {
      * @param email The identifier of the person (currently the email).
      * @return This person's id.
      */
-    public static int getId(String email) throws SQLException, NoRowsException {
+    public static int getId(String email) throws NoRowsException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL),
                                  email);
     }
@@ -112,7 +112,7 @@ public class UsersRepository extends AbstractRepository {
      * @param nameOrEmail The name or email of the person..
      * @return This person's id.
      */
-    public static int getIdFromNameOrEmail(String nameOrEmail) throws SQLException, NoRowsException {
+    public static int getIdFromNameOrEmail(String nameOrEmail) throws NoRowsException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1",
                                                       ID,
                                                       TABLE_NAME,
@@ -127,7 +127,7 @@ public class UsersRepository extends AbstractRepository {
      *
      * @param user The user to update.
      */
-    public static void update(User user) throws SQLException {
+    public static void update(User user) {
         LOGGER.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
         String previousEmail = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
                                                                          EMAIL,
