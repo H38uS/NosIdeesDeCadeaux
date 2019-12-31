@@ -9,19 +9,12 @@ public abstract class Table {
     /**
      * The database specific connection.
      */
-    private final DataSourceIdKDo db;
-
-    /**
-     * Class constructor.
-     */
-    public Table() {
-        db = new DataSourceIdKDo();
-    }
+    private static final DataSourceIdKDo db = new DataSourceIdKDo();
 
     /**
      * @return The DB connection manager to use.
      */
-    protected DataSourceIdKDo getDb() {
+    protected static DataSourceIdKDo getDb() {
         return db;
     }
 

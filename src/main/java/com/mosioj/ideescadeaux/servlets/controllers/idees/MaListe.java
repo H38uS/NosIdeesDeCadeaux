@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.Categories;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +45,7 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
     @Override
     public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-        List<Categorie> cat = model.categories.getCategories();
+        List<Categorie> cat = Categories.getCategories();
         List<Priorite> prio = model.priorities.getPriorities();
 
         request.setAttribute("types", cat);

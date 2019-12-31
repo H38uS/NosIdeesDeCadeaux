@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.entities.Share;
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
@@ -92,7 +93,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
         if ("annulation".equals(amount)) {
 
             User owner = model.idees.getIdeaOwnerFromGroup(group.getId());
-            boolean isThereSomeoneRemaning = model.groupForIdea.removeUserFromGroup(thisUser, group.getId());
+            boolean isThereSomeoneRemaning = GroupIdeaRepository.removeUserFromGroup(thisUser, group.getId());
             List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID,
                                                                                    group.getId());
             notifications.parallelStream()
@@ -146,7 +147,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
             request.getSession().setAttribute("errors", errorsAmount);
         } else {
             // Modification de la participation
-            boolean newMember = model.groupForIdea.updateAmount(group.getId(), thisUser, Double.parseDouble(amount));
+            boolean newMember = GroupIdeaRepository.updateAmount(group.getId(), thisUser, Double.parseDouble(amount));
             if (newMember) {
                 List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID,
                                                                                        group.getId());

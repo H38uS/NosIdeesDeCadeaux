@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
-import com.mosioj.ideescadeaux.model.repositories.GroupIdea;
+import com.mosioj.ideescadeaux.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.model.repositories.columns.GroupIdeaColumns;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
@@ -29,7 +29,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
     public void testGet() throws SQLException {
 
         int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
+        int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
         idees.bookByGroup(idea, id);
 
         int groupSuggestion = notif.addNotification(_OWNER_ID_,
@@ -50,7 +50,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
     public void testRejoindreGroupe() throws SQLException {
 
         int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
+        int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
         idees.bookByGroup(idea, id);
 
         int groupSuggestion = notif.addNotification(_OWNER_ID_,
@@ -71,8 +71,8 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
     public void testAnnulerParticipation() throws SQLException, NoRowsException {
 
         int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        int id = groupIdea.createAGroup(300, 250, _OWNER_ID_);
-        groupIdea.updateAmount(id, moiAutre, 25);
+        int id = GroupIdeaRepository.createAGroup(300, 250, _OWNER_ID_);
+        GroupIdeaRepository.updateAmount(id, moiAutre, 25);
         idees.bookByGroup(idea, id);
         assertGroupExists(id);
 
@@ -101,7 +101,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         idees.remove(idea);
         assertEquals(0,
                      ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                       GroupIdea.TABLE_NAME,
+                                                       GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),
                                   id));
     }
@@ -111,7 +111,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
 
         // On crée un groupe sur une idée
         int idea = idees.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        int id = groupIdea.createAGroup(300, 250, _MOI_AUTRE_);
+        int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
         idees.bookByGroup(idea, id);
         assertGroupExists(id);
         assertEquals(0,
@@ -174,7 +174,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         idees.remove(idea);
         assertEquals(0,
                      ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                       GroupIdea.TABLE_NAME,
+                                                       GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),
                                   id));
     }
@@ -182,7 +182,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
     protected void assertGroupExists(int id) throws SQLException, NoRowsException {
         assertEquals(1,
                      ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                       GroupIdea.TABLE_NAME,
+                                                       GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),
                                   id));
     }

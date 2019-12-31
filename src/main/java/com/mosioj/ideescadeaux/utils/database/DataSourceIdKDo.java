@@ -14,217 +14,167 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Provides some method to access the database.
- * 
- * @author Jordan Mosio
  *
+ * @author Jordan Mosio
  */
 public class DataSourceIdKDo {
 
-	private final Logger logger = LogManager.getLogger(DataSourceIdKDo.class);
+    private final Logger logger = LogManager.getLogger(DataSourceIdKDo.class);
+
+    /**
+     * The internal datasource.
+     */
+    private static DataSource ds;
+
+    /**
+     * @return A new connection. Warning : it must be closed.
+     */
+    protected Connection getAConnection() throws SQLException {
+        return getDatasource().getConnection();
+    }
+
+    /**
+     * @param query      The sql query.
+     * @param parameters Optional bindable parameters.
+     * @return The result of the first row on the first column.
+     */
+    public int selectCountStar(String query, Object... parameters) throws SQLException {
+        try {
+            return selectInt(query, parameters);
+        } catch (NoRowsException e) {
+            return 0;
+        }
+    }
 
 	/**
-	 * The internal datasource.
-	 */
-	private static DataSource ds;
+     * @param query      The sql query.
+     * @param parameters Optional bindable parameters.
+     * @return The result of the first row on the first column.
+     */
+    public int selectInt(String query, Object... parameters) throws SQLException, NoRowsException {
 
-	/**
-	 * 
-	 * @return A new connection. Warning : it must be closed.
-	 * @throws SQLException
-	 */
-	protected Connection getAConnection() throws SQLException {
-		return getDatasource().getConnection();
-	}
+        try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
 
-	/**
-	 * 
-	 * @param query The sql query.
-	 * @param parameters Optional bindable parameters.
-	 * @return The result of the first row on the first column.
-	 * @throws SQLException
-	 */
-	public int selectCountStar(String query, Object... parameters) throws SQLException {
-		try {
-			return selectInt(query, parameters);
-		} catch (NoRowsException e) {
-			return 0;
-		}
-	}
+            statement.bindParameters(parameters);
 
-	/**
-	 * 
-	 * @param query The sql query.
-	 * @param defaultValue The default value if no rows are found.
-	 * @param parameters Optional bindable parameters.
-	 * @return The result of the first row on the first column.
-	 * @throws SQLException
-	 */
-	public int selectIntWithDefault(String query, int defaultValue, Object... parameters) throws SQLException {
-		try {
-			return selectInt(query, parameters);
-		} catch (NoRowsException e) {
-			return defaultValue;
-		}
-	}
+            if (!statement.execute()) {
+                throw new SQLException("No result set available.");
+            }
 
-	/**
-	 * 
-	 * @param query The sql query.
-	 * @param parameters Optional bindable parameters.
-	 * @return The result of the first row on the first column.
-	 * @throws SQLException
-	 * @throws NoRowsException
-	 */
-	public int selectInt(String query, Object... parameters) throws SQLException, NoRowsException {
+            ResultSet res = statement.getResultSet();
+            if (!res.first()) {
+                throw new NoRowsException();
+            }
 
-		PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query);
-		try {
+            return res.getInt(1);
 
-			statement.bindParameters(parameters);
+        }
+    }
 
-			if (!statement.execute()) {
-				throw new SQLException("No result set available.");
-			}
+    /**
+     * Execute a DML statement : insert / update / delete.
+     *
+     * @param query      The SQL query.
+     * @param parameters Optional bindable parameters.
+     * @return The number of rows inserted / updated / deleted.
+     */
+    public int executeUpdate(String query, Object... parameters) {
 
-			ResultSet res = statement.getResultSet();
-			if (!res.first()) {
-				throw new NoRowsException();
-			}
+        int retour = 0;
 
-			return res.getInt(1);
+        try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
+            statement.bindParameters(parameters);
+            retour = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
+        }
 
-		} finally {
-			statement.close();
-		}
-	}
+        return retour;
+    }
 
-	/**
-	 * Execute a DML statement : insert / update / delete.
-	 * 
-	 * @param query The SQL query.
-	 * @param parameters Optional bindable parameters.
-	 * @return The number of rows inserted / updated / deleted.
-	 */
-	public int executeUpdate(String query, Object... parameters) {
+    /**
+     * Execute a DML statement : insert / update / delete.
+     *
+     * @param query      The SQL query.
+     * @param parameters Optional bindable parameters.
+     * @return The generated key value.
+     */
+    public int executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
+        try (PreparedStatementIdKdoInserter statement = new PreparedStatementIdKdoInserter(this, query)) {
+            statement.bindParameters(parameters);
+            return statement.executeUpdate();
+        }
+    }
 
-		int retour = 0;
+    /**
+     * !!!! Only for test !!!!
+     *
+     * @param newDS The new data source.
+     */
+    public static void setDataSource(DataSource newDS) {
+        ds = newDS;
+    }
 
-		PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query);
+    /**
+     * @return The data source to use.
+     */
+    private static DataSource getDatasource() {
+        if (ds == null) {
+            try {
+                Context initCtx = new InitialContext();
+                Context envCtx = (Context) initCtx.lookup("java:comp/env");
+                ds = (DataSource) envCtx.lookup("jdbc/web-db");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return ds;
+    }
 
-		try {
-			statement.bindParameters(parameters);
-			retour = statement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
-		} finally {
-			statement.close();
-		}
+    /**
+     * @param query      The initial query.
+     * @param parameters The query parameters.
+     * @return True if and only if the query returns at least one row.
+     */
+    public boolean doesReturnRows(String query, Object... parameters) throws SQLException {
+        query = "select 1 from dual where exists ( " + query + " )";
+        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(this, query)) {
+            ps.bindParameters(parameters);
 
-		return retour;
-	}
+            if (!ps.execute()) {
+                throw new SQLException("No result set available.");
+            }
 
-	/**
-	 * Execute a DML statement : insert / update / delete.
-	 * 
-	 * @param query The SQL query.
-	 * @param parameters Optional bindable parameters.
-	 * @return The generated key value.
-	 * @throws SQLException
-	 */
-	public int executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
+            ResultSet res = ps.getResultSet();
+            return res.first();
 
-		PreparedStatementIdKdoInserter statement = new PreparedStatementIdKdoInserter(this, query);
-		try {
-			statement.bindParameters(parameters);
-			return statement.executeUpdate();
-		} finally {
-			statement.close();
-		}
-	}
+        }
+    }
 
-	/**
-	 * !!!! Only for test !!!!
-	 * 
-	 * @param newDS
-	 */
-	public static void setDataSource(DataSource newDS) {
-		ds = newDS;
-	}
+    /**
+     * @param query      The sql query.
+     * @param parameters Optional bindable parameters.
+     * @return The result of the first row on the first column.
+     */
+    public String selectString(String query, Object... parameters) throws SQLException {
 
-	/**
-	 * 
-	 * @return The data source to use.
-	 */
-	private static DataSource getDatasource() {
+        try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
 
-		if (ds == null) {
-			try {
-				Context initCtx = new InitialContext();
-				Context envCtx = (Context) initCtx.lookup("java:comp/env");
-				ds = (DataSource) envCtx.lookup("jdbc/web-db");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+            statement.bindParameters(parameters);
 
-		return ds;
-	}
+            if (!statement.execute()) {
+                throw new SQLException("No result set available.");
+            }
 
-	/**
-	 * 
-	 * @param query
-	 * @param parameters
-	 * @return True if and only if the query returns at least one row.
-	 * @throws SQLException
-	 */
-	public boolean doesReturnRows(String query, Object... parameters) throws SQLException {
+            ResultSet res = statement.getResultSet();
+            if (!res.first()) {
+                throw new SQLException("No rows retrieved.");
+            }
 
-		PreparedStatementIdKdo ps = new PreparedStatementIdKdo(this, query);
-		try {
-			query = "select 1 from dual where exists ( " + query + " )";
-			ps.bindParameters(parameters);
+            return res.getString(1);
 
-			if (!ps.execute()) {
-				throw new SQLException("No result set available.");
-			}
-
-			ResultSet res = ps.getResultSet();
-			return res.first();
-
-		} finally {
-			ps.close();
-		}
-	}
-
-	/**
-	 * 
-	 * @param query The sql query.
-	 * @param parameters Optional bindable parameters.
-	 * @return The result of the first row on the first column.
-	 * @throws SQLException
-	 */
-	public String selectString(String query, Object... parameters) throws SQLException {
-
-		PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query);
-		try {
-
-			statement.bindParameters(parameters);
-
-			if (!statement.execute()) {
-				throw new SQLException("No result set available.");
-			}
-
-			ResultSet res = statement.getResultSet();
-			if (!res.first()) {
-				throw new SQLException("No rows retrieved.");
-			}
-
-			return res.getString(1);
-
-		} finally {
-			statement.close();
-		}
-	}
+        }
+    }
 
 }

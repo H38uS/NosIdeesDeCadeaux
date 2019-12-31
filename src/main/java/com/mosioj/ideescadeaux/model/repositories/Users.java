@@ -328,7 +328,7 @@ public class Users extends Table {
         new Comments().deleteAll(userId);
 
         // Suppression des participations aux groupes
-        new GroupIdea().removeUserFromAllGroups(user);
+        GroupIdeaRepository.removeUserFromAllGroups(user);
 
         // Suppression des idées
         // Suppression de l'historique des idées

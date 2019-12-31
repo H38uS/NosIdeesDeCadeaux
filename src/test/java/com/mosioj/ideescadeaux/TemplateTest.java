@@ -55,7 +55,6 @@ public class TemplateTest {
     protected final Notifications notif = new Notifications();
     protected final UserRelations userRelations = new UserRelations();
     protected final UserRelationRequests userRelationRequests = new UserRelationRequests();
-    protected final GroupIdea groupIdea = new GroupIdea();
     protected final Questions questions = new Questions();
     protected final Comments comments = new Comments();
     protected final ParentRelationship parents = new ParentRelationship();

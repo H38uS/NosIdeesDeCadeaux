@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
-import com.mosioj.ideescadeaux.model.repositories.GroupIdea;
+import com.mosioj.ideescadeaux.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.notifications.instance.*;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import org.junit.Test;
@@ -41,13 +41,12 @@ public class TestDeleteIdea extends AbstractTestServlet {
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 
         // Creation du groupe
-        GroupIdea g = new GroupIdea();
-        int group = g.createAGroup(200, 10, _MOI_AUTRE_);
+        int group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
         idees.bookByGroup(id, group);
         Idee idee = idees.getIdeaWithoutEnrichment(id);
         int notifId = notif.addNotification(_FRIEND_ID_, new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);
-        assertEquals(g.getGroupDetails(group), idee.getGroupKDO());
+        assertEquals(GroupIdeaRepository.getGroupDetails(group), idee.getGroupKDO());
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
 

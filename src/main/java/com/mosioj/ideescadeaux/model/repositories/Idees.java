@@ -33,7 +33,6 @@ public class Idees extends Table {
 
     private final Comments comments = new Comments();
     private final Questions questions = new Questions();
-    private final GroupIdea groupIdea = new GroupIdea();
 
     /**
      * Fills the idea structure from a result set query. /!\ The result set must be valid, and have a row available.
@@ -85,7 +84,7 @@ public class Idees extends Table {
 
         if (rs.getString(GROUPE_KDO_ID.name()) != null) {
             int groupId = rs.getInt(GROUPE_KDO_ID.name());
-            groupIdea.getGroupDetails(groupId).ifPresent(idee::withGroupKDO);
+            GroupIdeaRepository.getGroupDetails(groupId).ifPresent(idee::withGroupKDO);
         }
 
         return idee;
@@ -192,11 +191,11 @@ public class Idees extends Table {
 
         // Les groupes
         query.append(MessageFormat.format(" left join {0} g on i.{1} = g.{2} \n",
-                                          GroupIdea.TABLE_NAME,
+                                          GroupIdeaRepository.TABLE_NAME,
                                           GROUPE_KDO_ID,
                                           GroupIdeaColumns.ID));
         query.append(MessageFormat.format(" left join {0} gc on g.{1} = gc.{2} and gc.{3} = ? \n",
-                                          GroupIdea.TABLE_NAME_CONTENT,
+                                          GroupIdeaRepository.TABLE_NAME_CONTENT,
                                           GroupIdeaColumns.ID,
                                           GroupIdeaContentColumns.GROUP_ID,
                                           GroupIdeaContentColumns.USER_ID));
@@ -351,7 +350,7 @@ public class Idees extends Table {
         // ... Qui ne sont pas déjà dans le groupe !
         query.append(MessageFormat.format(
                 " where not exists (select 1 from {0} g where g.{1} = ? and g.{2} = ur.{3}) \n",
-                GroupIdea.TABLE_NAME_CONTENT,
+                GroupIdeaRepository.TABLE_NAME_CONTENT,
                 GroupIdeaContentColumns.GROUP_ID,
                 GroupIdeaContentColumns.USER_ID,
                 UserRelationsColumns.SECOND_USER));
@@ -627,11 +626,11 @@ public class Idees extends Table {
             groupId = getDb().selectInt("select " + GROUPE_KDO_ID + " from " + TABLE_NAME + " where " + ID + " = ?",
                                         idea);
             getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                       GroupIdea.TABLE_NAME_CONTENT,
+                                                       GroupIdeaRepository.TABLE_NAME_CONTENT,
                                                        GroupIdeaContentColumns.GROUP_ID),
                                   groupId);
             getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                       GroupIdea.TABLE_NAME,
+                                                       GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),
                                   groupId);
         } catch (NoRowsException e) {

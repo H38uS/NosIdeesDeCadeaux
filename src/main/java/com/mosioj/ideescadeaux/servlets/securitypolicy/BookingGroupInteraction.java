@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.ideescadeaux.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +60,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
             return false;
         }
 
-        Optional<IdeaGroup> g = model.groupForIdea.getGroupDetails(groupId);
+        Optional<IdeaGroup> g = GroupIdeaRepository.getGroupDetails(groupId);
         if (!g.isPresent()) {
             lastReason = "Le groupe est introuvable...";
             logger.warn("Ce groupe n'existe pas... => " + groupId);

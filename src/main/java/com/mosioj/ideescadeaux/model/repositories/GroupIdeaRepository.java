@@ -21,12 +21,16 @@ import com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns;
 import com.mosioj.ideescadeaux.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
 
-public class GroupIdea extends Table {
+public class GroupIdeaRepository extends Table {
 
-    private static final Logger LOGGER = LogManager.getLogger(GroupIdea.class);
+    private static final Logger LOGGER = LogManager.getLogger(GroupIdeaRepository.class);
 
     public static final String TABLE_NAME = "GROUP_IDEA";
     public static final String TABLE_NAME_CONTENT = "GROUP_IDEA_CONTENT";
+
+    private GroupIdeaRepository() {
+        // Forbidden
+    }
 
     /**
      * Creates an initial group for an idea. Does not map it to the idea.
@@ -36,7 +40,7 @@ public class GroupIdea extends Table {
      * @param userId First user belonging to this new group.
      * @return The group's idea
      */
-    public int createAGroup(double total, double amount, int userId) throws SQLException {
+    public static int createAGroup(double total, double amount, int userId) throws SQLException {
         int id = getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1}) values (?)",
                                                                         TABLE_NAME,
                                                                         NEEDED_PRICE),
@@ -52,7 +56,7 @@ public class GroupIdea extends Table {
      * @param userId The user id.
      * @param groupId The group id.
      */
-    private void addNewAmount(double amount, int userId, int groupId) throws SQLException {
+    private static void addNewAmount(double amount, int userId, int groupId) throws SQLException {
         getDb().executeUpdateGeneratedKey(MessageFormat.format(
                 "insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
                 TABLE_NAME_CONTENT,
@@ -69,7 +73,7 @@ public class GroupIdea extends Table {
      * @param groupId The group id.
      * @return The optional group object.
      */
-    public Optional<IdeaGroup> getGroupDetails(int groupId) throws SQLException {
+    public static Optional<IdeaGroup> getGroupDetails(int groupId) throws SQLException {
 
         Optional<IdeaGroup> group = Optional.empty();
         StringBuilder q = new StringBuilder();
@@ -128,7 +132,7 @@ public class GroupIdea extends Table {
      * @param newAmount The new amount
      * @return True if and only if the user is a new participant.
      */
-    public boolean updateAmount(Integer groupId, User user, double newAmount) {
+    public static boolean updateAmount(Integer groupId, User user, double newAmount) {
         try {
             addNewAmount(newAmount, user.id, groupId);
             return true;
@@ -150,7 +154,7 @@ public class GroupIdea extends Table {
      * @param groupId The group id.
      * @return true if there is at least one member left
      */
-    public boolean removeUserFromGroup(User user, Integer groupId) throws SQLException {
+    public static boolean removeUserFromGroup(User user, Integer groupId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
                                                    TABLE_NAME_CONTENT,
                                                    USER_ID,
@@ -171,7 +175,12 @@ public class GroupIdea extends Table {
         return true;
     }
 
-    public void removeUserFromAllGroups(User user) {
+    /**
+     * Removes the given user from all existing groups.
+     *
+     * @param user The user to remove.
+     */
+    public static void removeUserFromAllGroups(User user) {
 
         String query = MessageFormat.format("select distinct {0} from {1} where {2} = ? ",
                                             GROUP_ID,

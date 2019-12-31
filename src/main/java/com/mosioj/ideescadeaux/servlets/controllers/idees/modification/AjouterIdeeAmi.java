@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.Categories;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,75 +25,75 @@ import com.mosioj.ideescadeaux.utils.RootingsUtils;
 @WebServlet("/protected/ajouter_idee_ami")
 public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 
-	private static final long serialVersionUID = -7053283110787519597L;
-	private static final Logger logger = LogManager.getLogger(AjouterIdeeAmi.class);
+    private static final long serialVersionUID = -7053283110787519597L;
+    private static final Logger logger = LogManager.getLogger(AjouterIdeeAmi.class);
 
-	public static final String USER_PARAMETER = "id";
+    public static final String USER_PARAMETER = "id";
 
-	public static final String VIEW_PAGE_URL = "/protected/ajouter_idee_ami.jsp";
+    public static final String VIEW_PAGE_URL = "/protected/ajouter_idee_ami.jsp";
 
-	public AjouterIdeeAmi() {
-		super(new NetworkAccess(USER_PARAMETER));
-	}
+    public AjouterIdeeAmi() {
+        super(new NetworkAccess(USER_PARAMETER));
+    }
 
-	@Override
-	public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    @Override
+    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		User user = policy.getUser();
-		request.setAttribute("user", user);
-		request.setAttribute("types", model.categories.getCategories());
-		request.setAttribute("priorites", model.priorities.getPriorities());
+        User user = policy.getUser();
+        request.setAttribute("user", user);
+        request.setAttribute("types", Categories.getCategories());
+        request.setAttribute("priorites", model.priorities.getPriorities());
 
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-	}
+        RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
+    }
 
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+    @Override
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
 
-		User addedToUser = policy.getUser();
+        User addedToUser = policy.getUser();
 
-		// Check that we have a file upload request
-		if (ServletFileUpload.isMultipartContent(request)) {
+        // Check that we have a file upload request
+        if (ServletFileUpload.isMultipartContent(request)) {
 
-			fillIdeaOrErrors(request, response);
+            fillIdeaOrErrors(request, response);
 
-			if (!errors.isEmpty()) {
-				request.setAttribute("errors", errors);
-			} else {
-				logger.info(MessageFormat.format(	"Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
-													parameters.get("text"),
-													parameters.get("type"),
-													parameters.get("priority")));
-				User currentUser = thisOne;
-				boolean estSurprise = false;
-				if ("on".equals(parameters.get("est_surprise"))) {
-					if (addedToUser.id != currentUser.id) {
-						estSurprise = true;
-					}
-				}
-				int ideaId = model.idees.addIdea(	addedToUser,
-											parameters.get("text"),
-											parameters.get("type"),
-											Integer.parseInt(parameters.get("priority")),
-											parameters.get("image"),
-											estSurprise ? currentUser : null,
-											currentUser);
-				Idee idea = getIdeaAndEnrichIt(ideaId);
-				request.setAttribute("idee", idea);
+            if (!errors.isEmpty()) {
+                request.setAttribute("errors", errors);
+            } else {
+                logger.info(MessageFormat.format("Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
+                                                 parameters.get("text"),
+                                                 parameters.get("type"),
+                                                 parameters.get("priority")));
+                User currentUser = thisOne;
+                boolean estSurprise = false;
+                if ("on".equals(parameters.get("est_surprise"))) {
+                    if (addedToUser.id != currentUser.id) {
+                        estSurprise = true;
+                    }
+                }
+                int ideaId = model.idees.addIdea(addedToUser,
+                                                 parameters.get("text"),
+                                                 parameters.get("type"),
+                                                 Integer.parseInt(parameters.get("priority")),
+                                                 parameters.get("image"),
+                                                 estSurprise ? currentUser : null,
+                                                 currentUser);
+                Idee idea = getIdeaAndEnrichIt(ideaId);
+                request.setAttribute("idee", idea);
 
-				if (!estSurprise) {
-					model.notif.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
-					model.notif.removeAllType(addedToUser, NotificationType.NO_IDEA);
-				}
-			}
+                if (!estSurprise) {
+                    model.notif.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
+                    model.notif.removeAllType(addedToUser, NotificationType.NO_IDEA);
+                }
+            }
 
-		}
+        }
 
-		request.setAttribute("user", addedToUser);
-		request.setAttribute("types", model.categories.getCategories());
-		request.setAttribute("priorites", model.priorities.getPriorities());
+        request.setAttribute("user", addedToUser);
+        request.setAttribute("types", Categories.getCategories());
+        request.setAttribute("priorites", model.priorities.getPriorities());
 
-		RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-	}
+        RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
+    }
 
 }
