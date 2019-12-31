@@ -48,7 +48,6 @@ public class JSPAccessortTest extends TemplateTest {
                           "toto",
                           "",
                           null,
-                          45,
                           "toto.png",
                           null,
                           null,

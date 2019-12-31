@@ -63,7 +63,7 @@ public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction>
 		Set<User> toBeNotified = new HashSet<User>();
 
 		// If the idea is booked, we notify the bookers
-		toBeNotified.addAll(idea.getBookers(model.groupForIdea, model.sousReservation));
+		toBeNotified.addAll(idea.getBookers(model.sousReservation));
 
 		// Notifying at least all people in the thread
 		toBeNotified.addAll(model.comments.getUserListOnComment(idea.getId()));

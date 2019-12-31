@@ -58,13 +58,13 @@ public class TestIdee extends TemplateTest {
 	public void testEnrichissement() throws SQLException {
 		User owner = new User(1, "toto", "tutu@fneihfe.com", null);
 		User booker = new User(32, "moi", "moi", null);
-		Idee idee = new Idee(1, owner, "tutu", "", booker, 0, null, null, null, null, null, null, null, null, null);
+		Idee idee = new Idee(1, owner, "tutu", "", booker, null, null, null, null, null, null, null, null, null);
 		new Idees().fillAUserIdea(booker, idee, new TestDevice());
 		assertEquals("booked_by_me_idea", idee.displayClass);
 	}
 
 	private Idee ideaFactory(String text) {
-		return new Idee(1, null, text, "", null, 0, null, null, null, null, null, null, null, null, null);
+		return new Idee(1, null, text, "", null, null, null, null, null, null, null, null, null, null);
 	}
 
 }

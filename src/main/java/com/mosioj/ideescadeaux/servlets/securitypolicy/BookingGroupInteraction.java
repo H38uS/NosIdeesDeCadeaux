@@ -89,7 +89,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
      * @return The resolved group id, or null if the checks failed.
      */
     public Integer getGroupId() {
-        return groupId;
+        return groupId; // FIXME : 0 récupérer l'objet IdeaGroup et vérifier qu'il existe
     }
 
 	@Override

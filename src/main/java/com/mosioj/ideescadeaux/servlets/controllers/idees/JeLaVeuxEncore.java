@@ -33,7 +33,7 @@ public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
 		Set<User> toBeNotified = new HashSet<User>();
 
 		// On notifie toujours ceux qui ont réservé
-		toBeNotified.addAll(idea.getBookers(model.groupForIdea, model.sousReservation));
+		toBeNotified.addAll(idea.getBookers(model.sousReservation));
 
 		// Puis si l'anniversaire est proche, tous les amis !
 		User current = thisOne;

@@ -46,7 +46,7 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
         logger.debug(MessageFormat.format("Deleting idea {0}.", idea.getId()));
 
         Set<Integer> notified = new HashSet<>();
-        List<User> bookers = idea.getBookers(model.groupForIdea, model.sousReservation);
+        List<User> bookers = idea.getBookers(model.sousReservation);
         logger.debug(MessageFormat.format("Liste des personnes qui ont réservé au moment de la suppression: {0}",
                                           bookers));
         for (User user : bookers) {

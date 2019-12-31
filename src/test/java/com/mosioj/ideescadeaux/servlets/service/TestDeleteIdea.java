@@ -4,7 +4,6 @@ import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.repositories.GroupIdea;
 import com.mosioj.ideescadeaux.notifications.instance.*;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -27,7 +26,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
         assertEquals(0, ds.selectCountStar("select count(*) from IDEES_HIST where id = ?", id));
 
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
         assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
@@ -48,13 +47,13 @@ public class TestDeleteIdea extends AbstractTestServlet {
         Idee idee = idees.getIdeaWithoutEnrichment(id);
         int notifId = notif.addNotification(_FRIEND_ID_, new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);
-        assertEquals(group, idee.getGroupKDO());
+        assertEquals(g.getGroupDetails(group), idee.getGroupKDO());
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
 
         // Suppression
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         // Validation que cela supprime tout
         assertTrue(resp.isOK());
@@ -93,7 +92,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
 
         // Suppression
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(isUpToDate);

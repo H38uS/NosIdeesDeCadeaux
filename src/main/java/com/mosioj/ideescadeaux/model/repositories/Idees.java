@@ -1,19 +1,18 @@
 package com.mosioj.ideescadeaux.model.repositories;
 
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.A_SOUS_RESERVATION;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.CREE_LE;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.CREE_PAR;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.GROUPE_KDO_ID;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.ID;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.IDEE;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.IMAGE;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.MODIFICATION_DATE;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.OWNER;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.PRIORITE;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.RESERVE;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.RESERVE_LE;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.SURPRISE_PAR;
-import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.TYPE;
+import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.entities.Priorite;
+import com.mosioj.ideescadeaux.model.entities.SousReservationEntity;
+import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.columns.*;
+import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdoInserter;
+import com.mosioj.ideescadeaux.viewhelper.Escaper;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.mobile.device.Device;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,29 +20,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.mobile.device.Device;
-
-import com.mosioj.ideescadeaux.model.entities.Idee;
-import com.mosioj.ideescadeaux.model.entities.Priorite;
-import com.mosioj.ideescadeaux.model.entities.SousReservationEntity;
-import com.mosioj.ideescadeaux.model.entities.User;
-import com.mosioj.ideescadeaux.model.repositories.columns.CategoriesColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.CommentsColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.GroupIdeaColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.GroupIdeaContentColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.IsUpToDateColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.PrioritesColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.SousReservationColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.UserRelationsColumns;
-import com.mosioj.ideescadeaux.model.repositories.columns.UsersColumns;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
-import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdoInserter;
-import com.mosioj.ideescadeaux.viewhelper.Escaper;
+import static com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns.*;
 
 public class Idees extends Table {
 
@@ -58,6 +35,7 @@ public class Idees extends Table {
 
     private final Comments comments = new Comments();
     private final Questions questions = new Questions();
+    private final GroupIdea groupIdea = new GroupIdea();
 
     /**
      * Fills the idea structure from a result set query. /!\ The result set must be valid, and have a row available.
@@ -86,24 +64,31 @@ public class Idees extends Table {
                                   rs.getString("surpriseAvatar"));
         }
 
-        return new Idee(rs.getInt(ID.name()),
-                        owner,
-                        rs.getString(IDEE.name()),
-                        rs.getString(TYPE.name()),
-                        bookingOwner,
-                        rs.getInt(GROUPE_KDO_ID.name()),
-                        rs.getString("id_image"),
-                        rs.getString(CategoriesColumns.IMAGE.name()),
-                        rs.getString(CategoriesColumns.ALT.name()),
-                        rs.getString(CategoriesColumns.TITLE.name()),
-                        new Priorite(rs.getInt(PRIORITE.name()),
-                                     rs.getString("PRIORITY_NAME"),
-                                     rs.getString("PRIORITY_PICTURE"),
-                                     rs.getInt("PRIORITY_ORDER")),
-                        rs.getTimestamp(RESERVE_LE.name()),
-                        rs.getTimestamp(MODIFICATION_DATE.name()),
-                        rs.getString(A_SOUS_RESERVATION.name()),
-                        surpriseBy);
+        Idee idee = new Idee(rs.getInt(ID.name()),
+                             owner,
+                             rs.getString(IDEE.name()),
+                             rs.getString(TYPE.name()),
+                             bookingOwner,
+                             rs.getString("id_image"),
+                             rs.getString(CategoriesColumns.IMAGE.name()),
+                             rs.getString(CategoriesColumns.ALT.name()),
+                             rs.getString(CategoriesColumns.TITLE.name()),
+                             new Priorite(rs.getInt(PRIORITE.name()),
+                                          rs.getString("PRIORITY_NAME"),
+                                          rs.getString("PRIORITY_PICTURE"),
+                                          rs.getInt("PRIORITY_ORDER")),
+                             rs.getTimestamp(RESERVE_LE.name()),
+                             rs.getTimestamp(MODIFICATION_DATE.name()),
+                             rs.getString(A_SOUS_RESERVATION.name()),
+                             surpriseBy);
+
+        if (rs.getString(GROUPE_KDO_ID.name()) != null) {
+            int groupId = rs.getInt(GROUPE_KDO_ID.name());
+            groupIdea.getGroupDetails(groupId).ifPresent(idee::withGroupKDO);
+        }
+        // FIXME : 0 faire pareil avec les catégories
+
+        return idee;
     }
 
     /**
@@ -326,7 +311,7 @@ public class Idees extends Table {
 
     /**
      * @param groupId The booking group's id.
-     * @param userId The connected user.
+     * @param userId  The connected user.
      * @return The list of users that can contribute to this group. They must also belongs to the user relationship.
      */
     public List<User> getPotentialGroupUser(int groupId, int userId) throws SQLException {
@@ -393,7 +378,7 @@ public class Idees extends Table {
 
     /**
      * @param ideaId The idea's id.
-     * @param user The person.
+     * @param user   The person.
      * @return True if and only if the user has sub booked the idea.
      */
     public boolean isSubBookBy(int ideaId, User user) throws SQLException {
@@ -809,24 +794,21 @@ public class Idees extends Table {
         idee.hasAskedIfUpToDate = hasUserAskedIfUpToDate(idee.getId(), user.id);
 
         if (idee.isBooked()) {
-            if (idee.getBookingOwner() != null) {
-                if (user.equals(idee.getBookingOwner())) {
-                    // Réservé par soit !
+            idee.displayClass = "booked_by_others_idea";
+            idee.getBookingOwner().ifPresent(o -> {
+                // Réservé par soit !
+                if (user.equals(o)) {
                     idee.displayClass = "booked_by_me_idea";
-                } else {
-                    // Réservé par un autre
-                    idee.displayClass = "booked_by_others_idea";
                 }
-            } else {
-                // Réserver par un groupe
-                // FIXME : 8 ajouter le groupe à l'idée (et pas juste l'id...)
-                if (new GroupIdea().belongsToGroup(user, idee.getGroupKDO())) {
+            });
+            idee.getGroupKDO().ifPresent(g -> {
+                if (g.contains(user)) {
                     // On fait parti du groupe
                     idee.displayClass = "booked_by_me_idea";
                 } else {
                     idee.displayClass = "shared_booking_idea";
                 }
-            }
+            });
         } else if (idee.isPartiallyBooked()) {
             List<SousReservationEntity> resa = new SousReservation().getSousReservation(idee.getId());
             idee.displayClass = "shared_booking_idea";
