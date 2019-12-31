@@ -1,15 +1,13 @@
 package com.mosioj.ideescadeaux.model.repositories;
 
-import com.mosioj.ideescadeaux.model.entities.Idee;
-import com.mosioj.ideescadeaux.model.entities.Priorite;
-import com.mosioj.ideescadeaux.model.entities.SousReservationEntity;
-import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.entities.*;
 import com.mosioj.ideescadeaux.model.repositories.columns.*;
 import com.mosioj.ideescadeaux.utils.database.NoRowsException;
 import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdoInserter;
 import com.mosioj.ideescadeaux.viewhelper.Escaper;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
@@ -67,12 +65,8 @@ public class Idees extends Table {
         Idee idee = new Idee(rs.getInt(ID.name()),
                              owner,
                              rs.getString(IDEE.name()),
-                             rs.getString(TYPE.name()),
                              bookingOwner,
                              rs.getString("id_image"),
-                             rs.getString(CategoriesColumns.IMAGE.name()),
-                             rs.getString(CategoriesColumns.ALT.name()),
-                             rs.getString(CategoriesColumns.TITLE.name()),
                              new Priorite(rs.getInt(PRIORITE.name()),
                                           rs.getString("PRIORITY_NAME"),
                                           rs.getString("PRIORITY_PICTURE"),
@@ -82,11 +76,17 @@ public class Idees extends Table {
                              rs.getString(A_SOUS_RESERVATION.name()),
                              surpriseBy);
 
+        if (!StringUtils.isBlank(rs.getString(TYPE.name()))) {
+            idee.withCategorie(new Categorie(rs.getString(TYPE.name()),
+                                             rs.getString(CategoriesColumns.ALT.name()),
+                                             rs.getString(CategoriesColumns.IMAGE.name()),
+                                             rs.getString(CategoriesColumns.TITLE.name())));
+        }
+
         if (rs.getString(GROUPE_KDO_ID.name()) != null) {
             int groupId = rs.getInt(GROUPE_KDO_ID.name());
             groupIdea.getGroupDetails(groupId).ifPresent(idee::withGroupKDO);
         }
-        // FIXME : 0 faire pareil avec les catégories
 
         return idee;
     }

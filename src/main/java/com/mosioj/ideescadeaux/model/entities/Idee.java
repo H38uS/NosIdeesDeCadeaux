@@ -23,12 +23,9 @@ public class Idee {
     public String text;
 
     @Expose
-    private final String type;
-
-    @Expose
     public final User owner;
 
-    private final Categorie cat;
+    private Categorie cat;
     private final User bookingOwner;
     private IdeaGroup group;
     private final String image;
@@ -45,12 +42,8 @@ public class Idee {
     public Idee(int pId,
                 User owner,
                 String pText,
-                String pType,
                 User pBookingOwner,
                 String image,
-                String catImage,
-                String catAlt,
-                String catTitle,
                 Priorite priorite,
                 Timestamp bookedOn,
                 Timestamp lastModified,
@@ -58,8 +51,6 @@ public class Idee {
                 User surpriseBy) {
         id = pId;
         text = pText;
-        type = pType;
-        cat = pType.isEmpty() ? null : new Categorie(pType, catAlt, catImage, catTitle);
         bookingOwner = pBookingOwner;
         this.image = image;
         this.owner = owner;
@@ -71,12 +62,21 @@ public class Idee {
     }
 
     /**
-     * Associates a new group with the idea.
+     * Associates a new group with this idea.
      *
      * @param group The new group.
      */
     public void withGroupKDO(IdeaGroup group) {
         this.group = group;
+    }
+
+    /**
+     * Associates a new category with this idea.
+     *
+     * @param categorie The new category.
+     */
+    public void withCategorie(Categorie categorie) {
+        this.cat = categorie;
     }
 
     /**
@@ -215,10 +215,6 @@ public class Idee {
      */
     public String getHtml() {
         return text;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public String getImage() {

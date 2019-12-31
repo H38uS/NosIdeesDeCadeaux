@@ -51,7 +51,7 @@
 								<option value="">Sélectionnez un type</option>
 								<c:forEach var="type" items="${types}">
 									<c:choose>
-										<c:when test="${type.name == idea.type}">
+										<c:when test="${type.name == idea.category.name}">
 											<option value="${type.name}" selected="selected">${type.alt}</option>
 										</c:when>
 										<c:otherwise>
