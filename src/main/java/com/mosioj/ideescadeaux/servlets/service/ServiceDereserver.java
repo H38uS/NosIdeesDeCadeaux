@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
@@ -37,7 +38,7 @@ public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> 
         logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.",
                                           idea.getId(),
                                           userId));
-        model.idees.dereserver(idea.getId(), userId);
+        IdeesRepository.dereserver(idea.getId(), userId);
 
         buildResponse(response, ServiceResponse.ok(isAdmin(request)));
     }

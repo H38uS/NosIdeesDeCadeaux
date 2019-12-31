@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +41,7 @@ public class SuppressionCompte extends SecurityPolicy {
             return false;
         }
 
-        user = model.users.getUser(userId.get());
+        user = UsersRepository.getUser(userId.get());
 
         return false;
     }

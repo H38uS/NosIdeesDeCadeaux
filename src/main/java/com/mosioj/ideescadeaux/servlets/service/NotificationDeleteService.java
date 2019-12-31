@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +30,7 @@ public class NotificationDeleteService extends IdeesCadeauxPostServlet<Notificat
 
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-        model.notif.remove(policy.getNotificationId());
+        NotificationsRepository.remove(policy.getNotificationId());
         logger.info(MessageFormat.format("Suppression de la notification {0}", policy.getNotificationId()));
         buildResponse(response, ServiceResponse.ok(isAdmin(request)));
     }

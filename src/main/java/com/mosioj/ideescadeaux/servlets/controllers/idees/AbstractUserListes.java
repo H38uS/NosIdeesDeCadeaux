@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.servlets.controllers.idees;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,9 +37,9 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
     protected void fillsUserIdeas(User connectedUser, List<User> ids) throws SQLException {
         logger.trace("Getting all ideas for all users...");
         for (User user : ids) {
-            List<Idee> ownerIdeas = model.idees.getIdeasOf(user.id);
+            List<Idee> ownerIdeas = IdeesRepository.getIdeasOf(user.id);
             for (Idee idee : ownerIdeas) {
-                model.idees.fillAUserIdea(connectedUser, idee, device);
+                IdeesRepository.fillAUserIdea(connectedUser, idee, device);
             }
             user.setIdeas(ownerIdeas);
         }

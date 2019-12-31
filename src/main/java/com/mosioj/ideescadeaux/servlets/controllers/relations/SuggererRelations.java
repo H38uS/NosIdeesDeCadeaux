@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsSuggestionRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
@@ -39,21 +42,21 @@ public class SuggererRelations extends IdeesCadeauxGetAndPostServlet<NetworkAcce
 		String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 
 		int suggestedBy = thisOne.id;
-		List<User> toBeSuggested = model.userRelations.getAllUsersInRelationNotInOtherNetwork(	suggestedBy,
-																								suggestToUser.id,
-																								userNameOrEmail,
-																								0,
-																								50);
+		List<User> toBeSuggested = UserRelationsRepository.getAllUsersInRelationNotInOtherNetwork(suggestedBy,
+																								  suggestToUser.id,
+																								  userNameOrEmail,
+																								  0,
+																								  50);
 		toBeSuggested.remove(suggestToUser);
 
 		for (User u : toBeSuggested) {
-			if (model.userRelationsSuggestion.hasReceivedSuggestionOf(suggestToUser.id, u.id)) {
+			if (UserRelationsSuggestionRepository.hasReceivedSuggestionOf(suggestToUser.id, u.id)) {
 				u.freeComment = MessageFormat.format("{0} a déjà reçu une suggestion pour {1}.", suggestToUser.getName(), u.getName());
 			}
-			if (model.userRelationRequests.associationExists(suggestToUser.id, u.id)) {
+			if (UserRelationRequestsRepository.associationExists(suggestToUser.id, u.id)) {
 				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", suggestToUser.getName(), u.getName());
 			}
-			if (model.userRelationRequests.associationExists(u.id, suggestToUser.id)) {
+			if (UserRelationRequestsRepository.associationExists(u.id, suggestToUser.id)) {
 				u.freeComment = MessageFormat.format("{0} a déjà envoyé une demande à {1}.", u.getName(), suggestToUser.getName());
 			}
 		}

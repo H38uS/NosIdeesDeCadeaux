@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -34,8 +35,8 @@ public class ServiceReserver extends IdeesCadeauxPostServlet<IdeaInteraction> {
         Idee idea = policy.getIdea();
         logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea.getId(), thisOne));
 
-        if (model.idees.canBook(idea.getId(), thisOne.id)) {
-            model.idees.reserver(idea.getId(), thisOne.id);
+        if (IdeesRepository.canBook(idea.getId(), thisOne.id)) {
+            IdeesRepository.reserver(idea.getId(), thisOne.id);
         }
 
         buildResponse(response, ServiceResponse.ok(isAdmin(request)));

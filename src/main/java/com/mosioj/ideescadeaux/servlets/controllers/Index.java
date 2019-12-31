@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.ideescadeaux.model.entities.User;
-import com.mosioj.ideescadeaux.model.repositories.MessagesAccueil;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.MessagesAccueilRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
@@ -35,27 +37,27 @@ public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
         req.setAttribute("no_birth_date_set", me.getBirthday() == null);
 
         // Birthday messages
-        List<User> friends = model.userRelations.getCloseBirthday(thisOne, NB_DAYS_MAX_BEFORE_BIRTHDAY);
+        List<User> friends = UserRelationsRepository.getCloseBirthday(thisOne, NB_DAYS_MAX_BEFORE_BIRTHDAY);
         Set<User> listIBookedSomething = new HashSet<>();
-        model.idees.getIdeasWhereIDoParticipateIn(thisOne)
-                   .parallelStream()
-                   .forEach(i -> listIBookedSomething.add(i.owner));
+        IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne)
+                       .parallelStream()
+                       .forEach(i -> listIBookedSomething.add(i.owner));
         friends.parallelStream()
                .filter(listIBookedSomething::contains)
                .forEach(f -> f.hasBookedOneOfItsIdeas = true);
 
         req.setAttribute("userBirthday", friends);
         if (!friends.isEmpty()) {
-            req.setAttribute("birthdayMessage", MessagesAccueil.getOneBirthdayMessage());
+            req.setAttribute("birthdayMessage", MessagesAccueilRepository.getOneBirthdayMessage());
         }
 
         // Christmas
         Calendar now = Calendar.getInstance();
         if (now.after(startOfNotification()) && now.before(thisYearChristmas())) {
-            req.setAttribute("christmasMessage", MessagesAccueil.getOneChristmasMessage());
+            req.setAttribute("christmasMessage", MessagesAccueilRepository.getOneChristmasMessage());
         } else {
             if (friends.isEmpty()) {
-                req.setAttribute("nothingMessage", MessagesAccueil.getOneNothingMessage());
+                req.setAttribute("nothingMessage", MessagesAccueilRepository.getOneNothingMessage());
             }
         }
 

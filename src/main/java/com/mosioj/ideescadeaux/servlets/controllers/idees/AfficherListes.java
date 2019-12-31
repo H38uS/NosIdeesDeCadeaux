@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 
@@ -35,7 +36,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
             ids.add(connected);
             MAX--;
         }
-        ids.addAll(model.userRelations.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
+        ids.addAll(UserRelationsRepository.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
         fillsUserIdeas(connected, ids);
         return ids;
     }
@@ -44,7 +45,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
     protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException {
         User user = thisOne;
         String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
-        int size = model.userRelations.getAllUsersInRelationCount(user, nameOrEmail);
+        int size = UserRelationsRepository.getAllUsersInRelationCount(user, nameOrEmail);
         if (user.matchNameOrEmail(nameOrEmail)) {
             return size + 1;
         }

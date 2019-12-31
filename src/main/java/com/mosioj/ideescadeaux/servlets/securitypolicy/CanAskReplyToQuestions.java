@@ -1,6 +1,8 @@
 package com.mosioj.ideescadeaux.servlets.securitypolicy;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
@@ -49,7 +51,7 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
 
         int userId = connectedUser.id;
 
-        idea = model.idees.getIdeaWithoutEnrichment(ideaId.get());
+        idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
         if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
@@ -60,7 +62,7 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
             return false;
         }
 
-        boolean res = model.userRelations.associationExists(userId, idea.owner.id);
+        boolean res = UserRelationsRepository.associationExists(userId, idea.owner.id);
         if (!res) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
         }

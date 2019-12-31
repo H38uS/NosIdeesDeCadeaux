@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,85 +30,86 @@ import com.mosioj.ideescadeaux.viewhelper.LoginHelper;
 @WebServlet("/public/creation_compte")
 public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
-	public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
-	public static final String SUCCES_URL = "/public/succes_creation.jsp";
-	public static final String FORM_URL = "/public/creation_compte.jsp";
-	private static final Logger logger = LogManager.getLogger(CreationCompte.class);
+    public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
+    public static final String SUCCES_URL = "/public/succes_creation.jsp";
+    public static final String FORM_URL = "/public/creation_compte.jsp";
+    private static final Logger logger = LogManager.getLogger(CreationCompte.class);
 
-	/**
-	 * Class contructor.
-	 */
-	public CreationCompte() {
-		super(new AllAccessToPostAndGet());
-	}
+    /**
+     * Class contructor.
+     */
+    public CreationCompte() {
+        super(new AllAccessToPostAndGet());
+    }
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -101081965549681889L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -101081965549681889L;
 
-	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-		RootingsUtils.rootToPage(FORM_URL, req, resp);
-	}
+    @Override
+    public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+        RootingsUtils.rootToPage(FORM_URL, req, resp);
+    }
 
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    @Override
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		HttpSession session = request.getSession();
-		CompteInteractions helper = new CompteInteractions();
+        HttpSession session = request.getSession();
+        CompteInteractions helper = new CompteInteractions();
 
-		// Récupération des paramètres
-		String pwd = ParametersUtils.readIt(request, "pwd");
-		String email = ParametersUtils.readAndEscape(request, "email").trim();
-		String name = ParametersUtils.readAndEscape(request, "pseudo").trim();
+        // Récupération des paramètres
+        String pwd = ParametersUtils.readIt(request, "pwd");
+        String email = ParametersUtils.readAndEscape(request, "email").trim();
+        String name = ParametersUtils.readAndEscape(request, "pseudo").trim();
 
-		// Validation des paramètres
-		List<String> pwdErrors = helper.checkPwd(helper.getValidatorPwd(pwd));
-		request.setAttribute("pwd_errors", pwdErrors);
+        // Validation des paramètres
+        List<String> pwdErrors = helper.checkPwd(helper.getValidatorPwd(pwd));
+        request.setAttribute("pwd_errors", pwdErrors);
 
-		List<String> emailErrors = helper.checkEmail(helper.getValidatorEmail(email), -1, false); // The user does not
-																									// exist yet
-		request.setAttribute("email_errors", emailErrors);
+        List<String> emailErrors = helper.checkEmail(helper.getValidatorEmail(email), -1, false); // The user does not
+        // exist yet
+        request.setAttribute("email_errors", emailErrors);
 
-		try {
-			// Do this so we can capture non-Latin chars
-			request.setCharacterEncoding("UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			throw new ServletException(e1.getMessage());
-		}
+        try {
+            // Do this so we can capture non-Latin chars
+            request.setCharacterEncoding("UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            throw new ServletException(e1.getMessage());
+        }
 
-		String captchaResponse = ParametersUtils.readIt(request, "g-recaptcha-response");
-		String urlCalled = request.getRequestURL().toString();
-		logger.debug(captchaResponse + " / " + request.getRequestURL());
-		boolean captchaOk = urlCalled.startsWith(HTTP_LOCALHOST_8080) || CaptchaHandler.resolveIt(captchaResponse);
-		if (!captchaOk) {
-			request.setAttribute("captcha_errors", "Erreur lors de la validation du Captcha.");
-		}
+        String captchaResponse = ParametersUtils.readIt(request, "g-recaptcha-response");
+        String urlCalled = request.getRequestURL().toString();
+        logger.debug(captchaResponse + " / " + request.getRequestURL());
+        boolean captchaOk = urlCalled.startsWith(HTTP_LOCALHOST_8080) || CaptchaHandler.resolveIt(captchaResponse);
+        if (!captchaOk) {
+            request.setAttribute("captcha_errors", "Erreur lors de la validation du Captcha.");
+        }
 
-		// Password hash
-		String hashPwd = helper.hashPwd(pwd, pwdErrors);
+        // Password hash
+        String hashPwd = helper.hashPwd(pwd, pwdErrors);
 
-		// Retour au formulaire si un paramètre est incorrect
-		if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {
-			RootingsUtils.rootToPage(FORM_URL, request, response);
-			return;
-		}
+        // Retour au formulaire si un paramètre est incorrect
+        if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {
+            RootingsUtils.rootToPage(FORM_URL, request, response);
+            return;
+        }
 
-		// Les paramètres sont ok, on s'occupe de la requête
-		name = name.trim().isEmpty() ? email : name;
-		model.users.addNewPersonne(email, hashPwd, name);
-		session.invalidate();
-		request.login(email, pwd);
-		request.setAttribute("user", name);
-		try {
-			new LoginHelper().doFilter(request, response, new EmptyFilter());
-		} catch (IOException e) {
-			throw new ServletException(e.getMessage());
-		}
+        // Les paramètres sont ok, on s'occupe de la requête
+        name = name.trim().isEmpty() ? email : name;
+        UsersRepository.addNewPersonne(email, hashPwd, name);
+        session.invalidate();
+        request.login(email, pwd);
+        request.setAttribute("user", name);
+        try {
+            new LoginHelper().doFilter(request, response, new EmptyFilter());
+        } catch (IOException e) {
+            throw new ServletException(e.getMessage());
+        }
 
-		model.notif.notifyAboutANewInscription(MessageFormat.format("A person within the site !! This is {0}.", email));
-		model.notif.addNotification(thisOne.id, new NotifNoIdea());
-		RootingsUtils.rootToPage(SUCCES_URL, request, response);
-	}
+        NotificationsRepository.notifyAboutANewInscription(MessageFormat.format("A person within the site !! This is {0}.",
+                                                                                email));
+        NotificationsRepository.addNotification(thisOne.id, new NotifNoIdea());
+        RootingsUtils.rootToPage(SUCCES_URL, request, response);
+    }
 }

@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,13 +43,13 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
         }
 
         int userId = connectedUser.id;
-        boolean res = user.get() == userId || model.userRelations.associationExists(user.get(), userId);
+        boolean res = user.get() == userId || UserRelationsRepository.associationExists(user.get(), userId);
         if (!res) {
             lastReason = "Vous n'êtes pas ami avec cette personne.";
             return false;
         }
 
-        friend = model.users.getUser(user.get());
+        friend = UsersRepository.getUser(user.get());
         if (friend == null) {
             logger.error("The id " + user.get() + " does not exist...");
         }

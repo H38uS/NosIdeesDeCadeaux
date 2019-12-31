@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.SousReservationRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +43,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteraction> {
         logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
         req.setAttribute("idee", idea);
 
-        List<SousReservationEntity> reservations = model.sousReservation.getSousReservation(idea.getId());
+        List<SousReservationEntity> reservations = SousReservationRepository.getSousReservation(idea.getId());
         req.setAttribute("sous_reservation_existantes", reservations);
         boolean isInThere = false;
         for (SousReservationEntity entity : reservations) {

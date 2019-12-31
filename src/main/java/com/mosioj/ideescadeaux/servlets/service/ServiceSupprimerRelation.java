@@ -6,6 +6,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -34,15 +37,15 @@ public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAcc
         ServiceResponse<String> ans;
         try {
             User user = policy.getUser();
-            model.userRelations.deleteAssociation(user.id, thisOne.id);
-            model.notif.removeAllType(thisOne, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user.id);
-            model.notif.removeAllType(model.users.getUser(user.id),
-                                      NotificationType.ACCEPTED_FRIENDSHIP,
-                                      ParameterName.USER_ID,
-                                      thisOne);
+            UserRelationsRepository.deleteAssociation(user.id, thisOne.id);
+            NotificationsRepository.removeAllType(thisOne, NotificationType.ACCEPTED_FRIENDSHIP, ParameterName.USER_ID, user.id);
+            NotificationsRepository.removeAllType(UsersRepository.getUser(user.id),
+                                                  NotificationType.ACCEPTED_FRIENDSHIP,
+                                                  ParameterName.USER_ID,
+                                                  thisOne);
 
             // Send a notification
-            model.notif.addNotification(user.id, new NotifFriendshipDropped(thisOne));
+            NotificationsRepository.addNotification(user.id, new NotifFriendshipDropped(thisOne));
             ans = ServiceResponse.ok(isAdmin(request));
         } catch (SQLException e) {
             ans = ServiceResponse.ko(e.getMessage(), isAdmin(request));

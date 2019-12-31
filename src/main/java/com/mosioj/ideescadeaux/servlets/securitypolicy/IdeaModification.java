@@ -6,12 +6,13 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
-import com.mosioj.ideescadeaux.model.repositories.ParentRelationship;
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 
@@ -52,13 +53,13 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
 
         int userId = connectedUser.id;
 
-        idea = model.idees.getIdeaWithoutEnrichment(ideaId.get());
+        idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
         if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
-        boolean res = userId == idea.owner.id || new ParentRelationship().getChildren(userId).contains(idea.owner);
+        boolean res = userId == idea.owner.id || ParentRelationshipRepository.getChildren(userId).contains(idea.owner);
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos idées ou celles de vos enfants.";
         }

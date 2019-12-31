@@ -8,13 +8,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
-import com.mosioj.ideescadeaux.model.repositories.IsUpToDateQuestions;
+import com.mosioj.ideescadeaux.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 
@@ -45,11 +47,10 @@ public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBook
         int userId = thisOne.id;
         logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
 
-        IsUpToDateQuestions ask = new IsUpToDateQuestions();
-        if (ask.addAssociation(idea.getId(), userId) == 1) {
-            NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(model.users.getUser(userId), idea);
-            if (!model.notif.hasNotification(idea.owner.id, isUpToDateNotif)) {
-                model.notif.addNotification(idea.owner.id, isUpToDateNotif);
+        if (IsUpToDateQuestionsRepository.addAssociation(idea.getId(), userId) == 1) {
+            NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(UsersRepository.getUser(userId), idea);
+            if (!NotificationsRepository.hasNotification(idea.owner.id, isUpToDateNotif)) {
+                NotificationsRepository.addNotification(idea.owner.id, isUpToDateNotif);
                 return true;
             }
         }

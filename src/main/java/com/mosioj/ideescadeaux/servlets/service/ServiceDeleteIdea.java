@@ -11,6 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -46,11 +48,11 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
         logger.debug(MessageFormat.format("Deleting idea {0}.", idea.getId()));
 
         Set<Integer> notified = new HashSet<>();
-        List<User> bookers = idea.getBookers(model.sousReservation);
+        List<User> bookers = idea.getBookers();
         logger.debug(MessageFormat.format("Liste des personnes qui ont réservé au moment de la suppression: {0}",
                                           bookers));
         for (User user : bookers) {
-            model.notif.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
+            NotificationsRepository.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
             notified.add(user.id);
         }
 
@@ -58,7 +60,7 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
         logger.debug(MessageFormat.format("Image: {0}.", image));
         logic.removeUploadedImage(getIdeaPicturePath(), image);
 
-        List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.IDEA_ID, idea.getId());
+        List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId());
         // Pour chaque notification qui concerne cette idée
         for (AbstractNotification notification : notifications) {
 
@@ -69,20 +71,20 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
                 // Si la personne n'a pas déjà été notifié, et n'est pas le owner de l'idée
                 // On lui envoie une notif
                 if (!notified.contains(notifUserId.getUserIdParam()) && idea.owner.id != notifUserId.getUserIdParam()) {
-                    model.notif.addNotification(notifUserId.getUserIdParam(),
-                                                new NotifBookedRemove(idea, thisOne.getName()));
+                    NotificationsRepository.addNotification(notifUserId.getUserIdParam(),
+                                                            new NotifBookedRemove(idea, thisOne.getName()));
                     notified.add(notifUserId.getUserIdParam());
                 }
             }
 
-            model.notif.remove(notification.id);
+            NotificationsRepository.remove(notification.id);
         }
 
         int userId = thisOne.id;
-        model.idees.remove(idea.getId());
+        IdeesRepository.remove(idea.getId());
 
-        if (!model.idees.hasIdeas(userId)) {
-            model.notif.addNotification(userId, new NotifNoIdea());
+        if (!IdeesRepository.hasIdeas(userId)) {
+            NotificationsRepository.addNotification(userId, new NotifNoIdea());
         }
 
         buildResponse(response, ServiceResponse.ok("", isAdmin(request)));

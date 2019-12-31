@@ -1,6 +1,9 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNouvelleDemandeAmi;
@@ -36,7 +39,7 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
             User userToSendInvitation = policy.getUser();
             request.setAttribute("name", userToSendInvitation.getName());
 
-            if (model.userRelationRequests.associationExists(thisOne.id, userToSendInvitation.id)) {
+            if (UserRelationRequestsRepository.associationExists(thisOne.id, userToSendInvitation.id)) {
                 buildResponse(response,
                               ServiceResponse.ko(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.",
                                                                       userToSendInvitation.getName()),
@@ -44,7 +47,7 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
                 return;
             }
 
-            if (model.userRelations.associationExists(thisOne.id, userToSendInvitation.id)) {
+            if (UserRelationsRepository.associationExists(thisOne.id, userToSendInvitation.id)) {
                 buildResponse(response,
                               ServiceResponse.ko(MessageFormat.format("Vous faites déjà parti du réseau de {0}.",
                                                                       userToSendInvitation.getName()),
@@ -53,21 +56,21 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
             }
 
             // Suppression des notifications
-            model.notif.removeAllType(thisOne,
-                                      NotificationType.NEW_RELATION_SUGGESTION,
-                                      ParameterName.USER_ID,
-                                      userToSendInvitation.id);
-            model.notif.removeAllType(userToSendInvitation,
-                                      NotificationType.NEW_RELATION_SUGGESTION,
-                                      ParameterName.USER_ID,
-                                      thisOne);
+            NotificationsRepository.removeAllType(thisOne,
+                                                  NotificationType.NEW_RELATION_SUGGESTION,
+                                                  ParameterName.USER_ID,
+                                                  userToSendInvitation.id);
+            NotificationsRepository.removeAllType(userToSendInvitation,
+                                                  NotificationType.NEW_RELATION_SUGGESTION,
+                                                  ParameterName.USER_ID,
+                                                  thisOne);
 
             // On ajoute l'association
-            model.userRelationRequests.insert(thisOne, userToSendInvitation);
-            model.notif.addNotification(userToSendInvitation.id,
-                                        new NotifNouvelleDemandeAmi(thisOne,
-                                                                    userToSendInvitation.id,
-                                                                    thisOne.getName()));
+            UserRelationRequestsRepository.insert(thisOne, userToSendInvitation);
+            NotificationsRepository.addNotification(userToSendInvitation.id,
+                                                    new NotifNouvelleDemandeAmi(thisOne,
+                                                                      userToSendInvitation.id,
+                                                                      thisOne.getName()));
 
             ans = ServiceResponse.ok("", isAdmin(request));
         } catch (SQLException e) {

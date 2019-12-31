@@ -1,5 +1,8 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.ideescadeaux.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
@@ -19,60 +22,67 @@ import static org.mockito.Mockito.when;
 
 public class TestResoudreDemandeAmi extends AbstractTestServlet {
 
-	public TestResoudreDemandeAmi() {
-		super(new ResoudreDemandeAmi());
-	}
-	
-	@Test
-	public void testImpossibleToAcceptIfNotAsked() throws SQLException {
+    public TestResoudreDemandeAmi() {
+        super(new ResoudreDemandeAmi());
+    }
 
-		userRelations.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
-		assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+    @Test
+    public void testImpossibleToAcceptIfNotAsked() throws SQLException {
 
-		when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
+        UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
 
-		Map<String, String[]> params = new HashMap<>();
-		params.put("choix_" + _MOI_AUTRE_, new String[] {"Accepter"});
-		when(request.getParameterMap()).thenReturn(params);
-		
-		doTestPost();
+        when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
 
-		assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
-	}
+        Map<String, String[]> params = new HashMap<>();
+        params.put("choix_" + _MOI_AUTRE_, new String[]{"Accepter"});
+        when(request.getParameterMap()).thenReturn(params);
 
-	@Test
-	public void testAcceptationAmitieEtSuppressionNotif() throws SQLException {
-		
-		userRelations.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
-		assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        doTestPost();
 
-		// Ajout des notifs
-		int n1 = notif.addNotification(_OWNER_ID_, new NotifDemandeRefusee(_MOI_AUTRE_, "Moi Autre"));
-		int n2 = notif.addNotification(_MOI_AUTRE_, new NotifFriendshipDropped(firefox));
-		int newRelationSuggestion = notif.addNotification(_OWNER_ID_, new NotifNewRelationSuggestion(_MOI_AUTRE_, "Friend of firefox"));
-		int notRemoved = notif.addNotification(_OWNER_ID_, new NotifNewRelationSuggestion(_FRIEND_ID_, "Friend of firefox"));
-		int newFriendshipRequest = notif.addNotification(_OWNER_ID_, new NotifNouvelleDemandeAmi(moiAutre, _OWNER_ID_, "Moi autre"));
-		assertNotifDoesExists(n1);
-		assertNotifDoesExists(n2);
-		assertNotifDoesExists(newRelationSuggestion);
-		assertNotifDoesExists(notRemoved);
-		assertNotifDoesExists(newFriendshipRequest);
-		
-		// Ajout de la demande d'ami
-		userRelationRequests.insert(moiAutre, firefox);
+        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+    }
 
-		when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
-		Map<String, String[]> params = new HashMap<>();
-		params.put("choix_" + _MOI_AUTRE_, new String[] {"Accepter"});
-		when(request.getParameterMap()).thenReturn(params);
-		doTestPost();
+    @Test
+    public void testAcceptationAmitieEtSuppressionNotif() throws SQLException {
 
-		assertTrue(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
-		assertNotifDoesNotExists(n1);
-		assertNotifDoesNotExists(n2);
-		assertNotifDoesNotExists(newRelationSuggestion);
-		assertNotifDoesExists(notRemoved);
-		assertNotifDoesNotExists(newFriendshipRequest);
-	}
+        UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+
+        // Ajout des notifs
+        int n1 = NotificationsRepository.addNotification(_OWNER_ID_, new NotifDemandeRefusee(_MOI_AUTRE_, "Moi Autre"));
+        int n2 = NotificationsRepository.addNotification(_MOI_AUTRE_, new NotifFriendshipDropped(firefox));
+        int newRelationSuggestion = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                            new NotifNewRelationSuggestion(_MOI_AUTRE_,
+                                                                                                 "Friend of firefox"));
+        int notRemoved = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                 new NotifNewRelationSuggestion(_FRIEND_ID_,
+                                                                                      "Friend of firefox"));
+        int newFriendshipRequest = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                           new NotifNouvelleDemandeAmi(moiAutre,
+                                                                                             _OWNER_ID_,
+                                                                                             "Moi autre"));
+        assertNotifDoesExists(n1);
+        assertNotifDoesExists(n2);
+        assertNotifDoesExists(newRelationSuggestion);
+        assertNotifDoesExists(notRemoved);
+        assertNotifDoesExists(newFriendshipRequest);
+
+        // Ajout de la demande d'ami
+        UserRelationRequestsRepository.insert(moiAutre, firefox);
+
+        when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
+        Map<String, String[]> params = new HashMap<>();
+        params.put("choix_" + _MOI_AUTRE_, new String[]{"Accepter"});
+        when(request.getParameterMap()).thenReturn(params);
+        doTestPost();
+
+        assertTrue(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertNotifDoesNotExists(n1);
+        assertNotifDoesNotExists(n2);
+        assertNotifDoesNotExists(newRelationSuggestion);
+        assertNotifDoesExists(notRemoved);
+        assertNotifDoesNotExists(newFriendshipRequest);
+    }
 
 }

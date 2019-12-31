@@ -30,10 +30,14 @@ import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
  *
  * @author Jordan Mosio
  */
-public class Users extends Table {
+public class UsersRepository extends AbstractRepository {
 
     public static final String TABLE_NAME = "USERS";
-    private static final Logger LOGGER = LogManager.getLogger(Users.class);
+    private static final Logger LOGGER = LogManager.getLogger(UsersRepository.class);
+
+    private UsersRepository() {
+        // Forbidden
+    }
 
     /**
      * Inserts a new person into the database !
@@ -43,7 +47,7 @@ public class Users extends Table {
      * @param name        The user name.
      * @return the created user id.
      */
-    public int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
+    public static int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
         int userId = getDb().executeUpdateGeneratedKey(MessageFormat.format(
                 "insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
                 TABLE_NAME,
@@ -67,7 +71,7 @@ public class Users extends Table {
      * @param id The user's id.
      * @return The user corresponding to this ID or null if not found.
      */
-    public User getUser(int id) throws SQLException {
+    public static User getUser(int id) throws SQLException {
 
         User user = null;
         String query = MessageFormat.format("select {0}, {1}, {2}, {3}, {5} from {4} where {0} = ?",
@@ -99,7 +103,7 @@ public class Users extends Table {
      * @param email The identifier of the person (currently the email).
      * @return This person's id.
      */
-    public int getId(String email) throws SQLException, NoRowsException {
+    public static int getId(String email) throws SQLException, NoRowsException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", ID, TABLE_NAME, EMAIL),
                                  email);
     }
@@ -108,7 +112,7 @@ public class Users extends Table {
      * @param nameOrEmail The name or email of the person..
      * @return This person's id.
      */
-    public int getIdFromNameOrEmail(String nameOrEmail) throws SQLException, NoRowsException {
+    public static int getIdFromNameOrEmail(String nameOrEmail) throws SQLException, NoRowsException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1",
                                                       ID,
                                                       TABLE_NAME,
@@ -123,7 +127,7 @@ public class Users extends Table {
      *
      * @param user The user to update.
      */
-    public void update(User user) throws SQLException {
+    public static void update(User user) throws SQLException {
         LOGGER.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
         String previousEmail = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
                                                                          EMAIL,
@@ -150,7 +154,7 @@ public class Users extends Table {
     /**
      * @return All the users in DB. Only used for administration
      */
-    public List<User> getAllUsers() throws SQLException {
+    public static List<User> getAllUsers() throws SQLException {
 
         List<User> users = new ArrayList<>();
 
@@ -209,11 +213,11 @@ public class Users extends Table {
      * @param limit                Maximum result size.
      * @return The list of users.
      */
-    public List<User> getUsers(String nameToMatch,
-                               int userIdToSkip,
-                               boolean selectOnlyNonFriends,
-                               int firstRow,
-                               int limit) throws SQLException {
+    public static List<User> getUsers(String nameToMatch,
+                                      int userIdToSkip,
+                                      boolean selectOnlyNonFriends,
+                                      int firstRow,
+                                      int limit) throws SQLException {
 
         List<User> users = new ArrayList<>();
         LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.",
@@ -230,7 +234,7 @@ public class Users extends Table {
         query.append(MessageFormat.format("   and {0} <> ? ", ID));
         if (selectOnlyNonFriends) {
             query.append("   and not exists ( ");
-            query.append(MessageFormat.format(" select 1 from {0}  ", UserRelations.TABLE_NAME));
+            query.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
             query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
             query.append(MessageFormat.format("    and {0} = u.{1} ", UserRelationsColumns.SECOND_USER, ID));
             query.append("   ) ");
@@ -269,7 +273,7 @@ public class Users extends Table {
      * @param selectOnlyNonFriends True to select only non friends.
      * @return The number of users matching this name/email.
      */
-    public int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) throws SQLException {
+    public static int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) throws SQLException {
 
         nameToMatch = sanitizeSQLLike(nameToMatch);
 
@@ -281,7 +285,7 @@ public class Users extends Table {
         query.append(MessageFormat.format("   and {0} <> ? ", ID));
         if (selectOnlyNonFriends) {
             query.append("   and not exists ( ");
-            query.append(MessageFormat.format(" select 1 from {0}  ", UserRelations.TABLE_NAME));
+            query.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
             query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
             query.append(MessageFormat.format("    and {0} = u.{1} ", UserRelationsColumns.SECOND_USER, ID));
             query.append("   ) ");
@@ -313,46 +317,46 @@ public class Users extends Table {
      * @param userId      The user id.
      * @param digestedPwd The new obfuscated password.
      */
-    public void updatePassword(int userId, String digestedPwd) {
+    public static void updatePassword(int userId, String digestedPwd) {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ?", TABLE_NAME, PASSWORD, ID),
                               digestedPwd,
                               userId);
     }
 
-    public void deleteUser(User user) throws SQLException {
+    public static void deleteUser(User user) {
 
         LOGGER.info(MessageFormat.format("Suppression de {0}...", user));
         int userId = user.id;
 
         // Suppression des commentaires
-        new Comments().deleteAll(userId);
+        CommentsRepository.deleteAll(userId);
 
         // Suppression des participations aux groupes
         GroupIdeaRepository.removeUserFromAllGroups(user);
 
         // Suppression des idées
         // Suppression de l'historique des idées
-        new Idees().removeAll(userId);
+        IdeesRepository.removeAll(userId);
 
         // Suppression des notifications
-        new Notifications().removeAll(userId);
+        NotificationsRepository.removeAll(userId);
 
         // Suppression des relations parents - enfants
-        new ParentRelationship().deleteAllRelationForUser(userId);
+        ParentRelationshipRepository.deleteAllRelationForUser(userId);
 
         // Suppresion des questions
-        new Questions().deleteAll(userId);
+        QuestionsRepository.deleteAll(userId);
 
         // Suppression des demandes de modifications de mdp
-        new UserChangePwdRequest().deleteAssociation(userId);
+        UserChangePwdRequestRepository.deleteAssociation(userId);
 
         // Suppression des paramètres utilisateurs
-        new UserParameters().deleteAllUserParameters(userId);
+        UserParametersRepository.deleteAllUserParameters(userId);
 
         // Suppression des relations, des suggestions et des demandes
-        new UserRelations().removeAllAssociationsTo(userId);
-        new UserRelationsSuggestion().removeAllFromAndTo(userId);
-        new UserRelationRequests().removeAllFromAndTo(userId);
+        UserRelationsRepository.removeAllAssociationsTo(userId);
+        UserRelationsSuggestionRepository.removeAllFromAndTo(userId);
+        UserRelationRequestsRepository.removeAllFromAndTo(userId);
 
         // Suppression des roles
         getDb().executeUpdate(MessageFormat.format("delete from USER_ROLES where {0} = ?", UserRolesColumns.EMAIL),
@@ -367,7 +371,7 @@ public class Users extends Table {
      *
      * @param email The user's email.
      */
-    public void touch(String email) {
+    public static void touch(String email) {
         getDb().executeUpdate("update " + TABLE_NAME + " set " + LAST_LOGIN + " = now() where " + EMAIL + " = ?",
                               email);
     }

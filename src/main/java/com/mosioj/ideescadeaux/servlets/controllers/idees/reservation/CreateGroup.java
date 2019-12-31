@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.ideescadeaux.model.repositories.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -81,9 +82,9 @@ public class CreateGroup extends AbstractIdea<IdeaInteraction> {
 
         int userId = thisOne.id;
         Integer groupId = null;
-        if (model.idees.canBook(idea.getId(), userId)) {
+        if (IdeesRepository.canBook(idea.getId(), userId)) {
             groupId = GroupIdeaRepository.createAGroup(total, amount, userId);
-            model.idees.bookByGroup(idea.getId(), groupId);
+            IdeesRepository.bookByGroup(idea.getId(), groupId);
         }
 
         if (groupId == null) {

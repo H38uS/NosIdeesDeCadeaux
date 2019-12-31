@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.UserParametersRepository;
 import com.mosioj.ideescadeaux.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
@@ -53,7 +54,7 @@ public class ServiceUpdateNotificationParameter extends IdeesCadeauxPostServlet<
         }
 
         // Valid parameters, doing the update
-        model.userParameters.insertUpdateParameter(thisOne, name, value);
+        UserParametersRepository.insertUpdateParameter(thisOne, name, value);
         buildResponse(response, ServiceResponse.ok(isAdmin(request)));
     }
 }

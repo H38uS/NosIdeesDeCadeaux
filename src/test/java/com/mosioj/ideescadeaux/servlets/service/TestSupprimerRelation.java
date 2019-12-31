@@ -1,8 +1,9 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifDemandeAcceptee;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -20,19 +21,19 @@ public class TestSupprimerRelation extends AbstractTestServlet {
     @Test
     public void testSuppressionRelationEtSuppressionNotifs() throws SQLException {
 
-        userRelations.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
-        assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
-        userRelations.addAssociation(_OWNER_ID_, _MOI_AUTRE_);
-        assertTrue(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        UserRelationsRepository.addAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        assertTrue(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
 
-        int notifId = notif.addNotification(_OWNER_ID_, new NotifDemandeAcceptee(_MOI_AUTRE_, "Moi Autre"));
+        int notifId = NotificationsRepository.addNotification(_OWNER_ID_, new NotifDemandeAcceptee(_MOI_AUTRE_, "Moi Autre"));
         assertNotifDoesExists(notifId);
 
         when(request.getParameter(ServiceSupprimerRelation.USER_PARAMETER)).thenReturn(_MOI_AUTRE_ + "");
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        assertFalse(userRelations.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
         assertNotifDoesNotExists(notifId);
     }
 

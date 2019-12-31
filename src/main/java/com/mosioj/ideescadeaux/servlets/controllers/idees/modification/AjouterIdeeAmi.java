@@ -9,7 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.repositories.Categories;
+import com.mosioj.ideescadeaux.model.repositories.CategoriesRepository;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.PrioritesRepository;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,8 +44,8 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
 
         User user = policy.getUser();
         request.setAttribute("user", user);
-        request.setAttribute("types", Categories.getCategories());
-        request.setAttribute("priorites", model.priorities.getPriorities());
+        request.setAttribute("types", CategoriesRepository.getCategories());
+        request.setAttribute("priorites", PrioritesRepository.getPriorities());
 
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }
@@ -71,27 +74,27 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
                         estSurprise = true;
                     }
                 }
-                int ideaId = model.idees.addIdea(addedToUser,
-                                                 parameters.get("text"),
-                                                 parameters.get("type"),
-                                                 Integer.parseInt(parameters.get("priority")),
-                                                 parameters.get("image"),
-                                                 estSurprise ? currentUser : null,
-                                                 currentUser);
+                int ideaId = IdeesRepository.addIdea(addedToUser,
+                                                     parameters.get("text"),
+                                                     parameters.get("type"),
+                                                     Integer.parseInt(parameters.get("priority")),
+                                                     parameters.get("image"),
+                                                     estSurprise ? currentUser : null,
+                                                     currentUser);
                 Idee idea = getIdeaAndEnrichIt(ideaId);
                 request.setAttribute("idee", idea);
 
                 if (!estSurprise) {
-                    model.notif.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
-                    model.notif.removeAllType(addedToUser, NotificationType.NO_IDEA);
+                    NotificationsRepository.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
+                    NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
                 }
             }
 
         }
 
         request.setAttribute("user", addedToUser);
-        request.setAttribute("types", Categories.getCategories());
-        request.setAttribute("priorites", model.priorities.getPriorities());
+        request.setAttribute("types", CategoriesRepository.getCategories());
+        request.setAttribute("priorites", PrioritesRepository.getPriorities());
 
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }

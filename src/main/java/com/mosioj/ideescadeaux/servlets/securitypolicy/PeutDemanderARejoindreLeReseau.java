@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.servlets.securitypolicy;
 
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
@@ -36,7 +37,7 @@ public final class PeutDemanderARejoindreLeReseau extends SecurityPolicy impleme
                 return false;
             }
 
-            potentialFriend = model.users.getUser(toBeSentTo.get());
+            potentialFriend = UsersRepository.getUser(toBeSentTo.get());
             return true;
 
         } catch (Exception e) {

@@ -11,6 +11,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +24,8 @@ import com.mosioj.ideescadeaux.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
+
+import static com.mosioj.ideescadeaux.model.repositories.IdeesRepository.getIdeaWithoutEnrichmentFromGroup;
 
 @WebServlet("/protected/suggerer_groupe_idee")
 public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroupInteraction> {
@@ -44,16 +49,16 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
         IdeaGroup group = policy.getGroupId();
         logger.debug("Getting details for idea group " + group.getId() + "...");
 
-        Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
+        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId());
         User user = thisOne;
-        model.idees.fillAUserIdea(user, idee, device);
+        IdeesRepository.fillAUserIdea(user, idee, device);
 
-        List<User> potentialGroupUser = model.idees.getPotentialGroupUser(group.getId(), user.id);
+        List<User> potentialGroupUser = IdeesRepository.getPotentialGroupUser(group.getId(), user.id);
         logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
         List<User> removable = new ArrayList<>();
         for (User toRemove : potentialGroupUser) {
             NotifGroupSuggestion suggestion = new NotifGroupSuggestion(user, group.getId(), idee);
-            if (model.notif.hasNotification(toRemove.id, suggestion)) {
+            if (NotificationsRepository.hasNotification(toRemove.id, suggestion)) {
                 removable.add(toRemove);
             }
         }
@@ -70,8 +75,8 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
         IdeaGroup group = policy.getGroupId();
-        Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
-        model.idees.fillAUserIdea(thisOne, idee, device);
+        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId());
+        IdeesRepository.fillAUserIdea(thisOne, idee, device);
 
         List<Integer> selectedUsers = new ArrayList<>();
         Map<String, String[]> params = request.getParameterMap();
@@ -90,10 +95,10 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
 
         logger.debug("Selected users : " + selectedUsers);
         for (int userId : selectedUsers) {
-            User user = model.users.getUser(userId);
+            User user = UsersRepository.getUser(userId);
             NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, group.getId(), idee);
-            if (!model.notif.hasNotification(userId, suggestion)) {
-                model.notif.addNotification(userId, suggestion);
+            if (!NotificationsRepository.hasNotification(userId, suggestion)) {
+                NotificationsRepository.addNotification(userId, suggestion);
             }
             successTo.add(user);
         }

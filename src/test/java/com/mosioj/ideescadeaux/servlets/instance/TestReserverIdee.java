@@ -1,6 +1,8 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.ReserverIdee;
@@ -21,15 +23,15 @@ public class TestReserverIdee extends AbstractTestServlet {
     @Test
     public void test() throws SQLException {
 
-        int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
-        Idee idee = idees.getIdeaWithoutEnrichment(id);
+        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
 
-        int recurentUnbook = notif.addNotification(_OWNER_ID_, new NotifRecurentIdeaUnbook(friendOfFirefox, idee));
+        int recurentUnbook = NotificationsRepository.addNotification(_OWNER_ID_, new NotifRecurentIdeaUnbook(friendOfFirefox, idee));
         assertNotifDoesExists(recurentUnbook);
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         doTestPost();
-        idee = idees.getIdeaWithoutEnrichment(id);
+        idee = IdeesRepository.getIdeaWithoutEnrichment(id);
 
         assertNotifDoesNotExists(recurentUnbook);
         assertTrue(idee.isBooked());
@@ -38,13 +40,13 @@ public class TestReserverIdee extends AbstractTestServlet {
     @Test
     public void testReservationSurprise() throws SQLException {
 
-        int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
-        Idee idee = idees.getIdeaWithoutEnrichment(id);
+        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
         assertFalse(idee.isBooked());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         doTestPost();
-        idee = idees.getIdeaWithoutEnrichment(id);
+        idee = IdeesRepository.getIdeaWithoutEnrichment(id);
 
         assertTrue(idee.isBooked());
     }

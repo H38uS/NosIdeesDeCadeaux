@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.servlets.service.response.NameAnswer;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
@@ -49,7 +50,7 @@ public class NameService extends com.mosioj.ideescadeaux.servlets.rootservlet.Id
             MAX--;
         }
 
-        res.addAll(model.userRelations.getAllNamesOrEmailsInRelation(current.id, param, 0, MAX));
+        res.addAll(UserRelationsRepository.getAllNamesOrEmailsInRelation(current.id, param, 0, MAX));
 
         // Building the JSON answer
         List<NameAnswer> users = res.stream().map(NameAnswer::new).collect(Collectors.toList());

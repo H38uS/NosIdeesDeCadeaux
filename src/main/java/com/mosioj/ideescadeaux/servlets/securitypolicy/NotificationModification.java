@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +40,7 @@ public class NotificationModification extends SecurityPolicy {
     }
 
     /**
-     * @param request  The http request.
+     * @param request The http request.
      * @return True if the current user can interact with the idea.
      */
     private boolean canModifyNotification(HttpServletRequest request) throws SQLException {
@@ -51,14 +53,14 @@ public class NotificationModification extends SecurityPolicy {
 
         int userId = connectedUser.id;
 
-        AbstractNotification n = model.notif.getNotification(notifId.get());
+        AbstractNotification n = NotificationsRepository.getNotification(notifId.get());
         if (n == null) {
             lastReason = "Aucune notification trouvée en paramètre.";
             return false;
         }
 
         boolean res = userId == n.getOwner()
-                      || model.parentRelationship.getChildren(userId).contains(new User(n.getOwner(), "", "", ""));
+                      || ParentRelationshipRepository.getChildren(userId).contains(new User(n.getOwner(), "", "", ""));
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos notifications ou celles de vos enfants.";
             return false;

@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,7 @@ public class QuestionModification extends SecurityPolicy implements CommentSecur
 
         User thisOne = connectedUser;
 
-        comment = model.questions.getComment(commentId.get());
+        comment = QuestionsRepository.getComment(commentId.get());
         if (comment == null) {
             lastReason = "Aucun commentaire trouvé en paramètre.";
             return false;

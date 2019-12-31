@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +54,7 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
 
         User thisOne = connectedUser;
 
-        idea = model.idees.getIdeaWithoutEnrichment(ideaId.get());
+        idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
         if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
@@ -63,7 +65,7 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
             return false;
         }
 
-        boolean res = model.userRelations.associationExists(thisOne.id, idea.owner.id);
+        boolean res = UserRelationsRepository.associationExists(thisOne.id, idea.owner.id);
         if (!res) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
         }

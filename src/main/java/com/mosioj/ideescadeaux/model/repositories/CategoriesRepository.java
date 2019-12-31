@@ -14,11 +14,11 @@ import java.util.List;
 import com.mosioj.ideescadeaux.model.entities.Categorie;
 import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
 
-public class Categories extends Table {
+public class CategoriesRepository extends AbstractRepository {
 
     public static final String TABLE_NAME = "CATEGORIES";
 
-    private Categories() {
+    private CategoriesRepository() {
         // Forbidden
     }
 

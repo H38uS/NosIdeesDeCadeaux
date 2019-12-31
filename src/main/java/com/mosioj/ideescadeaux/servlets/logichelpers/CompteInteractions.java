@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.List;
 
-import com.mosioj.ideescadeaux.model.repositories.Users;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.utils.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.utils.validators.ValidatorFactory;
@@ -43,17 +43,17 @@ public class CompteInteractions {
         if (shouldExist) {
             if (userId < 0) {
                 validator.checkExists(MessageFormat.format("select count(*) from {0} where email = ?",
-                                                           Users.TABLE_NAME),
+                                                           UsersRepository.TABLE_NAME),
                                       validatorConnection);
             } else {
                 validator.checkExists(MessageFormat.format("select count(*) from {0} where email = ? and id = {1}",
-                                                           Users.TABLE_NAME,
+                                                           UsersRepository.TABLE_NAME,
                                                            userId),
                                       validatorConnection);
             }
         } else {
             validator.checkIsUnique(MessageFormat.format("select count(*) from {0} where email = ?",
-                                                         Users.TABLE_NAME,
+                                                         UsersRepository.TABLE_NAME,
                                                          userId),
                                     validatorConnection);
         }

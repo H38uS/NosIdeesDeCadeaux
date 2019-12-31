@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +39,7 @@ public class ServiceSuppressionCompte extends IdeesCadeauxPostServlet<Suppressio
         try {
             User user = policy.getUserToDelete();
             logger.info(MessageFormat.format("Suppression du compte {0} (id: {1})", user, user.id));
-            model.users.deleteUser(user);
+            UsersRepository.deleteUser(user);
             ans = ServiceResponse.ok(isAdmin(request));
         } catch (Exception e) {
             ans = ServiceResponse.ko(e.getMessage(), isAdmin(request));

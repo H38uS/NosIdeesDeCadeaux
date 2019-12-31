@@ -49,23 +49,13 @@ public class TemplateTest {
      */
     protected static final int _ADMIN_ID_ = 1;
 
-    protected final Idees idees = new Idees();
-    protected final Users users = new Users();
-    protected static final UserParameters userParameters = new UserParameters();
-    protected final Notifications notif = new Notifications();
-    protected final UserRelations userRelations = new UserRelations();
-    protected final UserRelationRequests userRelationRequests = new UserRelationRequests();
-    protected final Questions questions = new Questions();
-    protected final Comments comments = new Comments();
-    protected final ParentRelationship parents = new ParentRelationship();
-
     protected static DataSourceIdKDo ds;
 
     public TemplateTest() {
         try {
-            friendOfFirefox = users.getUser(_FRIEND_ID_);
-            firefox = users.getUser(_OWNER_ID_);
-            moiAutre = users.getUser(_MOI_AUTRE_);
+            friendOfFirefox = UsersRepository.getUser(_FRIEND_ID_);
+            firefox = UsersRepository.getUser(_OWNER_ID_);
+            moiAutre = UsersRepository.getUser(_MOI_AUTRE_);
         } catch (SQLException e) {
             fail("Fail to retrieve the friend of Firefox");
         }
@@ -95,13 +85,13 @@ public class TemplateTest {
         assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
         for (NotificationType type : NotificationType.values()) {
-            new UserRelations().getAllUsersInRelation(new Users().getUser(_OWNER_ID_))
-                               .forEach(u -> userParameters.insertUpdateParameter(u,
-                                                                                  type.name(),
-                                                                                  NotificationActivation.SITE.name()));
-            userParameters.insertUpdateParameter(new User(_OWNER_ID_, "", "", ""),
-                                                 type.name(),
-                                                 NotificationActivation.SITE.name());
+            UserRelationsRepository.getAllUsersInRelation(UsersRepository.getUser(_OWNER_ID_))
+                                   .forEach(u -> UserParametersRepository.insertUpdateParameter(u,
+                                                                                      type.name(),
+                                                                                      NotificationActivation.SITE.name()));
+            UserParametersRepository.insertUpdateParameter(new User(_OWNER_ID_, "", "", ""),
+                                                           type.name(),
+                                                           NotificationActivation.SITE.name());
         }
     }
 

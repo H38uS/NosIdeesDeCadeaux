@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.utils.NotLoggedInException;
@@ -32,7 +33,7 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
         if (firstRow == 0) {
             ids.add(user);
         }
-        ids.addAll(model.userRelations.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
+        ids.addAll(UserRelationsRepository.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
         fillsUserIdeas(user, ids);
         return ids;
     }
@@ -40,7 +41,7 @@ public class MesListes extends AbstractUserListes<SecurityPolicy> {
     @Override
     protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
         // On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
-        return model.userRelations.getRelationsCount(thisOne);
+        return UserRelationsRepository.getRelationsCount(thisOne);
     }
 
     @Override

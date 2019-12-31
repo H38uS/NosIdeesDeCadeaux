@@ -8,6 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -38,12 +40,12 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
         String message;
 
         try {
-            parentId = model.users.getIdFromNameOrEmail(nameOrEmail);
+            parentId = UsersRepository.getIdFromNameOrEmail(nameOrEmail);
             int userId = thisOne.id;
-            if (model.parentRelationship.noRelationExists(parentId, userId) && parentId != userId) {
+            if (ParentRelationshipRepository.noRelationExists(parentId, userId) && parentId != userId) {
                 logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
-                model.parentRelationship.addProcuration(parentId, userId);
-                message = model.users.getUser(parentId).getName();
+                ParentRelationshipRepository.addProcuration(parentId, userId);
+                message = UsersRepository.getUser(parentId).getName();
             } else {
                 message = "L'ajout du parent a échoué : il existe déjà.";
                 status = false;

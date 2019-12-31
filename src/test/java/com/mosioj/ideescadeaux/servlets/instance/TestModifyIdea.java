@@ -1,6 +1,9 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
@@ -32,11 +35,11 @@ public class TestModifyIdea extends AbstractTestServlet {
 
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
         String newText = "Idee modifiee le " + new Date();
-        Idee idee = idees.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
         assertNotEquals(newText, idee.text);
 
-        int notifId = notif.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
-        int addByFriend = notif.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));
+        int notifId = NotificationsRepository.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));
         assertNotifDoesExists(notifId);
         assertNotifDoesExists(addByFriend);
 
@@ -48,7 +51,7 @@ public class TestModifyIdea extends AbstractTestServlet {
         when(request.getParameter(ModifyIdea.IDEE_ID_PARAM)).thenReturn(id + "");
         doTestPost();
 
-        idee = idees.getIdeaWithoutEnrichment(id);
+        idee = IdeesRepository.getIdeaWithoutEnrichment(id);
         assertEquals(newText, idee.text);
         assertNotifDoesNotExists(notifId);
         assertNotifDoesNotExists(addByFriend);
@@ -61,15 +64,16 @@ public class TestModifyIdea extends AbstractTestServlet {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, 4);
         firefox.birthday = new java.sql.Date(cal.getTime().getTime());
-        users.update(firefox);
+
+        UsersRepository.update(firefox);
 
         // ... and the friend has no notifications yet, and notification activated
-        notif.removeAll(_FRIEND_ID_);
-        assertEquals(0, notif.getNotifications(_FRIEND_ID_,
-                                               NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                               ParameterName.USER_ID,
-                                               _OWNER_ID_)
-                             .size());
+        NotificationsRepository.removeAll(_FRIEND_ID_);
+        assertEquals(0, NotificationsRepository.getNotifications(_FRIEND_ID_,
+                                                                 NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
+                                                                 ParameterName.USER_ID,
+                                                                 _OWNER_ID_)
+                                               .size());
 
         // ... and the user has an idea and a modification form
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
@@ -83,20 +87,20 @@ public class TestModifyIdea extends AbstractTestServlet {
         createMultiPartRequest(param);
         doTestPost();
         assertEquals(1,
-                     notif.getNotifications(_FRIEND_ID_,
-                                            NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                            ParameterName.USER_ID,
-                                            _OWNER_ID_)
-                          .size());
+                     NotificationsRepository.getNotifications(_FRIEND_ID_,
+                                                              NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
+                                                              ParameterName.USER_ID,
+                                                              _OWNER_ID_)
+                                            .size());
 
         // A second does not
         createMultiPartRequest(param);
         doTestPost();
         assertEquals(1,
-                     notif.getNotifications(_FRIEND_ID_,
-                                            NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                            ParameterName.USER_ID,
-                                            _OWNER_ID_)
-                          .size());
+                     NotificationsRepository.getNotifications(_FRIEND_ID_,
+                                                              NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
+                                                              ParameterName.USER_ID,
+                                                              _OWNER_ID_)
+                                            .size());
     }
 }

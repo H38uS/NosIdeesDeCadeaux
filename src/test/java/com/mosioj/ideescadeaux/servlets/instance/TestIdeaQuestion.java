@@ -1,6 +1,9 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
@@ -21,12 +24,13 @@ public class TestIdeaQuestion extends AbstractTestServlet {
     @Test
     public void testGetQuestions() throws SQLException {
 
-        int id = idees.addIdea(firefox, "avec questions", null, 0, null, null, null);
-        Idee idee = idees.getIdeaWithoutEnrichment(id);
-        questions.addComment(_FRIEND_ID_, id, "mon pti com'");
+        int id = IdeesRepository.addIdea(firefox, "avec questions", null, 0, null, null, null);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        QuestionsRepository.addComment(_FRIEND_ID_, id, "mon pti com'");
 
-        int addByFriend = notif.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));
-        int newQuestion = notif.addNotification(_OWNER_ID_, new NotifNewQuestionOnIdea(friendOfFirefox, idee, true));
+        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));
+        int newQuestion = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                  new NotifNewQuestionOnIdea(friendOfFirefox, idee, true));
         assertNotifDoesExists(addByFriend);
         assertNotifDoesExists(newQuestion);
 
@@ -36,35 +40,35 @@ public class TestIdeaQuestion extends AbstractTestServlet {
 
         assertNotifDoesNotExists(addByFriend);
         assertNotifDoesNotExists(newQuestion);
-        idees.remove(id);
+        IdeesRepository.remove(id);
     }
 
     @Test
     public void testAjouterQuestion() throws SQLException {
 
-        int ideaId = idees.addIdea(friendOfFirefox, "sans questions", null, 0, null, null, null);
-        assertEquals(0, questions.getCommentsOn(ideaId).size());
+        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "sans questions", null, 0, null, null, null);
+        assertEquals(0, QuestionsRepository.getCommentsOn(ideaId).size());
 
         when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId + "");
         when(request.getParameter("text")).thenReturn("Voilou voilou");
         doTestPost();
 
-        assertEquals(1, questions.getCommentsOn(ideaId).size());
-        idees.remove(ideaId);
+        assertEquals(1, QuestionsRepository.getCommentsOn(ideaId).size());
+        IdeesRepository.remove(ideaId);
     }
 
     @Test
     public void testAjouterQuestionSurUneSurprise() throws SQLException {
 
-        int ideaId = idees.addIdea(friendOfFirefox, "sans questions", null, 0, null, firefox, firefox);
-        assertEquals(0, questions.getCommentsOn(ideaId).size());
+        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "sans questions", null, 0, null, firefox, firefox);
+        assertEquals(0, QuestionsRepository.getCommentsOn(ideaId).size());
 
         when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId + "");
         when(request.getParameter("text")).thenReturn("Voilou voilou");
         doTestPost();
 
-        assertEquals(0, questions.getCommentsOn(ideaId).size()); // Impossible de poser une question sur une surprise !
-        idees.remove(ideaId);
+        assertEquals(0, QuestionsRepository.getCommentsOn(ideaId).size()); // Impossible de poser une question sur une surprise !
+        IdeesRepository.remove(ideaId);
     }
 
 }

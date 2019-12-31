@@ -16,23 +16,27 @@ import java.util.List;
 
 import static com.mosioj.ideescadeaux.model.repositories.columns.UserParametersColumns.*;
 
-public class UserParameters extends Table {
+public class UserParametersRepository extends AbstractRepository {
 
     public static final String TABLE_NAME = "USER_PARAMETERS";
-    private static final Logger logger = LogManager.getLogger(UserParameters.class);
+    private static final Logger logger = LogManager.getLogger(UserParametersRepository.class);
 
-    public void deleteAllUserParameters(int userId) {
+    private UserParametersRepository() {
+        // Forbidden
+    }
+
+    public static void deleteAllUserParameters(int userId) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, USER_ID), userId);
     }
 
-	/**
-	 * Updates or insert a new parameter for this user.
-	 *
-	 * @param user The user.
-	 * @param paramName The parameter name.
-	 * @param paramValue The new value to insert/update.
-	 */
-    public void insertUpdateParameter(User user, String paramName, String paramValue) {
+    /**
+     * Updates or insert a new parameter for this user.
+     *
+     * @param user       The user.
+     * @param paramName  The parameter name.
+     * @param paramValue The new value to insert/update.
+     */
+    public static void insertUpdateParameter(User user, String paramName, String paramValue) {
         int nb = getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? and {3} = ?",
                                                             TABLE_NAME,
                                                             PARAMETER_VALUE,
@@ -53,7 +57,7 @@ public class UserParameters extends Table {
         }
     }
 
-    public String getParameter(int userId, String paramName) throws SQLException {
+    public static String getParameter(int userId, String paramName) throws SQLException {
         return getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ? and {3} = ?",
                                                          PARAMETER_VALUE,
                                                          TABLE_NAME,
@@ -67,7 +71,7 @@ public class UserParameters extends Table {
      * @param userId The user id.
      * @return The notification parameters for this user.
      */
-    public List<UserParameter> getUserNotificationParameters(int userId) throws SQLException {
+    public static List<UserParameter> getUserNotificationParameters(int userId) throws SQLException {
 
         List<UserParameter> params = new ArrayList<>();
 

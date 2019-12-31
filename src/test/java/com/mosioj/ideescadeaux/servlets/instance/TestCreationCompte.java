@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAdministration;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.compte.CreationCompte;
@@ -71,11 +72,11 @@ public class TestCreationCompte extends AbstractTestServlet {
         assertEquals(count + 1, countNewInscriptionNotification());
     }
 
-    protected long countNewInscriptionNotification() throws SQLException {
-        return notif.getUserNotifications(_ADMIN_ID_)
-                    .stream()
-                    .filter(n -> NotifAdministration.class.equals(n.getClass()))
-                    .count();
+    protected long countNewInscriptionNotification() {
+        return NotificationsRepository.getUserNotifications(_ADMIN_ID_)
+                                      .stream()
+                                      .filter(n -> NotifAdministration.class.equals(n.getClass()))
+                                      .count();
     }
 
 }

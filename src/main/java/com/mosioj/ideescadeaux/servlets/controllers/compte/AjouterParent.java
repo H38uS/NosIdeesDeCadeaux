@@ -8,6 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,11 +37,11 @@ public class AjouterParent extends IdeesCadeauxPostServlet<AllAccessToPostAndGet
 
         int parentId;
         try {
-            parentId = model.users.getIdFromNameOrEmail(nameOrEmail);
+            parentId = UsersRepository.getIdFromNameOrEmail(nameOrEmail);
             int userId = thisOne.id;
-            if (model.parentRelationship.noRelationExists(parentId, userId) && parentId != userId) {
+            if (ParentRelationshipRepository.noRelationExists(parentId, userId) && parentId != userId) {
                 logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
-                model.parentRelationship.addProcuration(parentId, userId);
+                ParentRelationshipRepository.addProcuration(parentId, userId);
             }
         } catch (NoRowsException e) {
             logger.warn(

@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
-import com.mosioj.ideescadeaux.model.repositories.UserRelationRequests;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
@@ -40,14 +41,14 @@ public class TestDemandeRejoindreReseau extends AbstractTestServlet {
     @Test
     public void testPostSuccess() throws SQLException {
 
-        UserRelationRequests urr = new UserRelationRequests();
         final int otherUserNotFriendYet = 23;
-        urr.cancelRequest(_OWNER_ID_, otherUserNotFriendYet);
+        UserRelationRequestsRepository.cancelRequest(_OWNER_ID_, otherUserNotFriendYet);
 
-        int suggestionAndAsk = notif.addNotification(_OWNER_ID_,
-                                                     new NotifNewRelationSuggestion(otherUserNotFriendYet, "Toto"));
-        int suggestionAndAsked = notif.addNotification(otherUserNotFriendYet,
-                                                       new NotifNewRelationSuggestion(_OWNER_ID_, "Toto"));
+        int suggestionAndAsk = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                       new NotifNewRelationSuggestion(otherUserNotFriendYet,
+                                                                                            "Toto"));
+        int suggestionAndAsked = NotificationsRepository.addNotification(otherUserNotFriendYet,
+                                                                         new NotifNewRelationSuggestion(_OWNER_ID_, "Toto"));
         assertNotifDoesExists(suggestionAndAsk);
         assertNotifDoesExists(suggestionAndAsked);
 

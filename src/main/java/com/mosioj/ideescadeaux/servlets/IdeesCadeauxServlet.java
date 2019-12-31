@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationshipRepository;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -34,7 +37,6 @@ import org.springframework.mobile.device.Device;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.entities.User;
-import com.mosioj.ideescadeaux.servlets.logichelpers.ModelAccessor;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.utils.Compteur;
@@ -60,11 +62,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * The security policy defining whether we can interact with the parameters, etc.
      */
     protected final P policy;
-
-    /**
-     * Interface to the DB model.
-     */
-    protected final ModelAccessor model = new ModelAccessor();
 
     /**
      * The connected user, or null if the user is not logged in.
@@ -119,18 +116,15 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             return;
         }
 
-        String fullURL = request.getRequestURL().toString();
-        model.notif.setURL(fullURL);
-
         device = (Device) request.getAttribute("device");
 
         if (request.getRemoteUser() != null) {
             try {
                 // Mise à jour du nombre de notifications
-                final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisOne.id));
-                model.parentRelationship.getChildren(thisOne.id).forEach(c -> {
+                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisOne.id));
+                ParentRelationshipRepository.getChildren(thisOne.id).forEach(c -> {
                     try {
-                        count.add(model.notif.getUserNotificationCount(c.id));
+                        count.add(NotificationsRepository.getUserNotificationCount(c.id));
                     } catch (Exception e) {
                         logger.warn(MessageFormat.format(
                                 "Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
@@ -143,7 +137,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 // Ajout d'information sur l'idée du Security check
                 if (policy instanceof IdeaSecurityChecker) {
                     Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    model.idees.fillAUserIdea(thisOne, idee, device);
+                    IdeesRepository.fillAUserIdea(thisOne, idee, device);
                 }
 
             } catch (Exception e) {
@@ -205,19 +199,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             return;
         }
 
-        String fullURL = request.getRequestURL().toString();
-        model.notif.setURL(fullURL);
-
         device = (Device) request.getAttribute("device");
 
         if (request.getRemoteUser() != null) {
             try {
                 // Mise à jour du nombre de notifications
                 User thisUser = thisOne;
-                final Compteur count = new Compteur(model.notif.getUserNotificationCount(thisUser.id));
-                model.parentRelationship.getChildren(thisUser.id).forEach(c -> {
+                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisUser.id));
+                ParentRelationshipRepository.getChildren(thisUser.id).forEach(c -> {
                     try {
-                        count.add(model.notif.getUserNotificationCount(c.id));
+                        count.add(NotificationsRepository.getUserNotificationCount(c.id));
                     } catch (Exception e) {
                         logger.warn(MessageFormat.format(
                                 "Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
@@ -230,7 +221,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 // Ajout d'information sur l'idée du Security check
                 if (policy instanceof IdeaSecurityChecker) {
                     Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    model.idees.fillAUserIdea(thisUser, idee, device);
+                    IdeesRepository.fillAUserIdea(thisUser, idee, device);
                 }
 
             } catch (Exception e) {
@@ -446,8 +437,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @return The idea from the DB, enriched with useful information.
      */
     protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException {
-        Idee idee = model.idees.getIdeaWithoutEnrichment(ideaId);
-        model.idees.fillAUserIdea(thisOne, idee, device);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
+        IdeesRepository.fillAUserIdea(thisOne, idee, device);
         return idee;
     }
 

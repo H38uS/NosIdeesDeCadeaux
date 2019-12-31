@@ -6,12 +6,13 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.ideescadeaux.model.entities.User;
-import com.mosioj.ideescadeaux.model.repositories.UserChangePwdRequest;
+import com.mosioj.ideescadeaux.model.repositories.UserChangePwdRequestRepository;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.root.SecurityPolicy;
 
@@ -34,24 +35,20 @@ public final class PasswordChangeRequest extends SecurityPolicy implements UserS
      */
     private final String userIdParameter;
 
-    private final UserChangePwdRequest ucpr;
-
     private User user;
     private Integer tokenId;
 
     /**
-     * @param ucpr Something to update the password.
      * @param tokenParameter  Defines the string used in HttpServletRequest to retrieve the token id.
      * @param userIdParameter Defines the string used in HttpServletRequest to retrieve the user id.
      */
-    public PasswordChangeRequest(UserChangePwdRequest ucpr, String tokenParameter, String userIdParameter) {
-        this.ucpr = ucpr;
+    public PasswordChangeRequest(String tokenParameter, String userIdParameter) {
         this.tokenParameter = tokenParameter;
         this.userIdParameter = userIdParameter;
     }
 
     /**
-     * @param request  The http request.
+     * @param request The http request.
      * @return True if the current user can interact with the idea.
      */
     private boolean isUserIdTokenValid(HttpServletRequest request) throws SQLException {
@@ -64,12 +61,12 @@ public final class PasswordChangeRequest extends SecurityPolicy implements UserS
             return false;
         }
 
-        if (!ucpr.isAValidCombinaison(userId.get(), tokenIdParam.get())) {
+        if (!UserChangePwdRequestRepository.isAValidCombinaison(userId.get(), tokenIdParam.get())) {
             lastReason = "Aucune demande trouvée pour cet utilisateur.";
             return false;
         }
 
-        user = model.users.getUser(userId.get());
+        user = UsersRepository.getUser(userId.get());
         tokenId = tokenIdParam.get();
 
         return true;

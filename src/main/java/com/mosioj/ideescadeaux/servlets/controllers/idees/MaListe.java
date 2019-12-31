@@ -10,7 +10,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.repositories.Categories;
+import com.mosioj.ideescadeaux.model.repositories.CategoriesRepository;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.PrioritesRepository;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,8 +48,8 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
     @Override
     public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
 
-        List<Categorie> cat = Categories.getCategories();
-        List<Priorite> prio = model.priorities.getPriorities();
+        List<Categorie> cat = CategoriesRepository.getCategories();
+        List<Priorite> prio = PrioritesRepository.getPriorities();
 
         request.setAttribute("types", cat);
         request.setAttribute("priorites", prio);
@@ -70,15 +73,15 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
                                                  parameters.get("type"),
                                                  parameters.get("priority")));
                 User user = thisOne;
-                int ideaId = model.idees.addIdea(user,
-                                                 parameters.get("text"),
-                                                 parameters.get("type"),
-                                                 Integer.parseInt(parameters.get("priority")),
-                                                 parameters.get("image"),
-                                                 null,
-                                                 user);
-                addModificationNotification(user, model.idees.getIdeaWithoutEnrichment(ideaId), true);
-                model.notif.removeAllType(user, NotificationType.NO_IDEA);
+                int ideaId = IdeesRepository.addIdea(user,
+                                                     parameters.get("text"),
+                                                     parameters.get("type"),
+                                                     Integer.parseInt(parameters.get("priority")),
+                                                     parameters.get("image"),
+                                                     null,
+                                                     user);
+                addModificationNotification(user, IdeesRepository.getIdeaWithoutEnrichment(ideaId), true);
+                NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
 
                 request.getSession().setAttribute("added_idea_id", ideaId);
 

@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,12 +43,12 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
         }
 
         int userId = connectedUser.id;
-        if (model.parentRelationship.noRelationExists(userId, child.get())) {
+        if (ParentRelationshipRepository.noRelationExists(userId, child.get())) {
             lastReason = "Vous n'êtes pas un parent de cette personne...";
             return false;
         }
 
-        user = model.users.getUser(child.get());
+        user = UsersRepository.getUser(child.get());
         return true;
     }
 

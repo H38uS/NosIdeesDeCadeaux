@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.NotificationModification;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
@@ -14,17 +15,17 @@ import com.mosioj.ideescadeaux.utils.RootingsUtils;
 @WebServlet("/protected/notification_non_lue")
 public class NotificationNonLue extends IdeesCadeauxGetServlet<NotificationModification> {
 
-	private static final long serialVersionUID = -5381776220247069645L;
-	private static final String NOTIFICATION_PARAMETER = "notif_id";
+    private static final long serialVersionUID = -5381776220247069645L;
+    private static final String NOTIFICATION_PARAMETER = "notif_id";
 
-	public NotificationNonLue() {
-		super(new NotificationModification(NOTIFICATION_PARAMETER));
-	}
+    public NotificationNonLue() {
+        super(new NotificationModification(NOTIFICATION_PARAMETER));
+    }
 
-	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		model.notif.setUnread(policy.getNotificationId());
-		RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
-	}
+    @Override
+    public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+        NotificationsRepository.setUnread(policy.getNotificationId());
+        RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
+    }
 
 }

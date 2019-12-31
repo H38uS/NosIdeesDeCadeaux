@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.modification.AjouterIdeeAmi;
@@ -21,7 +22,7 @@ public class TestAjouterIdeeAmi extends AbstractTestServlet {
     @Test
     public void testSuccess() throws IOException, SQLException {
 
-        int noIdea = notif.addNotification(_FRIEND_ID_, new NotifNoIdea());
+        int noIdea = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifNoIdea());
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();
@@ -40,7 +41,7 @@ public class TestAjouterIdeeAmi extends AbstractTestServlet {
     @Test
     public void testSuccessSurprise() throws IOException, SQLException {
 
-        int noIdea = notif.addNotification(_FRIEND_ID_, new NotifNoIdea());
+        int noIdea = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifNoIdea());
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();

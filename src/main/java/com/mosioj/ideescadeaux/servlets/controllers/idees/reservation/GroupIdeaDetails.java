@@ -5,6 +5,8 @@ import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.entities.Share;
 import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.model.repositories.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
@@ -64,15 +66,15 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
             request.getSession().removeAttribute("errors");
         }
 
-        Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
         User user = thisOne;
-        model.idees.fillAUserIdea(user, idee, device);
+        IdeesRepository.fillAUserIdea(user, idee, device);
 
         // Suppression des notif's si y'en a
-        model.notif.getNotifications(user.id,
-                                     NotificationType.GROUP_IDEA_SUGGESTION,
-                                     ParameterName.GROUP_ID,
-                                     group.getId()).forEach(n -> model.notif.remove(n.id));
+        NotificationsRepository.getNotifications(user.id,
+                                                 NotificationType.GROUP_IDEA_SUGGESTION,
+                                                 ParameterName.GROUP_ID,
+                                                 group.getId()).forEach(n -> NotificationsRepository.remove(n.id));
 
         request.setAttribute("idee", idee);
         request.setAttribute("is_in_group", group.contains(thisOne));
@@ -92,14 +94,14 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
         if ("annulation".equals(amount)) {
 
-            User owner = model.idees.getIdeaOwnerFromGroup(group.getId());
+            User owner = IdeesRepository.getIdeaOwnerFromGroup(group.getId());
             boolean isThereSomeoneRemaning = GroupIdeaRepository.removeUserFromGroup(thisUser, group.getId());
-            List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID,
-                                                                                   group.getId());
+            List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
+                                                                                               group.getId());
             notifications.parallelStream()
                          .filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name()))
                          .forEach(n -> {
-                             model.notif.remove(n.id);
+                             NotificationsRepository.remove(n.id);
                              logger.debug(MessageFormat.format("Notification {0} (type: {1}) dropped !",
                                                                n.id,
                                                                n.getType()));
@@ -107,17 +109,17 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
             if (isThereSomeoneRemaning) {
                 // On supprime les notifications précédentes de cette personne si y'en a
-                model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                          ParameterName.GROUP_ID,
-                                          group.getId(),
-                                          ParameterName.USER_ID,
-                                          thisUser);
+                NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
+                                                      ParameterName.GROUP_ID,
+                                                      group.getId(),
+                                                      ParameterName.USER_ID,
+                                                      thisUser);
 
-                final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
+                final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
                 group.getShares().parallelStream().forEach(s -> {
                     try {
-                        model.notif.addNotification(s.getUser().id,
-                                                    new NotifGroupEvolution(thisUser, group.getId(), idee, false));
+                        NotificationsRepository.addNotification(s.getUser().id,
+                                                                new NotifGroupEvolution(thisUser, group.getId(), idee, false));
                     } catch (Exception e) {
                         e.printStackTrace();
                         logger.error("Fail to send group evolution notification => " + e.getMessage());
@@ -149,25 +151,25 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
             // Modification de la participation
             boolean newMember = GroupIdeaRepository.updateAmount(group.getId(), thisUser, Double.parseDouble(amount));
             if (newMember) {
-                List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.GROUP_ID,
-                                                                                       group.getId());
+                List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
+                                                                                                   group.getId());
                 for (AbstractNotification notification : notifications) {
                     if (notification instanceof NotifGroupSuggestion && notification.owner == thisUser.id) {
-                        model.notif.remove(notification.id);
+                        NotificationsRepository.remove(notification.id);
                     }
                 }
                 // On supprime les notifications précédentes de cette personne si y'en a
-                model.notif.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                          ParameterName.GROUP_ID,
-                                          group.getId(),
-                                          ParameterName.USER_ID,
-                                          thisUser);
+                NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
+                                                      ParameterName.GROUP_ID,
+                                                      group.getId(),
+                                                      ParameterName.USER_ID,
+                                                      thisUser);
 
-                final Idee idee = model.idees.getIdeaWithoutEnrichmentFromGroup(group.getId());
+                final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
                 group.getShares().parallelStream().filter(s -> !s.getUser().equals(thisUser)).forEach(s -> {
                     try {
-                        model.notif.addNotification(s.getUser().id,
-                                                    new NotifGroupEvolution(thisUser, group.getId(), idee, true));
+                        NotificationsRepository.addNotification(s.getUser().id,
+                                                                new NotifGroupEvolution(thisUser, group.getId(), idee, true));
                     } catch (Exception e) {
                         e.printStackTrace();
                         logger.error("Fail to send group evolution notification => " + e.getMessage());

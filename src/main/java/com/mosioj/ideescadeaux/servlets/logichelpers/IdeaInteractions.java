@@ -8,17 +8,9 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.model.repositories.Idees;
-import com.mosioj.ideescadeaux.model.repositories.Notifications;
-import com.mosioj.ideescadeaux.model.repositories.Users;
-
 public class IdeaInteractions {
 
     private static final Logger logger = LogManager.getLogger(IdeaInteractions.class);
-
-    protected Notifications notif = new Notifications();
-    protected Idees idees = new Idees();
-    protected Users users = new Users();
 
     public void removeUploadedImage(File path, String image) {
         if (image != null && !image.isEmpty()) {

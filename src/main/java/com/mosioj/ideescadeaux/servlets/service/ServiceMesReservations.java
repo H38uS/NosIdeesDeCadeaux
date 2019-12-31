@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.servlets.service.response.ServiceResponse;
 
@@ -34,7 +35,7 @@ public class ServiceMesReservations extends com.mosioj.ideescadeaux.servlets.roo
     public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
 
         // All ideas for which we do participate
-        List<Idee> idees = model.idees.getIdeasWhereIDoParticipateIn(thisOne);
+        List<Idee> idees = IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne);
 
         // Grouped by owners
         Map<User, List<Idee>> userToIdeas = idees.stream()

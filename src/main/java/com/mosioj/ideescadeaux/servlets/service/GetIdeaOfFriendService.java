@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +47,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteracti
 
         logger.debug(MessageFormat.format("Getting idea {0} from service call (from {1})...", idee.getId(), from));
 
-        model.idees.fillAUserIdea(thisOne, idee, device);
+        IdeesRepository.fillAUserIdea(thisOne, idee, device);
 
         request.setAttribute("idee", idee);
         request.setAttribute("identic_call_back", from);

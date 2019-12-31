@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,14 +31,14 @@ public final class NameServicePolicy extends SecurityPolicy {
 
     protected boolean hasRight(HttpServletRequest request) throws SQLException {
         int userId = ParametersUtils.readInt(request, userParameter).orElse(connectedUser.id);
-        if (userId != connectedUser.id && !model.userRelations.associationExists(userId, connectedUser.id)) {
+        if (userId != connectedUser.id && !UserRelationsRepository.associationExists(userId, connectedUser.id)) {
             // On regarde
             // Soit son propre réseau
             // Soit celui d'un ami
             userId = connectedUser.id;
         }
 
-        user = model.users.getUser(userId);
+        user = UsersRepository.getUser(userId);
 
         return true;
     }

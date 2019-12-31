@@ -29,9 +29,15 @@ public class DataSourceIdKDo {
     /**
      * @return A new connection. Warning : it must be closed.
      */
-    protected Connection getAConnection() throws SQLException {
-        return getDatasource().getConnection();
-    }
+    protected Connection getAConnection() {
+        try {
+            return getDatasource().getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.warn("Fail to get a connection... => " + e.getMessage());
+            throw new RuntimeException("Impossible to get a connection...");
+        }
+    } // FIXME : 0 revoir les exceptions + séparer en deux modules
 
     /**
      * @param query      The sql query.

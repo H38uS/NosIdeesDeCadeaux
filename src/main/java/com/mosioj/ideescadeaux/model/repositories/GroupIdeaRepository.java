@@ -21,7 +21,7 @@ import com.mosioj.ideescadeaux.model.repositories.columns.IdeeColumns;
 import com.mosioj.ideescadeaux.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.utils.database.PreparedStatementIdKdo;
 
-public class GroupIdeaRepository extends Table {
+public class GroupIdeaRepository extends AbstractRepository {
 
     private static final Logger LOGGER = LogManager.getLogger(GroupIdeaRepository.class);
 
@@ -92,7 +92,7 @@ public class GroupIdeaRepository extends Table {
                                             TABLE_NAME_CONTENT,
                                             ID,
                                             GROUP_ID,
-                                            Users.TABLE_NAME,
+                                            UsersRepository.TABLE_NAME,
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
                                             UsersColumns.AVATAR);
@@ -166,7 +166,7 @@ public class GroupIdeaRepository extends Table {
                                                          GROUP_ID), groupId)) {
             getDb().executeUpdate("delete from " + TABLE_NAME + " where " + ID + " = ?", groupId);
             getDb().executeUpdate(MessageFormat.format("update {0} set {1} = null, {2} = null where {1} = ?",
-                                                       Idees.TABLE_NAME,
+                                                       IdeesRepository.TABLE_NAME,
                                                        IdeeColumns.GROUPE_KDO_ID,
                                                        IdeeColumns.RESERVE_LE),
                                   groupId);

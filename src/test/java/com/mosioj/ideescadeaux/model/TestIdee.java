@@ -10,7 +10,7 @@ import org.springframework.mobile.device.DevicePlatform;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.entities.User;
-import com.mosioj.ideescadeaux.model.repositories.Idees;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.TemplateTest;
 
 public class TestIdee extends TemplateTest {
@@ -59,7 +59,7 @@ public class TestIdee extends TemplateTest {
         User owner = new User(1, "toto", "tutu@fneihfe.com", null);
         User booker = new User(32, "moi", "moi", null);
         Idee idee = new Idee(1, owner, "tutu", booker, null, null, null, null, null, null);
-        new Idees().fillAUserIdea(booker, idee, new TestDevice());
+        IdeesRepository.fillAUserIdea(booker, idee, new TestDevice());
         assertEquals("booked_by_me_idea", idee.displayClass);
     }
 

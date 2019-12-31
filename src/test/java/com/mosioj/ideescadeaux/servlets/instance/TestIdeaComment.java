@@ -1,6 +1,9 @@
 package com.mosioj.ideescadeaux.servlets.instance;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
+import com.mosioj.ideescadeaux.model.repositories.CommentsRepository;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.IdeaComments;
@@ -19,11 +22,11 @@ public class TestIdeaComment extends AbstractTestServlet {
     @Test
     public void test() throws SQLException {
 
-        int id = idees.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
-        Idee idee = idees.getIdeaWithoutEnrichment(id);
-        comments.addComment(_OWNER_ID_, id, "mon pti com'");
+        int id = IdeesRepository.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        CommentsRepository.addComment(_OWNER_ID_, id, "mon pti com'");
 
-        int newComment = notif.addNotification(_OWNER_ID_, new NotifNewCommentOnIdea(firefox, idee));
+        int newComment = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNewCommentOnIdea(firefox, idee));
         assertNotifDoesExists(newComment);
 
         when(request.getRequestDispatcher(IdeaComments.VIEW_PAGE_URL)).thenReturn(dispatcher);
@@ -31,7 +34,7 @@ public class TestIdeaComment extends AbstractTestServlet {
         doTestGet();
 
         assertNotifDoesNotExists(newComment);
-        idees.remove(id);
+        IdeesRepository.remove(id);
     }
 
 }

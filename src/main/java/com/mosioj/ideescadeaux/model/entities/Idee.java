@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.model.repositories.SousReservation;
+import com.mosioj.ideescadeaux.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.utils.date.MyDateFormatViewer;
 
 public class Idee {
@@ -108,10 +108,9 @@ public class Idee {
     }
 
     /**
-     * @param sousReservation Partial booking interface.
      * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
      */
-    public List<User> getBookers(SousReservation sousReservation) throws SQLException {
+    public List<User> getBookers() throws SQLException {
         List<User> bookers = new ArrayList<>();
 
         if (isBooked()) {
@@ -121,9 +120,7 @@ public class Idee {
             getGroupKDO().ifPresent(g -> g.getShares().forEach(s -> bookers.add(s.getUser())));
         } else if (isPartiallyBooked()) {
             // Réservé par plusieurs personnes, mais pas dans un groupe
-            for (SousReservationEntity res : sousReservation.getSousReservation(getId())) {
-                bookers.add(res.user);
-            }
+            SousReservationRepository.getSousReservation(getId()).forEach(s -> bookers.add(s.user));
         }
 
         return bookers;

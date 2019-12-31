@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.ideescadeaux.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.model.repositories.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +55,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
         int groupId = groupIdParam.get();
         int userId = connectedUser.id;
 
-        User ideaOwner = model.idees.getIdeaOwnerFromGroup(groupId);
+        User ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(groupId);
         if (ideaOwner == null) {
             lastReason = "Ce groupe appartient à personne.";
             logger.warn("Un groupe n'appartient à aucune idée... => " + groupId);
@@ -67,7 +69,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
             return false;
         }
 
-        if (!model.userRelations.associationExists(userId, ideaOwner.id)) {
+        if (!UserRelationsRepository.associationExists(userId, ideaOwner.id)) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
             return false;
         }

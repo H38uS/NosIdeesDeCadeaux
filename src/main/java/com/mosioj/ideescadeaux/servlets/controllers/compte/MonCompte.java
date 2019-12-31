@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.ideescadeaux.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.model.repositories.UserParametersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,11 +51,11 @@ public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
             session.removeAttribute("errors_info_gen");
         }
 
-        List<UserParameter> userNotificationParameters = model.userParameters.getUserNotificationParameters(current.id);
+        List<UserParameter> userNotificationParameters = UserParametersRepository.getUserNotificationParameters(current.id);
         request.setAttribute("notif_types", userNotificationParameters);
 
-        request.setAttribute("parents", model.parentRelationship.getParents(current.id));
-        request.setAttribute("children", model.parentRelationship.getChildren(current.id));
+        request.setAttribute("parents", ParentRelationshipRepository.getParents(current.id));
+        request.setAttribute("children", ParentRelationshipRepository.getChildren(current.id));
 
         request.setAttribute("possible_values", NotificationActivation.values());
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);

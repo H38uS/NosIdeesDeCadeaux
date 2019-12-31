@@ -1,5 +1,7 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
+import com.mosioj.ideescadeaux.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
@@ -21,42 +23,42 @@ public class TestEstCeAJour extends AbstractTestServlet {
     @Test
     public void test() throws SQLException {
 
-        int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
+        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
-        notif.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
-        List<AbstractNotification> notifs = notif.getUserNotifications(friendOfFirefox.id,
-                                                                       NotificationType.IS_IDEA_UP_TO_DATE);
+        NotificationsRepository.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
+        List<AbstractNotification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id,
+                                                                                         NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        notifs = notif.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
+        notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(1, notifs.size());
     }
 
     @Test
     public void testSurprise() throws SQLException {
 
-        int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
+        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
 
-        notif.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
-        List<AbstractNotification> notifs = notif.getUserNotifications(friendOfFirefox.id,
-                                                                       NotificationType.IS_IDEA_UP_TO_DATE);
+        NotificationsRepository.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
+        List<AbstractNotification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id,
+                                                                                         NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         doTestServicePost(false); // bloqué par la police, impossible en utilisation classique...
 
-        notifs = notif.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
+        notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size()); // On ne peut pas demander sur une surprise
     }
 
     @Test
     public void testTriggeringItTwiceIsNotAllowed() throws SQLException {
 
-        int id = idees.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
+        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         StringServiceResponse resp = doTestServicePost();

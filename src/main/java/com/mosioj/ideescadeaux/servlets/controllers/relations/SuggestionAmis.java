@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.ideescadeaux.model.entities.User;
+import com.mosioj.ideescadeaux.model.repositories.*;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
@@ -21,67 +22,69 @@ import com.mosioj.ideescadeaux.utils.RootingsUtils;
 @WebServlet("/protected/suggestion_amis")
 public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
-	private static final long serialVersionUID = -8566629037022016825L;
-	private static final String DISPATCH_URL = "suggestion_amis.jsp";
+    private static final long serialVersionUID = -8566629037022016825L;
+    private static final String DISPATCH_URL = "suggestion_amis.jsp";
 
-	public SuggestionAmis() {
-		super(new AllAccessToPostAndGet());
-	}
+    public SuggestionAmis() {
+        super(new AllAccessToPostAndGet());
+    }
 
-	@Override
-	public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-		req.setAttribute("suggestions", model.userRelationsSuggestion.getUserSuggestions(thisOne));
-		RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
-	}
+    @Override
+    public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+        req.setAttribute("suggestions", UserRelationsSuggestionRepository.getUserSuggestions(thisOne));
+        RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
+    }
 
-	@Override
-	public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    @Override
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-		int userId = thisOne.id;
+        int userId = thisOne.id;
 
-		Map<String, String[]> params = request.getParameterMap();
+        Map<String, String[]> params = request.getParameterMap();
 
-		List<Integer> toBeAsked = getSelectedChoices(params, "selected_");
-		List<Integer> toIgnore = getSelectedChoices(params, "reject_");
-		
-		List<String> errors = new ArrayList<String>();
+        List<Integer> toBeAsked = getSelectedChoices(params, "selected_");
+        List<Integer> toIgnore = getSelectedChoices(params, "reject_");
 
-		for (int userToAsk : toBeAsked) {
-			
-			User userToSendInvitation = model.users.getUser(userToAsk);
-			model.userRelationsSuggestion.removeIfExists(userId, userToAsk);
-			
-			if (userToSendInvitation.id == userId || model.userRelations.associationExists(userToSendInvitation.id, userId)) {
-				errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", userToSendInvitation.getName()));
-				continue;
-			}
-			
-			if (model.userRelationRequests.associationExists(userId, userToSendInvitation.id)) {
-				errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.", userToSendInvitation.getName()));
-				continue;
-			}
-			
-			// On ajoute l'association
-			model.userRelationRequests.insert(thisOne, userToSendInvitation);
-		}
-		
-		for (int ignore : toIgnore) {
-			model.userRelationsSuggestion.removeIfExists(userId, ignore);
-		}
+        List<String> errors = new ArrayList<>();
 
-		List<AbstractNotification> notifications = model.notif.getUserNotifications(userId);
-		for (AbstractNotification n : notifications) {
-			if (n instanceof NotifNewRelationSuggestion) {
-				NotifNewRelationSuggestion notification = (NotifNewRelationSuggestion) n;
-				if (!model.userRelationsSuggestion.hasReceivedSuggestionFrom(userId, notification.getUserIdParam())) {
-					model.notif.remove(notification.id);
-				}
-			}
-		}
-		
-		request.setAttribute("suggestions", model.userRelationsSuggestion.getUserSuggestions(thisOne));
-		request.setAttribute("error_messages", errors);
-		RootingsUtils.rootToPage(DISPATCH_URL, request, response);
-	}
+        for (int userToAsk : toBeAsked) {
+
+            User userToSendInvitation = UsersRepository.getUser(userToAsk);
+            UserRelationsSuggestionRepository.removeIfExists(userId, userToAsk);
+
+            if (userToSendInvitation.id == userId || UserRelationsRepository.associationExists(userToSendInvitation.id, userId)) {
+                errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.",
+                                                userToSendInvitation.getName()));
+                continue;
+            }
+
+            if (UserRelationRequestsRepository.associationExists(userId, userToSendInvitation.id)) {
+                errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.",
+                                                userToSendInvitation.getName()));
+                continue;
+            }
+
+            // On ajoute l'association
+            UserRelationRequestsRepository.insert(thisOne, userToSendInvitation);
+        }
+
+        for (int ignore : toIgnore) {
+            UserRelationsSuggestionRepository.removeIfExists(userId, ignore);
+        }
+
+        List<AbstractNotification> notifications = NotificationsRepository.getUserNotifications(userId);
+        for (AbstractNotification n : notifications) {
+            if (n instanceof NotifNewRelationSuggestion) {
+                NotifNewRelationSuggestion notification = (NotifNewRelationSuggestion) n;
+                if (!UserRelationsSuggestionRepository.hasReceivedSuggestionFrom(userId, notification.getUserIdParam())) {
+                    NotificationsRepository.remove(notification.id);
+                }
+            }
+        }
+
+        request.setAttribute("suggestions", UserRelationsSuggestionRepository.getUserSuggestions(thisOne));
+        request.setAttribute("error_messages", errors);
+        RootingsUtils.rootToPage(DISPATCH_URL, request, response);
+    }
 
 }

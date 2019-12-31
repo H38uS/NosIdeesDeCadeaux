@@ -5,9 +5,13 @@ import static com.mosioj.ideescadeaux.model.repositories.columns.IsUpToDateColum
 
 import java.text.MessageFormat;
 
-public class IsUpToDateQuestions extends Table {
+public class IsUpToDateQuestionsRepository extends AbstractRepository {
 
     public static final String TABLE_NAME = "IS_UP_TO_DATE";
+
+    private IsUpToDateQuestionsRepository() {
+        // Forbidden
+    }
 
     /**
      * Removes the association if it exists.
@@ -16,7 +20,7 @@ public class IsUpToDateQuestions extends Table {
 	 * @param userId The user id.
      * @return The number of rows deleted.
      */
-    public int deleteAssociation(int ideeId, int userId) {
+    public static int deleteAssociation(int ideeId, int userId) {
         return getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
                                                           TABLE_NAME,
                                                           IDEE_ID,
@@ -28,7 +32,7 @@ public class IsUpToDateQuestions extends Table {
     /**
      * @param ideeId The idea id.
      */
-    public void deleteAssociations(int ideeId) {
+    public static void deleteAssociations(int ideeId) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, IDEE_ID),
                               ideeId);
     }
@@ -38,7 +42,7 @@ public class IsUpToDateQuestions extends Table {
      * @param userId The user id.
      * @return Number of rows inserted.
      */
-    public int addAssociation(int ideeId, int userId) {
+    public static int addAssociation(int ideeId, int userId) {
         return getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
                                                           TABLE_NAME,
                                                           IDEE_ID,

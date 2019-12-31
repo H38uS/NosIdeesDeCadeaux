@@ -10,14 +10,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mosioj.ideescadeaux.model.repositories.Categories;
+import com.mosioj.ideescadeaux.model.repositories.*;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mosioj.ideescadeaux.model.entities.Idee;
 import com.mosioj.ideescadeaux.model.entities.User;
-import com.mosioj.ideescadeaux.model.repositories.IsUpToDateQuestions;
 import com.mosioj.ideescadeaux.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.notifications.ParameterName;
 import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
@@ -51,8 +50,8 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 
         Idee idea = policy.getIdea();
 
-        request.setAttribute("types", Categories.getCategories());
-        request.setAttribute("priorites", model.priorities.getPriorities());
+        request.setAttribute("types", CategoriesRepository.getCategories());
+        request.setAttribute("priorites", PrioritesRepository.getPriorities());
         request.setAttribute("idea", idea);
         request.setAttribute("from", getFrom(request, ""));
 
@@ -112,30 +111,30 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
                     logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
                 }
 
-                model.idees.modifier(idea.getId(),
-                                     parameters.get("text"),
-                                     parameters.get("type"),
-                                     parameters.get("priority"),
-                                     image);
+                IdeesRepository.modifier(idea.getId(),
+                                         parameters.get("text"),
+                                         parameters.get("type"),
+                                         parameters.get("priority"),
+                                         image);
                 User user = thisOne;
 
                 // Ajout de notification aux amis si l'anniversaire approche
                 addModificationNotification(user, policy.getIdea(), false);
 
                 // Suppression des demandes si y'en avait
-                new IsUpToDateQuestions().deleteAssociations(idea.getId());
+                IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
-                List<AbstractNotification> notifications = model.notif.getNotification(ParameterName.IDEA_ID,
-                                                                                       idea.getId());
+                List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID,
+                                                                                                   idea.getId());
                 for (AbstractNotification notification : notifications) {
                     if (notification instanceof NotifAskIfIsUpToDate) {
                         NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
-                        model.notif.addNotification(isUpToDate.getUserIdParam(),
-                                                    new NotifConfirmedUpToDate(user, idea));
-                        model.notif.remove(notification.id);
+                        NotificationsRepository.addNotification(isUpToDate.getUserIdParam(),
+                                                                new NotifConfirmedUpToDate(user, idea));
+                        NotificationsRepository.remove(notification.id);
                     }
                     if (notification instanceof NotifIdeaAddedByFriend) {
-                        model.notif.remove(notification.id);
+                        NotificationsRepository.remove(notification.id);
                     }
                 }
             }

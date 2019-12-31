@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.servlets.service;
 
+import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.servlets.logichelpers.CompteInteractions;
 import com.mosioj.ideescadeaux.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.ideescadeaux.servlets.rootservlet.IdeesCadeauxPostServlet;
@@ -151,10 +152,10 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
 
             if (errors.isEmpty()) {
                 logger.debug(MessageFormat.format("Updating user {0}. Email: {1}, name: {2}", thisOne, email, name));
-                model.users.update(thisOne);
+                UsersRepository.update(thisOne);
                 if (!newPwd.isEmpty()) {
                     String digested = ci.hashPwd(newPwd, errors);
-                    model.users.updatePassword(thisOne.id, digested);
+                    UsersRepository.updatePassword(thisOne.id, digested);
                 }
             }
         }
