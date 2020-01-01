@@ -137,7 +137,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 // Ajout d'information sur l'idée du Security check
                 if (policy instanceof IdeaSecurityChecker) {
                     Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    IdeesRepository.fillAUserIdea(thisOne, idee, device);
+                    IdeesRepository.fillAUserIdea(thisOne, idee, device.isMobile());
                 }
 
             } catch (Exception e) {
@@ -221,7 +221,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 // Ajout d'information sur l'idée du Security check
                 if (policy instanceof IdeaSecurityChecker) {
                     Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    IdeesRepository.fillAUserIdea(thisUser, idee, device);
+                    IdeesRepository.fillAUserIdea(thisUser, idee, device.isMobile());
                 }
 
             } catch (Exception e) {
@@ -438,7 +438,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      */
     protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException {
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
-        IdeesRepository.fillAUserIdea(thisOne, idee, device);
+        IdeesRepository.fillAUserIdea(thisOne, idee, device.isMobile());
         return idee;
     }
 

@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.utils.validators;
 
-import com.mosioj.ideescadeaux.utils.database.DataSourceIdKDo;
+import com.mosioj.ideescadeaux.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.utils.date.MyDateFormatViewer;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;

@@ -10,7 +10,7 @@ import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.modification.ModifyIdea;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.model.database.NoRowsException;
 import org.junit.Test;
 
 import java.io.IOException;

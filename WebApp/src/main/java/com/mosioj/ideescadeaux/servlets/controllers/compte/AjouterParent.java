@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.model.database.NoRowsException;
 
 @WebServlet("/protected/ajouter_parent")
 public class AjouterParent extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {

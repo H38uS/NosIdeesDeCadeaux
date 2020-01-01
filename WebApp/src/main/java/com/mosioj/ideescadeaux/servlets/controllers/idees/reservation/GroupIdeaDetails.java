@@ -67,7 +67,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
         Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
         User user = thisOne;
-        IdeesRepository.fillAUserIdea(user, idee, device);
+        IdeesRepository.fillAUserIdea(user, idee, device.isMobile());
 
         // Suppression des notif's si y'en a
         NotificationsRepository.getNotifications(user.id,

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.model.database.NoRowsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -20,7 +20,7 @@ import org.junit.rules.TestName;
 import com.mosioj.ideescadeaux.model.entities.User;
 import com.mosioj.ideescadeaux.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.notifications.NotificationType;
-import com.mosioj.ideescadeaux.utils.database.DataSourceIdKDo;
+import com.mosioj.ideescadeaux.model.database.DataSourceIdKDo;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 public class TemplateTest {

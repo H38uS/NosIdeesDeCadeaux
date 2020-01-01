@@ -11,7 +11,7 @@ import com.mosioj.ideescadeaux.notifications.instance.NotifGroupEvolution;
 import com.mosioj.ideescadeaux.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.reservation.GroupIdeaDetails;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.model.database.NoRowsException;
 import org.junit.Test;
 
 import java.sql.SQLException;

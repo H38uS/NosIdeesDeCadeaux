@@ -6,7 +6,7 @@ import com.mosioj.ideescadeaux.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.MaListe;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.model.database.NoRowsException;
 import org.junit.Before;
 import org.junit.Test;
 

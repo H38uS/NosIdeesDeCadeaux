@@ -47,7 +47,7 @@ public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteracti
 
         logger.debug(MessageFormat.format("Getting idea {0} from service call (from {1})...", idee.getId(), from));
 
-        IdeesRepository.fillAUserIdea(thisOne, idee, device);
+        IdeesRepository.fillAUserIdea(thisOne, idee, device.isMobile());
 
         request.setAttribute("idee", idee);
         request.setAttribute("identic_call_back", from);

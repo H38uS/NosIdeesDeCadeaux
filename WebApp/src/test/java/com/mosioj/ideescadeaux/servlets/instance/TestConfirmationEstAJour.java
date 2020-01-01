@@ -8,7 +8,7 @@ import com.mosioj.ideescadeaux.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.servlets.controllers.compte.MesNotifications;
 import com.mosioj.ideescadeaux.servlets.controllers.idees.ConfirmationEstAJour;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.model.database.NoRowsException;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;

@@ -6,7 +6,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import com.mosioj.ideescadeaux.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.utils.database.DataSourceIdKDo;
+import com.mosioj.ideescadeaux.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.utils.validators.ValidatorFactory;
 

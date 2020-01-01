@@ -21,7 +21,7 @@ import com.mosioj.ideescadeaux.servlets.securitypolicy.generic.AllAccessToPostAn
 import com.mosioj.ideescadeaux.utils.EmailSender;
 import com.mosioj.ideescadeaux.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.utils.RootingsUtils;
-import com.mosioj.ideescadeaux.utils.database.NoRowsException;
+import com.mosioj.ideescadeaux.model.database.NoRowsException;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
 public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
