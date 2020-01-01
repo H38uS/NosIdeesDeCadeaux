@@ -22,7 +22,7 @@ public class TestReserverIdee extends AbstractTestServlet {
     }
 
     @Test
-    public void test() throws NoRowsException {
+    public void test() throws NoRowsException, SQLException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);

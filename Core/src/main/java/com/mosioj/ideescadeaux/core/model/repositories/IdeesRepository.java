@@ -396,7 +396,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param user   The person.
      * @return True if and only if the user has sub booked the idea.
      */
-    public static boolean isSubBookBy(int ideaId, User user) {
+    public static boolean isSubBookBy(int ideaId, User user) throws SQLException {
         return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ? and {2} = ?",
                                                             SousReservationRepository.TABLE_NAME,
                                                             SousReservationColumns.IDEE_ID,
@@ -548,7 +548,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param ideaId The idea's id.
      * @param user   The person who has previously booked a subpart of the idea.
      */
-    public static void dereserverSousPartie(int ideaId, User user) {
+    public static void dereserverSousPartie(int ideaId, User user) throws SQLException {
         int nb = getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
                                                             SousReservationRepository.TABLE_NAME,
                                                             SousReservationColumns.IDEE_ID,
@@ -579,7 +579,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The person's id who is trying to book.
      * @return True if and only if the idea can be booked.
      */
-    public static boolean canBook(int idea, int userId) {
+    public static boolean canBook(int idea, int userId) throws SQLException {
 
         String queryText = "select count(*) " +
                            "  from {0} i " +
@@ -605,7 +605,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The user id.
      * @return True if and only if a sub part of the idea can be booked.
      */
-    public static boolean canSubBook(int idea, int userId) {
+    public static boolean canSubBook(int idea, int userId) throws SQLException {
 
         String queryText = "select count(*) " +
                            "  from {0} i " +
@@ -634,7 +634,7 @@ public class IdeesRepository extends AbstractRepository {
      *
      * @param idea L'idée qu'on doit déréserver.
      */
-    public static void toutDereserver(int idea) {
+    public static void toutDereserver(int idea) throws SQLException {
 
         // Suppression des groupes potentiels
         int groupId;
@@ -683,7 +683,7 @@ public class IdeesRepository extends AbstractRepository {
      *
      * @param idea The idea's id.
      */
-    public static void remove(int idea) {
+    public static void remove(int idea) throws SQLException {
         try {
             int nb = getDb().executeUpdate(MessageFormat.format("insert into IDEES_HIST select * from {0} where {1} = ?",
                                                                 TABLE_NAME,
@@ -712,7 +712,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The user's id.
      * @return True if the user has at least one idea.
      */
-    public static boolean hasIdeas(int userId) {
+    public static boolean hasIdeas(int userId) throws SQLException {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? limit 1",
                                                            TABLE_NAME,
                                                            IdeeColumns.OWNER), userId);
@@ -776,7 +776,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The person's id.
      * @return True if this user has asked about this idea.
      */
-    public static boolean hasUserAskedIfUpToDate(int ideeId, int userId) {
+    public static boolean hasUserAskedIfUpToDate(int ideeId, int userId) throws SQLException {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                                            IsUpToDateQuestionsRepository.TABLE_NAME,
                                                            IsUpToDateColumns.IDEE_ID,

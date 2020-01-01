@@ -51,7 +51,14 @@ public class ResoudreDemandeAmi extends IdeesCadeauxPostServlet<PeutResoudreDema
 
         // Parcours des réponses
         policy.getChoiceParameters()
-              .forEach((fromUserId, accept) -> processRequest(accepted, toBeRemoved, fromUserId, accept));
+              .forEach((fromUserId, accept) -> {
+                  try {
+                      processRequest(accepted, toBeRemoved, fromUserId, accept);
+                  } catch (SQLException e) {
+                      e.printStackTrace();
+                      logger.error(e.getMessage());
+                  }
+              });
 
         // Suppression des notifications
         toBeRemoved.forEach(n -> NotificationsRepository.remove(n.id));
@@ -73,7 +80,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxPostServlet<PeutResoudreDema
      * @param fromUserId  This particular request user's id.
      * @param accept      Whether we do accept or not this friendship request.
      */
-    protected void processRequest(List<User> accepted, Set<AbstractNotification> toBeRemoved, int fromUserId, boolean accept) {
+    protected void processRequest(List<User> accepted, Set<AbstractNotification> toBeRemoved, int fromUserId, boolean accept) throws SQLException {
 
         if (!UserRelationRequestsRepository.associationExists(fromUserId, thisOne.id)) {
             // On ne traite que les demandes réellement envoyées...

@@ -56,7 +56,7 @@ public class UserParametersRepository extends AbstractRepository {
         }
     }
 
-    public static String getParameter(int userId, String paramName) {
+    public static String getParameter(int userId, String paramName) throws SQLException {
         String query = MessageFormat.format("select {0} from {1} where {2} = ? and {3} = ?",
                                             UserParametersColumns.PARAMETER_VALUE,
                                             TABLE_NAME,

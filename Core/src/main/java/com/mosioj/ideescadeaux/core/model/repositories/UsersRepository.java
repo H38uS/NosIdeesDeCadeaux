@@ -95,7 +95,7 @@ public class UsersRepository extends AbstractRepository {
      * @param email The identifier of the person (currently the email).
      * @return This person's id.
      */
-    public static int getId(String email) throws NoRowsException {
+    public static int getId(String email) throws NoRowsException, SQLException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", UsersColumns.ID, TABLE_NAME, UsersColumns.EMAIL),
                                  email);
     }
@@ -104,7 +104,7 @@ public class UsersRepository extends AbstractRepository {
      * @param nameOrEmail The name or email of the person..
      * @return This person's id.
      */
-    public static int getIdFromNameOrEmail(String nameOrEmail) throws NoRowsException {
+    public static int getIdFromNameOrEmail(String nameOrEmail) throws NoRowsException, SQLException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1",
                                                       UsersColumns.ID,
                                                       TABLE_NAME,
@@ -119,7 +119,7 @@ public class UsersRepository extends AbstractRepository {
      *
      * @param user The user to update.
      */
-    public static void update(User user) {
+    public static void update(User user) throws SQLException {
         LOGGER.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
         String previousEmail = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
                                                                          UsersColumns.EMAIL,

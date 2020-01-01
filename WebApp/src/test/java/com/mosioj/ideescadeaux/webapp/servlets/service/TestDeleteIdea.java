@@ -22,7 +22,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testDelete() {
+    public void testDelete() throws SQLException {
 
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
@@ -66,7 +66,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testUnderlyingNotificationAreWellRemoved() throws NoRowsException {
+    public void testUnderlyingNotificationAreWellRemoved() throws NoRowsException, SQLException {
 
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));

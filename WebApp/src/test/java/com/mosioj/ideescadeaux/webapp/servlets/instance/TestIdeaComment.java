@@ -21,7 +21,7 @@ public class TestIdeaComment extends AbstractTestServlet {
     }
 
     @Test
-    public void test() throws NoRowsException {
+    public void test() throws NoRowsException, SQLException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);

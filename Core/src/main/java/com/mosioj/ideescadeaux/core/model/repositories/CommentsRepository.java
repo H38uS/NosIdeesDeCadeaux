@@ -74,7 +74,12 @@ public class CommentsRepository extends AbstractRepository {
         return users;
     }
 
-    public static int getNbComments(int ideaId) {
+    /**
+     *
+     * @param ideaId The idea.
+     * @return The number of comments on this idea.
+     */
+    public static int getNbComments(int ideaId) throws SQLException {
         return getDb().selectCountStar("select count(*) from " + TABLE_NAME + " where " + CommentsColumns.IDEA_ID + " = ?", ideaId);
     }
 

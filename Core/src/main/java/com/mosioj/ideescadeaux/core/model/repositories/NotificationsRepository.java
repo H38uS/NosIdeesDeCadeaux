@@ -49,45 +49,50 @@ public class NotificationsRepository extends AbstractRepository {
     public static int addNotification(int userId, AbstractNotification notif) {
 
         logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
-        NotificationActivation activation = getActivationType(userId, notif);
         int id = -1;
+        try {
+            NotificationActivation activation = getActivationType(userId, notif);
 
-        // Insertion en base
-        if (activation == NotificationActivation.SITE || activation == NotificationActivation.EMAIL_SITE) {
-            try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(),
-                                                                                        MessageFormat.format(
-                                                                                                "insert into {0} (owner, text, type, creation_date) values (?, ?, ?, now())",
-                                                                                                TABLE_NAME))) {
-                ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
-                id = ps.executeUpdate();
-            }
+            // Insertion en base
+            if (activation == NotificationActivation.SITE || activation == NotificationActivation.EMAIL_SITE) {
+                try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(),
+                                                                                            MessageFormat.format(
+                                                                                                    "insert into {0} (owner, text, type, creation_date) values (?, ?, ?, now())",
+                                                                                                    TABLE_NAME))) {
+                    ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
+                    id = ps.executeUpdate();
+                }
 
-            if (id > 0) {
-                logger.debug(MessageFormat.format("Creating parameters for notification {0}", id));
-                Map<ParameterName, Object> notifParams = notif.getParameters();
-                for (ParameterName key : notifParams.keySet()) {
-                    try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(),
-                                                                                                MessageFormat.format(
-                                                                                                        "insert into {0} ({1},{2},{3}) values (?, ?, ?)",
-                                                                                                        TABLE_PARAMS,
-                                                                                                        NotificationParametersColumns.NOTIFICATION_ID,
-                                                                                                        NotificationParametersColumns.PARAMETER_NAME,
-                                                                                                        NotificationParametersColumns.PARAMETER_VALUE))) {
-                        ps.bindParameters(id, key, notifParams.get(key).toString());
-                        ps.executeUpdate();
+                if (id > 0) {
+                    logger.debug(MessageFormat.format("Creating parameters for notification {0}", id));
+                    Map<ParameterName, Object> notifParams = notif.getParameters();
+                    for (ParameterName key : notifParams.keySet()) {
+                        try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(),
+                                                                                                    MessageFormat.format(
+                                                                                                            "insert into {0} ({1},{2},{3}) values (?, ?, ?)",
+                                                                                                            TABLE_PARAMS,
+                                                                                                            NotificationParametersColumns.NOTIFICATION_ID,
+                                                                                                            NotificationParametersColumns.PARAMETER_NAME,
+                                                                                                            NotificationParametersColumns.PARAMETER_VALUE))) {
+                            ps.bindParameters(id, key, notifParams.get(key).toString());
+                            ps.executeUpdate();
+                        }
                     }
                 }
             }
-        }
 
-        // Envoie de la notification par email si besoin
-        if (activation == NotificationActivation.EMAIL || activation == NotificationActivation.EMAIL_SITE) {
-            String email = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
-                                                                     UsersColumns.EMAIL,
-                                                                     UsersRepository.TABLE_NAME,
-                                                                     UsersColumns.ID),
-                                                userId);
-            notif.sendEmail(email, notificationProperties.get("urlTillProtectedPublic").toString());
+            // Envoie de la notification par email si besoin
+            if (activation == NotificationActivation.EMAIL || activation == NotificationActivation.EMAIL_SITE) {
+                String email = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
+                                                                         UsersColumns.EMAIL,
+                                                                         UsersRepository.TABLE_NAME,
+                                                                         UsersColumns.ID),
+                                                    userId);
+                notif.sendEmail(email, notificationProperties.get("urlTillProtectedPublic").toString());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.warn("Exception while trying to add a notification: " + e.getMessage());
         }
 
         return id;
@@ -98,7 +103,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif  The notification.
      * @return The activation type. Default is EMAIL_SITE.
      */
-    private static NotificationActivation getActivationType(int userId, AbstractNotification notif) {
+    private static NotificationActivation getActivationType(int userId, AbstractNotification notif) throws SQLException {
         try {
             return NotificationActivation.valueOf(UserParametersRepository.getParameter(userId, notif.getType()));
         } catch (IllegalArgumentException e) {
@@ -222,7 +227,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return The number of notification this user has.
      */
-    public static int getUserNotificationCount(int userId) {
+    public static int getUserNotificationCount(int userId) throws SQLException {
         return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                             TABLE_NAME,
                                                             NotificationsColumns.OWNER), userId);
@@ -233,7 +238,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif  The notification.
      * @return True if and only if the user has already receive this notification.
      */
-    public static boolean hasNotification(int userId, AbstractNotification notif) {
+    public static boolean hasNotification(int userId, AbstractNotification notif) throws SQLException {
 
         Map<ParameterName, Object> parameters = notif.getParameters();
 

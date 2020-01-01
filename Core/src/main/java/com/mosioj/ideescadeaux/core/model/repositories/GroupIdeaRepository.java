@@ -142,7 +142,7 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param groupId The group id.
      * @return true if there is at least one member left
      */
-    public static boolean removeUserFromGroup(User user, Integer groupId) {
+    public static boolean removeUserFromGroup(User user, Integer groupId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
                                                    TABLE_NAME_CONTENT,
                                                    GroupIdeaContentColumns.USER_ID,

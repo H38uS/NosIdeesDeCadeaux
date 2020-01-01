@@ -6,6 +6,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -149,7 +150,7 @@ public class ParameterValidator {
      *                 query must also have exactly a string bind parameter for the parameter value.
      * @param db       The connection to use.
      */
-    public void checkIsUnique(String sqlQuery, DataSourceIdKDo db) {
+    public void checkIsUnique(String sqlQuery, DataSourceIdKDo db) throws SQLException {
         int res = db.selectCountStar(sqlQuery, parameterValue);
         if (res > 0) {
             errors.add(article + parameterName + " existe déjà.");
@@ -163,7 +164,7 @@ public class ParameterValidator {
      *                 query must also have exactly a string bind parameter for the parameter value.
      * @param db       The connection to use.
      */
-    public void checkExists(String sqlQuery, DataSourceIdKDo db) {
+    public void checkExists(String sqlQuery, DataSourceIdKDo db) throws SQLException {
         int res = db.selectCountStar(sqlQuery, parameterValue);
         if (res == 0) {
             errors.add(article + parameterName + " n'existe pas.");

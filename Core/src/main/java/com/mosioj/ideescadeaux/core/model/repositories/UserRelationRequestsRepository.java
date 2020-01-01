@@ -25,7 +25,7 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param sent_to Sent to this user.
      * @return True if and only if sent_by has sent a request to sent_to.
      */
-    public static boolean associationExists(int sent_by, int sent_to) {
+    public static boolean associationExists(int sent_by, int sent_to) throws SQLException {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                                            TABLE_NAME,
                                                            UserRelationRequestsColumns.SENT_BY_USER,

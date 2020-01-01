@@ -14,6 +14,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
@@ -27,7 +28,7 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         User userToSendInvitation = policy.getUser();
         request.setAttribute("name", userToSendInvitation.getName());

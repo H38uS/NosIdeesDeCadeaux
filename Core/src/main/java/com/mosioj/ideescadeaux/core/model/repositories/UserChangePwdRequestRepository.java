@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.columns.UserChangePwdRequ
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.text.MessageFormat;
 
 public class UserChangePwdRequestRepository extends AbstractRepository {
@@ -21,7 +22,7 @@ public class UserChangePwdRequestRepository extends AbstractRepository {
      * @param tokenId The token id.
      * @return True if and only if the user has asked for a new password.
      */
-    public static boolean isAValidCombinaison(int userId, int tokenId) {
+    public static boolean isAValidCombinaison(int userId, int tokenId) throws SQLException {
         String query = MessageFormat.format(
                 "select 1 from {0} where {1} = ? and {2} = ? and TIMESTAMPDIFF(SECOND, NOW(), {3}) > 0",
                 TABLE_NAME,

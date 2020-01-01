@@ -44,7 +44,7 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
      * @param request  The http request.
      * @return True if the current user can interact with the idea.
      */
-    protected boolean canInteractWithIdea(HttpServletRequest request) {
+    protected boolean canInteractWithIdea(HttpServletRequest request) throws SQLException {
 
         Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
         if (!ideaId.isPresent()) {
@@ -76,12 +76,22 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
 
     @Override
     public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
-        return canInteractWithIdea(request);
+        try {
+            return canInteractWithIdea(request);
+        } catch (SQLException e) {
+            logger.error("Got an exception while checking security: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
-        return canInteractWithIdea(request);
+        try {
+            return canInteractWithIdea(request);
+        } catch (SQLException e) {
+            logger.error("Got an exception while checking security: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override

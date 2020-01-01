@@ -101,11 +101,11 @@ public class TemplateTest {
         System.out.println();
     }
 
-    protected void assertNotifDoesNotExists(int notifId) {
+    protected void assertNotifDoesNotExists(int notifId) throws SQLException {
         Assert.assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 
-    protected void assertNotifDoesExists(int notifId) {
+    protected void assertNotifDoesExists(int notifId) throws SQLException {
         Assert.assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 }

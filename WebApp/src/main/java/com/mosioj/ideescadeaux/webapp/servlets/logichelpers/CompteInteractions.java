@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.logichelpers;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class CompteInteractions {
      * @param userId    The user id for who we are checking the email.
      * @return The list of errors found.
      */
-    public List<String> checkEmail(ParameterValidator validator, int userId, boolean shouldExist) {
+    public List<String> checkEmail(ParameterValidator validator, int userId, boolean shouldExist) throws SQLException {
         validator.checkEmpty();
         validator.checkIsEmailValid();
         if (shouldExist) {

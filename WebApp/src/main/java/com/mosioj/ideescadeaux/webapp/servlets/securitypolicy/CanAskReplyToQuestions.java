@@ -7,9 +7,12 @@ import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.util.Optional;
 
 /**
@@ -18,6 +21,8 @@ import java.util.Optional;
  * @author Jordan Mosio
  */
 public final class CanAskReplyToQuestions extends SecurityPolicy implements IdeaSecurityChecker {
+
+    private static final Logger logger = LogManager.getLogger(CanAskReplyToQuestions.class);
 
     /**
      * Defines the string used in HttpServletRequest to retrieve the idea id.
@@ -37,7 +42,7 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
      * @param request  The http request.
      * @return True if the current user can interact with the idea.
      */
-    private boolean canInteractWithIdea(HttpServletRequest request) {
+    private boolean canInteractWithIdea(HttpServletRequest request) throws SQLException {
 
         Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
         if (!ideaId.isPresent()) {
@@ -69,12 +74,22 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
 
     @Override
     public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
-        return canInteractWithIdea(request);
+        try {
+            return canInteractWithIdea(request);
+        } catch (SQLException e) {
+            logger.error("Got an exception while checking security: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
-        return canInteractWithIdea(request);
+        try {
+            return canInteractWithIdea(request);
+        } catch (SQLException e) {
+            logger.error("Got an exception while checking security: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override

@@ -1,16 +1,14 @@
 package com.mosioj.ideescadeaux.core.model.database;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.MessageFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Provides some method to access the database.
@@ -44,7 +42,7 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public int selectCountStar(String query, Object... parameters) {
+    public int selectCountStar(String query, Object... parameters) throws SQLException {
         try {
             return selectInt(query, parameters);
         } catch (NoRowsException e) {
@@ -57,7 +55,8 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public int selectInt(String query, Object... parameters) throws NoRowsException {
+    // FIXME : Optional
+    public int selectInt(String query, Object... parameters) throws NoRowsException, SQLException {
 
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
 
@@ -73,11 +72,6 @@ public class DataSourceIdKDo {
             }
 
             return res.getInt(1);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing select: {0}.", e.getMessage()));
-            return -1;
         }
     }
 
@@ -139,17 +133,13 @@ public class DataSourceIdKDo {
      * @param parameters The query parameters.
      * @return True if and only if the query returns at least one row.
      */
-    public boolean doesReturnRows(String query, Object... parameters) {
+    public boolean doesReturnRows(String query, Object... parameters) throws SQLException {
         query = "select 1 from dual where exists ( " + query + " )";
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(this, query)) {
             ps.bindParameters(parameters);
             ps.execute();
             ResultSet res = ps.getResultSet();
             return res.first();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing doesReturnRows: {0}.", e.getMessage()));
-            return false;
         }
     }
 
@@ -158,7 +148,8 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public String selectString(String query, Object... parameters) {
+    // FIXME : Optional
+    public String selectString(String query, Object... parameters) throws SQLException {
 
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
             statement.bindParameters(parameters);
@@ -169,10 +160,6 @@ public class DataSourceIdKDo {
             } else {
                 return "";
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing selectString: {0}.", e.getMessage()));
-            return "";
         }
     }
 

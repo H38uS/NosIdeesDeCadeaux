@@ -89,7 +89,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param nameOrEmail The token to search for.
      * @return The number of user in this user network.
      */
-    public static int getRelationsCount(int userId, String nameOrEmail) {
+    public static int getRelationsCount(int userId, String nameOrEmail) throws SQLException {
 
         String query = "select count(*) " +
                        "from {0} urr " +
@@ -115,7 +115,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param user The user.
      * @return The number of user in this user network.
      */
-    public static int getRelationsCount(User user) {
+    public static int getRelationsCount(User user) throws SQLException {
         return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                             TABLE_NAME,
                                                             UserRelationsColumns.FIRST_USER), user.id);
@@ -302,7 +302,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param second Another user id.
      * @return True if and only if the two guys are friends. False for the owner.
      */
-    public static boolean associationExists(int first, int second) {
+    public static boolean associationExists(int first, int second) throws SQLException {
         String query = MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                             TABLE_NAME,
                                             UserRelationsColumns.FIRST_USER,
@@ -638,7 +638,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param userNameOrEmail The token.
      * @return The number of users belonging to userId network and matching name/email
      */
-    public static int getAllUsersInRelationCount(User user, String userNameOrEmail) {
+    public static int getAllUsersInRelationCount(User user, String userNameOrEmail) throws SQLException {
 
         StringBuilder query = new StringBuilder();
         query.append("select count(*) ");
