@@ -27,13 +27,13 @@
     <Loggers>
         <logger name="org" level="warn"/>
         <logger name="com.mosioj.ideescadeaux" level="debug"/>
-        <logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="error"/>
-        <logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="error"/>
+        <logger name="com.mosioj.ideescadeaux.webapp.viewhelper.DeviceResolverFilter" level="error"/>
+        <logger name="com.mosioj.ideescadeaux.webapp.utils.AuthenticationListener" level="error"/>
 
-        <logger name="com.mosioj.ideescadeaux.utils.AuthenticationListener" level="debug" additivity="false">
+        <logger name="com.mosioj.ideescadeaux.webapp.utils.AuthenticationListener" level="debug" additivity="false">
             <AppenderRef ref="AccessLogs"/>
         </logger>
-        <logger name="com.mosioj.ideescadeaux.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
+        <logger name="com.mosioj.ideescadeaux.webapp.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
             <AppenderRef ref="AccessLogs"/>
         </logger>
 

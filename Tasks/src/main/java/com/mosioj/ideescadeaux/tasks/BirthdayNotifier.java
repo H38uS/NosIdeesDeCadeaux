@@ -1,17 +1,14 @@
 package com.mosioj.ideescadeaux.tasks;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Properties;
 
-import com.mosioj.ideescadeaux.model.entities.User;
-import com.mosioj.ideescadeaux.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.utils.EmailSender;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.utils.EmailSender;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

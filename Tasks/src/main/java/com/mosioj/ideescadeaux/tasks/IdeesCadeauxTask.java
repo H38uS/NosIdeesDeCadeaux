@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.tasks;
 
-import com.mosioj.ideescadeaux.model.database.DataSourceIdKDo;
+import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

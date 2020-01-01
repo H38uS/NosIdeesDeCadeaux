@@ -41,6 +41,6 @@
         </authentication-provider>
     </authentication-manager>
 
-    <beans:bean class="com.mosioj.ideescadeaux.utils.AuthenticationListener"/>
+    <beans:bean class="com.mosioj.ideescadeaux.webapp.utils.AuthenticationListener"/>
 
 </beans:beans>
