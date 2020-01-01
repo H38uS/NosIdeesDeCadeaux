@@ -1,3 +1,5 @@
+    // FIXME : 0 séparer en deux modules
+
     // FIXME : Pour mes réservations, faire un tableau avec nom owner (lien vers la liste) type image et texte
     // FIXME : 1 sur l'index mettre le nombre total de réservation si non vide et un lien vers mes réservations
     // FIXME : 6 revoir le CSS de la recherche en mode pc + des puces pour les anniv Noel + CSS alert box

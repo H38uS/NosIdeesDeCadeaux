@@ -1,0 +1,46 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+    <http pattern="/public/reinitialiser_mot_de_passe" create-session="never">
+        <csrf disabled="true"/>
+        <form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
+                    authentication-failure-url="/public/error.jsp"/>
+        <logout logout-success-url="/public/index.jsp"/>
+    </http>
+    <http pattern="/public/changer_mot_de_passe_depuis_reinit" create-session="never">
+        <csrf disabled="true"/>
+        <form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
+                    authentication-failure-url="/public/error.jsp"/>
+        <logout logout-success-url="/public/index.jsp"/>
+    </http>
+
+    <http auto-config="true">
+        <intercept-url pattern="/" access="permitAll"/>
+        <intercept-url pattern="/public" access="permitAll"/>
+        <intercept-url pattern="/protected/administration/**" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/protected/mon_compte" access="isFullyAuthenticated()"/>
+        <intercept-url pattern="/protected/**" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/manage/**" access="hasRole('ROLE_MANAGER')"/>
+        <form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
+                    authentication-failure-url="/public/error.jsp"/>
+        <csrf disabled="true"/>
+        <remember-me remember-me-parameter="remember-me" remember-me-cookie="remember-me"
+                     token-validity-seconds="1209600"
+                     data-source-ref="springDS"/>
+        <logout logout-success-url="/public/index.jsp"/>
+    </http>
+
+    <authentication-manager>
+        <authentication-provider>
+            <password-encoder hash="sha"/>
+            <jdbc-user-service data-source-ref="springDS"
+                               users-by-username-query="select email, password, true from USERS where email = ?"
+                               authorities-by-username-query="select email, role from USER_ROLES where email = ? "/>
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean class="com.mosioj.ideescadeaux.utils.AuthenticationListener"/>
+
+</beans:beans>
