@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +40,7 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
         for (User user : ids) {
             List<Idee> ownerIdeas = IdeesRepository.getIdeasOf(user.id);
             for (Idee idee : ownerIdeas) {
-                IdeesRepository.fillAUserIdea(connectedUser, idee, device.isMobile());
+                IdeesCadeauxServlet.fillAUserIdea(connectedUser, idee, device.isMobile());
             }
             user.setIdeas(ownerIdeas);
         }

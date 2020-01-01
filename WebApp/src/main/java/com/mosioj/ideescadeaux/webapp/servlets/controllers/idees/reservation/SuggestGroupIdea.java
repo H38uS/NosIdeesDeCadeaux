@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -51,7 +52,7 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
 
         Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId());
         User user = thisOne;
-        IdeesRepository.fillAUserIdea(user, idee, device.isMobile());
+        IdeesCadeauxServlet.fillAUserIdea(user, idee, device.isMobile());
 
         List<User> potentialGroupUser = IdeesRepository.getPotentialGroupUser(group.getId(), user.id);
         logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
@@ -76,7 +77,7 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
 
         IdeaGroup group = policy.getGroupId();
         Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId());
-        IdeesRepository.fillAUserIdea(thisOne, idee, device.isMobile());
+        IdeesCadeauxServlet.fillAUserIdea(thisOne, idee, device.isMobile());
 
         List<Integer> selectedUsers = new ArrayList<>();
         Map<String, String[]> params = request.getParameterMap();

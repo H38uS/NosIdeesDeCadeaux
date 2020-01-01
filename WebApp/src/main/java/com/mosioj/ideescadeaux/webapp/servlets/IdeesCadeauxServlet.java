@@ -23,10 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.ideescadeaux.core.model.entities.Priorite;
+import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
+import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.utils.Compteur;
@@ -137,7 +137,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 // Ajout d'information sur l'idée du Security check
                 if (policy instanceof IdeaSecurityChecker) {
                     Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    IdeesRepository.fillAUserIdea(thisOne, idee, device.isMobile());
+                    fillAUserIdea(thisOne, idee, device.isMobile());
                 }
 
             } catch (Exception e) {
@@ -221,7 +221,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 // Ajout d'information sur l'idée du Security check
                 if (policy instanceof IdeaSecurityChecker) {
                     Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    IdeesRepository.fillAUserIdea(thisUser, idee, device.isMobile());
+                    fillAUserIdea(thisUser, idee, device.isMobile());
                 }
 
             } catch (Exception e) {
@@ -275,6 +275,53 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         logger.debug("Resize done!");
 
         return resizedImage;
+    }
+
+    /**
+     * @param user                The connected user.
+     * @param idee                The idea.
+     * @param isFromAMobileDevice True if the request is comming from a mobile device (mobile vs computer).
+     */
+    public static void fillAUserIdea(User user, Idee idee, boolean isFromAMobileDevice) throws SQLException {
+
+        idee.hasComment = CommentsRepository.getNbComments(idee.getId()) > 0;
+        idee.hasQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
+        idee.hasAskedIfUpToDate = IdeesRepository.hasUserAskedIfUpToDate(idee.getId(), user.id);
+
+        if (idee.isBooked()) {
+            idee.displayClass = "booked_by_others_idea";
+            idee.getBookingOwner().ifPresent(o -> {
+                // Réservé par soit !
+                if (user.equals(o)) {
+                    idee.displayClass = "booked_by_me_idea";
+                }
+            });
+            idee.getGroupKDO().ifPresent(g -> {
+                if (g.contains(user)) {
+                    // On fait parti du groupe
+                    idee.displayClass = "booked_by_me_idea";
+                } else {
+                    idee.displayClass = "shared_booking_idea";
+                }
+            });
+        } else if (idee.isPartiallyBooked()) {
+            List<SousReservationEntity> resa = SousReservationRepository.getSousReservation(idee.getId());
+            idee.displayClass = "shared_booking_idea";
+
+            // On fait parti de la sous-réservation
+            resa.stream()
+                .filter(r -> user.equals(r.getUser()))
+                .forEach(r -> idee.displayClass = "booked_by_me_idea");
+        }
+        // Sinon, on laisse la class par défaut
+
+        if (isFromAMobileDevice) {
+            Priorite priorite = idee.getPriorite();
+            if (priorite != null && priorite.getImage() != null) {
+                priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"",
+                                                                "width=\"" + IdeesRepository.MOBILE_PICTURE_WIDTH + "px\"");
+            }
+        }
     }
 
     protected void readMultiFormParameters(HttpServletRequest request, File filePath) throws ServletException {
@@ -438,7 +485,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      */
     protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException {
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
-        IdeesRepository.fillAUserIdea(thisOne, idee, device.isMobile());
+        fillAUserIdea(thisOne, idee, device.isMobile());
         return idee;
     }
 

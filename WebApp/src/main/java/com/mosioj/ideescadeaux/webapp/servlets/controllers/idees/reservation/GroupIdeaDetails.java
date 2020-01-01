@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupEvolution;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
@@ -67,7 +68,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
         Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
         User user = thisOne;
-        IdeesRepository.fillAUserIdea(user, idee, device.isMobile());
+        IdeesCadeauxServlet.fillAUserIdea(user, idee, device.isMobile());
 
         // Suppression des notif's si y'en a
         NotificationsRepository.getNotifications(user.id,

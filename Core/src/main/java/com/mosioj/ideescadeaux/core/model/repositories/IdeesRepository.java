@@ -797,49 +797,4 @@ public class IdeesRepository extends AbstractRepository {
         return res;
     }
 
-    /**
-     * @param user                The connected user.
-     * @param idee                The idea.
-     * @param isFromAMobileDevice True if the request is comming from a mobile device (mobile vs computer).
-     */
-    // FIXME : 1 devrait être dans le projet Web
-    public static void fillAUserIdea(User user, Idee idee, boolean isFromAMobileDevice) throws SQLException {
-
-        idee.hasComment = CommentsRepository.getNbComments(idee.getId()) > 0;
-        idee.hasQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
-        idee.hasAskedIfUpToDate = hasUserAskedIfUpToDate(idee.getId(), user.id);
-
-        if (idee.isBooked()) {
-            idee.displayClass = "booked_by_others_idea";
-            idee.getBookingOwner().ifPresent(o -> {
-                // Réservé par soit !
-                if (user.equals(o)) {
-                    idee.displayClass = "booked_by_me_idea";
-                }
-            });
-            idee.getGroupKDO().ifPresent(g -> {
-                if (g.contains(user)) {
-                    // On fait parti du groupe
-                    idee.displayClass = "booked_by_me_idea";
-                } else {
-                    idee.displayClass = "shared_booking_idea";
-                }
-            });
-        } else if (idee.isPartiallyBooked()) {
-            List<SousReservationEntity> resa = SousReservationRepository.getSousReservation(idee.getId());
-            idee.displayClass = "shared_booking_idea";
-
-            // On fait parti de la sous-réservation
-            resa.stream().filter(r -> user.equals(r.getUser())).forEach(r -> idee.displayClass = "booked_by_me_idea");
-        }
-        // Sinon, on laisse la class par défaut
-
-        if (isFromAMobileDevice) {
-            Priorite priorite = idee.getPriorite();
-            if (priorite != null && priorite.getImage() != null) {
-                priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"",
-                                                                "width=\"" + MOBILE_PICTURE_WIDTH + "px\"");
-            }
-        }
-    }
 }
