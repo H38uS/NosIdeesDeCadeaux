@@ -29,8 +29,8 @@ public class PreparedStatementIdKdo implements Closeable {
         try {
             temp = ds.getAConnection().prepareStatement(query);
         } catch (SQLException e) {
-            logger.error(MessageFormat.format("Error while opening the statement: {0}", e.getMessage()));
             e.printStackTrace();
+            logger.warn(MessageFormat.format("Error while opening the statement: {0}", e.getMessage()));
         }
         ps = temp;
     }
@@ -47,8 +47,8 @@ public class PreparedStatementIdKdo implements Closeable {
             ps.close();
             con.close();
         } catch (SQLException e) {
-            logger.error("Error while closing the statement: " + e.getMessage());
             e.printStackTrace();
+            logger.warn("Error while closing the statement: " + e.getMessage());
         }
     }
 
@@ -57,76 +57,53 @@ public class PreparedStatementIdKdo implements Closeable {
      *
      * @param parameters The query parameters.
      */
-    public void bindParameters(Object... parameters) {
+    public void bindParameters(Object... parameters) throws SQLException {
 
         logger.trace("Binding parameters...");
-        try {
-            for (int i = 0; i < parameters.length; i++) {
+        for (int i = 0; i < parameters.length; i++) {
 
-                Object parameter = parameters[i];
-                logger.trace("Binding parameter " + i + " to " + parameter);
-                if (parameter == null) {
-                    ps.setString(i + 1, null);
-                    continue;
-                }
-
-                if (parameter instanceof Double) {
-                    ps.setDouble(i + 1, (Double) parameter);
-                    continue;
-                }
-
-                if (parameter instanceof Integer) {
-                    ps.setInt(i + 1, (Integer) parameter);
-                    continue;
-                }
-
-                if (parameter instanceof User) {
-                    ps.setInt(i + 1, ((User) parameter).getId());
-                    continue;
-                }
-
-                if (parameter instanceof Idee) {
-                    ps.setInt(i + 1, ((Idee) parameter).getId());
-                    continue;
-                }
-
-                // Default case - String
-                ps.setString(i + 1, parameter.toString());
+            Object parameter = parameters[i];
+            logger.trace("Binding parameter " + i + " to " + parameter);
+            if (parameter == null) {
+                ps.setString(i + 1, null);
+                continue;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while binding parameters: {0}.", e.getMessage()));
+
+            if (parameter instanceof Double) {
+                ps.setDouble(i + 1, (Double) parameter);
+                continue;
+            }
+
+            if (parameter instanceof Integer) {
+                ps.setInt(i + 1, (Integer) parameter);
+                continue;
+            }
+
+            if (parameter instanceof User) {
+                ps.setInt(i + 1, ((User) parameter).getId());
+                continue;
+            }
+
+            if (parameter instanceof Idee) {
+                ps.setInt(i + 1, ((Idee) parameter).getId());
+                continue;
+            }
+
+            // Default case - String
+            ps.setString(i + 1, parameter.toString());
         }
     }
 
-    public int executeUpdate() {
-        try {
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
-            return 0;
-        }
+    public int executeUpdate() throws SQLException {
+        return ps.executeUpdate();
     }
 
-    public boolean execute() {
-        try {
-            return ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
-            return false;
-        }
+    public boolean execute() throws SQLException {
+        return ps.execute();
     }
 
-    public ResultSet getResultSet() {
-        try {
-            return ps.getResultSet();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
-            return null;
-        }
+    public ResultSet getResultSet() throws SQLException {
+        return ps.getResultSet();
     }
 
 }

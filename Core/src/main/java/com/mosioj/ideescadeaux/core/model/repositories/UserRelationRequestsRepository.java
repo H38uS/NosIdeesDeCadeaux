@@ -40,7 +40,7 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param sent_by Sent by this user.
      * @param sent_to Sent to this user.
      */
-    public static void insert(User sent_by, User sent_to) {
+    public static void insert(User sent_by, User sent_to) throws SQLException {
         getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
                                                                TABLE_NAME,
                                                                UserRelationRequestsColumns.SENT_BY_USER,
@@ -54,7 +54,7 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return The list of request of frienship this user has received.
      */
-    public static List<RelationRequest> getRequests(int userId) {
+    public static List<RelationRequest> getRequests(int userId) throws SQLException {
 
         List<RelationRequest> requests = new ArrayList<>();
         String query =
@@ -89,8 +89,6 @@ public class UserRelationRequestsRepository extends AbstractRepository {
                                                      res.getDate(UserRelationRequestsColumns.REQUEST_DATE.name())));
                 }
             }
-        } catch (SQLException ignored) {
-
         }
         return requests;
     }
@@ -101,7 +99,7 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param userThatSendTheRequest    The user who sent the request.
      * @param userThatReceiveTheRequest The user who received it.
      */
-    public static void cancelRequest(int userThatSendTheRequest, int userThatReceiveTheRequest) {
+    public static void cancelRequest(int userThatSendTheRequest, int userThatReceiveTheRequest) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
                                                    TABLE_NAME,
                                                    UserRelationRequestsColumns.SENT_BY_USER,
@@ -110,13 +108,12 @@ public class UserRelationRequestsRepository extends AbstractRepository {
                               userThatReceiveTheRequest);
     }
 
-    public static void removeAllFromAndTo(int userId) {
+    public static void removeAllFromAndTo(int userId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? or {2} = ?",
                                                    TABLE_NAME,
                                                    UserRelationRequestsColumns.SENT_BY_USER,
                                                    UserRelationRequestsColumns.SENT_TO_USER),
                               userId,
                               userId);
-
     }
 }

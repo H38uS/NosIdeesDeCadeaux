@@ -5,6 +5,8 @@ import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipReposit
 import org.junit.After;
 import org.junit.Test;
 
+import java.sql.SQLException;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
@@ -15,12 +17,12 @@ public class AjouterParentServiceTest extends AbstractTestServlet {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws SQLException {
         ParentRelationshipRepository.deleteParents(firefox);
     }
 
     @Test
-    public void testAjoutSucces() {
+    public void testAjoutSucces() throws SQLException {
 
         ParentRelationshipRepository.deleteParents(firefox);
         when(request.getParameter(AjouterParentService.NAME_OR_EMAIL)).thenReturn("tesT@toto.Com");
@@ -32,7 +34,7 @@ public class AjouterParentServiceTest extends AbstractTestServlet {
     }
 
     @Test
-    public void testIncorrectEmail() {
+    public void testIncorrectEmail() throws SQLException {
 
         ParentRelationshipRepository.deleteParents(firefox);
         when(request.getParameter(AjouterParentService.NAME_OR_EMAIL)).thenReturn("");
@@ -44,7 +46,7 @@ public class AjouterParentServiceTest extends AbstractTestServlet {
     }
 
     @Test
-    public void testDejaAjoute() {
+    public void testDejaAjoute() throws SQLException {
 
         ParentRelationshipRepository.deleteParents(firefox);
         when(request.getParameter(AjouterParentService.NAME_OR_EMAIL)).thenReturn("test@toto.com");

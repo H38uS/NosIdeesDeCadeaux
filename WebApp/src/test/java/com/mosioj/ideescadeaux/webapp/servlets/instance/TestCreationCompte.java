@@ -72,7 +72,7 @@ public class TestCreationCompte extends AbstractTestServlet {
         assertEquals(count + 1, countNewInscriptionNotification());
     }
 
-    protected long countNewInscriptionNotification() {
+    protected long countNewInscriptionNotification() throws SQLException {
         return NotificationsRepository.getUserNotifications(_ADMIN_ID_)
                                       .stream()
                                       .filter(n -> NotifAdministration.class.equals(n.getClass()))

@@ -24,7 +24,7 @@ public class CategoriesRepository extends AbstractRepository {
     /**
      * @return The available list of categories.
      */
-    public static List<Categorie> getCategories() {
+    public static List<Categorie> getCategories() throws SQLException {
 
         List<Categorie> categories = new ArrayList<>();
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
@@ -44,9 +44,6 @@ public class CategoriesRepository extends AbstractRepository {
                                                  rs.getString(CategoriesColumns.TITLE.name())));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while fetching categories: {0}.", e.getMessage()));
         }
 
         return categories;

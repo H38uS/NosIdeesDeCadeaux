@@ -87,25 +87,21 @@ public class ResoudreDemandeAmi extends IdeesCadeauxPostServlet<PeutResoudreDema
             return;
         }
 
-        try {
-            if (accept) {
-                logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.",
-                                                 thisOne.id,
-                                                 fromUserId));
-                UserRelationsRepository.addAssociation(fromUserId, thisOne.id);
-                UserRelationRequestsRepository.cancelRequest(fromUserId, thisOne.id);
-                accepted.add(UsersRepository.getUser(fromUserId));
-                NotificationsRepository.addNotification(fromUserId, new NotifDemandeAcceptee(thisOne.id, thisOne.getName()));
-            } else {
-                logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.",
-                                                 thisOne.id,
-                                                 fromUserId));
-                UserRelationRequestsRepository.cancelRequest(fromUserId, thisOne.id);
-                NotificationsRepository.addNotification(fromUserId, new NotifDemandeRefusee(thisOne.id, thisOne.getName()));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e);
+        if (accept) {
+            logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.",
+                                             thisOne.id,
+                                             fromUserId));
+            UserRelationsRepository.addAssociation(fromUserId, thisOne.id);
+            UserRelationRequestsRepository.cancelRequest(fromUserId, thisOne.id);
+            accepted.add(UsersRepository.getUser(fromUserId));
+            NotificationsRepository.addNotification(fromUserId,
+                                                    new NotifDemandeAcceptee(thisOne.id, thisOne.getName()));
+        } else {
+            logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.",
+                                             thisOne.id,
+                                             fromUserId));
+            UserRelationRequestsRepository.cancelRequest(fromUserId, thisOne.id);
+            NotificationsRepository.addNotification(fromUserId, new NotifDemandeRefusee(thisOne.id, thisOne.getName()));
         }
 
         // Si fromUserId avait supprimé sa relation avec userId

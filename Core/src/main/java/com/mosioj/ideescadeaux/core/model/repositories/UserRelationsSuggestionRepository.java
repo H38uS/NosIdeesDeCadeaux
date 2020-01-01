@@ -30,7 +30,9 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
      * @return True if the given user has received at least one suggestion.
      */
     public static boolean hasReceivedSuggestion(int userId) throws SQLException {
-        return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ?", TABLE_NAME, UserRelationsSuggestionColumns.SUGGESTED_TO),
+        return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ?",
+                                                           TABLE_NAME,
+                                                           UserRelationsSuggestionColumns.SUGGESTED_TO),
                                       userId);
     }
 
@@ -49,9 +51,8 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
     }
 
     /**
-	 *
-	 * @param suggestedTo The person who receives the suggestion.
-	 * @param userId The user id.
+     * @param suggestedTo The person who receives the suggestion.
+     * @param userId      The user id.
      * @return True if and only if suggestedTo has received a notification for userId.
      */
     public static boolean hasReceivedSuggestionOf(int suggestedTo, int userId) throws SQLException {
@@ -70,7 +71,7 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
      * @param toUser               The user receiving the suggestion.
      * @param suggestedUser        User that may be added.
      */
-    public static boolean newSuggestion(int userMakingSuggestion, int toUser, int suggestedUser) {
+    public static boolean newSuggestion(int userMakingSuggestion, int toUser, int suggestedUser) throws SQLException {
         String query = MessageFormat.format(
                 "insert into {0} ({1},{2},{3},{4}) select * FROM (select ?, ?, now(), ?) as vals where not exists (select 1 from {0} where {1} = ? and {2} = ? and {4} = ?)",
                 TABLE_NAME,
@@ -172,9 +173,9 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
      * Removes any suggestions for user to suggestedTo.
      *
      * @param suggestedTo The user we initially sent the suggestion to.
-     * @param user The connected user.
+     * @param user        The connected user.
      */
-    public static void removeIfExists(int suggestedTo, int user) {
+    public static void removeIfExists(int suggestedTo, int user) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
                                                    TABLE_NAME,
                                                    UserRelationsSuggestionColumns.SUGGESTED_TO,
@@ -183,7 +184,7 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
                               user);
     }
 
-    public static void removeAllFromAndTo(int userId) {
+    public static void removeAllFromAndTo(int userId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? or {2} = ?",
                                                    TABLE_NAME,
                                                    UserRelationsSuggestionColumns.SUGGESTED_TO,

@@ -235,27 +235,22 @@ public class IdeesRepository extends AbstractRepository {
      * @param idIdee The idea's id.
      * @return All fields for this idea.
      */
-    public static Idee getIdeaWithoutEnrichment(int idIdee) throws NoRowsException {
+    // FIXME : 0 Optional
+    public static Idee getIdeaWithoutEnrichment(int idIdee) throws NoRowsException, SQLException {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(idIdee);
-            try {
-                if (ps.execute()) {
-                    ResultSet rs = ps.getResultSet();
-                    if (rs.next()) {
-                        return createIdeaFromQuery(rs);
-                    } else {
-                        throw new NoRowsException();
-                    }
+            if (ps.execute()) {
+                ResultSet rs = ps.getResultSet();
+                if (rs.next()) {
+                    return createIdeaFromQuery(rs);
                 } else {
                     throw new NoRowsException();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                logger.error("Idea " + idIdee + " does not exists...");
+            } else {
                 throw new NoRowsException();
             }
         }
@@ -422,7 +417,7 @@ public class IdeesRepository extends AbstractRepository {
                               int priorite,
                               String image,
                               User surprisePar,
-                              User createdBy) {
+                              User createdBy) throws SQLException {
 
         type = type == null ? "" : type;
         int createdById = createdBy == null ? owner.id : createdBy.id;
@@ -473,7 +468,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param idea   The idea's id.
      * @param userId The person who is booking the idea.
      */
-    public static void reserver(int idea, int userId) {
+    public static void reserver(int idea, int userId) throws SQLException {
 
         StringBuilder query = new StringBuilder();
         query.append(MessageFormat.format("update {0} ", TABLE_NAME));
@@ -492,7 +487,7 @@ public class IdeesRepository extends AbstractRepository {
      *
      * @param idea The idea's id.
      */
-    public static void sousReserver(int idea) {
+    public static void sousReserver(int idea) throws SQLException {
 
         StringBuilder query = new StringBuilder();
         query.append(MessageFormat.format("update {0} ", TABLE_NAME));
@@ -512,7 +507,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param id      The idea's id.
      * @param groupId The booking group's id.
      */
-    public static void bookByGroup(int id, int groupId) {
+    public static void bookByGroup(int id, int groupId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ?",
                                                    TABLE_NAME,
                                                    IdeeColumns.GROUPE_KDO_ID,
@@ -528,7 +523,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param idea   The idea's id.
      * @param userId The person who has previously booked the idea.
      */
-    public static void dereserver(int idea, int userId) {
+    public static void dereserver(int idea, int userId) throws SQLException {
 
         StringBuilder query = new StringBuilder();
         query.append(MessageFormat.format("update {0} ", TABLE_NAME));
@@ -723,7 +718,7 @@ public class IdeesRepository extends AbstractRepository {
      *
      * @param ideaId The idea's id.
      */
-    public static void touch(int ideaId) {
+    public static void touch(int ideaId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = now() where {2} = ?",
                                                    TABLE_NAME,
                                                    IdeeColumns.MODIFICATION_DATE,
@@ -740,7 +735,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param priority The idea's priority.
      * @param image    The idea's picture.
      */
-    public static void modifier(int id, String text, String type, String priority, String image) {
+    public static void modifier(int id, String text, String type, String priority, String image) throws SQLException {
         text = StringEscapeUtils.unescapeHtml4(text);
         text = Escaper.escapeIdeaText(text);
         getDb().executeUpdate(MessageFormat.format(
@@ -764,10 +759,12 @@ public class IdeesRepository extends AbstractRepository {
      *
      * @param userId The user's id.
      */
-    public static void removeAll(int userId) {
+    public static void removeAll(int userId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, IdeeColumns.OWNER),
                               userId);
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", "IDEES_HIST", IdeeColumns.OWNER),
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                   "IDEES_HIST",
+                                                   IdeeColumns.OWNER),
                               userId);
     }
 

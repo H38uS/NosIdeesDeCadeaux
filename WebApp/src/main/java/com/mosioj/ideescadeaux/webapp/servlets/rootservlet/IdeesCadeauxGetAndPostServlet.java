@@ -22,7 +22,7 @@ public abstract class IdeesCadeauxGetAndPostServlet<P extends SecurityPolicy> ex
      * @param response The http response.
      * @param ans      This specific service answer, as a JSon string.
      */
-    protected void buildResponse(HttpServletResponse response, ServiceResponse ans) {
+    protected void buildResponse(HttpServletResponse response, ServiceResponse<?> ans) {
         try {
             response.getOutputStream().print(ans.asJSon(response));
         } catch (IOException e) {

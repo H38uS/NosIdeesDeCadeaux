@@ -24,8 +24,10 @@ public class UserParametersRepository extends AbstractRepository {
         // Forbidden
     }
 
-    public static void deleteAllUserParameters(int userId) {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, UserParametersColumns.USER_ID), userId);
+    public static void deleteAllUserParameters(int userId) throws SQLException {
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                   TABLE_NAME,
+                                                   UserParametersColumns.USER_ID), userId);
     }
 
     /**
@@ -35,7 +37,7 @@ public class UserParametersRepository extends AbstractRepository {
      * @param paramName  The parameter name.
      * @param paramValue The new value to insert/update.
      */
-    public static void insertUpdateParameter(User user, String paramName, String paramValue) {
+    public static void insertUpdateParameter(User user, String paramName, String paramValue) throws SQLException {
         int nb = getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? and {3} = ?",
                                                             TABLE_NAME,
                                                             UserParametersColumns.PARAMETER_VALUE,
@@ -97,7 +99,9 @@ public class UserParametersRepository extends AbstractRepository {
         query.append("          ) n ");
 
         query.append(MessageFormat.format("  left join {0} t ", TABLE_NAME));
-        query.append(MessageFormat.format("    on n.{0} = t.{1}", UserParametersColumns.PARAMETER_NAME, UserParametersColumns.PARAMETER_NAME));
+        query.append(MessageFormat.format("    on n.{0} = t.{1}",
+                                          UserParametersColumns.PARAMETER_NAME,
+                                          UserParametersColumns.PARAMETER_NAME));
         query.append(MessageFormat.format("   and t.{0} = ? ", UserParametersColumns.USER_ID));
         query.append(MessageFormat.format(" where t.{0} = ? or t.{0} is null ", UserParametersColumns.USER_ID));
         query.append(MessageFormat.format(" order by n.{0}", UserParametersColumns.PARAMETER_NAME));
@@ -113,7 +117,8 @@ public class UserParametersRepository extends AbstractRepository {
                                                  rs.getInt(UserParametersColumns.USER_ID.name()),
                                                  rs.getString(UserParametersColumns.PARAMETER_NAME.name()),
                                                  rs.getString(UserParametersColumns.PARAMETER_VALUE.name()),
-                                                 NotificationType.valueOf(rs.getString(UserParametersColumns.PARAMETER_NAME.name()))
+                                                 NotificationType.valueOf(rs.getString(UserParametersColumns.PARAMETER_NAME
+                                                                                               .name()))
                                                                  .getDescription()));
                 }
             }

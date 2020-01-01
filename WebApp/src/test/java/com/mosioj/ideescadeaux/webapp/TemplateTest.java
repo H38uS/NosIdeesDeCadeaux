@@ -81,9 +81,16 @@ public class TemplateTest {
 
         for (NotificationType type : NotificationType.values()) {
             UserRelationsRepository.getAllUsersInRelation(UsersRepository.getUser(_OWNER_ID_))
-                                   .forEach(u -> UserParametersRepository.insertUpdateParameter(u,
-                                                                                                type.name(),
-                                                                                                NotificationActivation.SITE.name()));
+                                   .forEach(u -> {
+                                       try {
+                                           UserParametersRepository.insertUpdateParameter(u,
+                                                                                                        type.name(),
+                                                                                                        NotificationActivation.SITE.name());
+                                       } catch (SQLException e) {
+                                           e.printStackTrace();
+                                           Assert.fail();
+                                       }
+                                   });
             UserParametersRepository.insertUpdateParameter(new User(_OWNER_ID_, "", "", ""),
                                                            type.name(),
                                                            NotificationActivation.SITE.name());

@@ -13,13 +13,11 @@ import org.apache.logging.log4j.Logger;
 import org.junit.*;
 import org.junit.rules.TestName;
 
-import java.io.File;
 import java.sql.SQLException;
 
 public class TemplateTest {
 
     private final static Logger LOGGER = LogManager.getLogger(TemplateTest.class);
-    protected final File root = new File(getClass().getResource("/").getFile()).getParentFile().getParentFile();
 
     /**
      * firefox@toto.com aka firefox
@@ -38,11 +36,6 @@ public class TemplateTest {
      */
     protected static final int _MOI_AUTRE_ = 8;
     protected User moiAutre;
-
-    /**
-     * The admin user.
-     */
-    protected static final int _ADMIN_ID_ = 1;
 
     protected static DataSourceIdKDo ds;
 
@@ -81,9 +74,16 @@ public class TemplateTest {
 
         for (NotificationType type : NotificationType.values()) {
             UserRelationsRepository.getAllUsersInRelation(UsersRepository.getUser(_OWNER_ID_))
-                                   .forEach(u -> UserParametersRepository.insertUpdateParameter(u,
-                                                                                                type.name(),
-                                                                                                NotificationActivation.SITE.name()));
+                                   .forEach(u -> {
+                                       try {
+                                           UserParametersRepository.insertUpdateParameter(u,
+                                                                                                        type.name(),
+                                                                                                        NotificationActivation.SITE.name());
+                                       } catch (SQLException e) {
+                                           e.printStackTrace();
+                                           Assert.fail();
+                                       }
+                                   });
             UserParametersRepository.insertUpdateParameter(new User(_OWNER_ID_, "", "", ""),
                                                            type.name(),
                                                            NotificationActivation.SITE.name());

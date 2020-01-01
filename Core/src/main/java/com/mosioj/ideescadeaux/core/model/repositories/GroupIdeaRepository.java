@@ -35,7 +35,7 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param userId First user belonging to this new group.
      * @return The group's idea
      */
-    public static int createAGroup(double total, double amount, int userId) {
+    public static int createAGroup(double total, double amount, int userId) throws SQLException {
         int id = getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1}) values (?)",
                                                                         TABLE_NAME,
                                                                         GroupIdeaColumns.NEEDED_PRICE),
@@ -51,7 +51,7 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param userId  The user id.
      * @param groupId The group id.
      */
-    public static void addNewAmount(double amount, int userId, int groupId) {
+    public static void addNewAmount(double amount, int userId, int groupId) throws SQLException {
         getDb().executeUpdateGeneratedKey(MessageFormat.format(
                 "insert into {0} ({1},{2},{3},{4}) values (?, ?, ?, now())",
                 TABLE_NAME_CONTENT,
@@ -126,7 +126,7 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param user      The user id.
      * @param newAmount The new amount
      */
-    public static void updateAmount(Integer groupId, User user, double newAmount) {
+    public static void updateAmount(Integer groupId, User user, double newAmount) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? and {3} = ?",
                                                    TABLE_NAME_CONTENT,
                                                    GroupIdeaContentColumns.PRICE,

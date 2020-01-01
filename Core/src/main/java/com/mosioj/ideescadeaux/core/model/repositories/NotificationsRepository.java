@@ -115,7 +115,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param user      The user.
      * @param notifType The notification type.
      */
-    public static void removeAllType(User user, NotificationType notifType) {
+    public static void removeAllType(User user, NotificationType notifType) throws SQLException {
 
         logger.info(MessageFormat.format("Delete notification {0} for user {1}", notifType.name(), user));
 
@@ -130,10 +130,19 @@ public class NotificationsRepository extends AbstractRepository {
     }
 
     public static void remove(int notificationId) {
-        logger.info(MessageFormat.format("Suppression de la notification {0}", notificationId));
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, NotificationsColumns.ID), notificationId);
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_PARAMS, NotificationParametersColumns.NOTIFICATION_ID),
-                              notificationId);
+        try {
+            logger.info(MessageFormat.format("Suppression de la notification {0}", notificationId));
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
+                                                       TABLE_NAME,
+                                                       NotificationsColumns.ID), notificationId);
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
+                                                       TABLE_PARAMS,
+                                                       NotificationParametersColumns.NOTIFICATION_ID),
+                                  notificationId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
     }
 
     /**
@@ -147,7 +156,7 @@ public class NotificationsRepository extends AbstractRepository {
     public static void removeAllType(User owner,
                                      NotificationType type,
                                      ParameterName parameterName,
-                                     Object parameterValue) {
+                                     Object parameterValue) throws SQLException {
         StringBuilder sb = new StringBuilder();
         sb.append(MessageFormat.format("delete from {0} where ", TABLE_NAME));
         sb.append(MessageFormat.format(
@@ -183,7 +192,7 @@ public class NotificationsRepository extends AbstractRepository {
                                      ParameterName parameterName,
                                      Object parameterValue,
                                      ParameterName parameterName2,
-                                     Object parameterValue2) {
+                                     Object parameterValue2) throws SQLException {
         StringBuilder sb = new StringBuilder();
         sb.append(MessageFormat.format("delete from {0} where \n ", TABLE_NAME));
         sb.append(MessageFormat.format(
@@ -251,7 +260,10 @@ public class NotificationsRepository extends AbstractRepository {
 
         for (ParameterName key : parameters.keySet()) {
             query.append(MessageFormat.format("inner join {0} p{1} ", TABLE_PARAMS, i));
-            query.append(MessageFormat.format("on n.{0} = p{2}.{1} ", NotificationsColumns.ID, NotificationParametersColumns.NOTIFICATION_ID, i));
+            query.append(MessageFormat.format("on n.{0} = p{2}.{1} ",
+                                              NotificationsColumns.ID,
+                                              NotificationParametersColumns.NOTIFICATION_ID,
+                                              i));
             query.append(MessageFormat.format("and p{0}.{1} = ? ", i, NotificationParametersColumns.PARAMETER_NAME));
             query.append(MessageFormat.format("and p{0}.{1} = ? ", i, NotificationParametersColumns.PARAMETER_VALUE));
 
@@ -278,13 +290,11 @@ public class NotificationsRepository extends AbstractRepository {
      * @param parameters The parameters.
      * @return The list of notification found.
      */
-    private static List<AbstractNotification> getNotificationFromQuery(String query, Object... parameters) {
+    private static List<AbstractNotification> getNotificationFromQuery(String query, Object... parameters) throws SQLException {
 
-        PreparedStatementIdKdo ps = null;
         List<AbstractNotification> notifications = new ArrayList<>();
 
-        try {
-            ps = new PreparedStatementIdKdo(getDb(), query);
+        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters(parameters);
             if (ps.execute()) {
 
@@ -315,7 +325,8 @@ public class NotificationsRepository extends AbstractRepository {
                         // reading parameters
                         String name = res.getString(NotificationParametersColumns.PARAMETER_NAME.name());
                         if (name != null && !name.isEmpty()) {
-                            notifParams.put(ParameterName.valueOf(name), res.getString(NotificationParametersColumns.PARAMETER_VALUE.name()));
+                            notifParams.put(ParameterName.valueOf(name),
+                                            res.getString(NotificationParametersColumns.PARAMETER_VALUE.name()));
                         }
                         continue;
                     }
@@ -341,7 +352,8 @@ public class NotificationsRepository extends AbstractRepository {
                     notifParams = new HashMap<>();
                     String name = res.getString(NotificationParametersColumns.PARAMETER_NAME.name());
                     if (name != null && !name.isEmpty()) {
-                        notifParams.put(ParameterName.valueOf(name), res.getString(NotificationParametersColumns.PARAMETER_VALUE.name()));
+                        notifParams.put(ParameterName.valueOf(name),
+                                        res.getString(NotificationParametersColumns.PARAMETER_VALUE.name()));
                     }
                 }
 
@@ -357,13 +369,6 @@ public class NotificationsRepository extends AbstractRepository {
                 }
 
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e);
-        } finally {
-            if (ps != null) {
-                ps.close();
-            }
         }
 
         return notifications;
@@ -374,7 +379,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param parameters  The parameters.
      * @return The notifications matched by this where clause or all.
      */
-    private static List<AbstractNotification> getNotificationWithWhereClause(String whereClause, Object... parameters) {
+    private static List<AbstractNotification> getNotificationWithWhereClause(String whereClause, Object... parameters) throws SQLException {
 
         StringBuilder query = new StringBuilder();
         query.append(MessageFormat.format("select {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8} ",
@@ -389,7 +394,9 @@ public class NotificationsRepository extends AbstractRepository {
                                           NotificationsColumns.READ_ON));
         query.append(MessageFormat.format("  from {0} ", TABLE_NAME));
         query.append(MessageFormat.format("  left join {0} ", TABLE_PARAMS));
-        query.append(MessageFormat.format("    on {0} = {1} ", NotificationsColumns.ID, NotificationParametersColumns.NOTIFICATION_ID));
+        query.append(MessageFormat.format("    on {0} = {1} ",
+                                          NotificationsColumns.ID,
+                                          NotificationParametersColumns.NOTIFICATION_ID));
 
         if (whereClause != null && !whereClause.isEmpty()) {
             query.append(MessageFormat.format(" where {0}", whereClause));
@@ -405,7 +412,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return All notifications for this user.
      */
-    public static List<AbstractNotification> getUserNotifications(int userId) {
+    public static List<AbstractNotification> getUserNotifications(int userId) throws SQLException {
         return getNotificationWithWhereClause(MessageFormat.format("{0} = ?", NotificationsColumns.OWNER), userId);
     }
 
@@ -413,8 +420,10 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return All notifications for this user.
      */
-    public static List<AbstractNotification> getUserNotifications(int userId, NotificationType type) {
-        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", NotificationsColumns.OWNER, NotificationsColumns.TYPE),
+    public static List<AbstractNotification> getUserNotifications(int userId, NotificationType type) throws SQLException {
+        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
+                                                                   NotificationsColumns.OWNER,
+                                                                   NotificationsColumns.TYPE),
                                               userId,
                                               type.name());
     }
@@ -423,8 +432,10 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return All notifications for this user.
      */
-    public static List<AbstractNotification> getUserReadNotifications(int userId) {
-        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", NotificationsColumns.OWNER, NotificationsColumns.IS_UNREAD),
+    public static List<AbstractNotification> getUserReadNotifications(int userId) throws SQLException {
+        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
+                                                                   NotificationsColumns.OWNER,
+                                                                   NotificationsColumns.IS_UNREAD),
                                               userId,
                                               "N");
     }
@@ -433,8 +444,10 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return All notifications for this user.
      */
-    public static List<AbstractNotification> getUserUnReadNotifications(int userId) {
-        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?", NotificationsColumns.OWNER, NotificationsColumns.IS_UNREAD),
+    public static List<AbstractNotification> getUserUnReadNotifications(int userId) throws SQLException {
+        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
+                                                                   NotificationsColumns.OWNER,
+                                                                   NotificationsColumns.IS_UNREAD),
                                               userId,
                                               "Y");
     }
@@ -449,7 +462,7 @@ public class NotificationsRepository extends AbstractRepository {
     public static List<AbstractNotification> getNotifications(int owner,
                                                               NotificationType type,
                                                               ParameterName parameterName,
-                                                              Object parameterValue) {
+                                                              Object parameterValue) throws SQLException {
         String whereClause = MessageFormat.format(
                 " exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?) and {5} = ? and {6} = ?",
                 TABLE_PARAMS,
@@ -467,7 +480,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param parameterValue The paramter value.
      * @return The list of notification having the given parameter name equals to this value.
      */
-    public static List<AbstractNotification> getNotification(ParameterName parameterName, Object parameterValue) {
+    public static List<AbstractNotification> getNotification(ParameterName parameterName, Object parameterValue) throws SQLException {
         String whereClause = MessageFormat.format(" exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?)",
                                                   TABLE_PARAMS,
                                                   NotificationParametersColumns.NOTIFICATION_ID,
@@ -481,8 +494,9 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notifId The notification id.
      * @return The notification corresponding to this id.
      */
-    public static AbstractNotification getNotification(int notifId) {
-        List<AbstractNotification> notifs = getNotificationWithWhereClause(MessageFormat.format("{0} = ?", NotificationsColumns.ID),
+    public static AbstractNotification getNotification(int notifId) throws SQLException {
+        List<AbstractNotification> notifs = getNotificationWithWhereClause(MessageFormat.format("{0} = ?",
+                                                                                                NotificationsColumns.ID),
                                                                            notifId);
         return notifs.size() == 0 ? null : notifs.get(0);
     }
@@ -498,7 +512,11 @@ public class NotificationsRepository extends AbstractRepository {
         // Insert a DB notification
         StringBuilder query = new StringBuilder();
         query.append(MessageFormat.format(" insert into {0} ", TABLE_NAME));
-        query.append(MessageFormat.format("   ({0},{1},{2},{3}) ", NotificationsColumns.OWNER, NotificationsColumns.TEXT, NotificationsColumns.TYPE, NotificationsColumns.CREATION_DATE));
+        query.append(MessageFormat.format("   ({0},{1},{2},{3}) ",
+                                          NotificationsColumns.OWNER,
+                                          NotificationsColumns.TEXT,
+                                          NotificationsColumns.TYPE,
+                                          NotificationsColumns.CREATION_DATE));
         query.append(MessageFormat.format(" select u.{0}, ''{1}'', ''{2}'', now()",
                                           UsersColumns.ID,
                                           message,
@@ -509,7 +527,12 @@ public class NotificationsRepository extends AbstractRepository {
                                           UsersColumns.EMAIL));
         query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
 
-        getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
+        try {
+            getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.warn("Fail to write notification.");
+        }
 
         // Send emails to the ADMIN
         query = new StringBuilder();
@@ -537,10 +560,9 @@ public class NotificationsRepository extends AbstractRepository {
                     e.printStackTrace();
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            logger.warn(e.getMessage());
+            logger.warn("Fail to write notification.");
         }
     }
 
@@ -568,7 +590,7 @@ public class NotificationsRepository extends AbstractRepository {
      *
      * @param thisOne   The current connected user.
      * @param exception The exception thrown.
-	 */
+     */
     public static void logError(User thisOne, Exception exception) {
 
         StringBuilder notifText = new StringBuilder();
@@ -593,7 +615,7 @@ public class NotificationsRepository extends AbstractRepository {
      *
      * @param notifId The notification id.
      */
-    public static void setRead(int notifId) {
+    public static void setRead(int notifId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ? ",
                                                    TABLE_NAME,
                                                    NotificationsColumns.IS_UNREAD,
@@ -608,14 +630,19 @@ public class NotificationsRepository extends AbstractRepository {
      *
      * @param notifId The notification id.
      */
-    public static void setUnread(int notifId) {
-        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? ", TABLE_NAME, NotificationsColumns.IS_UNREAD, NotificationsColumns.ID),
+    public static void setUnread(int notifId) throws SQLException {
+        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? ",
+                                                   TABLE_NAME,
+                                                   NotificationsColumns.IS_UNREAD,
+                                                   NotificationsColumns.ID),
                               "Y",
                               notifId);
     }
 
-    public static void removeAll(int userId) {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ", TABLE_NAME, NotificationsColumns.OWNER), userId);
+    public static void removeAll(int userId) throws SQLException {
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
+                                                   TABLE_NAME,
+                                                   NotificationsColumns.OWNER), userId);
         String query = MessageFormat.format("delete from {0} where not exists (select 1 from {1} n where {2} = n.{3}) ",
                                             TABLE_PARAMS,
                                             TABLE_NAME,

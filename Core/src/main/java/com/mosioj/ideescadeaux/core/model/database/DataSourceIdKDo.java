@@ -82,7 +82,7 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The number of rows inserted / updated / deleted.
      */
-    public int executeUpdate(String query, Object... parameters) {
+    public int executeUpdate(String query, Object... parameters) throws SQLException {
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
             statement.bindParameters(parameters);
             return statement.executeUpdate();
@@ -96,7 +96,7 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The generated key value.
      */
-    public int executeUpdateGeneratedKey(String query, Object... parameters) {
+    public int executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
         try (PreparedStatementIdKdoInserter statement = new PreparedStatementIdKdoInserter(this, query)) {
             statement.bindParameters(parameters);
             return statement.executeUpdate();

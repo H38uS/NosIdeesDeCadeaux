@@ -26,7 +26,7 @@ public class CommentsRepository extends AbstractRepository {
      * @param ideaId The idea id.
      * @param text   The text of the comment.
      */
-    public static void addComment(int userId, Integer ideaId, String text) {
+    public static void addComment(int userId, Integer ideaId, String text) throws SQLException {
         getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
                                                                TABLE_NAME,
                                                                CommentsColumns.IDEA_ID,
@@ -75,12 +75,15 @@ public class CommentsRepository extends AbstractRepository {
     }
 
     /**
-     *
      * @param ideaId The idea.
      * @return The number of comments on this idea.
      */
     public static int getNbComments(int ideaId) throws SQLException {
-        return getDb().selectCountStar("select count(*) from " + TABLE_NAME + " where " + CommentsColumns.IDEA_ID + " = ?", ideaId);
+        return getDb().selectCountStar("select count(*) from " +
+                                       TABLE_NAME +
+                                       " where " +
+                                       CommentsColumns.IDEA_ID +
+                                       " = ?", ideaId);
     }
 
     /**
@@ -174,15 +177,18 @@ public class CommentsRepository extends AbstractRepository {
     /**
      * @param commentId The comment id.
      */
-    public static void delete(int commentId) {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, CommentsColumns.ID), commentId);
+    public static void delete(int commentId) throws SQLException {
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, CommentsColumns.ID),
+                              commentId);
     }
 
     /**
      * @param userId The user id.
      */
-    public static void deleteAll(int userId) {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, CommentsColumns.WRITTEN_BY), userId);
+    public static void deleteAll(int userId) throws SQLException {
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                   TABLE_NAME,
+                                                   CommentsColumns.WRITTEN_BY), userId);
     }
 
 }

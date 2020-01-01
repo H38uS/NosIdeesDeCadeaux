@@ -316,7 +316,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param userThatSendTheRequest    The user that is asking to be friend.
      * @param userThatReceiveTheRequest The user that is asked to be friend.
      */
-    public static void addAssociation(int userThatSendTheRequest, int userThatReceiveTheRequest) {
+    public static void addAssociation(int userThatSendTheRequest, int userThatReceiveTheRequest) throws SQLException {
         getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
                                                                TABLE_NAME,
                                                                UserRelationsColumns.FIRST_USER,
@@ -339,7 +339,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param firstUserId  One user id.
      * @param secondUserId Another user id.
      */
-    public static void deleteAssociation(int firstUserId, int secondUserId) {
+    public static void deleteAssociation(int firstUserId, int secondUserId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format(
                 "delete from {0} where ({1} = ? and {2} = ?) or ({1} = ? and {2} = ?)",
                 TABLE_NAME,
@@ -351,14 +351,13 @@ public class UserRelationsRepository extends AbstractRepository {
                               firstUserId);
     }
 
-    public static void removeAllAssociationsTo(int userId) {
+    public static void removeAllAssociationsTo(int userId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? or {2} = ?",
                                                    TABLE_NAME,
                                                    UserRelationsColumns.FIRST_USER,
                                                    UserRelationsColumns.SECOND_USER),
                               userId,
                               userId);
-
     }
 
     /**

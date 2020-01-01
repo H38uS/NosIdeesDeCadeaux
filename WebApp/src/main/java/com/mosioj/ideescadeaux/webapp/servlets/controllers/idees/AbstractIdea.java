@@ -154,11 +154,19 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
             // Send a notification for each user that has no such modification notification yet
             UserRelationsRepository.getAllUsersInRelation(user)
                                    .parallelStream()
-                                   .filter(u -> NotificationsRepository.getNotifications(u.id,
-                                                                                         NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                                                         ParameterName.IDEA_ID,
-                                                                                         idea.getId())
-                                                                       .size() == 0)
+                                   .filter(u -> {
+                                       try {
+                                           return NotificationsRepository.getNotifications(u.id,
+                                                                                                 NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
+                                                                                                 ParameterName.IDEA_ID,
+                                                                                                 idea.getId())
+                                                                               .size() == 0;
+                                       } catch (SQLException e) {
+                                           e.printStackTrace();
+                                           logger.error("Fail to add a notification: " + e.getMessage());
+                                           return false;
+                                       }
+                                   })
                                    .forEach(u ->
                                                     NotificationsRepository.addNotification(u.id,
                                                                                             new NotifIdeaModifiedWhenBirthdayIsSoon(

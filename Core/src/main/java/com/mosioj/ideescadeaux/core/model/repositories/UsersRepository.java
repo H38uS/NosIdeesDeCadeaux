@@ -39,7 +39,7 @@ public class UsersRepository extends AbstractRepository {
      * @param name        The user name.
      * @return the created user id.
      */
-    public static int addNewPersonne(String email, String digestedPwd, String name) {
+    public static int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
         int userId = getDb().executeUpdateGeneratedKey(MessageFormat.format(
                 "insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
                 TABLE_NAME,
@@ -96,7 +96,10 @@ public class UsersRepository extends AbstractRepository {
      * @return This person's id.
      */
     public static int getId(String email) throws NoRowsException, SQLException {
-        return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?", UsersColumns.ID, TABLE_NAME, UsersColumns.EMAIL),
+        return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?",
+                                                      UsersColumns.ID,
+                                                      TABLE_NAME,
+                                                      UsersColumns.EMAIL),
                                  email);
     }
 
@@ -158,7 +161,10 @@ public class UsersRepository extends AbstractRepository {
                                             UsersColumns.CREATION_DATE,
                                             UsersColumns.LAST_LOGIN) +
                        MessageFormat.format("  from {0} u ", TABLE_NAME) +
-                       MessageFormat.format(" order by {0}, {1}, {2} ", UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.ID);
+                       MessageFormat.format(" order by {0}, {1}, {2} ",
+                                            UsersColumns.NAME,
+                                            UsersColumns.EMAIL,
+                                            UsersColumns.ID);
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
                                                                     query)) {
@@ -169,19 +175,8 @@ public class UsersRepository extends AbstractRepository {
 
             ResultSet res = ps.getResultSet();
             while (res.next()) {
-
-                Timestamp creation = null;
-                try {
-                    creation = res.getTimestamp(UsersColumns.CREATION_DATE.name());
-                } catch (SQLException ignored) {
-                }
-
-                Timestamp lastLogin = null;
-                try {
-                    lastLogin = res.getTimestamp(UsersColumns.LAST_LOGIN.name());
-                } catch (SQLException ignored) {
-                }
-
+                Timestamp creation = res.getTimestamp(UsersColumns.CREATION_DATE.name());
+                Timestamp lastLogin = res.getTimestamp(UsersColumns.LAST_LOGIN.name());
                 users.add(new User(res.getInt(UsersColumns.ID.name()),
                                    res.getString(UsersColumns.NAME.name()),
                                    res.getString(UsersColumns.EMAIL.name()),
@@ -219,7 +214,11 @@ public class UsersRepository extends AbstractRepository {
         nameToMatch = sanitizeSQLLike(nameToMatch);
 
         StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("select {0},{1},{2},{3} ", UsersColumns.ID, UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.AVATAR));
+        query.append(MessageFormat.format("select {0},{1},{2},{3} ",
+                                          UsersColumns.ID,
+                                          UsersColumns.NAME,
+                                          UsersColumns.EMAIL,
+                                          UsersColumns.AVATAR));
         query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
         query.append(MessageFormat.format(" where (lower({0}) like ? ESCAPE ''!''   ", UsersColumns.NAME));
         query.append(MessageFormat.format("    or  lower({0}) like ? ESCAPE ''!'' ) ", UsersColumns.EMAIL));
@@ -228,10 +227,15 @@ public class UsersRepository extends AbstractRepository {
             query.append("   and not exists ( ");
             query.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
             query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
-            query.append(MessageFormat.format("    and {0} = u.{1} ", UserRelationsColumns.SECOND_USER, UsersColumns.ID));
+            query.append(MessageFormat.format("    and {0} = u.{1} ",
+                                              UserRelationsColumns.SECOND_USER,
+                                              UsersColumns.ID));
             query.append("   ) ");
         }
-        query.append(MessageFormat.format(" order by {0}, {1}, {2} ", UsersColumns.NAME, UsersColumns.EMAIL, UsersColumns.ID));
+        query.append(MessageFormat.format(" order by {0}, {1}, {2} ",
+                                          UsersColumns.NAME,
+                                          UsersColumns.EMAIL,
+                                          UsersColumns.ID));
         query.append(" 						LIMIT ?, ? ");
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
@@ -279,7 +283,9 @@ public class UsersRepository extends AbstractRepository {
             query.append("   and not exists ( ");
             query.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
             query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
-            query.append(MessageFormat.format("    and {0} = u.{1} ", UserRelationsColumns.SECOND_USER, UsersColumns.ID));
+            query.append(MessageFormat.format("    and {0} = u.{1} ",
+                                              UserRelationsColumns.SECOND_USER,
+                                              UsersColumns.ID));
             query.append("   ) ");
         }
 
@@ -309,13 +315,16 @@ public class UsersRepository extends AbstractRepository {
      * @param userId      The user id.
      * @param digestedPwd The new obfuscated password.
      */
-    public static void updatePassword(int userId, String digestedPwd) {
-        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ?", TABLE_NAME, UsersColumns.PASSWORD, UsersColumns.ID),
+    public static void updatePassword(int userId, String digestedPwd) throws SQLException {
+        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ?",
+                                                   TABLE_NAME,
+                                                   UsersColumns.PASSWORD,
+                                                   UsersColumns.ID),
                               digestedPwd,
                               userId);
     }
 
-    public static void deleteUser(User user) {
+    public static void deleteUser(User user) throws SQLException {
 
         LOGGER.info(MessageFormat.format("Suppression de {0}...", user));
         int userId = user.id;
@@ -355,7 +364,8 @@ public class UsersRepository extends AbstractRepository {
                               user.email);
 
         // Et !! Suppression du user
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, UsersColumns.ID), userId);
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, UsersColumns.ID),
+                              userId);
     }
 
     /**
@@ -363,8 +373,14 @@ public class UsersRepository extends AbstractRepository {
      *
      * @param email The user's email.
      */
-    public static void touch(String email) {
-        getDb().executeUpdate("update " + TABLE_NAME + " set " + UsersColumns.LAST_LOGIN + " = now() where " + UsersColumns.EMAIL + " = ?",
+    public static void touch(String email) throws SQLException {
+        getDb().executeUpdate("update " +
+                              TABLE_NAME +
+                              " set " +
+                              UsersColumns.LAST_LOGIN +
+                              " = now() where " +
+                              UsersColumns.EMAIL +
+                              " = ?",
                               email);
     }
 

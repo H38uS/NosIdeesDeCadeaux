@@ -47,7 +47,10 @@ public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBook
         int userId = thisOne.id;
         logger.debug(MessageFormat.format("Demande de validité sur l''idée {0} de {1}.", idea.getId(), userId));
 
-        // FIXME : 0 vérifier que ça n'existe pas déjà pour éviter la stack trace
+        if (IsUpToDateQuestionsRepository.associationExists(idea, thisOne)) {
+            return false;
+        }
+
         if (IsUpToDateQuestionsRepository.addAssociation(idea.getId(), userId) == 1) {
             NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(UsersRepository.getUser(userId), idea);
             if (!NotificationsRepository.hasNotification(idea.owner.id, isUpToDateNotif)) {

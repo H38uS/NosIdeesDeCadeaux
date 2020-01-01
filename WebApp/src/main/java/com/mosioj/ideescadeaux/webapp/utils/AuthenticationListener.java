@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.utils;
 
+import java.sql.SQLException;
 import java.text.MessageFormat;
 
 import org.apache.logging.log4j.LogManager;
@@ -51,7 +52,10 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
             logger.info(MessageFormat.format("{0} vient de se connecter. Détails: {1}",
                                              email,
                                              event.getAuthentication().getDetails()));
-            UsersRepository.touch(email);
+            try {
+                UsersRepository.touch(email);
+            } catch (SQLException ignored) {
+            }
             return;
         }
 

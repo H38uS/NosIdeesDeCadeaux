@@ -20,7 +20,7 @@ public class SousReservationRepository extends AbstractRepository {
         // Forbidden
     }
 
-    public static void sousReserver(int idea, int userId, String comment) {
+    public static void sousReserver(int idea, int userId, String comment) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("insert into {0}({1},{2},{3},{4}) values (?, ?, ?, now()) ",
                                                    TABLE_NAME,
                                                    SousReservationColumns.IDEE_ID,

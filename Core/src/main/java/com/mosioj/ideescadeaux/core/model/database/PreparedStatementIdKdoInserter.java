@@ -48,57 +48,46 @@ public class PreparedStatementIdKdoInserter implements Closeable {
      *
      * @param parameters The query parameters.
      */
-    public void bindParameters(Object... parameters) {
+    public void bindParameters(Object... parameters) throws SQLException {
 
         logger.trace("Binding parameters...");
 
-        try {
-            for (int i = 0; i < parameters.length; i++) {
-                Object parameter = parameters[i];
-                logger.trace("Binding parameter " + i + " to " + parameter);
-                if (parameter == null) {
-                    ps.setString(i + 1, null);
-                    continue;
-                }
-
-                if (parameter instanceof User) {
-                    ps.setInt(i + 1, ((User) parameter).getId());
-                    continue;
-                }
-
-                if (parameter instanceof Double) {
-                    ps.setDouble(i + 1, (Double) parameter);
-                    continue;
-                }
-
-                if (parameter instanceof Integer) {
-                    ps.setInt(i + 1, (Integer) parameter);
-                    continue;
-                }
-
-                // Default case - String
-                ps.setString(i + 1, parameter.toString());
+        for (int i = 0; i < parameters.length; i++) {
+            Object parameter = parameters[i];
+            logger.trace("Binding parameter " + i + " to " + parameter);
+            if (parameter == null) {
+                ps.setString(i + 1, null);
+                continue;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while binding parameters: {0}.", e.getMessage()));
+
+            if (parameter instanceof User) {
+                ps.setInt(i + 1, ((User) parameter).getId());
+                continue;
+            }
+
+            if (parameter instanceof Double) {
+                ps.setDouble(i + 1, (Double) parameter);
+                continue;
+            }
+
+            if (parameter instanceof Integer) {
+                ps.setInt(i + 1, (Integer) parameter);
+                continue;
+            }
+
+            // Default case - String
+            ps.setString(i + 1, parameter.toString());
         }
     }
 
     /**
      * @return The generated key.
      */
-    public int executeUpdate() { // FIXME : 0 faire un optional pour les erreurs
-        try {
-            ps.executeUpdate();
-            ResultSet res = ps.getGeneratedKeys();
-            res.next();
-            return res.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(MessageFormat.format("Error while executing update: {0}.", e.getMessage()));
-            return 0;
-        }
+    public int executeUpdate() throws SQLException {
+        ps.executeUpdate();
+        ResultSet res = ps.getGeneratedKeys();
+        res.next();
+        return res.getInt(1);
     }
 
 }
