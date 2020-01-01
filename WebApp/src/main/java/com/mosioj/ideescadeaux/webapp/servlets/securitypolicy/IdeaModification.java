@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -39,7 +40,7 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
     }
 
     /**
-     * @param request  The http request.
+     * @param request The http request.
      * @return True if the current user can interact with the idea.
      */
     private boolean canModifyIdea(HttpServletRequest request) throws SQLException {
@@ -52,8 +53,9 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
 
         int userId = connectedUser.id;
 
-        idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        if (idea == null) {
+        try {
+            idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
+        } catch (NoRowsException e) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }

@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -20,7 +21,7 @@ public class TestIdeaComment extends AbstractTestServlet {
     }
 
     @Test
-    public void test() throws SQLException {
+    public void test() throws NoRowsException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);

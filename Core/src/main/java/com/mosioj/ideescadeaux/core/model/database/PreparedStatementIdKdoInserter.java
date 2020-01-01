@@ -88,7 +88,7 @@ public class PreparedStatementIdKdoInserter implements Closeable {
     /**
      * @return The generated key.
      */
-    public int executeUpdate() {
+    public int executeUpdate() { // FIXME : 0 faire un optional pour les erreurs
         try {
             ps.executeUpdate();
             ResultSet res = ps.getGeneratedKeys();

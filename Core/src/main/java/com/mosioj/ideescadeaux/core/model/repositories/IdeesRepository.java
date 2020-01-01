@@ -235,22 +235,30 @@ public class IdeesRepository extends AbstractRepository {
      * @param idIdee The idea's id.
      * @return All fields for this idea.
      */
-    public static Idee getIdeaWithoutEnrichment(int idIdee) throws SQLException {
+    public static Idee getIdeaWithoutEnrichment(int idIdee) throws NoRowsException {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(idIdee);
-            if (ps.execute()) {
-                ResultSet rs = ps.getResultSet();
-                if (rs.next()) {
-                    return createIdeaFromQuery(rs);
+            try {
+                if (ps.execute()) {
+                    ResultSet rs = ps.getResultSet();
+                    if (rs.next()) {
+                        return createIdeaFromQuery(rs);
+                    } else {
+                        throw new NoRowsException();
+                    }
+                } else {
+                    throw new NoRowsException();
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                logger.error("Idea " + idIdee + " does not exists...");
+                throw new NoRowsException();
             }
         }
-
-        return null;
     }
 
     /**

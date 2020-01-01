@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -21,7 +22,7 @@ public class TestReserverIdee extends AbstractTestServlet {
     }
 
     @Test
-    public void test() throws SQLException {
+    public void test() throws NoRowsException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
@@ -38,7 +39,7 @@ public class TestReserverIdee extends AbstractTestServlet {
     }
 
     @Test
-    public void testReservationSurprise() throws SQLException {
+    public void testReservationSurprise() throws NoRowsException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);

@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
@@ -81,12 +82,16 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
                                                      parameters.get("image"),
                                                      estSurprise ? currentUser : null,
                                                      currentUser);
-                Idee idea = getIdeaAndEnrichIt(ideaId);
-                request.setAttribute("idee", idea);
 
-                if (!estSurprise) {
-                    NotificationsRepository.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
-                    NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
+                try {
+                    Idee idea = getIdeaAndEnrichIt(ideaId);
+                    request.setAttribute("idee", idea);
+                    if (!estSurprise) {
+                        NotificationsRepository.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
+                        NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
+                    }
+                } catch (NoRowsException ignored) {
+                    // Impossible, we jute created it
                 }
             }
 

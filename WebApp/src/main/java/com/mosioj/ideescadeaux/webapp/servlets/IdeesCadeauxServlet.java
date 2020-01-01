@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Priorite;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
@@ -483,7 +484,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @param ideaId The idea's id.
      * @return The idea from the DB, enriched with useful information.
      */
-    protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException {
+    protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException, NoRowsException {
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
         fillAUserIdea(thisOne, idee, device.isMobile());
         return idee;

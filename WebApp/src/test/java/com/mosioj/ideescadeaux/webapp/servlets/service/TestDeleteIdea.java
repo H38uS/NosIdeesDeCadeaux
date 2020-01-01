@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.*;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
@@ -21,7 +22,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testDelete() throws SQLException {
+    public void testDelete() {
 
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
@@ -36,7 +37,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testDeleteWithGroupBooking() throws SQLException {
+    public void testDeleteWithGroupBooking() throws SQLException, NoRowsException {
 
         // Creation de l'idée
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
@@ -65,7 +66,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testUnderlyingNotificationAreWellRemoved() throws SQLException {
+    public void testUnderlyingNotificationAreWellRemoved() throws NoRowsException {
 
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));

@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
@@ -52,8 +53,9 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
 
         int userId = connectedUser.id;
 
-        idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        if (idea == null) {
+        try {
+            idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
+        } catch (NoRowsException e) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }

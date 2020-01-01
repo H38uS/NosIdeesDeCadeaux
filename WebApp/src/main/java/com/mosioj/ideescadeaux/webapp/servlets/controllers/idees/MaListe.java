@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
@@ -80,12 +81,22 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
                                                      parameters.get("image"),
                                                      null,
                                                      user);
-                addModificationNotification(user, IdeesRepository.getIdeaWithoutEnrichment(ideaId), true);
+
+                try {
+                    addModificationNotification(user, IdeesRepository.getIdeaWithoutEnrichment(ideaId), true);
+                } catch (NoRowsException ignored) {
+                    // Impossible, we jute created it
+                }
+
                 NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
 
                 request.getSession().setAttribute("added_idea_id", ideaId);
 
-                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST + "?" + VoirListe.USER_ID_PARAM + "=" + user.id,
+                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
+                                             "?" +
+                                             VoirListe.USER_ID_PARAM +
+                                             "=" +
+                                             user.id,
                                              request,
                                              response);
                 return;
