@@ -47,7 +47,7 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
             return false;
         }
 
-        user = UsersRepository.getUser(child.get());
+        user = UsersRepository.getUser(child.get()).orElseThrow(SQLException::new);
         return true;
     }
 

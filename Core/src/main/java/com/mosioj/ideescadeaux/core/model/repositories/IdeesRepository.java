@@ -260,6 +260,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param groupId The booking group's id.
      * @return The idea id of the idea booked by this group.
      */
+    // FIXME : optional
     public static Idee getIdeaWithoutEnrichmentFromGroup(int groupId) throws SQLException {
 
         StringBuilder query = getIdeaBasedSelect();

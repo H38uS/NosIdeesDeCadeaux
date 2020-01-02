@@ -91,11 +91,18 @@ public class ResoudreDemandeAmi extends IdeesCadeauxPostServlet<PeutResoudreDema
             logger.info(MessageFormat.format("Approbation de la demande par {0} de l'utilisateur {1}.",
                                              thisOne.id,
                                              fromUserId));
-            UserRelationsRepository.addAssociation(fromUserId, thisOne.id);
-            UserRelationRequestsRepository.cancelRequest(fromUserId, thisOne.id);
-            accepted.add(UsersRepository.getUser(fromUserId));
-            NotificationsRepository.addNotification(fromUserId,
-                                                    new NotifDemandeAcceptee(thisOne.id, thisOne.getName()));
+            UsersRepository.getUser(fromUserId).ifPresent(u -> {
+                try {
+                    UserRelationsRepository.addAssociation(fromUserId, thisOne.id);
+                    UserRelationRequestsRepository.cancelRequest(fromUserId, thisOne.id);
+                    accepted.add(u);
+                    NotificationsRepository.addNotification(fromUserId,
+                                                            new NotifDemandeAcceptee(thisOne.id, thisOne.getName()));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    logger.error("Fail to accept " + u + ": " + e.getMessage());
+                }
+            });
         } else {
             logger.info(MessageFormat.format("Refus de la demande par {0} de l'utilisateur {1}.",
                                              thisOne.id,

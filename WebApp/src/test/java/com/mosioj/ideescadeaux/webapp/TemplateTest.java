@@ -48,9 +48,9 @@ public class TemplateTest {
 
     public TemplateTest() {
         try {
-            friendOfFirefox = UsersRepository.getUser(_FRIEND_ID_);
-            firefox = UsersRepository.getUser(_OWNER_ID_);
-            moiAutre = UsersRepository.getUser(_MOI_AUTRE_);
+            friendOfFirefox = UsersRepository.getUser(_FRIEND_ID_).orElseThrow(SQLException::new);
+            firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
+            moiAutre = UsersRepository.getUser(_MOI_AUTRE_).orElseThrow(SQLException::new);
         } catch (SQLException e) {
             Assert.fail("Fail to retrieve the friend of Firefox");
         }
@@ -80,7 +80,7 @@ public class TemplateTest {
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
         for (NotificationType type : NotificationType.values()) {
-            UserRelationsRepository.getAllUsersInRelation(UsersRepository.getUser(_OWNER_ID_))
+            UserRelationsRepository.getAllUsersInRelation(UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new))
                                    .forEach(u -> {
                                        try {
                                            UserParametersRepository.insertUpdateParameter(u,

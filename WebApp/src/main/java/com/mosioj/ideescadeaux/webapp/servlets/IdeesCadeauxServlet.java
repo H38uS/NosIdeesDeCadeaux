@@ -90,7 +90,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         policy.setConnectedUser(thisOne);
         policy.reset();
 
-        if (!policy.hasRightToInteractInGetRequest(request, resp) && !isAdmin(request)) {
+        if (!policy.hasRightToInteractInGetRequest(request, resp)) {
 
             int userId;
             try {
@@ -173,7 +173,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         policy.setConnectedUser(thisOne);
         policy.reset();
 
-        if (!policy.hasRightToInteractInPostRequest(request, response) && !isAdmin(request)) {
+        if (!policy.hasRightToInteractInPostRequest(request, response)) {
 
             int userId;
             try {

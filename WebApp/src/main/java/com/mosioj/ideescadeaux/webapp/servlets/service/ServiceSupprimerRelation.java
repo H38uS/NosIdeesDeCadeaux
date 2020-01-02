@@ -35,10 +35,10 @@ public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAcc
                                               NotificationType.ACCEPTED_FRIENDSHIP,
                                               ParameterName.USER_ID,
                                               user.id);
-        NotificationsRepository.removeAllType(UsersRepository.getUser(user.id),
-                                              NotificationType.ACCEPTED_FRIENDSHIP,
-                                              ParameterName.USER_ID,
-                                              thisOne);
+        UsersRepository.getUser(user.id).ifPresent(u -> NotificationsRepository.removeAllType(u,
+                                                                                              NotificationType.ACCEPTED_FRIENDSHIP,
+                                                                                              ParameterName.USER_ID,
+                                                                                              thisOne));
 
         // Send a notification
         NotificationsRepository.addNotification(user.id, new NotifFriendshipDropped(thisOne));

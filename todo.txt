@@ -1,12 +1,12 @@
     // FIXME : Pour mes réservations, faire un tableau avec nom owner (lien vers la liste) type image et texte
     // FIXME : 1 sur l'index mettre le nombre total de réservation si non vide et un lien vers mes réservations
-    // FIXME : 6 revoir le CSS de la recherche en mode pc + des puces pour les anniv Noel + CSS alert box
+    // FIXME : 1 revoir le CSS de la recherche en mode pc + des puces pour les anniv Noel + CSS alert box
     // FIXME : 1 utiliser le format MD pour les idées, les commentaires et les séances de natation
     // FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)
     // FIXME : 3 dans mon réseau quand on tape filtrer les cartes en dessous
     // FIXME : 4 ajouter l'heure dans les infos de sous réservation / idem groupe
     // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
-    // FIXME : Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
+    // FIXME : 5 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
     // FIXME : 5 faire une passe et remplacer les exception par des Try
     // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
     // FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas

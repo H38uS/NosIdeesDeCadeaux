@@ -29,6 +29,7 @@ public class SuppressionCompte extends SecurityPolicy {
     }
 
     protected boolean canInteract(HttpServletRequest request) throws SQLException {
+
         if (!request.isUserInRole("ROLE_ADMIN")) {
             lastReason = "Non, mais non.";
             return false;
@@ -40,14 +41,12 @@ public class SuppressionCompte extends SecurityPolicy {
             return false;
         }
 
-        user = UsersRepository.getUser(userId.get());
-
-        return false;
+        user = UsersRepository.getUser(userId.get()).orElseThrow(SQLException::new);
+        return true;
     }
 
     @Override
     public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
-
         try {
             return canInteract(request);
         } catch (SQLException e) {

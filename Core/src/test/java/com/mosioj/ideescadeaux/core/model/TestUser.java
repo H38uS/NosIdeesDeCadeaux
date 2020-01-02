@@ -23,7 +23,7 @@ public class TestUser extends TemplateTest {
         ds.executeUpdate("delete from USER_ROLES where email = ?", email);
 
         int userId = UsersRepository.addNewPersonne(email, "hihi", "my_new_name");
-        User user = UsersRepository.getUser(userId);
+        User user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
         int notifId = NotificationsRepository.addNotification(userId, new NotifNoIdea());
 
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", user.id));

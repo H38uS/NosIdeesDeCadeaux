@@ -42,7 +42,7 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
             if (ParentRelationshipRepository.noRelationExists(parentId.get(), userId) && parentId.get() != userId) {
                 logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
                 ParentRelationshipRepository.addProcuration(parentId.get(), userId);
-                message = UsersRepository.getUser(parentId.get()).getName();
+                message = UsersRepository.getUser(parentId.get()).orElseThrow(SQLException::new).getName();
             } else {
                 message = "L'ajout du parent a échoué : il existe déjà.";
                 status = false;

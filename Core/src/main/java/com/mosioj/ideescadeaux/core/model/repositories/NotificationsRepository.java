@@ -2,13 +2,13 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserter;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.*;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationParametersColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -162,27 +162,32 @@ public class NotificationsRepository extends AbstractRepository {
     public static void removeAllType(User owner,
                                      NotificationType type,
                                      ParameterName parameterName,
-                                     Object parameterValue) throws SQLException {
-        StringBuilder sb = new StringBuilder();
-        sb.append(MessageFormat.format("delete from {0} where ", TABLE_NAME));
-        sb.append(MessageFormat.format(
-                " exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) and {5} = ? and {6} = ?",
-                TABLE_PARAMS,
-                NotificationParametersColumns.NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                NotificationParametersColumns.PARAMETER_NAME,
-                NotificationParametersColumns.PARAMETER_VALUE,
-                NotificationsColumns.OWNER,
-                NotificationsColumns.TYPE));
-        logger.trace(sb.toString());
-        int res = getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner.id, type);
-        logger.debug(MessageFormat.format("{0} notifications supprimées !", res));
+                                     Object parameterValue) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(MessageFormat.format("delete from {0} where ", TABLE_NAME));
+            sb.append(MessageFormat.format(
+                    " exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) and {5} = ? and {6} = ?",
+                    TABLE_PARAMS,
+                    NotificationParametersColumns.NOTIFICATION_ID,
+                    NotificationsColumns.ID,
+                    NotificationParametersColumns.PARAMETER_NAME,
+                    NotificationParametersColumns.PARAMETER_VALUE,
+                    NotificationsColumns.OWNER,
+                    NotificationsColumns.TYPE));
+            logger.trace(sb.toString());
+            int res = getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner.id, type);
+            logger.debug(MessageFormat.format("{0} notifications supprimées !", res));
 
-        getDb().executeUpdate(MessageFormat.format(
-                "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                NotificationParametersColumns.NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                TABLE_NAME));
+            getDb().executeUpdate(MessageFormat.format(
+                    "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
+                    NotificationParametersColumns.NOTIFICATION_ID,
+                    NotificationsColumns.ID,
+                    TABLE_NAME));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e);
+        }
     }
 
     /**
@@ -253,7 +258,8 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif  The notification.
      * @return True if and only if the user has already receive this notification.
      */
-    public static boolean hasNotification(int userId, AbstractNotification notif) throws SQLException {
+    // FIXME : 0 retourner la notification si on la trouve, sera plus simple
+    public static Optional<Boolean> hasNotification(int userId, AbstractNotification notif) {
 
         Map<ParameterName, Object> parameters = notif.getParameters();
 
@@ -286,7 +292,12 @@ public class NotificationsRepository extends AbstractRepository {
         logger.trace(query);
         logger.trace("Parameters => " + parameters);
 
-        return getDb().doesReturnRows(query.toString(), queryParameters);
+        try {
+            return Optional.of(getDb().doesReturnRows(query.toString(), queryParameters));
+        } catch (SQLException e) {
+            logger.warn(e);
+            return Optional.empty();
+        }
     }
 
     /**

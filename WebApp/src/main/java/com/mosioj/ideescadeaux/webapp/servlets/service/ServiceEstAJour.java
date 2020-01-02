@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,13 +53,18 @@ public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBook
         }
 
         if (IsUpToDateQuestionsRepository.addAssociation(idea.getId(), userId) == 1) {
-            NotifAskIfIsUpToDate isUpToDateNotif = new NotifAskIfIsUpToDate(UsersRepository.getUser(userId), idea);
-            if (!NotificationsRepository.hasNotification(idea.owner.id, isUpToDateNotif)) {
-                NotificationsRepository.addNotification(idea.owner.id, isUpToDateNotif);
-                return true;
+            Optional<NotifAskIfIsUpToDate> isUpToDateNotif = UsersRepository.getUser(userId)
+                                                                            .map(user -> new NotifAskIfIsUpToDate(user,
+                                                                                                                  idea));
+            if (isUpToDateNotif.isPresent()) {
+                Optional<Boolean> doesNotHaveIt = NotificationsRepository.hasNotification(idea.owner.id,
+                                                                                          isUpToDateNotif.get())
+                                                                         .filter(h -> !h);
+                doesNotHaveIt.flatMap(h -> isUpToDateNotif)
+                             .ifPresent(n -> NotificationsRepository.addNotification(idea.owner.id, n));
+                return doesNotHaveIt.isPresent(); // i.e. on ne l'avait pas avant...
             }
         }
-
         return false;
     }
 }

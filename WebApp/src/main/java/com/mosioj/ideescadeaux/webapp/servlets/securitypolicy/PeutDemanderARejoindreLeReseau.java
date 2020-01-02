@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public final class PeutDemanderARejoindreLeReseau extends SecurityPolicy implements UserSecurityChecker {
@@ -37,7 +38,7 @@ public final class PeutDemanderARejoindreLeReseau extends SecurityPolicy impleme
                 return false;
             }
 
-            potentialFriend = UsersRepository.getUser(toBeSentTo.get());
+            potentialFriend = UsersRepository.getUser(toBeSentTo.get()).orElseThrow(SQLException::new);
             return true;
 
         } catch (Exception e) {

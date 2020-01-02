@@ -65,7 +65,7 @@ public final class PasswordChangeRequest extends SecurityPolicy implements UserS
             return false;
         }
 
-        user = UsersRepository.getUser(userId.get());
+        user = UsersRepository.getUser(userId.get()).orElseThrow(SQLException::new);
         tokenId = tokenIdParam.get();
 
         return true;

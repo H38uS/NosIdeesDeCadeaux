@@ -1,27 +1,25 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.MesNotifications;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.MesNotifications;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @WebServlet("/protected/confirmation_est_a_jour")
 public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
@@ -41,13 +39,14 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
         int userId = thisOne.id;
         IsUpToDateQuestionsRepository.deleteAssociation(idea.getId(), userId);
 
-        List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId());
+        List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID,
+                                                                                           idea.getId());
         Set<Integer> ids = new HashSet<>();
         for (AbstractNotification notification : notifications) {
             if (notification instanceof NotifAskIfIsUpToDate) {
                 NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
                 NotificationsRepository.addNotification(isUpToDate.getUserIdParam(),
-                                                        new NotifConfirmedUpToDate(UsersRepository.getUser(userId), idea));
+                                                        new NotifConfirmedUpToDate(thisOne, idea));
                 NotificationsRepository.remove(notification.id);
                 ids.add(isUpToDate.getUserIdParam());
             }

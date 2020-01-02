@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -22,6 +23,14 @@ public class TestSuppressionCompte extends AbstractTestServlet {
         when(request.isUserInRole("ROLE_ADMIN")).thenReturn(true);
         assertTrue(request.isUserInRole("ROLE_ADMIN"));
 
+        UsersRepository.getId("to_be_deleted@djizjdz.cekj").flatMap(UsersRepository::getUser).ifPresent(u -> {
+            try {
+                UsersRepository.deleteUser(u);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Assert.fail();
+            }
+        });
         int userId = UsersRepository.addNewPersonne("to_be_deleted@djizjdz.cekj", "a", "to_be_deleted");
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
 
@@ -37,10 +46,17 @@ public class TestSuppressionCompte extends AbstractTestServlet {
     public void testNotAdmin() throws SQLException {
 
         assertFalse(request.isUserInRole("ROLE_ADMIN"));
-
+        UsersRepository.getId("to_be_deleted@djizjdz.cekj").flatMap(UsersRepository::getUser).ifPresent(u -> {
+            try {
+                UsersRepository.deleteUser(u);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Assert.fail();
+            }
+        });
         int userId = UsersRepository.addNewPersonne("to_be_deleted@djizjdz.cekj", "a", "to_be_deleted");
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
-        User user = UsersRepository.getUser(userId);
+        User user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
 
         when(request.getParameter(ServiceSuppressionCompte.USER_ID_PARAM)).thenReturn(userId + "");
         doTestPost();

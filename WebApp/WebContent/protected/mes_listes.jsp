@@ -503,7 +503,7 @@
                                                                     <c:choose>
                                                                         <c:when test="${connected_user.id == idea_from_liste.bookingOwner.get().id}">
                                                                             <div class="col-auto px-0">
-                                                                                <a href="protected/dereserver?idee=${idea_from_liste.id}&from=/${identic_call_back}"
+                                                                                <a href="?idee=${idea_from_liste.id}"
                                                                                    class="img idea_dereserver">
                                                                                     <img src="resources/image/reserve-moi.png"
                                                                                          title="Une de vos généreuses réservations - Cliquer pour annuler"
@@ -670,10 +670,7 @@
                                                                 <c:when test="${idea_from_liste.bookingOwner.isPresent()}">
                                                                     <c:choose>
                                                                         <c:when test="${connected_user.id == idea_from_liste.bookingOwner.get().id}">
-                                                                            Réservée par vous le
-                                                                            ${idea_from_liste.bookingDate} - <a
-                                                                                href="protected/dereserver?idee=${idea_from_liste.id}&from=/${identic_call_back}"
-                                                                                class="idea_dereserver">Annuler</a> !
+                                                                            Réservée par vous le ${idea_from_liste.bookingDate} - <a href="?idee=${idea_from_liste.id}" class="idea_dereserver">Annuler</a> !
                                                                         </c:when>
                                                                         <c:otherwise>
                                                                             Réservée par

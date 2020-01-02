@@ -48,7 +48,7 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
             return false;
         }
 
-        friend = UsersRepository.getUser(user.get());
+        friend = UsersRepository.getUser(user.get()).orElseThrow(SQLException::new);
         if (friend == null) {
             logger.error("The id " + user.get() + " does not exist...");
         }

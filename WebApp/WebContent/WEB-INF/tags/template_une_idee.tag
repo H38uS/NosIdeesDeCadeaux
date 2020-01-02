@@ -233,7 +233,7 @@
 									<c:choose>
 										<c:when test="${connected_user.id == idee.bookingOwner.get().id}">
 										<div class="col-auto px-0">	
-											<a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="img idea_dereserver">
+											<a href="?idee=${idee.id}" class="img idea_dereserver">
 												<img src="resources/image/reserve-moi.png" title="Une de vos généreuses réservations - Cliquer pour annuler" alt="Idée réservée par vous" width="${action_img_width}px" />
 											</a>
 										</div>
@@ -350,7 +350,7 @@
 								<c:when test="${idee.bookingOwner.isPresent()}">
 									<c:choose>
 										<c:when test="${connected_user.id == idee.bookingOwner.get().id}">
-											Réservée par vous le ${idee.bookingDate} - <a href="protected/dereserver?idee=${idee.id}&from=/${identic_call_back}" class="idea_dereserver">Annuler</a> !
+											Réservée par vous le ${idee.bookingDate} - <a href="?idee=${idee.id}" class="idea_dereserver">Annuler</a> !
 										</c:when>
 										<c:otherwise>
 											Réservée par ${idee.bookingOwner.get().name} le ${idee.bookingDate}

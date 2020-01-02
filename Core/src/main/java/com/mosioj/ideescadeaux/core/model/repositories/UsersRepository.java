@@ -24,7 +24,7 @@ import java.util.Optional;
 public class UsersRepository extends AbstractRepository {
 
     public static final String TABLE_NAME = "USERS";
-    private static final Logger LOGGER = LogManager.getLogger(UsersRepository.class);
+    private static final Logger logger = LogManager.getLogger(UsersRepository.class);
 
     private UsersRepository() {
         // Forbidden
@@ -62,9 +62,7 @@ public class UsersRepository extends AbstractRepository {
      * @param id The user's id.
      * @return The user corresponding to this ID or null if not found.
      */
-    public static User getUser(int id) throws SQLException {
-
-        User user = null;
+    public static Optional<User> getUser(int id) {
         String query = MessageFormat.format("select {0}, {1}, {2}, {3}, {5} from {4} where {0} = ?",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
@@ -72,22 +70,23 @@ public class UsersRepository extends AbstractRepository {
                                             UsersColumns.BIRTHDAY,
                                             TABLE_NAME,
                                             UsersColumns.AVATAR);
-
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters(id);
             if (ps.execute()) {
                 ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    user = new User(res.getInt(UsersColumns.ID.name()),
-                                    res.getString(UsersColumns.NAME.name()),
-                                    res.getString(UsersColumns.EMAIL.name()),
-                                    res.getDate(UsersColumns.BIRTHDAY.name()),
-                                    res.getString(UsersColumns.AVATAR.name()));
+                if (res.next()) {
+                    return Optional.of(new User(res.getInt(UsersColumns.ID.name()),
+                                                res.getString(UsersColumns.NAME.name()),
+                                                res.getString(UsersColumns.EMAIL.name()),
+                                                res.getDate(UsersColumns.BIRTHDAY.name()),
+                                                res.getString(UsersColumns.AVATAR.name())));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.warn(e);
         }
-
-        return user;
+        return Optional.empty();
     }
 
     /**
@@ -122,7 +121,7 @@ public class UsersRepository extends AbstractRepository {
      * @param user The user to update.
      */
     public static void update(User user) throws SQLException {
-        LOGGER.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
+        logger.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
         String previousEmail = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
                                                                          UsersColumns.EMAIL,
                                                                          TABLE_NAME,
@@ -207,7 +206,7 @@ public class UsersRepository extends AbstractRepository {
                                       int limit) throws SQLException {
 
         List<User> users = new ArrayList<>();
-        LOGGER.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.",
+        logger.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.",
                                           nameToMatch,
                                           userIdToSkip));
 
@@ -326,7 +325,7 @@ public class UsersRepository extends AbstractRepository {
 
     public static void deleteUser(User user) throws SQLException {
 
-        LOGGER.info(MessageFormat.format("Suppression de {0}...", user));
+        logger.info(MessageFormat.format("Suppression de {0}...", user));
         int userId = user.id;
 
         // Suppression des commentaires

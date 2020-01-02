@@ -33,7 +33,6 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAc
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
-        User suggestedBy = thisOne;
         User suggestTo = policy.getUser();
 
         List<Integer> suggestedUsers = getSelectedChoices(request.getParameterMap(), "selected_");
@@ -41,14 +40,14 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAc
         // Persist suggestion
         List<User> sent = new ArrayList<>();
         for (int toBeAdded : suggestedUsers) {
-            if (UserRelationsSuggestionRepository.newSuggestion(suggestedBy.id, suggestTo.id, toBeAdded)) {
-                sent.add(UsersRepository.getUser(toBeAdded));
+            if (UserRelationsSuggestionRepository.newSuggestion(thisOne.id, suggestTo.id, toBeAdded)) {
+                UsersRepository.getUser(toBeAdded).ifPresent(sent::add);
             }
         }
         if (sent.size() > 0) {
             // Send a notification
             NotificationsRepository.addNotification(suggestTo.id,
-                                                    new NotifNewRelationSuggestion(suggestedBy.id, suggestedBy.getName()));
+                                                    new NotifNewRelationSuggestion(thisOne.id, thisOne.getName()));
             request.setAttribute("user", UsersRepository.getUser(suggestTo.id));
             request.setAttribute("users", sent);
             RootingsUtils.rootToPage(URL_SUCCESS, request, response);

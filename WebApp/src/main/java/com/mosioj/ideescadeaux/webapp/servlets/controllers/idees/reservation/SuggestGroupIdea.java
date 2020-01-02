@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -59,9 +60,9 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
         List<User> removable = new ArrayList<>();
         for (User toRemove : potentialGroupUser) {
             NotifGroupSuggestion suggestion = new NotifGroupSuggestion(user, group.getId(), idee);
-            if (NotificationsRepository.hasNotification(toRemove.id, suggestion)) {
-                removable.add(toRemove);
-            }
+            NotificationsRepository.hasNotification(toRemove.id, suggestion)
+                                   .filter(has -> has)
+                                   .ifPresent(has -> removable.add(toRemove));
         }
         potentialGroupUser.removeAll(removable);
 
@@ -93,19 +94,24 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
         }
 
         List<User> successTo = new ArrayList<>();
-
         logger.debug("Selected users : " + selectedUsers);
-        for (int userId : selectedUsers) {
-            User user = UsersRepository.getUser(userId);
-            NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, group.getId(), idee);
-            if (!NotificationsRepository.hasNotification(userId, suggestion)) {
-                NotificationsRepository.addNotification(userId, suggestion);
-            }
-            successTo.add(user);
-        }
+        selectedUsers.stream()
+                     .map(UsersRepository::getUser)
+                     .filter(Optional::isPresent)
+                     .map(Optional::get)
+                     .forEach(u -> suggestTheGroupTo(group, idee, u, successTo));
 
         request.setAttribute("sent_to_users", successTo);
         ideesKDoGET(request, response);
+    }
+
+    private void suggestTheGroupTo(IdeaGroup group, Idee idea, User user, List<User> successTo) {
+        NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, group.getId(), idea);
+        NotificationsRepository.hasNotification(user.id, suggestion)
+                               .filter(has -> !has)
+                               .ifPresent(n -> NotificationsRepository.addNotification(user.id,
+                                                                                       suggestion));
+        successTo.add(user);
     }
 
 }

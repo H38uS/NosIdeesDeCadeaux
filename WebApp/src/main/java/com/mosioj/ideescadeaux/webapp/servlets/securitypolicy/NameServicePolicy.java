@@ -38,7 +38,7 @@ public final class NameServicePolicy extends SecurityPolicy {
             userId = connectedUser.id;
         }
 
-        user = UsersRepository.getUser(userId);
+        user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
 
         return true;
     }
