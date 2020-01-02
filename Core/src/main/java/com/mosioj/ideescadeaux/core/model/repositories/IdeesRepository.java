@@ -287,9 +287,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param groupId The booking group's id.
      * @return The owner of the idea booked by this group, or null if it does not exist.
      */
-    // FIXME : optional
-    public static User getIdeaOwnerFromGroup(int groupId) throws SQLException {
-
+    public static Optional<User> getIdeaOwnerFromGroup(int groupId) throws SQLException {
         String query = MessageFormat.format("select u.{0}, u.{1}, u.{2}, u.{3} ",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
@@ -301,21 +299,20 @@ public class IdeesRepository extends AbstractRepository {
                                             IdeeColumns.OWNER,
                                             UsersColumns.ID) +
                        MessageFormat.format(" where i.{0} = ?", IdeeColumns.GROUPE_KDO_ID);
-
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters(groupId);
             if (ps.execute()) {
                 ResultSet rs = ps.getResultSet();
                 if (rs.next()) {
-                    return new User(rs.getInt(UsersColumns.ID.name()),
-                                    rs.getString(UsersColumns.NAME.name()),
-                                    rs.getString(UsersColumns.EMAIL.name()),
-                                    rs.getString(UsersColumns.AVATAR.name()));
+                    return Optional.of(new User(rs.getInt(UsersColumns.ID.name()),
+                                                rs.getString(UsersColumns.NAME.name()),
+                                                rs.getString(UsersColumns.EMAIL.name()),
+                                                rs.getString(UsersColumns.AVATAR.name())));
                 }
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**

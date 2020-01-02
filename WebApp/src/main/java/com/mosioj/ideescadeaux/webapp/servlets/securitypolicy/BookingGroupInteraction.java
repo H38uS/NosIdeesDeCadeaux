@@ -54,8 +54,8 @@ public final class BookingGroupInteraction extends SecurityPolicy {
         int groupId = groupIdParam.get();
         int userId = connectedUser.id;
 
-        User ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(groupId);
-        if (ideaOwner == null) {
+        Optional<User> ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(groupId);
+        if (!ideaOwner.isPresent()) {
             lastReason = "Ce groupe appartient à personne.";
             logger.warn("Un groupe n'appartient à aucune idée... => " + groupId);
             return false;
@@ -68,7 +68,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
             return false;
         }
 
-        if (!UserRelationsRepository.associationExists(userId, ideaOwner.id)) {
+        if (!UserRelationsRepository.associationExists(userId, ideaOwner.get().id)) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
             return false;
         }

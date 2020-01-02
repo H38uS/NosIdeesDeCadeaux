@@ -92,8 +92,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
         String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
         if ("annulation".equals(amount)) {
-
-            User owner = IdeesRepository.getIdeaOwnerFromGroup(group.getId());
+            User owner = IdeesRepository.getIdeaOwnerFromGroup(group.getId()).orElseThrow(SQLException::new);
             boolean isThereSomeoneRemaining = GroupIdeaRepository.removeUserFromGroup(thisOne, group.getId());
             List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
                                                                                                group.getId());
