@@ -118,18 +118,21 @@ public class NotificationsRepository extends AbstractRepository {
      * @param user      The user.
      * @param notifType The notification type.
      */
-    public static void removeAllType(User user, NotificationType notifType) throws SQLException {
-
+    public static void removeAllType(User user, NotificationType notifType) {
         logger.info(MessageFormat.format("Delete notification {0} for user {1}", notifType.name(), user));
-
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where owner = ? and type = ?", TABLE_NAME),
-                              user.id,
-                              notifType.name());
-        getDb().executeUpdate(MessageFormat.format(
-                "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                NotificationParametersColumns.NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                TABLE_NAME));
+        try {
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where owner = ? and type = ?", TABLE_NAME),
+                                  user.id,
+                                  notifType.name());
+            getDb().executeUpdate(MessageFormat.format(
+                    "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
+                    NotificationParametersColumns.NOTIFICATION_ID,
+                    NotificationsColumns.ID,
+                    TABLE_NAME));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.warn("Impossible de supprimer les notifications..." + e.getMessage());
+        }
     }
 
     public static void remove(int notificationId) {

@@ -1,30 +1,28 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.MessageFormat;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.Optional;
 
 @WebServlet("/protected/ajouter_idee_ami")
 public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
@@ -69,12 +67,7 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
                                                  parameters.get("type"),
                                                  parameters.get("priority")));
                 User currentUser = thisOne;
-                boolean estSurprise = false;
-                if ("on".equals(parameters.get("est_surprise"))) {
-                    if (addedToUser.id != currentUser.id) {
-                        estSurprise = true;
-                    }
-                }
+                boolean estSurprise = "on".equals(parameters.get("est_surprise")) && addedToUser.id != currentUser.id;
                 int ideaId = IdeesRepository.addIdea(addedToUser,
                                                      parameters.get("text"),
                                                      parameters.get("type"),
@@ -83,16 +76,16 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
                                                      estSurprise ? currentUser : null,
                                                      currentUser);
 
-                try {
-                    Idee idea = getIdeaAndEnrichIt(ideaId);
-                    request.setAttribute("idee", idea);
-                    if (!estSurprise) {
-                        NotificationsRepository.addNotification(addedToUser.id, new NotifIdeaAddedByFriend(currentUser, idea));
-                        NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
-                    }
-                } catch (NoRowsException ignored) {
-                    // Impossible, we jute created it
-                }
+                final Optional<Idee> idea = getIdeaAndEnrichIt(ideaId);
+                idea.ifPresent(i -> request.setAttribute("idee", i));
+
+                // Si ce n'est pas une surprise, envoie de notification
+                // Et suppression des notifications NO_IDEA
+                idea.filter(i -> !estSurprise).ifPresent(i -> {
+                    NotificationsRepository.addNotification(addedToUser.id,
+                                                            new NotifIdeaAddedByFriend(currentUser, i));
+                    NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
+                });
             }
 
         }

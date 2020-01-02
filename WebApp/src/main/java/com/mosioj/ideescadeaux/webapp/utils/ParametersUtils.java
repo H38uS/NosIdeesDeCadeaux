@@ -20,6 +20,20 @@ public class ParametersUtils {
      * @param name    The parameter name.
      * @return The parameter value, or empty string if not provided.
      */
+    public static String readItFromSession(HttpServletRequest request, String name) {
+        Object res = request.getSession().getAttribute(name);
+        logger.trace(MessageFormat.format("{0} is:{1}", name, res));
+        return res == null ? "" : new String(res.toString().getBytes(StandardCharsets.ISO_8859_1),
+                                             StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Attention: ne surtout pas utiliser dans les redirect post -> get.
+     *
+     * @param request The processing request.
+     * @param name    The parameter name.
+     * @return The parameter value, or empty string if not provided.
+     */
     public static String readIt(HttpServletRequest request, String name) {
         String res = request.getParameter(name);
         logger.trace(MessageFormat.format("{0} is:{1}", name, res));
@@ -27,16 +41,15 @@ public class ParametersUtils {
     }
 
     /**
-     *
      * @param request The http request.
-     * @param name The parameter name.
+     * @param name    The parameter name.
      * @return The parameter, as an integer. If it is not possible, returns null.
      */
     public static Optional<Integer> readInt(HttpServletRequest request, String name) {
         try {
-            return Optional.of(Integer.parseInt(ParametersUtils	.readIt(request, name)
-                                                                   .replaceAll("[  ]", "")
-                                                                   .replaceAll("%C2%A0", "")));
+            return Optional.of(Integer.parseInt(ParametersUtils.readIt(request, name)
+                                                               .replaceAll("[  ]", "")
+                                                               .replaceAll("%C2%A0", "")));
         } catch (NumberFormatException e) {
             return Optional.empty();
         }
@@ -50,6 +63,21 @@ public class ParametersUtils {
             return Optional.empty();
         }
         return Optional.of(param);
+    }
+
+    /**
+     * @param request The http request.
+     * @param name    The parameter name.
+     * @return The parameter, as an integer. If it is not possible, returns null.
+     */
+    public static Optional<Integer> readIntFromSession(HttpServletRequest request, String name) {
+        try {
+            return Optional.of(Integer.parseInt(ParametersUtils.readItFromSession(request, name)
+                                                               .replaceAll("[  ]", "")
+                                                               .replaceAll("%C2%A0", "")));
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 
     /**

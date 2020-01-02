@@ -1,30 +1,13 @@
 package com.mosioj.ideescadeaux.webapp.servlets;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.*;
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priorite;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
-import com.mosioj.ideescadeaux.core.model.repositories.*;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.*;
+import com.mosioj.ideescadeaux.core.utils.Escaper;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.Compteur;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -37,8 +20,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
-import com.mosioj.ideescadeaux.core.utils.Escaper;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.*;
 
 /**
  * An intermediate servlet for test purpose. Increase the visibility of tested method.
@@ -481,7 +477,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @param ideaId The idea's id.
      * @return The idea from the DB, enriched with useful information.
      */
-    protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException, NoRowsException {
+    protected Optional<Idee> getIdeaAndEnrichIt(int ideaId) throws SQLException {
         Optional<Idee> idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
         idee.ifPresent(i -> {
             try {
@@ -491,7 +487,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 logger.error(e);
             }
         });
-        return idee.orElseThrow(NoRowsException::new);
+        return idee;
     }
 
     /**
