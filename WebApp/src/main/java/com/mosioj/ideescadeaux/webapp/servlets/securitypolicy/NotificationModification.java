@@ -52,12 +52,13 @@ public class NotificationModification extends SecurityPolicy {
 
         int userId = connectedUser.id;
 
-        AbstractNotification n = NotificationsRepository.getNotification(notifId.get());
-        if (n == null) {
+        Optional<AbstractNotification> tentative = NotificationsRepository.getNotification(notifId.get());
+        if (!tentative.isPresent()) {
             lastReason = "Aucune notification trouvée en paramètre.";
             return false;
         }
 
+        AbstractNotification n = tentative.get();
         boolean res = userId == n.getOwner()
                       || ParentRelationshipRepository.getChildren(userId).contains(new User(n.getOwner(), "", "", ""));
         if (!res) {

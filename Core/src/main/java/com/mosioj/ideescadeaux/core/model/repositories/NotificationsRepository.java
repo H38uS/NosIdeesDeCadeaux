@@ -497,12 +497,11 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notifId The notification id.
      * @return The notification corresponding to this id.
      */
-    // FIXME : optional
-    public static AbstractNotification getNotification(int notifId) throws SQLException {
+    public static Optional<AbstractNotification> getNotification(int notifId) throws SQLException {
         List<AbstractNotification> notifs = getNotificationWithWhereClause(MessageFormat.format("{0} = ?",
                                                                                                 NotificationsColumns.ID),
                                                                            notifId);
-        return notifs.size() == 0 ? null : notifs.get(0);
+        return notifs.size() == 0 ? Optional.empty() : Optional.ofNullable(notifs.get(0));
     }
 
     /**

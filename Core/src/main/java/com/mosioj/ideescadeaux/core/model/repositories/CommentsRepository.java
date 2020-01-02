@@ -42,7 +42,6 @@ public class CommentsRepository extends AbstractRepository {
      * @param ideaId The idea.
      * @return All users that have posted on this idea.
      */
-    // FIXME : 0 catcher toutes les exceptions dans les methodes et ne plus faire de throw depuis les repository
     public static List<User> getUserListOnComment(int ideaId) throws SQLException {
 
         List<User> users = new ArrayList<>();

@@ -46,7 +46,7 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifAskIfIsUpToDate(firefox, idee));
 
-        AbstractNotification n = NotificationsRepository.getNotification(notifId);
+        AbstractNotification n = NotificationsRepository.getNotification(notifId).orElseThrow(SQLException::new);
         String text = n.getText();
         String ideaId = text.substring(text.indexOf("nfirmation_est_a_jour?idee=") +
                                        "nfirmation_est_a_jour?idee=".length(),
