@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * Provides some method to access the database.
@@ -43,11 +44,7 @@ public class DataSourceIdKDo {
      * @return The result of the first row on the first column.
      */
     public int selectCountStar(String query, Object... parameters) throws SQLException {
-        try {
-            return selectInt(query, parameters);
-        } catch (NoRowsException e) {
-            return 0;
-        }
+        return selectInt(query, parameters).orElse(0);
     }
 
     /**
@@ -55,24 +52,18 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    // FIXME : Optional
-    public int selectInt(String query, Object... parameters) throws NoRowsException, SQLException {
-
+    public Optional<Integer> selectInt(String query, Object... parameters) throws SQLException {
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
-
             statement.bindParameters(parameters);
-
-            if (!statement.execute()) {
-                throw new SQLException("No result set available.");
+            if (statement.execute()) {
+                ResultSet res = statement.getResultSet();
+                if (res.first()) {
+                    int value = res.getInt(1);
+                    return res.wasNull() ? Optional.empty() : Optional.of(value);
+                }
             }
-
-            ResultSet res = statement.getResultSet();
-            if (!res.first()) {
-                throw new NoRowsException();
-            }
-
-            return res.getInt(1);
         }
+        return Optional.empty();
     }
 
     /**

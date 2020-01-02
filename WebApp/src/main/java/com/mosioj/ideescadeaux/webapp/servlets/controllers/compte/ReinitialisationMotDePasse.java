@@ -1,27 +1,25 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Random;
+import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.core.utils.EmailSender;
+import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
-import com.mosioj.ideescadeaux.core.utils.EmailSender;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
 public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
@@ -67,15 +65,14 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<Al
             return;
         }
 
-        int userId;
-        try {
-            userId = UsersRepository.getId(email1);
-        } catch (NoRowsException e) {
+        Optional<Integer> userIdOpt = UsersRepository.getId(email1);
+        if (!userIdOpt.isPresent()) {
             // L'email n'existe pas. On affiche la page de base pour éviter plus d'info aux pirates.
             ideesKDoGET(request, response);
             return;
         }
 
+        int userId = userIdOpt.get();
         int token = new Random().nextInt();
         UserChangePwdRequestRepository.deleteAssociation(userId);
         UserChangePwdRequestRepository.createNewRequest(userId, token);

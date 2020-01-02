@@ -1,21 +1,20 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Représente la table de personnes.
@@ -95,7 +94,7 @@ public class UsersRepository extends AbstractRepository {
      * @param email The identifier of the person (currently the email).
      * @return This person's id.
      */
-    public static int getId(String email) throws NoRowsException, SQLException {
+    public static Optional<Integer> getId(String email) throws SQLException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?",
                                                       UsersColumns.ID,
                                                       TABLE_NAME,
@@ -107,7 +106,7 @@ public class UsersRepository extends AbstractRepository {
      * @param nameOrEmail The name or email of the person..
      * @return This person's id.
      */
-    public static int getIdFromNameOrEmail(String nameOrEmail) throws NoRowsException, SQLException {
+    public static Optional<Integer> getIdFromNameOrEmail(String nameOrEmail) throws SQLException {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1",
                                                       UsersColumns.ID,
                                                       TABLE_NAME,

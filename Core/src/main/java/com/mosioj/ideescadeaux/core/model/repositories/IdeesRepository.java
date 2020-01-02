@@ -1,9 +1,11 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserter;
-import com.mosioj.ideescadeaux.core.model.entities.*;
+import com.mosioj.ideescadeaux.core.model.entities.Categorie;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priorite;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.*;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -622,6 +624,7 @@ public class IdeesRepository extends AbstractRepository {
         return getDb().selectCountStar(query, userId, userId, idea, userId, userId) > 0;
     }
 
+
     /**
      * Supprime tout type de réservation sur l'idée. Fait aussi le ménage pour les groupes sous-jacent etc.
      *
@@ -630,27 +633,22 @@ public class IdeesRepository extends AbstractRepository {
     public static void toutDereserver(int idea) throws SQLException {
 
         // Suppression des groupes potentiels
-        int groupId;
-        try {
-            groupId = getDb().selectInt("select " +
-                                        IdeeColumns.GROUPE_KDO_ID +
-                                        " from " +
-                                        TABLE_NAME +
-                                        " where " +
-                                        IdeeColumns.ID +
-                                        " = ?",
-                                        idea);
-            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                       GroupIdeaRepository.TABLE_NAME_CONTENT,
-                                                       GroupIdeaContentColumns.GROUP_ID),
-                                  groupId);
-            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                       GroupIdeaRepository.TABLE_NAME,
-                                                       GroupIdeaColumns.ID),
-                                  groupId);
-        } catch (NoRowsException e) {
-            // Nothing to do
-        }
+        getDb().selectInt("select " + IdeeColumns.GROUPE_KDO_ID + " from IDEES where " + IdeeColumns.ID + " = ?", idea)
+               .ifPresent(groupId -> {
+                              try {
+                                  getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                                             GroupIdeaRepository.TABLE_NAME_CONTENT,
+                                                                             GroupIdeaContentColumns.GROUP_ID),
+                                                        groupId);
+                                  getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
+                                                                             GroupIdeaRepository.TABLE_NAME,
+                                                                             GroupIdeaColumns.ID),
+                                                        groupId);
+                              } catch (SQLException e) {
+                                  e.printStackTrace();
+                              }
+                          }
+               );
 
         // Des sous-reservations
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",

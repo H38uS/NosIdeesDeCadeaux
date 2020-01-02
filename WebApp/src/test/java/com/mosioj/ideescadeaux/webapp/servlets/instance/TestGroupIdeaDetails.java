@@ -1,6 +1,5 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
@@ -16,6 +15,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -68,7 +68,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
     }
 
     @Test
-    public void testAnnulerParticipation() throws NoRowsException, SQLException {
+    public void testAnnulerParticipation() throws SQLException {
 
         int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         int id = GroupIdeaRepository.createAGroup(300, 250, _OWNER_ID_);
@@ -104,7 +104,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         assertNotifDoesExists(groupEvolutionShouldStay);
 
         IdeesRepository.remove(idea);
-        assertEquals(0,
+        assertEquals(Optional.of(0),
                      ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                        GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),
@@ -112,7 +112,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
     }
 
     @Test
-    public void testRejoindrePuisAnnuler() throws NoRowsException, SQLException {
+    public void testRejoindrePuisAnnuler() throws SQLException {
 
         // On crée un groupe sur une idée
         int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
@@ -201,15 +201,15 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         // -----------------------
         // Clean up
         IdeesRepository.remove(idea);
-        assertEquals(0,
+        assertEquals(Optional.of(0),
                      ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                        GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),
                                   id));
     }
 
-    protected void assertGroupExists(int id) throws NoRowsException, SQLException {
-        assertEquals(1,
+    protected void assertGroupExists(int id) throws SQLException {
+        assertEquals(Optional.of(1),
                      ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                        GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),

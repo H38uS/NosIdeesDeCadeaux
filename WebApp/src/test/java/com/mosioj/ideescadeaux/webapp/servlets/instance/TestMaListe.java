@@ -1,12 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.MaListe;
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,7 +54,7 @@ public class TestMaListe extends AbstractTestServlet {
     }
 
     @Test
-    public void testShouldAutoConvertLinks() throws IOException, SQLException, NoRowsException {
+    public void testShouldAutoConvertLinks() throws IOException, SQLException {
 
         Map<String, String> param = new HashMap<>();
         param.put("text",
@@ -64,7 +63,7 @@ public class TestMaListe extends AbstractTestServlet {
         createMultiPartRequest(param);
         doTestPost();
 
-        int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
+        int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         assertEquals(
                 "un lien <a href=\"https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra\" target=\"_blank\">https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra</a> et voilà",

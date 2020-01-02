@@ -1,22 +1,20 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
+import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.Optional;
 
 @WebServlet("/protected/service/ajouter_parent")
 public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
@@ -35,24 +33,22 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
         String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
         logger.debug(MessageFormat.format("Name or email reçu: {0}.", nameOrEmail));
 
-        int parentId;
-        boolean status = true;
         String message;
+        boolean status = true;
 
-        try {
-            parentId = UsersRepository.getIdFromNameOrEmail(nameOrEmail);
+        Optional<Integer> parentId = UsersRepository.getIdFromNameOrEmail(nameOrEmail);
+        if (parentId.isPresent()) {
             int userId = thisOne.id;
-            if (ParentRelationshipRepository.noRelationExists(parentId, userId) && parentId != userId) {
+            if (ParentRelationshipRepository.noRelationExists(parentId.get(), userId) && parentId.get() != userId) {
                 logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
-                ParentRelationshipRepository.addProcuration(parentId, userId);
-                message = UsersRepository.getUser(parentId).getName();
+                ParentRelationshipRepository.addProcuration(parentId.get(), userId);
+                message = UsersRepository.getUser(parentId.get()).getName();
             } else {
                 message = "L'ajout du parent a échoué : il existe déjà.";
                 status = false;
             }
-        } catch (NoRowsException e) {
+        } else {
             message = "L'ajout du parent a échoué : il n'existe pas de compte pour le nom ou l'email passé en paramètre.";
-            logger.warn(message);
             status = false;
         }
 

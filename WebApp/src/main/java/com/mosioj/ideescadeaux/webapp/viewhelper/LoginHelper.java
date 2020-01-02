@@ -1,26 +1,19 @@
 package com.mosioj.ideescadeaux.webapp.viewhelper;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Provides helper functions to the views.
@@ -54,10 +47,10 @@ public class LoginHelper implements Filter {
             User user = (User) session.getAttribute("connected_user");
             if (user == null) {
                 try {
-                    user = UsersRepository.getUser(UsersRepository.getId(name));
+                    user = UsersRepository.getUser(UsersRepository.getId(name).orElseThrow(SQLException::new));
                     // Storing the new one
                     session.setAttribute("connected_user", user);
-                } catch (NoRowsException | SQLException e) {
+                } catch (SQLException e) {
                     // Impossible: le nom existe forcément
                     // Sait-on jamais, on le log
                     logger.fatal(MessageFormat.format("L''utilisateur {0} est connecté mais n''a pas de compte...",
@@ -72,12 +65,16 @@ public class LoginHelper implements Filter {
 
             File work = new File(workDir);
             if (!work.exists()) {
-                work.mkdirs();
+                if (!work.mkdirs()) {
+                    logger.error("Fail to create " + work + " directory.");
+                }
             }
             File avatars = new File(work, "uploaded_pictures/avatars");
             if (!avatars.exists()) {
                 // Création des sous dossiers
-                avatars.mkdirs();
+                if (!avatars.mkdirs()) {
+                    logger.error("Fail to create " + work + " directory.");
+                }
                 FileUtils.copyDirectory(new File(session.getServletContext()
                                                         .getRealPath("/public/uploaded_pictures/avatars")),
                                         avatars);
