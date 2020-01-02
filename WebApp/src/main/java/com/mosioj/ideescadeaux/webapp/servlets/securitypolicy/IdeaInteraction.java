@@ -1,11 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,15 +50,14 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
             return false;
         }
 
-        int userId = connectedUser.id;
-
-        try {
-            idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        } catch (NoRowsException e) {
+        Optional<Idee> tentative = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
+        if (!tentative.isPresent()) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
+        idea = tentative.get();
+        int userId = connectedUser.id;
         boolean res = UserRelationsRepository.associationExists(userId, idea.owner.id);
         if (!res) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";

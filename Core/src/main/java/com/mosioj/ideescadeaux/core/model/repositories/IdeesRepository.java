@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class IdeesRepository extends AbstractRepository {
 
@@ -235,8 +236,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param idIdee The idea's id.
      * @return All fields for this idea.
      */
-    // FIXME : 0 Optional
-    public static Idee getIdeaWithoutEnrichment(int idIdee) throws NoRowsException, SQLException {
+    public static Optional<Idee> getIdeaWithoutEnrichment(int idIdee) throws SQLException {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
@@ -246,14 +246,12 @@ public class IdeesRepository extends AbstractRepository {
             if (ps.execute()) {
                 ResultSet rs = ps.getResultSet();
                 if (rs.next()) {
-                    return createIdeaFromQuery(rs);
-                } else {
-                    throw new NoRowsException();
+                    return Optional.of(createIdeaFromQuery(rs));
                 }
-            } else {
-                throw new NoRowsException();
             }
         }
+
+        return Optional.empty();
     }
 
     /**

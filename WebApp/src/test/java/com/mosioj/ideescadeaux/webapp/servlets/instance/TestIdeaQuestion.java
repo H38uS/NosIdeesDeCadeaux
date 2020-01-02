@@ -1,12 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.IdeeQuestions;
 import org.junit.Test;
@@ -23,10 +22,10 @@ public class TestIdeaQuestion extends AbstractTestServlet {
     }
 
     @Test
-    public void testGetQuestions() throws SQLException, NoRowsException {
+    public void testGetQuestions() throws SQLException {
 
         int id = IdeesRepository.addIdea(firefox, "avec questions", null, 0, null, null, null);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         QuestionsRepository.addComment(_FRIEND_ID_, id, "mon pti com'");
 
         int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));

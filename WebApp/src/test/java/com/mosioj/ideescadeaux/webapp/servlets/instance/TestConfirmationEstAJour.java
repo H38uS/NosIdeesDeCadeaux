@@ -26,7 +26,7 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
     public void testAskAndAnswerYes() throws NoRowsException, SQLException {
 
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
 
         int notifId = NotificationsRepository.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
         assertNotifDoesExists(notifId);
@@ -44,7 +44,7 @@ public class TestConfirmationEstAJour extends AbstractTestServlet {
 
         when(session.getAttribute("connected_user")).thenReturn(friendOfFirefox);
         int id = IdeesRepository.addIdea(friendOfFirefox, "ma nouvelle idée", "", 1, null, null, null);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifAskIfIsUpToDate(firefox, idee));
 
         AbstractNotification n = NotificationsRepository.getNotification(notifId);

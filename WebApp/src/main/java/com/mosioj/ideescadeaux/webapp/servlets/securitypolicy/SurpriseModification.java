@@ -1,21 +1,19 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.Optional;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * A policy to make sure we can interact with an idea : forbids the owner of the idea.
@@ -54,13 +52,13 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
 
         User thisOne = connectedUser;
 
-        try {
-            idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        } catch (NoRowsException e) {
+        Optional<Idee> tentative = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
+        if (!tentative.isPresent()) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
+        idea = tentative.get();
         if (idea.getSurpriseBy() == null || !idea.getSurpriseBy().equals(thisOne)) {
             lastReason = "Vous n'avez pas créé cette surprise.";
             return false;

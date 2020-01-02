@@ -1,20 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.Optional;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -53,13 +51,13 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
 
         int userId = connectedUser.id;
 
-        try {
-            idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        } catch (NoRowsException e) {
+        Optional<Idee> tentative = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
+        if (!tentative.isPresent()) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
+        idea = tentative.get();
         boolean res = userId == idea.owner.id || ParentRelationshipRepository.getChildren(userId).contains(idea.owner);
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos idées ou celles de vos enfants.";

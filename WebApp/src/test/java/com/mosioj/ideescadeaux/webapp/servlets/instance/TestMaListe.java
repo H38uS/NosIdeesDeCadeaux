@@ -65,7 +65,7 @@ public class TestMaListe extends AbstractTestServlet {
         doTestPost();
 
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         assertEquals(
                 "un lien <a href=\"https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra\" target=\"_blank\">https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra</a> et voilà",
                 idee.getText());

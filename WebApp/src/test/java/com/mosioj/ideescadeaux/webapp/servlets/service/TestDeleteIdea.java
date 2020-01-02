@@ -1,6 +1,5 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.*;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
@@ -37,7 +36,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testDeleteWithGroupBooking() throws SQLException, NoRowsException {
+    public void testDeleteWithGroupBooking() throws SQLException {
 
         // Creation de l'idée
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
@@ -46,7 +45,7 @@ public class TestDeleteIdea extends AbstractTestServlet {
         // Creation du groupe
         int group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
         IdeesRepository.bookByGroup(id, group);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);
         assertEquals(GroupIdeaRepository.getGroupDetails(group), idee.getGroupKDO());
@@ -66,12 +65,12 @@ public class TestDeleteIdea extends AbstractTestServlet {
     }
 
     @Test
-    public void testUnderlyingNotificationAreWellRemoved() throws NoRowsException, SQLException {
+    public void testUnderlyingNotificationAreWellRemoved() throws SQLException {
 
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         int isUpToDate = NotificationsRepository.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
         int confirmedUpToDate = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifConfirmedUpToDate(firefox, idee));
         int groupSuggestion = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifGroupSuggestion(firefox, 0, idee));

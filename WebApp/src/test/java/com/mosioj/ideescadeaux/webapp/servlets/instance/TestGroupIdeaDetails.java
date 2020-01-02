@@ -28,16 +28,15 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
     }
 
     @Test
-    public void testGet() throws NoRowsException, SQLException {
+    public void testGet() throws SQLException {
 
-        int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(idea, id);
+        IdeesRepository.bookByGroup(ideaId, id);
 
-        int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                      new NotifGroupSuggestion(firefox,
-                                                                                     id,
-                                                                                     IdeesRepository.getIdeaWithoutEnrichment(idea)));
+        Idee idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId).orElseThrow(SQLException::new);
+        NotifGroupSuggestion notifGroupSuggestion = new NotifGroupSuggestion(firefox, id, idea);
+        int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_, notifGroupSuggestion);
         assertNotifDoesExists(groupSuggestion);
 
         when(request.getRequestDispatcher(GroupIdeaDetails.VIEW_PAGE_URL)).thenReturn(dispatcher);
@@ -45,20 +44,19 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         doTestGet();
         assertNotifDoesNotExists(groupSuggestion);
 
-        IdeesRepository.remove(idea);
+        IdeesRepository.remove(ideaId);
     }
 
     @Test
-    public void testRejoindreGroupe() throws NoRowsException, SQLException {
+    public void testRejoindreGroupe() throws SQLException {
 
-        int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(idea, id);
+        IdeesRepository.bookByGroup(ideaId, id);
 
+        Idee idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId).orElseThrow(SQLException::new);
         int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                      new NotifGroupSuggestion(firefox,
-                                                                                     id,
-                                                                                     IdeesRepository.getIdeaWithoutEnrichment(idea)));
+                                                                      new NotifGroupSuggestion(firefox, id, idea));
         assertNotifDoesExists(groupSuggestion);
 
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
@@ -66,7 +64,7 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         doTestPost();
 
         assertNotifDoesNotExists(groupSuggestion);
-        IdeesRepository.remove(idea);
+        IdeesRepository.remove(ideaId);
     }
 
     @Test
@@ -78,15 +76,20 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         IdeesRepository.bookByGroup(idea, id);
         assertGroupExists(id);
 
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(idea);
-        int groupSuggestion = NotificationsRepository.addNotification(_MOI_AUTRE_, new NotifGroupSuggestion(moiAutre, id, idee));
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(idea).orElseThrow(SQLException::new);
+        int groupSuggestion = NotificationsRepository.addNotification(_MOI_AUTRE_,
+                                                                      new NotifGroupSuggestion(moiAutre, id, idee));
         int groupEvolutionShouldDisapear = NotificationsRepository.addNotification(_MOI_AUTRE_,
-                                                                                   new NotifGroupEvolution(firefox, // == _OWNER_ID_
-                                                                                         id,
-                                                                                         idee,
-                                                                                         true));
+                                                                                   new NotifGroupEvolution(firefox,
+                                                                                                           // == _OWNER_ID_
+                                                                                                           id,
+                                                                                                           idee,
+                                                                                                           true));
         int groupEvolutionShouldStay = NotificationsRepository.addNotification(_MOI_AUTRE_,
-                                                                               new NotifGroupEvolution(friendOfFirefox, id, idee, true));
+                                                                               new NotifGroupEvolution(friendOfFirefox,
+                                                                                                       id,
+                                                                                                       idee,
+                                                                                                       true));
         assertNotifDoesExists(groupSuggestion);
         assertNotifDoesExists(groupEvolutionShouldDisapear);
         assertNotifDoesExists(groupEvolutionShouldStay);
@@ -117,7 +120,10 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         IdeesRepository.bookByGroup(idea, id);
         assertGroupExists(id);
         assertEquals(0,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                              NotificationType.GROUP_EVOLUTION,
+                                                              ParameterName.IDEA_ID,
+                                                              idea)
                                             .size());
 
         // -----------------------
@@ -126,7 +132,10 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         when(request.getParameter("amount")).thenReturn(32 + "");
         doTestPost();
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                              NotificationType.GROUP_EVOLUTION,
+                                                              ParameterName.IDEA_ID,
+                                                              idea)
                                             .size());
         NotificationsRepository.removeAllType(moiAutre, NotificationType.GROUP_EVOLUTION);
 
@@ -135,7 +144,10 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         when(request.getParameter("amount")).thenReturn("annulation");
         doTestPost();
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                              NotificationType.GROUP_EVOLUTION,
+                                                              ParameterName.IDEA_ID,
+                                                              idea)
                                             .size());
 
         // -----------------------
@@ -144,19 +156,31 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         when(request.getParameter("amount")).thenReturn(32 + "");
         doTestPost();
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                              NotificationType.GROUP_EVOLUTION,
+                                                              ParameterName.IDEA_ID,
+                                                              idea)
                                             .size());
-        int nId = NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+        int nId = NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                           NotificationType.GROUP_EVOLUTION,
+                                                           ParameterName.IDEA_ID,
+                                                           idea)
                                          .get(0).id;
 
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn(35 + "");
         doTestPost();
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                              NotificationType.GROUP_EVOLUTION,
+                                                              ParameterName.IDEA_ID,
+                                                              idea)
                                             .size());
         assertEquals(nId,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                              NotificationType.GROUP_EVOLUTION,
+                                                              ParameterName.IDEA_ID,
+                                                              idea)
                                             .get(0).id);
 
         // Finalement - re - Annulation de la participation
@@ -164,7 +188,10 @@ public class TestGroupIdeaDetails extends AbstractTestServlet {
         when(request.getParameter("amount")).thenReturn("annulation");
         doTestPost();
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_, NotificationType.GROUP_EVOLUTION, ParameterName.IDEA_ID, idea)
+                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
+                                                              NotificationType.GROUP_EVOLUTION,
+                                                              ParameterName.IDEA_ID,
+                                                              idea)
                                             .size());
         assertTrue(NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                             NotificationType.GROUP_EVOLUTION,

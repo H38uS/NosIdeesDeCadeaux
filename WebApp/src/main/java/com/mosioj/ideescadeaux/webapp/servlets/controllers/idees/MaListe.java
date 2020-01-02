@@ -1,30 +1,27 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
+import com.mosioj.ideescadeaux.core.model.entities.Categorie;
+import com.mosioj.ideescadeaux.core.model.entities.Priorite;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.Categorie;
-import com.mosioj.ideescadeaux.core.model.entities.Priorite;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
 
 @WebServlet("/protected/ma_liste")
 public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
@@ -82,11 +79,16 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
                                                      null,
                                                      user);
 
-                try {
-                    addModificationNotification(user, IdeesRepository.getIdeaWithoutEnrichment(ideaId), true);
-                } catch (NoRowsException ignored) {
-                    // Impossible, we jute created it
-                }
+                IdeesRepository.getIdeaWithoutEnrichment(ideaId).ifPresent(
+                        i -> {
+                            try {
+                                addModificationNotification(user, i, true);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                logger.error(e);
+                            }
+                        }
+                );
 
                 NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
 

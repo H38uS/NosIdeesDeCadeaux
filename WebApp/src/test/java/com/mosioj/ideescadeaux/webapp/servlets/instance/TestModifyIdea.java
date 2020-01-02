@@ -35,7 +35,7 @@ public class TestModifyIdea extends AbstractTestServlet {
 
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_);
         String newText = "Idee modifiee le " + new Date();
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         assertNotEquals(newText, idee.text);
 
         int notifId = NotificationsRepository.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
@@ -51,7 +51,7 @@ public class TestModifyIdea extends AbstractTestServlet {
         when(request.getParameter(ModifyIdea.IDEE_ID_PARAM)).thenReturn(id + "");
         doTestPost();
 
-        idee = IdeesRepository.getIdeaWithoutEnrichment(id);
+        idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         assertEquals(newText, idee.text);
         assertNotifDoesNotExists(notifId);
         assertNotifDoesNotExists(addByFriend);

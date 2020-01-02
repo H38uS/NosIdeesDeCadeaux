@@ -9,12 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -320,7 +315,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             Priorite priorite = idee.getPriorite();
             if (priorite != null && priorite.getImage() != null) {
                 priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"",
-                                                                "width=\"" + IdeesRepository.MOBILE_PICTURE_WIDTH + "px\"");
+                                                                "width=\"" +
+                                                                IdeesRepository.MOBILE_PICTURE_WIDTH +
+                                                                "px\"");
             }
         }
     }
@@ -485,9 +482,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @return The idea from the DB, enriched with useful information.
      */
     protected Idee getIdeaAndEnrichIt(int ideaId) throws SQLException, NoRowsException {
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
-        fillAUserIdea(thisOne, idee, device.isMobile());
-        return idee;
+        Optional<Idee> idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
+        idee.ifPresent(i -> {
+            try {
+                fillAUserIdea(thisOne, i, device.isMobile());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                logger.error(e);
+            }
+        });
+        return idee.orElseThrow(NoRowsException::new);
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import com.mosioj.ideescadeaux.core.model.database.NoRowsException;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -50,13 +49,13 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
             return false;
         }
 
-        try {
-            idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        } catch (NoRowsException e) {
+        Optional<Idee> tentative = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
+        if (!tentative.isPresent()) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
+        idea = tentative.get();
         if (idea.getSurpriseBy() != null) {
             lastReason = "Vous ne pouvez pas poser de question car il s'agit d'une surprise... ;)";
             return false;
