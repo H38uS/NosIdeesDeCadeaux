@@ -260,8 +260,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param groupId The booking group's id.
      * @return The idea id of the idea booked by this group.
      */
-    // FIXME : optional
-    public static Idee getIdeaWithoutEnrichmentFromGroup(int groupId) throws SQLException {
+    public static Optional<Idee> getIdeaWithoutEnrichmentFromGroup(int groupId) throws SQLException {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format(" where i.{0} = ( ", IdeeColumns.ID));
@@ -276,18 +275,19 @@ public class IdeesRepository extends AbstractRepository {
             if (ps.execute()) {
                 ResultSet rs = ps.getResultSet();
                 if (rs.next()) {
-                    return createIdeaFromQuery(rs);
+                    return Optional.of(createIdeaFromQuery(rs));
                 }
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
      * @param groupId The booking group's id.
      * @return The owner of the idea booked by this group, or null if it does not exist.
      */
+    // FIXME : optional
     public static User getIdeaOwnerFromGroup(int groupId) throws SQLException {
 
         String query = MessageFormat.format("select u.{0}, u.{1}, u.{2}, u.{3} ",

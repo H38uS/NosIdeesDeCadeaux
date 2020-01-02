@@ -66,7 +66,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
             request.getSession().removeAttribute("errors");
         }
 
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
+        Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId()).orElseThrow(SQLException::new);
         User user = thisOne;
         IdeesCadeauxServlet.fillAUserIdea(user, idee, device.isMobile());
 
@@ -109,19 +109,19 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                       ParameterName.USER_ID,
                                                       thisOne);
 
-                final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
-                group.getShares().parallelStream().forEach(s -> {
-                    try {
-                        NotificationsRepository.addNotification(s.getUser().id,
-                                                                new NotifGroupEvolution(thisOne,
-                                                                                        group.getId(),
-                                                                                        idee,
-                                                                                        false));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        logger.error("Fail to send group evolution notification => " + e.getMessage());
-                    }
-                });
+                IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId())
+                               .ifPresent(idee -> group.getShares().parallelStream().forEach(s -> {
+                                   try {
+                                       NotificationsRepository.addNotification(s.getUser().id,
+                                                                               new NotifGroupEvolution(thisOne,
+                                                                                                       group.getId(),
+                                                                                                       idee,
+                                                                                                       false));
+                                   } catch (Exception e) {
+                                       e.printStackTrace();
+                                       logger.error("Fail to send group evolution notification => " + e.getMessage());
+                                   }
+                               }));
                 RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
             } else {
                 RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
@@ -163,15 +163,16 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                       ParameterName.USER_ID,
                                                       thisOne);
 
-                final Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId());
-                group.getShares()
-                     .parallelStream()
-                     .filter(s -> !s.getUser().equals(thisOne))
-                     .forEach(s -> NotificationsRepository.addNotification(s.getUser().id,
-                                                                           new NotifGroupEvolution(thisOne,
-                                                                                                   group.getId(),
-                                                                                                   idee,
-                                                                                                   true)));
+                IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId())
+                               .ifPresent(idee -> group.getShares()
+                                                       .parallelStream()
+                                                       .filter(s -> !s.getUser().equals(thisOne))
+                                                       .forEach(s -> NotificationsRepository.addNotification(s.getUser().id,
+                                                                                                             new NotifGroupEvolution(
+                                                                                                                     thisOne,
+                                                                                                                     group.getId(),
+                                                                                                                     idee,
+                                                                                                                     true))));
             } else {
                 GroupIdeaRepository.updateAmount(group.getId(), thisOne, Double.parseDouble(amount));
             }

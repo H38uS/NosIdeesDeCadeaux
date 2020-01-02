@@ -51,7 +51,7 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
         IdeaGroup group = policy.getGroupId();
         logger.debug("Getting details for idea group " + group.getId() + "...");
 
-        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId());
+        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId()).orElseThrow(SQLException::new);
         User user = thisOne;
         IdeesCadeauxServlet.fillAUserIdea(user, idee, device.isMobile());
 
@@ -77,7 +77,7 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
 
         IdeaGroup group = policy.getGroupId();
-        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId());
+        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId()).orElseThrow(SQLException::new);
         IdeesCadeauxServlet.fillAUserIdea(thisOne, idee, device.isMobile());
 
         List<Integer> selectedUsers = new ArrayList<>();
