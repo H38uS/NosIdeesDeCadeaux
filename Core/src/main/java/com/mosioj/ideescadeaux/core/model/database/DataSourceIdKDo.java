@@ -139,19 +139,17 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    // FIXME : Optional
-    public String selectString(String query, Object... parameters) throws SQLException {
-
+    public Optional<String> selectString(String query, Object... parameters) throws SQLException {
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
             statement.bindParameters(parameters);
-            statement.execute();
-            ResultSet res = statement.getResultSet();
-            if (res.first()) {
-                return res.getString(1);
-            } else {
-                return "";
+            if (statement.execute()) {
+                ResultSet res = statement.getResultSet();
+                if (res.first()) {
+                    return Optional.ofNullable(res.getString(1));
+                }
             }
         }
+        return Optional.empty();
     }
 
 }

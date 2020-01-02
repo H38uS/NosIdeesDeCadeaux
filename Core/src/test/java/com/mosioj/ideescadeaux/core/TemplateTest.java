@@ -69,7 +69,7 @@ public class TemplateTest {
 
         DataSourceIdKDo.setDataSource(dataSource);
         ds = new DataSourceIdKDo();
-        String email = ds.selectString("select email from USERS where id = ?", 3);
+        String email = ds.selectString("select email from USERS where id = ?", 3).orElseThrow(SQLException::new);
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
         for (NotificationType type : NotificationType.values()) {
@@ -77,8 +77,8 @@ public class TemplateTest {
                                    .forEach(u -> {
                                        try {
                                            UserParametersRepository.insertUpdateParameter(u,
-                                                                                                        type.name(),
-                                                                                                        NotificationActivation.SITE.name());
+                                                                                          type.name(),
+                                                                                          NotificationActivation.SITE.name());
                                        } catch (SQLException e) {
                                            e.printStackTrace();
                                            Assert.fail();

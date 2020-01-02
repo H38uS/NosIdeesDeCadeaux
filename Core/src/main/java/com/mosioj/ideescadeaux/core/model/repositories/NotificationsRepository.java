@@ -83,12 +83,14 @@ public class NotificationsRepository extends AbstractRepository {
 
             // Envoie de la notification par email si besoin
             if (activation == NotificationActivation.EMAIL || activation == NotificationActivation.EMAIL_SITE) {
-                String email = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
-                                                                         UsersColumns.EMAIL,
-                                                                         UsersRepository.TABLE_NAME,
-                                                                         UsersColumns.ID),
-                                                    userId);
-                notif.sendEmail(email, notificationProperties.get("urlTillProtectedPublic").toString());
+                getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
+                                                          UsersColumns.EMAIL,
+                                                          UsersRepository.TABLE_NAME,
+                                                          UsersColumns.ID),
+                                     userId)
+                       .ifPresent(e -> notif.sendEmail(e,
+                                                       notificationProperties.get("urlTillProtectedPublic")
+                                                                             .toString()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,7 +107,8 @@ public class NotificationsRepository extends AbstractRepository {
      */
     private static NotificationActivation getActivationType(int userId, AbstractNotification notif) throws SQLException {
         try {
-            return NotificationActivation.valueOf(UserParametersRepository.getParameter(userId, notif.getType()));
+            final String value = UserParametersRepository.getParameter(userId, notif.getType()).orElse("EMAIL_SITE");
+            return NotificationActivation.valueOf(value);
         } catch (IllegalArgumentException e) {
             return NotificationActivation.EMAIL_SITE;
         }

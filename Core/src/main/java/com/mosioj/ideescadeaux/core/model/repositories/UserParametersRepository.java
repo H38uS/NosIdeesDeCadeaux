@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserParametersRepository extends AbstractRepository {
 
@@ -58,7 +59,7 @@ public class UserParametersRepository extends AbstractRepository {
         }
     }
 
-    public static String getParameter(int userId, String paramName) throws SQLException {
+    public static Optional<String> getParameter(int userId, String paramName) throws SQLException {
         String query = MessageFormat.format("select {0} from {1} where {2} = ? and {3} = ?",
                                             UserParametersColumns.PARAMETER_VALUE,
                                             TABLE_NAME,

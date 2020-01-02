@@ -76,7 +76,7 @@ public class TemplateTest {
 
         DataSourceIdKDo.setDataSource(dataSource);
         ds = new DataSourceIdKDo();
-        String email = ds.selectString("select email from USERS where id = ?", 3);
+        String email = ds.selectString("select email from USERS where id = ?", 3).orElseThrow(SQLException::new);
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
         for (NotificationType type : NotificationType.values()) {

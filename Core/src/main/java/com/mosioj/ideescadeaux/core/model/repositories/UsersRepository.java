@@ -127,7 +127,8 @@ public class UsersRepository extends AbstractRepository {
                                                                          UsersColumns.EMAIL,
                                                                          TABLE_NAME,
                                                                          UsersColumns.ID),
-                                                    user.id);
+                                                    user.id)
+                                      .orElseThrow(() -> new SQLException("L'utilisateur n'existe pas."));
         String query = MessageFormat.format("update {0} set {1} = ?, {2} = ?, {3} = ?, {5} = ? where {4} = ?",
                                             TABLE_NAME,
                                             UsersColumns.EMAIL,
