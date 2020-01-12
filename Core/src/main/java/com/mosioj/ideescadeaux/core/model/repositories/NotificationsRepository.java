@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class NotificationsRepository extends AbstractRepository {
 
@@ -258,46 +259,34 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif  The notification.
      * @return True if and only if the user has already receive this notification.
      */
-    // FIXME : 0 retourner la notification si on la trouve, sera plus simple
-    public static Optional<Boolean> hasNotification(int userId, AbstractNotification notif) {
-
-        Map<ParameterName, Object> parameters = notif.getParameters();
-
-        StringBuilder query = new StringBuilder();
-        query.append("select 1 ");
-        query.append(MessageFormat.format("from {0} n ", TABLE_NAME));
-
-        Object[] queryParameters = new Object[parameters.keySet().size() * 2 + 2];
-        int i = 0;
-
-        for (ParameterName key : parameters.keySet()) {
-            query.append(MessageFormat.format("inner join {0} p{1} ", TABLE_PARAMS, i));
-            query.append(MessageFormat.format("on n.{0} = p{2}.{1} ",
-                                              NotificationsColumns.ID,
-                                              NotificationParametersColumns.NOTIFICATION_ID,
-                                              i));
-            query.append(MessageFormat.format("and p{0}.{1} = ? ", i, NotificationParametersColumns.PARAMETER_NAME));
-            query.append(MessageFormat.format("and p{0}.{1} = ? ", i, NotificationParametersColumns.PARAMETER_VALUE));
-
-            queryParameters[i++] = key;
-            queryParameters[i++] = parameters.get(key);
-        }
-
-        query.append(MessageFormat.format("where n.{0} = ? ", NotificationsColumns.TYPE));
-        query.append(MessageFormat.format("  and n.{0} = ? ", NotificationsColumns.OWNER));
-
-        queryParameters[i++] = notif.getType();
-        queryParameters[i] = userId;
-
-        logger.trace(query);
-        logger.trace("Parameters => " + parameters);
-
+    public static List<AbstractNotification> findNotificationMatching(int userId, AbstractNotification notif) {
+        List<AbstractNotification> res = new ArrayList<>();
         try {
-            return Optional.of(getDb().doesReturnRows(query.toString(), queryParameters));
+            List<AbstractNotification> found = getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
+                                                                                                   NotificationsColumns.TYPE,
+                                                                                                   NotificationsColumns.OWNER),
+                                                                              notif.getType(),
+                                                                              userId);
+
+            final Map<ParameterName, Object> parameters = notif.getParameters();
+
+            // On ne garde que celles qui ont les paramètres et leur valeur
+            found.forEach(n -> {
+                if (!n.getParameters().keySet().containsAll(parameters.keySet())) {
+                    return;
+                }
+                for (ParameterName name : parameters.keySet()) {
+                    if (!n.getParameters().get(name).equals(parameters.get(name))) {
+                        return;
+                    }
+                }
+                res.add(n);
+            });
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.warn(e);
-            return Optional.empty();
         }
+        return res;
     }
 
     /**

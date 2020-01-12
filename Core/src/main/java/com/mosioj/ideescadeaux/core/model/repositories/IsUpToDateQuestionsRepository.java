@@ -50,17 +50,20 @@ public class IsUpToDateQuestionsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return Number of rows inserted.
      */
-    public static int addAssociation(int ideeId, int userId) throws SQLException {
-        return getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
-                                                          TABLE_NAME,
-                                                          IsUpToDateColumns.IDEE_ID,
-                                                          IsUpToDateColumns.USER_ID),
-                                     ideeId,
-                                     userId);
+    public static int addAssociation(int ideeId, int userId) {
+        try {
+            return getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
+                                                              TABLE_NAME,
+                                                              IsUpToDateColumns.IDEE_ID,
+                                                              IsUpToDateColumns.USER_ID),
+                                         ideeId,
+                                         userId);
+        } catch (SQLException e) {
+            return 0;
+        }
     }
 
     /**
-     *
      * @param idea The idea.
      * @param user The user.
      * @return True if this user has already asked if this idea is up to date.

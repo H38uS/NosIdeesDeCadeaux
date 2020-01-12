@@ -21,6 +21,8 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 
+import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationMatching;
+
 @WebServlet("/protected/service/est_a_jour")
 public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBookingUpToDate> {
 
@@ -53,18 +55,15 @@ public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBook
         }
 
         if (IsUpToDateQuestionsRepository.addAssociation(idea.getId(), userId) == 1) {
-            Optional<NotifAskIfIsUpToDate> isUpToDateNotif = UsersRepository.getUser(userId)
-                                                                            .map(user -> new NotifAskIfIsUpToDate(user,
-                                                                                                                  idea));
-            if (isUpToDateNotif.isPresent()) {
-                Optional<Boolean> doesNotHaveIt = NotificationsRepository.hasNotification(idea.owner.id,
-                                                                                          isUpToDateNotif.get())
-                                                                         .filter(h -> !h);
-                doesNotHaveIt.flatMap(h -> isUpToDateNotif)
-                             .ifPresent(n -> NotificationsRepository.addNotification(idea.owner.id, n));
-                return doesNotHaveIt.isPresent(); // i.e. on ne l'avait pas avant...
-            }
+            Optional<NotifAskIfIsUpToDate> isUpToDate;
+            isUpToDate = UsersRepository.getUser(userId)
+                                        .map(user -> new NotifAskIfIsUpToDate(user, idea))
+                                        // seulement si la notification n'existe pas encore
+                                        .filter(n -> findNotificationMatching(idea.owner.id, n).size() == 0);
+            isUpToDate.ifPresent(n -> NotificationsRepository.addNotification(idea.owner.id, n));
+            return isUpToDate.isPresent();
         }
+
         return false;
     }
 }

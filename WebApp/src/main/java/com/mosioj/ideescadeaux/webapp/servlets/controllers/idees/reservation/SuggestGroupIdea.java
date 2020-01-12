@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
@@ -28,6 +30,7 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import static com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository.getIdeaWithoutEnrichmentFromGroup;
+import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationMatching;
 
 @WebServlet("/protected/suggerer_groupe_idee")
 public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroupInteraction> {
@@ -55,18 +58,20 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
         User user = thisOne;
         IdeesCadeauxServlet.fillAUserIdea(user, idee, device.isMobile());
 
-        List<User> potentialGroupUser = IdeesRepository.getPotentialGroupUser(group.getId(), user.id);
-        logger.debug(MessageFormat.format("Potential users: {0}", potentialGroupUser));
-        List<User> removable = new ArrayList<>();
-        for (User toRemove : potentialGroupUser) {
-            NotifGroupSuggestion suggestion = new NotifGroupSuggestion(user, group.getId(), idee);
-            NotificationsRepository.hasNotification(toRemove.id, suggestion)
-                                   .filter(has -> has)
-                                   .ifPresent(has -> removable.add(toRemove));
-        }
-        potentialGroupUser.removeAll(removable);
+        // La notification qu'on va envoyer
+        NotifGroupSuggestion suggestion = new NotifGroupSuggestion(user, group.getId(), idee);
 
-        request.setAttribute("candidates", potentialGroupUser);
+        // Tous les utilisateurs qui peuvent être intéressés
+        List<User> candidates = IdeesRepository.getPotentialGroupUser(group.getId(), user.id);
+
+        // On conserve que ceux qui n'ont pas la notification
+        candidates = candidates.stream()
+                               .filter(toRemove -> findNotificationMatching(toRemove.id, suggestion).size() == 0)
+                               .collect(Collectors.toList());
+
+        logger.debug(MessageFormat.format("Potential users: {0}", candidates));
+
+        request.setAttribute("candidates", candidates);
         request.setAttribute("idee", idee);
         request.setAttribute("group", group);
 
@@ -107,10 +112,10 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
 
     private void suggestTheGroupTo(IdeaGroup group, Idee idea, User user, List<User> successTo) {
         NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, group.getId(), idea);
-        NotificationsRepository.hasNotification(user.id, suggestion)
-                               .filter(has -> !has)
-                               .ifPresent(n -> NotificationsRepository.addNotification(user.id,
-                                                                                       suggestion));
+        final List<AbstractNotification> existingNotif = findNotificationMatching(user.id, suggestion);
+        if (existingNotif.size() == 0) {
+            NotificationsRepository.addNotification(user.id, suggestion);
+        }
         successTo.add(user);
     }
 
