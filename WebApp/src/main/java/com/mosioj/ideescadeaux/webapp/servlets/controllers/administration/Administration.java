@@ -38,7 +38,8 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
 
         logger.info("Getting administration page from user: " + thisOne);
         List<User> allUsers = UsersRepository.getAllUsers();
@@ -47,7 +48,7 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
         File logDir = new File(getServletContext().getInitParameter("work_dir"), "logs");
         try {
             request.setAttribute("log_folder", logDir.getCanonicalPath());
-            List<File> logFiles = Arrays.stream(logDir.listFiles())
+            List<File> logFiles = Arrays.stream(Optional.ofNullable(logDir.listFiles()).orElse(new File[]{}))
                                         .filter(f -> f.getName().endsWith(".log"))
                                         .sorted(Comparator.reverseOrder())
                                         .limit(10)
@@ -77,10 +78,10 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
         // And all files
         File smallFolder = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas/small");
         File largeFolder = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas/large");
-        List<String> fileNamesInSmall = Arrays.stream(smallFolder.listFiles())
+        List<String> fileNamesInSmall = Arrays.stream(Optional.ofNullable(smallFolder.listFiles()).orElse(new File[]{}))
                                               .map(File::getName)
                                               .collect(Collectors.toList());
-        List<String> fileNamesInLarge = Arrays.stream(largeFolder.listFiles())
+        List<String> fileNamesInLarge = Arrays.stream(Optional.ofNullable(largeFolder.listFiles()).orElse(new File[]{}))
                                               .map(File::getName)
                                               .collect(Collectors.toList());
 

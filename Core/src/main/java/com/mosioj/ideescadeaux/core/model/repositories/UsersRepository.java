@@ -174,8 +174,21 @@ public class UsersRepository extends AbstractRepository {
 
             ResultSet res = ps.getResultSet();
             while (res.next()) {
-                Timestamp creation = res.getTimestamp(UsersColumns.CREATION_DATE.name());
-                Timestamp lastLogin = res.getTimestamp(UsersColumns.LAST_LOGIN.name());
+
+                Timestamp creation = null;
+                try {
+                    creation = res.getTimestamp(UsersColumns.CREATION_DATE.name());
+                } catch (SQLException ignored) {
+                    // Plante lorsque vide - nécessaire de catcher
+                }
+
+                Timestamp lastLogin = null;
+                try {
+                    lastLogin = res.getTimestamp(UsersColumns.LAST_LOGIN.name());
+                } catch (SQLException ignored) {
+                    // Plante lorsque vide - nécessaire de catcher
+                }
+
                 users.add(new User(res.getInt(UsersColumns.ID.name()),
                                    res.getString(UsersColumns.NAME.name()),
                                    res.getString(UsersColumns.EMAIL.name()),
