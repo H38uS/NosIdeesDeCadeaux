@@ -151,7 +151,7 @@ public abstract class AbstractTestServlet extends TemplateTest {
     /**
      * Performs a post to the test object.
      *
-     * @param clazz The actual class of the response.
+     * @param clazz                    The actual class of the response.
      * @param shouldPassSecurityChecks True if the parameters should be accepted by the service.
      * @return The service response if allowed by policy, null otherwise.
      */
@@ -234,7 +234,6 @@ public abstract class AbstractTestServlet extends TemplateTest {
         final byte[] byteContent = content.getBytes(StandardCharsets.UTF_8);
 
         ServletInputStream sis = new ServletInputStream() {
-
             int pos = -1;
 
             @Override

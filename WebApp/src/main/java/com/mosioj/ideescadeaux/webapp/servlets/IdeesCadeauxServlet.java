@@ -337,11 +337,11 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 if (!fi.isFormField()) {
                     logger.trace(MessageFormat.format("Character encoding: {0}", request.getCharacterEncoding()));
                     String fileName = fi.getName() == null ? "" : fi.getName();
-                    logger.debug(MessageFormat.format("File name: {0}", fileName));
+                    logger.debug(MessageFormat.format("Receiving file name: {0}", fileName));
                     if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
                         if ("blob".equals(fileName)) {
-                            String inputFileName = parameters.get("fileName");
+                            String inputFileName = StringEscapeUtils.unescapeHtml4(parameters.get("fileName"));
                             fileName = inputFileName == null ? "IMG" : inputFileName;
                         }
                         image = Escaper.computeImageName(fileName);
