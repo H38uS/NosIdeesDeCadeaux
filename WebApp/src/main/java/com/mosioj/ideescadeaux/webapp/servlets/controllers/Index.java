@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.core.model.entities.User;
@@ -60,6 +61,9 @@ public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
                 req.setAttribute("nothingMessage", MessagesAccueilRepository.getOneNothingMessage());
             }
         }
+
+        // All ideas for which we do participate
+        req.setAttribute("nb_of_reservations", IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne).size());
 
         RootingsUtils.rootToPage(VIEW_URL, req, resp);
     }
