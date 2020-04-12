@@ -75,6 +75,11 @@
 					${nothingMessage}
 				</c:otherwise>
 			</c:choose>
+			<c:if test="${nb_of_reservations > 0}">
+			    <div class="alert alert-info">
+			        Vous avez actuellement réservé ${nb_of_reservations} idée(s). <a href="protected/mes_reservations.jsp">Aller les voir</a> toutes.
+			    </div>
+			</c:if>
 		</div>
 		
 		<div class="container-fluid mt-sm-3 mt-lg-5">
