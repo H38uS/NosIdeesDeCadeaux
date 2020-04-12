@@ -125,6 +125,8 @@ function getPictureWidth() {
 	}
 }
 
+var picturePath = "protected/files/uploaded_pictures/ideas";
+
 /* ********************* */
 /* *** Loading Stuff *** */
 /* ********************* */

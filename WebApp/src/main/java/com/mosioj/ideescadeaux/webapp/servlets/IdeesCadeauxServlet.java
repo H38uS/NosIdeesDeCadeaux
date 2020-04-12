@@ -272,7 +272,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     /**
      * @param user                The connected user.
      * @param idee                The idea.
-     * @param isFromAMobileDevice True if the request is comming from a mobile device (mobile vs computer).
+     * @param isFromAMobileDevice True if the request is coming from a mobile device (mobile vs computer).
      */
     public static void fillAUserIdea(User user, Idee idee, boolean isFromAMobileDevice) throws SQLException {
 

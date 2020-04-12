@@ -25,10 +25,14 @@ public class Idee {
     @Expose
     public final User owner;
 
+    @Expose
     private Categorie cat;
+
+    @Expose
+    private final String image;
+
     private final User bookingOwner;
     private IdeaGroup group;
-    private final String image;
     private final Priorite priorite;
     private final Timestamp bookedOn;
     private final Timestamp lastModified;
