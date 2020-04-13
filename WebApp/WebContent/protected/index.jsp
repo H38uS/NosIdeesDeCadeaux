@@ -31,41 +31,37 @@
 				<c:when test="${empty nothingMessage}">
 					<c:if test="${not empty userBirthday}">
 						<span>${birthdayMessage}</span>
-						<table>
+						<ul>
 							<c:forEach var="user" items="${userBirthday}" >
-							<tr>
-								<td class="px-1">
-									<c:choose>
-										<c:when test="${user.nbDaysBeforeBirthday == 0}">
-											C'est l'anniversaire ${user.myDName} aujourd'hui !
-										</c:when>
-										<c:when test="${user.nbDaysBeforeBirthday == 1}">
-											L'anniversaire ${user.myDName} est demain !
-										</c:when>
-										<c:otherwise>
-											L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
-										</c:otherwise>
-									</c:choose>
-								</td>
-								<td class="px-1 d-none d-lg-table-cell">
-									<a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
-								</td>
-								<td class="px-1 d-lg-none" style="width:65px">
-									<a href="protected/voir_liste?id=${user.id}">Sa liste</a>
-								</td>
-								<td class="px-1 center">
-									<c:choose>
-										<c:when test="${user.hasBookedOneOfItsIdeas}">
-											<span title="Vous avez déjà réservé des idées" class="badge badge-success">Réservé</span>
-										</c:when>
-										<c:otherwise>
-											<span title="Vous n'avez pas encore réservé d'idée !" class="badge badge-warning">Non réservé</span>
-										</c:otherwise>
-									</c:choose>
-								</td>
-							</tr>
+							<li>
+                                <c:choose>
+                                    <c:when test="${user.hasBookedOneOfItsIdeas}">
+                                        <span title="Vous avez déjà réservé des idées" class="badge badge-success">Réservé</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span title="Vous n'avez pas encore réservé d'idée !" class="badge badge-warning">Non réservé</span>
+                                    </c:otherwise>
+                                </c:choose>
+                                <c:choose>
+                                    <c:when test="${user.nbDaysBeforeBirthday == 0}">
+                                        C'est l'anniversaire ${user.myDName} aujourd'hui !
+                                    </c:when>
+                                    <c:when test="${user.nbDaysBeforeBirthday == 1}">
+                                        L'anniversaire ${user.myDName} est demain !
+                                    </c:when>
+                                    <c:otherwise>
+                                        L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
+                                    </c:otherwise>
+                                </c:choose>
+                                <span class="px-1 d-none d-lg-inline">
+                                    <a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
+                                </span>
+                                <span class="px-1 d-lg-none">
+                                    <a href="protected/voir_liste?id=${user.id}">Voir sa liste</a>
+                                </span>
+							</li>
 							</c:forEach>
-						</table>
+						</ul>
 					</c:if>
 					<c:if test="${not empty christmasMessage}">
 						<p>${christmasMessage}</p>
@@ -75,13 +71,13 @@
 					${nothingMessage}
 				</c:otherwise>
 			</c:choose>
-			<c:if test="${nb_of_reservations > 0}">
-			    <div class="alert alert-info">
-			        Vous avez actuellement réservé ${nb_of_reservations} idée(s). <a href="protected/mes_reservations.jsp">Aller les voir</a> toutes.
-			    </div>
-			</c:if>
 		</div>
-		
+        <c:if test="${nb_of_reservations > 0}">
+            <div class="alert alert-info mb-2">
+                Vous avez actuellement réservé ${nb_of_reservations} idée(s). <a href="protected/mes_reservations.jsp">Aller les voir</a> toutes.
+            </div>
+        </c:if>
+
 		<div class="container-fluid mt-sm-3 mt-lg-5">
 			<div class="row justify-content-center">
 				<div class="col-auto col-sm-4 col-lg-5 col-xl-4 ml-sm-auto ml-lg-0 mb-2">
