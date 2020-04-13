@@ -5,7 +5,7 @@
 		<div id="container">
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-0 pb-0">
-				<div class="container-fluid">
+				<div class="container-fluid px-0 px-lg-2">
 					<div class="row align-items-center justify-content-end mx-0 w-100">
 						<div class="col-auto">
 							<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu_content" aria-controls="menu_content" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-auto mx-auto my-3 my-sm-0 mx-md-0 justify-content-md-end  d-md-flex">
+						<div class="col-auto mx-auto my-3 my-sm-0 mx-md-0 justify-content-md-end">
 							<c:if test="${is_mobile}">
 								<img id="connected_user_logo" src="protected/files/uploaded_pictures/avatars/${connected_user.avatarSrcSmall}" alt="" style="height:50px;" />
 							</c:if>
@@ -94,17 +94,23 @@
 				</div>
 			</nav>
 
-			<div class="container-fluid">
-				<div class="row align-items-center justify-content-center mx-0">
-					<div class="col-12 col-md-5 col-lg-6 col-xl-7 mr-auto huge w-100 d-none d-sm-block pb-sm-2">Créer et partager vos envies de cadeaux avec toute votre famille et vos amis</div>
-					<div class="col-12 col-sm-auto pt-md-0">
-						<form id="afficherliste" class="form-inline justify-content-center justify-content-md-end" method="POST" action="protected/afficher_listes">
-							<input type="text" class="form-control mx-2" name="name" id="header_name" placeholder="Entrer un nom ou un email" />
-							<button type="submit" class="btn btn-primary d-none d-sm-block">Rechercher !</button>
-						</form>
-					</div>
-				</div>
-			</div>
+            <div class="container-fluid">
+                <div class="container-fluid px-0 px-lg-2">
+                <form id="afficherliste" class="justify-content-center justify-content-md-end" method="POST" action="protected/afficher_listes">
+                    <div class="form-row justify-content-end align-items-center mx-0">
+                        <div class="col-12 col-lg-5 col-xl-6 d-none d-sm-block pb-sm-2 pl-0 pr-3">
+                            Créer et partager vos envies de cadeaux avec toute votre famille et vos amis
+                        </div>
+                        <div class="col px-0">
+                            <input type="text" class="form-control" name="name" id="header_name" placeholder="Entrer un nom ou un email" />
+                        </div>
+                        <div class="col-auto px-0">
+                            <button type="submit" class="btn btn-primary d-none d-sm-block ml-2">Rechercher !</button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
 
 			<nav class="navbar navbar-expand-lg py-0 mt-2 mt-xl-3 menu">
 				<div class="collapse navbar-collapse">
