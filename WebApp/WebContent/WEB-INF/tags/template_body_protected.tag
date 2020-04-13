@@ -183,9 +183,16 @@
 									return false;
 								}
 							}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-								return $( "<li class=\"ui-menu-item\"></li>" )
+								return $('<li class="ui-menu-item"></li>')
 									.data( "item.autocomplete", item )
-									.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
+									.append('<div class="ui-menu-item-wrapper">' +
+                                                '<div class="row align-items-center">' +
+                                                    '<div class="col-3 center">' +
+                                                        '<img class="avatar" src="' + item.imgsrc + '" />' +
+                                                    '</div>' +
+                                                    '<div class="col">' + item.value + '</div>' +
+                                                '</div>' +
+                                            '</div>')
 									.appendTo( ul );
 							};
 						});

@@ -1,4 +1,3 @@
-// FIXME : 1 revoir le CSS de la recherche en mode pc + CSS alert box
 // FIXME : 1 utiliser le format MD pour les idées, les commentaires et les séances de natation
 // FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)
 // FIXME : 3 dans mon réseau quand on tape filtrer les cartes en dessous
