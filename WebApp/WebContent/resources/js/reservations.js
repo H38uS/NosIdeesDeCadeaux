@@ -49,7 +49,7 @@ function loadReservations() {
                     <td>
                         ${category}
                         ${image}
-                        ${idea.text}
+                        ${idea.htmlText}
                     </td>
                 </tr>
                 `);

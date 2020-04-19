@@ -153,7 +153,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @param request The http request.
      * @return True if the user is an admin.
      */
-    protected boolean isAdmin(HttpServletRequest request) {
+    public static boolean isAdmin(HttpServletRequest request) {
         return request.isUserInRole("ROLE_ADMIN");
     }
 

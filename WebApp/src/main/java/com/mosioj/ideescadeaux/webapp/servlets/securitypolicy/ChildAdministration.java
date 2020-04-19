@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
@@ -42,7 +43,8 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
         }
 
         int userId = connectedUser.id;
-        if (ParentRelationshipRepository.noRelationExists(userId, child.get())) {
+        final boolean isAdmin = IdeesCadeauxServlet.isAdmin(request);
+        if (ParentRelationshipRepository.noRelationExists(userId, child.get()) && !isAdmin) {
             lastReason = "Vous n'êtes pas un parent de cette personne...";
             return false;
         }

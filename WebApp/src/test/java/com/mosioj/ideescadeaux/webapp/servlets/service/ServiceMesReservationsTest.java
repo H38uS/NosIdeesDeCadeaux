@@ -27,7 +27,7 @@ public class ServiceMesReservationsTest extends AbstractTestServlet {
         assertEquals("test@toto.com", first.getOwner().email);
         assertEquals("Test@toto.com", first.getOwner().name);
         assertEquals(4, first.getOwner().id);
-        assertEquals("toto\r\n\r\ntutu", first.getIdeas().get(0).getText());
+        assertEquals("<p>toto</p>\n<p>tutu</p>", first.getIdeas().get(0).getHtml().trim());
     }
 
     private static class MyServiceResp extends ServiceResponse<List<OwnerIdeas>> {

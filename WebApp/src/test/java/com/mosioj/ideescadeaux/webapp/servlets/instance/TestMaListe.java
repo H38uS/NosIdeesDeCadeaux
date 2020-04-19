@@ -58,7 +58,7 @@ public class TestMaListe extends AbstractTestServlet {
 
         Map<String, String> param = new HashMap<>();
         param.put("text",
-                  "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra et voilà");
+                  "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&langue=fra et voilà");
         param.put("priority", "1");
         createMultiPartRequest(param);
         doTestPost();
@@ -66,7 +66,7 @@ public class TestMaListe extends AbstractTestServlet {
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
         assertEquals(
-                "un lien <a href=\"https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra\" target=\"_blank\">https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra</a> et voilà",
-                idee.getText());
+                "<p>un lien <a rel=\"nofollow\" href=\"https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra\">https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra</a> et voilà</p>",
+                idee.getHtml().trim());
     }
 }

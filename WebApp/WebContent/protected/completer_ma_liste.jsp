@@ -6,9 +6,7 @@
 <html>
 <t:template_head_includes>
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/thickbox.css" />
-	<link rel="stylesheet" type="text/css" href="resources/css/lib/jquery-te-1.4.0.css" />
 	<script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
-	<script src="resources/js/lib/jquery-te-1.4.0.min.js" type="text/javascript"></script>
 	<c:if test="${not is_mobile}">
 		<script src="resources/js/browser/pictures.js" type="text/javascript"></script>
 	</c:if>
@@ -24,9 +22,6 @@
 				<div class="form-group">
 					<label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
 					<textarea id="text" class="form-control" name="text" cols="70" rows="6"></textarea>
-					<script type="text/javascript">
-						$("#text").jqte();
-					</script>
 				</div>
 				<div class="form-group">
 					<label for="type" class="d-none d-md-inline-block">Type</label>

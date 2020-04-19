@@ -1,5 +1,10 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.google.gson.annotations.Expose;
+import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
+import com.mosioj.ideescadeaux.core.utils.Escaper;
+import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
@@ -7,10 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
-import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 public class Idee {
 
@@ -20,9 +21,6 @@ public class Idee {
     private final int id;
 
     @Expose
-    public String text;
-
-    @Expose
     public final User owner;
 
     @Expose
@@ -30,6 +28,17 @@ public class Idee {
 
     @Expose
     private final String image;
+
+    /**
+     * Le text échappé de l'utilisateur, converti en markdown.
+     */
+    @Expose
+    private final String htmlText;
+
+    /**
+     * Le text tel que rentré par l'utilisateur. N'est pas échappé.
+     */
+    private final String text;
 
     private final User bookingOwner;
     private IdeaGroup group;
@@ -55,6 +64,7 @@ public class Idee {
                 User surpriseBy) {
         id = pId;
         text = pText;
+        htmlText = Escaper.interpreteMarkDown(text);
         bookingOwner = pBookingOwner;
         this.image = image;
         this.owner = owner;
@@ -215,7 +225,7 @@ public class Idee {
      * @return The idea text stored in DB, that will be presented to the browser.
      */
     public String getHtml() {
-        return text;
+        return htmlText;
     }
 
     public String getImage() {
