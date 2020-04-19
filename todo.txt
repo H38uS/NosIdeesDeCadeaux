@@ -1,4 +1,7 @@
-// FIXME : 1 utiliser le format MD pour les idées, les commentaires et les séances de natation
+Gros bug ajouter personne !!! en mode pc au moins
+
+// FIXME : 1 utiliser le format MD pour les commentaires / questions
+// FIXME : 1 permettre les smileys
 // FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)
 // FIXME : 3 dans mon réseau quand on tape filtrer les cartes en dessous
 // FIXME : 4 ajouter l'heure dans les infos de sous réservation / idem groupe
@@ -6,6 +9,7 @@
 // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
 // FIXME : 5 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
 // FIXME : 5 faire une passe et remplacer les exception par des Try
+// FIXME : 6 faire un preview pour l'édition des idées
 // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
 // FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
 // FIXME : 7 ordonnancer les résa de plus de 3 mois ? + les mettre dans un tableau au moins en mode pc
