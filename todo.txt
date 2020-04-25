@@ -1,5 +1,3 @@
-Gros bug ajouter personne !!! en mode pc au moins
-
 // FIXME : 1 utiliser le format MD pour les commentaires / questions
 // FIXME : 1 permettre les smileys
 // FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)

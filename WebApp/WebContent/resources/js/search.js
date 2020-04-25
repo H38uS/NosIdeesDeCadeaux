@@ -14,7 +14,7 @@ function doSearch(value, only_non_friend) {
 	doLoading("Recherche en cours...");
 	$("#res").html();
 
-	$.post('protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
+	$.get('protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
 		$("#res").html(data);
 		$("#res li").hide();
 		setTimeout(function() {

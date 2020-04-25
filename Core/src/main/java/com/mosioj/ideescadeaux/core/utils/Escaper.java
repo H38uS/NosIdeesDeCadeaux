@@ -33,11 +33,6 @@ public class Escaper {
     private static final String HTTPS_REGEX = "(^|[^\"(\\[])(https?://[^\\s]*)";
     private static final String HTTPS_REPLACEMENT = "$1[$2]($2)";
 
-    private static final String[] UNSUPPORTED_TAGS = new String[]{"applet", "area", "audio", "base", "canvas", "data", "datalist",
-            "embed", "figcaption", "figure", "form", "frame", "frameset", "html", "iframe", "img", "link", "meta", "nav", "object",
-            "output", "param", "picture", "progress", "ruby", "script", "source", "svg", "textarea", "input", "label", "video",
-            "track", "template"};
-
     /**
      * @param text The text to escape.
      * @return The html equivalent of this text.
