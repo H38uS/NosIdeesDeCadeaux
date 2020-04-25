@@ -2,42 +2,57 @@ package com.mosioj.ideescadeaux.core.model.entities;
 
 import java.sql.Timestamp;
 
+import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 public class Comment {
 
-	private int id;
-	private String text;
-	private User writtenBy;
-	private int idea;
-	private Timestamp time;
+    private final int id;
+    private final String text;
 
-	public Comment(int id, String text, User writtenBy, int idea, Timestamp time) {
-		super();
-		this.id = id;
-		this.text = text;
-		this.writtenBy = writtenBy;
-		this.idea = idea;
-		this.time = time;
-	}
+    /**
+     * Le text échappé de l'utilisateur, converti en markdown.
+     */
+    private final String htmlText;
 
-	public int getId() {
-		return id;
-	}
+    private final User writtenBy;
+    private final int idea;
+    private final Timestamp time;
 
-	public String getText() {
-		return text;
-	}
+    public Comment(int id, String text, User writtenBy, int idea, Timestamp time) {
+        super();
+        this.id = id;
+        this.text = text;
+        htmlText = Escaper.interpreteMarkDown(text);
+        this.writtenBy = writtenBy;
+        this.idea = idea;
+        this.time = time;
+    }
 
-	public User getWrittenBy() {
-		return writtenBy;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getIdea() {
-		return idea;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public String getTime() {
-		return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(time);
-	}
+    /**
+     * @return The idea text stored in DB, that will be presented to the browser.
+     */
+    public String getHtml() {
+        return htmlText;
+    }
+
+    public User getWrittenBy() {
+        return writtenBy;
+    }
+
+    public int getIdea() {
+        return idea;
+    }
+
+    public String getTime() {
+        return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(time);
+    }
 }

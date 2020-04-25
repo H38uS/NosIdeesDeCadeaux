@@ -12,6 +12,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.model.entities.Comment;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class CommentsRepository extends AbstractRepository {
 
@@ -27,6 +28,8 @@ public class CommentsRepository extends AbstractRepository {
      * @param text   The text of the comment.
      */
     public static void addComment(int userId, Integer ideaId, String text) throws SQLException {
+        text = StringEscapeUtils.unescapeHtml4(text);
+        text = Escaper.escapeIdeaText(text);
         getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
                                                                TABLE_NAME,
                                                                CommentsColumns.IDEA_ID,
@@ -34,7 +37,7 @@ public class CommentsRepository extends AbstractRepository {
                                                                CommentsColumns.WRITTEN_BY,
                                                                CommentsColumns.WRITTEN_ON),
                                           ideaId,
-                                          Escaper.textToHtml(text),
+                                          text,
                                           userId);
     }
 

@@ -45,13 +45,13 @@
 							<c:when test="${connected_user.id == comment.writtenBy.id}">
 								<div class="comment comment_mine">
 									<div class="comment_header_mine">Posté par vous le ${comment.time} - le <a href="protected/supprimer_commentaire?id=${comment.id}">supprimer</a></div>
-									<div class="comment_text">${comment.text}</div>
+									<div class="comment_text">${comment.getHtml()}</div>
 								</div>
 							</c:when>
 							<c:otherwise>
 								<div class="comment comment_other">
 									<div class="comment_header_other">Posté par ${comment.writtenBy.name} le ${comment.time}</div>
-									<div class="comment_text">${comment.text}</div>
+									<div class="comment_text">${comment.getHtml()}</div>
 								</div>
 							</c:otherwise>
 						</c:choose>
