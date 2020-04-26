@@ -60,7 +60,7 @@ public class IdeesRepository extends AbstractRepository {
 
         Idee idee = new Idee(rs.getInt(IdeeColumns.ID.name()),
                              owner,
-                             rs.getString(IdeeColumns.IDEE.name()),
+                             Escaper.transformCodeToSmiley(rs.getString(IdeeColumns.IDEE.name())),
                              bookingOwner,
                              rs.getString("id_image"),
                              new Priorite(rs.getInt(IdeeColumns.PRIORITE.name()),
@@ -440,6 +440,7 @@ public class IdeesRepository extends AbstractRepository {
         try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), insert.toString())) {
             text = StringEscapeUtils.unescapeHtml4(text);
             text = Escaper.escapeIdeaText(text);
+            text = Escaper.transformSmileyToCode(text);
             logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
                                              owner.id,
                                              text,
@@ -732,6 +733,7 @@ public class IdeesRepository extends AbstractRepository {
     public static void modifier(int id, String text, String type, String priority, String image) throws SQLException {
         text = StringEscapeUtils.unescapeHtml4(text);
         text = Escaper.escapeIdeaText(text);
+        text = Escaper.transformSmileyToCode(text);
         getDb().executeUpdate(MessageFormat.format(
                 "update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
                 TABLE_NAME,

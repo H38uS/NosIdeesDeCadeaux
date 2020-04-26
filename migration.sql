@@ -35,6 +35,7 @@ ALTER TABLE `QUESTIONS` CHANGE `text` `text` TEXT CHARACTER SET utf8mb4 COLLATE 
 ALTER TABLE `SOUS_RESERVATION` CHANGE `COMMENT` `COMMENT` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 
 /* mysqld --help --verbose */
+/* /var/packages/MariaDB/etc/my.cnf sur le nas */
 /*
 [client]
 default-character-set = utf8mb4

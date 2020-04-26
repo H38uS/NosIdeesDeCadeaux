@@ -6,13 +6,11 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.*;
-
 public class IdeesRepositoryTest extends TemplateTest {
 
     @Test
     public void testAddSmiley() throws SQLException {
-        String text = "😀";
+        String text = "😀😑😎😣😣😲😩😨🤢🤮🚛🚑🛫✈";
         int id = IdeesRepository.addIdea(new User(0, "test", "test@ieqhfe.eij", ""), text, "", 0, "", null, null);
         IdeesRepository.remove(id);
     }

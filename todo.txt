@@ -1,6 +1,6 @@
-// FIXME : 1 ==> + catcher les erreurs dans la création d'idées + modifier sûrement pareil
-// FIXME : 2 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)
-// FIXME : 4 ajouter l'heure dans les infos de sous réservation / idem groupe
+// FIXME : 1 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)
+// FIXME : 2 ajouter l'heure dans les infos de sous réservation / idem groupe
+// FIXME : 3 ajouter le support des smileys dans les questions et commentaires
 // FIXME : 4 rendre les dates d'anniversaire plus visible (dans le mail?) et dans le site
 // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
 // FIXME : 5 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
@@ -11,7 +11,6 @@
 // FIXME : 7 ordonnancer les résa de plus de 3 mois dans (mes réservations) ? + les mettre dans un tableau au moins en mode pc - ajouter la date de l'action!!
 // FIXME : 8 tester les services quand on a pas les droits
 // FIXME : 9 lazy loading pour les idées (image c'est déjà le cas)
-// FIXME : 9 pour les smileys, il faut modifier le server... Mais impossible de leur côté car partagé avec le client...
 // FIXME : 9 auto-génération des smileys
 // FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
 // FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??
