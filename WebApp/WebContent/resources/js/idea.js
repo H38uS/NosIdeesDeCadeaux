@@ -98,8 +98,13 @@ function setIdeaActionsToJs(my_idea) {
 var postIdea = function(form) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', form.attr("action"));
-	xhr.onload = function() {
-		actionDone("L'idée a bien été crée ou mise à jour sur le serveur.");
+	xhr.onload = function(e) {
+	    var resp = JSON.parse(xhr.responseText);
+        if (resp.status !== 'OK') {
+            actionError(resp.message);
+        } else {
+            actionDone(resp.message);
+        }
 	};
 	xhr.onerror = function() {
 		actionError(this.responseText)
@@ -124,6 +129,8 @@ $(document).ready(function() {
 	$("a.idea_est_a_jour").click(estAJourIdea);
 	$("a.idea_reserver").click(reserverIdea);
 	$("a.idea_dereserver").click(dereserverIdea);
+	var theForm = $(".post_idea").closest('form');
+	theForm.attr("action", theForm.attr("action").replace("protected/", "protected/service/"));
 	$(".post_idea").click(function (e) {
 		e.preventDefault();
 		var form = $(this).closest('form');
