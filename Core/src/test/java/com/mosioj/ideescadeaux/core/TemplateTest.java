@@ -65,7 +65,7 @@ public class TemplateTest {
         dataSource.setDatabaseName("test_ideeskdos");
         dataSource.setUser("mosioj");
         dataSource.setPassword("tuaD50Kv2jguyX5ncokK");
-        dataSource.setURL("jdbc:mysql://192.168.1.44/test_ideeskdos?serverTimezone=Europe/Paris");
+        dataSource.setURL("jdbc:mysql://192.168.1.44/test_ideeskdos?serverTimezone=Europe/Paris&useUnicode=yes");//
 
         DataSourceIdKDo.setDataSource(dataSource);
         ds = new DataSourceIdKDo();

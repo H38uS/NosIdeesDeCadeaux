@@ -3,7 +3,7 @@
     <Resource  name="jdbc/web-db" auth="Container"  type="javax.sql.DataSource"
               maxActive="20"  maxIdle="10"  maxWait="10000" removeAbandoned="true"
               username="${db.username}"  password="${db.password}"  driverClassName="com.mysql.jdbc.Driver"
-              url="${db.url}?useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Paris" validationQuery="select 1" testOnBorrow="true" />
+              url="${db.url}?useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Paris&amp;useUnicode=yes" validationQuery="select 1" testOnBorrow="true" />
     <Realm className="org.apache.catalina.realm.LockOutRealm">
     <Realm className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/web-db" digest="SHA"
                userTable="USERS" userNameCol="email" userCredCol="password"
