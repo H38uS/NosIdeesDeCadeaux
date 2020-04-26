@@ -89,7 +89,7 @@
 					<span class="ml-3 d-none d-lg-inline">Afficher ma liste</span>
 				</div>
 				<div class="col-auto col-sm-5 col-xl-5 mr-sm-auto mr-lg-0 mb-2">
-					<a href="protected/ma_liste" class="img">
+					<a href="protected/ajouter_idee" class="img">
 						<img class="clickable" alt="Compléter ma liste" title="Compléter ma liste"
 											src="resources/image/index/AjouterIdeeOUT.png" onmouseout="this.src='resources/image/index/AjouterIdeeOUT.png'"
 											onmouseover="this.src='resources/image/index/AjouterIdeeOVER.png'" />

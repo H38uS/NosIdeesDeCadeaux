@@ -6,7 +6,7 @@
     <jsp:body>
 
         <c:if test="${not empty idee}">
-            Votre idée a bien été créée. Cliquez <a href="protected/ma_liste">ici</a> pour en ajouter d'autres !
+            Votre idée a bien été créée. Cliquez <a href="protected/ajouter_idee">ici</a> pour en ajouter d'autres !
             L'idée ajoutée:
             <t:template_une_idee/>
         </c:if>
@@ -144,7 +144,7 @@
                                             <span class="d-inline-block d-lg-none">Mes idées</span>
                                         </div>
                                         <div class="mx-auto">
-                                            <a href="protected/ma_liste" class="img">
+                                            <a href="protected/ajouter_idee" class="img">
                                                 <c:choose>
                                                     <c:when test="${is_mobile}">
                                                         <img src="resources/image/ajouter_champs.png"
@@ -325,7 +325,7 @@
                                 <c:if test="${fn:length(user.ideas) == 0}">
                                     <div class="alert alert-primary">
                                         Vous n'avez pas encore d'idées.
-                                        Cliquez <a href="protected/ma_liste">ici</a> pour en ajouter.
+                                        Cliquez <a href="protected/ajouter_idee">ici</a> pour en ajouter.
                                     </div>
                                 </c:if>
                             </div>

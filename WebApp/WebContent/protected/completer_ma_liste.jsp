@@ -18,7 +18,7 @@
 			Avant d'ajouter une idée, je voudrais consulter <a href="protected/voir_liste?id=${connected_user.id}">ma liste</a>.
 		</div>
 		<div class="container border border-info bg-light rounded mb-2 p-3">
-			<form class="mw-50" action="protected/ma_liste" method="post" enctype="multipart/form-data">
+			<form class="mw-50" action="protected/ajouter_idee" method="post" enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
 					<textarea id="text" class="form-control" name="text" cols="70" rows="6"></textarea>

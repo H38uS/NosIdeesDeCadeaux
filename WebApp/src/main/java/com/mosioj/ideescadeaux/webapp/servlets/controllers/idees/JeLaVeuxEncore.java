@@ -50,13 +50,13 @@ public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
         // On supprime les réservations
         IdeesRepository.toutDereserver(idea.getId());
 
-        request.setAttribute("from", getFrom(request, MaListe.PROTECTED_MA_LISTE).substring(1));
+        request.setAttribute("from", getFrom(request, AjouterIdee.PROTECTED_AJOUTER_IDEE).substring(1));
         RootingsUtils.rootToPage("/protected/je_le_veux_encore.jsp", request, response);
     }
 
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-        RootingsUtils.redirectToPage(MaListe.PROTECTED_MA_LISTE, request, response);
+        RootingsUtils.redirectToPage(AjouterIdee.PROTECTED_AJOUTER_IDEE, request, response);
     }
 
 }

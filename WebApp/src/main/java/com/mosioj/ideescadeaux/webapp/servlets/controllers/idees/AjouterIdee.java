@@ -23,28 +23,29 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 
-@WebServlet("/protected/ma_liste")
-public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
+@WebServlet("/protected/ajouter_idee")
+public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
 
     /**
      * Class logger.
      */
-    private static final Logger logger = LogManager.getLogger(MaListe.class);
+    private static final Logger logger = LogManager.getLogger(AjouterIdee.class);
     private static final long serialVersionUID = -1774633803227715931L;
 
     public static final String VIEW_PAGE_URL = "/protected/completer_ma_liste.jsp";
-    public static final String PROTECTED_MA_LISTE = "/protected/ma_liste";
+    public static final String PROTECTED_AJOUTER_IDEE = "/protected/ajouter_idee";
 
     /**
      * Class constructor.
      */
-    public MaListe() {
+    public AjouterIdee() {
         // No security : we will see only our content.
         super(new AllAccessToPostAndGet());
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse resp) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse resp) throws ServletException, SQLException {
 
         List<Categorie> cat = CategoriesRepository.getCategories();
         List<Priorite> prio = PrioritesRepository.getPriorities();
@@ -56,7 +57,8 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, IOException, SQLException {
 
         // Check that we have a file upload request
         if (ServletFileUpload.isMultipartContent(request)) {
@@ -103,9 +105,7 @@ public class MaListe extends AbstractIdea<AllAccessToPostAndGet> {
                                              response);
                 return;
             }
-
         }
-
         ideesKDoGET(request, response);
     }
 

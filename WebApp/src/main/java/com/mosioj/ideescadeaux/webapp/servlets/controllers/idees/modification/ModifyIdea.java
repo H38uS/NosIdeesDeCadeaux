@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.MaListe;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 @WebServlet("/protected/modifier_idee")
@@ -141,7 +141,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 
         }
 
-        RootingsUtils.redirectToPage(getFrom(request, MaListe.PROTECTED_MA_LISTE + "?" + "id=" + idea.getId()),
+        RootingsUtils.redirectToPage(getFrom(request, AjouterIdee.PROTECTED_AJOUTER_IDEE + "?" + "id=" + idea.getId()),
                                      request,
                                      response);
     }

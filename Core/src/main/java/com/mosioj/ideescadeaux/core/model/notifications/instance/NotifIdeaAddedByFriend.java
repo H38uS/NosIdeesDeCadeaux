@@ -44,7 +44,7 @@ public class NotifIdeaAddedByFriend extends AbstractNotification implements Noti
 
 	@Override
 	public String getTextToInsert() {
-		final String link = "<a href=\"protected/ma_liste\">ma liste</a>";
+		final String link = "<a href=\"protected/ajouter_idee\">ma liste</a>";
 		return MessageFormat.format("{0} vous a ajouté une nouvelle idée \"{1}\". Consulter {2}.",
 									userName,
 									idea,

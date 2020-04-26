@@ -5,7 +5,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.MaListe;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,21 +19,21 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class TestMaListe extends AbstractTestServlet {
+public class TestAjouterIdee extends AbstractTestServlet {
 
-    public TestMaListe() {
-        super(new MaListe());
+    public TestAjouterIdee() {
+        super(new AjouterIdee());
     }
 
     @Before
     public void before() {
-        when(request.getRequestDispatcher(MaListe.VIEW_PAGE_URL)).thenReturn(dispatcher);
+        when(request.getRequestDispatcher(AjouterIdee.VIEW_PAGE_URL)).thenReturn(dispatcher);
     }
 
     @Test
     public void testGetSuccess() {
         doTestGet();
-        verify(request).getRequestDispatcher(eq(MaListe.VIEW_PAGE_URL));
+        verify(request).getRequestDispatcher(eq(AjouterIdee.VIEW_PAGE_URL));
     }
 
     @Test

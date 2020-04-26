@@ -50,7 +50,7 @@
 							<a href="protected/index" class="btn btn-light">Accueil</a>
 						</li>
 						<li class="nav-item m-2">
-							<a href="protected/ma_liste" class="btn btn-light">Compléter ma liste</a>
+							<a href="protected/ajouter_idee" class="btn btn-light">Compléter ma liste</a>
 						</li>
 						<li class="nav-item m-2">
 							<a href="protected/voir_liste?id=${connected_user.id}" class="btn btn-light">Ma liste</a>
@@ -119,7 +119,7 @@
 							<a href="protected/index" class="fl_green">Accueil</a>
 						</li>
 						<li class="nav-item">
-							<a href="protected/ma_liste" class="fl_yellow">Compléter ma liste</a>
+							<a href="protected/ajouter_idee" class="fl_yellow">Compléter ma liste</a>
 						</li>
 						<li class="nav-item">
 							<a href="protected/voir_liste?id=${connected_user.id}" class="fl_blue">Ma liste</a>
