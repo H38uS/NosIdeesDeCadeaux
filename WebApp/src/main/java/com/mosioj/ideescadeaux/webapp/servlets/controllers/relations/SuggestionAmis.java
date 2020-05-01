@@ -79,7 +79,7 @@ public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
                 NotifNewRelationSuggestion notification = (NotifNewRelationSuggestion) n;
                 if (!UserRelationsSuggestionRepository.hasReceivedSuggestionFrom(userId,
                                                                                  notification.getUserIdParam())) {
-                    NotificationsRepository.remove(notification.id);
+                    NotificationsRepository.remove(notification);
                 }
             }
         }

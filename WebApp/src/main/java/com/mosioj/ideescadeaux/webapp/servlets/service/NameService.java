@@ -1,27 +1,26 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NameServicePolicy;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.NameAnswer;
+import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.service.response.NameAnswer;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NameServicePolicy;
-import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @WebServlet("/protected/service/name_resolver")
 public class NameService extends IdeesCadeauxGetServlet<NameServicePolicy> {
@@ -61,8 +60,7 @@ public class NameService extends IdeesCadeauxGetServlet<NameServicePolicy> {
             content = new String(content.getBytes(StandardCharsets.UTF_8), response.getCharacterEncoding());
             response.getOutputStream().print(content);
         } catch (IOException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 

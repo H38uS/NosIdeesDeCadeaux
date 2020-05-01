@@ -1,16 +1,15 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
-import java.sql.SQLException;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NotificationModification;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NotificationModification;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
 
 @WebServlet("/protected/notification_non_lue")
 public class NotificationNonLue extends IdeesCadeauxGetServlet<NotificationModification> {
@@ -24,7 +23,7 @@ public class NotificationNonLue extends IdeesCadeauxGetServlet<NotificationModif
 
     @Override
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-        NotificationsRepository.setUnread(policy.getNotificationId());
+        NotificationsRepository.setUnread(policy.getNotification());
         RootingsUtils.redirectToPage(MesNotifications.URL, req, resp);
     }
 

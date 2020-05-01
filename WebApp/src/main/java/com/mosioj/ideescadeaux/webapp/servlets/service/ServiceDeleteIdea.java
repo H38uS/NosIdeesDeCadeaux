@@ -1,32 +1,30 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifBookedRemove;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUserIdParam;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @WebServlet("/protected/service/delete_idea")
 public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification> {
@@ -77,7 +75,7 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
                 }
             }
 
-            NotificationsRepository.remove(notification.id);
+            NotificationsRepository.remove(notification);
         }
 
         int userId = thisOne.id;

@@ -1,32 +1,30 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
 
 @WebServlet("/protected/modifier_idee")
 public class ModifyIdea extends AbstractIdea<IdeaModification> {
@@ -131,10 +129,10 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
                         NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
                         NotificationsRepository.addNotification(isUpToDate.getUserIdParam(),
                                                                 new NotifConfirmedUpToDate(user, idea));
-                        NotificationsRepository.remove(notification.id);
+                        NotificationsRepository.remove(notification);
                     }
                     if (notification instanceof NotifIdeaAddedByFriend) {
-                        NotificationsRepository.remove(notification.id);
+                        NotificationsRepository.remove(notification);
                     }
                 }
             }

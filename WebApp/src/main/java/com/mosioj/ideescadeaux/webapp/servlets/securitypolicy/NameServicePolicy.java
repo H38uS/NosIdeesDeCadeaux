@@ -1,18 +1,16 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 
 public final class NameServicePolicy extends SecurityPolicy {
 
@@ -30,22 +28,22 @@ public final class NameServicePolicy extends SecurityPolicy {
     }
 
     protected boolean hasRight(HttpServletRequest request) throws SQLException {
-        int userId = ParametersUtils.readInt(request, userParameter).orElse(connectedUser.id);
-        if (userId != connectedUser.id && !UserRelationsRepository.associationExists(userId, connectedUser.id)) {
+
+        user = ParametersUtils.readInt(request, userParameter).flatMap(UsersRepository::getUser).orElse(connectedUser);
+
+        if (!user.equals(connectedUser) && !UserRelationsRepository.associationExists(user.id, connectedUser.id)) {
             // On regarde
             // Soit son propre réseau
             // Soit celui d'un ami
-            userId = connectedUser.id;
+            // On force pour ne pas avoir d'exception
+            user = connectedUser;
         }
-
-        user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
 
         return true;
     }
 
     @Override
     public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
-
         try {
             return hasRight(request);
         } catch (SQLException e) {

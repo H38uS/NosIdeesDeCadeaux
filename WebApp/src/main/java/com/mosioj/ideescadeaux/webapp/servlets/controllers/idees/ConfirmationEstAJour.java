@@ -32,7 +32,8 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
 
         Idee idea = policy.getIdea();
         IdeesRepository.touch(idea.getId());
@@ -47,7 +48,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
                 NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
                 NotificationsRepository.addNotification(isUpToDate.getUserIdParam(),
                                                         new NotifConfirmedUpToDate(thisOne, idea));
-                NotificationsRepository.remove(notification.id);
+                NotificationsRepository.remove(notification);
                 ids.add(isUpToDate.getUserIdParam());
             }
         }
@@ -56,7 +57,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
             if (notification instanceof NotifConfirmedUpToDate) {
                 NotifConfirmedUpToDate confirmed = (NotifConfirmedUpToDate) notification;
                 if (ids.contains(confirmed.owner)) {
-                    NotificationsRepository.remove(notification.id);
+                    NotificationsRepository.remove(notification);
                 }
             }
         }
@@ -65,7 +66,8 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
         RootingsUtils.redirectToPage(MesNotifications.URL, request, response);
     }
 

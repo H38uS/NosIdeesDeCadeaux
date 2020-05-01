@@ -1,17 +1,19 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 
@@ -22,7 +24,7 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
      */
     private Map<Integer, Boolean> choiceParameters;
 
-    private boolean hasAccess(HttpServletRequest request) throws SQLException {
+    private boolean hasAccess(HttpServletRequest request) {
         try {
             Map<String, String[]> params = request.getParameterMap();
             for (String key : params.keySet()) {
@@ -41,6 +43,16 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
             }
 
             int userId = connectedUser.id;
+
+            // Only keep users that exists
+            choiceParameters.keySet().retainAll(choiceParameters.keySet()
+                                                                .parallelStream()
+                                                                .map(UsersRepository::getUser)
+                                                                .filter(Optional::isPresent)
+                                                                .map(Optional::get)
+                                                                .map(User::getId)
+                                                                .collect(Collectors.toSet()));
+
             for (int user : choiceParameters.keySet()) {
                 if (user == userId) {
                     lastReason = "Vous ne pouvez pas être ami avec vous-même...";
@@ -67,22 +79,12 @@ public final class PeutResoudreDemandesAmis extends SecurityPolicy {
 
     @Override
     public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            return hasAccess(request);
-        } catch (SQLException e) {
-            logger.error("Cannot process checking, SQLException: " + e);
-            return false;
-        }
+        return hasAccess(request);
     }
 
     @Override
     public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            return hasAccess(request);
-        } catch (SQLException e) {
-            logger.error("Cannot process checking, SQLException: " + e);
-            return false;
-        }
+        return hasAccess(request);
     }
 
     /**

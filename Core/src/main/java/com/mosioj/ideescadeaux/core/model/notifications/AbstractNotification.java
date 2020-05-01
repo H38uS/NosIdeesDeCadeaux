@@ -1,5 +1,10 @@
 package com.mosioj.ideescadeaux.core.model.notifications;
 
+import com.mosioj.ideescadeaux.core.utils.EmailSender;
+import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,11 +14,6 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import com.mosioj.ideescadeaux.core.utils.EmailSender;
-import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class AbstractNotification {
 
@@ -140,6 +140,7 @@ public abstract class AbstractNotification {
         return id;
     }
 
+    // FIXME : utiliser un user
     public int getOwner() {
         return owner;
     }

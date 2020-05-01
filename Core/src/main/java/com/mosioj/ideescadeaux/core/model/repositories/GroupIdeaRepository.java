@@ -1,11 +1,8 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.Optional;
-
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.GroupIdeaColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.GroupIdeaContentColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.IdeeColumns;
@@ -13,8 +10,10 @@ import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.Optional;
 
 public class GroupIdeaRepository extends AbstractRepository {
 
@@ -68,7 +67,7 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param groupId The group id.
      * @return The optional group object.
      */
-    public static Optional<IdeaGroup> getGroupDetails(int groupId) throws SQLException {
+    public static Optional<IdeaGroup> getGroupDetails(int groupId) {
 
         Optional<IdeaGroup> group = Optional.empty();
         StringBuilder q = new StringBuilder();
@@ -116,6 +115,8 @@ public class GroupIdeaRepository extends AbstractRepository {
                     group = Optional.of(ideaGroup);
                 }
             }
+        } catch (SQLException e) {
+            LOGGER.warn(e);
         }
 
         return group;

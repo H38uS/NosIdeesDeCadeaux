@@ -1,21 +1,21 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Share;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupEvolution;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
-import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.Share;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.VoirListe;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
@@ -49,7 +49,8 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
 
         IdeaGroup group = policy.getGroupId();
         logger.debug("Getting details for idea group " + group + "...");
@@ -74,7 +75,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
         NotificationsRepository.getNotifications(user.id,
                                                  NotificationType.GROUP_IDEA_SUGGESTION,
                                                  ParameterName.GROUP_ID,
-                                                 group.getId()).forEach(n -> NotificationsRepository.remove(n.id));
+                                                 group.getId()).forEach(NotificationsRepository::remove);
 
         request.setAttribute("idee", idee);
         request.setAttribute("is_in_group", group.contains(thisOne));
@@ -86,7 +87,8 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         IdeaGroup group = policy.getGroupId();
         String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
@@ -98,7 +100,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                                                                group.getId());
             notifications.parallelStream()
                          .filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name()))
-                         .forEach(n -> NotificationsRepository.remove(n.id));
+                         .forEach(NotificationsRepository::remove);
 
             if (isThereSomeoneRemaining) {
                 // On supprime les notifications précédentes de cette personne si y'en a
@@ -153,7 +155,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                                                                    group.getId());
                 notifications.stream()
                              .filter(n -> n instanceof NotifGroupSuggestion && n.owner == thisOne.id)
-                             .forEach(n -> NotificationsRepository.remove(n.id));
+                             .forEach(NotificationsRepository::remove);
 
                 // On supprime les notifications précédentes de cette personne si y'en a
                 NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,

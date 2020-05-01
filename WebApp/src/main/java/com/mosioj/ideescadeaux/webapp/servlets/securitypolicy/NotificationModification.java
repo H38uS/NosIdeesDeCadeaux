@@ -1,19 +1,17 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.Optional;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.sql.SQLException;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -29,7 +27,7 @@ public class NotificationModification extends SecurityPolicy {
      */
     private final String notifParameter;
 
-    private Integer notificationId;
+    private AbstractNotification notif;
 
     /**
      * @param notifParameter Defines the string used in HttpServletRequest to retrieve the notification id.
@@ -44,32 +42,25 @@ public class NotificationModification extends SecurityPolicy {
      */
     private boolean canModifyNotification(HttpServletRequest request) throws SQLException {
 
-        Optional<Integer> notifId = ParametersUtils.readInt(request, notifParameter);
-        if (!notifId.isPresent()) {
+        notif = ParametersUtils.readInt(request, notifParameter)
+                               .flatMap(NotificationsRepository::getNotification)
+                               .orElse(null);
+        if (notif == null) {
             lastReason = "Aucune notification trouvée en paramètre.";
             return false;
         }
 
         int userId = connectedUser.id;
 
-        Optional<AbstractNotification> tentative = NotificationsRepository.getNotification(notifId.get());
-        if (!tentative.isPresent()) {
-            lastReason = "Aucune notification trouvée en paramètre.";
-            return false;
-        }
-
-        AbstractNotification n = tentative.get();
-        boolean res = userId == n.getOwner()
-                      || ParentRelationshipRepository.getChildren(userId).contains(new User(n.getOwner(), "", "", ""));
+        final boolean isMe = userId == notif.getOwner();
+        final User notifOwner = new User(notif.getOwner(), "", "", "");
+        boolean res = isMe || ParentRelationshipRepository.getChildren(userId).contains(notifOwner);
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos notifications ou celles de vos enfants.";
             return false;
         }
 
-        notificationId = notifId.get();
-
         return true;
-
     }
 
     @Override
@@ -95,13 +86,13 @@ public class NotificationModification extends SecurityPolicy {
     /**
      * @return The notification id, or null if the checks fail.
      */
-    public Integer getNotificationId() {
-        return notificationId;
+    public AbstractNotification getNotification() {
+        return notif;
     }
 
     @Override
     public void reset() {
-        notificationId = null;
+        notif = null;
     }
 
 }

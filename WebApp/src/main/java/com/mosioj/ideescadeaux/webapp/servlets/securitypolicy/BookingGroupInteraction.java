@@ -1,20 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 
 /**
  * A policy to make sure we can interact with a group.
@@ -45,35 +43,28 @@ public final class BookingGroupInteraction extends SecurityPolicy {
      * @throws SQLException If an SQL error occurs.
      */
     private boolean canInteractWithGroup(HttpServletRequest request) throws SQLException {
-        Optional<Integer> groupIdParam = ParametersUtils.readInt(request, groupParameter);
-        if (!groupIdParam.isPresent()) {
+
+        theGroup = ParametersUtils.readInt(request, groupParameter)
+                                  .flatMap(GroupIdeaRepository::getGroupDetails)
+                                  .orElse(null);
+        if (theGroup == null) {
             lastReason = "Aucun groupe trouvé en paramètre.";
             return false;
         }
 
-        int groupId = groupIdParam.get();
-        int userId = connectedUser.id;
-
-        Optional<User> ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(groupId);
-        if (!ideaOwner.isPresent()) {
-            lastReason = "Ce groupe appartient à personne.";
-            logger.warn("Un groupe n'appartient à aucune idée... => " + groupId);
+        // Le owner de l'idée sur laquelle existe ce groupe
+        User ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(theGroup.getId()).orElse(null);
+        if (ideaOwner == null) {
+            lastReason = "Ce groupe n'appartient à personne.";
+            logger.error("Un groupe n'appartient à aucune idée... => " + theGroup.getId());
             return false;
         }
 
-        Optional<IdeaGroup> g = GroupIdeaRepository.getGroupDetails(groupId);
-        if (!g.isPresent()) {
-            lastReason = "Le groupe est introuvable...";
-            logger.warn("Ce groupe n'existe pas... => " + groupId);
-            return false;
-        }
-
-        if (!UserRelationsRepository.associationExists(userId, ideaOwner.get().id)) {
+        if (!UserRelationsRepository.associationExists(connectedUser.id, ideaOwner.id)) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
             return false;
         }
 
-        theGroup = g.get();
         return true;
     }
 

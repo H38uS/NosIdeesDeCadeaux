@@ -1,34 +1,32 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeAcceptee;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeRefusee;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PeutResoudreDemandesAmis;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeAcceptee;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeRefusee;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PeutResoudreDemandesAmis;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @WebServlet("/protected/resoudre_demande_ami")
 public class ResoudreDemandeAmi extends IdeesCadeauxPostServlet<PeutResoudreDemandesAmis> {
@@ -61,7 +59,7 @@ public class ResoudreDemandeAmi extends IdeesCadeauxPostServlet<PeutResoudreDema
               });
 
         // Suppression des notifications
-        toBeRemoved.forEach(n -> NotificationsRepository.remove(n.id));
+        toBeRemoved.forEach(NotificationsRepository::remove);
         NotificationsRepository.removeAllType(thisOne, NotificationType.NEW_FRIENSHIP_REQUEST);
 
         // Redirection à la page d'administration

@@ -105,10 +105,10 @@ public class ServiceModifierIdee extends AbstractIdea<IdeaModification> {
                             NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) n;
                             NotificationsRepository.addNotification(isUpToDate.getUserIdParam(),
                                                                     new NotifConfirmedUpToDate(user, idea));
-                            NotificationsRepository.remove(n.id);
+                            NotificationsRepository.remove(n);
                         }
                         if (n instanceof NotifIdeaAddedByFriend) {
-                            NotificationsRepository.remove(n.id);
+                            NotificationsRepository.remove(n);
                         }
                     });
                 }
