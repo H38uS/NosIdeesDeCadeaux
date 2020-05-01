@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -12,6 +13,8 @@ import java.util.Optional;
 public class ParametersUtils {
 
     private static final Logger logger = LogManager.getLogger(ParametersUtils.class);
+
+    private static String workDir;
 
     /**
      * Attention: ne surtout pas utiliser dans les redirect post -> get.
@@ -89,5 +92,21 @@ public class ParametersUtils {
      */
     public static String readAndEscape(HttpServletRequest request, String name) {
         return StringEscapeUtils.escapeHtml4(readIt(request, name));
+    }
+
+    /**
+     *
+     * @param context The servlet context used to initialize the value.
+     * @return The work directory.
+     */
+    public static synchronized String getWorkDir(ServletContext context) {
+        if (workDir == null) {
+            workDir = context.getInitParameter("work_dir");
+            if ("${work_dir}".equalsIgnoreCase(workDir)) {
+                workDir = "C:\\temp";
+            }
+            logger.info("Work directory initialized to {}", workDir);
+        }
+        return workDir;
     }
 }

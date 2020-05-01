@@ -1,6 +1,7 @@
 // FIXME : 1 pour toutes les polices qui récupèrent un paramètre, vérifier que ça existe en base (e.g. pour USERS)
 // FIXME : 2 ajouter l'heure dans les infos de sous réservation / idem groupe
 // FIXME : 3 ajouter le support des smileys dans les questions et commentaires
+// FIXME : 4 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
 // FIXME : 4 rendre les dates d'anniversaire plus visible (dans le mail?) et dans le site
 // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone
 // FIXME : 5 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.

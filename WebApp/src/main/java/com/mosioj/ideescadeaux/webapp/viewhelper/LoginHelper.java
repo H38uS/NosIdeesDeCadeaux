@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.viewhelper;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +60,7 @@ public class LoginHelper implements Filter {
                 }
             }
 
-            String workDir = session.getServletContext().getInitParameter("work_dir");
+            String workDir = ParametersUtils.getWorkDir(session.getServletContext());
             request.setAttribute("work_dir", workDir);
             request.setAttribute("connected_user", user);
 

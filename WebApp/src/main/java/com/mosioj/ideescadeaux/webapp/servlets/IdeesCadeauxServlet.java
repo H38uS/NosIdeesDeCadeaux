@@ -417,8 +417,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
     protected File getIdeaPicturePath() {
         if (ideasPicturePath == null) {
-            String workDir = getServletContext().getInitParameter("work_dir");
-            logger.debug(MessageFormat.format("Initialisation du répertoire de travail à {0}", workDir));
+            String workDir = ParametersUtils.getWorkDir(getServletContext());
             setIdeaPicturePath(new File(workDir, "uploaded_pictures/ideas"));
         }
         return ideasPicturePath;

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +45,7 @@ public class FileServlet extends HttpServlet {
 			return;
 		}
 
-		File file = new File(getServletContext().getInitParameter("work_dir"), filename);
+		File file = new File(ParametersUtils.getWorkDir(getServletContext()), filename);
 		response.setHeader("Content-Type", getServletContext().getMimeType(filename));
 		response.setHeader("Content-Length", String.valueOf(file.length()));
 		response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");

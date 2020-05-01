@@ -7,6 +7,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessT
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -71,7 +72,7 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
 
     public static synchronized File getFilePath(ServiceEnregistrementMonCompte service) {
         if (filePath == null) {
-            filePath = new File(service.getServletContext().getInitParameter("work_dir"), "uploaded_pictures/avatars");
+            filePath = new File(ParametersUtils.getWorkDir(service.getServletContext()), "uploaded_pictures/avatars");
             logger.info(MessageFormat.format("Setting file path to: {0}", filePath.getAbsolutePath()));
             if (!filePath.exists() && !filePath.mkdirs()) {
                 logger.warn("Fail to create " + filePath);

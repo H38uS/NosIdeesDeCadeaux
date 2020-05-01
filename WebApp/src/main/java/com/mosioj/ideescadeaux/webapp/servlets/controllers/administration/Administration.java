@@ -16,6 +16,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServle
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +46,7 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
         List<User> allUsers = UsersRepository.getAllUsers();
         request.setAttribute("users", allUsers);
 
-        File logDir = new File(getServletContext().getInitParameter("work_dir"), "logs");
+        File logDir = new File(ParametersUtils.getWorkDir(getServletContext()), "logs");
         try {
             request.setAttribute("log_folder", logDir.getCanonicalPath());
             List<File> logFiles = Arrays.stream(Optional.ofNullable(logDir.listFiles()).orElse(new File[]{}))
@@ -76,8 +77,8 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
         List<String> imagesInIdeas = IdeesRepository.getAllImages();
 
         // And all files
-        File smallFolder = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas/small");
-        File largeFolder = new File(getServletContext().getInitParameter("work_dir"), "uploaded_pictures/ideas/large");
+        File smallFolder = new File(ParametersUtils.getWorkDir(getServletContext()), "uploaded_pictures/ideas/small");
+        File largeFolder = new File(ParametersUtils.getWorkDir(getServletContext()), "uploaded_pictures/ideas/large");
         List<String> fileNamesInSmall = Arrays.stream(Optional.ofNullable(smallFolder.listFiles()).orElse(new File[]{}))
                                               .map(File::getName)
                                               .collect(Collectors.toList());
