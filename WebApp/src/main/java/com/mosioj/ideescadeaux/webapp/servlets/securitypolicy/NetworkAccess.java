@@ -1,19 +1,17 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.Optional;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.sql.SQLException;
 
 public final class NetworkAccess extends SecurityPolicy implements UserSecurityChecker {
 
@@ -35,25 +33,20 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 
     private boolean hasAccess(HttpServletRequest request) throws SQLException {
 
-        Optional<Integer> user = ParametersUtils.readInt(request, userParameter);
-        if (!user.isPresent()) {
+        friend = ParametersUtils.readInt(request, userParameter).flatMap(UsersRepository::getUser).orElse(null);
+        if (friend == null) {
             lastReason = "Aucun utilisateur trouvé en paramètre.";
             return false;
         }
 
-        int userId = connectedUser.id;
-        boolean res = user.get() == userId || UserRelationsRepository.associationExists(user.get(), userId);
+        final boolean isMe = connectedUser.equals(friend);
+        final boolean res = isMe || UserRelationsRepository.associationExists(friend.id, connectedUser.id);
         if (!res) {
             lastReason = "Vous n'êtes pas ami avec cette personne.";
             return false;
         }
 
-        friend = UsersRepository.getUser(user.get()).orElseThrow(SQLException::new);
-        if (friend == null) {
-            logger.error("The id " + user.get() + " does not exist...");
-        }
-
-        return friend != null;
+        return true;
     }
 
     @Override

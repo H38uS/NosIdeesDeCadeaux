@@ -12,10 +12,9 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.Optional;
 
 /**
- * A policy to make sure we can interact with an idea.
+ * A policy to make sure we are allowed to modify this idea.
  *
  * @author Jordan Mosio
  */
@@ -43,27 +42,21 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
      */
     private boolean canModifyIdea(HttpServletRequest request) throws SQLException {
 
-        Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
-        if (!ideaId.isPresent()) {
+        idea = ParametersUtils.readInt(request, ideaParameter)
+                              .flatMap(IdeesRepository::getIdeaWithoutEnrichment)
+                              .orElse(null);
+        if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
         int userId = connectedUser.id;
-
-        Optional<Idee> tentative = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        if (!tentative.isPresent()) {
-            lastReason = "Aucune idée trouvée en paramètre.";
-            return false;
-        }
-
-        idea = tentative.get();
         boolean res = userId == idea.owner.id || ParentRelationshipRepository.getChildren(userId).contains(idea.owner);
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos idées ou celles de vos enfants.";
         }
-        return res;
 
+        return res;
     }
 
     @Override

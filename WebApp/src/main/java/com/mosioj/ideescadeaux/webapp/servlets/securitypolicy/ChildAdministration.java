@@ -1,20 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 
 public final class ChildAdministration extends SecurityPolicy implements UserSecurityChecker {
 
@@ -25,7 +23,7 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
      */
     private final String childParameter;
 
-    private User user;
+    private User child;
 
     /**
      * @param childParameter Request parameter name.
@@ -36,20 +34,18 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
 
     private boolean hasAccess(HttpServletRequest request) throws SQLException {
 
-        Optional<Integer> child = ParametersUtils.readInt(request, childParameter);
-        if (!child.isPresent()) {
+        child = ParametersUtils.readInt(request, childParameter).flatMap(UsersRepository::getUser).orElse(null);
+        if (child == null) {
             lastReason = "Aucun utilisateur trouvé en paramètre.";
             return false;
         }
 
-        int userId = connectedUser.id;
         final boolean isAdmin = IdeesCadeauxServlet.isAdmin(request);
-        if (ParentRelationshipRepository.noRelationExists(userId, child.get()) && !isAdmin) {
+        if (ParentRelationshipRepository.noRelationExists(connectedUser.id, child.id) && !isAdmin) {
             lastReason = "Vous n'êtes pas un parent de cette personne...";
             return false;
         }
 
-        user = UsersRepository.getUser(child.get()).orElseThrow(SQLException::new);
         return true;
     }
 
@@ -75,12 +71,12 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
 
     @Override
     public User getUser() {
-        return user;
+        return child;
     }
 
     @Override
     public void reset() {
-        user = null;
+        child = null;
     }
 
 }

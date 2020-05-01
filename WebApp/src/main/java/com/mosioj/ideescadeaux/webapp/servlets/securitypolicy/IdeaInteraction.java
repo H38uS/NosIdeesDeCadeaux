@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.Optional;
 
 /**
  * A policy to make sure we can interact with an idea : forbids the owner of the idea.
@@ -44,26 +43,21 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
      */
     protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
-        if (!ideaId.isPresent()) {
+        idea = ParametersUtils.readInt(request, ideaParameter)
+                              .flatMap(IdeesRepository::getIdeaWithoutEnrichment)
+                              .orElse(null);
+        if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
-        Optional<Idee> tentative = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        if (!tentative.isPresent()) {
-            lastReason = "Aucune idée trouvée en paramètre.";
-            return false;
+        if (UserRelationsRepository.associationExists(connectedUser.id, idea.owner.id)) {
+            // OK si on est pote (interdit le owner)
+            return true;
         }
 
-        idea = tentative.get();
-        int userId = connectedUser.id;
-        boolean res = UserRelationsRepository.associationExists(userId, idea.owner.id);
-        if (!res) {
-            lastReason = "Vous n'avez pas accès aux idées de cette personne.";
-        }
-        return res;
-
+        lastReason = "Vous n'avez pas accès aux idées de cette personne.";
+        return false;
     }
 
     @Override

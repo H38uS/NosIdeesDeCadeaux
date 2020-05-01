@@ -1,21 +1,25 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
+import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.Comment;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.CommentsColumns;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+import com.mosioj.ideescadeaux.core.utils.Escaper;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.CommentsColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
-import com.mosioj.ideescadeaux.core.utils.Escaper;
-import com.mosioj.ideescadeaux.core.model.entities.Comment;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import org.apache.commons.lang3.StringEscapeUtils;
+import java.util.Optional;
 
 public class QuestionsRepository extends AbstractRepository {
 
+    private static final Logger logger = LogManager.getLogger(QuestionsRepository.class);
     public static final String TABLE_NAME = "QUESTIONS";
 
     private QuestionsRepository() {
@@ -134,7 +138,7 @@ public class QuestionsRepository extends AbstractRepository {
      * @param commentId The comment id.
      * @return The comment corresponding to this id.
      */
-    public static Comment getComment(Integer commentId) throws SQLException {
+    public static Optional<Comment> getComment(Integer commentId) {
 
         String query = MessageFormat.format("select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, u.{7}, c.{6} ",
                                             CommentsColumns.ID,
@@ -157,19 +161,22 @@ public class QuestionsRepository extends AbstractRepository {
             if (ps.execute()) {
                 ResultSet res = ps.getResultSet();
                 if (res.next()) {
-                    return new Comment(res.getInt(CommentsColumns.ID.name()),
-                                       res.getString(CommentsColumns.TEXT.name()),
-                                       new User(res.getInt("userId"),
-                                                res.getString(UsersColumns.NAME.name()),
-                                                res.getString(UsersColumns.EMAIL.name()),
-                                                res.getString(UsersColumns.AVATAR.name())),
-                                       res.getInt(CommentsColumns.IDEA_ID.name()),
-                                       res.getTimestamp(CommentsColumns.WRITTEN_ON.name()));
+                    final User writer = new User(res.getInt("userId"),
+                                                 res.getString(UsersColumns.NAME.name()),
+                                                 res.getString(UsersColumns.EMAIL.name()),
+                                                 res.getString(UsersColumns.AVATAR.name()));
+                    return Optional.of(new Comment(res.getInt(CommentsColumns.ID.name()),
+                                                   res.getString(CommentsColumns.TEXT.name()),
+                                                   writer,
+                                                   res.getInt(CommentsColumns.IDEA_ID.name()),
+                                                   res.getTimestamp(CommentsColumns.WRITTEN_ON.name())));
                 }
             }
+        } catch (SQLException e) {
+            logger.warn(e);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**

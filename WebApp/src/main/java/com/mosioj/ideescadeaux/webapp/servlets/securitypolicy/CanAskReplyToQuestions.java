@@ -12,10 +12,9 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.Optional;
 
 /**
- * A policy to make sure we can interact with an idea : forbids the owner of the idea.
+ * A policy to make sure we can reply to questions on this idea : allows the owner of the idea (if not a surprise).
  *
  * @author Jordan Mosio
  */
@@ -38,37 +37,37 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
     }
 
     /**
-     * @param request  The http request.
+     * @param request The http request.
      * @return True if the current user can interact with the idea.
      */
     private boolean canInteractWithIdea(HttpServletRequest request) throws SQLException {
 
-        Optional<Integer> ideaId = ParametersUtils.readInt(request, ideaParameter);
-        if (!ideaId.isPresent()) {
+        idea = ParametersUtils.readInt(request, ideaParameter)
+                              .flatMap(IdeesRepository::getIdeaWithoutEnrichment)
+                              .orElse(null);
+        if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
             return false;
         }
 
-        Optional<Idee> tentative = IdeesRepository.getIdeaWithoutEnrichment(ideaId.get());
-        if (!tentative.isPresent()) {
-            lastReason = "Aucune idée trouvée en paramètre.";
-            return false;
-        }
-
-        idea = tentative.get();
         if (idea.getSurpriseBy() != null) {
             lastReason = "Vous ne pouvez pas poser de question car il s'agit d'une surprise... ;)";
             return false;
         }
 
         int userId = connectedUser.id;
-        boolean res = UserRelationsRepository.associationExists(userId, idea.owner.id);
-        if (!res) {
-            lastReason = "Vous n'avez pas accès aux idées de cette personne.";
+
+        // Le owner peut toujours
+        if (userId == idea.owner.id) {
+            return true;
         }
 
-        return res || userId == idea.owner.id;
-
+        // Enfin, uniquement si on est amis
+        if (!UserRelationsRepository.associationExists(userId, idea.owner.id)) {
+            lastReason = "Vous n'avez pas accès aux idées de cette personne.";
+            return false;
+        }
+        return true;
     }
 
     @Override

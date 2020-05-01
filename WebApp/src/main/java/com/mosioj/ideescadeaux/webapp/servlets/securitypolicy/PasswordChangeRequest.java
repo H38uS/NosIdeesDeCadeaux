@@ -1,19 +1,17 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import java.sql.SQLException;
-import java.util.Optional;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.sql.SQLException;
 
 /**
  * A policy to make sure we can interact with an idea.
@@ -52,24 +50,24 @@ public final class PasswordChangeRequest extends SecurityPolicy implements UserS
      */
     private boolean isUserIdTokenValid(HttpServletRequest request) throws SQLException {
 
-        Optional<Integer> userId = ParametersUtils.readInt(request, userIdParameter);
-        Optional<Integer> tokenIdParam = ParametersUtils.readInt(request, tokenParameter);
+        user = ParametersUtils.readInt(request, userIdParameter).flatMap(UsersRepository::getUser).orElse(null);
+        if (user == null) {
+            lastReason = "Aucun utilisateur trouvé en paramètre.";
+            return false;
+        }
 
-        if (!userId.isPresent() || !tokenIdParam.isPresent()) {
+        Integer tokenId = ParametersUtils.readInt(request, tokenParameter).orElse(null);
+        if (tokenId == null) {
             lastReason = "Aucune demande trouvée pour cet utilisateur.";
             return false;
         }
 
-        if (!UserChangePwdRequestRepository.isAValidCombinaison(userId.get(), tokenIdParam.get())) {
+        if (!UserChangePwdRequestRepository.isAValidCombinaison(user.id, tokenId)) {
             lastReason = "Aucune demande trouvée pour cet utilisateur.";
             return false;
         }
-
-        user = UsersRepository.getUser(userId.get()).orElseThrow(SQLException::new);
-        tokenId = tokenIdParam.get();
 
         return true;
-
     }
 
     @Override

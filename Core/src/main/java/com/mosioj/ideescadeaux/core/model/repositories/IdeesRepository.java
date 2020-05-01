@@ -238,7 +238,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param idIdee The idea's id.
      * @return All fields for this idea.
      */
-    public static Optional<Idee> getIdeaWithoutEnrichment(int idIdee) throws SQLException {
+    public static Optional<Idee> getIdeaWithoutEnrichment(int idIdee) {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
@@ -251,6 +251,8 @@ public class IdeesRepository extends AbstractRepository {
                     return Optional.of(createIdeaFromQuery(rs));
                 }
             }
+        } catch (SQLException e) {
+            logger.error(e);
         }
 
         return Optional.empty();
