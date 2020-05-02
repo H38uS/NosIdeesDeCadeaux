@@ -53,11 +53,7 @@ public class VoirListe extends MesListes {
      * @return The corresponding enriched idea if it exists.
      */
     private Optional<Idee> enrichIdeaIfFound(int ideaId) {
-        try {
-            return getIdeaAndEnrichIt(ideaId);
-        } catch (SQLException e) {
-            return Optional.empty();
-        }
+        return getIdeaAndEnrichIt(ideaId);
     }
 
     @Override

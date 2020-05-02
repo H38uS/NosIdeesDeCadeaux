@@ -1,9 +1,9 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
-import java.sql.Timestamp;
-
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+
+import java.sql.Timestamp;
 
 public class Comment {
 
@@ -53,6 +53,6 @@ public class Comment {
     }
 
     public String getTime() {
-        return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(time);
+        return MyDateFormatViewer.formatMine(time);
     }
 }

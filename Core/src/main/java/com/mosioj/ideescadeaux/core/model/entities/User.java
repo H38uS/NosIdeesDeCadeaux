@@ -1,15 +1,14 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.google.gson.annotations.Expose;
+import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
-import org.apache.commons.lang3.text.WordUtils;
-
-import com.google.gson.annotations.Expose;
 
 public class User implements Comparable<User> {
 
@@ -55,12 +54,12 @@ public class User implements Comparable<User> {
     /**
      * Administration constructor.
      *
-     * @param id The user's ID.
-     * @param name The user's name.
-     * @param email The user's email.
-     * @param avatar The user's avatar.
+     * @param id           The user's ID.
+     * @param name         The user's name.
+     * @param email        The user's email.
+     * @param avatar       The user's avatar.
      * @param creationDate When this user has been created.
-     * @param lastLogin When it has last logged in.
+     * @param lastLogin    When it has last logged in.
      */
     public User(int id, String name, String email, String avatar, Timestamp creationDate, Timestamp lastLogin) {
         this(id, name, email, avatar);
@@ -91,20 +90,14 @@ public class User implements Comparable<User> {
      * @return the creationDate
      */
     public String getCreationDate() {
-        if (creationDate == null) {
-            return "";
-        }
-        return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(creationDate);
+        return MyDateFormatViewer.formatMine(creationDate);
     }
 
     /**
      * @return the lastLogin
      */
     public String getLastLogin() {
-        if (lastLogin == null) {
-            return "";
-        }
-        return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(lastLogin);
+        return MyDateFormatViewer.formatMine(lastLogin);
     }
 
     /**

@@ -22,7 +22,7 @@ public abstract class AbstractNotification {
     /**
      * The notification type, useful for database insertion.
      */
-    private NotificationType type;
+    private final NotificationType type;
 
     private final Properties p;
     public int id;
@@ -82,7 +82,7 @@ public abstract class AbstractNotification {
     }
 
     public String getReadOn() {
-        return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(readOn);
+        return MyDateFormatViewer.formatMine(readOn);
     }
 
     /**
@@ -97,7 +97,7 @@ public abstract class AbstractNotification {
     /**
      * Send the notification by email.
      *
-     * @param emailAdress The email adress.
+     * @param emailAdress          The email adress.
      * @param fullURLTillProtected The full URL.
      */
     public void sendEmail(String emailAdress, String fullURLTillProtected) {
@@ -146,7 +146,7 @@ public abstract class AbstractNotification {
     }
 
     public String getCreationTime() {
-        return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(creationTime);
+        return MyDateFormatViewer.formatMine(creationTime);
     }
 
 }

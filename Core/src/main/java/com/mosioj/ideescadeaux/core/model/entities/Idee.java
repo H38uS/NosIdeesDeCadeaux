@@ -8,14 +8,11 @@ import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class Idee {
-
-    private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT);
 
     @Expose
     private final int id;
@@ -167,15 +164,14 @@ public class Idee {
     }
 
     public String getBookingDate() {
-        if (bookedOn == null)
-            return null;
-        return new MyDateFormatViewer(MyDateFormatViewer.DATETIME_DISPLAY_FORMAT).format(bookedOn);
+        return MyDateFormatViewer.formatMine(bookedOn);
     }
 
+    /**
+     * @return The last modified date as a readable string.
+     */
     public String getModificationDate() {
-        if (lastModified == null)
-            return "-- on ne sait pas --";
-        return MODIFICATION_DATE_FORMAT.format(lastModified);
+        return MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
     }
 
     /**
@@ -263,7 +259,6 @@ public class Idee {
     }
 
     /**
-     *
      * @return The reservation group ID or -1 if it does not exist.
      */
     public int getGroupKDOId() {

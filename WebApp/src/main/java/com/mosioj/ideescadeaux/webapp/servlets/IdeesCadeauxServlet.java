@@ -48,11 +48,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     // Maximum 10M
     private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
 
+    /** Class logger */
     private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
-    /**
-     * The security policy defining whether we can interact with the parameters, etc.
-     */
+    /** The security policy defining whether we can interact with the parameters, etc. */
     protected final P policy;
 
     /**
@@ -163,7 +162,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @param request  The http request.
      * @param response The http response.
      */
-    public abstract void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException;
+    public abstract void ideesKDoPOST(HttpServletRequest request,
+                                      HttpServletResponse response) throws ServletException, SQLException, IOException;
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -476,7 +476,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @param ideaId The idea's id.
      * @return The idea from the DB, enriched with useful information.
      */
-    protected Optional<Idee> getIdeaAndEnrichIt(int ideaId) throws SQLException {
+    protected Optional<Idee> getIdeaAndEnrichIt(int ideaId) {
         Optional<Idee> idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
         idee.ifPresent(i -> {
             try {
