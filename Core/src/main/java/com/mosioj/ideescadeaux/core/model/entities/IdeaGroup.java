@@ -58,4 +58,5 @@ public class IdeaGroup {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

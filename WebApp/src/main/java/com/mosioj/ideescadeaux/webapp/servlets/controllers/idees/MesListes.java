@@ -1,20 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
-
 @WebServlet("/protected/mes_listes")
-public class MesListes extends AbstractUserListes<SecurityPolicy> {
+public class MesListes extends AbstractUserListes<NetworkAccess> {
 
     private static final long serialVersionUID = -1774633803227715931L;
     public static final String PROTECTED_MES_LISTES = "/protected/mes_listes";

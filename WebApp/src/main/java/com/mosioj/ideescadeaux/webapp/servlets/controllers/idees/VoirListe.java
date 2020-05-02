@@ -63,7 +63,7 @@ public class VoirListe extends MesListes {
     @Override
     protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
         List<User> ids = new ArrayList<>();
-        User user = ((NetworkAccess) policy).getUser();
+        User user = policy.getUser();
         ids.add(user);
         fillsUserIdeas(thisOne, ids);
         return ids;

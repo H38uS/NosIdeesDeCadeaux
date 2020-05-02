@@ -247,7 +247,7 @@
 								</c:when>
 								<c:otherwise>
 								<div class="col-auto px-0">
-									<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}" class="img">
+									<a href="protected/detail_du_groupe?groupid=${idee.getGroupKDOId()}" class="img">
 										<img src="resources/image/reserve-groupe.png" title="Une réservation de groupe !" alt="Idée réservée par un groupe" width="${action_img_width}px" />
 									</a>
 								</div>
@@ -359,7 +359,7 @@
 								</c:when>
 								<c:otherwise>
 									Réservée par un groupe (créé le ${idee.bookingDate}).
-									<a href="protected/detail_du_groupe?groupid=${idee.groupKDO}">Voir le détail du groupe</a>.
+									<a href="protected/detail_du_groupe?groupid=${idee.getGroupKDOId()}">Voir le détail du groupe</a>.
 								</c:otherwise>
 							</c:choose>
 						</c:when>

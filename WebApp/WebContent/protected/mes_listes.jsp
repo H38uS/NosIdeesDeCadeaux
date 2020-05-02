@@ -524,7 +524,7 @@
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <div class="col-auto px-0">
-                                                                        <a href="protected/detail_du_groupe?groupid=${idea_from_liste.groupKDO}"
+                                                                        <a href="protected/detail_du_groupe?groupid=${idea_from_liste.getGroupKDOId()}"
                                                                            class="img">
                                                                             <img src="resources/image/reserve-groupe.png"
                                                                                  title="Une réservation de groupe !"
@@ -680,9 +680,8 @@
                                                                     </c:choose>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    Réservée par un groupe (créé le
-                                                                    ${idea_from_liste.bookingDate}).
-                                                                    <a href="protected/detail_du_groupe?groupid=${idea_from_liste.groupKDO}">Voir
+                                                                    aaaaaaaaaaaa Réservée par un groupe (créé le ${idea_from_liste.bookingDate}).
+                                                                    <a href="protected/detail_du_groupe?groupid=${idea_from_liste.getGroupKDOId()}">Voir
                                                                         le détail du groupe</a>.
                                                                 </c:otherwise>
                                                             </c:choose>

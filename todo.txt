@@ -7,11 +7,12 @@
 // FIXME : 5 faire une passe et remplacer les exception par des Try
 // FIXME : 6 faire un preview markdown pour l'édition des idées
 // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
+// FIXME : 6 lazy loading pour les idées (image c'est déjà le cas) --> faut surtout tout faire en JSON et gérer les création de div en JS
 // FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
 // FIXME : 7 ordonnancer les résa de plus de 3 mois dans (mes réservations) ? + les mettre dans un tableau au moins en mode pc - ajouter la date de l'action!!
 // FIXME : 8 tester les services quand on a pas les droits
+// FIXME : 8 auto génération de liens d'image à partir des liens (quand termine par .jpg / .png / etc.)
 // FIXME : 8 vérifier qu'on fait un test pour chaque méthode des repository
-// FIXME : 9 lazy loading pour les idées (image c'est déjà le cas)
 // FIXME : 9 auto-génération des smileys
 // FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
 // FIXME : 99 et faire le lazy loading pour tout (genre les listes etc.) ??

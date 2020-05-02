@@ -49,7 +49,7 @@ public class Idee {
     public String displayClass = "";
     public boolean hasComment = false;
     public boolean hasQuestion = false;
-    private User surpriseBy;
+    private final User surpriseBy;
     public boolean hasAskedIfUpToDate = false;
 
     public Idee(int pId,
@@ -260,5 +260,13 @@ public class Idee {
 
     public Optional<IdeaGroup> getGroupKDO() {
         return Optional.ofNullable(group);
+    }
+
+    /**
+     *
+     * @return The reservation group ID or -1 if it does not exist.
+     */
+    public int getGroupKDOId() {
+        return getGroupKDO().map(IdeaGroup::getId).orElse(-1);
     }
 }
