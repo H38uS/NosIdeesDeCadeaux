@@ -4,10 +4,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
 	<jsp:body>
-		<p>
-		A la différence des questions, cette page permet de discuter entre participant autour d'une idée, pour mieux s'organiser.
-		Le propriétaire de l'idée ne pourra donc rien voir de ce qu'il se passe ici !
-		</p>
+        <p class="alert alert-primary">
+            A la différence des questions, cette page permet de discuter entre participant autour d'une idée, pour mieux s'organiser.
+            Le propriétaire de l'idée ne pourra donc <strong>rien voir</strong> de ce qu'il se passe ici !
+        </p>
 		<h2>Commenter une idée</h2>
 		<h3>Rappel de l'idée</h3>
 		<t:template_une_idee />

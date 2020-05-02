@@ -34,6 +34,7 @@ public class CommentsRepository extends AbstractRepository {
     public static void addComment(int userId, Integer ideaId, String text) throws SQLException {
         text = StringEscapeUtils.unescapeHtml4(text);
         text = Escaper.escapeIdeaText(text);
+        text = Escaper.transformSmileyToCode(text);
         getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
                                                                TABLE_NAME,
                                                                CommentsColumns.IDEA_ID,
@@ -124,7 +125,7 @@ public class CommentsRepository extends AbstractRepository {
                 ResultSet res = ps.getResultSet();
                 while (res.next()) {
                     comments.add(new Comment(res.getInt(CommentsColumns.ID.name()),
-                                             res.getString(CommentsColumns.TEXT.name()),
+                                             Escaper.transformCodeToSmiley(res.getString(CommentsColumns.TEXT.name())),
                                              new User(res.getInt("userId"),
                                                       res.getString(UsersColumns.NAME.name()),
                                                       res.getString(UsersColumns.EMAIL.name()),
@@ -170,7 +171,7 @@ public class CommentsRepository extends AbstractRepository {
                                                  res.getString(UsersColumns.EMAIL.name()),
                                                  res.getString(UsersColumns.AVATAR.name()));
                     return Optional.of(new Comment(res.getInt(CommentsColumns.ID.name()),
-                                                   res.getString(CommentsColumns.TEXT.name()),
+                                                   Escaper.transformCodeToSmiley(res.getString(CommentsColumns.TEXT.name())),
                                                    writer,
                                                    res.getInt(CommentsColumns.IDEA_ID.name()),
                                                    res.getTimestamp(CommentsColumns.WRITTEN_ON.name())));

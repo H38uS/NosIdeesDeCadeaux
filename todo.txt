@@ -1,4 +1,3 @@
-// FIXME : 3 ajouter le support des smileys dans les questions et commentaires
 // FIXME : 4 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
 // FIXME : 4 rendre les dates d'anniversaire plus visible (dans le mail?) et dans le site
 // FIXME : 5 vérfier que l'envoie des emails est bien asynchrone

@@ -178,7 +178,9 @@ public class NotificationsRepository extends AbstractRepository {
                     NotificationsColumns.TYPE));
             logger.trace(sb.toString());
             int res = getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner.id, type);
-            logger.debug(MessageFormat.format("{0} notifications supprimées !", res));
+            if (res > 0) {
+                logger.debug(MessageFormat.format("{0} notifications supprimées !", res));
+            }
 
             getDb().executeUpdate(MessageFormat.format(
                     "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",

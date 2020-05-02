@@ -4,11 +4,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
 	<jsp:body>
-		Cette page permet d'échanger des questions entre le propriétaire de l'idée et les intéressés. Donc:
-		<ul>
-			<li>Le propriétaire de l'idée verra tout ce qui est écris ici...</li>
-			<li>... Mais les commentaires seront anonymes.</li>
-		</ul>
+        <div class="alert alert-primary pb-0">
+            Cette page permet d'échanger des questions entre le propriétaire de l'idée et les intéressés. Donc:
+            <ul>
+                <li>Le propriétaire de l'idée verra tout ce qui est écris ici...</li>
+                <li>... Mais les commentaires seront anonymes.</li>
+            </ul>
+        </div>
 		<c:choose>
 			<c:when test="${isOwner}">
 				<h2>Répondez à des questions sur une de vos idées</h2>
