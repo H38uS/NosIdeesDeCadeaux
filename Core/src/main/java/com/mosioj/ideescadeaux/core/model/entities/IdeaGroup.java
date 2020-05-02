@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,8 +33,8 @@ public class IdeaGroup {
         return shares;
     }
 
-    public void addUser(User user, double d) {
-        shares.add(new Share(user, d));
+    public void addUser(User user, double d, Timestamp timestamp) {
+        shares.add(new Share(user, d, timestamp));
     }
 
     /**

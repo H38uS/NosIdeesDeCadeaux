@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 public class JSPAccessortTest extends TemplateTest {
 
+    // FIXME : à supprimer lorsque tout sera en JSON
+
     User u = new User(42, "toto", "toto@tutu.gmail.fr", "none.png");
     public static final Timestamp TS20191212_0829 = new Timestamp(1576135793001L);
 
@@ -58,6 +60,7 @@ public class JSPAccessortTest extends TemplateTest {
         Assert.assertEquals("12 décembre 2019 à 08h29", i.getModificationDate());
         Assert.assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertEquals("large/toto.png", i.getImageSrcLarge());
+        Assert.assertEquals(-1, i.getGroupKDOId());
         Assert.assertNull(i.getCategory());
     }
 
@@ -87,14 +90,15 @@ public class JSPAccessortTest extends TemplateTest {
 
     @Test
     public void testJSPOnlyShareMethods() {
-        Share s = new Share(u, 23.14);
+        Share s = new Share(u, 23.14, null);
         Assert.assertEquals("23,14", s.getShareAmount());
+        Assert.assertEquals("", s.getJoinDate());
     }
 
     @Test
     public void testJSPOnlySousReservationEntityMethods() {
         SousReservationEntity sre = new SousReservationEntity(56, 14, u, "toto", TS20191212_0829);
-        Assert.assertEquals(TS20191212_0829, sre.getBookedOn());
+        Assert.assertEquals("12 décembre 2019 à 08h29", sre.getBookedOn());
         Assert.assertEquals(14, sre.getIdeeId());
     }
 

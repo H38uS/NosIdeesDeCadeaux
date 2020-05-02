@@ -52,13 +52,9 @@
 						<c:otherwise>
 							<ul>
 								<c:forEach var="share" items="${group.shares}">
-									<li>${share.user.name} : ${share.shareAmount}€
-										<td></td>
-										
-									</li>
+									<li>${share.user.name} : ${share.shareAmount}€ - <small>depuis le ${share.joinDate}</small></li>
 								</c:forEach>
 							</ul>
-							</table>
 						</c:otherwise>
 					</c:choose>
 				</div>

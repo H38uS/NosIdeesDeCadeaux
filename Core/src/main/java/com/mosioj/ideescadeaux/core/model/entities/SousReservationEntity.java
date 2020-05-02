@@ -1,41 +1,43 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+
 import java.sql.Timestamp;
 
 public class SousReservationEntity {
 
-	public final int id;
-	public int ideeId;
-	public User user;
-	public String comment;
-	private final Timestamp bookedOn;
+    public final int id;
+    public int ideeId;
+    public User user;
+    public String comment;
+    private final Timestamp bookedOn;
 
-	public SousReservationEntity(int id, int ideeId, User user, String comment, Timestamp bookedOn) {
-		this.id = id;
-		this.ideeId = ideeId;
-		this.user = user;
-		this.comment = comment;
-		this.bookedOn = bookedOn;
-	}
-	
-	public Timestamp getBookedOn() {
-		return bookedOn;
-	}
+    public SousReservationEntity(int id, int ideeId, User user, String comment, Timestamp bookedOn) {
+        this.id = id;
+        this.ideeId = ideeId;
+        this.user = user;
+        this.comment = comment;
+        this.bookedOn = bookedOn;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getBookedOn() {
+        return MyDateFormatViewer.formatMine(bookedOn);
+    }
 
-	public int getIdeeId() {
-		return ideeId;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public int getIdeeId() {
+        return ideeId;
+    }
 
-	public String getComment() {
-		return comment;
-	}
-	
+    public User getUser() {
+        return user;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
 }

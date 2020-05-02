@@ -32,7 +32,7 @@
 							</div>
 						</c:if>
 						<div class="col-9 col-sm">
-							${resa.comment}
+							${resa.comment} - <small>${resa.bookedOn}</small>
 						</div>
 					</div>
 				</c:forEach>

@@ -437,13 +437,13 @@ public class IdeesRepository extends AbstractRepository {
         insert.append(IdeeColumns.PRIORITE);
         insert.append(") values (?, ?, ?, ?, now(), ?, now(), ?, ?)");
 
-        logger.info(MessageFormat.format("Insert query: {0}", insert.toString()));
+        logger.debug(MessageFormat.format("Insert query: {0}", insert.toString()));
 
         try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), insert.toString())) {
             text = StringEscapeUtils.unescapeHtml4(text);
             text = Escaper.escapeIdeaText(text);
             text = Escaper.transformSmileyToCode(text);
-            logger.info(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
+            logger.debug(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
                                              owner.id,
                                              text,
                                              type,
@@ -592,7 +592,7 @@ public class IdeesRepository extends AbstractRepository {
                                             UserRelationsColumns.FIRST_USER,
                                             UserRelationsColumns.SECOND_USER,
                                             IdeeColumns.A_SOUS_RESERVATION);
-        logger.debug(query);
+        logger.trace(query);
         return getDb().selectCountStar(query, userId, userId, idea, userId) > 0;
     }
 
@@ -621,7 +621,7 @@ public class IdeesRepository extends AbstractRepository {
                                             IdeeColumns.OWNER,
                                             UserRelationsColumns.FIRST_USER,
                                             UserRelationsColumns.SECOND_USER);
-        logger.debug(query);
+        logger.trace(query);
         return getDb().selectCountStar(query, userId, userId, idea, userId, userId) > 0;
     }
 
