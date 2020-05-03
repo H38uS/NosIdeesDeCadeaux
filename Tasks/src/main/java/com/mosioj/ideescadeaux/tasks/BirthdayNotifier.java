@@ -10,6 +10,8 @@ import org.apache.logging.log4j.Logger;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class BirthdayNotifier {
 
@@ -63,7 +65,11 @@ public class BirthdayNotifier {
         String body = EmailSender.MY_PROPERTIES.get("birthday_lucky").toString();
         body = body.replaceAll("\\$\\$nb_jours\\$\\$", nbDays + "");
 
-        EmailSender.sendEmail(user.email, "Votre anniversaire approche... Compléter votre liste !", body);
+        try {
+            EmailSender.sendEmail(user.email, "Votre anniversaire approche... Compléter votre liste !", body).get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e);
+        }
     }
 
     /**
@@ -74,13 +80,19 @@ public class BirthdayNotifier {
      */
     private void sendMailToFriends(User user, int nbDays) {
         try {
-            logger.info(MessageFormat.format("L''anniversaire {0} ({1}) arrive dans {2} !",
+            logger.info(MessageFormat.format("L''anniversaire {0} ({1}) arrive dans {2} jours !",
                                              user.getMyDName(),
                                              user.id,
                                              nbDays));
             UserRelationsRepository.getAllUsersInRelation(user)
                                    .parallelStream()
-                                   .forEach(u -> sendMail(u, user, nbDays));
+                                   .forEach(u -> {
+                                       try {
+                                           sendMail(u, user, nbDays).get();
+                                       } catch (InterruptedException | ExecutionException e) {
+                                           logger.error(e);
+                                       }
+                                   });
         } catch (SQLException e) {
             logger.error(MessageFormat.format("Fail to get the user list: {0}", e.getMessage()));
         }
@@ -92,8 +104,9 @@ public class BirthdayNotifier {
      * @param toUser       The user to which we should send an email.
      * @param birthdayUser The friend that has a birthday coming !
      * @param nbDays       The number of days before the birthday.
+     * @return The mail task.
      */
-    private void sendMail(User toUser, User birthdayUser, int nbDays) {
+    private Future<?> sendMail(User toUser, User birthdayUser, int nbDays) {
         logger.info(MessageFormat.format("Envoie d''un mail à {0} pour l''anniversaire {1} ({2}) dans {3} jours !",
                                          toUser,
                                          birthdayUser.getMyDName(),
@@ -106,10 +119,11 @@ public class BirthdayNotifier {
         body = body.replaceAll("\\$\\$name\\$\\$", birthdayUser.getName());
         body = body.replaceAll("\\$\\$nb_jours\\$\\$", nbDays + "");
         body = body.replaceAll("\\$\\$id\\$\\$", birthdayUser.id + "");
+        body = body.replaceAll("\\$\\$date\\$\\$", birthdayUser.getBirthdayAsString() + "");
 
         String nameInFullText = StringEscapeUtils.unescapeHtml4(birthdayUser.getMyDName());
-        EmailSender.sendEmail(toUser.email,
-                              MessageFormat.format("L''anniversaire {0} est proche !", nameInFullText),
-                              body);
+        return EmailSender.sendEmail(toUser.email,
+                                     MessageFormat.format("L''anniversaire {0} est proche !", nameInFullText),
+                                     body);
     }
 }

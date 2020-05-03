@@ -11,7 +11,7 @@ public class EmailSenderTest extends TemplateTest {
     /**
      * Un appel prend environ 50 ms + environ 110ms d'init.
      */
-    @Test(timeout = 200)
+    @Test(timeout = 250)
     public void emailShouldBeAsynchronous() throws InterruptedException, ExecutionException {
 
         Future<?> res1 = EmailSender.sendEmail("dzjhdquhd@dzkozjkd.cijzcjiz", "test", "Da test.");

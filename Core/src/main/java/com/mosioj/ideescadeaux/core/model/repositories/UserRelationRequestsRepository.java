@@ -1,16 +1,16 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
+import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationRequestsColumns;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationRequestsColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
-import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 
 public class UserRelationRequestsRepository extends AbstractRepository {
 
@@ -25,7 +25,7 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param sent_to Sent to this user.
      * @return True if and only if sent_by has sent a request to sent_to.
      */
-    public static boolean associationExists(int sent_by, int sent_to) throws SQLException {
+    public static boolean associationExists(int sent_by, int sent_to) {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                                            TABLE_NAME,
                                                            UserRelationRequestsColumns.SENT_BY_USER,

@@ -1,21 +1,21 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.Relation;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.core.model.entities.Relation;
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UserRelationsRepository extends AbstractRepository {
 
@@ -24,64 +24,6 @@ public class UserRelationsRepository extends AbstractRepository {
 
     private UserRelationsRepository() {
         // Forbidden
-    }
-
-    /**
-     * @param user            The user.
-     * @param nameOrEmail     The token to search.
-     * @param firstRow        Index of the first row.
-     * @param maxNumberOfRows Size of the result set.
-     * @return The list of relations this use has that matches the given name/email.
-     */
-    public static List<Relation> getRelations(int user, String nameOrEmail, int firstRow, int maxNumberOfRows) throws SQLException {
-
-        List<Relation> relations = new ArrayList<>();
-        PreparedStatementIdKdo ps = null;
-
-        String query =
-                "select {0}, {1}, u1.{4} as first_name, u1.{5} as first_email, u1.{6} as first_avatar, u2.{4} as second_name, u2.{5} as second_email, u2.{6} as second_avatar " +
-                "from {2} urr " +
-                "left join {3} u1 on u1.id = urr.{0} " +
-                "left join {3} u2 on u2.id = urr.{1} " +
-                "where {0} = ? " +
-                "  and (lower(u2.{4}) like ? ESCAPE ''!'' or lower(u2.{5}) like ? ESCAPE ''!'') " +
-                " order by coalesce(u2.{4}, u2.{5}) " +
-                " LIMIT ?, ? ";
-        String formatedQuery = MessageFormat.format(query,
-                                                    UserRelationsColumns.FIRST_USER,
-                                                    UserRelationsColumns.SECOND_USER,
-                                                    TABLE_NAME,
-                                                    UsersRepository.TABLE_NAME,
-                                                    UsersColumns.NAME,
-                                                    UsersColumns.EMAIL,
-                                                    UsersColumns.AVATAR);
-        logger.trace(formatedQuery);
-
-        try {
-
-            ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
-            nameOrEmail = sanitizeSQLLike(nameOrEmail);
-            ps.bindParameters(user, nameOrEmail, nameOrEmail, firstRow, maxNumberOfRows);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    relations.add(new Relation(new User(res.getInt(UserRelationsColumns.FIRST_USER.name()),
-                                                        res.getString("first_name"),
-                                                        res.getString("first_email"),
-                                                        res.getString("first_avatar")),
-                                               new User(res.getInt(UserRelationsColumns.SECOND_USER.name()),
-                                                        res.getString("second_name"),
-                                                        res.getString("second_email"),
-                                                        res.getString("second_avatar"))));
-                }
-            }
-        } finally {
-            if (ps != null) {
-                ps.close();
-            }
-        }
-
-        return relations;
     }
 
     /**
@@ -123,53 +65,83 @@ public class UserRelationsRepository extends AbstractRepository {
 
     /**
      * @param user The user.
+     * @return All relations of the given user.
+     */
+    public static List<Relation> getRelations(int user) throws SQLException {
+        return getRelations(user, -1, -1);
+    }
+
+    /**
+     * @param user            The user.
+     * @param firstRow        The first row to select.
+     * @param maxNumberOfRows Number of results to retrieve.
      * @return The list of relations this use has.
      */
     public static List<Relation> getRelations(int user, int firstRow, int maxNumberOfRows) throws SQLException {
 
         List<Relation> relations = new ArrayList<>();
-        PreparedStatementIdKdo ps = null;
 
         String query =
-                "select {0}, {1}, u1.{6} as first_name, u1.{7} as first_email, u1.{8} as first_avatar, u2.{6} as second_name, u2.{7} as second_email, u2.{8} as second_avatar " +
-                "  from {2} urr " +
-                "  left join {5} u1 on u1.id = urr.{0} " +
-                "  left join {5} u2 on u2.id = urr.{1} " +
-                " where {3} = ? " +
-                " order by coalesce(u2.{6}, u2.{7}) " +
-                " LIMIT ?, ? ";
+                "select {1}, {2}," +
+                "       u1.{4} as first_name,  u1.{5} as first_email,  u1.{6} as first_avatar,  u1.{7} as first_birthday, " +
+                "       u2.{4} as second_name, u2.{5} as second_email, u2.{6} as second_avatar, u2.{7} as second_birthday " +
+                "  from {0} urr " +
+                "  left join {3} u1 on u1.id = urr.{1} " +
+                "  left join {3} u2 on u2.id = urr.{2} " +
+                " where {1} = ? " +
+                " order by coalesce(u2.{4}, u2.{5}) ";
+
+        if (firstRow > -1 && maxNumberOfRows > 0) {
+            query += " LIMIT ?, ? ";
+        }
+
         String formatedQuery = MessageFormat.format(query,
-                                                    UserRelationsColumns.FIRST_USER.name(),
-                                                    UserRelationsColumns.SECOND_USER.name(),
                                                     TABLE_NAME,
                                                     UserRelationsColumns.FIRST_USER,
                                                     UserRelationsColumns.SECOND_USER,
                                                     UsersRepository.TABLE_NAME,
                                                     UsersColumns.NAME,
                                                     UsersColumns.EMAIL,
-                                                    UsersColumns.AVATAR);
+                                                    UsersColumns.AVATAR,
+                                                    UsersColumns.BIRTHDAY);
         logger.trace(formatedQuery);
 
-        try {
+        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), formatedQuery)) {
 
-            ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
-            ps.bindParameters(user, firstRow, maxNumberOfRows);
+            if (firstRow > -1 && maxNumberOfRows > 0) {
+                ps.bindParameters(user, firstRow, maxNumberOfRows);
+            } else {
+                ps.bindParameters(user);
+            }
+
             if (ps.execute()) {
                 ResultSet res = ps.getResultSet();
                 while (res.next()) {
+
+                    Date firstBirthday = null;
+                    try {
+                        firstBirthday = res.getDate("first_birthday");
+                    } catch (SQLException ignored) {
+                        // Plante lorsque vide - nécessaire de catcher
+                    }
+                    Date secondBirthday = null;
+                    try {
+                        secondBirthday = res.getDate("second_birthday");
+                    } catch (SQLException ignored) {
+                        // Plante lorsque vide - nécessaire de catcher
+                    }
+
                     relations.add(new Relation(new User(res.getInt(UserRelationsColumns.FIRST_USER.name()),
                                                         res.getString("first_name"),
                                                         res.getString("first_email"),
+                                                        firstBirthday,
                                                         res.getString("first_avatar")),
                                                new User(res.getInt(UserRelationsColumns.SECOND_USER.name()),
                                                         res.getString("second_name"),
                                                         res.getString("second_email"),
+                                                        secondBirthday,
                                                         res.getString("second_avatar"))));
                 }
-            }
-        } finally {
-            if (ps != null) {
-                ps.close();
             }
         }
 
@@ -302,7 +274,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param second Another user id.
      * @return True if and only if the two guys are friends. False for the owner.
      */
-    public static boolean associationExists(int first, int second) throws SQLException {
+    public static boolean associationExists(int first, int second) {
         String query = MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                             TABLE_NAME,
                                             UserRelationsColumns.FIRST_USER,
@@ -367,7 +339,10 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param limit           Maximum number of results.
      * @return The list of users.
      */
-    public static List<User> getAllNamesOrEmailsInRelation(int userId, String userNameOrEmail, int firstRow, int limit) throws SQLException {
+    public static List<User> getAllNamesOrEmailsInRelation(int userId,
+                                                           String userNameOrEmail,
+                                                           int firstRow,
+                                                           int limit) throws SQLException {
 
         List<User> users = new ArrayList<>();
         userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
@@ -588,7 +563,10 @@ public class UserRelationsRepository extends AbstractRepository {
         return users;
     }
 
-    public static List<User> getAllUsersInRelation(int userId, String userNameOrEmail, int firstRow, int limit) throws SQLException {
+    public static List<User> getAllUsersInRelation(int userId,
+                                                   String userNameOrEmail,
+                                                   int firstRow,
+                                                   int limit) throws SQLException {
 
         List<User> users = new ArrayList<>();
         PreparedStatementIdKdo ps = null;

@@ -48,7 +48,8 @@ public class IdeesCadeauxTask {
         props.load(is);
 
         MysqlDataSource mysqlDS = new MysqlDataSource();
-        String url = MessageFormat.format("{0}?serverTimezone=Europe/Paris", props.getProperty("MYSQL_DB_URL"));
+        String url = MessageFormat.format("{0}?useLegacyDatetimeCode=false&serverTimezone=Europe/Paris&useUnicode=yes",
+                                          props.getProperty("MYSQL_DB_URL"));
         logger.debug(MessageFormat.format("URL: {0}", url));
 
         mysqlDS.setURL(url);

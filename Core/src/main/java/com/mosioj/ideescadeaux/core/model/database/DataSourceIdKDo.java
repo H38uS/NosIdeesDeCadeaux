@@ -122,15 +122,18 @@ public class DataSourceIdKDo {
     /**
      * @param query      The initial query.
      * @param parameters The query parameters.
-     * @return True if and only if the query returns at least one row.
+     * @return True if and only if the query returns at least one row and there are no errors.
      */
-    public boolean doesReturnRows(String query, Object... parameters) throws SQLException {
+    public boolean doesReturnRows(String query, Object... parameters) {
         query = "select 1 from dual where exists ( " + query + " )";
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(this, query)) {
             ps.bindParameters(parameters);
             ps.execute();
             ResultSet res = ps.getResultSet();
             return res.first();
+        } catch (SQLException e) {
+            logger.error(e);
+            return false;
         }
     }
 

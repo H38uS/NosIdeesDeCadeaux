@@ -35,6 +35,7 @@ public class User implements Comparable<User> {
     private final List<Idee> ideas = new ArrayList<>();
 
     public User(int id, String name, String email, String avatar) {
+        // FIXME : supprimer ce constructeur - toujours renseigner la date d'anniversaire
         this.id = id;
         this.name = name == null ? email : WordUtils.capitalize(name.trim());
         this.email = email;
@@ -73,6 +74,13 @@ public class User implements Comparable<User> {
 
     public Date getBirthday() {
         return birthday;
+    }
+
+    /**
+     * @return The formatted birthdate.
+     */
+    public String getBirthdayAsString() {
+        return birthday == null ? "- on ne sait pas..." : MyDateFormatViewer.formatDayWithYearHidden(birthday.getTime());
     }
 
     public String getAvatar() {

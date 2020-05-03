@@ -17,6 +17,7 @@ import java.sql.SQLException;
 
 public class TemplateTest {
 
+    /** Class logger. */
     private final static Logger LOGGER = LogManager.getLogger(TemplateTest.class);
 
     /**

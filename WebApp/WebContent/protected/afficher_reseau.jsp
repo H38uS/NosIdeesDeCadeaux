@@ -194,6 +194,7 @@
 							<div class="card-body">
 								<h5 class="card-title">
 									<a href="protected/voir_liste?id=${relation.second.id}">${relation.second.name}</a>
+                                    <div><small>Né le ${relation.second.getBirthdayAsString()}</small></div>
 								</h5>
 							</div>
 							<div class="card-footer">

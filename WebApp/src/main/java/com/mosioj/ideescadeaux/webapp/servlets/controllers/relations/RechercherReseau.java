@@ -1,11 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.core.model.entities.Relation;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 
 import javax.servlet.ServletException;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet("/protected/rechercher_reseau")
 public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
@@ -31,7 +32,8 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
 
         String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
         User networkOwner = policy.getUser();
@@ -73,24 +75,23 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
     @Override
     protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest request) throws SQLException {
 
-        String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
-        List<Relation> relations = UserRelationsRepository.getRelations(policy.getUser().id,
-                                                                        nameOrEmail,
-                                                                        firstRow,
-                                                                        maxNumberOfResults);
-        int userId = thisOne.id;
+        final String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM).toLowerCase();
+        List<Relation> relations = UserRelationsRepository.getRelations(policy.getUser().id);
+        relations = relations.stream()
+                             .filter(r -> r.getSecond().getName().toLowerCase().contains(nameOrEmail) ||
+                                          r.getSecond().getEmail().toLowerCase().contains(nameOrEmail))
+                             .collect(Collectors.toList());
 
-        // Ajout du flag network
-        for (Relation r : relations) {
-            if (UserRelationsRepository.associationExists(r.getSecond().id, userId)) {
+        relations.forEach(r -> {
+            if (UserRelationsRepository.associationExists(r.getSecond().id, thisOne.id)) {
                 r.secondIsInMyNetwork = true;
             } else {
                 User other = r.getSecond();
-                if (UserRelationRequestsRepository.associationExists(userId, other.id)) {
+                if (UserRelationRequestsRepository.associationExists(thisOne.id, other.id)) {
                     other.freeComment = "Vous avez déjà envoyé une demande à " + other.getName();
                 }
             }
-        }
+        });
 
         return relations;
     }
