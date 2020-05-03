@@ -26,7 +26,7 @@ public class JSPAccessortTest extends TemplateTest {
         Assert.assertEquals("large/none.png", u.getAvatarSrcLarge());
         Assert.assertEquals(0, u.getNbDaysBeforeBirthday());
         Assert.assertNull(u.getFreeComment());
-        Assert.assertEquals("", u.getBirthdayAsString());
+        Assert.assertEquals("- on ne sait pas...", u.getBirthdayAsString());
     }
 
     @Test

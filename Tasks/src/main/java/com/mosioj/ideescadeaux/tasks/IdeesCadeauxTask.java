@@ -21,10 +21,18 @@ public class IdeesCadeauxTask {
         try {
             DataSourceIdKDo.setDataSource(initDB());
         } catch (IOException e) {
-            e.printStackTrace();
-            logger.error("Fail to initialize the DB... Exiting.");
+            logger.error("Fail to initialize the DB... Exiting.", e);
             return;
         }
+
+        sendNotification();
+        logger.info("Run IdeesCadeauxTasks completed successfully !");
+    }
+
+    /**
+     * Do all the work. Assumes the connexion has been setup.
+     */
+    protected static void sendNotification() {
 
         BirthdayNotifier bn = new BirthdayNotifier();
 
@@ -34,8 +42,6 @@ public class IdeesCadeauxTask {
         // Au poto, pour qu'ils réservent les idées !
         bn.findBirthdayAndSendMailToFriends(15);
         bn.findBirthdayAndSendMailToFriends(5);
-
-        logger.info("Run IdeesCadeauxTasks completed successfully !");
     }
 
     /**

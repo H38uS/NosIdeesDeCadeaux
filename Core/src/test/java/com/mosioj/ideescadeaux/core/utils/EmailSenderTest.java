@@ -9,9 +9,9 @@ import java.util.concurrent.Future;
 public class EmailSenderTest extends TemplateTest {
 
     /**
-     * Un appel prend environ 50 ms + environ 110ms d'init.
+     * Timeout en mode maven build à environ 2.5 secondes.
      */
-    @Test(timeout = 250)
+    @Test(timeout = 3500)
     public void emailShouldBeAsynchronous() throws InterruptedException, ExecutionException {
 
         Future<?> res1 = EmailSender.sendEmail("dzjhdquhd@dzkozjkd.cijzcjiz", "test", "Da test.");

@@ -524,6 +524,8 @@ public class NotificationsRepository extends AbstractRepository {
     private static void sendAdminNotification(String type, String message) {
 
         // Insert a DB notification
+        logger.info("Envoie d'une notification admin de type {}...", type);
+
         StringBuilder query = new StringBuilder();
         query.append(MessageFormat.format(" insert into {0} ", TABLE_NAME));
         query.append(MessageFormat.format("   ({0},{1},{2},{3}) ",
@@ -531,10 +533,8 @@ public class NotificationsRepository extends AbstractRepository {
                                           NotificationsColumns.TEXT,
                                           NotificationsColumns.TYPE,
                                           NotificationsColumns.CREATION_DATE));
-        query.append(MessageFormat.format(" select u.{0}, ''{1}'', ''{2}'', now()",
-                                          UsersColumns.ID,
-                                          message,
-                                          type));
+        query.append(MessageFormat.format(" select u.{0}, ?, ?, now()",
+                                          UsersColumns.ID));
         query.append(MessageFormat.format("   from {0} u ", UsersRepository.TABLE_NAME));
         query.append(MessageFormat.format("   join USER_ROLES ur on ur.{0} = u.{1}",
                                           UserRolesColumns.EMAIL,
@@ -542,10 +542,11 @@ public class NotificationsRepository extends AbstractRepository {
         query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
 
         try {
-            getDb().executeUpdate(query.toString(), "ROLE_ADMIN");
+            getDb().executeUpdate(query.toString(), message, type, "ROLE_ADMIN");
         } catch (SQLException e) {
             e.printStackTrace();
-            logger.warn("Fail to write notification.");
+            logger.info("Query is => " + query);
+            logger.warn("Fail to write notification.", e);
         }
 
         // Send emails to the ADMIN
