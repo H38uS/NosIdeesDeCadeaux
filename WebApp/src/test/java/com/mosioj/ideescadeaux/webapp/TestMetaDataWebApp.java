@@ -13,9 +13,9 @@ import java.util.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class TestMetaData extends TemplateTest {
+public class TestMetaDataWebApp extends WebAppTemplateTest {
 
-    private static final Logger logger = LogManager.getLogger(TestMetaData.class);
+    private static final Logger logger = LogManager.getLogger(TestMetaDataWebApp.class);
 
     @Test
     public void testAllLink() throws IOException {

@@ -8,7 +8,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedB
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification.ModifyIdea;
 import org.junit.Test;
 
@@ -19,12 +19,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.when;
 
-public class TestModifyIdea extends AbstractTestServlet {
+public class TestModifyIdeaWebApp extends AbstractTestServletWebApp {
 
-    public TestModifyIdea() {
+    public TestModifyIdeaWebApp() {
         super(new ModifyIdea());
     }
 

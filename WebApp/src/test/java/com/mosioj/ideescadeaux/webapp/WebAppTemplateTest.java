@@ -16,9 +16,9 @@ import org.junit.rules.TestName;
 import java.io.File;
 import java.sql.SQLException;
 
-public class TemplateTest {
+public class WebAppTemplateTest {
 
-    private final static Logger LOGGER = LogManager.getLogger(TemplateTest.class);
+    private final static Logger LOGGER = LogManager.getLogger(WebAppTemplateTest.class);
     protected final File root = new File(getClass().getResource("/").getFile()).getParentFile().getParentFile();
 
     /**
@@ -46,7 +46,7 @@ public class TemplateTest {
 
     protected static DataSourceIdKDo ds;
 
-    public TemplateTest() {
+    public WebAppTemplateTest() {
         try {
             friendOfFirefox = UsersRepository.getUser(_FRIEND_ID_).orElseThrow(SQLException::new);
             firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);

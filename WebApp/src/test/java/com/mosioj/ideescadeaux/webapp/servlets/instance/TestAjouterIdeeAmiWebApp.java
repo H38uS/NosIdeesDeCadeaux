@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification.AjouterIdeeAmi;
 import org.junit.Test;
 
@@ -13,9 +13,9 @@ import java.util.Map;
 
 import static org.mockito.Mockito.when;
 
-public class TestAjouterIdeeAmi extends AbstractTestServlet {
+public class TestAjouterIdeeAmiWebApp extends AbstractTestServletWebApp {
 
-    public TestAjouterIdeeAmi() {
+    public TestAjouterIdeeAmiWebApp() {
         super(new AjouterIdeeAmi());
     }
 

@@ -1,9 +1,19 @@
 package com.mosioj.ideescadeaux.webapp.servlets;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.CreationCompte;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.mobile.device.Device;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -11,23 +21,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
-import com.mosioj.ideescadeaux.webapp.TemplateTest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.mobile.device.Device;
-
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.CreationCompte;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-
-public abstract class AbstractTestServlet extends TemplateTest {
+public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
 
     protected RequestDispatcher dispatcher;
     protected HttpServletRequest request;
@@ -35,12 +33,12 @@ public abstract class AbstractTestServlet extends TemplateTest {
     protected HttpSession session;
     protected Device device;
 
-    private static final Logger logger = LogManager.getLogger(AbstractTestServlet.class);
+    private static final Logger logger = LogManager.getLogger(AbstractTestServletWebApp.class);
     protected final IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> instance;
     private final MyServerOutput responseOutput = new MyServerOutput();
     protected ServletContext config;
 
-    public AbstractTestServlet(IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> pInstance) {
+    public AbstractTestServletWebApp(IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> pInstance) {
 
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);

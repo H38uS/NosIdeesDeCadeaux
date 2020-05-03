@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.RechercherPersonne;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +13,9 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TestRecherchePersonne extends AbstractTestServlet {
+public class TestRecherchePersonneWebApp extends AbstractTestServletWebApp {
 
-    public TestRecherchePersonne() {
+    public TestRecherchePersonneWebApp() {
         super(new RechercherPersonne());
     }
 

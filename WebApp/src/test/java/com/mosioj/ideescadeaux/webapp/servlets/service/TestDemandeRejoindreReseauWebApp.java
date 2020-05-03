@@ -1,9 +1,9 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +15,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class TestDemandeRejoindreReseau extends AbstractTestServlet {
+public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp {
 
-    public TestDemandeRejoindreReseau() {
+    public TestDemandeRejoindreReseauWebApp() {
         super(new DemandeRejoindreReseauService());
     }
 

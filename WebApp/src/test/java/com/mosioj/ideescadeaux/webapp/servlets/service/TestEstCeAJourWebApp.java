@@ -1,10 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.ReserverIdee;
 import org.junit.Test;
 
@@ -14,9 +14,9 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class TestEstCeAJour extends AbstractTestServlet {
+public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
 
-    public TestEstCeAJour() {
+    public TestEstCeAJourWebApp() {
         super(new ServiceEstAJour());
     }
 

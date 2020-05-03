@@ -4,7 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.ReserverIdee;
 import org.junit.Test;
 
@@ -14,9 +14,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class TestReserverIdee extends AbstractTestServlet {
+public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
 
-    public TestReserverIdee() {
+    public TestReserverIdeeWebApp() {
         super(new ReserverIdee());
     }
 

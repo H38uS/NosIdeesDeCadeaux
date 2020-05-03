@@ -1,17 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.core.model.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class ServiceMesReservationsTest extends AbstractTestServlet {
+public class ServiceMesReservationsTestWebApp extends AbstractTestServletWebApp {
 
-    public ServiceMesReservationsTest() {
+    public ServiceMesReservationsTestWebApp() {
         super(new ServiceMesReservations());
     }
 

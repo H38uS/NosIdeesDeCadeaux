@@ -9,7 +9,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.GroupIdeaColumns;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.GroupIdeaDetails;
 import org.junit.Test;
 
@@ -21,9 +21,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class TestGroupIdeaDetails extends AbstractTestServlet {
+public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
 
-    public TestGroupIdeaDetails() {
+    public TestGroupIdeaDetailsWebApp() {
         super(new GroupIdeaDetails());
     }
 

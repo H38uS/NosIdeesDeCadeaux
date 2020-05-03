@@ -5,7 +5,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.MesNotifications;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.ConfirmationEstAJour;
 import org.junit.Test;
@@ -15,9 +15,9 @@ import java.sql.SQLException;
 
 import static org.mockito.Mockito.when;
 
-public class TestConfirmationEstAJour extends AbstractTestServlet {
+public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
 
-    public TestConfirmationEstAJour() {
+    public TestConfirmationEstAJourWebApp() {
         super(new ConfirmationEstAJour());
     }
 

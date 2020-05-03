@@ -6,7 +6,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewQuestio
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.IdeeQuestions;
 import org.junit.Test;
 
@@ -15,9 +15,9 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class TestIdeaQuestion extends AbstractTestServlet {
+public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
 
-    public TestIdeaQuestion() {
+    public TestIdeaQuestionWebApp() {
         super(new IdeeQuestions());
     }
 

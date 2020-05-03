@@ -4,7 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +19,9 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class TestAjouterIdee extends AbstractTestServlet {
+public class TestAjouterIdeeWebApp extends AbstractTestServletWebApp {
 
-    public TestAjouterIdee() {
+    public TestAjouterIdeeWebApp() {
         super(new AjouterIdee());
     }
 

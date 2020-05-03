@@ -1,13 +1,13 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
 import static org.mockito.Mockito.when;
 
-public class RechercherPersonneServiceTest extends AbstractTestServlet {
+public class RechercherPersonneServiceTestWebApp extends AbstractTestServletWebApp {
 
-    public RechercherPersonneServiceTest() {
+    public RechercherPersonneServiceTestWebApp() {
         super(new RechercherPersonneService());
     }
 

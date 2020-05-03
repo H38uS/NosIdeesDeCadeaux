@@ -5,7 +5,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewComment
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.IdeaComments;
 import org.junit.Test;
 
@@ -13,9 +13,9 @@ import java.sql.SQLException;
 
 import static org.mockito.Mockito.when;
 
-public class TestIdeaComment extends AbstractTestServlet {
+public class TestIdeaCommentWebApp extends AbstractTestServletWebApp {
 
-    public TestIdeaComment() {
+    public TestIdeaCommentWebApp() {
         super(new IdeaComments());
     }
 

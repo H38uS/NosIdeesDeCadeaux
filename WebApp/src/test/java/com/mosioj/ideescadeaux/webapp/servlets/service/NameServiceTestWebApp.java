@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.NameAnswer;
 import org.junit.Test;
 
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class NameServiceTest extends AbstractTestServlet {
+public class NameServiceTestWebApp extends AbstractTestServletWebApp {
 
-    public NameServiceTest() {
+    public NameServiceTestWebApp() {
         super(new NameService());
     }
 

@@ -1,13 +1,13 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeRefusee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifFriendshipDropped;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNouvelleDemandeAmi;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.AfficherReseau;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.ResoudreDemandeAmi;
 import org.junit.Test;
@@ -20,9 +20,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class TestResoudreDemandeAmi extends AbstractTestServlet {
+public class TestResoudreDemandeAmiWebApp extends AbstractTestServletWebApp {
 
-    public TestResoudreDemandeAmi() {
+    public TestResoudreDemandeAmiWebApp() {
         super(new ResoudreDemandeAmi());
     }
 

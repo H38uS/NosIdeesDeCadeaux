@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-public class ServiceEnregistrementMonCompteTest extends AbstractTestServlet {
+public class ServiceEnregistrementMonCompteTestWebApp extends AbstractTestServletWebApp {
 
-    public ServiceEnregistrementMonCompteTest() {
+    public ServiceEnregistrementMonCompteTestWebApp() {
         super(new ServiceEnregistrementMonCompte());
     }
 

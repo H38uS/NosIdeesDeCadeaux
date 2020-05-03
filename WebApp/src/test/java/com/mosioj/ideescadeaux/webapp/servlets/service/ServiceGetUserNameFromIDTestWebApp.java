@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
@@ -9,9 +9,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class ServiceGetUserNameFromIDTest extends AbstractTestServlet {
+public class ServiceGetUserNameFromIDTestWebApp extends AbstractTestServletWebApp {
 
-    public ServiceGetUserNameFromIDTest() {
+    public ServiceGetUserNameFromIDTestWebApp() {
         super(new ServiceGetUserNameFromID());
     }
 

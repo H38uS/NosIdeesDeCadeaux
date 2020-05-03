@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -12,9 +12,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class NotificationDeleteServiceTest extends AbstractTestServlet {
+public class NotificationDeleteServiceTestWebApp extends AbstractTestServletWebApp {
 
-    public NotificationDeleteServiceTest() {
+    public NotificationDeleteServiceTestWebApp() {
         super(new NotificationDeleteService());
     }
 

@@ -2,16 +2,15 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class ServiceUpdateNotificationParameterTest extends AbstractTestServlet {
+public class ServiceUpdateNotificationParameterTestWebApp extends AbstractTestServletWebApp {
 
-    public ServiceUpdateNotificationParameterTest() {
+    public ServiceUpdateNotificationParameterTestWebApp() {
         super(new ServiceUpdateNotificationParameter());
     }
 
@@ -21,7 +20,7 @@ public class ServiceUpdateNotificationParameterTest extends AbstractTestServlet 
         when(request.getParameter("name")).thenReturn(NotificationType.FRIENDSHIP_DROPPED.toString());
         when(request.getParameter("value")).thenReturn("toto");
 
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
         assertEquals("Valeur inconnue...", resp.getMessage());
@@ -33,7 +32,7 @@ public class ServiceUpdateNotificationParameterTest extends AbstractTestServlet 
         when(request.getParameter("name")).thenReturn("toto");
         when(request.getParameter("value")).thenReturn(NotificationActivation.SITE.toString());
 
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
         assertEquals("Type de notification inconnu...", resp.getMessage());
@@ -45,7 +44,7 @@ public class ServiceUpdateNotificationParameterTest extends AbstractTestServlet 
         when(request.getParameter("name")).thenReturn("toto");
         when(request.getParameter("value")).thenReturn("toto");
 
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
     }
@@ -56,7 +55,7 @@ public class ServiceUpdateNotificationParameterTest extends AbstractTestServlet 
         when(request.getParameter("name")).thenReturn(NotificationType.FRIENDSHIP_DROPPED.toString());
         when(request.getParameter("value")).thenReturn(NotificationActivation.SITE.toString());
 
-        ServiceResponse resp = doTestServicePost();
+        StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
     }

@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAdministration;
-import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServlet;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.CreationCompte;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.junit.Before;
@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-public class TestCreationCompte extends AbstractTestServlet {
+public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
 
-    public TestCreationCompte() {
+    public TestCreationCompteWebApp() {
         super(new CreationCompte());
     }
 
