@@ -1,11 +1,5 @@
 package com.mosioj.ideescadeaux.tasks;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Properties;
-
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
@@ -13,10 +7,13 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
+
 public class BirthdayNotifier {
 
     private static final Logger logger = LogManager.getLogger(BirthdayNotifier.class);
-    private static Properties prop;
 
     /**
      * Finds the user that have their birthday coming in nbDays. Then find all their friends. Finally send an email to
@@ -63,7 +60,7 @@ public class BirthdayNotifier {
                                          user.id,
                                          nbDays));
 
-        String body = getP().get("birthday_lucky").toString();
+        String body = EmailSender.MY_PROPERTIES.get("birthday_lucky").toString();
         body = body.replaceAll("\\$\\$nb_jours\\$\\$", nbDays + "");
 
         EmailSender.sendEmail(user.email, "Votre anniversaire approche... Compléter votre liste !", body);
@@ -81,7 +78,9 @@ public class BirthdayNotifier {
                                              user.getMyDName(),
                                              user.id,
                                              nbDays));
-            UserRelationsRepository.getAllUsersInRelation(user).parallelStream().forEach(u -> sendMail(u, user, nbDays));
+            UserRelationsRepository.getAllUsersInRelation(user)
+                                   .parallelStream()
+                                   .forEach(u -> sendMail(u, user, nbDays));
         } catch (SQLException e) {
             logger.error(MessageFormat.format("Fail to get the user list: {0}", e.getMessage()));
         }
@@ -101,7 +100,7 @@ public class BirthdayNotifier {
                                          birthdayUser.id,
                                          nbDays));
 
-        String body = getP().get("birthday").toString();
+        String body = EmailSender.MY_PROPERTIES.get("birthday").toString();
 
         body = body.replaceAll("\\$\\$de_name\\$\\$", birthdayUser.getMyDName());
         body = body.replaceAll("\\$\\$name\\$\\$", birthdayUser.getName());
@@ -112,18 +111,5 @@ public class BirthdayNotifier {
         EmailSender.sendEmail(toUser.email,
                               MessageFormat.format("L''anniversaire {0} est proche !", nameInFullText),
                               body);
-    }
-
-    private synchronized Properties getP() {
-        if (prop == null) {
-            prop = new Properties();
-            try {
-                prop.load(BirthdayNotifier.class.getResourceAsStream("mail.properties"));
-            } catch (IOException e) {
-                e.printStackTrace();
-                logger.error(e);
-            }
-        }
-        return prop;
     }
 }

@@ -100,12 +100,13 @@ public abstract class AbstractNotification {
      * @param emailAdress          The email adress.
      * @param fullURLTillProtected The full URL.
      */
-    public void sendEmail(String emailAdress, String fullURLTillProtected) {
+    public void sendEmail(String emailAdress, Object fullURLTillProtected) {
         String notifText = getTextToInsert();
         notifText = notifText.replaceAll("<a href=\"protected/",
-                                         MessageFormat.format("<a href=\"{0}protected/", fullURLTillProtected));
+                                         MessageFormat.format("<a href=\"{0}protected/",
+                                                              fullURLTillProtected.toString()));
         notifText = notifText.replaceAll("<a href=\"public/",
-                                         MessageFormat.format("<a href=\"{0}public/", fullURLTillProtected));
+                                         MessageFormat.format("<a href=\"{0}public/", fullURLTillProtected.toString()));
         String body = p.get("mail_template").toString().replaceAll("\\$\\$text\\$\\$", notifText);
         EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Nouvelle notification !", body);
     }

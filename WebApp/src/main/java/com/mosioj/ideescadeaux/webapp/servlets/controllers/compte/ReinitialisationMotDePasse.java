@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
 public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
@@ -77,10 +79,16 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<Al
         UserChangePwdRequestRepository.deleteAssociation(userId);
         UserChangePwdRequestRepository.createNewRequest(userId, token);
 
-        EmailSender.sendEmailReinitializationPwd(email1, userId, token);
-
-        request.setAttribute("email", email1);
-        RootingsUtils.rootToPage(SUCCES_PAGE_URL, request, response);
+        try {
+            logger.info("Envoie du mail en cours...");
+            EmailSender.sendEmailReinitializationPwd(email1, userId, token).get();
+            request.setAttribute("email", email1);
+            RootingsUtils.rootToPage(SUCCES_PAGE_URL, request, response);
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e);
+            request.setAttribute("email1_error", Collections.singleton("Echec de l'envoie du mail."));
+            RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
+        }
     }
 
 }

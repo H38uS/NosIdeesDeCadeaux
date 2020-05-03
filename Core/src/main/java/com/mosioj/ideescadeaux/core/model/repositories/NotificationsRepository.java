@@ -88,9 +88,7 @@ public class NotificationsRepository extends AbstractRepository {
                                                           UsersRepository.TABLE_NAME,
                                                           UsersColumns.ID),
                                      userId)
-                       .ifPresent(e -> notif.sendEmail(e,
-                                                       notificationProperties.get("urlTillProtectedPublic")
-                                                                             .toString()));
+                       .ifPresent(e -> notif.sendEmail(e, notificationProperties.get("urlTillProtectedPublic")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -566,15 +564,9 @@ public class NotificationsRepository extends AbstractRepository {
 
             while (res.next()) {
                 String emailAdress = res.getString(UsersColumns.EMAIL.name());
-                try {
-                    String messageTemplate = notificationProperties.get("mail_template").toString();
-                    String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
-                    EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Admin notification...", body);
-
-                } catch (Exception e) {
-                    logger.warn(MessageFormat.format("Fail to send error email to {0}", emailAdress));
-                    e.printStackTrace();
-                }
+                String messageTemplate = notificationProperties.get("mail_template").toString();
+                String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
+                EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Admin notification...", body);
             }
         } catch (SQLException e) {
             e.printStackTrace();

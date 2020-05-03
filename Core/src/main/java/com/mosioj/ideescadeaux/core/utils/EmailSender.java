@@ -1,11 +1,7 @@
 package com.mosioj.ideescadeaux.core.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.text.MessageFormat;
-import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -13,74 +9,72 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class EmailSender {
 
-	private static final Logger logger = LogManager.getLogger(EmailSender.class);
-	private static Properties p;
+    private static final Logger logger = LogManager.getLogger(EmailSender.class);
 
-	private static void initialize() {
-		p = new Properties();
-		try {
-			InputStream input = EmailSender.class.getResourceAsStream("/mail.properties");
-			p.load(new InputStreamReader(input, "UTF-8"));
-			logger.debug("host: " + p.getProperty("host"));
-			logger.debug("from: " + p.getProperty("from"));
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error(e);
-		}
-	}
+    // Properties
+    public static final Properties MY_PROPERTIES = new Properties();
+    private static final Properties SYSTEM_PROP = System.getProperties();
 
-	/**
-	 * 
-	 * @return The properties.
-	 */
-	private static Properties getP() {
-		if (p == null) {
-			initialize();
-		}
-		return p;
-	}
-	
-	/**
-	 * Sends out an email.
-	 * 
-	 * @param to The email address where to send the email.
-	 * @param subject The email subject.
-	 * @param htmlText The email body, html formated.
-	 */
-	public static void sendEmail(String to, String subject, String htmlText) {
+    /** Envoie de 4 mails en parrallèle */
+    private static final ExecutorService executor = Executors.newFixedThreadPool(8);
 
-		logger.info(MessageFormat.format("Sending email to {0}...", to));
-		Properties properties = System.getProperties();
-		properties.setProperty("mail.smtp.host", getP().getProperty("host"));
-		Session session = Session.getDefaultInstance(properties);
+    /**
+     * Sends out an email.
+     *
+     * @param to       The email address where to send the email.
+     * @param subject  The email subject.
+     * @param htmlText The email body, html formated.
+     */
+    public static Future<?> sendEmail(String to, String subject, String htmlText) {
+        return executor.submit(() -> {
+            try {
+                logger.info(MessageFormat.format("Sending email to {0}...", to));
+                Session session = Session.getDefaultInstance(SYSTEM_PROP);
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(MY_PROPERTIES.getProperty("from"), "Nos Idées de Cadeaux"));
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+                message.setSubject(subject);
+                message.setContent(htmlText, "text/html; charset=UTF-8");
 
-		try {
-			MimeMessage message = new MimeMessage(session);
+                Transport.send(message);
+                logger.info("Sent message successfully....");
 
-			message.setFrom(new InternetAddress(getP().getProperty("from"), "Nos Idées de Cadeaux"));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject(subject);
-			message.setContent(htmlText, "text/html; charset=UTF-8");
+            } catch (MessagingException | UnsupportedEncodingException mex) {
+                logger.error(mex);
+            }
+        });
+    }
 
-			Transport.send(message);
-			logger.info("Sent message successfully....");
+    public static Future<?> sendEmailReinitializationPwd(String to, int userId, int tokenId) {
+        String body = MY_PROPERTIES.get("body_reinitialization").toString();
+        body = body.replaceAll("\\$\\$parameters\\$\\$",
+                               MessageFormat.format("userIdParam={0}&tokenId={1}", userId, tokenId + ""));
+        return sendEmail(to, "Mot de passe oublié - Nos idées de cadeaux", body);
+    }
 
-		} catch (MessagingException | UnsupportedEncodingException mex) {
-			mex.printStackTrace();
-			logger.error(mex.getMessage());
-		}
-	}
-
-	public static void sendEmailReinitializationPwd(String to, int userId, int tokenId) {
-		String body = getP().get("body_reinitialization").toString();
-		body = body.replaceAll("\\$\\$parameters\\$\\$", MessageFormat.format("userIdParam={0}&tokenId={1}", userId, tokenId + ""));
-		sendEmail(to, "Mot de passe oublié - Nos idées de cadeaux", body);
-	}
-
+    static {
+        try {
+            InputStream input = EmailSender.class.getResourceAsStream("/mail.properties");
+            MY_PROPERTIES.load(new InputStreamReader(input, StandardCharsets.UTF_8));
+            logger.debug("host: " + MY_PROPERTIES.getProperty("host"));
+            logger.debug("from: " + MY_PROPERTIES.getProperty("from"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(e);
+        }
+        SYSTEM_PROP.setProperty("mail.smtp.host", MY_PROPERTIES.getProperty("host"));
+    }
 }
