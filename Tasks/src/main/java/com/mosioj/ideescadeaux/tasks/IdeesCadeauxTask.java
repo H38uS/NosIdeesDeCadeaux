@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.tasks;
 
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
+import com.mosioj.ideescadeaux.core.utils.AppVersion;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,8 @@ public class IdeesCadeauxTask {
     public static void main(String[] args) {
 
         logger.info("Running IdeesCadeauxTasks...");
+        logger.info("Application version: {}", AppVersion.DA_VERSION);
+
         try {
             DataSourceIdKDo.setDataSource(initDB());
         } catch (IOException e) {
