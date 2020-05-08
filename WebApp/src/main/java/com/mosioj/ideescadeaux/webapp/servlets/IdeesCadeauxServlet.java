@@ -274,11 +274,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @param idee                The idea.
      * @param isFromAMobileDevice True if the request is coming from a mobile device (mobile vs computer).
      */
-    public static void fillAUserIdea(User user, Idee idee, boolean isFromAMobileDevice) throws SQLException {
+    public static void fillAUserIdea(User user, Idee idee, boolean isFromAMobileDevice) {
 
-        idee.hasComment = CommentsRepository.getNbComments(idee.getId()) > 0;
-        idee.hasQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
-        idee.hasAskedIfUpToDate = IdeesRepository.hasUserAskedIfUpToDate(idee.getId(), user.id);
+        // FIXME : faut faire une autre classe idée qui étend l'autre et qui calcul le display class - comme ça devient explicite
+        try {
+            idee.hasComment = CommentsRepository.getNbComments(idee.getId()) > 0;
+            idee.hasQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
+            idee.hasAskedIfUpToDate = IdeesRepository.hasUserAskedIfUpToDate(idee.getId(), user.id);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
 
         if (idee.isBooked()) {
             idee.displayClass = "booked_by_others_idea";
@@ -297,13 +302,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 }
             });
         } else if (idee.isPartiallyBooked()) {
-            List<SousReservationEntity> resa = SousReservationRepository.getSousReservation(idee.getId());
-            idee.displayClass = "shared_booking_idea";
-
-            // On fait parti de la sous-réservation
-            resa.stream()
-                .filter(r -> user.equals(r.getUser()))
-                .forEach(r -> idee.displayClass = "booked_by_me_idea");
+            try {
+                List<SousReservationEntity> resa = SousReservationRepository.getSousReservation(idee.getId());
+                idee.displayClass = "shared_booking_idea";
+                // On fait parti de la sous-réservation
+                resa.stream()
+                    .filter(r -> user.equals(r.getUser()))
+                    .forEach(r -> idee.displayClass = "booked_by_me_idea");
+            } catch (SQLException e) {
+                logger.error(e);
+            }
         }
         // Sinon, on laisse la class par défaut
 
@@ -478,14 +486,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      */
     protected Optional<Idee> getIdeaAndEnrichIt(int ideaId) {
         Optional<Idee> idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
-        idee.ifPresent(i -> {
-            try {
-                fillAUserIdea(thisOne, i, device.isMobile());
-            } catch (SQLException e) {
-                e.printStackTrace();
-                logger.error(e);
-            }
-        });
+        idee.ifPresent(i -> fillAUserIdea(thisOne, i, device.isMobile()));
         return idee;
     }
 

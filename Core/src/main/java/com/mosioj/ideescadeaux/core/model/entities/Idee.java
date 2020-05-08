@@ -26,27 +26,33 @@ public class Idee {
     @Expose
     private final String image;
 
-    /**
-     * Le text échappé de l'utilisateur, converti en markdown.
-     */
+    /** Le text échappé de l'utilisateur, converti en markdown. */
     @Expose
     private final String htmlText;
 
-    /**
-     * Le text tel que rentré par l'utilisateur. N'est pas échappé.
-     */
+    /** La date de modification dans un format lisible. */
+    @Expose
+    private final String modificationDate;
+
+    @Expose
+    private final User surpriseBy;
+
+    @Expose
+    private final BookingInformation bookingInformation;
+
+    @Expose
+    public String displayClass = "";
+
+    /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     private final String text;
 
     private final User bookingOwner;
-    private IdeaGroup group;
+    private final IdeaGroup group;
     private final Priorite priorite;
     private final Timestamp bookedOn;
-    private final Timestamp lastModified;
     private final boolean isPartiallyBooked;
-    public String displayClass = "";
     public boolean hasComment = false;
     public boolean hasQuestion = false;
-    private final User surpriseBy;
     public boolean hasAskedIfUpToDate = false;
 
     public Idee(int pId,
@@ -58,6 +64,7 @@ public class Idee {
                 Timestamp bookedOn,
                 Timestamp lastModified,
                 String isPartiallyBooked,
+                IdeaGroup group,
                 User surpriseBy) {
         id = pId;
         text = pText;
@@ -67,18 +74,25 @@ public class Idee {
         this.owner = owner;
         this.priorite = priorite;
         this.bookedOn = bookedOn;
-        this.lastModified = lastModified;
         this.isPartiallyBooked = "Y".equals(isPartiallyBooked);
         this.surpriseBy = surpriseBy;
-    }
-
-    /**
-     * Associates a new group with this idea.
-     *
-     * @param group The new group.
-     */
-    public void withGroupKDO(IdeaGroup group) {
+        modificationDate = MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
         this.group = group;
+
+        // Compute the type
+        if (bookingOwner == null) {
+            if (group == null) {
+                if (this.isPartiallyBooked) {
+                    bookingInformation = BookingInformation.fromAPartialReservation(bookedOn);
+                } else {
+                    bookingInformation = BookingInformation.noBooking();
+                }
+            } else {
+                bookingInformation = BookingInformation.fromAGroup(group, bookedOn);
+            }
+        } else {
+            bookingInformation = BookingInformation.fromASingleUser(bookingOwner, bookedOn);
+        }
     }
 
     /**
@@ -171,7 +185,7 @@ public class Idee {
      * @return The last modified date as a readable string.
      */
     public String getModificationDate() {
-        return MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
+        return modificationDate;
     }
 
     /**

@@ -2,10 +2,7 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserter;
-import com.mosioj.ideescadeaux.core.model.entities.Categorie;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.Priorite;
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.*;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.*;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -58,6 +55,11 @@ public class IdeesRepository extends AbstractRepository {
                                   rs.getString("surpriseAvatar"));
         }
 
+        IdeaGroup group = Optional.ofNullable(rs.getString(IdeeColumns.GROUPE_KDO_ID.name()))
+                                  .map(Integer::parseInt)
+                                  .flatMap(GroupIdeaRepository::getGroupDetails)
+                                  .orElse(null);
+
         Idee idee = new Idee(rs.getInt(IdeeColumns.ID.name()),
                              owner,
                              Escaper.transformCodeToSmiley(rs.getString(IdeeColumns.IDEE.name())),
@@ -70,6 +72,7 @@ public class IdeesRepository extends AbstractRepository {
                              rs.getTimestamp(IdeeColumns.RESERVE_LE.name()),
                              rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()),
                              rs.getString(IdeeColumns.A_SOUS_RESERVATION.name()),
+                             group,
                              surpriseBy);
 
         if (!StringUtils.isBlank(rs.getString(IdeeColumns.TYPE.name()))) {
@@ -77,11 +80,6 @@ public class IdeesRepository extends AbstractRepository {
                                              rs.getString(CategoriesColumns.ALT.name()),
                                              rs.getString(CategoriesColumns.IMAGE.name()),
                                              rs.getString(CategoriesColumns.TITLE.name())));
-        }
-
-        if (rs.getString(IdeeColumns.GROUPE_KDO_ID.name()) != null) {
-            int groupId = rs.getInt(IdeeColumns.GROUPE_KDO_ID.name());
-            GroupIdeaRepository.getGroupDetails(groupId).ifPresent(idee::withGroupKDO);
         }
 
         return idee;
@@ -444,12 +442,12 @@ public class IdeesRepository extends AbstractRepository {
             text = Escaper.escapeIdeaText(text);
             text = Escaper.transformSmileyToCode(text);
             logger.debug(MessageFormat.format("Parameters: [{0}, {1}, {2}, {3}, {4}, {5}]",
-                                             owner.id,
-                                             text,
-                                             type,
-                                             image,
-                                             surprisePar,
-                                             priorite));
+                                              owner.id,
+                                              text,
+                                              type,
+                                              image,
+                                              surprisePar,
+                                              priorite));
             ps.bindParameters(owner,
                               text,
                               type,
@@ -704,7 +702,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The user's id.
      * @return True if the user has at least one idea.
      */
-    public static boolean hasIdeas(int userId) throws SQLException {
+    public static boolean hasIdeas(int userId) {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? limit 1",
                                                            TABLE_NAME,
                                                            IdeeColumns.OWNER), userId);
@@ -771,7 +769,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The person's id.
      * @return True if this user has asked about this idea.
      */
-    public static boolean hasUserAskedIfUpToDate(int ideeId, int userId) throws SQLException {
+    public static boolean hasUserAskedIfUpToDate(int ideeId, int userId) {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                                            IsUpToDateQuestionsRepository.TABLE_NAME,
                                                            IsUpToDateColumns.IDEE_ID,

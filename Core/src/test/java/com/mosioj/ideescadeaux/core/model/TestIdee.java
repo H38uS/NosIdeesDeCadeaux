@@ -2,11 +2,8 @@ package com.mosioj.ideescadeaux.core.model;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.sql.SQLException;
 
 public class TestIdee extends TemplateTest {
 
@@ -28,7 +25,7 @@ public class TestIdee extends TemplateTest {
     }
 
     private Idee ideaFactory(String text) {
-        return new Idee(1, null, text, null, null, null, null, null, null, null);
+        return new Idee(1, null, text, null, null, null, null, null, null, null, null);
     }
 
 }

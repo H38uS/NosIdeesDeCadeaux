@@ -52,6 +52,7 @@ public class JSPAccessortTest extends TemplateTest {
                           TS20191212_0829,
                           TS20191212_0829,
                           null,
+                          null,
                           null);
         Assert.assertFalse(i.hasAskedIfUpToDate());
         Assert.assertFalse(i.hasComment());
