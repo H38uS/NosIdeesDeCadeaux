@@ -1,7 +1,6 @@
 package com.mosioj.ideescadeaux.core.utils;
 
 import com.vdurmont.emoji.EmojiParser;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.commonmark.parser.Parser;
@@ -71,6 +70,14 @@ public class Escaper {
             // Drop all of them
             fileName = fileName.substring(0, fileName.indexOf("."));
         }
+
+        fileName = fileName.replaceAll("[éêè]", "e");
+        fileName = fileName.replaceAll("î", "i");
+        fileName = fileName.replaceAll("ô", "o");
+        fileName = fileName.replaceAll("[ùû]", "u");
+        fileName = fileName.replaceAll("[àâ]", "a");
+        fileName = fileName.replaceAll("[^a-zA-Z_0-9]", "");
+
         if (fileName.isEmpty()) {
             fileName = "IMG";
         }
@@ -83,14 +90,6 @@ public class Escaper {
         } else {
             fileName = fileName + "_" + id;
         }
-
-        fileName = fileName.replaceAll("'", "");
-        fileName = fileName.replaceAll("[éêè]", "e");
-        fileName = fileName.replaceAll("î", "i");
-        fileName = fileName.replaceAll("ô", "o");
-        fileName = fileName.replaceAll("[ùû]", "u");
-        fileName = fileName.replaceAll("[àâ]", "a");
-        fileName = StringEscapeUtils.escapeHtml4(fileName);
 
         logger.debug("Computed image name: " + fileName + ".png");
         return fileName + ".png";
