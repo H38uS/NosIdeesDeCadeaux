@@ -44,8 +44,8 @@ public class ServiceEnregistrementMonCompteTestWebApp extends AbstractTestServle
          * @param message The JSon response message.
          * @param isAdmin Whether the user is an admin.
          */
-        public MyServiceResp(boolean isOK, User message, boolean isAdmin) {
-            super(isOK, message, isAdmin);
+        public MyServiceResp(boolean isOK, User message, boolean isAdmin, User connectedUser) {
+            super(isOK, message, isAdmin, connectedUser);
         }
     }
 }

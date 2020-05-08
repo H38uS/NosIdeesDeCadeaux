@@ -1,21 +1,19 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.SuppressionCompte;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.SuppressionCompte;
-import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import java.sql.SQLException;
+import java.text.MessageFormat;
 
 @WebServlet("/protected/administration/service/supprimer_compte")
 public class ServiceSuppressionCompte extends IdeesCadeauxPostServlet<SuppressionCompte> {
@@ -40,9 +38,9 @@ public class ServiceSuppressionCompte extends IdeesCadeauxPostServlet<Suppressio
             User user = policy.getUserToDelete();
             logger.info(MessageFormat.format("Suppression du compte {0} (id: {1})", user, user.id));
             UsersRepository.deleteUser(user);
-            ans = ServiceResponse.ok(isAdmin(request));
+            ans = ServiceResponse.ok(isAdmin(request), thisOne);
         } catch (Exception e) {
-            ans = ServiceResponse.ko(e.getMessage(), isAdmin(request));
+            ans = ServiceResponse.ko(e.getMessage(), isAdmin(request), thisOne);
             logger.error(e.getMessage());
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.CreationCompte;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
@@ -271,8 +272,8 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
          * @param message The JSon response message.
          * @param isAdmin Whether the user is an admin.
          */
-        public StringServiceResponse(boolean isOK, String message, boolean isAdmin) {
-            super(isOK, message, isAdmin);
+        public StringServiceResponse(boolean isOK, String message, boolean isAdmin, User connectedUser) {
+            super(isOK, message, isAdmin, connectedUser);
         }
     }
 

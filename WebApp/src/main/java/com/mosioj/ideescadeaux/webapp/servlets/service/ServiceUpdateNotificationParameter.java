@@ -1,22 +1,20 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import java.sql.SQLException;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import java.sql.SQLException;
 
 @WebServlet("/protected/service/update_notification_parameter")
 public class ServiceUpdateNotificationParameter extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
@@ -49,12 +47,12 @@ public class ServiceUpdateNotificationParameter extends IdeesCadeauxPostServlet<
         }
 
         if (!message.isEmpty()) {
-            buildResponse(response, ServiceResponse.ko(message, isAdmin(request)));
+            buildResponse(response, ServiceResponse.ko(message, isAdmin(request), thisOne));
             return;
         }
 
         // Valid parameters, doing the update
         UserParametersRepository.insertUpdateParameter(thisOne, name, value);
-        buildResponse(response, ServiceResponse.ok(isAdmin(request)));
+        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }
 }

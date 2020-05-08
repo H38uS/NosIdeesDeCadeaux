@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
@@ -40,8 +41,8 @@ public class ServiceMesReservationsTestWebApp extends AbstractTestServletWebApp 
          * @param message The JSon response message.
          * @param isAdmin Whether the user is an admin.
          */
-        public MyServiceResp(boolean isOK, List<OwnerIdeas> message, boolean isAdmin) {
-            super(isOK, message, isAdmin);
+        public MyServiceResp(boolean isOK, List<OwnerIdeas> message, boolean isAdmin, User connectedUser) {
+            super(isOK, message, isAdmin, connectedUser);
         }
     }
 }

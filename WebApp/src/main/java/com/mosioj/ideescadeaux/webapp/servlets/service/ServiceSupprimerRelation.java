@@ -43,7 +43,7 @@ public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAcc
         // Send a notification
         NotificationsRepository.addNotification(user.id, new NotifFriendshipDropped(thisOne));
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request)));
+        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }
 
 }

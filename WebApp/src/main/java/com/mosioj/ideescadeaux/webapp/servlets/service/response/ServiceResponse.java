@@ -1,15 +1,14 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.response;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.gson.annotations.Expose;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class ServiceResponse<T> {
 
@@ -24,48 +23,57 @@ public class ServiceResponse<T> {
     @Expose
     private final boolean isAdmin;
 
+    @Expose
+    private final User connectedUser;
+
     /**
      * Class constructor.
-     * @param isOK       True if there is no error.
-     * @param message    The JSon response message.
-     * @param isAdmin    Whether the user is an admin.
+     *
+     * @param isOK          True if there is no error.
+     * @param message       The JSon response message.
+     * @param isAdmin       Whether the user is an admin.
+     * @param connectedUser The connected user or null if none.
      */
-    public ServiceResponse(boolean isOK, T message, boolean isAdmin) {
+    public ServiceResponse(boolean isOK, T message, boolean isAdmin, User connectedUser) {
         status = isOK ? "OK" : "KO";
         this.message = message;
         this.isAdmin = isAdmin;
+        this.connectedUser = connectedUser;
     }
 
     /**
      * Factory method for working protected answers with empty message.
      *
-     * @param isAdmin Whether the user is an admin.
+     * @param isAdmin       Whether the user is an admin.
+     * @param connectedUser The connected user or null if none.
      * @return The response built from parameters.
      */
-    public static ServiceResponse<String> ok(boolean isAdmin) {
-        return new ServiceResponse<>(true, "", isAdmin);
+    public static ServiceResponse<String> ok(boolean isAdmin, User connectedUser) {
+        return new ServiceResponse<>(true, "", isAdmin, connectedUser);
     }
 
     /**
      * Factory method for working protected answers.
      *
-     * @param message The JSon response message.
-     * @param isAdmin Whether the user is an admin.
+     * @param message       The JSon response message.
+     * @param isAdmin       Whether the user is an admin.
+     * @param connectedUser The connected user or null if none.
      * @return The response built from parameters.
      */
-    public static <T> ServiceResponse<T> ok(T message, boolean isAdmin) {
-        return new ServiceResponse<>(true, message, isAdmin);
+    public static <T> ServiceResponse<T> ok(T message, boolean isAdmin, User connectedUser) {
+        return new ServiceResponse<>(true, message, isAdmin, connectedUser);
     }
 
     /**
      * Factory method for non working answers in protected sessions.
      *
-     * @param message    The JSon response message.
-     * @param isAdmin    Whether the user is an admin.
+     * @param message       The JSon response message.
+     * @param isAdmin       Whether the user is an admin.
+     * @param connectedUser The connected user or null if none.
      * @return The response built from parameters.
      */
-    public static <T> ServiceResponse<T> ko(T message, boolean isAdmin) {
-        return new ServiceResponse<>(false, message, isAdmin);
+    public static <T> ServiceResponse<T> ko(T message, boolean isAdmin, User connectedUser) {
+        return new ServiceResponse<>(false, message, isAdmin, connectedUser);
     }
 
     /**

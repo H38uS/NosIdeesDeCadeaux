@@ -38,7 +38,8 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
-        ServiceResponse<String> sr = ServiceResponse.ok("L'idée a bien été crée sur le serveur.", isAdmin(request));
+        ServiceResponse<String> sr = ServiceResponse.ok("L'idée a bien été crée sur le serveur.", isAdmin(request),
+                                                        thisOne);
         try {
             // Check that we have a file upload request
             if (ServletFileUpload.isMultipartContent(request)) {
@@ -51,7 +52,7 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                     message.append("<ul>");
                     errors.forEach(e -> message.append("<li>").append(e).append("</li>"));
                     message.append("</ul>");
-                    sr = ServiceResponse.ko(message.toString(), isAdmin(request));
+                    sr = ServiceResponse.ko(message.toString(), isAdmin(request), thisOne);
                 } else {
                     logger.info(MessageFormat.format("Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
                                                      parameters.get("text"),
@@ -79,7 +80,7 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
         } catch (ServletException | IOException | SQLException e) {
             logger.error(e);
             sr = ServiceResponse.ko("Une erreur est survenue lors de l'ajout de cette idée: " + e.getMessage(),
-                                    isAdmin(request));
+                                    isAdmin(request), thisOne);
         }
 
         buildResponse(response, sr);

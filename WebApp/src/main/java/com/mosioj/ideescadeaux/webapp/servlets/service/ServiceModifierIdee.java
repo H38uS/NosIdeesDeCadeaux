@@ -46,7 +46,7 @@ public class ServiceModifierIdee extends AbstractIdea<IdeaModification> {
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
         ServiceResponse<String> sr = ServiceResponse.ok("L'idée a bien été mise à jour sur le serveur.",
-                                                        isAdmin(request));
+                                                        isAdmin(request), thisOne);
 
         try {
             Idee idea = policy.getIdea();
@@ -62,7 +62,7 @@ public class ServiceModifierIdee extends AbstractIdea<IdeaModification> {
                     message.append("<ul>");
                     errors.forEach(e -> message.append("<li>").append(e).append("</li>"));
                     message.append("</ul>");
-                    sr = ServiceResponse.ko(message.toString(), isAdmin(request));
+                    sr = ServiceResponse.ko(message.toString(), isAdmin(request), thisOne);
                 } else {
                     logger.info(MessageFormat.format("Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",
                                                      parameters.get("text"),
@@ -116,7 +116,7 @@ public class ServiceModifierIdee extends AbstractIdea<IdeaModification> {
         } catch (ServletException | IOException | SQLException e) {
             logger.error(e);
             sr = ServiceResponse.ko("Une erreur est survenue lors de la modification de cette idée: " + e.getMessage(),
-                                    isAdmin(request));
+                                    isAdmin(request), thisOne);
         }
 
         buildResponse(response, sr);

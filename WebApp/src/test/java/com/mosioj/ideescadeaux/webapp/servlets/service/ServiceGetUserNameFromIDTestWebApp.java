@@ -29,6 +29,7 @@ public class ServiceGetUserNameFromIDTestWebApp extends AbstractTestServletWebAp
 
     private static class ThisServiceResp extends ServiceResponse<User> {
         // For json conversion
+
         /**
          * Class constructor.
          *
@@ -36,8 +37,8 @@ public class ServiceGetUserNameFromIDTestWebApp extends AbstractTestServletWebAp
          * @param message The JSon response message.
          * @param isAdmin Whether the user is an admin.
          */
-        public ThisServiceResp(boolean isOK, User message, boolean isAdmin) {
-            super(isOK, message, isAdmin);
+        public ThisServiceResp(boolean isOK, User message, boolean isAdmin, User connectedUser) {
+            super(isOK, message, isAdmin, connectedUser);
         }
     }
 }

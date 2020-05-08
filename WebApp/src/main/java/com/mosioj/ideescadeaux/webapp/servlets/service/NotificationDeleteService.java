@@ -30,6 +30,6 @@ public class NotificationDeleteService extends IdeesCadeauxPostServlet<Notificat
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
         NotificationsRepository.remove(policy.getNotification());
         logger.info(MessageFormat.format("Suppression de la notification {0}", policy.getNotification()));
-        buildResponse(response, ServiceResponse.ok(isAdmin(request)));
+        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }
 }

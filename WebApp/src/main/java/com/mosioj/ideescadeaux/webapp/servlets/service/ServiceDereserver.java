@@ -1,10 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +40,6 @@ public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> 
                                           userId));
         IdeesRepository.dereserver(idea.getId(), userId);
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request)));
+        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }
 }

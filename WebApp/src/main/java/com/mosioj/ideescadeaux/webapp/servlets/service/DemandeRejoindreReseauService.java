@@ -1,15 +1,15 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNouvelleDemandeAmi;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
-import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
             buildResponse(response,
                           ServiceResponse.ko(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.",
                                                                   userToSendInvitation.getName()),
-                                             isAdmin(request)));
+                                             isAdmin(request), thisOne));
             return;
         }
 
@@ -45,7 +45,7 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
             buildResponse(response,
                           ServiceResponse.ko(MessageFormat.format("Vous faites déjà parti du réseau de {0}.",
                                                                   userToSendInvitation.getName()),
-                                             isAdmin(request)));
+                                             isAdmin(request), thisOne));
             return;
         }
 
@@ -66,7 +66,7 @@ public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutD
                                                                             userToSendInvitation.id,
                                                                             thisOne.getName()));
 
-        buildResponse(response, ServiceResponse.ok("", isAdmin(request)));
+        buildResponse(response, ServiceResponse.ok("", isAdmin(request), thisOne));
     }
 
 }
