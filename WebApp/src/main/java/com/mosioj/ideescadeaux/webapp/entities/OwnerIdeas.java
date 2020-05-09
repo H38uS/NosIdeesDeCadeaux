@@ -1,8 +1,9 @@
-package com.mosioj.ideescadeaux.core.model.entities;
-
-import java.util.List;
+package com.mosioj.ideescadeaux.webapp.entities;
 
 import com.google.gson.annotations.Expose;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+
+import java.util.List;
 
 public class OwnerIdeas {
 
@@ -10,9 +11,9 @@ public class OwnerIdeas {
     private final User owner;
 
     @Expose
-    private final List<Idee> ideas;
+    private final List<DecoratedWebAppIdea> ideas;
 
-    public OwnerIdeas(User owner, List<Idee> ideas) {
+    public OwnerIdeas(User owner, List<DecoratedWebAppIdea> ideas) {
         this.owner = owner;
         this.ideas = ideas;
     }
@@ -24,7 +25,7 @@ public class OwnerIdeas {
      * @param ideas His list of ideas.
      * @return The combined object.
      */
-    public static OwnerIdeas from(User owner, List<Idee> ideas) {
+    public static OwnerIdeas from(User owner, List<DecoratedWebAppIdea> ideas) {
         return new OwnerIdeas(owner, ideas);
     }
 
@@ -38,7 +39,7 @@ public class OwnerIdeas {
     /**
      * @return the ideas
      */
-    public List<Idee> getIdeas() {
+    public List<DecoratedWebAppIdea> getIdeas() {
         return ideas;
     }
 }

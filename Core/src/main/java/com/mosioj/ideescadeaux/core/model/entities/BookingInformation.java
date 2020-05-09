@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 public class BookingInformation {
 
@@ -38,6 +39,29 @@ public class BookingInformation {
         bookingReadableDate = MyDateFormatViewer.formatMine(bookedOn);
     }
 
+    /**
+     * @return The booking type.
+     */
+    public BookingType getBookingType() {
+        return type;
+    }
+
+    /**
+     *
+     * @return The booking owner if any.
+     */
+    public Optional<User> getBookingOwner() {
+        return Optional.ofNullable(bookingOwner);
+    }
+
+    /**
+     *
+     * @return The booking group if any.
+     */
+    public Optional<IdeaGroup> getBookingGroup() {
+        return Optional.ofNullable(group);
+    }
+
     public static BookingInformation fromAGroup(IdeaGroup group, Timestamp bookedOn) {
         return new BookingInformation(BookingType.GROUP, null, group, bookedOn);
     }
@@ -54,7 +78,7 @@ public class BookingInformation {
         return new BookingInformation(BookingType.NONE, null, null, null);
     }
 
-    protected enum BookingType {
+    public enum BookingType {
 
         /** Booked entirely by a single person */
         SINGLE_PERSON,

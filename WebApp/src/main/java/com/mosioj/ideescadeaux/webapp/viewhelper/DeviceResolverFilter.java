@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.viewhelper;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.utils.AppVersion;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
@@ -55,7 +55,7 @@ public class DeviceResolverFilter implements Filter {
         request.setAttribute("is_mobile", device.isMobile());
         request.setAttribute("is_normal", device.isNormal());
         request.setAttribute("action_img_width",
-                             device.isMobile() ? IdeesRepository.MOBILE_PICTURE_WIDTH : PICTURE_PC_WIDTH);
+                             device.isMobile() ? ParametersUtils.MOBILE_PICTURE_WIDTH : PICTURE_PC_WIDTH);
 
         User user = (User) ((HttpServletRequest) request).getSession().getAttribute("connected_user");
         String name = user == null ? "anonymous" : user.getEmail();

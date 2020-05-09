@@ -12,6 +12,10 @@ import java.util.Optional;
 
 public class ParametersUtils {
 
+    /** Size of icon in mobile views */
+    public static final int MOBILE_PICTURE_WIDTH = 42;
+
+    /** Class logger */
     private static final Logger logger = LogManager.getLogger(ParametersUtils.class);
 
     private static String workDir;

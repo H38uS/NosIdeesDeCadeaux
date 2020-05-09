@@ -5,7 +5,6 @@ import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -58,6 +57,8 @@ public class Idee {
     /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     private final String text;
 
+    // FIXME : supprimer ces champs et utiliser BookingInformation de partout
+    // sera fait de base quand on utilisera le js pour construire les idées
     private final User bookingOwner;
     private final IdeaGroup group;
     private final Timestamp bookedOn;
@@ -137,7 +138,7 @@ public class Idee {
     /**
      * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
      */
-    public List<User> getBookers() throws SQLException {
+    public List<User> getBookers() {
         List<User> bookers = new ArrayList<>();
 
         if (isBooked()) {
@@ -279,5 +280,12 @@ public class Idee {
      */
     public int getGroupKDOId() {
         return getGroupKDO().map(IdeaGroup::getId).orElse(-1);
+    }
+
+    /**
+     * @return The booking information of this idea.
+     */
+    public BookingInformation getBookingInformation() {
+        return bookingInformation;
     }
 }

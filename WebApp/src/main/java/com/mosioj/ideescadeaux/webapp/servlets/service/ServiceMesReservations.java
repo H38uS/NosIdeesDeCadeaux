@@ -1,9 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
+import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -39,9 +40,10 @@ public class ServiceMesReservations extends IdeesCadeauxGetServlet<AllAccessToPo
         idees.forEach(i -> fillAUserIdea(thisOne, i, device.isMobile()));
 
         // Grouped by owners
-        Map<User, List<Idee>> userToIdeas = idees.stream()
-                                                 .filter(i -> !thisOne.equals(i.getOwner()))
-                                                 .collect(Collectors.groupingBy(Idee::getOwner));
+        Map<User, List<DecoratedWebAppIdea>> userToIdeas = idees.stream()
+                                                                .filter(i -> !thisOne.equals(i.getOwner()))
+                                                                .map(i -> new DecoratedWebAppIdea(i, thisOne, device))
+                                                                .collect(Collectors.groupingBy(DecoratedWebAppIdea::getIdeaOwner));
         List<OwnerIdeas> ownerIdeas = new ArrayList<>();
         userToIdeas.forEach((u, ideas) -> ownerIdeas.add(OwnerIdeas.from(u, ideas)));
 

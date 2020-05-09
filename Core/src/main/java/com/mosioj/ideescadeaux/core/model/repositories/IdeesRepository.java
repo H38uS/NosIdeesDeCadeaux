@@ -22,7 +22,6 @@ public class IdeesRepository extends AbstractRepository {
     private static final Logger logger = LogManager.getLogger(IdeesRepository.class);
 
     public static final String TABLE_NAME = "IDEES";
-    public static final int MOBILE_PICTURE_WIDTH = 42;
 
     private IdeesRepository() {
         // Forbidden

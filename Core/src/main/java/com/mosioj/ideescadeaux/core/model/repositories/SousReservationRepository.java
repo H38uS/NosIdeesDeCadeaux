@@ -1,18 +1,23 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
+import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.SousReservationColumns;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.SousReservationColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
-import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-
 public class SousReservationRepository extends AbstractRepository {
+
+    /** Class logger */
+    private static final Logger logger = LogManager.getLogger(SousReservationRepository.class);
 
     public static final String TABLE_NAME = "SOUS_RESERVATION";
 
@@ -32,7 +37,7 @@ public class SousReservationRepository extends AbstractRepository {
                               comment);
     }
 
-    public static List<SousReservationEntity> getSousReservation(int ideeId) throws SQLException {
+    public static List<SousReservationEntity> getSousReservation(int ideeId) {
 
         List<SousReservationEntity> reservations = new ArrayList<>();
 
@@ -52,8 +57,7 @@ public class SousReservationRepository extends AbstractRepository {
                                             UsersColumns.ID) +
                        MessageFormat.format(" where t.{0} = ? ", SousReservationColumns.IDEE_ID);
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
-                                                                    query)) {
+        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters(ideeId);
             if (ps.execute()) {
                 ResultSet res = ps.getResultSet();
@@ -68,6 +72,8 @@ public class SousReservationRepository extends AbstractRepository {
                                                                res.getTimestamp(SousReservationColumns.DATE_RESERVATION.name())));
                 }
             }
+        } catch (SQLException e) {
+            logger.error(e);
         }
 
         return reservations;

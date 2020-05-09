@@ -276,7 +276,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      */
     public static void fillAUserIdea(User user, Idee idee, boolean isFromAMobileDevice) {
 
-        // FIXME : faut faire une autre classe idée qui étend l'autre et qui calcul le display class - comme ça devient explicite
+        // FIXME : utiliser DecoredWebAppIdea à la place de Idee de partout et supprimer ça
         try {
             idee.hasComment = CommentsRepository.getNbComments(idee.getId()) > 0;
             idee.hasQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
@@ -302,16 +302,12 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                 }
             });
         } else if (idee.isPartiallyBooked()) {
-            try {
-                List<SousReservationEntity> resa = SousReservationRepository.getSousReservation(idee.getId());
-                idee.displayClass = "shared_booking_idea";
-                // On fait parti de la sous-réservation
-                resa.stream()
-                    .filter(r -> user.equals(r.getUser()))
-                    .forEach(r -> idee.displayClass = "booked_by_me_idea");
-            } catch (SQLException e) {
-                logger.error(e);
-            }
+            List<SousReservationEntity> resa = SousReservationRepository.getSousReservation(idee.getId());
+            idee.displayClass = "shared_booking_idea";
+            // On fait parti de la sous-réservation
+            resa.stream()
+                .filter(r -> user.equals(r.getUser()))
+                .forEach(r -> idee.displayClass = "booked_by_me_idea");
         }
         // Sinon, on laisse la class par défaut
 
@@ -320,7 +316,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             if (priorite != null && priorite.getImage() != null) {
                 priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"",
                                                                 "width=\"" +
-                                                                IdeesRepository.MOBILE_PICTURE_WIDTH +
+                                                                ParametersUtils.MOBILE_PICTURE_WIDTH +
                                                                 "px\"");
             }
         }

@@ -252,7 +252,6 @@ function getSurpriseDivAsHTMl(connectedUser, jsonIdea) {
         } else {
             content.html(`
                 Idée surprise créée le ${jsonIdea.modificationDate} par vous - la
-                // FIXME 00 --- il faut un service pour supprimer les idées...
                 <a href="protected/supprimer_surprise?idee=${jsonIdea.id}">
                     supprimer
                 </a>.
@@ -389,9 +388,10 @@ function getBookingIconAsHTML(connectedUser, jsonIdea) {
     return bookingIconDiv.html();
 }
 
-function getAskIfUpToDateIconAsHTML(jsonIdea) {
+function getAskIfUpToDateIconAsHTML(jsonDecoratedIdea) {
+    var jsonIdea = jsonDecoratedIdea.idee;
     var askIfUpToDateIconDiv = $("<div>");
-    if (jsonIdea.hasAskedIfUpToDate) {
+    if (jsonDecoratedIdea.hasAskedIfUpToDate) {
         askIfUpToDateIconDiv.append(`
             <div class="col-auto px-0">
                 <img src="resources/image/a_jour.png"
@@ -404,9 +404,10 @@ function getAskIfUpToDateIconAsHTML(jsonIdea) {
     return askIfUpToDateIconDiv.html();
 }
 
-function getCommentAndQuestionIconAsHTML(jsonIdea) {
+function getCommentAndQuestionIconAsHTML(jsonDecoratedIdea) {
+    var jsonIdea = jsonDecoratedIdea.idee;
     var commentAndQuestionIconDiv = $("<div>");
-    if (jsonIdea.hasComment) {
+    if (jsonDecoratedIdea.hasComment) {
         commentAndQuestionIconDiv.append(`
             <div class="col-auto px-0">
                 <a href="protected/idee_commentaires?idee=${jsonIdea.id}" class="img">
@@ -417,7 +418,7 @@ function getCommentAndQuestionIconAsHTML(jsonIdea) {
             </div>
         `);
     }
-    if (jsonIdea.hasQuestion) {
+    if (jsonDecoratedIdea.hasQuestion) {
         commentAndQuestionIconDiv.append(`
             <div class="col-auto px-0">
                 <a href="protected/idee_questions?idee=${jsonIdea.id}" class="img">
@@ -499,9 +500,10 @@ function getActionTooltipForNonMobile(jsonIdea) {
     return actionTooltipSpan;
 }
 
-function getIdeaDiv(connectedUser, jsonIdea) {
+function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
 
-    var mainDiv = $(`<div id="idea-${jsonIdea.id}" class="idea_square top_tooltip ${jsonIdea.displayClass} col-lg-12 my-3 px-2"></div>`);
+    var jsonIdea = jsonDecoratedIdea.idee;
+    var mainDiv = $(`<div id="idea-${jsonIdea.id}" class="idea_square top_tooltip ${jsonDecoratedIdea.displayClass} col-lg-12 my-3 px-2"></div>`);
     var ideaContainer = $('<div class="p-2"></div>');
 
     // Mobile action div - only for Mobile view
@@ -538,8 +540,8 @@ function getIdeaDiv(connectedUser, jsonIdea) {
             ${getCategoryIconDivAsHTML(jsonIdea)}
             ${getSurpriseIconDivAsHTMl(jsonIdea)}
             ${getBookingIconAsHTML(connectedUser, jsonIdea)}
-            ${getAskIfUpToDateIconAsHTML(jsonIdea)}
-            ${getCommentAndQuestionIconAsHTML(jsonIdea)}
+            ${getAskIfUpToDateIconAsHTML(jsonDecoratedIdea)}
+            ${getCommentAndQuestionIconAsHTML(jsonDecoratedIdea)}
             ${getMobileActionButtonAsHTML(jsonIdea)}
         </div>
     `);
