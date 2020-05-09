@@ -36,6 +36,7 @@ public class ServiceMesReservations extends IdeesCadeauxGetServlet<AllAccessToPo
 
         // All ideas for which we do participate
         List<Idee> idees = IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne);
+        idees.forEach(i -> fillAUserIdea(thisOne, i, device.isMobile()));
 
         // Grouped by owners
         Map<User, List<Idee>> userToIdeas = idees.stream()
