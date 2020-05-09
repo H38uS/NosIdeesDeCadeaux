@@ -62,7 +62,7 @@
 			<jsp:doBody/>
 		</div>
 		<footer class="mt-5">
-			&#9400; 2020 NosIdeesCadeaux ${application_version} - Tous droits réservés - Conditions générales d'utilisation - <a href="public/remerciements.jsp">Remerciements</a>
+			&#9400; 2020 NosIdeesCadeaux ${application_version} - Tous droits réservés - <a href="public/remerciements.jsp">Remerciements</a>
 		</footer>
 		</div>
 	</body>

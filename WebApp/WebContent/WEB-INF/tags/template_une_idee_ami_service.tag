@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ tag language="java" pageEncoding="UTF-8"%>
 
-<div class="idea_square top_tooltip ${idee.displayClass} col-lg-12 my-3 px-2">
+<div id="idea-${idee.id}" class="idea_square top_tooltip ${idee.displayClass} col-lg-12 my-3 px-2">
 	<div class="p-2">
 		<div class="modal fade" id="actions-idea-${idee.id}" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered" role="document">

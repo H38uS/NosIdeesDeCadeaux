@@ -60,29 +60,29 @@ public class IdeesRepository extends AbstractRepository {
                                   .flatMap(GroupIdeaRepository::getGroupDetails)
                                   .orElse(null);
 
-        Idee idee = new Idee(rs.getInt(IdeeColumns.ID.name()),
-                             owner,
-                             Escaper.transformCodeToSmiley(rs.getString(IdeeColumns.IDEE.name())),
-                             bookingOwner,
-                             rs.getString("id_image"),
-                             new Priorite(rs.getInt(IdeeColumns.PRIORITE.name()),
-                                          rs.getString("PRIORITY_NAME"),
-                                          rs.getString("PRIORITY_PICTURE"),
-                                          rs.getInt("PRIORITY_ORDER")),
-                             rs.getTimestamp(IdeeColumns.RESERVE_LE.name()),
-                             rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()),
-                             rs.getString(IdeeColumns.A_SOUS_RESERVATION.name()),
-                             group,
-                             surpriseBy);
-
+        Categorie categorie = null;
         if (!StringUtils.isBlank(rs.getString(IdeeColumns.TYPE.name()))) {
-            idee.withCategorie(new Categorie(rs.getString(IdeeColumns.TYPE.name()),
-                                             rs.getString(CategoriesColumns.ALT.name()),
-                                             rs.getString(CategoriesColumns.IMAGE.name()),
-                                             rs.getString(CategoriesColumns.TITLE.name())));
+            categorie = new Categorie(rs.getString(IdeeColumns.TYPE.name()),
+                                      rs.getString(CategoriesColumns.ALT.name()),
+                                      rs.getString(CategoriesColumns.IMAGE.name()),
+                                      rs.getString(CategoriesColumns.TITLE.name()));
         }
 
-        return idee;
+        return new Idee(rs.getInt(IdeeColumns.ID.name()),
+                        owner,
+                        Escaper.transformCodeToSmiley(rs.getString(IdeeColumns.IDEE.name())),
+                        categorie,
+                        bookingOwner,
+                        rs.getString("id_image"),
+                        new Priorite(rs.getInt(IdeeColumns.PRIORITE.name()),
+                                     rs.getString("PRIORITY_NAME"),
+                                     rs.getString("PRIORITY_PICTURE"),
+                                     rs.getInt("PRIORITY_ORDER")),
+                        rs.getTimestamp(IdeeColumns.RESERVE_LE.name()),
+                        rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()),
+                        rs.getString(IdeeColumns.A_SOUS_RESERVATION.name()),
+                        group,
+                        surpriseBy);
     }
 
     /**

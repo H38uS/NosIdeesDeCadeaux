@@ -1,32 +1,36 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.google.gson.annotations.Expose;
+
 public class Priorite {
 
-	private final String name;
-	private final int id;
-	private final int order;
-	public String image;
+    private final String name;
+    private final int id;
+    private final int order;
 
-	public Priorite(int pId, String pName, String pImage, int pOrder) {
-		name = pName;
-		id = pId;
-		image = pImage;
-		order = pOrder;
-	}
+    @Expose
+    public String image;
 
-	public String getName() {
-		return name;
-	}
+    public Priorite(int pId, String pName, String pImage, int pOrder) {
+        name = pName;
+        id = pId;
+        image = pImage;
+        order = pOrder;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getOrder() {
-		return order;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getImage() {
-		return image;
-	}
+    public int getOrder() {
+        return order;
+    }
+
+    public String getImage() {
+        return image;
+    }
 }

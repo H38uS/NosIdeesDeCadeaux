@@ -47,6 +47,7 @@ public class JSPAccessortTest extends TemplateTest {
                           u,
                           "toto",
                           null,
+                          null,
                           "toto.png",
                           null,
                           TS20191212_0829,

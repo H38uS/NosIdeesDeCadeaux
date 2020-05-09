@@ -21,7 +21,7 @@ public class Idee {
     public final User owner;
 
     @Expose
-    private Categorie cat;
+    private final Categorie categorie;
 
     @Expose
     private final String image;
@@ -43,21 +43,30 @@ public class Idee {
     @Expose
     public String displayClass = "";
 
+    @Expose
+    private final Priorite priorite;
+
+    @Expose
+    public boolean hasAskedIfUpToDate = false;
+
+    @Expose
+    public boolean hasComment = false;
+
+    @Expose
+    public boolean hasQuestion = false;
+
     /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     private final String text;
 
     private final User bookingOwner;
     private final IdeaGroup group;
-    private final Priorite priorite;
     private final Timestamp bookedOn;
     private final boolean isPartiallyBooked;
-    public boolean hasComment = false;
-    public boolean hasQuestion = false;
-    public boolean hasAskedIfUpToDate = false;
 
     public Idee(int pId,
                 User owner,
                 String pText,
+                Categorie categorie,
                 User pBookingOwner,
                 String image,
                 Priorite priorite,
@@ -66,8 +75,10 @@ public class Idee {
                 String isPartiallyBooked,
                 IdeaGroup group,
                 User surpriseBy) {
+        // FIXME refactor utiliser uniquement BookingInformation, et directement depuis IdeesRepository
         id = pId;
         text = pText;
+        this.categorie = categorie;
         htmlText = Escaper.interpreteMarkDown(text);
         bookingOwner = pBookingOwner;
         this.image = image;
@@ -93,15 +104,6 @@ public class Idee {
         } else {
             bookingInformation = BookingInformation.fromASingleUser(bookingOwner, bookedOn);
         }
-    }
-
-    /**
-     * Associates a new category with this idea.
-     *
-     * @param categorie The new category.
-     */
-    public void withCategorie(Categorie categorie) {
-        this.cat = categorie;
     }
 
     /**
@@ -251,7 +253,7 @@ public class Idee {
     }
 
     public Categorie getCategory() {
-        return cat;
+        return categorie;
     }
 
     /**

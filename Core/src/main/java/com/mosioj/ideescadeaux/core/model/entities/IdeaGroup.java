@@ -1,5 +1,7 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.google.gson.annotations.Expose;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +10,10 @@ import java.util.stream.Collectors;
 
 public class IdeaGroup {
 
-    private final double total;
+    @Expose
     private final int id;
+
+    private final double total;
     private final List<Share> shares = new ArrayList<>();
 
     public IdeaGroup(int id, double d) {
