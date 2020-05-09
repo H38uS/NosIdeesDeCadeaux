@@ -20,7 +20,6 @@ public class GetIdeaOfFriendServiceTestWebApp extends AbstractTestServletWebApp 
 
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox.id).get(0);
         when(request.getParameter(GetIdeaOfFriendService.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
-        when(request.getRequestDispatcher(GetIdeaOfFriendService.VIEW_PAGE_URL)).thenReturn(dispatcher);
 
         doTestGet();
     }

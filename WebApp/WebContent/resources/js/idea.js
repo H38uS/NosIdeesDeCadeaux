@@ -63,23 +63,31 @@ function dereserverIdea(e) {
 }
 
 function refreshIdea(idea, id, from) {
-	$.get("protected/service/get_idea_of_friend",
-		  {idee : id, from : from},
-		  function (data) {
-			idea.hide();
-			idea.wrap("<span></span>");
-			var div = idea.parent();
-			div.html(data);
-			var newIdea = div.children();
-			newIdea.hide();
-			newIdea.unwrap();
-			setIdeaActionsToJs(newIdea);
-			newIdea.fadeIn('slow');
-		  },
-		  "html")
-	.fail(function () {
-		// Osef pour le moment, on a pas réussi à changer l'idée
-	});
+    $.get("protected/service/get_idea_of_friend",
+          {idee : id, from : from}
+    ).done(function (data) {
+
+        var rawData = JSON.parse(data);
+        if (rawData.status !== 'OK') {
+          actionError(rawData.message);
+          return;
+        }
+
+        idea.wrap("<span></span>");
+        var div = idea.parent();
+        idea.remove();
+
+        var newIdea = getIdeaDiv(rawData.connectedUser, rawData.message);
+        newIdea.hide();
+        div.append(newIdea);
+        newIdea.unwrap();
+
+        setIdeaActionsToJs(newIdea);
+        newIdea.fadeIn('slow');
+
+    }).fail(function (data) {
+        actionError(data.status + " - " + data.statusText);
+    });
 }
 
 function setIdeaActionsToJs(my_idea) {
