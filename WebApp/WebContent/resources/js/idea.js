@@ -60,7 +60,7 @@ function dereserverIdea(e) {
 }
 
 function refreshIdea(idea, id) {
-    $.get("protected/service/get_idea_of_friend",
+    $.get("protected/service/get_idea",
           {idee : id}
     ).done(function (data) {
 
@@ -110,98 +110,144 @@ function setIdeaActionsToJs(my_idea) {
 }
 
 var postIdea = function(form) {
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', form.attr("action"));
-	xhr.onload = function(e) {
-	    var resp = JSON.parse(xhr.responseText);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', form.attr("action"));
+    xhr.onload = function(e) {
+        var resp = JSON.parse(xhr.responseText);
         if (resp.status !== 'OK') {
             actionError(resp.message);
         } else {
-            actionDone(resp.message);
+            if ($("#ideaResPlaceholder").length) {
+                var resIdea = $("#ideaResPlaceholder").children(":first");
+            } else {
+                var resDiv = $("#idea_creation_result");
+                var resIdea = $("<div>");
+                resDiv.append(resIdea);
+            }
+            refreshIdea(resIdea, resp.message)
+            actionDone("L'idée a bien été créée / mise à jour sur le serveur.");
         }
-	};
-	xhr.onerror = function() {
-		actionError(this.responseText)
-	};
-	xhr.upload.onprogress = function(event) {
-		var percent = (event.loaded / event.total) * 100;
-		doLoading("Envoie en cours (" + percent + "%)...")
-	}
+    };
+    xhr.onerror = function() {
+        actionError(this.responseText)
+    };
+    xhr.upload.onprogress = function(event) {
+        var percent = (event.loaded / event.total) * 100;
+        doLoading("Envoie en cours (" + percent + "%)...")
+    }
 
-	var formData = new FormData();
-	formData.append('fileName', selectedPictureName);
-	formData.append('text', form.find("#text").val());
-	formData.append('type', form.find("#type").val());
-	formData.append('priority', form.find("#priority").val());
-	formData.append('old_picture', form.find("#old_picture").val());
-	formData.append('myfile', selectedPicture);
-	xhr.send(formData);
+    var formData = new FormData();
+    formData.append('fileName', selectedPictureName);
+    formData.append('text', form.find("#text").val());
+    formData.append('type', form.find("#type").val());
+    formData.append('priority', form.find("#priority").val());
+    formData.append('old_picture', form.find("#old_picture").val());
+    formData.append('myfile', selectedPicture);
+    xhr.send(formData);
 };
 
 /* ********************************************************************* */
 /* ***************** ==== Construction de DIV idee === ***************** */
 /* ********************************************************************* */
 
+function isTheOwnerConnected(jsonIdea) {
+    return typeof jsonIdea.bookingInformation === 'undefined';
+}
+
 function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
     var modalBodyDiv = $("<div>");
-    if (jsonIdea.bookingInformation.type === "NONE") {
+    if (!isTheOwnerConnected(jsonIdea)) {
+        if (jsonIdea.bookingInformation.type === "NONE") {
+            modalBodyDiv.append(`
+                <div class="row align-items-center">
+                    <div class="col-3 pr-0">
+                        <a href="protected/reserver?idee=${jsonIdea.id}" class="img idea_reserver">
+                            <img src="resources/image/reserver.png"
+                                 class="clickable"
+                                 title="Réserver l'idée"
+                                 width="${getPictureWidth()}px" />
+                        </a>
+                    </div>
+                    <div class="col-9 pl-0 text-left">
+                        Réserver l'idée
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-3 pr-0">
+                        <a href="protected/sous_reserver?idee=${jsonIdea.id}" class="img">
+                            <img src="resources/image/sous_partie.png"
+                                 class="clickable"
+                                 title="Réserver une sous-partie de l'idée"
+                                 width="${getPictureWidth()}px" />
+                        </a>
+                    </div>
+                    <div class="col-9 pl-0 text-left">
+                        Réserver une sous-partie de l'idée
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-3 pr-0">
+                        <a href="protected/create_a_group?idee=${jsonIdea.id}" class="img">
+                            <img src="resources/image/grouper.png"
+                                 class="clickable"
+                                 title="Créer un groupe"
+                                 width="${getPictureWidth()}px" />
+                        </a>
+                    </div>
+                    <div class="col-9 pl-0 text-left">
+                        Créer un groupe
+                    </div>
+                </div>
+            `);
+        }
+    } else {
+        // Connected user is the owner
         modalBodyDiv.append(`
             <div class="row align-items-center">
-                <div class="col-3 pr-0">
-                    <a href="protected/reserver?idee=${jsonIdea.id}" class="img idea_reserver">
-                        <img src="resources/image/reserver.png"
-                             class="clickable"
-                             title="Réserver l'idée"
-                             width="${getPictureWidth()}px" />
+                <div class="col-3">
+                    <a href="protected/modifier_idee?id=${jsonIdea.id}" class="img">
+                        <img src="resources/image/modifier.png"
+                             title="Modifier cette idée"
+                             width="${getPictureWidth()}px"/>
                     </a>
                 </div>
                 <div class="col-9 pl-0 text-left">
-                    Réserver l'idée
+                    Modifier cette idée
                 </div>
             </div>
             <div class="row align-items-center">
-                <div class="col-3 pr-0">
-                    <a href="protected/sous_reserver?idee=${jsonIdea.id}" class="img">
-                        <img src="resources/image/sous_partie.png"
-                             class="clickable"
-                             title="Réserver une sous-partie de l'idée"
-                             width="${getPictureWidth()}px" />
+                <div class="col-3">
+                    <a href="protected/remove_an_idea?ideeId=${jsonIdea.id}" class="img idea_remove">
+                        <img src="resources/image/supprimer.png"
+                             title="Supprimer cette idée"
+                             width="${getPictureWidth()}px"/>
                     </a>
                 </div>
                 <div class="col-9 pl-0 text-left">
-                    Réserver une sous-partie de l'idée
-                </div>
-            </div>
-            <div class="row align-items-center">
-                <div class="col-3 pr-0">
-                    <a href="protected/create_a_group?idee=${jsonIdea.id}" class="img">
-                        <img src="resources/image/grouper.png"
-                             class="clickable"
-                             title="Créer un groupe"
-                             width="${getPictureWidth()}px" />
-                    </a>
-                </div>
-                <div class="col-9 pl-0 text-left">
-                    Créer un groupe
+                    Supprimer cette idée
                 </div>
             </div>
         `);
     }
     if (typeof jsonIdea.surpriseBy === 'undefined') {
+        if (!isTheOwnerConnected(jsonIdea)) {
+            modalBodyDiv.append(`
+                <div class="row align-items-center">
+                    <div class="col-3 pr-0">
+                        <a href="protected/est_a_jour?idee=${jsonIdea.id}" class="img idea_est_a_jour">
+                            <img src="resources/image/a_jour.png"
+                                 class="clickable"
+                                 title="Demander si c'est à jour."
+                                 width="${getPictureWidth()}px" />
+                        </a>
+                    </div>
+                    <div class="col-9 pl-0 text-left">
+                        Demander si c'est à jour
+                    </div>
+                </div>
+            `);
+        }
         modalBodyDiv.append(`
-            <div class="row align-items-center">
-                <div class="col-3 pr-0">
-                    <a href="protected/est_a_jour?idee=${jsonIdea.id}" class="img idea_est_a_jour">
-                        <img src="resources/image/a_jour.png"
-                             class="clickable"
-                             title="Demander si c'est à jour."
-                             width="${getPictureWidth()}px" />
-                    </a>
-                </div>
-                <div class="col-9 pl-0 text-left">
-                    Demander si c'est à jour
-                </div>
-            </div>
             <div class="row align-items-center">
                 <div class="col-3 pr-0">
                     <a href="protected/idee_questions?idee=${jsonIdea.id}" class="img">
@@ -217,20 +263,37 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
             </div>
         `);
     }
-    modalBodyDiv.append(`
-        <div class="row align-items-center">
-            <div class="col-3 pr-0">
-                <a href="protected/idee_commentaires?idee=${jsonIdea.id}" class="img">
-                    <img src="resources/image/commentaires.png"
-                         title="Ajouter un commentaire / voir les existants"
-                         width="${getPictureWidth()}px" />
-                </a>
+    if (isTheOwnerConnected(jsonIdea)) {
+        modalBodyDiv.append(`
+            <div class="row align-items-center">
+                <div class="col-3">
+                    <a href="protected/je_le_veux_encore?idee=${jsonIdea.id}" class="img">
+                        <img src="resources/image/encore.png"
+                             title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite."
+                             height="${getPictureWidth()}px"/>
+                    </a>
+                </div>
+                <div class="col-9 pl-0 text-left">
+                    Annuler toutes les réservations
+                </div>
             </div>
-            <div class="col-9 pl-0 text-left">
-                Ajouter un commentaire / voir les existants
+        `);
+    } else {
+        modalBodyDiv.append(`
+            <div class="row align-items-center">
+                <div class="col-3 pr-0">
+                    <a href="protected/idee_commentaires?idee=${jsonIdea.id}" class="img">
+                        <img src="resources/image/commentaires.png"
+                             title="Ajouter un commentaire / voir les existants"
+                             width="${getPictureWidth()}px" />
+                    </a>
+                </div>
+                <div class="col-9 pl-0 text-left">
+                    Ajouter un commentaire / voir les existants
+                </div>
             </div>
-        </div>
-    `);
+        `);
+    }
     return modalBodyDiv.html();
 }
 
@@ -268,6 +331,9 @@ function getSurpriseDivAsHTMl(connectedUser, jsonIdea) {
 }
 
 function getReservationText(connectedUser, jsonIdea) {
+    if (isTheOwnerConnected(jsonIdea)) {
+        return "";
+    }
     if (jsonIdea.bookingInformation.type === "SINGLE_PERSON") {
         if (connectedUser.id !== jsonIdea.bookingInformation.bookingOwner.id) {
             return `
@@ -333,6 +399,9 @@ function getSurpriseIconDivAsHTMl(jsonIdea) {
 }
 
 function getBookingIconAsHTML(connectedUser, jsonIdea) {
+    if (isTheOwnerConnected(jsonIdea)) {
+        return "";
+    }
     var bookingIconDiv = $("<div>");
     if (jsonIdea.bookingInformation.type === "SINGLE_PERSON") {
         if (connectedUser.id !== jsonIdea.bookingInformation.bookingOwner.id) {
@@ -395,6 +464,9 @@ function getBookingIconAsHTML(connectedUser, jsonIdea) {
 
 function getAskIfUpToDateIconAsHTML(jsonDecoratedIdea) {
     var jsonIdea = jsonDecoratedIdea.idee;
+    if (isTheOwnerConnected(jsonIdea)) {
+        return "";
+    }
     var askIfUpToDateIconDiv = $("<div>");
     if (jsonDecoratedIdea.hasAskedIfUpToDate) {
         askIfUpToDateIconDiv.append(`
@@ -456,36 +528,61 @@ function getActionTooltipForNonMobile(jsonIdea) {
     }
     var actionTooltipSpan = $('<span class="outer_top_tooltiptext">');
     var content = $('<span class="top_tooltiptext">');
-    if (jsonIdea.bookingInformation.type === "NONE") {
+    if (!isTheOwnerConnected(jsonIdea)) {
+        if (jsonIdea.bookingInformation.type === "NONE") {
+            // *** Boutons pour réserver
+            content.append(`
+                <a href="protected/reserver?idee=${jsonIdea.id}" class="img idea_reserver">
+                    <img src="resources/image/reserver.png"
+                         class="clickable"
+                         title="Réserver l'idée"
+                         width="${getPictureWidth()}px" />
+                </a>
+                <a href="protected/sous_reserver?idee=${jsonIdea.id}" class="img">
+                    <img src="resources/image/sous_partie.png"
+                         class="clickable"
+                         title="Réserver une sous-partie de l'idée"
+                         width="${getPictureWidth()}px" />
+                </a>
+                <a href="protected/create_a_group?idee=${jsonIdea.id}" class="img">
+                    <img src="resources/image/grouper.png"
+                         class="clickable"
+                         title="Créer un groupe"
+                         width="${getPictureWidth()}px" />
+                </a>
+            `);
+        }
+    } else {
+        // *** Boutons pour modifier supprimer l'idée
         content.append(`
-            <a href="protected/reserver?idee=${jsonIdea.id}" class="img idea_reserver">
-                <img src="resources/image/reserver.png"
-                     class="clickable"
-                     title="Réserver l'idée"
-                     width="${getPictureWidth()}px" />
+            <a href="protected/modifier_idee?id=${jsonIdea.id}"
+               class="img">
+                <img src="resources/image/modifier.png"
+                     title="Modifier cette idée"
+                     width="${getPictureWidth()}px"/>
             </a>
-            <a href="protected/sous_reserver?idee=${jsonIdea.id}" class="img">
-                <img src="resources/image/sous_partie.png"
-                     class="clickable"
-                     title="Réserver une sous-partie de l'idée"
-                     width="${getPictureWidth()}px" />
-            </a>
-            <a href="protected/create_a_group?idee=${jsonIdea.id}" class="img">
-                <img src="resources/image/grouper.png"
-                     class="clickable"
-                     title="Créer un groupe"
-                     width="${getPictureWidth()}px" />
+            <a href="protected/remove_an_idea?ideeId=${jsonIdea.id}"
+               class="img idea_remove">
+                <img src="resources/image/supprimer.png"
+                     title="Supprimer cette idée"
+                     width="${getPictureWidth()}px"/>
             </a>
         `);
     }
     if (typeof jsonIdea.surpriseBy === 'undefined') {
+        if (!isTheOwnerConnected(jsonIdea)) {
+            // *** Boutons pour demander si à jour
+            content.append(`
+                <a href="protected/est_a_jour?idee=${jsonIdea.id}" class="img idea_est_a_jour">
+                    <img src="resources/image/a_jour.png"
+                         class="clickable"
+                         title="Demander si c'est à jour."
+                         width="${getPictureWidth()}px" />
+                </a>
+            `);
+        }
+        // *** Boutons pour poser des questions / y répondre
         content.append(`
-            <a href="protected/est_a_jour?idee=${jsonIdea.id}" class="img idea_est_a_jour">
-                <img src="resources/image/a_jour.png"
-                     class="clickable"
-                     title="Demander si c'est à jour."
-                     width="${getPictureWidth()}px" />
-            </a>
             <a href="protected/idee_questions?idee=${jsonIdea.id}" class="img">
                 <img src="resources/image/questions.png"
                      class="clickable"
@@ -493,14 +590,27 @@ function getActionTooltipForNonMobile(jsonIdea) {
                      width="${getPictureWidth()}px" />
             </a>
         `);
+        if (isTheOwnerConnected(jsonIdea)) {
+            // *** Boutons pour annuler les réservations
+            content.append(`
+                <a href="protected/je_le_veux_encore?idee=${jsonIdea.id}"
+                   class="img">
+                    <img src="resources/image/encore.png"
+                         title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite."
+                         height="${getPictureWidth()}px"/>
+                </a>
+            `);
+        }
     }
-    content.append(`
-        <a href="protected/idee_commentaires?idee=${jsonIdea.id}" class="img">
-            <img src="resources/image/commentaires.png"
-                 title="Ajouter un commentaire / voir les existants"
-                 width="${getPictureWidth()}px" />
-        </a>
-    `);
+    if (!isTheOwnerConnected(jsonIdea)) {
+        content.append(`
+            <a href="protected/idee_commentaires?idee=${jsonIdea.id}" class="img">
+                <img src="resources/image/commentaires.png"
+                     title="Ajouter un commentaire / voir les existants"
+                     width="${getPictureWidth()}px" />
+            </a>
+        `);
+    }
     actionTooltipSpan.append(content);
     return actionTooltipSpan;
 }

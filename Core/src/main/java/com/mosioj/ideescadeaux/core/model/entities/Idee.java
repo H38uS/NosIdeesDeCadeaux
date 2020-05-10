@@ -37,7 +37,7 @@ public class Idee {
     private final User surpriseBy;
 
     @Expose
-    private final BookingInformation bookingInformation;
+    private BookingInformation bookingInformation;
 
     @Expose
     public String displayClass = "";
@@ -287,5 +287,12 @@ public class Idee {
      */
     public BookingInformation getBookingInformation() {
         return bookingInformation;
+    }
+
+    /**
+     * Mask booking information when providing the idea of the connected user.
+     */
+    public void maskBookingInformation() {
+        bookingInformation = null;
     }
 }

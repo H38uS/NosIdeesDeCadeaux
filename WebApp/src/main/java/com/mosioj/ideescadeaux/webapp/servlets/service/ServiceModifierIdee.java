@@ -45,12 +45,10 @@ public class ServiceModifierIdee extends AbstractIdea<IdeaModification> {
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
-        ServiceResponse<String> sr = ServiceResponse.ok("L'idée a bien été mise à jour sur le serveur.",
-                                                        isAdmin(request), thisOne);
+        Idee idea = policy.getIdea();
+        ServiceResponse<?> sr = ServiceResponse.ok(idea.getId(), isAdmin(request), thisOne);
 
         try {
-            Idee idea = policy.getIdea();
-
             // Check that we have a file upload request
             if (ServletFileUpload.isMultipartContent(request)) {
 

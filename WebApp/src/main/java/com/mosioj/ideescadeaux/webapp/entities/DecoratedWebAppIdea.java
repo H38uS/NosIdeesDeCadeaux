@@ -42,12 +42,8 @@ public class DecoratedWebAppIdea {
      */
     public DecoratedWebAppIdea(Idee idee, User connectedUser, Device device) {
 
-        boolean tempComment = false;
-        try {
-            tempComment = CommentsRepository.getNbComments(idee.getId()) > 0;
-        } catch (SQLException e) {
-            logger.error(e);
-        }
+        final boolean isOwnerByConnectedUser = connectedUser.equals(idee.getOwner());
+        boolean tempComment = computeHasComment(isOwnerByConnectedUser, idee);
         boolean tempQuestion = false;
         try {
             tempQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
@@ -61,33 +57,10 @@ public class DecoratedWebAppIdea {
         hasAskedIfUpToDate = IdeesRepository.hasUserAskedIfUpToDate(idee.getId(), connectedUser.id);
 
         // calcul de la display class
-        final BookingInformation bookingInfo = idee.getBookingInformation();
-        if (bookingInfo.getBookingType() == BookingInformation.BookingType.SINGLE_PERSON) {
+        displayClass = computeDisplayClass(idee, connectedUser);
 
-            displayClass = bookingInfo.getBookingOwner()
-                                      .filter(connectedUser::equals)
-                                      .map(u -> "booked_by_me_idea")
-                                      .orElse("booked_by_others_idea");
-
-        } else if (bookingInfo.getBookingType() == BookingInformation.BookingType.GROUP) {
-
-            displayClass = bookingInfo.getBookingGroup().filter(g -> g.contains(connectedUser))
-                                      .map(g -> "booked_by_me_idea")
-                                      .orElse("shared_booking_idea");
-
-        } else if (bookingInfo.getBookingType() == BookingInformation.BookingType.PARTIAL) {
-
-            displayClass = SousReservationRepository.getSousReservation(idee.getId())
-                                                    .stream()
-                                                    .map(SousReservationEntity::getUser)
-                                                    .filter(connectedUser::equals)
-                                                    .map(u -> "booked_by_me_idea")
-                                                    .findFirst()
-                                                    .orElse("shared_booking_idea");
-
-        } else {
-            // No booking
-            displayClass = "";
+        if (isOwnerByConnectedUser) {
+            idee.maskBookingInformation();
         }
 
         if (device.isMobile()) {
@@ -101,6 +74,63 @@ public class DecoratedWebAppIdea {
         }
     }
 
+    private boolean computeHasComment(boolean isOwnerByConnectedUser, Idee idee) {
+        if (isOwnerByConnectedUser) {
+            return false;
+        }
+        try {
+            return CommentsRepository.getNbComments(idee.getId()) > 0;
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return false;
+    }
+
+    /**
+     * @param idee          The idea.
+     * @param connectedUser The connected user.
+     * @return The computed display class.
+     */
+    private String computeDisplayClass(Idee idee, User connectedUser) {
+
+        // S'il s'agit de l'idée de l'utilisateur => pas de display class
+        if (connectedUser.equals(idee.getOwner())) {
+            return "";
+        }
+
+        // Classe lors d'une réservation complète par une personne
+        final BookingInformation bookingInfo = idee.getBookingInformation();
+        if (bookingInfo.getBookingType() == BookingInformation.BookingType.SINGLE_PERSON) {
+            return bookingInfo.getBookingOwner()
+                              .filter(connectedUser::equals)
+                              .map(u -> "booked_by_me_idea")
+                              .orElse("booked_by_others_idea");
+
+        }
+
+        // Classe lors d'une réservation par un groupe
+        if (bookingInfo.getBookingType() == BookingInformation.BookingType.GROUP) {
+            return bookingInfo.getBookingGroup().filter(g -> g.contains(connectedUser))
+                              .map(g -> "booked_by_me_idea")
+                              .orElse("shared_booking_idea");
+
+        }
+
+        // Classe lors d'une sous-réservation par au moins une personne
+        if (bookingInfo.getBookingType() == BookingInformation.BookingType.PARTIAL) {
+            return SousReservationRepository.getSousReservation(idee.getId())
+                                            .stream()
+                                            .map(SousReservationEntity::getUser)
+                                            .filter(connectedUser::equals)
+                                            .map(u -> "booked_by_me_idea")
+                                            .findFirst()
+                                            .orElse("shared_booking_idea");
+        }
+
+        // No booking
+        return "";
+    }
+
     /**
      * @return The idea's owner.
      */
@@ -109,7 +139,6 @@ public class DecoratedWebAppIdea {
     }
 
     /**
-     *
      * @return The idea.
      */
     public Idee getIdee() {

@@ -26,9 +26,7 @@ import java.util.List;
 @WebServlet("/protected/ajouter_idee")
 public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
 
-    /**
-     * Class logger.
-     */
+    /** Class logger. */
     private static final Logger logger = LogManager.getLogger(AjouterIdee.class);
     private static final long serialVersionUID = -1774633803227715931L;
 

@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.CanAskReplyToQuestions;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 
 import javax.servlet.ServletException;
@@ -17,14 +17,15 @@ import java.sql.SQLException;
  *
  * @author Jordan Mosio
  */
-@WebServlet("/protected/service/get_idea_of_friend")
-public class GetIdeaOfFriendService extends IdeesCadeauxGetServlet<IdeaInteraction> {
+@WebServlet("/protected/service/get_idea")
+public class GetIdeaService extends IdeesCadeauxGetServlet<CanAskReplyToQuestions> {
 
     private static final long serialVersionUID = -3425240682690763149L;
     public static final String IDEA_ID_PARAM = "idee";
 
-    public GetIdeaOfFriendService() {
-        super(new IdeaInteraction(IDEA_ID_PARAM));
+    public GetIdeaService() {
+        // OK pour voir les idées des amis ou les siennes quand ce ne sont pas des surprises
+        super(new CanAskReplyToQuestions(IDEA_ID_PARAM));
     }
 
     @Override

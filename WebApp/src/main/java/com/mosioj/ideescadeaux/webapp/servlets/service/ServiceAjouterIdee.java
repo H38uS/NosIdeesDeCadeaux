@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 
 @WebServlet("/protected/service/ajouter_idee")
 public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
@@ -38,8 +37,8 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
-        ServiceResponse<String> sr = ServiceResponse.ok("L'idée a bien été crée sur le serveur.", isAdmin(request),
-                                                        thisOne);
+        ServiceResponse<?> sr = null;
+
         try {
             // Check that we have a file upload request
             if (ServletFileUpload.isMultipartContent(request)) {
@@ -54,10 +53,6 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                     message.append("</ul>");
                     sr = ServiceResponse.ko(message.toString(), isAdmin(request), thisOne);
                 } else {
-                    logger.info(MessageFormat.format("Adding a new idea [''{0}'' / ''{1}'' / ''{2}'']",
-                                                     parameters.get("text"),
-                                                     parameters.get("type"),
-                                                     parameters.get("priority")));
                     int ideaId = IdeesRepository.addIdea(thisOne,
                                                          parameters.get("text"),
                                                          parameters.get("type"),
@@ -65,6 +60,11 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                                                          parameters.get("image"),
                                                          null,
                                                          thisOne);
+                    logger.info("Idea {} [{} / {} / {}] added.",
+                                ideaId,
+                                parameters.get("text"),
+                                parameters.get("type"),
+                                parameters.get("priority"));
                     IdeesRepository.getIdeaWithoutEnrichment(ideaId).ifPresent(
                             i -> {
                                 try {
@@ -75,7 +75,10 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                             }
                     );
                     NotificationsRepository.removeAllType(thisOne, NotificationType.NO_IDEA);
+                    sr = ServiceResponse.ok(ideaId, isAdmin(request), thisOne);
                 }
+            } else {
+                sr = ServiceResponse.ko("Le formulaire est incorrect...", isAdmin(request), thisOne);
             }
         } catch (ServletException | IOException | SQLException e) {
             logger.error(e);
