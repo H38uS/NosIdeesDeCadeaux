@@ -1,23 +1,21 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
-import java.sql.SQLException;
-import java.util.List;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
-import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet("/protected/detail_sous_reservation")
 public class DetailSousReservation extends AbstractIdea<IdeaInteraction> {
@@ -38,7 +36,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteraction> {
 
     // FIXME : Pouvoir suggérer de sous réserver cette idée
 
-    private void setupCommon(HttpServletRequest req, Idee idea, User user) throws SQLException {
+    private void setupCommon(HttpServletRequest req, Idee idea, User user) {
 
         logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
         req.setAttribute("idee", idea);
