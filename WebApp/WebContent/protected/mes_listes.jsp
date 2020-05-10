@@ -5,12 +5,6 @@
 <t:normal_protected>
     <jsp:body>
 
-        <c:if test="${not empty idee}">
-            Votre idée a bien été créée. Cliquez <a href="protected/ajouter_idee">ici</a> pour en ajouter d'autres !
-            L'idée ajoutée:
-            <t:template_une_idee/>
-        </c:if>
-
         <c:if test="${fn:length(entities) gt 1}">
             <c:choose>
                 <c:when test="${is_mobile}">

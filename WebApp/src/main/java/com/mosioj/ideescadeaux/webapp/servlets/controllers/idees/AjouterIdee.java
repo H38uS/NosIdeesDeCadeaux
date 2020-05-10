@@ -93,9 +93,6 @@ public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                 );
 
                 NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
-
-                request.getSession().setAttribute("added_idea_id", ideaId);
-
                 RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
                                              "?" +
                                              VoirListe.USER_ID_PARAM +

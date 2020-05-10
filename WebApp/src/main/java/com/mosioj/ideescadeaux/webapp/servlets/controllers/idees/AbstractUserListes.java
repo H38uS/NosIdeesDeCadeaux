@@ -1,24 +1,23 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import java.sql.SQLException;
-import java.util.List;
-
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
+import java.sql.SQLException;
+import java.util.List;
 
 public abstract class AbstractUserListes<P extends SecurityPolicy> extends AbstractListes<User, P> {
 
     private static final long serialVersionUID = 1638868138216657989L;
     private static final Logger logger = LogManager.getLogger(AbstractUserListes.class);
 
-    public static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
+    private static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 
     public AbstractUserListes(P policy) {
         super(policy, 6);

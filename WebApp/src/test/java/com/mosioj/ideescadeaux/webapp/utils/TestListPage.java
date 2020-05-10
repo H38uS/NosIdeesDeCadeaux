@@ -1,127 +1,124 @@
 package com.mosioj.ideescadeaux.webapp.utils;
 
-import static org.junit.Assert.assertEquals;
-
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import org.junit.Test;
-
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.MesListes;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.VoirListe;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import org.junit.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestListPage {
-	
-	@Test
-	public void testAbstractList() {
-		TestList maListe = new TestList();
-		System.out.println(maListe.getClass().getName() + " " + maListe.getMaxNumberOfResults());
-		assertEquals(2, maListe.getPages(32).size());
-		assertEquals(1, maListe.getPages(19).size());
-		assertEquals(1, maListe.getPages(20).size());
-		assertEquals(2, maListe.getPages(21).size());
-		assertEquals(8, maListe.getPages(144).size());
-	}
 
-	@Test
-	public void testMesListesList() {
-		TestMesListes maListe = new TestMesListes(new NetworkAccess(VoirListe.USER_ID_PARAM));
-		int maxNumberOfResults = maListe.getMaxNumberOfResults();
-		System.out.println(maListe.getClass().getName() + " " + maxNumberOfResults);
-		assertEquals(6, maListe.getPages(maxNumberOfResults*5 +1).size());
-		assertEquals(1, maListe.getPages(maxNumberOfResults-1).size());
-		assertEquals(1, maListe.getPages(maxNumberOfResults).size());
-		assertEquals(2, maListe.getPages(maxNumberOfResults + 3).size());
-		assertEquals(15, maListe.getPages(maxNumberOfResults*14+2).size());
-	}
-	
-	private class TestMesListes extends MesListes {
-		
-		public TestMesListes(NetworkAccess policy) {
-			super(policy);
-		}
+    @Test
+    public void testAbstractList() {
+        TestList maListe = new TestList();
+        System.out.println(maListe.getClass().getName() + " " + maListe.getMaxNumberOfResults());
+        assertEquals(2, maListe.getPages(32).size());
+        assertEquals(1, maListe.getPages(19).size());
+        assertEquals(1, maListe.getPages(20).size());
+        assertEquals(2, maListe.getPages(21).size());
+        assertEquals(8, maListe.getPages(144).size());
+    }
 
-		private static final long serialVersionUID = 1L;
-		
-		public int getMaxNumberOfResults() {
-			return maxNumberOfResults;
-		}
-		
-		@Override
-		protected List<Page> getPages(int total) {
-			return super.getPages(total);
-		}
-		
-		@Override
-		protected String getViewPageURL() {
-			return null;
-		}
-		
-		@Override
-		protected String getCallingURL() {
-			return null;
-		}
-		
-		@Override
-		protected String getSpecificParameters(HttpServletRequest req) {
-			return null;
-		}
-		
-		@Override
-		protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
-			return 0;
-		}
-		
-	}
+    @Test
+    public void testMesListesList() {
+        TestMesListes maListe = new TestMesListes(new NetworkAccess(VoirListe.USER_ID_PARAM));
+        int maxNumberOfResults = maListe.getMaxNumberOfResults();
+        System.out.println(maListe.getClass().getName() + " " + maxNumberOfResults);
+        assertEquals(6, maListe.getPages(maxNumberOfResults * 5 + 1).size());
+        assertEquals(1, maListe.getPages(maxNumberOfResults - 1).size());
+        assertEquals(1, maListe.getPages(maxNumberOfResults).size());
+        assertEquals(2, maListe.getPages(maxNumberOfResults + 3).size());
+        assertEquals(15, maListe.getPages(maxNumberOfResults * 14 + 2).size());
+    }
 
-	private class TestList extends AbstractListes<Object, SecurityPolicy> {
-		
-		private static final long serialVersionUID = 1L;
+    private static class TestMesListes extends MesListes {
 
-		public int getMaxNumberOfResults() {
-			return maxNumberOfResults;
-		}
-		
-		public TestList() {
-			super(null);
-		}
+        public TestMesListes(NetworkAccess policy) {
+            super(policy);
+        }
 
-		@Override
-		protected List<Page> getPages(int total) {
-			return super.getPages(total);
-		}
+        private static final long serialVersionUID = 1L;
 
-		@Override
-		protected String getViewPageURL() {
-			return null;
-		}
+        public int getMaxNumberOfResults() {
+            return maxNumberOfResults;
+        }
 
-		@Override
-		protected String getCallingURL() {
-			return null;
-		}
+        @Override
+        protected List<Page> getPages(int total) {
+            return super.getPages(total);
+        }
 
-		@Override
-		protected String getSpecificParameters(HttpServletRequest req) {
-			return null;
-		}
+        @Override
+        protected String getViewPageURL() {
+            return null;
+        }
 
-		@Override
-		protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
-			return 0;
-		}
+        @Override
+        protected String getCallingURL() {
+            return null;
+        }
 
-		@Override
-		protected List<Object> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException, NotLoggedInException {
-			return null;
-		}
+        @Override
+        protected String getSpecificParameters(HttpServletRequest req) {
+            return null;
+        }
 
-	}
+        @Override
+        protected int getTotalNumberOfRecords(HttpServletRequest req) {
+            return 0;
+        }
+
+    }
+
+    private static class TestList extends AbstractListes<Object, SecurityPolicy> {
+
+        private static final long serialVersionUID = 1L;
+
+        public int getMaxNumberOfResults() {
+            return maxNumberOfResults;
+        }
+
+        public TestList() {
+            super(null);
+        }
+
+        @Override
+        protected List<Page> getPages(int total) {
+            return super.getPages(total);
+        }
+
+        @Override
+        protected String getViewPageURL() {
+            return null;
+        }
+
+        @Override
+        protected String getCallingURL() {
+            return null;
+        }
+
+        @Override
+        protected String getSpecificParameters(HttpServletRequest req) {
+            return null;
+        }
+
+        @Override
+        protected int getTotalNumberOfRecords(HttpServletRequest req) {
+            return 0;
+        }
+
+        @Override
+        protected List<Object> getDisplayedEntities(int firstRow, HttpServletRequest req) {
+            return null;
+        }
+
+    }
 
 }

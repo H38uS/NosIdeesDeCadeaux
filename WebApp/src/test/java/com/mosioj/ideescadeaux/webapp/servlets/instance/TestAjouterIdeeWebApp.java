@@ -48,7 +48,6 @@ public class TestAjouterIdeeWebApp extends AbstractTestServletWebApp {
         createMultiPartRequest(param);
         doTestPost();
 
-        verify(session).setAttribute(eq("added_idea_id"), anyObject());
         verify(request, never()).setAttribute(eq("errors"), anyObject());
         assertNotifDoesNotExists(noIdea);
     }
