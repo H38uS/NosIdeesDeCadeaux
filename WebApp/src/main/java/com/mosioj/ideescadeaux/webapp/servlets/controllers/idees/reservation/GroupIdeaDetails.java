@@ -12,7 +12,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSugge
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.VoirListe;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
@@ -69,7 +68,6 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
 
         Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId()).orElseThrow(SQLException::new);
         User user = thisOne;
-        IdeesCadeauxServlet.fillAUserIdea(user, idee, device.isMobile());
 
         // Suppression des notif's si y'en a
         NotificationsRepository.getNotifications(user.id,
@@ -83,7 +81,6 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
         request.setAttribute("currentTotal", currentTotal);
         request.setAttribute("remaining", String.format("%1$,.2f", remaining));
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-
     }
 
     @Override

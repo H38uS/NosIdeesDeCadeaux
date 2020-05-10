@@ -17,13 +17,12 @@ function estAJourIdea(e) {
 	
 	e.preventDefault();
 	var id = getURLParameter($(this).attr("href"), 'idee');
-	var from = getURLParameter($(this).attr("href"), 'from');
 	var idea = $(this).closest('.idea_square');
 	
 	servicePost('protected/service/est_a_jour',
 			{ idee : id },
 			function(data) {
-				refreshIdea(idea, id, from);
+				refreshIdea(idea, id);
 			},
 			"Création de la demande en cours...",
 			"La demande a bien été créée.",
@@ -34,13 +33,12 @@ function reserverIdea(e) {
 
 	e.preventDefault();
 	var id = getURLParameter($(this).attr("href"), 'idee');
-	var from = getURLParameter($(this).attr("href"), 'from');
 	var idea = $(this).closest('.idea_square');
 	
 	servicePost('protected/service/reserver',
 				{ idee : id },
 				function(data) {
-					refreshIdea(idea, id, from);
+					refreshIdea(idea, id);
 				},
 				"Réservation de l'idée en cours...",
 				"L'idée a bien été réservée.");
@@ -50,21 +48,20 @@ function dereserverIdea(e) {
 
 	e.preventDefault();
 	var id = getURLParameter($(this).attr("href"), 'idee');
-	var from = getURLParameter($(this).attr("href"), 'from');
 	var idea = $(this).closest('.idea_square');
 	
 	servicePost('protected/service/dereserver',
 				{ idee : id },
 				function(data) {
-					refreshIdea(idea, id, from);
+					refreshIdea(idea, id);
 				},
 				"Annulation de la réservation en cours...",
 				"La réservation de l'idée a bien été annulée.");
 }
 
-function refreshIdea(idea, id, from) {
+function refreshIdea(idea, id) {
     $.get("protected/service/get_idea_of_friend",
-          {idee : id, from : from}
+          {idee : id}
     ).done(function (data) {
 
         var rawData = JSON.parse(data);
