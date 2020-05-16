@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,19 +25,18 @@ public class MesListes extends AbstractUserListes<NetworkAccess> {
     }
 
     @Override
-    protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+    protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
         User user = thisOne;
-        List<User> ids = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         if (firstRow == 0) {
-            ids.add(user);
+            users.add(user);
         }
-        ids.addAll(UserRelationsRepository.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
-        fillsUserIdeas(user, ids);
-        return ids;
+        users.addAll(UserRelationsRepository.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
+        return getPersonIdeasFromUser(users);
     }
 
     @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException, NotLoggedInException {
+    protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
         // On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
         return UserRelationsRepository.getRelationsCount(thisOne);
     }

@@ -694,6 +694,71 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
 }
 
 /* ********************************************************************* */
+/* *************** ==== Construction de H2 user list === *************** */
+/* ********************************************************************* */
+
+function getH2UserTitle(ideaOwner, connectedUser) {
+    var imgAdd = $('<div>');
+    if ($("#mobile_res_search").css('display') !== 'none') {
+        imgAdd.append(`
+            <img src="resources/image/ajouter_champs.png"
+                 style="margin-left: 10px;margin-top: -2px;"
+                 class="clickable" title="Je veux plus de cadeaux"
+                 width="${getPictureWidth()}px"/>
+        `);
+    } else {
+        imgAdd.append(`
+            <img src="resources/image/ajouter_champs.png"
+                 style="margin-left: 10px;margin-top: 1px;"
+                 class="clickable" title="Je veux plus de cadeaux"
+                 width="${getPictureWidth()}px"/>
+        `);
+    }
+    if (ideaOwner.id !== connectedUser.id) {
+        return $(`
+            <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
+                <div class="row align-items-center">
+                    <div class="col-auto mx-auto my-1">
+                        <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
+                             alt="" style="height:50px;"/>
+                    </div>
+                    <div class="mx-1">
+                        <span class="d-none d-lg-inline-block">${ideaOwner.name}</span>
+                        <span class="d-inline-block d-lg-none">${ideaOwner.name}</span>
+                    </div>
+                    <div class="mx-auto">
+                        <a href="protected/ajouter_idee_ami?id=${ideaOwner.id}" class="img">
+                            ${imgAdd.html()}
+                        </a>
+                    </div>
+                </div>
+            </h2>
+        `);
+    } else {
+        // Le user connecté
+        return $(`
+            <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
+                <div class="row align-items-center">
+                    <div class="col-auto mx-auto my-1">
+                        <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
+                             alt="" style="height:50px;"/>
+                    </div>
+                    <div class="mx-1">
+                        <span class="d-none d-lg-inline-block">Mes idées de cadeaux</span>
+                        <span class="d-inline-block d-lg-none">Mes idées</span>
+                    </div>
+                    <div class="mx-auto">
+                        <a href="protected/ajouter_idee" class="img">
+                            ${imgAdd.html()}
+                        </a>
+                    </div>
+                </div>
+            </h2>
+        `);
+    }
+}
+
+/* ********************************************************************* */
 /* ********************************************************************* */
 
 $(document).ready(function() {

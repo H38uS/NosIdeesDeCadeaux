@@ -1,12 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @WebServlet("/protected/voir_liste")
@@ -24,12 +23,8 @@ public class VoirListe extends MesListes {
     }
 
     @Override
-    protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
-        List<User> ids = new ArrayList<>();
-        User user = policy.getUser();
-        ids.add(user);
-        fillsUserIdeas(thisOne, ids);
-        return ids;
+    protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) {
+        return getPersonIdeasFromUser(Collections.singletonList(policy.getUser()));
     }
 
     @Override

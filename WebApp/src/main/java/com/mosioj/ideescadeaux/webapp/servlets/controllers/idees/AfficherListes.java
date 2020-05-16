@@ -1,8 +1,9 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +18,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
     private static final long serialVersionUID = 1209953017190072617L;
 
     public static final String AFFICHER_LISTES = "/protected/afficher_listes";
-    private static final String NAME_OR_EMAIL = "name";
+    protected static final String NAME_OR_EMAIL = "name";
 
     /**
      * Class constructor.
@@ -27,18 +28,17 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
     }
 
     @Override
-    protected List<User> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+    protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
         String nameOrEmail = readNameOrEmail(req, NAME_OR_EMAIL);
-        List<User> ids = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         int MAX = maxNumberOfResults;
         User connected = thisOne;
         if (connected.matchNameOrEmail(nameOrEmail)) {
-            ids.add(connected);
+            users.add(connected);
             MAX--;
         }
-        ids.addAll(UserRelationsRepository.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
-        fillsUserIdeas(connected, ids);
-        return ids;
+        users.addAll(UserRelationsRepository.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
+        return getPersonIdeasFromUser(users);
     }
 
     @Override

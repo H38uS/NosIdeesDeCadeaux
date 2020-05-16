@@ -1,22 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
+import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public abstract class AbstractUserListes<P extends SecurityPolicy> extends AbstractListes<User, P> {
+public abstract class AbstractUserListes<P extends SecurityPolicy> extends AbstractListes<OwnerIdeas, P> {
 
     private static final long serialVersionUID = 1638868138216657989L;
-    private static final Logger logger = LogManager.getLogger(AbstractUserListes.class);
-
     private static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 
     public AbstractUserListes(P policy) {
@@ -31,17 +27,16 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
     /**
      * Fills in the user ideas.
      *
-     * @param connectedUser The connected user.
-     * @param ids  We want the ideas of those user list.
+     * @param users We want the ideas of those user list.
+     * @return Those users as their ideas in a single list.
      */
-    protected void fillsUserIdeas(User connectedUser, List<User> ids) throws SQLException {
-        logger.trace("Getting all ideas for all users...");
-        for (User user : ids) {
-            List<Idee> ownerIdeas = IdeesRepository.getIdeasOf(user.id);
-            for (Idee idee : ownerIdeas) {
-                IdeesCadeauxServlet.fillAUserIdea(connectedUser, idee, device.isMobile());
-            }
-            user.setIdeas(ownerIdeas);
-        }
+    protected List<OwnerIdeas> getPersonIdeasFromUser(List<User> users) {
+        return users.stream()
+                    .map(u -> OwnerIdeas.from(u,
+                                              IdeesRepository.getIdeasOf(u.id)
+                                                             .stream()
+                                                             .map(i -> new DecoratedWebAppIdea(i, thisOne, device))
+                                                             .collect(Collectors.toList())))
+                    .collect(Collectors.toList());
     }
 }

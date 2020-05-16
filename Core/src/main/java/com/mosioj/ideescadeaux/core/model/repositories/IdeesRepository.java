@@ -150,7 +150,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param ownerId The person for which we are getting all the ideas.
      * @return The person's ideas list.
      */
-    public static List<Idee> getIdeasOf(int ownerId) throws SQLException {
+    public static List<Idee> getIdeasOf(int ownerId) {
 
         List<Idee> ideas = new ArrayList<>();
 
@@ -170,6 +170,8 @@ public class IdeesRepository extends AbstractRepository {
                     ideas.add(createIdeaFromQuery(rs));
                 }
             }
+        } catch (SQLException e) {
+            logger.error(e);
         }
 
         return ideas;

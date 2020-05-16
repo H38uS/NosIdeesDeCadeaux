@@ -5,6 +5,9 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 
 import java.util.List;
 
+/**
+ * Association between a user and its idea list.
+ */
 public class OwnerIdeas {
 
     @Expose
