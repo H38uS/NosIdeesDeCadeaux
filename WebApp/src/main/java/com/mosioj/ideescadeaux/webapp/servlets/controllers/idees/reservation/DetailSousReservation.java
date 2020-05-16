@@ -34,7 +34,7 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteraction> {
         super(new IdeaInteraction(IDEA_ID_PARAM));
     }
 
-    // FIXME : Pouvoir suggérer de sous réserver cette idée
+    // TODO : Pouvoir suggérer de sous réserver cette idée
 
     private void setupCommon(HttpServletRequest req, Idee idea, User user) {
 

@@ -1,21 +1,23 @@
-// FIXME : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
+// FIXME : 0 revoir les bandes présentation liste en mode mobile - mettre l'image du owner sur une ligne avant son nom
+// FIXME : 1 faire un service pour le Encore!
 // FIXME : 1 revoir le visuel recherche liste dans mes listes quand on trouve pas - au moins en mode PC
 //              Idem pour recherche réseau
-// FIXME : 3 utiliser alert-sucess / warning / error dans les messages de statuts + le mettre tout en haut (position absolute 0 avec marge)
-// FIXME : 3 ajouter un changelog
-// FIXME : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
-// FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
-// FIXME : 6 lazy loading pour les idées (image c'est déjà le cas) --> faut surtout tout faire en JSON et gérer les création de div en JS
-// FIXME : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
-// FIXME : 7 ordonnancer les résa de plus de 3 mois dans (mes réservations) ? + les mettre dans un tableau au moins en mode pc - ajouter la date de l'action!!
-// FIXME : 8 tester les services quand on a pas les droits
-// FIXME : 8 ajouter une option pour montrer son année de naissance dans le réseau + les mails.
-// FIXME : 8 auto génération de liens d'image à partir des liens (quand termine par .jpg / .png / etc.)
-// FIXME : 8 vérifier qu'on fait un test pour chaque méthode des repository
-// FIXME : 9 auto-génération des smileys
-// FIXME : 9 faire une passe et remplacer les exception par des Try
-// FIXME : 99 faire un preview markdown pour l'édition des idées
-// FIXME : 99 vérifier régulièrement si y'a pas d'autres notif
+// TODO : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
+// TODO : 3 utiliser alert-sucess / warning / error dans les messages de statuts + le mettre tout en haut (position absolute 0 avec marge)
+// TODO : 3 ajouter un changelog
+// TODO : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
+// TODO : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
+// TODO : 6 lazy loading pour les idées (image c'est déjà le cas) --> faut surtout tout faire en JSON et gérer les création de div en JS
+// TODO : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
+// TODO : 7 ordonnancer les résa de plus de 3 mois dans (mes réservations) ? + les mettre dans un tableau au moins en mode pc - ajouter la date de l'action!!
+// TODO : 8 tester les services quand on a pas les droits
+// TODO : 8 ajouter une option pour montrer son année de naissance dans le réseau + les mails.
+// TODO : 8 auto génération de liens d'image à partir des liens (quand termine par .jpg / .png / etc.)
+// TODO : 8 vérifier qu'on fait un test pour chaque méthode des repository
+// TODO : 9 auto-génération des smileys
+// TODO : 9 faire une passe et remplacer les exception par des Try
+// TODO : 99 faire un preview markdown pour l'édition des idées
+// TODO : 99 vérifier régulièrement si y'a pas d'autres notif
 
 // TODO : pouvoir mettre un rappel de date de réservation
 // TODO : pouvoir se noter des personnes pour lesquelles on veut faire une résa
