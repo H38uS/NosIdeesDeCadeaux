@@ -37,7 +37,7 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
-        ServiceResponse<?> sr = null;
+        ServiceResponse<?> sr;
 
         try {
             // Check that we have a file upload request
