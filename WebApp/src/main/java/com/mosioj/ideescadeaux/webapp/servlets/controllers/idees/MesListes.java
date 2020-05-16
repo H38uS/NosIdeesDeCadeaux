@@ -5,13 +5,11 @@ import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/protected/mes_listes")
 public class MesListes extends AbstractUserListes<NetworkAccess> {
 
     private static final long serialVersionUID = -1774633803227715931L;

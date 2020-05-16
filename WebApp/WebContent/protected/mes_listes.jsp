@@ -184,33 +184,33 @@
 
                 <c:if test="${empty entities}">
                     <div>
-                        <p>Aucune liste trouvée...</p>
-                        <p>
-                            Vous pouvez entrer un nouveau nom ci-dessous, ou cliquer sur <a href="protected/mes_listes">ce
+                        <p class="alert alert-danger">Aucune liste trouvée...</p>
+                        <p class="alert alert-info">
+                            Vous pouvez entrer un nouveau nom ci-dessous, ou cliquer sur <a href="protected/afficher_reseau?id=${connected_user.id}">ce
                             lien</a>
-                            pour afficher toutes vos listes.
+                            pour afficher tous vos amis.
                         </p>
                     </div>
                 </c:if>
                 <c:if test="${not is_mobile}">
                     <script type="text/javascript">
-						$(document).ready(function() {
-							$("#bottom_mes_listes_search").autocomplete({
-								source : "protected/service/name_resolver",
-								minLength : 2,
-								position: { my : "left bottom", at: "left top", of : "#bottom_mes_listes_search" },
-								select : function(event, ui) {
-									$("#bottom_mes_listes_search").val(ui.item.email);
-									$("#afficherliste_bottommeslistes").submit();
-									return false;
-								}
-							}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-								return $( "<li class=\"ui-menu-item\"></li>" )
-								.data( "item.autocomplete", item )  
-								.append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
-								.appendTo( ul );
-							};
-						});
+                        $(document).ready(function() {
+                            $("#bottom_mes_listes_search").autocomplete({
+                                source : "protected/service/name_resolver",
+                                minLength : 2,
+                                position: { my : "left bottom", at: "left top", of : "#bottom_mes_listes_search" },
+                                select : function(event, ui) {
+                                    $("#bottom_mes_listes_search").val(ui.item.email);
+                                    $("#afficherliste_bottommeslistes").submit();
+                                    return false;
+                                }
+                            }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                                return $( "<li class=\"ui-menu-item\"></li>" )
+                                .data( "item.autocomplete", item )
+                                .append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
+                                .appendTo( ul );
+                            };
+                        });
                     </script>
                     <div class="alert alert-warning">
                         <div class="row align-items-center">
