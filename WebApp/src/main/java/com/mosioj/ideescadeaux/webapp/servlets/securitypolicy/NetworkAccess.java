@@ -6,20 +6,13 @@ import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 
 public final class NetworkAccess extends SecurityPolicy implements UserSecurityChecker {
 
-    private static final Logger logger = LogManager.getLogger(NetworkAccess.class);
-
-    /**
-     * Defines the string used in HttpServletRequest to retrieve the user id.
-     */
+    /** Defines the string used in HttpServletRequest to retrieve the user id. */
     private final String userParameter;
 
     private User friend;
@@ -31,7 +24,7 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
         this.userParameter = userParameter;
     }
 
-    private boolean hasAccess(HttpServletRequest request) throws SQLException {
+    private boolean hasAccess(HttpServletRequest request) {
 
         friend = ParametersUtils.readInt(request, userParameter).flatMap(UsersRepository::getUser).orElse(null);
         if (friend == null) {
@@ -51,22 +44,12 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 
     @Override
     public boolean hasRightToInteractInPostRequest(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            return hasAccess(request);
-        } catch (SQLException e) {
-            logger.error("Cannot process checking, SQLException: " + e);
-            return false;
-        }
+        return hasAccess(request);
     }
 
     @Override
     public boolean hasRightToInteractInGetRequest(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            return hasAccess(request);
-        } catch (SQLException e) {
-            logger.error("Cannot process checking, SQLException: " + e);
-            return false;
-        }
+        return hasAccess(request);
     }
 
     @Override

@@ -1,5 +1,26 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -7,29 +28,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
 
 public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeauxGetAndPostServlet<P> {
 
@@ -81,7 +79,8 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
         return from;
     }
 
-    protected void fillIdeaOrErrors(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+    protected void fillIdeaOrErrors(HttpServletRequest request,
+                                    HttpServletResponse response) throws ServletException, SQLException, IOException {
 
         errors.clear();
 
@@ -149,31 +148,34 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
      * @param idea  The idea.
      * @param isNew Whether this is a new idea or not.
      */
-    protected void addModificationNotification(User user, Idee idea, boolean isNew) throws SQLException {
+    protected void addModificationNotification(User user, Idee idea, boolean isNew) {
         if (isBirthdayClose(user)) {
             // Send a notification for each user that has no such modification notification yet
-            UserRelationsRepository.getAllUsersInRelation(user)
-                                   .parallelStream()
-                                   .filter(u -> {
-                                       try {
-                                           return NotificationsRepository.getNotifications(u.id,
-                                                                                                 NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                                                                 ParameterName.IDEA_ID,
-                                                                                                 idea.getId())
-                                                                               .size() == 0;
-                                       } catch (SQLException e) {
-                                           e.printStackTrace();
-                                           logger.error("Fail to add a notification: " + e.getMessage());
-                                           return false;
-                                       }
-                                   })
-                                   .forEach(u ->
-                                                    NotificationsRepository.addNotification(u.id,
-                                                                                            new NotifIdeaModifiedWhenBirthdayIsSoon(
-                                                                                                    user,
-                                                                                                    idea,
-                                                                                                    isNew))
-                                   );
+            final List<User> users = UserRelationsRepository.getAllUsersInRelation(user);
+            users.parallelStream()
+                 .filter(u -> hasIdeaModifiedNotifForThis(u, idea))
+                 .forEach(u -> NotificationsRepository.addNotification(u.id,
+                                                                       new NotifIdeaModifiedWhenBirthdayIsSoon(user,
+                                                                                                               idea,
+                                                                                                               isNew))
+                 );
+        }
+    }
+
+    /**
+     * @param user The user.
+     * @param idea The idea.
+     * @return True if it already has and if no error occured.
+     */
+    private boolean hasIdeaModifiedNotifForThis(User user, Idee idea) {
+        try {
+            return NotificationsRepository.getNotifications(user.id,
+                                                            NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
+                                                            ParameterName.IDEA_ID,
+                                                            idea.getId()).size() == 0;
+        } catch (SQLException e) {
+            logger.error("Fail to add a notification.", e);
+            return false;
         }
     }
 

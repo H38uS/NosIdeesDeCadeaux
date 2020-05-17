@@ -1,12 +1,15 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
@@ -18,15 +21,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 @WebServlet("/protected/service/ajouter_idee")
-public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
+public class ServiceAjouterIdee extends AbstractIdea<NetworkAccess> {
 
     /** Class logger. */
     private static final Logger logger = LogManager.getLogger(AjouterIdee.class);
 
+    public static final String USER_PARAMETER = "id";
+
     public ServiceAjouterIdee() {
-        super(new AllAccessToPostAndGet());
+        super(new NetworkAccess(USER_PARAMETER));
     }
 
     @Override
@@ -38,6 +44,9 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
 
         ServiceResponse<?> sr;
+
+        final User addedToUser = policy.getUser();
+        final boolean isItByMeForMe = thisOne.equals(addedToUser);
 
         try {
             // Check that we have a file upload request
@@ -53,28 +62,38 @@ public class ServiceAjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                     message.append("</ul>");
                     sr = ServiceResponse.ko(message.toString(), isAdmin(request), thisOne);
                 } else {
-                    int ideaId = IdeesRepository.addIdea(thisOne,
+
+                    // Ajout de l'idée
+                    boolean estSurprise = "on".equals(parameters.get("est_surprise")) && !isItByMeForMe;
+                    int ideaId = IdeesRepository.addIdea(addedToUser,
                                                          parameters.get("text"),
                                                          parameters.get("type"),
                                                          Integer.parseInt(parameters.get("priority")),
                                                          parameters.get("image"),
-                                                         null,
+                                                         estSurprise ? thisOne : null,
                                                          thisOne);
                     logger.info("Idea {} [{} / {} / {}] added.",
                                 ideaId,
                                 parameters.get("text"),
                                 parameters.get("type"),
                                 parameters.get("priority"));
-                    IdeesRepository.getIdeaWithoutEnrichment(ideaId).ifPresent(
-                            i -> {
-                                try {
-                                    addModificationNotification(thisOne, i, true);
-                                } catch (SQLException e) {
-                                    logger.error(e);
-                                }
-                            }
-                    );
-                    NotificationsRepository.removeAllType(thisOne, NotificationType.NO_IDEA);
+
+                    // Gestion des notifications
+                    final Optional<Idee> idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
+                    idea.ifPresent(i -> addModificationNotification(addedToUser, i, true));
+                    if (isItByMeForMe) {
+                        // Pour soit : uniquement la notif plus d'idée
+                        NotificationsRepository.removeAllType(thisOne, NotificationType.NO_IDEA);
+                    } else {
+                        // Si ce n'est pas une surprise, envoie de notification
+                        // Et suppression des notifications NO_IDEA
+                        idea.filter(i -> !estSurprise).ifPresent(i -> {
+                            NotificationsRepository.addNotification(addedToUser.id,
+                                                                    new NotifIdeaAddedByFriend(thisOne, i));
+                            NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
+                        });
+                    }
+
                     sr = ServiceResponse.ok(ideaId, isAdmin(request), thisOne);
                 }
             } else {

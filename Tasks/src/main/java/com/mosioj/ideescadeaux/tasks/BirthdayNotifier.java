@@ -79,23 +79,19 @@ public class BirthdayNotifier {
      * @param nbDays The number of days before the birthday comes.
      */
     private void sendMailToFriends(User user, int nbDays) {
-        try {
-            logger.info(MessageFormat.format("L''anniversaire {0} ({1}) arrive dans {2} jours !",
-                                             user.getMyDName(),
-                                             user.id,
-                                             nbDays));
-            UserRelationsRepository.getAllUsersInRelation(user)
-                                   .parallelStream()
-                                   .forEach(u -> {
-                                       try {
-                                           sendMail(u, user, nbDays).get();
-                                       } catch (InterruptedException | ExecutionException e) {
-                                           logger.error(e);
-                                       }
-                                   });
-        } catch (SQLException e) {
-            logger.error(MessageFormat.format("Fail to get the user list: {0}", e.getMessage()));
-        }
+        logger.info(MessageFormat.format("L''anniversaire {0} ({1}) arrive dans {2} jours !",
+                                         user.getMyDName(),
+                                         user.id,
+                                         nbDays));
+        UserRelationsRepository.getAllUsersInRelation(user)
+                               .parallelStream()
+                               .forEach(u -> {
+                                   try {
+                                       sendMail(u, user, nbDays).get();
+                                   } catch (InterruptedException | ExecutionException e) {
+                                       logger.error(e);
+                                   }
+                               });
     }
 
     /**

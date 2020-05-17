@@ -650,11 +650,11 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param user The user.
      * @return All user friends, without him.
      */
-    public static List<User> getAllUsersInRelation(User user) throws SQLException {
+    public static List<User> getAllUsersInRelation(User user) {
         return getAllUsersInRelation(user, -1, -1);
     }
 
-    public static List<User> getAllUsersInRelation(User user, int firstRow, int limit) throws SQLException {
+    public static List<User> getAllUsersInRelation(User user, int firstRow, int limit) {
 
         List<User> users = new ArrayList<>();
         PreparedStatementIdKdo ps = null;
@@ -694,6 +694,8 @@ public class UserRelationsRepository extends AbstractRepository {
                                        res.getString(UsersColumns.AVATAR.name())));
                 }
             }
+        } catch (SQLException e) {
+            logger.error(e);
         } finally {
             if (ps != null) {
                 ps.close();

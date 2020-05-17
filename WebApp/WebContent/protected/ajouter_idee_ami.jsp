@@ -31,8 +31,10 @@
             </div>
         </c:if>
         <h3>Ajouter une nouvelle idée à <a href="protected/voir_liste?id=${user.id}">${user.name}</a></h3>
+        <div id="idea_creation_result" class="container">
+        </div>
         <div class="container border border-info bg-light rounded mb-2 p-3">
-            <form class="mw-50" action="protected/ajouter_idee_ami?id=${user.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
+            <form class="mw-50" action="protected/ajouter_idee_ami?id=${user.id}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
                     <textarea id="text" class="form-control" name="text" cols="70" rows="6"></textarea>
@@ -72,7 +74,7 @@
                     </div>
                 </div>
                 <div class="center">
-                    <button type="submit" class="btn btn-primary" name="submit" id="submit">Ajouter</button>
+                    <button type="submit" class="btn btn-primary post_idea" name="submit" id="submit">Ajouter</button>
                 </div>
             </form>
         </div>

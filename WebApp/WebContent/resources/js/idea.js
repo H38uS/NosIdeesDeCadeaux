@@ -770,7 +770,9 @@ $(document).ready(function() {
 
     var theForm = $(".post_idea").closest('form');
     if (typeof theForm.attr("action") !== 'undefined') {
-        theForm.attr("action", theForm.attr("action").replace("protected/", "protected/service/"));
+        theForm.attr("action", theForm.attr("action")
+                                      .replace("protected/", "protected/service/")
+                                      .replace("ajouter_idee_ami", "ajouter_idee")); // service mutualisé
         $(".post_idea").click(function (e) {
             e.preventDefault();
             var form = $(this).closest('form');

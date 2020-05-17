@@ -79,18 +79,10 @@ public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                                                      null,
                                                      user);
 
-                IdeesRepository.getIdeaWithoutEnrichment(ideaId).ifPresent(
-                        i -> {
-                            try {
-                                addModificationNotification(user, i, true);
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                                logger.error(e);
-                            }
-                        }
-                );
-
+                IdeesRepository.getIdeaWithoutEnrichment(ideaId)
+                               .ifPresent(i -> addModificationNotification(user, i, true));
                 NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
+
                 RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
                                              "?" +
                                              VoirListe.USER_ID_PARAM +
