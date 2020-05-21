@@ -46,9 +46,10 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         int group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
         IdeesRepository.bookByGroup(id, group);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
-        int notifId = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifGroupEvolution(moiAutre, group, idee, true));
+        int notifId = NotificationsRepository.addNotification(_FRIEND_ID_,
+                                                              new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);
-        assertEquals(GroupIdeaRepository.getGroupDetails(group), idee.getGroupKDO());
+        assertEquals(GroupIdeaRepository.getGroupDetails(group), idee.getBookingInformation().getBookingGroup());
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
 
@@ -71,15 +72,25 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
-        int isUpToDate = NotificationsRepository.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
-        int confirmedUpToDate = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifConfirmedUpToDate(firefox, idee));
-        int groupSuggestion = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifGroupSuggestion(firefox, 0, idee));
-        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));
+        int isUpToDate = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                 new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+        int confirmedUpToDate = NotificationsRepository.addNotification(_FRIEND_ID_,
+                                                                        new NotifConfirmedUpToDate(firefox, idee));
+        int groupSuggestion = NotificationsRepository.addNotification(_FRIEND_ID_,
+                                                                      new NotifGroupSuggestion(firefox, 0, idee));
+        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                  new NotifIdeaAddedByFriend(moiAutre, idee));
         int modifiedWhenBDSoon = NotificationsRepository.addNotification(_FRIEND_ID_,
-                                                                         new NotifIdeaModifiedWhenBirthdayIsSoon(firefox, idee, false));
+                                                                         new NotifIdeaModifiedWhenBirthdayIsSoon(firefox,
+                                                                                                                 idee,
+                                                                                                                 false));
         int newComment = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNewCommentOnIdea(firefox, idee));
-        int newQuestion = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNewQuestionOnIdea(friendOfFirefox, idee, true));
-        int recurentUnbook = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifRecurentIdeaUnbook(firefox, idee));
+        int newQuestion = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                  new NotifNewQuestionOnIdea(friendOfFirefox,
+                                                                                             idee,
+                                                                                             true));
+        int recurentUnbook = NotificationsRepository.addNotification(_FRIEND_ID_,
+                                                                     new NotifRecurentIdeaUnbook(firefox, idee));
 
         assertTrue(isUpToDate > -1);
         assertNotifDoesExists(isUpToDate);

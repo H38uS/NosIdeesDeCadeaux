@@ -1,10 +1,14 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.google.gson.annotations.Expose;
+import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BookingInformation {
 
@@ -40,6 +44,35 @@ public class BookingInformation {
     }
 
     /**
+     * @param ideaId The idea identifier.
+     * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
+     */
+    public List<User> getBookers(int ideaId) {
+        if (type == BookingType.SINGLE_PERSON) {
+            return getBookingOwner().isPresent() ? Collections.singletonList(getBookingOwner().get()) : Collections.emptyList();
+        }
+        if (type == BookingType.GROUP) {
+            final List<Share> shares = getBookingGroup().map(IdeaGroup::getShares).orElse(Collections.emptyList());
+            return shares.stream().map(Share::getUser).collect(Collectors.toList());
+        }
+        if (type == BookingType.PARTIAL) {
+            return SousReservationRepository.getSousReservation(ideaId)
+                                            .stream()
+                                            .map(SousReservationEntity::getUser)
+                                            .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     *
+     * @return True if and only if this idea is booked somehow.
+     */
+    public boolean isBooked() {
+        return type != BookingType.NONE;
+    }
+
+    /**
      * @return The booking type.
      */
     public BookingType getBookingType() {
@@ -47,7 +80,6 @@ public class BookingInformation {
     }
 
     /**
-     *
      * @return The booking owner if any.
      */
     public Optional<User> getBookingOwner() {
@@ -55,7 +87,6 @@ public class BookingInformation {
     }
 
     /**
-     *
      * @return The booking group if any.
      */
     public Optional<IdeaGroup> getBookingGroup() {

@@ -47,23 +47,18 @@ public class JSPAccessortTest extends TemplateTest {
                           u,
                           "toto",
                           null,
-                          null,
                           "toto.png",
                           null,
                           TS20191212_0829,
-                          TS20191212_0829,
-                          null,
                           null,
                           null);
         Assert.assertFalse(i.hasAskedIfUpToDate());
         Assert.assertFalse(i.hasComment());
         Assert.assertFalse(i.hasQuestion());
         Assert.assertEquals("", i.getDisplayClass());
-        Assert.assertEquals("12 décembre 2019 à 08h29", i.getBookingDate());
         Assert.assertEquals("12 décembre 2019 à 08h29", i.getModificationDate());
         Assert.assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertEquals("large/toto.png", i.getImageSrcLarge());
-        Assert.assertEquals(-1, i.getGroupKDOId());
         Assert.assertNull(i.getCategory());
     }
 

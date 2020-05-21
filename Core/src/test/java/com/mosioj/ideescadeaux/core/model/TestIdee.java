@@ -25,7 +25,7 @@ public class TestIdee extends TemplateTest {
     }
 
     private Idee ideaFactory(String text) {
-        return new Idee(1, null, text, null, null, null, null, null, null, null, null, null);
+        return new Idee(1, null, text, null, null, null, null, null, null);
     }
 
 }

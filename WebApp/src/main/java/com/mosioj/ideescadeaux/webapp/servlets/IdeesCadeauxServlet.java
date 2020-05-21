@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.webapp.servlets;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priorite;
-import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
@@ -284,32 +283,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         } catch (SQLException e) {
             logger.error(e);
         }
-
-        if (idee.isBooked()) {
-            idee.displayClass = "booked_by_others_idea";
-            idee.getBookingOwner().ifPresent(o -> {
-                // Réservé par soit !
-                if (user.equals(o)) {
-                    idee.displayClass = "booked_by_me_idea";
-                }
-            });
-            idee.getGroupKDO().ifPresent(g -> {
-                if (g.contains(user)) {
-                    // On fait parti du groupe
-                    idee.displayClass = "booked_by_me_idea";
-                } else {
-                    idee.displayClass = "shared_booking_idea";
-                }
-            });
-        } else if (idee.isPartiallyBooked()) {
-            List<SousReservationEntity> resa = SousReservationRepository.getSousReservation(idee.getId());
-            idee.displayClass = "shared_booking_idea";
-            // On fait parti de la sous-réservation
-            resa.stream()
-                .filter(r -> user.equals(r.getUser()))
-                .forEach(r -> idee.displayClass = "booked_by_me_idea");
-        }
-        // Sinon, on laisse la class par défaut
 
         if (isFromAMobileDevice) {
             Priorite priorite = idee.getPriorite();

@@ -1,15 +1,13 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 import java.sql.Timestamp;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class Idee {
 
@@ -57,54 +55,25 @@ public class Idee {
     /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     private final String text;
 
-    // FIXME : supprimer ces champs et utiliser BookingInformation de partout
-    // sera fait de base quand on utilisera le js pour construire les idées
-    private final User bookingOwner;
-    private final IdeaGroup group;
-    private final Timestamp bookedOn;
-    private final boolean isPartiallyBooked;
-
     public Idee(int pId,
                 User owner,
                 String pText,
                 Categorie categorie,
-                User pBookingOwner,
                 String image,
                 Priorite priorite,
-                Timestamp bookedOn,
                 Timestamp lastModified,
-                String isPartiallyBooked,
-                IdeaGroup group,
-                User surpriseBy) {
-        // FIXME refactor utiliser uniquement BookingInformation, et directement depuis IdeesRepository
+                User surpriseBy,
+                BookingInformation bookingInformation) {
         id = pId;
         text = pText;
         this.categorie = categorie;
         htmlText = Escaper.interpreteMarkDown(text);
-        bookingOwner = pBookingOwner;
         this.image = image;
         this.owner = owner;
         this.priorite = priorite;
-        this.bookedOn = bookedOn;
-        this.isPartiallyBooked = "Y".equals(isPartiallyBooked);
         this.surpriseBy = surpriseBy;
         modificationDate = MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
-        this.group = group;
-
-        // Compute the type
-        if (bookingOwner == null) {
-            if (group == null) {
-                if (this.isPartiallyBooked) {
-                    bookingInformation = BookingInformation.fromAPartialReservation(bookedOn);
-                } else {
-                    bookingInformation = BookingInformation.noBooking();
-                }
-            } else {
-                bookingInformation = BookingInformation.fromAGroup(group, bookedOn);
-            }
-        } else {
-            bookingInformation = BookingInformation.fromASingleUser(bookingOwner, bookedOn);
-        }
+        this.bookingInformation = bookingInformation;
     }
 
     /**
@@ -139,26 +108,10 @@ public class Idee {
      * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
      */
     public List<User> getBookers() {
-        List<User> bookers = new ArrayList<>();
-
-        if (isBooked()) {
-            // Ajout de la personne qui a réservé
-            getBookingOwner().ifPresent(bookers::add);
-            // Ajout de toutes les personnes qui sont dans le groupe
-            getGroupKDO().ifPresent(g -> g.getShares().forEach(s -> bookers.add(s.getUser())));
-        } else if (isPartiallyBooked()) {
-            // Réservé par plusieurs personnes, mais pas dans un groupe
-            SousReservationRepository.getSousReservation(getId()).forEach(s -> bookers.add(s.user));
+        if (getBookingInformation() != null) {
+            return getBookingInformation().getBookers(getId());
         }
-
-        return bookers;
-    }
-
-    /**
-     * @return True if the idea is booked (by a owner, or a group)
-     */
-    public boolean isBooked() {
-        return bookingOwner != null || group != null;
+        return Collections.emptyList();
     }
 
     public Priorite getPriorite() {
@@ -174,14 +127,6 @@ public class Idee {
 
     public int getId() {
         return id;
-    }
-
-    public boolean isPartiallyBooked() {
-        return isPartiallyBooked;
-    }
-
-    public String getBookingDate() {
-        return MyDateFormatViewer.formatMine(bookedOn);
     }
 
     /**
@@ -262,24 +207,6 @@ public class Idee {
      */
     public User getOwner() {
         return owner;
-    }
-
-    /**
-     * @return The person who booked this idea. Null if nobodies books it, or if a group did it.
-     */
-    public Optional<User> getBookingOwner() {
-        return Optional.ofNullable(bookingOwner);
-    }
-
-    public Optional<IdeaGroup> getGroupKDO() {
-        return Optional.ofNullable(group);
-    }
-
-    /**
-     * @return The reservation group ID or -1 if it does not exist.
-     */
-    public int getGroupKDOId() {
-        return getGroupKDO().map(IdeaGroup::getId).orElse(-1);
     }
 
     /**

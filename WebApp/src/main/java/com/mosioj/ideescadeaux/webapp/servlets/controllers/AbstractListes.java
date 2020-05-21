@@ -1,23 +1,21 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Defines a generic base class that handle multiple pages based on the maximum rows returned.
@@ -138,6 +136,6 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
         sb.deleteCharAt(sb.length() - 1);
         req.setAttribute("identic_call_back", sb);
 
-        RootingsUtils.rootToPage(getViewPageURL(), req, resp); // FIXME : utiliser du json
+        RootingsUtils.rootToPage(getViewPageURL(), req, resp); // FIXME : utiliser du json - fait pour les idées
     }
 }

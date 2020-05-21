@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,21 +68,36 @@ public class IdeesRepository extends AbstractRepository {
                                       rs.getString(CategoriesColumns.TITLE.name()));
         }
 
+        // Computing the booking information
+        final boolean isPartiallyBooked = "Y".equals(rs.getString(IdeeColumns.A_SOUS_RESERVATION.name()));
+        final Timestamp bookedOn = rs.getTimestamp(IdeeColumns.RESERVE_LE.name());
+        BookingInformation bookingInformation;
+        if (bookingOwner == null) {
+            if (group == null) {
+                if (isPartiallyBooked) {
+                    bookingInformation = BookingInformation.fromAPartialReservation(bookedOn);
+                } else {
+                    bookingInformation = BookingInformation.noBooking();
+                }
+            } else {
+                bookingInformation = BookingInformation.fromAGroup(group, bookedOn);
+            }
+        } else {
+            bookingInformation = BookingInformation.fromASingleUser(bookingOwner, bookedOn);
+        }
+
         return new Idee(rs.getInt(IdeeColumns.ID.name()),
                         owner,
                         Escaper.transformCodeToSmiley(rs.getString(IdeeColumns.IDEE.name())),
                         categorie,
-                        bookingOwner,
                         rs.getString("id_image"),
                         new Priorite(rs.getInt(IdeeColumns.PRIORITE.name()),
                                      rs.getString("PRIORITY_NAME"),
                                      rs.getString("PRIORITY_PICTURE"),
                                      rs.getInt("PRIORITY_ORDER")),
-                        rs.getTimestamp(IdeeColumns.RESERVE_LE.name()),
                         rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()),
-                        rs.getString(IdeeColumns.A_SOUS_RESERVATION.name()),
-                        group,
-                        surpriseBy);
+                        surpriseBy,
+                        bookingInformation);
     }
 
     /**

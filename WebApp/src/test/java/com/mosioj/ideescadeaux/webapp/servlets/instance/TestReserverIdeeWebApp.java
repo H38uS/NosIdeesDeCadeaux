@@ -36,7 +36,7 @@ public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
         idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
 
         assertNotifDoesNotExists(recurentUnbook);
-        assertTrue(idee.isBooked());
+        assertTrue(idee.getBookingInformation().isBooked());
     }
 
     @Test
@@ -44,13 +44,13 @@ public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
-        assertFalse(idee.isBooked());
+        assertFalse(idee.getBookingInformation().isBooked());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         doTestPost();
         idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
 
-        assertTrue(idee.isBooked());
+        assertTrue(idee.getBookingInformation().isBooked());
     }
 
 }

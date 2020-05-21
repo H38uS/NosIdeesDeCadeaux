@@ -144,4 +144,12 @@ public class DecoratedWebAppIdea {
     public Idee getIdee() {
         return idee;
     }
+
+    /**
+     *
+     * @return The computed display class.
+     */
+    public String getDisplayClass() {
+        return displayClass;
+    }
 }
