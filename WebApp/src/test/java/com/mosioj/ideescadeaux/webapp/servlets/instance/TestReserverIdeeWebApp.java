@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
+import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -36,7 +37,7 @@ public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
         idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
 
         assertNotifDoesNotExists(recurentUnbook);
-        assertTrue(idee.getBookingInformation().isBooked());
+        assertTrue(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
     }
 
     @Test
@@ -44,13 +45,13 @@ public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
-        assertFalse(idee.getBookingInformation().isBooked());
+        assertFalse(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         doTestPost();
         idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
 
-        assertTrue(idee.getBookingInformation().isBooked());
+        assertTrue(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
     }
 
 }

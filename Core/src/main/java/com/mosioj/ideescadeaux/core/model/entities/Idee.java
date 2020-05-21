@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class Idee {
 
@@ -108,10 +109,7 @@ public class Idee {
      * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
      */
     public List<User> getBookers() {
-        if (getBookingInformation() != null) {
-            return getBookingInformation().getBookers(getId());
-        }
-        return Collections.emptyList();
+        return getBookingInformation().map(bi -> bi.getBookers(getId())).orElse(Collections.emptyList());
     }
 
     public Priorite getPriorite() {
@@ -212,8 +210,8 @@ public class Idee {
     /**
      * @return The booking information of this idea.
      */
-    public BookingInformation getBookingInformation() {
-        return bookingInformation;
+    public Optional<BookingInformation> getBookingInformation() {
+        return Optional.ofNullable(bookingInformation);
     }
 
     /**

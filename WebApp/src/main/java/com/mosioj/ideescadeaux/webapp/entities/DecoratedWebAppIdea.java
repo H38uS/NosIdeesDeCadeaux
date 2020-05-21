@@ -99,13 +99,12 @@ public class DecoratedWebAppIdea {
         }
 
         // Classe lors d'une réservation complète par une personne
-        final BookingInformation bookingInfo = idee.getBookingInformation();
+        final BookingInformation bookingInfo = idee.getBookingInformation().orElse(BookingInformation.noBooking());
         if (bookingInfo.getBookingType() == BookingInformation.BookingType.SINGLE_PERSON) {
             return bookingInfo.getBookingOwner()
                               .filter(connectedUser::equals)
                               .map(u -> "booked_by_me_idea")
                               .orElse("booked_by_others_idea");
-
         }
 
         // Classe lors d'une réservation par un groupe
@@ -113,7 +112,6 @@ public class DecoratedWebAppIdea {
             return bookingInfo.getBookingGroup().filter(g -> g.contains(connectedUser))
                               .map(g -> "booked_by_me_idea")
                               .orElse("shared_booking_idea");
-
         }
 
         // Classe lors d'une sous-réservation par au moins une personne
@@ -146,7 +144,6 @@ public class DecoratedWebAppIdea {
     }
 
     /**
-     *
      * @return The computed display class.
      */
     public String getDisplayClass() {

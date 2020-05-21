@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.*;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
@@ -49,7 +50,8 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_,
                                                               new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);
-        assertEquals(GroupIdeaRepository.getGroupDetails(group), idee.getBookingInformation().getBookingGroup());
+        assertEquals(GroupIdeaRepository.getGroupDetails(group),
+                     idee.getBookingInformation().flatMap(BookingInformation::getBookingGroup));
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
 
