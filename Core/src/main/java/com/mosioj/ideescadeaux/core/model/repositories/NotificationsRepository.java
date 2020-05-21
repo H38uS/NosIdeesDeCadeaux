@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class NotificationsRepository extends AbstractRepository {
 
@@ -260,7 +261,6 @@ public class NotificationsRepository extends AbstractRepository {
      * @return True if and only if the user has already receive this notification.
      */
     public static List<AbstractNotification> findNotificationMatching(int userId, AbstractNotification notif) {
-        List<AbstractNotification> res = new ArrayList<>();
         try {
             List<AbstractNotification> found = getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
                                                                                                    NotificationsColumns.TYPE,
@@ -268,25 +268,18 @@ public class NotificationsRepository extends AbstractRepository {
                                                                               notif.getType(),
                                                                               userId);
 
+            // les constructions de paramètres depuis la base sont forcément en <ParameterName, String>
             final Map<ParameterName, Object> parameters = notif.getParameters();
+            final Map<ParameterName, String> typedParameters = new HashMap<>();
+            parameters.forEach((key, value) -> typedParameters.put(key, value == null ? null : value.toString()));
 
-            // On ne garde que celles qui ont les paramètres et leur valeur
-            found.forEach(n -> {
-                if (!n.getParameters().keySet().containsAll(parameters.keySet())) {
-                    return;
-                }
-                for (ParameterName name : parameters.keySet()) {
-                    if (!n.getParameters().get(name).equals(parameters.get(name))) {
-                        return;
-                    }
-                }
-                res.add(n);
-            });
+            // On ne conserve que ceux qui matchent les paramètres
+            return found.stream().filter(n -> n.getParameters().equals(typedParameters)).collect(Collectors.toList());
+
         } catch (SQLException e) {
-            e.printStackTrace();
-            logger.warn(e);
+            logger.error(e);
         }
-        return res;
+        return Collections.emptyList();
     }
 
     /**

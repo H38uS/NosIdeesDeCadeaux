@@ -1,15 +1,15 @@
 package com.mosioj.ideescadeaux.core.model.notifications;
 
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAdministration;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Map;
-
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAdministration;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class NotificationFactory {
 
@@ -19,11 +19,11 @@ public class NotificationFactory {
     }
 
     /**
-     * @param id The notification id.
-     * @param owner The owner.
-     * @param type The notification type.
-     * @param text The notification text.
-     * @param readOn When it has been read.
+     * @param id       The notification id.
+     * @param owner    The owner.
+     * @param type     The notification type.
+     * @param text     The notification text.
+     * @param readOn   When it has been read.
      * @param isUnread If it has been read.
      * @return A new notification object based on the database content.
      */
