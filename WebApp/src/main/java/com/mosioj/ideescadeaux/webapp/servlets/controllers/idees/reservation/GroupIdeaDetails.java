@@ -66,7 +66,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
             request.getSession().removeAttribute("errors");
         }
 
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId()).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
         User user = thisOne;
 
         // Suppression des notif's si y'en a
@@ -107,7 +107,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                       ParameterName.USER_ID,
                                                       thisOne);
 
-                IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId())
+                IdeesRepository.getIdeaFromGroup(group.getId())
                                .ifPresent(idee -> group.getShares().parallelStream().forEach(s -> {
                                    try {
                                        NotificationsRepository.addNotification(s.getUser().id,
@@ -161,7 +161,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                       ParameterName.USER_ID,
                                                       thisOne);
 
-                IdeesRepository.getIdeaWithoutEnrichmentFromGroup(group.getId())
+                IdeesRepository.getIdeaFromGroup(group.getId())
                                .ifPresent(idee -> group.getShares()
                                                        .parallelStream()
                                                        .filter(s -> !s.getUser().equals(thisOne))

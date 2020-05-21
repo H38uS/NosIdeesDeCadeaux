@@ -1,5 +1,23 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -8,28 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
-
-import static com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository.getIdeaWithoutEnrichmentFromGroup;
+import static com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository.getIdeaFromGroup;
 import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationMatching;
 
 @WebServlet("/protected/suggerer_groupe_idee")
@@ -49,22 +46,19 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
 
         IdeaGroup group = policy.getGroupId();
-        logger.debug("Getting details for idea group " + group.getId() + "...");
+        logger.debug("Getting details for idea group {}...", group.getId());
 
-        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId()).orElseThrow(SQLException::new);
-        User user = thisOne;
-        IdeesCadeauxServlet.fillAUserIdea(user, idee, device.isMobile());
-
-        // La notification qu'on va envoyer
-        NotifGroupSuggestion suggestion = new NotifGroupSuggestion(user, group.getId(), idee);
+        Idee idee = getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
 
         // Tous les utilisateurs qui peuvent être intéressés
-        List<User> candidates = IdeesRepository.getPotentialGroupUser(group.getId(), user.id);
+        List<User> candidates = IdeesRepository.getPotentialGroupUser(group.getId(), thisOne.id);
 
-        // On conserve que ceux qui n'ont pas la notification
+        // On conserve que ceux qui n'ont pas encore de notifications
+        NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, group.getId(), idee);
         candidates = candidates.stream()
                                .filter(toRemove -> findNotificationMatching(toRemove.id, suggestion).size() == 0)
                                .collect(Collectors.toList());
@@ -79,11 +73,11 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         IdeaGroup group = policy.getGroupId();
-        Idee idee = getIdeaWithoutEnrichmentFromGroup(group.getId()).orElseThrow(SQLException::new);
-        IdeesCadeauxServlet.fillAUserIdea(thisOne, idee, device.isMobile());
+        Idee idee = getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
 
         List<Integer> selectedUsers = new ArrayList<>();
         Map<String, String[]> params = request.getParameterMap();

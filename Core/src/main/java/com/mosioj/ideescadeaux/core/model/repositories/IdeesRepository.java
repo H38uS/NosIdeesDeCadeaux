@@ -277,7 +277,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param groupId The booking group's id.
      * @return The idea id of the idea booked by this group.
      */
-    public static Optional<Idee> getIdeaWithoutEnrichmentFromGroup(int groupId) throws SQLException {
+    public static Optional<Idee> getIdeaFromGroup(int groupId) throws SQLException {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format(" where i.{0} = ( ", IdeeColumns.ID));
