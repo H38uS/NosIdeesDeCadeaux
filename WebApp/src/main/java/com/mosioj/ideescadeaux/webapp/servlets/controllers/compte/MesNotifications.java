@@ -1,23 +1,22 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.ChildNotifications;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.ChildNotifications;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet("/protected/mes_notifications")
 public class MesNotifications extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
@@ -34,21 +33,25 @@ public class MesNotifications extends IdeesCadeauxGetServlet<AllAccessToPostAndG
 
     @Override
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+
         int userId = thisOne.id;
         req.setAttribute("unread_notifications", NotificationsRepository.getUserUnReadNotifications(userId));
         req.setAttribute("read_notifications", NotificationsRepository.getUserReadNotifications(userId));
 
-        List<ChildNotifications> children = new ArrayList<>();
-        ParentRelationshipRepository.getChildren(userId).forEach(c -> {
-            try {
-                children.add(new ChildNotifications(c, NotificationsRepository.getUserNotifications(c.id)));
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                e.printStackTrace();
-            }
-        });
-        req.setAttribute("child_notifications", children);
+        List<ChildNotifications> childNotif = ParentRelationshipRepository.getChildren(userId)
+                                                                          .stream()
+                                                                          .map(this::getChildNotifications)
+                                                                          .collect(Collectors.toList());
 
+        req.setAttribute("child_notifications", childNotif);
         RootingsUtils.rootToPage(VIEW_URL, req, resp);
+    }
+
+    /**
+     * @param theChild The child user.
+     * @return This user bounded to its notifications.
+     */
+    private ChildNotifications getChildNotifications(User theChild) {
+        return new ChildNotifications(theChild, NotificationsRepository.getUserNotifications(theChild));
     }
 }

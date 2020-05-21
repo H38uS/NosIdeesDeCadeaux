@@ -73,7 +73,7 @@ public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
     }
 
     protected long countNewInscriptionNotification() throws SQLException {
-        return NotificationsRepository.getUserNotifications(_ADMIN_ID_)
+        return NotificationsRepository.getUserNotifications(theAdmin)
                                       .stream()
                                       .filter(n -> NotifAdministration.class.equals(n.getClass()))
                                       .count();

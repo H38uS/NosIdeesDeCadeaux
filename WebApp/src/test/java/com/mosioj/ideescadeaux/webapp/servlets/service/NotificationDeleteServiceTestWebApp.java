@@ -21,7 +21,7 @@ public class NotificationDeleteServiceTestWebApp extends AbstractTestServletWebA
     @Test
     public void testDeleteSuccess() throws SQLException {
 
-        AbstractNotification n = NotificationsRepository.getUserNotifications(firefox.id).get(0);
+        AbstractNotification n = NotificationsRepository.getUserNotifications(firefox).get(0);
         when(request.getParameter(NotificationDeleteService.NOTIFICATION_PARAMETER)).thenReturn(n.id + "");
 
         StringServiceResponse resp = doTestServicePost();

@@ -43,6 +43,7 @@ public class WebAppTemplateTest {
      * The admin user.
      */
     protected static final int _ADMIN_ID_ = 1;
+    protected User theAdmin;
 
     protected static DataSourceIdKDo ds;
 
@@ -51,6 +52,7 @@ public class WebAppTemplateTest {
             friendOfFirefox = UsersRepository.getUser(_FRIEND_ID_).orElseThrow(SQLException::new);
             firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
             moiAutre = UsersRepository.getUser(_MOI_AUTRE_).orElseThrow(SQLException::new);
+            theAdmin = UsersRepository.getUser(_ADMIN_ID_).orElseThrow(SQLException::new);
         } catch (SQLException e) {
             Assert.fail("Fail to retrieve the friend of Firefox");
         }

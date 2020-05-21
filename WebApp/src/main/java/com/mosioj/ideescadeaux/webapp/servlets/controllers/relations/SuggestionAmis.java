@@ -73,7 +73,7 @@ public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
             UserRelationsSuggestionRepository.removeIfExists(userId, ignore);
         }
 
-        List<AbstractNotification> notifications = NotificationsRepository.getUserNotifications(userId);
+        List<AbstractNotification> notifications = NotificationsRepository.getUserNotifications(thisOne);
         for (AbstractNotification n : notifications) {
             if (n instanceof NotifNewRelationSuggestion) {
                 NotifNewRelationSuggestion notification = (NotifNewRelationSuggestion) n;

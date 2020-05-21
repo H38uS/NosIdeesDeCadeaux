@@ -410,11 +410,16 @@ public class NotificationsRepository extends AbstractRepository {
     }
 
     /**
-     * @param userId The user id.
+     * @param user The user.
      * @return All notifications for this user.
      */
-    public static List<AbstractNotification> getUserNotifications(int userId) throws SQLException {
-        return getNotificationWithWhereClause(MessageFormat.format("{0} = ?", NotificationsColumns.OWNER), userId);
+    public static List<AbstractNotification> getUserNotifications(User user) {
+        try {
+            return getNotificationWithWhereClause(MessageFormat.format("{0} = ?", NotificationsColumns.OWNER), user.id);
+        } catch (SQLException e) {
+            logger.error(e);
+            return Collections.emptyList();
+        }
     }
 
     /**
