@@ -23,7 +23,7 @@ public final class IdeaInteractionBookingUpToDate extends IdeaInteraction {
     protected boolean canInteractWithIdea(HttpServletRequest request,
                                           HttpServletResponse response) throws SQLException {
         if (super.canInteractWithIdea(request, response)) {
-            if (idea.getSurpriseBy() != null) {
+            if (idea.getSurpriseBy().isPresent()) {
                 lastReason = "Impossible de réserver / demander des nouvelles sur cette idée... Il s'agit d'une surprise !";
                 return false;
             }

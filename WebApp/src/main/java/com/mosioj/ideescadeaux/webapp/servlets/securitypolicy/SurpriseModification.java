@@ -44,7 +44,7 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
             return false;
         }
 
-        if (idea.getSurpriseBy() == null || !idea.getSurpriseBy().equals(connectedUser)) {
+        if (!connectedUser.equals(idea.getSurpriseBy().orElse(null))) {
             lastReason = "Vous n'avez pas créé cette surprise.";
             return false;
         }

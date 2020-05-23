@@ -68,8 +68,8 @@ public class Idee {
     /**
      * @return The owner of the surprise if it exists
      */
-    public User getSurpriseBy() {
-        return surpriseBy;
+    public Optional<User> getSurpriseBy() {
+        return Optional.ofNullable(surpriseBy);
     }
 
     /**
