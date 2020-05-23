@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class NameServiceTestWebApp extends AbstractTestServletWebApp {
+public class ServiceNameTestWebApp extends AbstractTestServletWebApp {
 
-    public NameServiceTestWebApp() {
-        super(new NameService());
+    public ServiceNameTestWebApp() {
+        super(new ServiceName());
     }
 
     @Test
     public void testShouldReturnNames() {
 
-        when(request.getParameter(NameService.NAME_OR_EMAIL)).thenReturn("jord");
+        when(request.getParameter(ServiceName.NAME_OR_EMAIL)).thenReturn("jord");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -36,7 +36,7 @@ public class NameServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testSingleSizeMatchesAll() {
 
-        when(request.getParameter(NameService.NAME_OR_EMAIL)).thenReturn("z");
+        when(request.getParameter(ServiceName.NAME_OR_EMAIL)).thenReturn("z");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -46,7 +46,7 @@ public class NameServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testDoubleSizeMatchesAll() {
 
-        when(request.getParameter(NameService.NAME_OR_EMAIL)).thenReturn("zz");
+        when(request.getParameter(ServiceName.NAME_OR_EMAIL)).thenReturn("zz");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -56,7 +56,7 @@ public class NameServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testPriority() {
 
-        when(request.getParameter(NameService.NAME_OR_EMAIL)).thenReturn("zmail.");
+        when(request.getParameter(ServiceName.NAME_OR_EMAIL)).thenReturn("zmail.");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -72,7 +72,7 @@ public class NameServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testAucunResultat() {
 
-        when(request.getParameter(NameService.NAME_OR_EMAIL)).thenReturn("totoàlaplage");
+        when(request.getParameter(ServiceName.NAME_OR_EMAIL)).thenReturn("totoàlaplage");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -82,7 +82,7 @@ public class NameServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testPasResultatCarPasMemeReseau() {
 
-        when(request.getParameter(NameService.NAME_OR_EMAIL)).thenReturn("pouet");
+        when(request.getParameter(ServiceName.NAME_OR_EMAIL)).thenReturn("pouet");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 

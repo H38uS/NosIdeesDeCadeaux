@@ -5,15 +5,15 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.when;
 
-public class RechercherPersonneServiceTestWebApp extends AbstractTestServletWebApp {
+public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebApp {
 
-    public RechercherPersonneServiceTestWebApp() {
-        super(new RechercherPersonneService());
+    public ServiceRechercherPersonneTestWebApp() {
+        super(new ServiceRechercherPersonne());
     }
 
     @Test
     public void testSuccess() {
-        when(request.getRequestDispatcher(RechercherPersonneService.FORM_URL_SERVICE)).thenReturn(dispatcher);
+        when(request.getRequestDispatcher(ServiceRechercherPersonne.FORM_URL_SERVICE)).thenReturn(dispatcher);
         when(request.getParameter("name")).thenReturn("est@toto.co");
         when(request.getParameter("only_non_friend")).thenReturn("nop");
         when(request.getParameter("name")).thenReturn("");
@@ -23,7 +23,7 @@ public class RechercherPersonneServiceTestWebApp extends AbstractTestServletWebA
 
     @Test
     public void testSuccessOnlyNonFriends() {
-        when(request.getRequestDispatcher(RechercherPersonneService.FORM_URL_SERVICE)).thenReturn(dispatcher);
+        when(request.getRequestDispatcher(ServiceRechercherPersonne.FORM_URL_SERVICE)).thenReturn(dispatcher);
         when(request.getParameter("name")).thenReturn("est@toto.co");
         when(request.getParameter("only_non_friend")).thenReturn("on");
         when(request.getParameter("name")).thenReturn("");

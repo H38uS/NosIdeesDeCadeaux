@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/name_resolver")
-public class NameService extends IdeesCadeauxGetServlet<NameServicePolicy> {
+public class ServiceName extends IdeesCadeauxGetServlet<NameServicePolicy> {
 
-    private static final Logger logger = LogManager.getLogger(NameService.class);
+    private static final Logger logger = LogManager.getLogger(ServiceName.class);
     private static final long serialVersionUID = 9147880158497428623L;
     public static final String NAME_OR_EMAIL = "term";
     public static final String OF_USER_ID = "userId";
 
-    public NameService() {
+    public ServiceName() {
         super(new NameServicePolicy(OF_USER_ID));
     }
 

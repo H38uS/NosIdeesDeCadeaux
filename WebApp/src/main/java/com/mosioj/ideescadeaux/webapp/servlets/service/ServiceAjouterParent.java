@@ -17,13 +17,13 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 
 @WebServlet("/protected/service/ajouter_parent")
-public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
+public class ServiceAjouterParent extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
 
     private static final long serialVersionUID = 7598797241503497392L;
-    private static final Logger logger = LogManager.getLogger(AjouterParentService.class);
+    private static final Logger logger = LogManager.getLogger(ServiceAjouterParent.class);
     public static final String NAME_OR_EMAIL = "name";
 
-    public AjouterParentService() {
+    public ServiceAjouterParent() {
         super(new AllAccessToPostAndGet());
     }
 

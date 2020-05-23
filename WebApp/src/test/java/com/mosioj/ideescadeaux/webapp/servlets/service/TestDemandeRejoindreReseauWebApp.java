@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp {
 
     public TestDemandeRejoindreReseauWebApp() {
-        super(new DemandeRejoindreReseauService());
+        super(new ServiceDemandeRejoindreReseau());
     }
 
     @Before

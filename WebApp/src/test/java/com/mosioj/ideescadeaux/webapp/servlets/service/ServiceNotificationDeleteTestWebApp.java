@@ -12,17 +12,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class NotificationDeleteServiceTestWebApp extends AbstractTestServletWebApp {
+public class ServiceNotificationDeleteTestWebApp extends AbstractTestServletWebApp {
 
-    public NotificationDeleteServiceTestWebApp() {
-        super(new NotificationDeleteService());
+    public ServiceNotificationDeleteTestWebApp() {
+        super(new ServiceNotificationDelete());
     }
 
     @Test
     public void testDeleteSuccess() throws SQLException {
 
         AbstractNotification n = NotificationsRepository.getUserNotifications(firefox).get(0);
-        when(request.getParameter(NotificationDeleteService.NOTIFICATION_PARAMETER)).thenReturn(n.id + "");
+        when(request.getParameter(ServiceNotificationDelete.NOTIFICATION_PARAMETER)).thenReturn(n.id + "");
 
         StringServiceResponse resp = doTestServicePost();
 

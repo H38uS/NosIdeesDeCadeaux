@@ -15,14 +15,14 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 
 @WebServlet("/protected/service/notification_delete")
-public class NotificationDeleteService extends IdeesCadeauxPostServlet<NotificationModification> {
+public class ServiceNotificationDelete extends IdeesCadeauxPostServlet<NotificationModification> {
 
     private static final long serialVersionUID = 2642366164643542379L;
     public static final String NOTIFICATION_PARAMETER = "notif_id";
 
-    private static final Logger logger = LogManager.getLogger(NotificationDeleteService.class);
+    private static final Logger logger = LogManager.getLogger(ServiceNotificationDelete.class);
 
-    public NotificationDeleteService() {
+    public ServiceNotificationDelete() {
         super(new NotificationModification(NOTIFICATION_PARAMETER));
     }
 

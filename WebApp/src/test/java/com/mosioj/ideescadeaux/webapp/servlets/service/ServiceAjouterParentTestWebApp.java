@@ -11,10 +11,10 @@ import java.sql.SQLException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class AjouterParentServiceTestWebApp extends AbstractTestServletWebApp {
+public class ServiceAjouterParentTestWebApp extends AbstractTestServletWebApp {
 
-    public AjouterParentServiceTestWebApp() {
-        super(new AjouterParentService());
+    public ServiceAjouterParentTestWebApp() {
+        super(new ServiceAjouterParent());
     }
 
     @Before
@@ -30,7 +30,7 @@ public class AjouterParentServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testAjoutSucces() {
 
-        when(request.getParameter(AjouterParentService.NAME_OR_EMAIL)).thenReturn("tesT@toto.Com");
+        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn("tesT@toto.Com");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -41,7 +41,7 @@ public class AjouterParentServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testIncorrectEmail() {
 
-        when(request.getParameter(AjouterParentService.NAME_OR_EMAIL)).thenReturn("");
+        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn("");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -53,7 +53,7 @@ public class AjouterParentServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testDejaAjoute() {
 
-        when(request.getParameter(AjouterParentService.NAME_OR_EMAIL)).thenReturn("test@toto.com");
+        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn("test@toto.com");
 
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
@@ -66,7 +66,7 @@ public class AjouterParentServiceTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void shouldNotBePossibleToAddOurself() {
 
-        when(request.getParameter(AjouterParentService.NAME_OR_EMAIL)).thenReturn(firefox.getEmail());
+        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn(firefox.getEmail());
 
         StringServiceResponse resp = doTestServicePost();
         assertFalse(resp.isOK());

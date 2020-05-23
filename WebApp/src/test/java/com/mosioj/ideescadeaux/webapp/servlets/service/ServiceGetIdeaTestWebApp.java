@@ -9,17 +9,17 @@ import java.sql.SQLException;
 
 import static org.mockito.Mockito.when;
 
-public class GetIdeaServiceTestWebApp extends AbstractTestServletWebApp {
+public class ServiceGetIdeaTestWebApp extends AbstractTestServletWebApp {
 
-    public GetIdeaServiceTestWebApp() {
-        super(new GetIdeaService());
+    public ServiceGetIdeaTestWebApp() {
+        super(new ServiceGetIdea());
     }
 
     @Test
     public void testSucces() throws SQLException {
 
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox.id).get(0);
-        when(request.getParameter(GetIdeaService.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
+        when(request.getParameter(ServiceGetIdea.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
 
         doTestGet();
     }

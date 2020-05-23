@@ -18,12 +18,12 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
-public class DemandeRejoindreReseauService extends IdeesCadeauxPostServlet<PeutDemanderARejoindreLeReseau> {
+public class ServiceDemandeRejoindreReseau extends IdeesCadeauxPostServlet<PeutDemanderARejoindreLeReseau> {
 
     private static final long serialVersionUID = 3683476983071872342L;
     public static final String USER_ID_PARAM = "user_id";
 
-    public DemandeRejoindreReseauService() {
+    public ServiceDemandeRejoindreReseau() {
         super(new PeutDemanderARejoindreLeReseau(USER_ID_PARAM));
     }
 

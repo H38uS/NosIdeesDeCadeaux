@@ -18,12 +18,12 @@ import java.sql.SQLException;
  * @author Jordan Mosio
  */
 @WebServlet("/protected/service/get_idea")
-public class GetIdeaService extends IdeesCadeauxGetServlet<CanAskReplyToQuestions> {
+public class ServiceGetIdea extends IdeesCadeauxGetServlet<CanAskReplyToQuestions> {
 
     private static final long serialVersionUID = -3425240682690763149L;
     public static final String IDEA_ID_PARAM = "idee";
 
-    public GetIdeaService() {
+    public ServiceGetIdea() {
         // OK pour voir les idées des amis ou les siennes quand ce ne sont pas des surprises
         super(new CanAskReplyToQuestions(IDEA_ID_PARAM));
     }
