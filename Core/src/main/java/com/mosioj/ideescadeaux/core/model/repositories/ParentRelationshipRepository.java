@@ -1,15 +1,15 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
+import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.ParentRelationshipColumns;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.ParentRelationshipColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 
 public class ParentRelationshipRepository extends AbstractRepository {
 
@@ -27,10 +27,11 @@ public class ParentRelationshipRepository extends AbstractRepository {
 
         List<User> users = new ArrayList<>();
 
-        String sb = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3} ",
+        String sb = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
                                          ParentRelationshipColumns.ID,
                                          UsersColumns.NAME,
                                          UsersColumns.EMAIL,
+                                         UsersColumns.BIRTHDAY,
                                          UsersColumns.AVATAR) +
                     MessageFormat.format("   from {0} t ", TABLE_NAME) +
                     MessageFormat.format("   left join {0} u", UsersRepository.TABLE_NAME) +
@@ -46,6 +47,7 @@ public class ParentRelationshipRepository extends AbstractRepository {
                     users.add(new User(res.getInt(ParentRelationshipColumns.ID.name()),
                                        res.getString(UsersColumns.NAME.name()),
                                        res.getString(UsersColumns.EMAIL.name()),
+                                       res.getDate(UsersColumns.BIRTHDAY.name()),
                                        res.getString(UsersColumns.AVATAR.name())));
                 }
             }
@@ -63,10 +65,11 @@ public class ParentRelationshipRepository extends AbstractRepository {
 
         List<User> users = new ArrayList<>();
 
-        String sb = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3} ",
+        String sb = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
                                          ParentRelationshipColumns.ID,
                                          UsersColumns.NAME,
                                          UsersColumns.EMAIL,
+                                         UsersColumns.BIRTHDAY,
                                          UsersColumns.AVATAR) +
                     MessageFormat.format("   from {0} t ", TABLE_NAME) +
                     MessageFormat.format("   left join {0} u", UsersRepository.TABLE_NAME) +
@@ -84,6 +87,7 @@ public class ParentRelationshipRepository extends AbstractRepository {
                     users.add(new User(res.getInt(ParentRelationshipColumns.ID.name()),
                                        res.getString(UsersColumns.NAME.name()),
                                        res.getString(UsersColumns.EMAIL.name()),
+                                       res.getDate(UsersColumns.BIRTHDAY.name()),
                                        res.getString(UsersColumns.AVATAR.name())));
                 }
             }
@@ -98,7 +102,7 @@ public class ParentRelationshipRepository extends AbstractRepository {
      * @param childId  The child's id.
      * @return True if and only if this relation already exists.
      */
-    public static boolean noRelationExists(int parentId, int childId) throws SQLException {
+    public static boolean noRelationExists(int parentId, int childId) {
         return !getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                                             TABLE_NAME,
                                                             ParentRelationshipColumns.PARENT_ID,

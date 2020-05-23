@@ -40,11 +40,13 @@ public class IdeesRepository extends AbstractRepository {
             bookingOwner = new User(rs.getInt("userId"),
                                     rs.getString("userName"),
                                     rs.getString(UsersColumns.EMAIL.name()),
+                                    rs.getDate(UsersColumns.BIRTHDAY.name()),
                                     rs.getString(UsersColumns.AVATAR.name()));
         }
         User owner = new User(rs.getInt("ownerId"),
                               rs.getString("ownerName"),
                               rs.getString("ownerEmail"),
+                              rs.getDate("ownerBirthday"),
                               rs.getString("ownerAvatar"));
 
         User surpriseBy = null;
@@ -52,6 +54,7 @@ public class IdeesRepository extends AbstractRepository {
             surpriseBy = new User(rs.getInt("surpriseId"),
                                   rs.getString("surpriseName"),
                                   rs.getString("surpriseEmail"),
+                                  rs.getDate("surpriseBirthday"),
                                   rs.getString("surpriseAvatar"));
         }
 
@@ -127,14 +130,17 @@ public class IdeesRepository extends AbstractRepository {
         columns.append(MessageFormat.format("       u.{0} as userId, ", UsersColumns.ID));
         columns.append(MessageFormat.format("       u.{0} as userName, ", UsersColumns.NAME));
         columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.EMAIL));
+        columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.BIRTHDAY));
         columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.AVATAR));
         columns.append(MessageFormat.format("       u1.{0} as ownerId, ", UsersColumns.ID));
         columns.append(MessageFormat.format("       u1.{0} as ownerName, ", UsersColumns.NAME));
         columns.append(MessageFormat.format("       u1.{0} as ownerEmail, ", UsersColumns.EMAIL));
+        columns.append(MessageFormat.format("       u1.{0} as ownerBirthday, ", UsersColumns.BIRTHDAY));
         columns.append(MessageFormat.format("       u1.{0} as ownerAvatar, ", UsersColumns.AVATAR));
         columns.append(MessageFormat.format("       u2.{0} as surpriseId, ", UsersColumns.ID));
         columns.append(MessageFormat.format("       u2.{0} as surpriseName, ", UsersColumns.NAME));
         columns.append(MessageFormat.format("       u2.{0} as surpriseEmail, ", UsersColumns.EMAIL));
+        columns.append(MessageFormat.format("       u2.{0} as surpriseBirthday, ", UsersColumns.BIRTHDAY));
         columns.append(MessageFormat.format("       u2.{0} as surpriseAvatar ", UsersColumns.AVATAR));
 
         StringBuilder query = new StringBuilder(columns);
@@ -305,10 +311,11 @@ public class IdeesRepository extends AbstractRepository {
      * @return The owner of the idea booked by this group, or null if it does not exist.
      */
     public static Optional<User> getIdeaOwnerFromGroup(int groupId) throws SQLException {
-        String query = MessageFormat.format("select u.{0}, u.{1}, u.{2}, u.{3} ",
+        String query = MessageFormat.format("select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
+                                            UsersColumns.BIRTHDAY,
                                             UsersColumns.AVATAR) +
                        MessageFormat.format("from {0} i ", TABLE_NAME) +
                        MessageFormat.format("inner join {0} u on i.{1} = u.{2} ",
@@ -324,6 +331,7 @@ public class IdeesRepository extends AbstractRepository {
                     return Optional.of(new User(rs.getInt(UsersColumns.ID.name()),
                                                 rs.getString(UsersColumns.NAME.name()),
                                                 rs.getString(UsersColumns.EMAIL.name()),
+                                                rs.getDate(UsersColumns.BIRTHDAY.name()),
                                                 rs.getString(UsersColumns.AVATAR.name())));
                 }
             }
@@ -344,10 +352,11 @@ public class IdeesRepository extends AbstractRepository {
         StringBuilder query = new StringBuilder();
 
         query.append("\n");
-        query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2}, u.{3} \n",
+        query.append(MessageFormat.format("select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} \n",
                                           UsersColumns.ID,
                                           UsersColumns.NAME,
                                           UsersColumns.EMAIL,
+                                          UsersColumns.BIRTHDAY,
                                           UsersColumns.AVATAR));
 
         // On sélectionne toutes les relations (= second_user) du owner (= first_user) de l'idée...
@@ -393,6 +402,7 @@ public class IdeesRepository extends AbstractRepository {
                     users.add(new User(rs.getInt(UsersColumns.ID.name()),
                                        rs.getString(UsersColumns.NAME.name()),
                                        rs.getString(UsersColumns.EMAIL.name()),
+                                       rs.getDate(UsersColumns.BIRTHDAY.name()),
                                        rs.getString(UsersColumns.AVATAR.name())));
                 }
             }

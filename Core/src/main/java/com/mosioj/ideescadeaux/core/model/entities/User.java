@@ -34,16 +34,11 @@ public class User implements Comparable<User> {
 
     private final List<Idee> ideas = new ArrayList<>();
 
-    public User(int id, String name, String email, String avatar) {
-        // FIXME : supprimer ce constructeur - toujours renseigner la date d'anniversaire
+    public User(int id, String name, String email, Date birthday, String avatar) {
         this.id = id;
         this.name = name == null ? email : WordUtils.capitalize(name.trim());
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
-    }
-
-    public User(int id, String name, String email, Date birthday, String avatar) {
-        this(id, name, email, avatar);
         this.birthday = birthday;
     }
 
@@ -62,8 +57,8 @@ public class User implements Comparable<User> {
      * @param creationDate When this user has been created.
      * @param lastLogin    When it has last logged in.
      */
-    public User(int id, String name, String email, String avatar, Timestamp creationDate, Timestamp lastLogin) {
-        this(id, name, email, avatar);
+    public User(int id, String name, String email, Date birthday, String avatar, Timestamp creationDate, Timestamp lastLogin) {
+        this(id, name, email, birthday, avatar);
         this.creationDate = creationDate;
         this.lastLogin = lastLogin;
     }

@@ -42,7 +42,7 @@ public class BookingInformationTest extends TemplateTest {
 
     @Test
     public void singlePersonTypeShouldBeCorrectlyInitialized() {
-        final User aUser = new User(42, "toto", "", "");
+        final User aUser = firefox;
         final BookingInformation singlePerson = BookingInformation.fromASingleUser(aUser, MODIF_DATE);
         Assert.assertEquals(BookingInformation.BookingType.SINGLE_PERSON, singlePerson.type);
         Assert.assertEquals(aUser, singlePerson.bookingOwner);

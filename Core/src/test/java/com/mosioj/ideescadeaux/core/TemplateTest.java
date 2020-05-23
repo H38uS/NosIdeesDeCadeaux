@@ -17,28 +17,26 @@ import java.sql.SQLException;
 
 public class TemplateTest {
 
-    /** Class logger. */
-    private final static Logger LOGGER = LogManager.getLogger(TemplateTest.class);
-
     /**
      * firefox@toto.com aka firefox
      */
     protected static final int _OWNER_ID_ = 26;
-    protected User firefox;
-
     /**
      * test@toto.com aka friend of Firefox
      */
     protected static final int _FRIEND_ID_ = 4;
-    protected User friendOfFirefox;
-
     /**
      * moiautre@toto.com
      */
     protected static final int _MOI_AUTRE_ = 8;
-    protected User moiAutre;
-
+    /** Class logger. */
+    private final static Logger LOGGER = LogManager.getLogger(TemplateTest.class);
     protected static DataSourceIdKDo ds;
+    @Rule
+    public TestName name = new TestName();
+    protected User firefox;
+    protected User friendOfFirefox;
+    protected User moiAutre;
 
     public TemplateTest() {
         try {
@@ -48,14 +46,6 @@ public class TemplateTest {
         } catch (SQLException e) {
             Assert.fail("Fail to retrieve the friend of Firefox");
         }
-    }
-
-    @Rule
-    public TestName name = new TestName();
-
-    @Before
-    public void printName() {
-        LOGGER.info("============ Running " + name.getMethodName() + " ============");
     }
 
     @BeforeClass
@@ -74,7 +64,8 @@ public class TemplateTest {
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
         for (NotificationType type : NotificationType.values()) {
-            UserRelationsRepository.getAllUsersInRelation(UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new))
+            final User firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
+            UserRelationsRepository.getAllUsersInRelation(firefox)
                                    .forEach(u -> {
                                        try {
                                            UserParametersRepository.insertUpdateParameter(u,
@@ -85,10 +76,13 @@ public class TemplateTest {
                                            Assert.fail();
                                        }
                                    });
-            UserParametersRepository.insertUpdateParameter(new User(_OWNER_ID_, "", "", ""),
-                                                           type.name(),
-                                                           NotificationActivation.SITE.name());
+            UserParametersRepository.insertUpdateParameter(firefox, type.name(), NotificationActivation.SITE.name());
         }
+    }
+
+    @Before
+    public void printName() {
+        LOGGER.info("============ Running " + name.getMethodName() + " ============");
     }
 
     @After

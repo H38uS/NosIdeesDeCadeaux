@@ -58,11 +58,13 @@ public class UserRelationRequestsRepository extends AbstractRepository {
 
         List<RelationRequest> requests = new ArrayList<>();
         String query =
-                "select {0},{1},{2},u1.{5} as by_name,u1.{6} as by_email,u1.{7} as by_avatar,u2.{5} as to_name,u2.{6} as to_email,u2.{7} as to_avatar " +
-                "from {3} urr " +
-                "left join {4} u1 on u1.id = urr.{0} " +
-                "left join {4} u2 on u2.id = urr.{1} " +
-                "where {1} = ? ";
+                "select {0},{1},{2}," +
+                "       u1.{5} as by_name, u1.{6} as by_email, u1.{7} as by_birthday, u1.{8} as by_avatar," +
+                "       u2.{5} as to_name, u2.{6} as to_email, u2.{7} as to_birthday, u2.{8} as to_avatar " +
+                "  from {3} urr " +
+                "  left join {4} u1 on u1.id = urr.{0} " +
+                "  left join {4} u2 on u2.id = urr.{1} " +
+                " where {1} = ? ";
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
                                                                     MessageFormat.format(query,
@@ -73,6 +75,7 @@ public class UserRelationRequestsRepository extends AbstractRepository {
                                                                                          UsersRepository.TABLE_NAME,
                                                                                          UsersColumns.NAME,
                                                                                          UsersColumns.EMAIL,
+                                                                                         UsersColumns.BIRTHDAY,
                                                                                          UsersColumns.AVATAR))) {
             ps.bindParameters(userId);
             if (ps.execute()) {
@@ -81,10 +84,12 @@ public class UserRelationRequestsRepository extends AbstractRepository {
                     requests.add(new RelationRequest(new User(res.getInt(UserRelationRequestsColumns.SENT_BY_USER.name()),
                                                               res.getString("by_name"),
                                                               res.getString("by_email"),
+                                                              res.getDate("by_birthday"),
                                                               res.getString("by_avatar")),
                                                      new User(res.getInt(UserRelationRequestsColumns.SENT_TO_USER.name()),
                                                               res.getString("to_name"),
                                                               res.getString("to_email"),
+                                                              res.getDate("to_birthday"),
                                                               res.getString("to_avatar")),
                                                      res.getDate(UserRelationRequestsColumns.REQUEST_DATE.name())));
                 }

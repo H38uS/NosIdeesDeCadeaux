@@ -152,10 +152,11 @@ public class UsersRepository extends AbstractRepository {
 
         List<User> users = new ArrayList<>();
 
-        String query = MessageFormat.format("select {0},{1},{2},{3},{4},{5} ",
+        String query = MessageFormat.format("select {0},{1},{2},{3},{4},{5},{6} ",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
+                                            UsersColumns.BIRTHDAY,
                                             UsersColumns.AVATAR,
                                             UsersColumns.CREATION_DATE,
                                             UsersColumns.LAST_LOGIN) +
@@ -192,6 +193,7 @@ public class UsersRepository extends AbstractRepository {
                 users.add(new User(res.getInt(UsersColumns.ID.name()),
                                    res.getString(UsersColumns.NAME.name()),
                                    res.getString(UsersColumns.EMAIL.name()),
+                                   res.getDate(UsersColumns.BIRTHDAY.name()),
                                    res.getString(UsersColumns.AVATAR.name()),
                                    creation,
                                    lastLogin));
@@ -226,10 +228,11 @@ public class UsersRepository extends AbstractRepository {
         nameToMatch = sanitizeSQLLike(nameToMatch);
 
         StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("select {0},{1},{2},{3} ",
+        query.append(MessageFormat.format("select {0},{1},{2},{3},{4} ",
                                           UsersColumns.ID,
                                           UsersColumns.NAME,
                                           UsersColumns.EMAIL,
+                                          UsersColumns.BIRTHDAY,
                                           UsersColumns.AVATAR));
         query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
         query.append(MessageFormat.format(" where (lower({0}) like ? ESCAPE ''!''   ", UsersColumns.NAME));
@@ -266,6 +269,7 @@ public class UsersRepository extends AbstractRepository {
                 users.add(new User(res.getInt(UsersColumns.ID.name()),
                                    res.getString(UsersColumns.NAME.name()),
                                    res.getString(UsersColumns.EMAIL.name()),
+                                   res.getDate(UsersColumns.BIRTHDAY.name()),
                                    res.getString(UsersColumns.AVATAR.name())));
             }
         }

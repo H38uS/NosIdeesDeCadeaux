@@ -13,7 +13,7 @@ public class JSPAccessortTest extends TemplateTest {
 
     // TODO : à supprimer lorsque tout sera en JSON
 
-    User u = new User(42, "toto", "toto@tutu.gmail.fr", "none.png");
+    User u = firefox;
     public static final Timestamp TS20191212_0829 = new Timestamp(1576135793001L);
 
     @Test
@@ -22,8 +22,8 @@ public class JSPAccessortTest extends TemplateTest {
         Assert.assertFalse(u.getHasBookedOneOfItsIdeas());
         Assert.assertEquals("", u.getCreationDate());
         Assert.assertEquals("", u.getLastLogin());
-        Assert.assertTrue(u.hasSetUpAnAvatar());
-        Assert.assertEquals("large/none.png", u.getAvatarSrcLarge());
+        Assert.assertFalse(u.hasSetUpAnAvatar());
+        Assert.assertEquals("large/default.png", u.getAvatarSrcLarge());
         Assert.assertEquals(0, u.getNbDaysBeforeBirthday());
         Assert.assertNull(u.getFreeComment());
         Assert.assertEquals("- on ne sait pas...", u.getBirthdayAsString());

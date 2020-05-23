@@ -136,6 +136,6 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
         sb.deleteCharAt(sb.length() - 1);
         req.setAttribute("identic_call_back", sb);
 
-        RootingsUtils.rootToPage(getViewPageURL(), req, resp); // FIXME : utiliser du json - fait pour les idées
+        RootingsUtils.rootToPage(getViewPageURL(), req, resp); // TODO : utiliser du json - fait pour les idées
     }
 }

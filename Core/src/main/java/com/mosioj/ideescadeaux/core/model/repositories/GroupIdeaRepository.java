@@ -71,7 +71,7 @@ public class GroupIdeaRepository extends AbstractRepository {
 
         Optional<IdeaGroup> group = Optional.empty();
         StringBuilder q = new StringBuilder();
-        q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9}, u.{10}, gic.{11} \n ");
+        q.append("select gi.{0}, gic.{1}, gic.{2}, u.{8}, u.{9}, u.{10}, gic.{11}, u.{12} \n ");
         q.append("  from {3} gi, {4} gic \n ");
         q.append("  left join {7} u on u.id = gic.{1} \n ");
         q.append(" where gi.{5} = gic.{6} and gi.{5} = ? ");
@@ -90,7 +90,8 @@ public class GroupIdeaRepository extends AbstractRepository {
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
                                             UsersColumns.AVATAR,
-                                            GroupIdeaContentColumns.JOIN_DATE);
+                                            GroupIdeaContentColumns.JOIN_DATE,
+                                            UsersColumns.BIRTHDAY);
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters(groupId);
@@ -102,6 +103,7 @@ public class GroupIdeaRepository extends AbstractRepository {
                     ideaGroup.addUser(new User(res.getInt(GroupIdeaContentColumns.USER_ID.name()),
                                                res.getString(UsersColumns.NAME.name()),
                                                res.getString(UsersColumns.EMAIL.name()),
+                                               res.getDate(UsersColumns.BIRTHDAY.name()),
                                                res.getString(UsersColumns.AVATAR.name())),
                                       res.getDouble(GroupIdeaContentColumns.PRICE.name()),
                                       res.getTimestamp(GroupIdeaContentColumns.JOIN_DATE.name()));
@@ -110,6 +112,7 @@ public class GroupIdeaRepository extends AbstractRepository {
                         final User participant = new User(res.getInt(GroupIdeaContentColumns.USER_ID.name()),
                                                           res.getString(UsersColumns.NAME.name()),
                                                           res.getString(UsersColumns.EMAIL.name()),
+                                                          res.getDate(UsersColumns.BIRTHDAY.name()),
                                                           res.getString(UsersColumns.AVATAR.name()));
                         ideaGroup.addUser(participant,
                                           res.getDouble(GroupIdeaContentColumns.PRICE.name()),

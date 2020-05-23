@@ -41,7 +41,7 @@ public class SousReservationRepository extends AbstractRepository {
 
         List<SousReservationEntity> reservations = new ArrayList<>();
 
-        String query = MessageFormat.format("select t.{0},t.{1},t.{2},t.{3},t.{4},u.{5},u.{6},u.{7}",
+        String query = MessageFormat.format("select t.{0},t.{1},t.{2},t.{3},t.{4},u.{5},u.{6},u.{7},u.{8}",
                                             SousReservationColumns.ID,
                                             SousReservationColumns.IDEE_ID,
                                             SousReservationColumns.USER_ID,
@@ -49,6 +49,7 @@ public class SousReservationRepository extends AbstractRepository {
                                             SousReservationColumns.DATE_RESERVATION,
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
+                                            UsersColumns.BIRTHDAY,
                                             UsersColumns.AVATAR) +
                        MessageFormat.format("  from {0} t ", TABLE_NAME) +
                        MessageFormat.format("  inner join {0} u on t.{1} = u.{2} ",
@@ -67,6 +68,7 @@ public class SousReservationRepository extends AbstractRepository {
                                                                new User(res.getInt(SousReservationColumns.USER_ID.name()),
                                                                         res.getString(UsersColumns.NAME.name()),
                                                                         res.getString(UsersColumns.EMAIL.name()),
+                                                                        res.getDate(UsersColumns.BIRTHDAY.name()),
                                                                         res.getString(UsersColumns.AVATAR.name())),
                                                                res.getString(SousReservationColumns.COMMENT.name()),
                                                                res.getTimestamp(SousReservationColumns.DATE_RESERVATION.name())));

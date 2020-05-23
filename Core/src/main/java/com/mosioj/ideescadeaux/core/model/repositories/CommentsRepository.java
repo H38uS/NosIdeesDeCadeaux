@@ -54,10 +54,11 @@ public class CommentsRepository extends AbstractRepository {
 
         List<User> users = new ArrayList<>();
 
-        String query = MessageFormat.format("select distinct u.{0},u.{1},u.{2},u.{3} ",
+        String query = MessageFormat.format("select distinct u.{0},u.{1},u.{2},u.{3},u.{4} ",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
+                                            UsersColumns.BIRTHDAY,
                                             UsersColumns.AVATAR) +
                        MessageFormat.format("  from {0} q ", TABLE_NAME) +
                        MessageFormat.format("  join {0} u ", UsersRepository.TABLE_NAME) +
@@ -73,6 +74,7 @@ public class CommentsRepository extends AbstractRepository {
                     users.add(new User(res.getInt(UsersColumns.ID.name()),
                                        res.getString(UsersColumns.NAME.name()),
                                        res.getString(UsersColumns.EMAIL.name()),
+                                       res.getDate(UsersColumns.BIRTHDAY.name()),
                                        res.getString(UsersColumns.AVATAR.name())));
                 }
             }
@@ -101,7 +103,7 @@ public class CommentsRepository extends AbstractRepository {
 
         List<Comment> comments = new ArrayList<>();
 
-        String query = MessageFormat.format("select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6},u.{7} ",
+        String query = MessageFormat.format("select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6},u.{7},u.{8} ",
                                             CommentsColumns.ID,
                                             CommentsColumns.IDEA_ID,
                                             CommentsColumns.TEXT,
@@ -109,7 +111,8 @@ public class CommentsRepository extends AbstractRepository {
                                             UsersColumns.EMAIL,
                                             UsersColumns.ID,
                                             CommentsColumns.WRITTEN_ON,
-                                            UsersColumns.AVATAR) +
+                                            UsersColumns.AVATAR,
+                                            UsersColumns.BIRTHDAY) +
                        MessageFormat.format("  from {0} c ", TABLE_NAME) +
                        MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ",
                                             UsersRepository.TABLE_NAME,
@@ -129,6 +132,7 @@ public class CommentsRepository extends AbstractRepository {
                                              new User(res.getInt("userId"),
                                                       res.getString(UsersColumns.NAME.name()),
                                                       res.getString(UsersColumns.EMAIL.name()),
+                                                      res.getDate(UsersColumns.BIRTHDAY.name()),
                                                       res.getString(UsersColumns.AVATAR.name())),
                                              res.getInt(CommentsColumns.IDEA_ID.name()),
                                              res.getTimestamp(CommentsColumns.WRITTEN_ON.name())));
@@ -145,7 +149,7 @@ public class CommentsRepository extends AbstractRepository {
      */
     public static Optional<Comment> getComment(int commentId) {
 
-        String query = MessageFormat.format("select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6},u.{7} ",
+        String query = MessageFormat.format("select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6},u.{7},u.{8} ",
                                             CommentsColumns.ID,
                                             CommentsColumns.IDEA_ID,
                                             CommentsColumns.TEXT,
@@ -153,7 +157,8 @@ public class CommentsRepository extends AbstractRepository {
                                             UsersColumns.EMAIL,
                                             UsersColumns.ID,
                                             CommentsColumns.WRITTEN_ON,
-                                            UsersColumns.AVATAR) +
+                                            UsersColumns.AVATAR,
+                                            UsersColumns.BIRTHDAY) +
                        MessageFormat.format("  from {0} c ", TABLE_NAME) +
                        MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ",
                                             UsersRepository.TABLE_NAME,
@@ -169,6 +174,7 @@ public class CommentsRepository extends AbstractRepository {
                     final User writer = new User(res.getInt("userId"),
                                                  res.getString(UsersColumns.NAME.name()),
                                                  res.getString(UsersColumns.EMAIL.name()),
+                                                 res.getDate(UsersColumns.BIRTHDAY.name()),
                                                  res.getString(UsersColumns.AVATAR.name()));
                     return Optional.of(new Comment(res.getInt(CommentsColumns.ID.name()),
                                                    Escaper.transformCodeToSmiley(res.getString(CommentsColumns.TEXT.name())),

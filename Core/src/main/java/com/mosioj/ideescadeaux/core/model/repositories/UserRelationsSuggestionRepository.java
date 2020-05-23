@@ -1,20 +1,19 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
+import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsSuggestionColumns;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsSuggestionColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 
 public class UserRelationsSuggestionRepository extends AbstractRepository {
 
@@ -29,7 +28,7 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
      * @param userId The user id.
      * @return True if the given user has received at least one suggestion.
      */
-    public static boolean hasReceivedSuggestion(int userId) throws SQLException {
+    public static boolean hasReceivedSuggestion(int userId) {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ?",
                                                            TABLE_NAME,
                                                            UserRelationsSuggestionColumns.SUGGESTED_TO),
@@ -41,7 +40,7 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
      * @param suggestedBy The person who sends the suggestion.
      * @return True if and only if there is at least one suggestion from suggestedBy to suggestedTo.
      */
-    public static boolean hasReceivedSuggestionFrom(int suggestedTo, int suggestedBy) throws SQLException {
+    public static boolean hasReceivedSuggestionFrom(int suggestedTo, int suggestedBy) {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                                            TABLE_NAME,
                                                            UserRelationsSuggestionColumns.SUGGESTED_TO,
@@ -55,7 +54,7 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
      * @param userId      The user id.
      * @return True if and only if suggestedTo has received a notification for userId.
      */
-    public static boolean hasReceivedSuggestionOf(int suggestedTo, int userId) throws SQLException {
+    public static boolean hasReceivedSuggestionOf(int suggestedTo, int userId) {
         return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                                            TABLE_NAME,
                                                            UserRelationsSuggestionColumns.SUGGESTED_TO,
@@ -98,12 +97,16 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
         List<RelationSuggestion> suggestions = new ArrayList<>();
 
         String query = MessageFormat.format(
-                "select u1.{0} by_id,u1.{1} by_name,u1.{2} by_email,u1.{4} by_avatar,u2.{0} to_id,u2.{1} to_name,u2.{2} to_email,u2.{4} to_avatar,u3.{0} user_id,u3.{1} user_name,u3.{2} user_email,u3.{4} user_avatar,{3} ",
+                "select u1.{0} by_id,   u1.{1} by_name,   u1.{2} by_email,   u1.{3} by_avatar,   u1.{4} by_birthday" +
+                "              u2.{0} to_id,   u2.{1} to_name,   u2.{2} to_email,   u2.{3} to_avatar,   u2.{4} to_birthday" +
+                "              u3.{0} user_id, u3.{1} user_name, u3.{2} user_email, u3.{3} user_avatar, u3.{4} user_birthday" +
+                "              " +
+                UserRelationsSuggestionColumns.SUGGESTION_DATE,
                 UsersColumns.ID,
                 UsersColumns.NAME,
                 UsersColumns.EMAIL,
-                UserRelationsSuggestionColumns.SUGGESTION_DATE,
-                UsersColumns.AVATAR) +
+                UsersColumns.AVATAR,
+                UsersColumns.BIRTHDAY) +
                        MessageFormat.format("  from {0} urs ", TABLE_NAME) +
                        MessageFormat.format(" inner join {0} u1 on u1.{1} = urs.{2} ",
                                             UsersRepository.TABLE_NAME,
@@ -137,14 +140,17 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
                     User from = new User(res.getInt("by_id"),
                                          res.getString("by_name"),
                                          res.getString("by_email"),
+                                         res.getDate("by_birthday"),
                                          res.getString("by_avatar"));
                     to = new User(res.getInt("to_id"),
                                   res.getString("to_name"),
                                   res.getString("to_email"),
+                                  res.getDate("to_birthday"),
                                   res.getString("to_avatar"));
                     userSuggestions.add(new User(res.getInt("user_id"),
                                                  res.getString("user_name"),
                                                  res.getString("user_email"),
+                                                 res.getDate("user_birthday"),
                                                  res.getString("user_avatar")));
 
                     if (currentFrom == null) {
