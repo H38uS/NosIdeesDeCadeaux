@@ -5,8 +5,6 @@ import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -17,7 +15,7 @@ public class ServiceDereserverTestWebApp extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testSuccess() throws SQLException {
+    public void testSuccess() {
 
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox.id).get(0);
         when(request.getParameter(ServiceDereserver.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
