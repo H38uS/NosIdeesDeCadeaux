@@ -8,6 +8,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColu
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -224,11 +225,11 @@ public class NotificationsRepository extends AbstractRepository {
 
         logger.trace("[Perf] Executing query: {}", query);
         logger.trace(MessageFormat.format("Paramètres: {0} / {1} / {2} / {3} / {4}",
-                                         parameterName,
-                                         parameterValue,
-                                         parameterName2,
-                                         parameterValue2,
-                                         type));
+                                          parameterName,
+                                          parameterValue,
+                                          parameterName2,
+                                          parameterValue2,
+                                          type));
         int nb = getDb().executeUpdate(query,
                                        parameterName,
                                        parameterValue,
@@ -301,7 +302,7 @@ public class NotificationsRepository extends AbstractRepository {
                 logger.trace("[Perf] Execution completed! Building the result...");
                 ResultSet res = ps.getResultSet();
                 int currentId = -1;
-                int owner = -1;
+                User owner = null;
                 String type = "";
                 String text = "";
                 Timestamp creation = null;
@@ -314,7 +315,11 @@ public class NotificationsRepository extends AbstractRepository {
                     int id = res.getInt(NotificationsColumns.ID.name());
                     if (currentId == -1) {
                         currentId = id;
-                        owner = res.getInt(NotificationsColumns.OWNER.name());
+                        owner = new User(res.getInt("user_id"),
+                                         res.getString(UsersColumns.NAME.name()),
+                                         res.getString(UsersColumns.EMAIL.name()),
+                                         res.getDate(UsersColumns.BIRTHDAY.name()),
+                                         res.getString(UsersColumns.AVATAR.name()));
                         type = res.getString(NotificationsColumns.TYPE.name());
                         text = res.getString(NotificationsColumns.TEXT.name());
                         creation = res.getTimestamp(NotificationsColumns.CREATION_DATE.name());
@@ -344,7 +349,11 @@ public class NotificationsRepository extends AbstractRepository {
 
                     // Initialization for the next notification
                     currentId = id;
-                    owner = res.getInt(NotificationsColumns.OWNER.name());
+                    owner = new User(res.getInt("user_id"),
+                                     res.getString(UsersColumns.NAME.name()),
+                                     res.getString(UsersColumns.EMAIL.name()),
+                                     res.getDate(UsersColumns.BIRTHDAY.name()),
+                                     res.getString(UsersColumns.AVATAR.name()));
                     type = res.getString(NotificationsColumns.TYPE.name());
                     text = res.getString(NotificationsColumns.TEXT.name());
                     creation = res.getTimestamp(NotificationsColumns.CREATION_DATE.name());
@@ -384,31 +393,35 @@ public class NotificationsRepository extends AbstractRepository {
     private static List<AbstractNotification> getNotificationWithWhereClause(String whereClause,
                                                                              Object... parameters) throws SQLException {
 
-        StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("select {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8} ",
-                                          NotificationsColumns.ID,
-                                          NotificationsColumns.TEXT,
-                                          NotificationsColumns.TYPE,
-                                          NotificationsColumns.OWNER,
-                                          PARAMETER_NAME,
-                                          PARAMETER_VALUE,
-                                          NotificationsColumns.CREATION_DATE,
-                                          NotificationsColumns.IS_UNREAD,
-                                          NotificationsColumns.READ_ON));
-        query.append(MessageFormat.format("  from {0} ", TABLE_NAME));
-        query.append(MessageFormat.format("  left join {0} ", TABLE_PARAMS));
-        query.append(MessageFormat.format("    on {0} = {1} ",
-                                          NotificationsColumns.ID,
-                                          NOTIFICATION_ID));
+        String query = "select  n." + NotificationsColumns.ID + "," +
+                       "        n." + NotificationsColumns.TEXT + "," +
+                       "        n." + NotificationsColumns.TYPE + "," +
+                       "        u." + UsersColumns.ID + " as user_id," +
+                       "        u." + UsersColumns.NAME + "," +
+                       "        u." + UsersColumns.EMAIL + "," +
+                       "        u." + UsersColumns.BIRTHDAY + "," +
+                       "        u." + UsersColumns.AVATAR + "," +
+                       "       np." + PARAMETER_NAME + "," +
+                       "       np." + PARAMETER_VALUE + "," +
+                       "        n." + NotificationsColumns.CREATION_DATE + "," +
+                       "        n." + NotificationsColumns.IS_UNREAD + "," +
+                       "        n." + NotificationsColumns.READ_ON +
+                       "  from " + TABLE_NAME + " n " +
+                       "  left join " + TABLE_PARAMS + " np " +
+                       "    on " + NotificationsColumns.ID + " = " + NOTIFICATION_ID +
+                       "  left join " + UsersRepository.TABLE_NAME + " u " +
+                       "    on u." + UsersColumns.ID + " = " + NotificationsColumns.OWNER;
 
-        if (whereClause != null && !whereClause.isEmpty()) {
-            query.append(MessageFormat.format(" where {0}", whereClause));
+        if (!StringUtils.isBlank(whereClause)) {
+            query += " where " + whereClause;
         }
-        query.append(MessageFormat.format(" order by {0} desc", NOTIFICATION_ID));
-        logger.trace(MessageFormat.format("Query: {0}", query.toString()));
+
+        query += " order by n." + NotificationsColumns.ID + " desc";
+
+        logger.info(MessageFormat.format("Query: {0}", query));
         logger.trace(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
 
-        return getNotificationFromQuery(query.toString(), parameters);
+        return getNotificationFromQuery(query, parameters);
     }
 
     /**
@@ -417,7 +430,8 @@ public class NotificationsRepository extends AbstractRepository {
      */
     public static List<AbstractNotification> getUserNotifications(User user) {
         try {
-            return getNotificationWithWhereClause(MessageFormat.format("{0} = ?", NotificationsColumns.OWNER), user.id);
+            return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ?", NotificationsColumns.OWNER),
+                                                  user.id);
         } catch (SQLException e) {
             logger.error(e);
             return Collections.emptyList();
@@ -430,7 +444,7 @@ public class NotificationsRepository extends AbstractRepository {
      */
     public static List<AbstractNotification> getUserNotifications(int userId,
                                                                   NotificationType type) throws SQLException {
-        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
+        return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
                                                                    NotificationsColumns.OWNER,
                                                                    NotificationsColumns.TYPE),
                                               userId,
@@ -442,7 +456,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @return All notifications for this user.
      */
     public static List<AbstractNotification> getUserReadNotifications(int userId) throws SQLException {
-        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
+        return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
                                                                    NotificationsColumns.OWNER,
                                                                    NotificationsColumns.IS_UNREAD),
                                               userId,
@@ -454,7 +468,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @return All notifications for this user.
      */
     public static List<AbstractNotification> getUserUnReadNotifications(int userId) throws SQLException {
-        return getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
+        return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
                                                                    NotificationsColumns.OWNER,
                                                                    NotificationsColumns.IS_UNREAD),
                                               userId,
@@ -473,7 +487,7 @@ public class NotificationsRepository extends AbstractRepository {
                                                               ParameterName parameterName,
                                                               Object parameterValue) throws SQLException {
         String whereClause = MessageFormat.format(
-                " exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?) and {5} = ? and {6} = ?",
+                " exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?) and n.{5} = ? and n.{6} = ?",
                 TABLE_PARAMS,
                 NOTIFICATION_ID,
                 NotificationsColumns.ID,
@@ -491,7 +505,7 @@ public class NotificationsRepository extends AbstractRepository {
      */
     public static List<AbstractNotification> getNotification(ParameterName parameterName,
                                                              Object parameterValue) throws SQLException {
-        String whereClause = MessageFormat.format(" exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?)",
+        String whereClause = MessageFormat.format(" exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?)",
                                                   TABLE_PARAMS,
                                                   NOTIFICATION_ID,
                                                   NotificationsColumns.ID,
@@ -506,9 +520,8 @@ public class NotificationsRepository extends AbstractRepository {
      */
     public static Optional<AbstractNotification> getNotification(int notifId) {
         try {
-            final String whereClause = MessageFormat.format("{0} = ?", NotificationsColumns.ID);
-            List<AbstractNotification> notifs = getNotificationWithWhereClause(whereClause, notifId);
-            return notifs.size() == 0 ? Optional.empty() : Optional.ofNullable(notifs.get(0));
+            final String whereClause = MessageFormat.format("n.{0} = ?", NotificationsColumns.ID);
+            return getNotificationWithWhereClause(whereClause, notifId).stream().findFirst();
         } catch (SQLException e) {
             logger.warn(e);
             return Optional.empty();

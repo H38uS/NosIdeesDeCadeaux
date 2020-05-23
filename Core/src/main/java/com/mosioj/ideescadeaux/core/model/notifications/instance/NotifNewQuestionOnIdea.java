@@ -1,15 +1,15 @@
 package com.mosioj.ideescadeaux.core.model.notifications.instance;
 
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.util.Map;
-
-import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUserIdParam;
+
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.util.Map;
 
 public class NotifNewQuestionOnIdea extends AbstractNotification implements NotifUserIdParam {
 
@@ -19,9 +19,8 @@ public class NotifNewQuestionOnIdea extends AbstractNotification implements Noti
 	/**
 	 * 
 	 * @param user La personne qui vient d'ajouter une question ou une réponse.
-	 * @param groupId
-	 * @param idea
-	 * @param toOwner
+	 * @param idea The idea.
+	 * @param toOwner If the owner can answer.
 	 */
 	public NotifNewQuestionOnIdea(User user, Idee idea, boolean toOwner) {
 		super(NotificationType.NEW_QUESTION_ON_IDEA);
@@ -37,7 +36,7 @@ public class NotifNewQuestionOnIdea extends AbstractNotification implements Noti
 	 * @param text The notification text.
 	 * @param parameters The notification parameters.
 	 */
-	public NotifNewQuestionOnIdea(int id, int owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
+	public NotifNewQuestionOnIdea(int id, User owner, String text, Timestamp creationTime, boolean isUnread, Timestamp readOn, Map<ParameterName, Object> parameters) {
 		super(NotificationType.NEW_QUESTION_ON_IDEA, id, owner, text, parameters, creationTime, isUnread, readOn);
 	}
 
@@ -49,7 +48,7 @@ public class NotifNewQuestionOnIdea extends AbstractNotification implements Noti
 
 	@Override
 	public int getUserIdParam() {
-		return getOwner();
+		return getOwner().id;
 	}
 
 }

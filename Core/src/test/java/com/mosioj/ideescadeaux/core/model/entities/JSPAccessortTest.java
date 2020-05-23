@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class JSPAccessortTest extends TemplateTest {
 
-    // FIXME : à supprimer lorsque tout sera en JSON
+    // TODO : à supprimer lorsque tout sera en JSON
 
     User u = new User(42, "toto", "toto@tutu.gmail.fr", "none.png");
     public static final Timestamp TS20191212_0829 = new Timestamp(1576135793001L);

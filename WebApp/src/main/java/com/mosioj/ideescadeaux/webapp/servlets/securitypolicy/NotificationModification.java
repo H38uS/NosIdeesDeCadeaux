@@ -52,8 +52,8 @@ public class NotificationModification extends SecurityPolicy {
 
         int userId = connectedUser.id;
 
-        final boolean isMe = userId == notif.getOwner();
-        final User notifOwner = new User(notif.getOwner(), "", "", "");
+        final boolean isMe = connectedUser.equals(notif.getOwner());
+        final User notifOwner = notif.getOwner();
         boolean res = isMe || ParentRelationshipRepository.getChildren(userId).contains(notifOwner);
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos notifications ou celles de vos enfants.";

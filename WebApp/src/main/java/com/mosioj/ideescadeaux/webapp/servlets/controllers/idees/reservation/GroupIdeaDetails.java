@@ -151,7 +151,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                 List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
                                                                                                    group.getId());
                 notifications.stream()
-                             .filter(n -> n instanceof NotifGroupSuggestion && n.owner == thisOne.id)
+                             .filter(n -> n instanceof NotifGroupSuggestion && thisOne.equals(n.getOwner()))
                              .forEach(NotificationsRepository::remove);
 
                 // On supprime les notifications précédentes de cette personne si y'en a

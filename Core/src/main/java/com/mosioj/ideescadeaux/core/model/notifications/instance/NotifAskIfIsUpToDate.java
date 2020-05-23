@@ -1,11 +1,11 @@
 package com.mosioj.ideescadeaux.core.model.notifications.instance;
 
-import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUserIdParam;
 
 import java.sql.Timestamp;
 import java.text.MessageFormat;
@@ -17,14 +17,14 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
     private int ideaId;
 
     /**
-     * @param askedUser User who asked whether this idea is up to date or not.
-     * @param idea The idea.
+     * @param askingUser User who asked whether this idea is up to date or not.
+     * @param idea      The idea.
      */
-    public NotifAskIfIsUpToDate(User askedUser, Idee idea) {
+    public NotifAskIfIsUpToDate(User askingUser, Idee idea) {
         super(NotificationType.IS_IDEA_UP_TO_DATE);
         this.ideaText = idea.getTextSummary(50);
         this.ideaId = idea.getId();
-        params.put(ParameterName.USER_ID, askedUser.id);
+        params.put(ParameterName.USER_ID, askingUser.id);
         params.put(ParameterName.IDEA_ID, idea.getId());
     }
 
@@ -35,7 +35,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
      * @param parameters The notification parameters.
      */
     public NotifAskIfIsUpToDate(int id,
-                                int owner,
+                                User owner,
                                 String text,
                                 Timestamp creationTime,
                                 boolean isUnread,

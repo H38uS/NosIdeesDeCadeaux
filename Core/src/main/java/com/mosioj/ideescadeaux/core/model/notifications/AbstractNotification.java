@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.core.model.notifications;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +27,7 @@ public abstract class AbstractNotification {
 
     private final Properties p;
     public int id;
-    public int owner;
+    private User owner;
     public String text;
     private Timestamp creationTime;
     protected Map<ParameterName, Object> params = new HashMap<>();
@@ -44,7 +45,6 @@ public abstract class AbstractNotification {
         try {
             p.load(new InputStreamReader(input, StandardCharsets.UTF_8));
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error(e);
         }
     }
@@ -61,7 +61,7 @@ public abstract class AbstractNotification {
      */
     public AbstractNotification(NotificationType type,
                                 int id,
-                                int owner,
+                                User owner,
                                 String text,
                                 Map<ParameterName, Object> parameters,
                                 Timestamp creationTime,
@@ -141,8 +141,10 @@ public abstract class AbstractNotification {
         return id;
     }
 
-    // FIXME : utiliser un user
-    public int getOwner() {
+    /**
+     * @return The person that has this notification
+     */
+    public User getOwner() {
         return owner;
     }
 

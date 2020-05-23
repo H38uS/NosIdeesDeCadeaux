@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -17,9 +16,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.mosioj.ideescadeaux.core.model.notifications.ParameterName.IDEA_ID;
 
 @WebServlet("/protected/confirmation_est_a_jour")
 public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
@@ -40,27 +40,21 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
         int userId = thisOne.id;
         IsUpToDateQuestionsRepository.deleteAssociation(idea.getId(), userId);
 
-        List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID,
-                                                                                           idea.getId());
-        Set<Integer> ids = new HashSet<>();
-        for (AbstractNotification notification : notifications) {
-            if (notification instanceof NotifAskIfIsUpToDate) {
-                NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) notification;
-                NotificationsRepository.addNotification(isUpToDate.getUserIdParam(),
-                                                        new NotifConfirmedUpToDate(thisOne, idea));
-                NotificationsRepository.remove(notification);
-                ids.add(isUpToDate.getUserIdParam());
-            }
-        }
-        for (AbstractNotification notification : notifications) {
-            // Deletes old confirmation notifications
-            if (notification instanceof NotifConfirmedUpToDate) {
-                NotifConfirmedUpToDate confirmed = (NotifConfirmedUpToDate) notification;
-                if (ids.contains(confirmed.owner)) {
-                    NotificationsRepository.remove(notification);
-                }
-            }
-        }
+        // Gets all notification on this idea
+        List<AbstractNotification> notifications = NotificationsRepository.getNotification(IDEA_ID, idea.getId());
+
+        // Gets all previous notifications asking if this idea is up to date
+        final List<NotifAskIfIsUpToDate> asked = notifications.stream()
+                                                              .filter(n -> n instanceof NotifAskIfIsUpToDate)
+                                                              .map(n -> (NotifAskIfIsUpToDate) n)
+                                                              .collect(Collectors.toList());
+
+        // Deletes all of them
+        asked.forEach(NotificationsRepository::remove);
+
+        // Creating new confirmation notification
+        asked.forEach(a -> NotificationsRepository.addNotification(a.getUserIdParam(),
+                                                                   new NotifConfirmedUpToDate(thisOne, idea)));
 
         RootingsUtils.rootToPage(MesNotifications.URL, request, response);
     }

@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.core.model.notifications;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAdministration;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ public class NotificationFactory {
      * @return A new notification object based on the database content.
      */
     public static AbstractNotification buildIt(int id,
-                                               int owner,
+                                               User owner,
                                                String type,
                                                String text,
                                                Timestamp creationTime,
@@ -53,7 +54,7 @@ public class NotificationFactory {
                     params,
                     owner));
             Constructor<? extends AbstractNotification> ctor = clazz.getConstructor(int.class,
-                                                                                    int.class,
+                                                                                    User.class,
                                                                                     String.class,
                                                                                     Timestamp.class,
                                                                                     boolean.class,
