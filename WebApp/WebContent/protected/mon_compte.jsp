@@ -123,7 +123,7 @@
 				<div class="alert alert-info">Vous n'avez actuellement pas de comptes parent.</div>
 			</c:otherwise>
 		</c:choose>
-		<form id="ajouter_un_parent" class="form-inline" method="POST" action="protected/ajouter_parent">
+		<form id="ajouter_un_parent" class="form-inline" method="POST" action="">
 			<div class="row align-items-center justify-content-center">
 				<div class="col-auto">
 					<label for="input_add_parent" class="d-none d-lg-inline-block mr-3">Ajouter un nouveau parent pour gérer ce compte</label>

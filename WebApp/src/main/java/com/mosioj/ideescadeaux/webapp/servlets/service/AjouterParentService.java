@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.Optional;
 
 @WebServlet("/protected/service/ajouter_parent")
 public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
@@ -28,30 +27,35 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
         logger.debug(MessageFormat.format("Name or email reçu: {0}.", nameOrEmail));
 
-        String message;
-        boolean status = true;
+        ServiceResponse<String> resp;
 
-        Optional<Integer> parentId = UsersRepository.getIdFromNameOrEmail(nameOrEmail);
-        if (parentId.isPresent()) {
+        Integer parentId = UsersRepository.getIdFromNameOrEmail(nameOrEmail).orElse(null);
+        if (parentId != null) {
             int userId = thisOne.id;
-            if (ParentRelationshipRepository.noRelationExists(parentId.get(), userId) && parentId.get() != userId) {
+            if (parentId == userId) {
+                resp = ServiceResponse.ko("Vous ne pouvez pas vous ajouter vous-même...", isAdmin(request), thisOne);
+            } else if (ParentRelationshipRepository.noRelationExists(parentId, userId)) {
                 logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
-                ParentRelationshipRepository.addProcuration(parentId.get(), userId);
-                message = UsersRepository.getUser(parentId.get()).orElseThrow(SQLException::new).getName();
+                ParentRelationshipRepository.addProcuration(parentId, userId);
+                resp = ServiceResponse.ok(UsersRepository.getUser(parentId)
+                                                         .orElseThrow(SQLException::new)
+                                                         .getName(), isAdmin(request), thisOne);
             } else {
-                message = "L'ajout du parent a échoué : il existe déjà.";
-                status = false;
+                resp = ServiceResponse.ko("L'ajout du parent a échoué : il existe déjà.", isAdmin(request), thisOne);
             }
         } else {
-            message = "L'ajout du parent a échoué : il n'existe pas de compte pour le nom ou l'email passé en paramètre.";
-            status = false;
+            resp = ServiceResponse.ko(
+                    "L'ajout du parent a échoué : il n'existe pas de compte pour le nom ou l'email passé en paramètre.",
+                    isAdmin(request),
+                    thisOne);
         }
 
-        buildResponse(response, new ServiceResponse<>(status, message, isAdmin(request), thisOne));
+        buildResponse(response, resp);
     }
 }

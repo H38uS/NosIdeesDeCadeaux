@@ -7,8 +7,6 @@ import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipReposit
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,8 +18,6 @@ import java.util.stream.Collectors;
 
 @WebServlet("/protected/mes_notifications")
 public class MesNotifications extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
-
-    private static final Logger logger = LogManager.getLogger(MesNotifications.class);
 
     private static final long serialVersionUID = -5988235378202921870L;
     public static final String URL = "/protected/mes_notifications";
