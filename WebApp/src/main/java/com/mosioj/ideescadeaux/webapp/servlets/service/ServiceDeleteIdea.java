@@ -10,14 +10,13 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUser
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 @WebServlet("/protected/service/delete_idea")
-public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification> {
+public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
 
     private static final Logger logger = LogManager.getLogger(ServiceDeleteIdea.class);
     private static final long serialVersionUID = 2642366164643542379L;
@@ -39,7 +38,7 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         IdeaInteractions logic = new IdeaInteractions();
         Idee idea = policy.getIdea();
@@ -59,7 +58,8 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
         logger.debug(MessageFormat.format("Image: {0}.", image));
         logic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), image);
 
-        List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId());
+        List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID,
+                                                                                           idea.getId());
         // Pour chaque notification qui concerne cette idée
         for (AbstractNotification notification : notifications) {
 

@@ -4,7 +4,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
@@ -29,9 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet("/protected/service/enregistrement_mon_compte")
-public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllAccessToPostAndGet> {
+public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = -3371121559895996016L;
     private static final Logger logger = LogManager.getLogger(ServiceEnregistrementMonCompte.class);
 
     /** Avatar's file path */
@@ -42,13 +41,17 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         String message = "Le formulaire n'a pas le bon format.";
         ServiceResponse<?> ans = ServiceResponse.ko(message, isAdmin(request), thisOne);
         if (ServletFileUpload.isMultipartContent(request)) {
 
-            readMultiFormParameters(request, FILE_PATH);
+            try {
+                readMultiFormParameters(request, FILE_PATH);
+            } catch (ServletException e) {
+                throw new SQLException(e);
+            }
 
             List<String> errors = processSave(FILE_PATH, parameters);
             if (errors == null || errors.isEmpty()) {

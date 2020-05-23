@@ -7,7 +7,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNouvelleDe
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 
@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
-public class ServiceDemandeRejoindreReseau extends IdeesCadeauxPostServlet<PeutDemanderARejoindreLeReseau> {
+public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejoindreLeReseau> {
 
     private static final long serialVersionUID = 3683476983071872342L;
     public static final String USER_ID_PARAM = "user_id";
@@ -28,7 +28,7 @@ public class ServiceDemandeRejoindreReseau extends IdeesCadeauxPostServlet<PeutD
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         User userToSendInvitation = policy.getUser();
         request.setAttribute("name", userToSendInvitation.getName());

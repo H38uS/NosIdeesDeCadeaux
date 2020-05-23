@@ -2,13 +2,12 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +15,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 
 @WebServlet("/protected/service/dereserver")
-public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> {
+public class ServiceDereserver extends ServicePost<IdeaInteraction> {
 
     private static final Logger logger = LogManager.getLogger(ServiceDereserver.class);
     private static final long serialVersionUID = -8244829899125982644L;
@@ -30,7 +29,7 @@ public class ServiceDereserver extends IdeesCadeauxPostServlet<IdeaInteraction> 
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         Idee idea = policy.getIdea();
         int userId = thisOne.id;

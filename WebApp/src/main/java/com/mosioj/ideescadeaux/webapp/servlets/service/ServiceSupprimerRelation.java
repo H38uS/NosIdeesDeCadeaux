@@ -7,7 +7,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifFriendship
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 
 @WebServlet("/protected/service/supprimer_relation")
-public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAccess> {
+public class ServiceSupprimerRelation extends ServicePost<NetworkAccess> {
 
     private static final long serialVersionUID = -4896678945281607617L;
     public static final String USER_PARAMETER = "id";
@@ -27,7 +27,7 @@ public class ServiceSupprimerRelation extends IdeesCadeauxPostServlet<NetworkAcc
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         User user = policy.getUser();
         UserRelationsRepository.deleteAssociation(user.id, thisOne.id);

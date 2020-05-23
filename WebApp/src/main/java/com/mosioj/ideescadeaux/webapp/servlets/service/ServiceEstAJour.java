@@ -5,13 +5,12 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpT
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteractionBookingUpToDate;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,7 @@ import java.util.Optional;
 import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationMatching;
 
 @WebServlet("/protected/service/est_a_jour")
-public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBookingUpToDate> {
+public class ServiceEstAJour extends ServicePost<IdeaInteractionBookingUpToDate> {
 
     private static final long serialVersionUID = 2642366164643542379L;
     public static final String IDEE_FIELD_PARAMETER = "idee";
@@ -33,7 +32,7 @@ public class ServiceEstAJour extends IdeesCadeauxPostServlet<IdeaInteractionBook
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         Idee idea = policy.getIdea();
         boolean status = askIfUpToDate(idea);
         buildResponse(response, new ServiceResponse<>(status, "", isAdmin(request), thisOne));

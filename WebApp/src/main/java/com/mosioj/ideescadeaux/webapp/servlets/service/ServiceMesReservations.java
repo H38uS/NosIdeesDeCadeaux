@@ -5,7 +5,7 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/mes_reservations")
-public class ServiceMesReservations extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
+public class ServiceMesReservations extends ServiceGet<AllAccessToPostAndGet> {
 
     private static final long serialVersionUID = 2763424501732173771L;
 
@@ -38,7 +37,7 @@ public class ServiceMesReservations extends IdeesCadeauxGetServlet<AllAccessToPo
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+    public void serviceGet(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         // All ideas for which we do participate
         logger.trace("[Perf] Récupération des idées où je participe...");
