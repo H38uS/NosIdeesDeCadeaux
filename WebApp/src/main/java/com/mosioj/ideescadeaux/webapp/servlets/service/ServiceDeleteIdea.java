@@ -13,6 +13,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,7 +57,7 @@ public class ServiceDeleteIdea extends IdeesCadeauxPostServlet<IdeaModification>
 
         String image = idea.getImage();
         logger.debug(MessageFormat.format("Image: {0}.", image));
-        logic.removeUploadedImage(getIdeaPicturePath(), image);
+        logic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), image);
 
         List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId());
         // Pour chaque notification qui concerne cette idée

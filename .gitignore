@@ -3,6 +3,5 @@ target/
 testLogs/
 .idea/
 *.iml
-${work_dir}
 release.properties
 *.releaseBackup

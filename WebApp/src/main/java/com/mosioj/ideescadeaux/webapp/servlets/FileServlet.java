@@ -45,7 +45,7 @@ public class FileServlet extends HttpServlet {
             return;
         }
 
-        File file = new File(ParametersUtils.getWorkDir(getServletContext()), filename);
+        File file = new File(ParametersUtils.getWorkDir(), filename);
         response.setHeader("Content-Type", getServletContext().getMimeType(filename));
         response.setHeader("Content-Length", String.valueOf(file.length()));
         response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");

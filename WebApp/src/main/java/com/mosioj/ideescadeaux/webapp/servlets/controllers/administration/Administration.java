@@ -1,27 +1,25 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.administration;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 @WebServlet("/protected/administration/administration")
 public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
@@ -46,7 +44,7 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
         List<User> allUsers = UsersRepository.getAllUsers();
         request.setAttribute("users", allUsers);
 
-        File logDir = new File(ParametersUtils.getWorkDir(getServletContext()), "logs");
+        File logDir = new File(ParametersUtils.getWorkDir(), "logs");
         try {
             request.setAttribute("log_folder", logDir.getCanonicalPath());
             List<File> logFiles = Arrays.stream(Optional.ofNullable(logDir.listFiles()).orElse(new File[]{}))
@@ -77,8 +75,8 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
         List<String> imagesInIdeas = IdeesRepository.getAllImages();
 
         // And all files
-        File smallFolder = new File(ParametersUtils.getWorkDir(getServletContext()), "uploaded_pictures/ideas/small");
-        File largeFolder = new File(ParametersUtils.getWorkDir(getServletContext()), "uploaded_pictures/ideas/large");
+        File smallFolder = new File(ParametersUtils.getWorkDir(), "uploaded_pictures/ideas/small");
+        File largeFolder = new File(ParametersUtils.getWorkDir(), "uploaded_pictures/ideas/large");
         List<String> fileNamesInSmall = Arrays.stream(Optional.ofNullable(smallFolder.listFiles()).orElse(new File[]{}))
                                               .map(File::getName)
                                               .collect(Collectors.toList());

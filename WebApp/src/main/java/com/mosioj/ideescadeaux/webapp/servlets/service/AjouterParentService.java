@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +31,7 @@ public class AjouterParentService extends IdeesCadeauxPostServlet<AllAccessToPos
     public void ideesKDoPOST(HttpServletRequest request,
                              HttpServletResponse response) throws ServletException, SQLException {
 
-        String nameOrEmail = readNameOrEmail(request, NAME_OR_EMAIL);
+        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
         logger.debug(MessageFormat.format("Name or email reçu: {0}.", nameOrEmail));
 
         ServiceResponse<String> resp;

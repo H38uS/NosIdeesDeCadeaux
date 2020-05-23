@@ -13,6 +13,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,7 +81,7 @@ public class ServiceModifierIdee extends AbstractIdea<IdeaModification> {
                         // On supprime la précédente
                         if (!"default.png".equals(old)) {
                             IdeaInteractions helper = new IdeaInteractions();
-                            helper.removeUploadedImage(getIdeaPicturePath(), old);
+                            helper.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), old);
                         }
                         logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
                     }

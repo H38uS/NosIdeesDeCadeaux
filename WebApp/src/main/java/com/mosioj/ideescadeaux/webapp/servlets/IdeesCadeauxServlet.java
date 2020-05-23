@@ -60,7 +60,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
     protected Map<String, String> parameters;
     protected Device device;
-    private File ideasPicturePath;
 
     /**
      * Class constructor.
@@ -392,18 +391,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         }
     }
 
-    protected File getIdeaPicturePath() {
-        if (ideasPicturePath == null) {
-            String workDir = ParametersUtils.getWorkDir(getServletContext());
-            setIdeaPicturePath(new File(workDir, "uploaded_pictures/ideas"));
-        }
-        return ideasPicturePath;
-    }
-
-    public void setIdeaPicturePath(File file) {
-        ideasPicturePath = file;
-    }
-
     /**
      * @param params Parameters received in this request.
      * @param prefix The prefix to substract to get the id from the key.
@@ -422,31 +409,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             }
         }
         return toBeAsked;
-    }
-
-    /**
-     * @param request       The http request.
-     * @param parameterName The name of the parameter to read.
-     * @return The String to pass to the database
-     */
-    protected String readNameOrEmail(HttpServletRequest request, String parameterName) {
-
-        String nameOrEmail = ParametersUtils.readAndEscape(request, parameterName);
-        logger.trace(MessageFormat.format("Receive:{0}", nameOrEmail));
-
-        if (nameOrEmail == null || nameOrEmail.trim().isEmpty()) {
-            return nameOrEmail;
-        }
-
-        int open = nameOrEmail.lastIndexOf("(");
-        int close = nameOrEmail.lastIndexOf(")");
-        if (open > 0 && close > 0 && open < close) {
-            // Comes from some completion trick
-            nameOrEmail = nameOrEmail.substring(open + 1, close);
-        }
-
-        logger.trace(MessageFormat.format("Returned:{0}", nameOrEmail.trim()));
-        return nameOrEmail.trim();
     }
 
     /**

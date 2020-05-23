@@ -1,20 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.utils;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Properties;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Properties;
 
 public class RootingsUtils {
 
@@ -24,9 +22,7 @@ public class RootingsUtils {
     public static final String PUBLIC_SERVER_ERROR_JSP = "/public/server_error.jsp";
     public static final String PROTECTED_SERVER_ERROR_JSP = "/protected/server_error.jsp";
 
-    /**
-     * Class logger.
-     */
+    /** Class logger. */
     private static final Logger logger = LogManager.getLogger(RootingsUtils.class);
 
     /**
@@ -63,22 +59,10 @@ public class RootingsUtils {
     }
 
     /**
-     * The application properties.
-     */
-    private static Properties p;
-
-    /**
      * @return True if and only if the server should display technical stacks.
      */
     public static boolean shouldLogStack() {
-        if (p == null) {
-            p = new Properties();
-            try {
-                p.load(RootingsUtils.class.getResourceAsStream("/application.properties"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Properties p = ApplicationProperties.getProp();
         logger.trace(MessageFormat.format("shouldLogStack: {0}", p.get("shouldLogStack")));
         return "true".equals(p.get("shouldLogStack"));
     }

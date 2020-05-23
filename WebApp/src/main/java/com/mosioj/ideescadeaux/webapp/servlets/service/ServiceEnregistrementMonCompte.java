@@ -34,7 +34,8 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
     private static final long serialVersionUID = -3371121559895996016L;
     private static final Logger logger = LogManager.getLogger(ServiceEnregistrementMonCompte.class);
 
-    private static File filePath;
+    /** Avatar's file path */
+    private static final File FILE_PATH;
 
     public ServiceEnregistrementMonCompte() {
         super(new AllAccessToPostAndGet());
@@ -47,10 +48,9 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
         ServiceResponse<?> ans = ServiceResponse.ko(message, isAdmin(request), thisOne);
         if (ServletFileUpload.isMultipartContent(request)) {
 
-            File thePath = getFilePath(this);
-            readMultiFormParameters(request, thePath);
+            readMultiFormParameters(request, FILE_PATH);
 
-            List<String> errors = processSave(thePath, parameters);
+            List<String> errors = processSave(FILE_PATH, parameters);
             if (errors == null || errors.isEmpty()) {
                 request.setAttribute("connected_user", thisOne);
                 request.getSession().setAttribute("connected_user", thisOne);
@@ -68,17 +68,6 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
         }
 
         buildResponse(response, ans);
-    }
-
-    public static synchronized File getFilePath(ServiceEnregistrementMonCompte service) {
-        if (filePath == null) {
-            filePath = new File(ParametersUtils.getWorkDir(service.getServletContext()), "uploaded_pictures/avatars");
-            logger.info(MessageFormat.format("Setting file path to: {0}", filePath.getAbsolutePath()));
-            if (!filePath.exists() && !filePath.mkdirs()) {
-                logger.warn("Fail to create " + filePath);
-            }
-        }
-        return filePath;
     }
 
     // La base est en UTC, il faut donc ne pas utiliser MySimpleDateFormat.
@@ -163,4 +152,11 @@ public class ServiceEnregistrementMonCompte extends IdeesCadeauxPostServlet<AllA
         return errors;
     }
 
+    static {
+        FILE_PATH = new File(ParametersUtils.getWorkDir(), "uploaded_pictures/avatars");
+        logger.info(MessageFormat.format("Setting file path to: {0}", FILE_PATH.getAbsolutePath()));
+        if (!FILE_PATH.exists() && !FILE_PATH.mkdirs()) {
+            logger.warn("Fail to create " + FILE_PATH);
+        }
+    }
 }

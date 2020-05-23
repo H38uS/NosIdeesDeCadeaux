@@ -12,6 +12,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
@@ -104,7 +105,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
                     // On supprime la précédente
                     if (!"default.png".equals(old)) {
                         IdeaInteractions helper = new IdeaInteractions();
-                        helper.removeUploadedImage(getIdeaPicturePath(), old);
+                        helper.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), old);
                     }
                     logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
                 }

@@ -87,7 +87,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
         // Reading parameters
 
         // Parse the request to get file items.
-        readMultiFormParameters(request, getIdeaPicturePath());
+        readMultiFormParameters(request, ParametersUtils.getIdeaPicturePath());
 
         String text = parameters.get("text");
         String type = parameters.get("type");

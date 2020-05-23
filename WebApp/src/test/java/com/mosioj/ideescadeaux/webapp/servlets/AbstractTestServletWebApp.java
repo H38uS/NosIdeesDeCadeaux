@@ -63,11 +63,9 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
         }
 
         instance = pInstance;
-        instance.setIdeaPicturePath(new File("C:\\temp"));
         ServletConfig servletConfig = mock(ServletConfig.class);
         config = mock(ServletContext.class);
         when(servletConfig.getServletContext()).thenReturn(config);
-        when(config.getInitParameter("work_dir")).thenReturn("C:\\temp");
         try {
             instance.init(servletConfig);
         } catch (ServletException e) {

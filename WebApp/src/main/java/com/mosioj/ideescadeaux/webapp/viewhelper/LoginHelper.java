@@ -60,7 +60,7 @@ public class LoginHelper implements Filter {
                 }
             }
 
-            String workDir = ParametersUtils.getWorkDir(session.getServletContext());
+            String workDir = ParametersUtils.getWorkDir();
             request.setAttribute("work_dir", workDir);
             request.setAttribute("connected_user", user);
 
