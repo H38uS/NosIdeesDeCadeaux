@@ -39,19 +39,7 @@ public class Idee {
     private BookingInformation bookingInformation;
 
     @Expose
-    public String displayClass = "";
-
-    @Expose
     private final Priorite priorite;
-
-    @Expose
-    public boolean hasAskedIfUpToDate = false;
-
-    @Expose
-    public boolean hasComment = false;
-
-    @Expose
-    public boolean hasQuestion = false;
 
     /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     private final String text;
@@ -78,31 +66,10 @@ public class Idee {
     }
 
     /**
-     * @return the hasAskedIfUpToDate
-     */
-    public boolean hasAskedIfUpToDate() {
-        return hasAskedIfUpToDate;
-    }
-
-    /**
      * @return The owner of the surprise if it exists
      */
     public User getSurpriseBy() {
         return surpriseBy;
-    }
-
-    /**
-     * @return True if and only if there are some comments on this idea
-     */
-    public boolean hasComment() {
-        return hasComment;
-    }
-
-    /**
-     * @return True if and only if there are some questions on this idea
-     */
-    public boolean hasQuestion() {
-        return hasQuestion;
     }
 
     /**
@@ -112,26 +79,18 @@ public class Idee {
         return getBookingInformation().map(bi -> bi.getBookers(getId())).orElse(Collections.emptyList());
     }
 
+    /**
+     * @return The priority of this idea.
+     */
     public Priorite getPriorite() {
         return priorite;
     }
 
     /**
-     * @return The css class to use for this idea.
+     * @return The idea identifier.
      */
-    public String getDisplayClass() {
-        return displayClass;
-    }
-
     public int getId() {
         return id;
-    }
-
-    /**
-     * @return The last modified date as a readable string.
-     */
-    public String getModificationDate() {
-        return modificationDate;
     }
 
     /**
@@ -190,10 +149,6 @@ public class Idee {
 
     public String getImageSrcSmall() {
         return MessageFormat.format("small/{0}", image);
-    }
-
-    public String getImageSrcLarge() {
-        return MessageFormat.format("large/{0}", image);
     }
 
     public Categorie getCategory() {

@@ -1,14 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.servlets;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.Priorite;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.*;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.Compteur;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -122,13 +119,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                     }
                 });
                 request.setAttribute("notif_count", count.getValue());
-
-                // Ajout d'information sur l'idée du Security check
-                if (policy instanceof IdeaSecurityChecker) {
-                    Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    fillAUserIdea(thisOne, idee, device.isMobile());
-                }
-
             } catch (Exception e) {
                 // Osef
                 logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}",
@@ -207,13 +197,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                     }
                 });
                 request.setAttribute("notif_count", count.getValue());
-
-                // Ajout d'information sur l'idée du Security check
-                if (policy instanceof IdeaSecurityChecker) {
-                    Idee idee = ((IdeaSecurityChecker) policy).getIdea();
-                    fillAUserIdea(thisUser, idee, device.isMobile());
-                }
-
             } catch (Exception e) {
                 // Osef
                 logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}",
@@ -265,33 +248,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         logger.debug("Resize done!");
 
         return resizedImage;
-    }
-
-    /**
-     * @param user                The connected user.
-     * @param idee                The idea.
-     * @param isFromAMobileDevice True if the request is coming from a mobile device (mobile vs computer).
-     */
-    public static void fillAUserIdea(User user, Idee idee, boolean isFromAMobileDevice) {
-
-        // FIXME : utiliser DecoredWebAppIdea à la place de Idee de partout et supprimer ça
-        try {
-            idee.hasComment = CommentsRepository.getNbComments(idee.getId()) > 0;
-            idee.hasQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
-            idee.hasAskedIfUpToDate = IdeesRepository.hasUserAskedIfUpToDate(idee.getId(), user.id);
-        } catch (SQLException e) {
-            logger.error(e);
-        }
-
-        if (isFromAMobileDevice) {
-            Priorite priorite = idee.getPriorite();
-            if (priorite != null && priorite.getImage() != null) {
-                priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"",
-                                                                "width=\"" +
-                                                                ParametersUtils.MOBILE_PICTURE_WIDTH +
-                                                                "px\"");
-            }
-        }
     }
 
     protected void readMultiFormParameters(HttpServletRequest request, File filePath) throws ServletException {
@@ -409,16 +365,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             }
         }
         return toBeAsked;
-    }
-
-    /**
-     * @param ideaId The idea's id.
-     * @return The idea from the DB, enriched with useful information.
-     */
-    protected Optional<Idee> getIdeaAndEnrichIt(int ideaId) {
-        Optional<Idee> idee = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
-        idee.ifPresent(i -> fillAUserIdea(thisOne, i, device.isMobile()));
-        return idee;
     }
 
     /**
