@@ -105,7 +105,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                       ParameterName.GROUP_ID,
                                                       group.getId(),
                                                       ParameterName.USER_ID,
-                                                      thisOne);
+                                                      thisOne.id);
 
                 IdeesRepository.getIdeaFromGroup(group.getId())
                                .ifPresent(idee -> group.getShares().parallelStream().forEach(s -> {
@@ -159,7 +159,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                                       ParameterName.GROUP_ID,
                                                       group.getId(),
                                                       ParameterName.USER_ID,
-                                                      thisOne);
+                                                      thisOne.id);
 
                 IdeesRepository.getIdeaFromGroup(group.getId())
                                .ifPresent(idee -> group.getShares()

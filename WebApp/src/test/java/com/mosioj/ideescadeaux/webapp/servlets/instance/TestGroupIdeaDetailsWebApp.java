@@ -11,6 +11,8 @@ import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.GroupIdeaColumns;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.GroupIdeaDetails;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -22,6 +24,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
+
+    /** Class logger. */
+    private static final Logger logger = LogManager.getLogger(TestGroupIdeaDetailsWebApp.class);
 
     public TestGroupIdeaDetailsWebApp() {
         super(new GroupIdeaDetails());
@@ -115,9 +120,13 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
     public void testRejoindrePuisAnnuler() throws SQLException {
 
         // On crée un groupe sur une idée
+        logger.info("[Perf] Démarrage...");
         int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        logger.info("[Perf] Idée créée ! Création du groupe...");
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
+        logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");
         IdeesRepository.bookByGroup(idea, id);
+        logger.info("[Perf] OK! Vérication qu'il n'existe pas de notifications...");
         assertGroupExists(id);
         assertEquals(0,
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
@@ -130,13 +139,16 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         // Participation au groupe
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
         when(request.getParameter("amount")).thenReturn(32 + "");
+        logger.info("[Perf] OK! Envoie de la requête post...");
         doTestPost();
+        logger.info("[Perf] OK! Vérification des notifications...");
         assertEquals(1,
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
                                                               idea)
                                             .size());
+        logger.info("[Perf] OK! Suppression des notifications...");
         NotificationsRepository.removeAllType(moiAutre, NotificationType.GROUP_EVOLUTION);
 
         // Annulation de la participation

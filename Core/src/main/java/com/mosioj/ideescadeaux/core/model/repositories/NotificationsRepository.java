@@ -4,7 +4,6 @@ import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserter;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.*;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationParametersColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
@@ -23,6 +22,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
+
+import static com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationParametersColumns.*;
 
 public class NotificationsRepository extends AbstractRepository {
 
@@ -72,9 +73,9 @@ public class NotificationsRepository extends AbstractRepository {
                                                                                                     MessageFormat.format(
                                                                                                             "insert into {0} ({1},{2},{3}) values (?, ?, ?)",
                                                                                                             TABLE_PARAMS,
-                                                                                                            NotificationParametersColumns.NOTIFICATION_ID,
-                                                                                                            NotificationParametersColumns.PARAMETER_NAME,
-                                                                                                            NotificationParametersColumns.PARAMETER_VALUE))) {
+                                                                                                            NOTIFICATION_ID,
+                                                                                                            PARAMETER_NAME,
+                                                                                                            PARAMETER_VALUE))) {
                             ps.bindParameters(id, key, notifParams.get(key).toString());
                             ps.executeUpdate();
                         }
@@ -126,7 +127,7 @@ public class NotificationsRepository extends AbstractRepository {
                                   notifType.name());
             getDb().executeUpdate(MessageFormat.format(
                     "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                    NotificationParametersColumns.NOTIFICATION_ID,
+                    NOTIFICATION_ID,
                     NotificationsColumns.ID,
                     TABLE_NAME));
         } catch (SQLException e) {
@@ -143,7 +144,7 @@ public class NotificationsRepository extends AbstractRepository {
                                                        NotificationsColumns.ID), notification.id);
             getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
                                                        TABLE_PARAMS,
-                                                       NotificationParametersColumns.NOTIFICATION_ID),
+                                                       NOTIFICATION_ID),
                                   notification.id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -169,10 +170,10 @@ public class NotificationsRepository extends AbstractRepository {
             sb.append(MessageFormat.format(
                     " exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) and {5} = ? and {6} = ?",
                     TABLE_PARAMS,
-                    NotificationParametersColumns.NOTIFICATION_ID,
+                    NOTIFICATION_ID,
                     NotificationsColumns.ID,
-                    NotificationParametersColumns.PARAMETER_NAME,
-                    NotificationParametersColumns.PARAMETER_VALUE,
+                    PARAMETER_NAME,
+                    PARAMETER_VALUE,
                     NotificationsColumns.OWNER,
                     NotificationsColumns.TYPE));
             logger.trace(sb.toString());
@@ -183,7 +184,7 @@ public class NotificationsRepository extends AbstractRepository {
 
             getDb().executeUpdate(MessageFormat.format(
                     "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                    NotificationParametersColumns.NOTIFICATION_ID,
+                    NOTIFICATION_ID,
                     NotificationsColumns.ID,
                     TABLE_NAME));
         } catch (SQLException e) {
@@ -206,41 +207,39 @@ public class NotificationsRepository extends AbstractRepository {
                                      Object parameterValue,
                                      ParameterName parameterName2,
                                      Object parameterValue2) throws SQLException {
-        StringBuilder sb = new StringBuilder();
-        sb.append(MessageFormat.format("delete from {0} where \n ", TABLE_NAME));
-        sb.append(MessageFormat.format(
-                "    exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) and {5} = ? \n ",
-                TABLE_PARAMS,
-                NotificationParametersColumns.NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                NotificationParametersColumns.PARAMETER_NAME,
-                NotificationParametersColumns.PARAMETER_VALUE,
-                NotificationsColumns.TYPE));
-        sb.append(MessageFormat.format(
-                " and exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) \n ",
-                TABLE_PARAMS,
-                NotificationParametersColumns.NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                NotificationParametersColumns.PARAMETER_NAME,
-                NotificationParametersColumns.PARAMETER_VALUE));
-        logger.trace(sb.toString());
+
+        final String query = "DELETE FROM " + TABLE_NAME +
+                             " WHERE " + NotificationsColumns.ID + " IN ( " +
+                             "    SELECT p1." + NOTIFICATION_ID +
+                             "      FROM " + TABLE_PARAMS + " p1 " +
+                             "      LEFT JOIN " + TABLE_PARAMS + " p2 " +
+                             "        ON p1." + NOTIFICATION_ID + " = p2." + NOTIFICATION_ID +
+                             "       AND p2." + PARAMETER_NAME + " = ? " +
+                             "       AND p2." + PARAMETER_VALUE + " = ? " +
+                             "     WHERE p1." + PARAMETER_NAME + " = ? " +
+                             "       AND p1." + PARAMETER_VALUE + " = ? " +
+                             "       AND p1.id_param IS NOT NULL " +
+                             "       AND p2.id_param IS NOT NULL) " +
+                             "   AND TYPE = ?";
+
+        logger.trace("[Perf] Executing query: {}", query);
         logger.trace(MessageFormat.format("Paramètres: {0} / {1} / {2} / {3} / {4}",
-                                          parameterName,
-                                          parameterValue,
-                                          type,
-                                          parameterName2,
-                                          parameterValue2));
-        int nb = getDb().executeUpdate(sb.toString(),
+                                         parameterName,
+                                         parameterValue,
+                                         parameterName2,
+                                         parameterValue2,
+                                         type));
+        int nb = getDb().executeUpdate(query,
                                        parameterName,
                                        parameterValue,
-                                       type,
                                        parameterName2,
-                                       parameterValue2);
+                                       parameterValue2,
+                                       type);
         logger.info(MessageFormat.format("Suppression de {0} Notifications.", nb));
 
         getDb().executeUpdate(MessageFormat.format(
                 "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                NotificationParametersColumns.NOTIFICATION_ID,
+                NOTIFICATION_ID,
                 NotificationsColumns.ID,
                 TABLE_NAME));
     }
@@ -293,11 +292,13 @@ public class NotificationsRepository extends AbstractRepository {
                                                                        Object... parameters) throws SQLException {
 
         List<AbstractNotification> notifications = new ArrayList<>();
+        logger.trace("[Perf] getNotificationFromQuery. Query: {}. Parameters: {}", query, Arrays.toString(parameters));
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters(parameters);
             if (ps.execute()) {
 
+                logger.trace("[Perf] Execution completed! Building the result...");
                 ResultSet res = ps.getResultSet();
                 int currentId = -1;
                 int owner = -1;
@@ -323,10 +324,10 @@ public class NotificationsRepository extends AbstractRepository {
 
                     if (id == currentId) {
                         // reading parameters
-                        String name = res.getString(NotificationParametersColumns.PARAMETER_NAME.name());
+                        String name = res.getString(PARAMETER_NAME.name());
                         if (name != null && !name.isEmpty()) {
                             notifParams.put(ParameterName.valueOf(name),
-                                            res.getString(NotificationParametersColumns.PARAMETER_VALUE.name()));
+                                            res.getString(PARAMETER_VALUE.name()));
                         }
                         continue;
                     }
@@ -350,10 +351,10 @@ public class NotificationsRepository extends AbstractRepository {
                     isUnread = "Y".equals(res.getString(NotificationsColumns.IS_UNREAD.name()));
                     readOn = res.getTimestamp(NotificationsColumns.READ_ON.name());
                     notifParams = new HashMap<>();
-                    String name = res.getString(NotificationParametersColumns.PARAMETER_NAME.name());
+                    String name = res.getString(PARAMETER_NAME.name());
                     if (name != null && !name.isEmpty()) {
                         notifParams.put(ParameterName.valueOf(name),
-                                        res.getString(NotificationParametersColumns.PARAMETER_VALUE.name()));
+                                        res.getString(PARAMETER_VALUE.name()));
                     }
                 }
 
@@ -371,6 +372,7 @@ public class NotificationsRepository extends AbstractRepository {
             }
         }
 
+        logger.trace("[Perf] Completed! Created {} objects.", notifications.size());
         return notifications;
     }
 
@@ -388,8 +390,8 @@ public class NotificationsRepository extends AbstractRepository {
                                           NotificationsColumns.TEXT,
                                           NotificationsColumns.TYPE,
                                           NotificationsColumns.OWNER,
-                                          NotificationParametersColumns.PARAMETER_NAME,
-                                          NotificationParametersColumns.PARAMETER_VALUE,
+                                          PARAMETER_NAME,
+                                          PARAMETER_VALUE,
                                           NotificationsColumns.CREATION_DATE,
                                           NotificationsColumns.IS_UNREAD,
                                           NotificationsColumns.READ_ON));
@@ -397,12 +399,12 @@ public class NotificationsRepository extends AbstractRepository {
         query.append(MessageFormat.format("  left join {0} ", TABLE_PARAMS));
         query.append(MessageFormat.format("    on {0} = {1} ",
                                           NotificationsColumns.ID,
-                                          NotificationParametersColumns.NOTIFICATION_ID));
+                                          NOTIFICATION_ID));
 
         if (whereClause != null && !whereClause.isEmpty()) {
             query.append(MessageFormat.format(" where {0}", whereClause));
         }
-        query.append(MessageFormat.format(" order by {0} desc", NotificationParametersColumns.NOTIFICATION_ID));
+        query.append(MessageFormat.format(" order by {0} desc", NOTIFICATION_ID));
         logger.trace(MessageFormat.format("Query: {0}", query.toString()));
         logger.trace(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
 
@@ -473,10 +475,10 @@ public class NotificationsRepository extends AbstractRepository {
         String whereClause = MessageFormat.format(
                 " exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?) and {5} = ? and {6} = ?",
                 TABLE_PARAMS,
-                NotificationParametersColumns.NOTIFICATION_ID,
+                NOTIFICATION_ID,
                 NotificationsColumns.ID,
-                NotificationParametersColumns.PARAMETER_NAME,
-                NotificationParametersColumns.PARAMETER_VALUE,
+                PARAMETER_NAME,
+                PARAMETER_VALUE,
                 NotificationsColumns.OWNER,
                 NotificationsColumns.TYPE);
         return getNotificationWithWhereClause(whereClause, parameterName, parameterValue, owner, type);
@@ -491,10 +493,10 @@ public class NotificationsRepository extends AbstractRepository {
                                                              Object parameterValue) throws SQLException {
         String whereClause = MessageFormat.format(" exists (select 1 from {0} where {1} = {2} and {3} = ?  and {4} = ?)",
                                                   TABLE_PARAMS,
-                                                  NotificationParametersColumns.NOTIFICATION_ID,
+                                                  NOTIFICATION_ID,
                                                   NotificationsColumns.ID,
-                                                  NotificationParametersColumns.PARAMETER_NAME,
-                                                  NotificationParametersColumns.PARAMETER_VALUE);
+                                                  PARAMETER_NAME,
+                                                  PARAMETER_VALUE);
         return getNotificationWithWhereClause(whereClause, parameterName, parameterValue);
     }
 
@@ -653,7 +655,7 @@ public class NotificationsRepository extends AbstractRepository {
         String query = MessageFormat.format("delete from {0} where not exists (select 1 from {1} n where {2} = n.{3}) ",
                                             TABLE_PARAMS,
                                             TABLE_NAME,
-                                            NotificationParametersColumns.NOTIFICATION_ID,
+                                            NOTIFICATION_ID,
                                             NotificationsColumns.ID);
         logger.trace(query);
         getDb().executeUpdate(query);

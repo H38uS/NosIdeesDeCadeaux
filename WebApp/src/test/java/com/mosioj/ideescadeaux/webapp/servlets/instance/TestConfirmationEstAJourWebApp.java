@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
@@ -27,8 +28,12 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
         Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
 
-        int notifId = NotificationsRepository.addNotification(_OWNER_ID_, new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+        int notifId = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                              new NotifAskIfIsUpToDate(friendOfFirefox, idee));
         assertNotifDoesExists(notifId);
+        NotifAskIfIsUpToDate notif = (NotifAskIfIsUpToDate) NotificationsRepository.getNotification(notifId)
+                                                                                   .orElseThrow(SQLException::new);
+        assertEquals(friendOfFirefox.id, notif.getUserIdParam());
 
         when(request.getRequestDispatcher(MesNotifications.URL)).thenReturn(dispatcher);
         when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
