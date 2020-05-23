@@ -68,6 +68,16 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     }
 
     /**
+     * Rooting action performed when the policy is not OK.
+     * Default behavior is to root to the error page.
+     *
+     * @param policy The policy not met.
+     */
+    protected void dealWithUnauthorizedPolicyAccess(HttpServletRequest request, HttpServletResponse response, P policy) throws ServletException {
+        RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
+    }
+
+    /**
      * Internal class for GET processing, post security checks.
      *
      * @param request  The http request.
@@ -77,14 +87,14 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                                      HttpServletResponse response) throws ServletException, SQLException, IOException;
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
         fillConnectedUserIfPossible(request);
         policy.setConnectedUser(thisOne);
         policy.reset();
 
-        if (!policy.hasRightToInteractInGetRequest(request, resp)) {
+        if (!policy.hasRightToInteractInGetRequest(request, response)) {
 
             int userId;
             try {
@@ -98,7 +108,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                                              userId,
                                              request.getRequestURL(),
                                              policy.getLastReason()));
-            RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, resp);
+
+            dealWithUnauthorizedPolicyAccess(request, response, policy);
             return;
         }
 
@@ -129,10 +140,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
         try {
             // Security has passed, perform the logic
-            ideesKDoGET(request, resp);
+            ideesKDoGET(request, response);
         } catch (SQLException e) {
             // Default error management
-            RootingsUtils.rootToGenericSQLError(thisOne, e, request, resp);
+            RootingsUtils.rootToGenericSQLError(thisOne, e, request, response);
         }
     }
 
@@ -175,7 +186,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                                              userId,
                                              request.getRequestURL(),
                                              policy.getLastReason()));
-            RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
+
+            dealWithUnauthorizedPolicyAccess(request, response, policy);
             return;
         }
 

@@ -2,15 +2,13 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.CanAskReplyToQuestions;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 
 /**
  * Do not use for the users' idea.
@@ -18,9 +16,8 @@ import java.sql.SQLException;
  * @author Jordan Mosio
  */
 @WebServlet("/protected/service/get_idea")
-public class ServiceGetIdea extends IdeesCadeauxGetServlet<CanAskReplyToQuestions> {
+public class ServiceGetIdea extends ServiceGet<CanAskReplyToQuestions> {
 
-    private static final long serialVersionUID = -3425240682690763149L;
     public static final String IDEA_ID_PARAM = "idee";
 
     public ServiceGetIdea() {
@@ -29,8 +26,7 @@ public class ServiceGetIdea extends IdeesCadeauxGetServlet<CanAskReplyToQuestion
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request,
-                            HttpServletResponse response) throws ServletException, SQLException {
+    public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
 
         // Getting the idea
         Idee idee = policy.getIdea();

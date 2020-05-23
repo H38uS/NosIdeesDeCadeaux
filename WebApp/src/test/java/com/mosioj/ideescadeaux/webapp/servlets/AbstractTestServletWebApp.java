@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.webapp.servlets;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.CreationCompte;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
@@ -35,11 +34,11 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
     protected Device device;
 
     private static final Logger logger = LogManager.getLogger(AbstractTestServletWebApp.class);
-    protected final IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> instance;
+    protected final IdeesCadeauxServlet<? extends SecurityPolicy> instance;
     private final MyServerOutput responseOutput = new MyServerOutput();
     protected ServletContext config;
 
-    public AbstractTestServletWebApp(IdeesCadeauxGetAndPostServlet<? extends SecurityPolicy> pInstance) {
+    public AbstractTestServletWebApp(IdeesCadeauxServlet<? extends SecurityPolicy> pInstance) {
 
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);

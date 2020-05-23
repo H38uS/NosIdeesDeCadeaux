@@ -12,7 +12,7 @@ import java.io.IOException;
 public abstract class IdeesCadeauxGetAndPostServlet<P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
 
     private static final long serialVersionUID = -1513319177739695079L;
-	private static final Logger logger = LogManager.getLogger(IdeesCadeauxGetAndPostServlet.class);
+    private static final Logger logger = LogManager.getLogger(IdeesCadeauxGetAndPostServlet.class);
 
     public IdeesCadeauxGetAndPostServlet(P policy) {
         super(policy);
@@ -26,7 +26,6 @@ public abstract class IdeesCadeauxGetAndPostServlet<P extends SecurityPolicy> ex
         try {
             response.getOutputStream().print(ans.asJSon(response));
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error(e);
         }
     }
