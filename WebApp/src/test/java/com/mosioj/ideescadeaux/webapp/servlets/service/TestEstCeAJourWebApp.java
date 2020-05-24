@@ -49,8 +49,11 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
-        doTestServicePost(false); // bloqué par la police, impossible en utilisation classique...
+        StringServiceResponse resp = doTestServicePost(); // bloqué par la police, impossible en utilisation classique...
 
+        assertFalse(resp.isOK());
+        assertEquals("Impossible de réserver / demander des nouvelles sur cette idée... Il s'agit d'une surprise !",
+                     resp.getMessage());
         notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size()); // On ne peut pas demander sur une surprise
     }

@@ -30,12 +30,13 @@ public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp 
     public void testPostEmptyParameters() {
 
         // Should not throw an exception
-        StringServiceResponse resp = doTestServicePost(false);
+        StringServiceResponse resp = doTestServicePost();
 
         // Test parameters call
         verify(request).getParameter(eq("user_id"));
         verify(request, atMost(1)).getParameter(anyString());
-        assertNull(resp); // On a pas passé la sécurité
+        assertFalse(resp.isOK());
+        assertEquals("Aucun utilisateur trouvé en paramètre.", resp.getMessage());
     }
 
     @Test

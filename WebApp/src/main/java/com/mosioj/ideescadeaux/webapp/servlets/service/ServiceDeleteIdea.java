@@ -9,7 +9,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
+import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -40,7 +40,6 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
     @Override
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        IdeaInteractions logic = new IdeaInteractions();
         Idee idea = policy.getIdea();
         // Reading parameters
         logger.debug(MessageFormat.format("Deleting idea {0}.", idea.getId()));
@@ -56,7 +55,7 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
 
         String image = idea.getImage();
         logger.debug(MessageFormat.format("Image: {0}.", image));
-        logic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), image);
+        IdeaLogic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), image);
 
         List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID,
                                                                                            idea.getId());

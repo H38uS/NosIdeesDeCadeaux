@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
-import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
+import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,12 +46,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
         ServiceResponse<?> ans = ServiceResponse.ko(message, isAdmin(request), thisOne);
         if (ServletFileUpload.isMultipartContent(request)) {
 
-            try {
-                readMultiFormParameters(request, FILE_PATH);
-            } catch (ServletException e) {
-                throw new SQLException(e);
-            }
-
+            Map<String, String> parameters = ParametersUtils.readMultiFormParameters(request, FILE_PATH);
             List<String> errors = processSave(FILE_PATH, parameters);
             if (errors == null || errors.isEmpty()) {
                 request.setAttribute("connected_user", thisOne);
@@ -136,8 +130,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
                 // Modification de l'image
                 // On supprime la précédente
                 if (!"default.png".equals(old)) {
-                    IdeaInteractions helper = new IdeaInteractions();
-                    helper.removeUploadedImage(filePath, old);
+                    IdeaLogic.removeUploadedImage(filePath, old);
                 }
                 logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
             }

@@ -1,22 +1,22 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 @WebServlet("/protected/je_le_veux_encore")
 public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
@@ -38,7 +38,7 @@ public class JeLaVeuxEncore extends AbstractIdea<IdeaModification> {
 
         // Puis si l'anniversaire est proche, tous les amis !
         User current = thisOne;
-        if (isBirthdayClose(current)) {
+        if (IdeaLogic.isBirthdayClose(current)) {
             toBeNotified.addAll(UserRelationsRepository.getAllUsersInRelation(current));
         }
 

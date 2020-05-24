@@ -10,7 +10,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedB
 import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
-import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaInteractions;
+import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -22,10 +22,12 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/protected/modifier_idee")
 public class ModifyIdea extends AbstractIdea<IdeaModification> {
@@ -45,7 +47,8 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
 
         Idee idea = policy.getIdea();
 
@@ -64,14 +67,18 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException, IOException {
 
         Idee idea = policy.getIdea();
 
         // Check that we have a file upload request
         if (ServletFileUpload.isMultipartContent(request)) {
 
-            fillIdeaOrErrors(request, response);
+
+            final File ideaPicturePath = ParametersUtils.getIdeaPicturePath();
+            final Map<String, String> parameters = ParametersUtils.readMultiFormParameters(request, ideaPicturePath);
+            List<String> errors = IdeaLogic.fillIdeaOrErrors(parameters);
 
             if (!errors.isEmpty()) {
                 request.getSession().setAttribute("errors", errors);
@@ -104,8 +111,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
                     // Modification de l'image
                     // On supprime la précédente
                     if (!"default.png".equals(old)) {
-                        IdeaInteractions helper = new IdeaInteractions();
-                        helper.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), old);
+                        IdeaLogic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), old);
                     }
                     logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
                 }
@@ -118,7 +124,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
                 User user = thisOne;
 
                 // Ajout de notification aux amis si l'anniversaire approche
-                addModificationNotification(user, policy.getIdea(), false);
+                IdeaLogic.addModificationNotification(user, policy.getIdea(), false);
 
                 // Suppression des demandes si y'en avait
                 IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());

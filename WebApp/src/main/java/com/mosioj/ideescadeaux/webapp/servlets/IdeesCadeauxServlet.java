@@ -3,33 +3,21 @@ package com.mosioj.ideescadeaux.webapp.servlets;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
-import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.Compteur;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -40,22 +28,16 @@ import java.util.*;
 @SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
-    private static final int MAX_SIZE = 150;
-    // Maximum 10M
-    private static final int MAX_MEM_SIZE = 1024 * 1024 * 10;
-
     /** Class logger */
     private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
     /** The security policy defining whether we can interact with the parameters, etc. */
     protected final P policy;
 
-    /**
-     * The connected user, or null if the user is not logged in.
-     */
+    /** The connected user, or null if the user is not logged in. */
     protected User thisOne = null;
 
-    protected Map<String, String> parameters;
+    /** The user device used to perform this http request. */
     protected Device device;
 
     /**
@@ -73,8 +55,18 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      *
      * @param policy The policy not met.
      */
-    protected void dealWithUnauthorizedPolicyAccess(HttpServletRequest request, HttpServletResponse response, P policy) throws ServletException {
+    protected void dealWithUnauthorizedPolicyAccess(HttpServletRequest request,
+                                                    HttpServletResponse response,
+                                                    P policy) throws ServletException {
         RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
+    }
+
+    /**
+     * @param request The http request.
+     * @return True if the user is an admin.
+     */
+    public static boolean isAdmin(HttpServletRequest request) {
+        return request.isUserInRole("ROLE_ADMIN");
     }
 
     /**
@@ -148,14 +140,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     }
 
     /**
-     * @param request The http request.
-     * @return True if the user is an admin.
-     */
-    public static boolean isAdmin(HttpServletRequest request) {
-        return request.isUserInRole("ROLE_ADMIN");
-    }
-
-    /**
      * Internal class for POST processing, post security checks.
      *
      * @param request  The http request.
@@ -222,140 +206,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             ideesKDoPOST(request, response);
         } catch (SQLException e) {
             RootingsUtils.rootToGenericSQLError(thisOne, e, request, response);
-        }
-    }
-
-    /**
-     * @param originalImage The picture received over the network.
-     * @param type          The picture file extension.
-     * @return A new picture resized for best rendering.
-     */
-    protected BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth, int maxHeight) {
-
-        int width = originalImage.getWidth();
-        int height = originalImage.getHeight();
-
-        int newWidth = Math.min(width, maxWidth);
-        int newHeight = (newWidth * height) / width;
-
-        if (newHeight > maxHeight) {
-            newWidth = (maxHeight * newWidth) / newHeight;
-            newHeight = maxHeight;
-        }
-
-        if (width == newWidth && height == newHeight) {
-            // No resize needed
-            return originalImage;
-        }
-
-        logger.debug("Resizing picture from (" + width + "x" + height + ") to (" + newWidth + "x" + newHeight + ")...");
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, type);
-        Graphics2D g = resizedImage.createGraphics();
-        g.setComposite(AlphaComposite.Src);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-        g.dispose();
-        logger.debug("Resize done!");
-
-        return resizedImage;
-    }
-
-    protected void readMultiFormParameters(HttpServletRequest request, File filePath) throws ServletException {
-
-        parameters = new HashMap<>();
-
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        // maximum size that will be stored in memory
-        factory.setSizeThreshold(MAX_MEM_SIZE);
-        factory.setRepository(filePath);
-
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        upload.setSizeMax(MAX_MEM_SIZE);
-
-        String image = "";
-
-        try {
-            for (FileItem fi : upload.parseRequest(request)) {
-                if (!fi.isFormField()) {
-                    logger.trace(MessageFormat.format("Character encoding: {0}", request.getCharacterEncoding()));
-                    String fileName = fi.getName() == null ? "" : fi.getName();
-                    logger.debug(MessageFormat.format("Receiving file name: {0}", fileName));
-                    if (!fileName.trim().isEmpty() && image.isEmpty()) {
-
-                        if ("blob".equals(fileName)) {
-                            String inputFileName = StringEscapeUtils.unescapeHtml4(parameters.get("fileName"));
-                            fileName = inputFileName == null ? "IMG" : inputFileName;
-                        }
-                        image = Escaper.computeImageName(fileName);
-
-                        File largeFolder = new File(filePath, "large/");
-                        if (!largeFolder.exists()) {
-                            if (!largeFolder.mkdirs()) {
-                                logger.warn("Cannot create " + largeFolder);
-                            }
-                        }
-                        File smallFolder = new File(filePath, "small/");
-                        if (!smallFolder.exists()) {
-                            if (!smallFolder.mkdirs()) {
-                                logger.warn("Cannot create " + smallFolder);
-                            }
-                        }
-
-                        File tmpUploadedFile = new File(largeFolder, "TMP_" + image);
-                        logger.debug("Uploading file : " + tmpUploadedFile.getCanonicalPath());
-                        fi.write(tmpUploadedFile);
-                        logger.debug(MessageFormat.format("File size: {0} kos.", (tmpUploadedFile.length() / 1024)));
-                        logger.debug(MessageFormat.format("Memory (free / total): ( {0} Ko / {1} Ko ). Max: {2} Ko.",
-                                                          Runtime.getRuntime().freeMemory() / 1024,
-                                                          Runtime.getRuntime().totalMemory() / 1024,
-                                                          Runtime.getRuntime().maxMemory() / 1024));
-
-                        try {
-                            // Creation de la vignette
-                            BufferedImage originalImage = ImageIO.read(tmpUploadedFile);
-
-                            int originalType = originalImage.getType() ==
-                                               0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
-
-                            BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_SIZE, MAX_SIZE);
-                            ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
-
-                            // On l'écrit tout le temps pour avoir un PNG
-                            if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
-                                resizeImageJpg = resizeImage(originalImage, originalType, 1920, 1080);
-                            } else {
-                                resizeImageJpg = originalImage;
-                            }
-                            ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
-                            logger.debug("Releasing the image resources...");
-                            originalImage.flush();
-
-                        } catch (OutOfMemoryError e) {
-                            logger.error(e);
-                            // On copy juste le fichier
-                            FileUtils.copyFile(tmpUploadedFile, new File(largeFolder, image));
-                            FileUtils.copyFile(tmpUploadedFile, new File(smallFolder, image));
-                        }
-
-                        if (!tmpUploadedFile.delete()) {
-                            logger.warn("Cannot delete " + tmpUploadedFile);
-                        }
-                        logger.debug(MessageFormat.format("Passing image parameter: {0}", image));
-                        parameters.put("image", image);
-                    }
-                } else {
-                    String val = fi.getString() == null ? "" : new String(fi.getString()
-                                                                            .getBytes(StandardCharsets.ISO_8859_1),
-                                                                          StandardCharsets.UTF_8);
-                    parameters.put(fi.getFieldName(), StringEscapeUtils.escapeHtml4(val));
-                }
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-            throw new ServletException(e.getMessage());
         }
     }
 

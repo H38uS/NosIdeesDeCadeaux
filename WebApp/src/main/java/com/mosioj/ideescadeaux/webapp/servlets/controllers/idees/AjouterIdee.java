@@ -8,7 +8,9 @@ import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.LogManager;
@@ -18,10 +20,12 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/protected/ajouter_idee")
 public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
@@ -61,7 +65,9 @@ public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
         // Check that we have a file upload request
         if (ServletFileUpload.isMultipartContent(request)) {
 
-            fillIdeaOrErrors(request, response);
+            final File ideaPicturePath = ParametersUtils.getIdeaPicturePath();
+            final Map<String, String> parameters = ParametersUtils.readMultiFormParameters(request, ideaPicturePath);
+            List<String> errors = IdeaLogic.fillIdeaOrErrors(parameters);
 
             if (!errors.isEmpty()) {
                 request.setAttribute("errors", errors);
@@ -80,7 +86,7 @@ public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                                                      user);
 
                 IdeesRepository.getIdeaWithoutEnrichment(ideaId)
-                               .ifPresent(i -> addModificationNotification(user, i, true));
+                               .ifPresent(i -> IdeaLogic.addModificationNotification(user, i, true));
                 NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
 
                 RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +

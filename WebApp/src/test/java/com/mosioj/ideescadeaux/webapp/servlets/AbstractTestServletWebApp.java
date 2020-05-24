@@ -116,22 +116,12 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
     }
 
     /**
-     * Performs a post to the test object and assumes it should comply with the policy.
-     *
-     * @return The service response.
-     */
-    protected StringServiceResponse doTestServicePost() {
-        return doTestServicePost(true);
-    }
-
-    /**
      * Performs a post to the test object.
      *
-     * @param shouldPassSecurityChecks True if the parameters should be accepted by the service.
      * @return The service response if allowed by policy, null otherwise.
      */
-    protected StringServiceResponse doTestServicePost(boolean shouldPassSecurityChecks) {
-        return doTestServicePost(StringServiceResponse.class, shouldPassSecurityChecks);
+    protected StringServiceResponse doTestServicePost() {
+        return doTestServicePost(StringServiceResponse.class);
     }
 
     /**
@@ -141,17 +131,6 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
      * @return The service response if allowed by policy, null otherwise.
      */
     protected <T> T doTestServicePost(Class<T> clazz) {
-        return doTestServicePost(clazz, true);
-    }
-
-    /**
-     * Performs a post to the test object.
-     *
-     * @param clazz                    The actual class of the response.
-     * @param shouldPassSecurityChecks True if the parameters should be accepted by the service.
-     * @return The service response if allowed by policy, null otherwise.
-     */
-    protected <T> T doTestServicePost(Class<T> clazz, boolean shouldPassSecurityChecks) {
         when(request.getMethod()).thenReturn("POST");
         responseOutput.clear();
         try {
@@ -162,11 +141,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
         }
         logger.info(responseOutput.builder);
         T resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), clazz);
-        if (shouldPassSecurityChecks) {
-            assertNotNull(resp);
-        } else {
-            assertNull(resp);
-        }
+        assertNotNull(resp);
         return resp;
     }
 
