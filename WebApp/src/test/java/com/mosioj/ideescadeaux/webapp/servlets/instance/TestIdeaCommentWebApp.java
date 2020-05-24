@@ -23,7 +23,7 @@ public class TestIdeaCommentWebApp extends AbstractTestServletWebApp {
     public void test() throws SQLException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         CommentsRepository.addComment(_OWNER_ID_, id, "mon pti com'");
 
         int newComment = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNewCommentOnIdea(firefox, idee));

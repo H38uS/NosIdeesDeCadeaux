@@ -34,7 +34,7 @@ public class TestModifyIdeaWebApp extends AbstractTestServletWebApp {
 
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
         String newText = "Idee modifiee le " + new Date();
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         assertNotEquals(newText, idee.getText());
 
         int notifId = NotificationsRepository.addNotification(_OWNER_ID_,
@@ -52,7 +52,7 @@ public class TestModifyIdeaWebApp extends AbstractTestServletWebApp {
         when(request.getParameter(ModifyIdea.IDEE_ID_PARAM)).thenReturn(id + "");
         doTestPost();
 
-        idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         assertEquals(newText, idee.getText());
         assertNotifDoesNotExists(notifId);
         assertNotifDoesNotExists(addByFriend);

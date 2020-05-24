@@ -46,7 +46,7 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         // Creation du groupe
         int group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
         IdeesRepository.bookByGroup(id, group);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_,
                                                               new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);
@@ -73,7 +73,7 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
 
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         int isUpToDate = NotificationsRepository.addNotification(_OWNER_ID_,
                                                                  new NotifAskIfIsUpToDate(friendOfFirefox, idee));
         int confirmedUpToDate = NotificationsRepository.addNotification(_FRIEND_ID_,

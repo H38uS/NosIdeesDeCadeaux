@@ -85,7 +85,7 @@ public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                                                      null,
                                                      user);
 
-                IdeesRepository.getIdeaWithoutEnrichment(ideaId)
+                IdeesRepository.getIdea(ideaId)
                                .ifPresent(i -> IdeaLogic.addModificationNotification(user, i, true));
                 NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
 

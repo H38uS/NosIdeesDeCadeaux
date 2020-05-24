@@ -25,7 +25,7 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
     public void testGetQuestions() throws SQLException {
 
         int id = IdeesRepository.addIdea(firefox, "avec questions", null, 0, null, null, null);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         QuestionsRepository.addComment(_FRIEND_ID_, id, "mon pti com'");
 
         int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));

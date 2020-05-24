@@ -44,7 +44,7 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
     protected boolean canInteractWithIdea(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         idea = ParametersUtils.readInt(request, ideaParameter)
-                              .flatMap(IdeesRepository::getIdeaWithoutEnrichment)
+                              .flatMap(IdeesRepository::getIdea)
                               .orElse(null);
         if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";

@@ -39,7 +39,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
         IdeesRepository.bookByGroup(ideaId, id);
 
-        Idee idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId).orElseThrow(SQLException::new);
+        Idee idea = IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new);
         NotifGroupSuggestion notifGroupSuggestion = new NotifGroupSuggestion(firefox, id, idea);
         int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_, notifGroupSuggestion);
         assertNotifDoesExists(groupSuggestion);
@@ -59,7 +59,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
         IdeesRepository.bookByGroup(ideaId, id);
 
-        Idee idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId).orElseThrow(SQLException::new);
+        Idee idea = IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new);
         int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_,
                                                                       new NotifGroupSuggestion(firefox, id, idea));
         assertNotifDoesExists(groupSuggestion);
@@ -81,7 +81,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         IdeesRepository.bookByGroup(idea, id);
         assertGroupExists(id);
 
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(idea).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(idea).orElseThrow(SQLException::new);
         int groupSuggestion = NotificationsRepository.addNotification(_MOI_AUTRE_,
                                                                       new NotifGroupSuggestion(moiAutre, id, idee));
         int groupEvolutionShouldDisapear = NotificationsRepository.addNotification(_MOI_AUTRE_,

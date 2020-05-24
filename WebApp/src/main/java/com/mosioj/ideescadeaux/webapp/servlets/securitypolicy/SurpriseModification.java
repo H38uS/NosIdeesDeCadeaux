@@ -37,7 +37,7 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
     protected boolean canInteractWithIdea(HttpServletRequest request) {
 
         idea = ParametersUtils.readInt(request, ideaParameter)
-                              .flatMap(IdeesRepository::getIdeaWithoutEnrichment)
+                              .flatMap(IdeesRepository::getIdea)
                               .orElse(null);
         if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";

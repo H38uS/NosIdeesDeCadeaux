@@ -25,7 +25,7 @@ public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
     public void test() throws SQLException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
 
         int recurentUnbook = NotificationsRepository.addNotification(_OWNER_ID_,
                                                                      new NotifRecurentIdeaUnbook(friendOfFirefox,
@@ -34,7 +34,7 @@ public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         doTestPost();
-        idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
 
         assertNotifDoesNotExists(recurentUnbook);
         assertTrue(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
@@ -44,12 +44,12 @@ public class TestReserverIdeeWebApp extends AbstractTestServletWebApp {
     public void testReservationSurprise() throws SQLException {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
-        Idee idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         assertFalse(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
 
         when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
         doTestPost();
-        idee = IdeesRepository.getIdeaWithoutEnrichment(id).orElseThrow(SQLException::new);
+        idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
 
         assertTrue(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
     }

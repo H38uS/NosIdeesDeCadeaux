@@ -13,8 +13,6 @@ import java.sql.SQLException;
 
 public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
 
-    // FIXME : faire un test service modifier idée avec une idée qui n'existe pas
-
     /** Class logger */
     private static final Logger logger = LogManager.getLogger(ServiceGetAndPost.class);
 

@@ -78,7 +78,7 @@ public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
                             parameters.get("priority"));
 
                 // Gestion des notifications
-                final Optional<Idee> idea = IdeesRepository.getIdeaWithoutEnrichment(ideaId);
+                final Optional<Idee> idea = IdeesRepository.getIdea(ideaId);
                 idea.ifPresent(i -> IdeaLogic.addModificationNotification(addedToUser, i, true));
                 if (isItByMeForMe) {
                     // Pour soit : uniquement la notif plus d'idée

@@ -43,7 +43,7 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
     private boolean canModifyIdea(HttpServletRequest request) throws SQLException {
 
         idea = ParametersUtils.readInt(request, ideaParameter)
-                              .flatMap(IdeesRepository::getIdeaWithoutEnrichment)
+                              .flatMap(IdeesRepository::getIdea)
                               .orElse(null);
         if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
