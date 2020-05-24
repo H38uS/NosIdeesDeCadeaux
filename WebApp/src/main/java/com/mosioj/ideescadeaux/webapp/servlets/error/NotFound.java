@@ -1,19 +1,18 @@
 package com.mosioj.ideescadeaux.webapp.servlets.error;
 
-import java.sql.SQLException;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
 
 @WebServlet("/public/NotFound")
-public class NotFound extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
+public class NotFound extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
 	private static final long serialVersionUID = 936404523785343564L;
 	private static final String VIEW_PROTECTED_URL = "/protected/NotFound.jsp";

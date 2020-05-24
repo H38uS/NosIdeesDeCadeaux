@@ -1,34 +1,32 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import com.mosioj.ideescadeaux.webapp.viewhelper.CaptchaHandler;
+import com.mosioj.ideescadeaux.webapp.viewhelper.EmptyFilter;
+import com.mosioj.ideescadeaux.webapp.viewhelper.LoginHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.webapp.viewhelper.CaptchaHandler;
-import com.mosioj.ideescadeaux.webapp.viewhelper.EmptyFilter;
-import com.mosioj.ideescadeaux.webapp.viewhelper.LoginHelper;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
 
 @WebServlet("/public/creation_compte")
-public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
+public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
     public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
     public static final String SUCCES_URL = "/public/succes_creation.jsp";

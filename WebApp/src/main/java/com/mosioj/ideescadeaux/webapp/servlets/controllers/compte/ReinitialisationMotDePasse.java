@@ -3,8 +3,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -24,7 +24,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 @WebServlet("/public/reinitialiser_mot_de_passe")
-public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
+public class ReinitialisationMotDePasse extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
     private static final long serialVersionUID = 5998641192324526001L;
     public static final String VIEW_PAGE_URL = "/public/reinitialiser_mot_de_passe.jsp";

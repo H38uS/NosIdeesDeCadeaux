@@ -1,14 +1,14 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewCommentOnIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @WebServlet("/protected/idee_commentaires")
-public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction> {
+public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
 
     private static final long serialVersionUID = -433226623397937479L;
     public static final String IDEA_ID_PARAM = "idee";
@@ -38,7 +38,7 @@ public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction>
      * @param owner The notification owner.
      * @param ideaId The idea id.
      */
-    private void dropNotificationOnView(User owner, int ideaId) throws SQLException {
+    private void dropNotificationOnView(User owner, int ideaId) {
         NotificationsRepository.removeAllType(owner, NotificationType.NEW_COMMENT_ON_IDEA, ParameterName.IDEA_ID, ideaId);
     }
 

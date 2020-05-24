@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers;
 
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.NotLoggedInException;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
@@ -23,7 +23,7 @@ import java.util.List;
  * @param <T> The entity types displayed.
  * @author Jordan Mosio
  */
-public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesCadeauxGetAndPostServlet<P> {
+public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
 
     private static final long serialVersionUID = -3557546858990933563L;
     private static final Logger LOGGER = LogManager.getLogger(AbstractListes.class);

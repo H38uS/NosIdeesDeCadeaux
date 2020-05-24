@@ -1,25 +1,24 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
 
 @WebServlet("/protected/suggerer_relations")
-public class SuggererRelations extends IdeesCadeauxGetAndPostServlet<NetworkAccess> {
+public class SuggererRelations extends IdeesCadeauxServlet<NetworkAccess> {
 
 	private static final long serialVersionUID = -5480617244868517709L;
 	private static final String USER_PARAMETER = "id";

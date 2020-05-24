@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet("/protected/suggestion_amis")
-public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
+public class SuggestionAmis extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
 
     private static final long serialVersionUID = -8566629037022016825L;
     private static final String DISPATCH_URL = "suggestion_amis.jsp";
