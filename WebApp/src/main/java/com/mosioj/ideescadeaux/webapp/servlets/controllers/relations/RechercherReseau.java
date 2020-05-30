@@ -67,7 +67,7 @@ public class RechercherReseau extends AbstractListes<Relation, NetworkAccess> {
     }
 
     @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+    protected int getTotalNumberOfRecords(HttpServletRequest req) {
         return UserRelationsRepository.getRelationsCount(policy.getUser().id,
                                                          ParametersUtils.readAndEscape(req, SEARCH_USER_PARAM));
     }

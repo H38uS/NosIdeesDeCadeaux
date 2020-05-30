@@ -6,7 +6,6 @@ import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,18 +22,18 @@ public class MesListes extends AbstractUserListes<NetworkAccess> {
     }
 
     @Override
-    protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
+    protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) {
         User user = thisOne;
         List<User> users = new ArrayList<>();
         if (firstRow == 0) {
             users.add(user);
         }
-        users.addAll(UserRelationsRepository.getAllUsersInRelation(user, firstRow, maxNumberOfResults));
+        users.addAll(UserRelationsRepository.getAllUsersInRelation(user, firstRow, helper.getMaxNumberOfResults()));
         return getPersonIdeasFromUser(users);
     }
 
     @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+    protected int getTotalNumberOfRecords(HttpServletRequest req) {
         // On ne se compte pas, car on apparait nécessairement dans la première page (et cela n'affecte pas le max)
         return UserRelationsRepository.getRelationsCount(thisOne);
     }

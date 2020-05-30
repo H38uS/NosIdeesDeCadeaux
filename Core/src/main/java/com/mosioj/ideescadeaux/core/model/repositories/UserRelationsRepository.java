@@ -31,7 +31,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param nameOrEmail The token to search for.
      * @return The number of user in this user network.
      */
-    public static int getRelationsCount(int userId, String nameOrEmail) throws SQLException {
+    public static int getRelationsCount(int userId, String nameOrEmail) {
 
         String query = "select count(*) " +
                        "from {0} urr " +
@@ -57,7 +57,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param user The user.
      * @return The number of user in this user network.
      */
-    public static int getRelationsCount(User user) throws SQLException {
+    public static int getRelationsCount(User user) {
         return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                             TABLE_NAME,
                                                             UserRelationsColumns.FIRST_USER), user.id);
@@ -625,7 +625,7 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param userNameOrEmail The token.
      * @return The number of users belonging to userId network and matching name/email
      */
-    public static int getAllUsersInRelationCount(User user, String userNameOrEmail) throws SQLException {
+    public static int getAllUsersInRelationCount(User user, String userNameOrEmail) {
 
         StringBuilder query = new StringBuilder();
         query.append("select count(*) ");

@@ -93,7 +93,7 @@ public class UsersRepository extends AbstractRepository {
      * @param email The identifier of the person (currently the email).
      * @return This person's id.
      */
-    public static Optional<Integer> getId(String email) throws SQLException {
+    public static Optional<Integer> getId(String email) {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?",
                                                       UsersColumns.ID,
                                                       TABLE_NAME,
@@ -105,7 +105,7 @@ public class UsersRepository extends AbstractRepository {
      * @param nameOrEmail The name or email of the person..
      * @return This person's id.
      */
-    public static Optional<Integer> getIdFromNameOrEmail(String nameOrEmail) throws SQLException {
+    public static Optional<Integer> getIdFromNameOrEmail(String nameOrEmail) {
         return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1",
                                                       UsersColumns.ID,
                                                       TABLE_NAME,
@@ -285,7 +285,7 @@ public class UsersRepository extends AbstractRepository {
      * @param selectOnlyNonFriends True to select only non friends.
      * @return The number of users matching this name/email.
      */
-    public static int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) throws SQLException {
+    public static int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) {
 
         nameToMatch = sanitizeSQLLike(nameToMatch);
 
@@ -320,6 +320,8 @@ public class UsersRepository extends AbstractRepository {
             if (res.next()) {
                 return res.getInt(1);
             }
+        } catch (SQLException e) {
+            logger.error(e);
         }
 
         return 0;

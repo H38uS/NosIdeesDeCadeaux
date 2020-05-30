@@ -31,7 +31,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
     protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
         String nameOrEmail = ParametersUtils.readNameOrEmail(req, NAME_OR_EMAIL);
         List<User> users = new ArrayList<>();
-        int MAX = maxNumberOfResults;
+        int MAX = helper.getMaxNumberOfResults();
         User connected = thisOne;
         if (connected.matchNameOrEmail(nameOrEmail)) {
             users.add(connected);
@@ -42,7 +42,7 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
     }
 
     @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException {
+    protected int getTotalNumberOfRecords(HttpServletRequest request) {
         User user = thisOne;
         String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
         int size = UserRelationsRepository.getAllUsersInRelationCount(user, nameOrEmail);

@@ -16,7 +16,7 @@ public class ServiceAfficherListes extends AfficherListes {
     @Override
     public void ideesKDoGET(HttpServletRequest request,
                             HttpServletResponse response) throws ServletException, SQLException {
-        int firstRow = getFirstRow(request);
+        int firstRow = helper.getFirstRow(request);
         buildResponse(response, ServiceResponse.ok(getDisplayedEntities(firstRow, request), isAdmin(request), thisOne));
     }
 

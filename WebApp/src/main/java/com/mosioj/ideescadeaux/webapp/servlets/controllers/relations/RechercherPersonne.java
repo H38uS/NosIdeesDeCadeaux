@@ -1,11 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 
 import javax.servlet.ServletException;
@@ -70,7 +70,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
     }
 
     @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest request) throws SQLException {
+    protected int getTotalNumberOfRecords(HttpServletRequest request) {
         int userId = thisOne.id;
         String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
         String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
@@ -90,7 +90,7 @@ public class RechercherPersonne extends AbstractListes<User, AllAccessToPostAndG
                                                          userId,
                                                          onlyNonFriend,
                                                          firstRow,
-                                                         maxNumberOfResults);
+                                                         helper.getMaxNumberOfResults());
 
         if (!onlyNonFriend) {
             for (User user : foundUsers) {

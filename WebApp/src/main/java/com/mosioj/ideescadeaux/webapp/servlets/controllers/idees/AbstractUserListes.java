@@ -6,6 +6,7 @@ import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.viewhelper.ListResultWithPagesHelper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ public abstract class AbstractUserListes<P extends SecurityPolicy> extends Abstr
     private static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
 
     public AbstractUserListes(P policy) {
-        super(policy, 6);
+        super(policy, ListResultWithPagesHelper.with(6));
     }
 
     @Override

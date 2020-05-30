@@ -43,7 +43,7 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public int selectCountStar(String query, Object... parameters) throws SQLException {
+    public int selectCountStar(String query, Object... parameters) {
         return selectInt(query, parameters).orElse(0);
     }
 
@@ -52,7 +52,7 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The result of the first row on the first column.
      */
-    public Optional<Integer> selectInt(String query, Object... parameters) throws SQLException {
+    public Optional<Integer> selectInt(String query, Object... parameters) {
         try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
             statement.bindParameters(parameters);
             if (statement.execute()) {
@@ -62,6 +62,8 @@ public class DataSourceIdKDo {
                     return res.wasNull() ? Optional.empty() : Optional.of(value);
                 }
             }
+        } catch (SQLException e) {
+            logger.error(e);
         }
         return Optional.empty();
     }

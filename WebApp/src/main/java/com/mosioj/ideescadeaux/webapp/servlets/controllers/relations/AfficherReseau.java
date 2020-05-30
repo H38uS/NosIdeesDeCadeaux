@@ -1,12 +1,12 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.core.model.entities.Relation;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.AbstractListes;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -73,7 +73,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
     }
 
     @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest req) throws SQLException {
+    protected int getTotalNumberOfRecords(HttpServletRequest req) {
         return UserRelationsRepository.getRelationsCount(policy.getUser());
     }
 
@@ -83,7 +83,7 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
         User user = thisOne;
         List<Relation> relations = UserRelationsRepository.getRelations(policy.getUser().id,
                                                                         firstRow,
-                                                                        maxNumberOfResults);
+                                                                        helper.getMaxNumberOfResults());
 
         // Ajout du flag network
         for (Relation r : relations) {
