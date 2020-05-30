@@ -77,8 +77,10 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
         LOGGER.debug("Entities: " + ids);
 
         List<Page> pages = helper.getPages(req, ids.size(), this::getTotalNumberOfRecords);
-        req.setAttribute("pages", pages);
-        req.setAttribute("last", pages.size());
+        if (pages.size() > 1) {
+            req.setAttribute("pages", pages);
+            req.setAttribute("last", pages.size());
+        }
         req.setAttribute("spec_parameters", getSpecificParameters(req));
         req.setAttribute("call_back", getCallingURL());
 
