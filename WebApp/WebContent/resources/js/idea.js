@@ -299,7 +299,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
 
 function getImageDivAsHTML(jsonIdea) {
     var imageDiv = $("<div>");
-    if (typeof jsonIdea.image !== 'undefined') {
+    if (typeof jsonIdea.image !== 'undefined' && jsonIdea.image != "") {
         imageDiv.append(`
             <div class="col-auto pl-2 pr-2">
                 <a href="${picturePath}/large/${jsonIdea.image}" class="thickbox img" >
