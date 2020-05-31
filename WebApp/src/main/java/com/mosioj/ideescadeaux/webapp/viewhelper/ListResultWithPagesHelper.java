@@ -100,7 +100,11 @@ public class ListResultWithPagesHelper {
                 total = itemSize;
             }
         }
-        return getPages(total);
+        final List<Page> pages = getPages(total);
+        if (pages.size() > 0) {
+            pages.get(pageNumber - 1).setSelected(true);
+        }
+        return pages;
     }
 
     @FunctionalInterface

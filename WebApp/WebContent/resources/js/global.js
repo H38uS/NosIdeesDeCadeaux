@@ -228,3 +228,92 @@ function getURLParameter(url, name) {
 		return results[1] || 0;
 	}
 }
+
+/* ************************ */
+/* *** Pages Management *** */
+/* ************************ */
+
+function getPreviousPageButtonAsHTML(current) {
+    var previousDiv = $("<div>");
+    if (current === 1) {
+        previousDiv.append(`
+            <li class="page-item disabled">
+                <a class="page-link" href="page=${current-1}">Précédent</a>
+            </li>
+        `);
+    } else {
+        previousDiv.append(`
+            <li class="page-item">
+                <a class="page-link" href="page=${current-1}">Précédent</a>
+            </li>
+        `);
+    }
+    return previousDiv.html();
+}
+
+function getNextPageButtonAsHTML(current, last) {
+    var nextDiv = $("<div>");
+    if (current === last) {
+        nextDiv.append(`
+            <li class="page-item disabled">
+                <a class="page-link" href="page=${current+1}">Suivant</a>
+            </li>
+        `);
+    } else {
+        nextDiv.append(`
+            <li class="page-item">
+                <a class="page-link" href="page=${current+1}">Suivant</a>
+            </li>
+        `);
+    }
+    return nextDiv.html();
+}
+
+function getMiddlePageContentAsHTML(pages, current) {
+    var pagesDiv = $("<div>");
+    $.each(pages, function(i, page) {
+        if (page.isSelected) {
+            pagesDiv.append(`
+                <li class="page-item active">
+                    <a class="page-link" href="page=${page.numero}">${page.numero}</a>
+                </li>
+            `);
+        } else {
+            pagesDiv.append(`
+                <li class="page-item">
+                    <a class="page-link" href="page=${page.numero}">${page.numero}</a>
+                </li>
+            `);
+        }
+    });
+    return pagesDiv.html();
+}
+
+function getPagesDiv(pages) {
+
+    var pagesDiv = $("<div>");
+    if (pages.length === 0) {
+        return pagesDiv;
+    }
+
+    // Finding the current one
+    var current = -1;
+    $.each(pages, function(i, page) {
+        if (page.isSelected) {
+            current = i;
+        }
+    });
+    current++; // passage d'index de tableau au numéro de page
+
+    // The last one
+    var last = pages.length;
+
+    pagesDiv.append(`
+        <ul class="pagination justify-content-center">
+            ${getPreviousPageButtonAsHTML(current)}
+            ${getMiddlePageContentAsHTML(pages, current)}
+            ${getNextPageButtonAsHTML(current, last)}
+        </ul>
+    `);
+    return pagesDiv;
+}
