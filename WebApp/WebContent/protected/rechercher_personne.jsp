@@ -10,28 +10,25 @@
 <t:template_body_protected>
     <jsp:body>
         <h2>Rechercher une personne pour l'ajouter</h2>
-        <div class="container">
-            <form class="default_form mb-3" method="POST" action="protected/rechercher_personne">
-                <div class="form-group">
-                    <label for="name" class="required">Nom / Email de la personne</label>
-                    <input type="text" class="form-control" name="name" id="name" value="${name}" />
-                </div>
-                <div class="form-check">
-                    <c:if test="${onlyNonFriend}">
-                        <input type="checkbox" class="form-check-input" name="only_non_friend" id="only_non_friend" checked="checked" />
-                    </c:if>
-                    <c:if test="${not onlyNonFriend}">
-                        <input type="checkbox" class="form-check-input" name="only_non_friend" id="only_non_friend" />
-                    </c:if>
-                    <label id="label_only_non_friend" for="only_non_friend">Afficher uniquement les non-amis</label>
-                </div>
-                <div class="center">
-                    <button class="btn btn-primary" type="submit" name="submit" id="submit">Rechercher !</button>
-                </div>
-                <input type="hidden" name="page" value="1" />
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            </form>
-        </div>
+        <form id="rechercherPersonForm" class="mb-3" method="POST" action="protected/rechercher_personne">
+            <div class="form-group">
+                <label for="name" class="required">Nom / Email de la personne</label>
+                <input type="text" class="form-control" name="name" id="name" value="${name}" />
+            </div>
+            <div class="form-check">
+                <c:if test="${onlyNonFriend}">
+                    <input type="checkbox" class="form-check-input" name="only_non_friend" id="only_non_friend" checked="checked" />
+                </c:if>
+                <c:if test="${not onlyNonFriend}">
+                    <input type="checkbox" class="form-check-input" name="only_non_friend" id="only_non_friend" />
+                </c:if>
+                <label id="label_only_non_friend" for="only_non_friend">Afficher uniquement les non-amis</label>
+            </div>
+            <div class="center">
+                <button class="btn btn-primary" type="submit" name="submit" id="submit">Rechercher !</button>
+            </div>
+            <input type="hidden" name="page" value="1" />
+        </form>
         <div id="res">
             <c:if test="${not empty entities}">
                 <c:if test="${not empty pages}">
