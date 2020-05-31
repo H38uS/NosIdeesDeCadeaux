@@ -9,25 +9,43 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class User implements Comparable<User> {
 
+    /** The user's id. */
     @Expose
     public final int id;
 
+    /** The user's email. Cannot be null or empty. */
     @Expose
     public String email;
 
+    /** The user's name. */
     @Expose
     public String name;
 
+    /** The user's profile picture. */
     @Expose
     public String avatar;
 
-    public Date birthday;
-    public boolean isInMyNetwork;
-    public int nbDaysBeforeBirthday;
+    // FIXME : comme pour les idées, faire un decorated user
+    /** Whether the user belongs to the network. */
+    @Expose
+    private boolean isInMyNetwork;
+
+    /** The user's birthday, as a string. */
+    @Expose
+    private final String readableBirthday;
+
+    // FIXME : renommer... Uniquement utiliser si on a déjà envoyé une demande...
+    @Expose
     public String freeComment;
+
+    public Date birthday;
+
+
+    public int nbDaysBeforeBirthday;
     private Timestamp creationDate;
     private Timestamp lastLogin;
     public boolean hasBookedOneOfItsIdeas = false;
@@ -40,6 +58,8 @@ public class User implements Comparable<User> {
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
         this.birthday = birthday;
+        this.readableBirthday = getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.getTime()))
+                                             .orElse("- on ne sait pas...");
     }
 
     public User(int id, String name, String email, Date birthday, String avatar, int nbDaysBeforeBirthday) {
@@ -57,18 +77,37 @@ public class User implements Comparable<User> {
      * @param creationDate When this user has been created.
      * @param lastLogin    When it has last logged in.
      */
-    public User(int id, String name, String email, Date birthday, String avatar, Timestamp creationDate, Timestamp lastLogin) {
+    public User(int id,
+                String name,
+                String email,
+                Date birthday,
+                String avatar,
+                Timestamp creationDate,
+                Timestamp lastLogin) {
         this(id, name, email, birthday, avatar);
         this.creationDate = creationDate;
         this.lastLogin = lastLogin;
     }
 
+    /**
+     * @param isInMyNetwork Whether the user belongs to the network.
+     */
+    public void withIsInMyNetwork(boolean isInMyNetwork) {
+        this.isInMyNetwork = isInMyNetwork;
+    }
+
+    /**
+     * @return Whether the user belongs to the network, or false if not computed.
+     */
     public boolean getIsInMyNetwork() {
         return isInMyNetwork;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    /**
+     * @return The birthday if set by the users.
+     */
+    public Optional<Date> getBirthday() {
+        return Optional.ofNullable(birthday);
     }
 
     /**

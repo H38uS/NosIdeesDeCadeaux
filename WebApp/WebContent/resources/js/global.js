@@ -126,6 +126,7 @@ function getPictureWidth() {
 }
 
 var picturePath = "protected/files/uploaded_pictures/ideas";
+var avatarPicturePath = "protected/files/uploaded_pictures/avatars";
 
 /* ********************* */
 /* *** Loading Stuff *** */

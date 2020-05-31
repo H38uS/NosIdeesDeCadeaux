@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebApp {

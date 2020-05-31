@@ -5,59 +5,57 @@ var completed = true;
 
 function doSearch(value, only_non_friend) {
 
-	if (value.length < minLength || !completed)
-		return;
+    if (value.length < minLength || !completed)
+        return;
 
-	completed = false;
-	if (only_non_friend) only_non_friend = "on";
-	
-	doLoading("Recherche en cours...");
-	$("#res").html();
+    completed = false;
+    if (only_non_friend) only_non_friend = "on";
 
-	$.get('protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
-		$("#res").html(data);
-		$("#res li").hide();
-		setTimeout(function() {
-			$("#res li").each(function(i) {
-			    $(this).delay(100 * i).fadeIn('slow');
-			});
-			$(".envoyer_demande_reseau").off("click");
-			$(".envoyer_demande_reseau").click(sendRequest);
-			completed = true;
-		}, minTempsReflexion);
-		actionDone('Recherche terminée');
-	}).fail(function() {
-		actionError("Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
-	});
+    doLoading("Recherche en cours...");
+    $("#res").html();
 
-}
+    $.get('protected/service/rechercher_personne', { name : value, only_non_friend : only_non_friend }, function(data) {
 
-function sendRequest(e) {
+        completed = true;
+        $("#res").hide();
+        $("#res").empty();
 
-	e.preventDefault();
+        // Récupération des données
+        var rawData = JSON.parse(data);
+        if (rawData.status !== 'OK') {
+            actionError(rawData.message);
+            return;
+        }
 
-	var form = $(this).closest("form");
-	var userId = form.find("input[name=user_id]").val();
+        // Préparation des résultats
+        var usersDiv = $('<div class="row align-items-start mx-0 justify-content-center">');
+        $("#res").append(usersDiv);
 
-	servicePost('protected/service/demande_rejoindre_reseau',
-				{ user_id : userId },
-				function(data) {},
-				"Envoie d'une demande en cours...",
-				"Envoie de la demande avec succès.");
+        var jsonData = rawData.message;
+        var jsonUsers = jsonData.theContent
+        $.each(jsonUsers, function(i, jsonUser) {
+            usersDiv.append(getUserDiv(jsonData.connectedUser, jsonUser));
+        });
+
+        $("#res").fadeIn('slow');
+
+        actionDone('Recherche terminée');
+    }).fail(function() {
+        actionError("Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
+    });
 }
 
 $(document).ready(function() {
-	$("#name").keyup(function() {
-		var text = $(this).val();
-		doSearch(text, $("#only_non_friend").is(':checked'));
-	});
-	$("#label_only_non_friend").click(function() {
-		setTimeout(function() {
-			doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
-		}, 150);
-	});
-	$("#span_only_non_friend").click(function() {
-		doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
-	});
-	$(".envoyer_demande_reseau").click(sendRequest);
+    $("#name").keyup(function() {
+        var text = $(this).val();
+        doSearch(text, $("#only_non_friend").is(':checked'));
+    });
+    $("#label_only_non_friend").click(function() {
+        setTimeout(function() {
+            doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
+        }, 150);
+    });
+    $("#span_only_non_friend").click(function() {
+        doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
+    });
 });

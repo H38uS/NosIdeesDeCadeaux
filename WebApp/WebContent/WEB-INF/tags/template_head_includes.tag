@@ -30,5 +30,6 @@
         <script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
         <script src="resources/js/global.js" type="text/javascript"></script>
         <script src="resources/js/idea.js" type="text/javascript"></script>
+        <script src="resources/js/users.js" type="text/javascript"></script>
         <jsp:doBody />
     </head>
