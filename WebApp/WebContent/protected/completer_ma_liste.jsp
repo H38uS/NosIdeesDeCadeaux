@@ -5,8 +5,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <t:template_head_includes>
-    <link rel="stylesheet" type="text/css" href="resources/css/lib/thickbox.css" />
-    <script src="resources/js/lib/thickbox.js" type="text/javascript"></script>
     <c:if test="${not is_mobile}">
         <script src="resources/js/browser/pictures.js" type="text/javascript"></script>
     </c:if>
