@@ -113,7 +113,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
     /**
      * Performs a post to the test object.
      *
-     * @return The service response if allowed by policy, null otherwise.
+     * @return The service response.
      */
     protected StringServiceResponse doTestServicePost() {
         return doTestServicePost(StringServiceResponse.class);
@@ -123,7 +123,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
      * Performs a post to the test object.
      *
      * @param clazz The actual class of the response.
-     * @return The service response if allowed by policy, null otherwise.
+     * @return The service response.
      */
     protected <T> T doTestServicePost(Class<T> clazz) {
         when(request.getMethod()).thenReturn("POST");
@@ -139,6 +139,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
      * Performs a get to the test object.
      *
      * @param clazz The actual class of the response.
+     * @return The service response.
      */
     protected <T> T doTestServiceGet(Class<T> clazz) {
         when(request.getMethod()).thenReturn("GET");

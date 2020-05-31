@@ -25,6 +25,13 @@ public class PagedResponse<T> {
     }
 
     /**
+     * @return The response list content.
+     */
+    public T getTheContent() {
+        return theContent;
+    }
+
+    /**
      * @param pages      The list of page available for this request.
      * @param theContent The response list content.
      * @param <T>        The response type.
