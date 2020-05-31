@@ -32,12 +32,12 @@ public class RootingsUtils {
      * @param request  The http request.
      * @param response The http response.
      */
-    public static void rootToPage(String url, HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public static void rootToPage(String url, HttpServletRequest request, HttpServletResponse response) {
         RequestDispatcher rd = request.getRequestDispatcher(url);
         try {
             rd.forward(request, response);
-        } catch (IOException e) {
-            throw new ServletException(e.getMessage());
+        } catch (IOException | ServletException e) {
+            logger.error(e);
         }
     }
 
@@ -50,7 +50,9 @@ public class RootingsUtils {
      * @param request  The http request.
      * @param response The http response.
      */
-    public static void redirectToPage(String url, HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public static void redirectToPage(String url,
+                                      HttpServletRequest request,
+                                      HttpServletResponse response) throws ServletException {
         try {
             response.sendRedirect(request.getContextPath() + url.replaceAll("[  ]", "%20"));
         } catch (IOException e) {
@@ -77,7 +79,8 @@ public class RootingsUtils {
      */
     public static void rootToGenericSQLError(User thisOne,
                                              Exception exception,
-                                             HttpServletRequest request, HttpServletResponse response) throws ServletException {
+                                             HttpServletRequest request,
+                                             HttpServletResponse response) {
 
         logger.error(MessageFormat.format("An error occured: {0}. StackTrace: {1}",
                                           exception.getMessage(),
@@ -98,8 +101,8 @@ public class RootingsUtils {
 
         try {
             rd.forward(request, response);
-        } catch (IOException e) {
-            throw new ServletException(e.getMessage());
+        } catch (IOException | ServletException e) {
+            logger.error(e);
         }
     }
 }

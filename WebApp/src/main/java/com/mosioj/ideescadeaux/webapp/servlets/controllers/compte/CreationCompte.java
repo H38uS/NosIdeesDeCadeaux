@@ -3,8 +3,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -26,7 +26,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 @WebServlet("/public/creation_compte")
-public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
+public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
     public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
     public static final String SUCCES_URL = "/public/succes_creation.jsp";
@@ -51,7 +51,8 @@ public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         HttpSession session = request.getSession();
         CompteInteractions helper = new CompteInteractions();
@@ -105,8 +106,9 @@ public class CreationCompte extends IdeesCadeauxServlet<AllAccessToPostAndGet> {
             throw new ServletException(e.getMessage());
         }
 
-        NotificationsRepository.notifyAboutANewInscription(MessageFormat.format("A person within the site !! This is {0}.",
-                                                                                email));
+        NotificationsRepository.notifyAboutANewInscription(MessageFormat.format(
+                "A person within the site !! This is {0}.",
+                email));
         NotificationsRepository.addNotification(thisOne.id, new NotifNoIdea());
         RootingsUtils.rootToPage(SUCCES_URL, request, response);
     }

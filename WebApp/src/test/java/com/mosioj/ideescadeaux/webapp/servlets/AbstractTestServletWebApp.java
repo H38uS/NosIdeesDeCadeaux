@@ -107,12 +107,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
      */
     protected void doTestPost() {
         when(request.getMethod()).thenReturn("POST");
-        try {
-            instance.doPost(request, response);
-        } catch (ServletException | IOException e) {
-            e.printStackTrace();
-            fail("Servlet error.");
-        }
+        instance.doPost(request, response);
     }
 
     /**
@@ -133,12 +128,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
     protected <T> T doTestServicePost(Class<T> clazz) {
         when(request.getMethod()).thenReturn("POST");
         responseOutput.clear();
-        try {
-            instance.doPost(request, response);
-        } catch (ServletException | IOException e) {
-            e.printStackTrace();
-            fail("Servlet error.");
-        }
+        instance.doPost(request, response);
         logger.info(responseOutput.builder);
         T resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), clazz);
         assertNotNull(resp);
@@ -153,12 +143,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
     protected <T> T doTestServiceGet(Class<T> clazz) {
         when(request.getMethod()).thenReturn("GET");
         responseOutput.clear();
-        try {
-            instance.doGet(request, response);
-        } catch (ServletException | IOException e) {
-            e.printStackTrace();
-            fail("Servlet error.");
-        }
+        instance.doGet(request, response);
         logger.info("Service response: " + responseOutput.builder);
         T resp = GsonFactory.getIt().fromJson(responseOutput.builder.toString(), clazz);
         assertNotNull(resp);
@@ -170,12 +155,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
      */
     protected void doTestGet() {
         when(request.getMethod()).thenReturn("GET");
-        try {
-            instance.doGet(request, response);
-        } catch (ServletException | IOException e) {
-            e.printStackTrace();
-            fail("Servlet error.");
-        }
+        instance.doGet(request, response);
     }
 
     protected void createMultiPartRequest(Map<String, String> parameters) throws IOException {

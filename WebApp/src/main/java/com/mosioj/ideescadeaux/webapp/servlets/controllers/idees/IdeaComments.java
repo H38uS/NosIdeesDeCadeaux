@@ -7,7 +7,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewCommentOnIdea;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @WebServlet("/protected/idee_commentaires")
-public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
+public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction> {
 
     private static final long serialVersionUID = -433226623397937479L;
     public static final String IDEA_ID_PARAM = "idee";
@@ -35,15 +35,19 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
     /**
      * Drops all notification linked to questions of the given owner links to the given idea.
      *
-     * @param owner The notification owner.
+     * @param owner  The notification owner.
      * @param ideaId The idea id.
      */
     private void dropNotificationOnView(User owner, int ideaId) {
-        NotificationsRepository.removeAllType(owner, NotificationType.NEW_COMMENT_ON_IDEA, ParameterName.IDEA_ID, ideaId);
+        NotificationsRepository.removeAllType(owner,
+                                              NotificationType.NEW_COMMENT_ON_IDEA,
+                                              ParameterName.IDEA_ID,
+                                              ideaId);
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
         Idee idea = policy.getIdea();
         request.setAttribute("idee", idea);
         request.setAttribute("comments", CommentsRepository.getCommentsOn(idea.getId()));
@@ -52,7 +56,8 @@ public class IdeaComments extends IdeesCadeauxServlet<IdeaInteraction> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         String text = ParametersUtils.readAndEscape(request, "text");
 

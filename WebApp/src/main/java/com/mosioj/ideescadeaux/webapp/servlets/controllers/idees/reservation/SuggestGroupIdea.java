@@ -8,7 +8,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSugge
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +30,7 @@ import static com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository.ge
 import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationMatching;
 
 @WebServlet("/protected/suggerer_groupe_idee")
-public class SuggestGroupIdea extends IdeesCadeauxServlet<BookingGroupInteraction> {
+public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroupInteraction> {
 
     private static final Logger logger = LogManager.getLogger(SuggestGroupIdea.class);
     private static final long serialVersionUID = 5094570058900475394L;

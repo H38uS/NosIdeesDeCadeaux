@@ -55,11 +55,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      *
      * @param policy The policy not met.
      */
-    protected void dealWithUnauthorizedPolicyAccess(HttpServletRequest request,
-                                                    HttpServletResponse response,
-                                                    P policy) throws ServletException {
-        RootingsUtils.rootToPage("/protected/erreur_parametre_ou_droit.jsp", request, response);
-    }
+    protected abstract void dealWithUnauthorizedPolicyAccess(HttpServletRequest request,
+                                                             HttpServletResponse response,
+                                                             P policy);
 
     /**
      * @param request The http request.
@@ -79,7 +77,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                                      HttpServletResponse response) throws ServletException, SQLException, IOException;
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
 
         Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
         fillConnectedUserIfPossible(request);
@@ -133,7 +131,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         try {
             // Security has passed, perform the logic
             ideesKDoGET(request, response);
-        } catch (SQLException e) {
+        } catch (SQLException | ServletException | IOException e) {
             // Default error management
             RootingsUtils.rootToGenericSQLError(thisOne, e, request, response);
         }
@@ -149,7 +147,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                                       HttpServletResponse response) throws ServletException, SQLException, IOException;
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
         Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
         fillConnectedUserIfPossible(request);
@@ -204,7 +202,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         try {
             // Security has passed, perform the logic
             ideesKDoPOST(request, response);
-        } catch (SQLException e) {
+        } catch (SQLException | ServletException | IOException e) {
             RootingsUtils.rootToGenericSQLError(thisOne, e, request, response);
         }
     }

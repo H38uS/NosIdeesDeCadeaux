@@ -7,7 +7,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewQuestionOnIdea;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.CanAskReplyToQuestions;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @WebServlet("/protected/idee_questions")
-public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
+public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQuestions> {
 
     private static final Logger logger = LogManager.getLogger(IdeeQuestions.class);
 
@@ -44,12 +44,19 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
      * @param ideaId The idea id.
      */
     private void dropNotificationOnView(User owner, int ideaId) {
-        NotificationsRepository.removeAllType(owner, NotificationType.IDEA_ADDED_BY_FRIEND, ParameterName.IDEA_ID, ideaId);
-        NotificationsRepository.removeAllType(owner, NotificationType.NEW_QUESTION_ON_IDEA, ParameterName.IDEA_ID, ideaId);
+        NotificationsRepository.removeAllType(owner,
+                                              NotificationType.IDEA_ADDED_BY_FRIEND,
+                                              ParameterName.IDEA_ID,
+                                              ideaId);
+        NotificationsRepository.removeAllType(owner,
+                                              NotificationType.NEW_QUESTION_ON_IDEA,
+                                              ParameterName.IDEA_ID,
+                                              ideaId);
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
         Idee idea = policy.getIdea();
         request.setAttribute("idee", idea);
         request.setAttribute("isOwner", idea.owner == thisOne);
@@ -59,7 +66,8 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         Idee idea = policy.getIdea();
         logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", idea.getId()));
@@ -84,7 +92,9 @@ public class IdeeQuestions extends IdeesCadeauxServlet<CanAskReplyToQuestions> {
         logger.debug(MessageFormat.format("Personnes à prévenir : {0}", toBeNotified));
         for (User notified : toBeNotified) {
             NotificationsRepository.addNotification(notified.id,
-                                                    new NotifNewQuestionOnIdea(current, idea, idea.owner.equals(notified)));
+                                                    new NotifNewQuestionOnIdea(current,
+                                                                               idea,
+                                                                               idea.owner.equals(notified)));
         }
 
         dropNotificationOnView(thisOne, idea.getId());

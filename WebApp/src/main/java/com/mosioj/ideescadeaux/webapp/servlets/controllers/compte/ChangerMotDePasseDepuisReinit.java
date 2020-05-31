@@ -3,8 +3,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PasswordChangeRequest;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/public/changer_mot_de_passe_depuis_reinit")
-public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordChangeRequest> {
+public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet<PasswordChangeRequest> {
 
     private static final long serialVersionUID = 5998641192324526001L;
     public static final String VIEW_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit.jsp";
@@ -37,7 +37,8 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxServlet<PasswordC
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         CompteInteractions helper = new CompteInteractions();
         User user = policy.getUser();

@@ -4,7 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
+public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeauxGetAndPostServlet<P> {
 
     private static final long serialVersionUID = -1774633803227715931L;
     private static final Logger logger = LogManager.getLogger(AbstractIdea.class);

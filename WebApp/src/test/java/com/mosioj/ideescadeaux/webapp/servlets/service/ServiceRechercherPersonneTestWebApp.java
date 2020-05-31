@@ -14,7 +14,9 @@ public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebA
 
     @Test
     public void testSuccess() {
-        when(request.getRequestDispatcher(ServiceRechercherPersonne.FORM_URL_SERVICE)).thenReturn(dispatcher);
+        // FIXME : faire un test du service
+        fail("");
+        // when(request.getRequestDispatcher(ServiceRechercherPersonne.FORM_URL_SERVICE)).thenReturn(dispatcher);
         when(request.getParameter("name")).thenReturn("est@toto.co");
         when(request.getParameter("only_non_friend")).thenReturn("nop");
         when(request.getParameter("name")).thenReturn("");
@@ -24,7 +26,9 @@ public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebA
 
     @Test
     public void testSuccessOnlyNonFriends() {
-        when(request.getRequestDispatcher(ServiceRechercherPersonne.FORM_URL_SERVICE)).thenReturn(dispatcher);
+        // FIXME : faire un test du service
+        fail("");
+//        when(request.getRequestDispatcher(ServiceRechercherPersonne.FORM_URL_SERVICE)).thenReturn(dispatcher);
         when(request.getParameter("name")).thenReturn("est@toto.co");
         when(request.getParameter("only_non_friend")).thenReturn("on");
         when(request.getParameter("name")).thenReturn("");
