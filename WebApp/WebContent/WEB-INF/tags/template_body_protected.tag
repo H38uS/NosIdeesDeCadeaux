@@ -62,7 +62,7 @@
 							<a href="protected/afficher_reseau?id=${connected_user.id}" class="btn btn-light">Mes amis</a>
 						</li>
 						<li class="nav-item m-2">
-							<a href="protected/rechercher_personne.jsp" class="btn btn-light">Ajouter un ami</a>
+							<a href="protected/rechercher_personne" class="btn btn-light">Ajouter un ami</a>
 						</li>
 						<li class="nav-item m-2">
 							<a href="protected/mon_compte" class="btn btn-light">Mon compte</a>
@@ -131,7 +131,7 @@
 							<a href="protected/afficher_reseau?id=${connected_user.id}" class="fl_purple">Mes amis</a>
 						</li>
 						<li class="nav-item">
-							<a href="protected/rechercher_personne.jsp" class="fl_purple">Ajouter un ami</a>
+							<a href="protected/rechercher_personne" class="fl_purple">Ajouter un ami</a>
 						</li>
 						<c:if test="${is_admin}">
 						<li class="nav-item">

@@ -292,7 +292,7 @@ function getMiddlePageContentAsHTML(pages, current) {
 function getPagesDiv(pages) {
 
     var pagesDiv = $("<div>");
-    if (pages.length === 0) {
+    if (pages.length < 2) {
         return pagesDiv;
     }
 

@@ -105,7 +105,7 @@
 					<span class="ml-3 d-none d-lg-inline">Afficher mes amis</span>
 				</div>
 				<div class="col-auto col-sm-5 col-xl-5 mr-sm-auto mr-lg-0 mb-2">
-					<a href="protected/rechercher_personne.jsp" class="img">
+					<a href="protected/rechercher_personne" class="img">
 						<img class="clickable" alt="Ajouter un ami" title="Ajouter un ami" src="resources/image/index/RejoindreGroupeOUT.png"
 											onmouseout="this.src='resources/image/index/RejoindreGroupeOUT.png'"
 											onmouseover="this.src='resources/image/index/RejoindreGroupeOVER.png'" />

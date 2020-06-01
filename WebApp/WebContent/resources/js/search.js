@@ -95,4 +95,7 @@ $(document).ready(function() {
         e.preventDefault();
         doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
     });
+
+    // First search if parameter are there
+    doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
 });

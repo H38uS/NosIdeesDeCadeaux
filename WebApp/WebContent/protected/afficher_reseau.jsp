@@ -182,7 +182,7 @@
         </c:if>
         <c:choose>
             <c:when test="${empty entities}">
-                Aucune relation trouvée. <a href="protected/rechercher_personne.jsp" >Rechercher</a> des personnes à ajouter !
+                Aucune relation trouvée. <a href="protected/rechercher_personne" >Rechercher</a> des personnes à ajouter !
             </c:when>
             <c:otherwise>
                 <div class="row align-items-start mx-0 justify-content-start">
