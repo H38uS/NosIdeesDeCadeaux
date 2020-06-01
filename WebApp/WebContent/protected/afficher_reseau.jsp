@@ -10,69 +10,6 @@
 <t:template_body_protected>
     <jsp:body>
         <span id="userId" class="d-none">${id}</span>
-        <c:choose>
-            <c:when test="${is_mobile}">
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        jQuery.ui.autocomplete.prototype._resizeMenu = function () {
-                            var ul = this.menu.element;
-                            ul.outerWidth(
-                                    Math.max( $("#mobile_res_search").outerWidth(), this.element.outerWidth())
-                                );
-                        }
-                        $("#looking_for").autocomplete({
-                            source: function(request, response) {
-                                $.getJSON(
-                                    "protected/service/name_resolver",
-                                    { term: $("#looking_for").val(), userId: $("#userId").html() },
-                                    response
-                                );
-                            },
-                            minLength : 2,
-                            appendTo: "#mobile_res_search_afficher_reseau",
-                            position: { my : "left top", at: "left top", of : "#mobile_res_search_afficher_reseau" },
-                            select : function(event, ui) {
-                                $("#looking_for").val(ui.item.email);
-                                $("#form_rechercher_dans_reseau").submit();
-                                return false;
-                            }
-                        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-                            return $( "<li class=\"ui-menu-item\"></li>" )
-                                .data( "item.autocomplete", item )
-                                .append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
-                                .appendTo( ul );
-                        };
-                    });
-                </script>
-            </c:when>
-            <c:otherwise>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        $("#looking_for").autocomplete({
-                            source: function(request, response) {
-                                $.getJSON(
-                                    "protected/service/name_resolver",
-                                    { term: $("#looking_for").val(), userId: $("#userId").html() },
-                                    response
-                                );
-                            },
-                            minLength : 2,
-                            select : function(event, ui) {
-                                $("#looking_for").val(ui.item.email);
-                                $("#form_rechercher_dans_reseau").submit();
-                                return false;
-                            }
-                        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-                            return $( "<li class=\"ui-menu-item\"></li>" )
-                            .data( "item.autocomplete", item )
-                            .append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
-                            .appendTo( ul );
-                        };
-                    });
-                </script>
-            </c:otherwise>
-        </c:choose>
-
         <c:if test="${not empty accepted}">
             <h3>Succès</h3>
             <div class="alert alert-success">
@@ -118,22 +55,21 @@
             Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
         </c:if>
         <h3 class="pb-1">Rechercher des personnes dans le réseau ${name}</h3>
-            <form id="form_rechercher_dans_reseau" class="form-inline" method="POST" action="protected/rechercher_reseau">
-                <div class="row align-items-center">
-                    <div class="col-auto d-none d-md-inline-block">
-                        <label for="name">Nom / Email de la personne</label>
-                    </div>
-                    <div class="col-7 col-sm-auto">
-                        <input type="text" class="form-control" name="looking_for" id="looking_for" value="${looking_for}" />
-                    </div>
-                    <div class="col-auto px-0">
-                        <button class="btn btn-primary" type="submit">Rechercher !</button>
-                    </div>
+        <form id="form_rechercher_dans_reseau" method="POST" action="protected/rechercher_reseau">
+            <div class="form-row justify-content-start align-items-center mx-0">
+                <div class="col-auto d-none d-md-block pl-0 pr-3">
+                    <label for="name">Nom / Email de la personne</label>
                 </div>
-                <input type="hidden" name="id" value="${id}" />
-                <input type="hidden" name="page" value="1" />
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            </form>
+                <div class="col-12 col-sm-9 col-md-5 col-lg-5 col-xl-4 px-0">
+                    <input type="text" class="form-control" name="looking_for" id="looking_for" value="${looking_for}" placeholder="Entrer deux catactères pour filtrer les amis ${name}" />
+                </div>
+                <div class="col-auto px-0">
+                    <button class="btn btn-primary d-none d-sm-block ml-2" type="submit">Rechercher !</button>
+                </div>
+            </div>
+            <input type="hidden" name="id" value="${id}" />
+            <input type="hidden" name="page" value="1" />
+        </form>
         <div id="mobile_res_search_afficher_reseau" class="mobile_res_search"></div>
         <h3 class="pt-4">Réseau ${name}</h3>
         <c:if test="${not empty pages}">

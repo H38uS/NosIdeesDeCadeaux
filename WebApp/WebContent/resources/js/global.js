@@ -82,43 +82,14 @@ function loadPreview(e) {
 	reader.readAsDataURL(inputFile);
 }
 
+function isMobileView() {
+    return $("#mobile_res_search").css('display') !== 'none';
+}
+
 var lastModalOpened;
 
-$(document).ready(function() {
-	$("span.checkbox").click(function() {
-		var checkBoxes = $(this).prev();
-		checkBoxes.prop("checked", !checkBoxes.prop("checked"));
-	});
-	$('#imageFile').on("change", function() {
-		pictureNeedsRefresh = true;
-		loadPreview();
-	});
-
-	if (typeof ($().tooltipster) === "function") {
-		// Tooltip pour tout sauf les images : information supplémentaire
-		$('[title]').not('img').tooltipster(myTooltipsterPrioParam);
-
-		// Tooltip pour les images : information sur l'action
-		$('img[title]').tooltipster(myTooltipsterInfoParam);
-	}
-	
-	$('.modal').on('show.bs.modal', function (e) {
-		lastModalOpened = $(this);
-	});
-	
-	if ( $("#mobile_res_search").css('display') !== 'none' ) {
-		// Mode mobile, on masque le reste quand on gagne le focus
-		$("#header_name").focus(function () {
-			$("nav").slideUp("fast");
-		});
-		$("#header_name").focusout(function () {
-			$("nav").slideDown("fast");
-		});
-	}
-});
-
 function getPictureWidth() {
-	if ( $("#mobile_res_search").css('display') == 'none' ) {
+	if ( isMobileView() ) {
 		return 30;
 	} else {
 		return 45;
@@ -317,3 +288,119 @@ function getPagesDiv(pages) {
     `);
     return pagesDiv;
 }
+
+/* *********************** */
+/* *** Recherche Liste *** */
+/* *********************** */
+
+// callback : function(event, ui)
+function personAutoComplete(selector, userId, callback, mobileResSelector, my = "right top", at = "right bottom") {
+    if (isMobileView()) {
+        jQuery.ui.autocomplete.prototype._resizeMenu = function () {
+            var ul = this.menu.element;
+            ul.outerWidth(
+                    Math.max( $(mobileResSelector).outerWidth(), this.element.outerWidth())
+                );
+        }
+        $(selector).autocomplete({
+            source: function(request, response) {
+                $.getJSON(
+                    "protected/service/name_resolver",
+                    { term: $(selector).val(), userId: userId },
+                    response
+                );
+            },
+            minLength : 2,
+            appendTo: mobileResSelector,
+            position: { my : "left top", at: "left top", of : mobileResSelector },
+            select : callback
+        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+            return $( "<li class=\"ui-menu-item\"></li>" )
+                .data( "item.autocomplete", item )
+                .append(`
+                    <div class="ui-menu-item-wrapper">
+                        <div class="row align-items-center">
+                            <div class="col-4 col-sm-3 col-md-2 center">
+                                <img class="avatar" src="${item.imgsrc}"/>
+                            </div>
+                            <div class="col-8 col-md-9">${item.value}</div>
+                        </div>
+                    </div>
+                `)
+                .appendTo( ul );
+        };
+    } else {
+        $(selector).autocomplete({
+            source: function(request, response) {
+                $.getJSON(
+                    "protected/service/name_resolver",
+                    { term: $(selector).val(), userId: userId },
+                    response
+                );
+            },
+            minLength : 2,
+            position: { my : my, at: at, of : selector },
+            select : callback
+        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+            return $('<li class="ui-menu-item"></li>')
+                .data( "item.autocomplete", item )
+                .append(`<div class="ui-menu-item-wrapper">
+                            <div class="row align-items-center">
+                                <div class="col-3 center">
+                                    <img class="avatar" src="${item.imgsrc}" />
+                                </div>
+                                <div class="col">${item.value}</div>
+                            </div>
+                        </div>
+                `)
+                .appendTo( ul );
+        };
+    }
+}
+
+/* ***************************** */
+/* *** Ouverture du document *** */
+/* ***************************** */
+
+$(document).ready(function() {
+    $("span.checkbox").click(function() {
+        var checkBoxes = $(this).prev();
+        checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+    });
+    $('#imageFile').on("change", function() {
+        pictureNeedsRefresh = true;
+        loadPreview();
+    });
+
+    if (typeof ($().tooltipster) === "function") {
+        // Tooltip pour tout sauf les images : information supplémentaire
+        $('[title]').not('img').tooltipster(myTooltipsterPrioParam);
+
+        // Tooltip pour les images : information sur l'action
+        $('img[title]').tooltipster(myTooltipsterInfoParam);
+    }
+
+    $('.modal').on('show.bs.modal', function (e) {
+        lastModalOpened = $(this);
+    });
+
+    if ( isMobileView() ) {
+        // Mode mobile, on masque le reste quand on gagne le focus
+        $("#header_name").focus(function () {
+            $("nav").slideUp("fast");
+        });
+        $("#header_name").focusout(function () {
+            $("nav").slideDown("fast");
+        });
+    }
+
+    // auto complete
+    personAutoComplete("#header_name",
+                       -1,
+                       function(event, ui) {
+                            $("#header_name").val(ui.item.email);
+                            $("#afficherliste").submit();
+                            return false;
+                       },
+                       "#mobile_res_search");
+});

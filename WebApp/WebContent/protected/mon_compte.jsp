@@ -120,12 +120,12 @@
                 <div class="alert alert-info">Vous n'avez actuellement pas de comptes parent.</div>
             </c:otherwise>
         </c:choose>
-        <form id="ajouter_un_parent" class="form-inline" method="POST" action="">
-            <div class="row align-items-center justify-content-center">
+        <form id="ajouter_un_parent" method="POST" action="">
+            <div class="form-row align-items-center justify-content-center justify-content-md-start">
                 <div class="col-auto">
                     <label for="input_add_parent" class="d-none d-lg-inline-block mr-3">Ajouter un nouveau parent pour gérer ce compte</label>
                 </div>
-                <div class="col-auto px-0">
+                <div class="col-auto col-sm-8 col-md-7 col-lg-6 col-xl-5 px-0">
                     <input type="text" class="form-control" name="name" id="input_add_parent" placeholder="Nom ou email du parent" />
                 </div>
                 <div class="col-auto">
@@ -133,28 +133,27 @@
                 </div>
             </div>
         </form>
+        <div id="mobile_res_search_mon_compte"></div>
         <h3 id="mes_comptes_enfants_h3" class="mt-2">Mes comptes enfant</h3>
         <c:choose>
             <c:when test="${not empty children}">
-            <table>
+            <div class="row align-items-center">
                 <c:forEach var="child" items="${children}">
-                <tr>
-                    <td>${child}</td>
-                    <td>
-                        <form method="POST" action="protected/connexion_enfant">
-                            <input type="hidden" name="name" value="${child.id}" />
-                            <button type="submit" class="btn btn-primary ml-sm-2">Se connecter avec ce compte</button>
-                        </form>
-                    </td>
-                </tr>
+                <div class="col col-md-auto">${child}</div>
+                <div class="col text-center text-md-left">
+                    <form method="POST" action="protected/connexion_enfant">
+                        <input type="hidden" name="name" value="${child.id}" />
+                        <button type="submit" class="btn btn-primary ml-sm-2">Se connecter avec ce compte</button>
+                    </form>
+                </div>
                 </c:forEach>
-            </table>
+            </div>
             </c:when>
             <c:otherwise>
-                Vous n'avez actuellement pas de comptes enfant.
+                <div class="alert alert-info">Vous n'avez actuellement pas de comptes enfant.</div>
             </c:otherwise>
         </c:choose>
-        <p class="mb-0">
+        <p class="mb-0 alert alert-info mt-2">
             Pour en ajouter, connectez-vous (ou créez un autre compte) depuis le compte enfant
             afin d'initialiser la procuration. <br/>Vous pourrez alors accéder à vos comptes enfant depuis le vôtre !
         </p>

@@ -141,64 +141,6 @@
                     </ul>
                 </div>
             </nav>
-            <c:choose>
-                <c:when test="${is_mobile}">
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            jQuery.ui.autocomplete.prototype._resizeMenu = function () {
-                                var ul = this.menu.element;
-                                ul.outerWidth(
-                                        Math.max( $("#mobile_res_search").outerWidth(), this.element.outerWidth())
-                                    );
-                            }
-                            $("#header_name").autocomplete({
-                                source : "protected/service/name_resolver",
-                                minLength : 2,
-                                appendTo: "#mobile_res_search",
-                                position: { my : "left top", at: "left top", of : "#mobile_res_search" },
-                                select : function(event, ui) {
-                                    $("#header_name").val(ui.item.email);
-                                    $("#afficherliste").submit();
-                                    return false;
-                                }
-                            }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-                                return $( "<li class=\"ui-menu-item\"></li>" )
-                                    .data( "item.autocomplete", item )
-                                    .append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
-                                    .appendTo( ul );
-                            };
-                        });
-                    </script>
-                </c:when>
-                <c:otherwise>
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            $("#header_name").autocomplete({
-                                source : "protected/service/name_resolver",
-                                minLength : 2,
-                                position: { my : "right top", at: "right bottom", of : "#header_name" },
-                                select : function(event, ui) {
-                                    $("#header_name").val(ui.item.email);
-                                    $("#afficherliste").submit();
-                                    return false;
-                                }
-                            }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-                                return $('<li class="ui-menu-item"></li>')
-                                    .data( "item.autocomplete", item )
-                                    .append('<div class="ui-menu-item-wrapper">' +
-                                                '<div class="row align-items-center">' +
-                                                    '<div class="col-3 center">' +
-                                                        '<img class="avatar" src="' + item.imgsrc + '" />' +
-                                                    '</div>' +
-                                                    '<div class="col">' + item.value + '</div>' +
-                                                '</div>' +
-                                            '</div>')
-                                    .appendTo( ul );
-                            };
-                        });
-                    </script>
-                </c:otherwise>
-            </c:choose>
         </header>
         <div id="loading_message_container"><div id="loading_message_div"></div></div>
         <div id="mobile_res_search" class="mobile_res_search word-break-all">&nbsp;</div>

@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
     <jsp:body>
-
         <c:if test="${fn:length(entities) gt 1}">
             <c:choose>
                 <c:when test="${is_mobile}">
@@ -33,29 +32,9 @@
         </c:if>
 
         <div class="row justify-content-around">
-
             <div id="mes_listes_entities_container" class="col-12">
-
                 <c:if test="${not is_mobile}">
                     <c:if test="${fn:length(entities) gt 1}">
-                        <script type="text/javascript">
-                            $(document).ready(function() {
-                                $("#top_mes_listes_search").autocomplete({
-                                    source : "protected/service/name_resolver",
-                                    minLength : 2,
-                                    select : function(event, ui) {
-                                        $("#top_mes_listes_search").val(ui.item.email);
-                                        $("#afficherliste_topmeslistes").submit();
-                                        return false;
-                                    }
-                                }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-                                    return $( "<li class=\"ui-menu-item\"></li>" )
-                                    .data( "item.autocomplete", item )
-                                    .append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
-                                    .appendTo( ul );
-                                };
-                            });
-                        </script>
                         <div class="alert alert-warning">
                             <div class="row align-items-center pb-2">
                                 <div class="col-auto">
@@ -69,9 +48,18 @@
                                 </form>
                             </div>
                         </div>
+                        <script type="text/javascript">
+                            $(document).ready(personAutoComplete("#top_mes_listes_search",
+                                                                 -1,
+                                                                 function(event, ui) {
+                                                                     $("#top_mes_listes_search").val(ui.item.email);
+                                                                     $("#afficherliste_topmeslistes").submit();
+                                                                     return false;
+                                                                 },
+                                                                 "#mobile_res_search")); // osef: uniquement en non mobile
+                        </script>
                     </c:if>
                 </c:if>
-
                 <c:if test="${not empty pages}">
                     <div class="my-3">
                         <ul class="pagination justify-content-center">
@@ -193,25 +181,6 @@
                     </div>
                 </c:if>
                 <c:if test="${not is_mobile}">
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            $("#bottom_mes_listes_search").autocomplete({
-                                source : "protected/service/name_resolver",
-                                minLength : 2,
-                                position: { my : "left bottom", at: "left top", of : "#bottom_mes_listes_search" },
-                                select : function(event, ui) {
-                                    $("#bottom_mes_listes_search").val(ui.item.email);
-                                    $("#afficherliste_bottommeslistes").submit();
-                                    return false;
-                                }
-                            }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-                                return $( "<li class=\"ui-menu-item\"></li>" )
-                                .data( "item.autocomplete", item )
-                                .append( '<div class="ui-menu-item-wrapper"> <div class="row align-items-center"><div class="col-4 col-sm-3 col-md-2 center"><img class="avatar" src="' + item.imgsrc + '"/></div><div class="col-8 col-md-9">' + item.value + '</div></div></div>')
-                                .appendTo( ul );
-                            };
-                        });
-                    </script>
                     <div class="alert alert-warning">
                         <div class="row align-items-center">
                             <c:choose>
@@ -240,6 +209,18 @@
                             </c:choose>
                         </div>
                     </div>
+                    <script type="text/javascript">
+                        $(document).ready(personAutoComplete("#bottom_mes_listes_search",
+                                                             -1,
+                                                             function(event, ui) {
+                                                                 $("#bottom_mes_listes_search").val(ui.item.email);
+                                                                 $("#afficherliste_topmeslistes").submit();
+                                                                 return false;
+                                                             },
+                                                             "#mobile_res_search",
+                                                             "right bottom",
+                                                             "right top"));
+                    </script>
                 </c:if>
             </div>
         </div>

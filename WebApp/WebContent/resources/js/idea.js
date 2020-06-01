@@ -511,7 +511,7 @@ function getCommentAndQuestionIconAsHTML(jsonDecoratedIdea) {
 
 function getMobileActionButtonAsHTML(jsonIdea) {
     var mobileActionDiv = $("<div>");
-    if ($("#mobile_res_search").css('display') !== 'none') {
+    if (isMobileView()) {
         mobileActionDiv.append(`
             <div class="col-auto ml-auto" data-toggle="modal" data-target="#actions-idea-${jsonIdea.id}">
                 <button class="btn btn-primary" >Actions...</button>
@@ -522,7 +522,7 @@ function getMobileActionButtonAsHTML(jsonIdea) {
 }
 
 function getActionTooltipForNonMobile(jsonIdea) {
-    if ($("#mobile_res_search").css('display') !== 'none') {
+    if (isMobileView()) {
         // no tooltip in Mobile view
         return "";
     }
@@ -623,7 +623,7 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
 
     // Mobile action div - only for Mobile view
     var ideaMobileModalContainer = "";
-    if ($("#mobile_res_search").css('display') !== 'none') {
+    if (isMobileView()) {
         ideaMobileModalContainer = $(`
             <div class="modal fade" id="actions-idea-${jsonIdea.id}" tabindex="-1" role="dialog" aria-hidden="true">
         `);
@@ -699,7 +699,7 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
 
 function getH2UserTitle(ideaOwner, connectedUser) {
     var imgAdd = $('<div>');
-    if ($("#mobile_res_search").css('display') !== 'none') {
+    if (isMobileView()) {
         imgAdd.append(`
             <img src="resources/image/ajouter_champs.png"
                  style="margin-left: 10px;margin-top: -2px;"

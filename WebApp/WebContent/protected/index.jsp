@@ -8,7 +8,7 @@
 <t:normal_protected>
 	<jsp:body>
 		<script>
-			if ( $("#mobile_res_search").css('display') == 'none' ) {
+			if ( isMobileView() ) {
 				// Mode normal, on sélectionne le champs recherche par défaut sur l'index
 				$("#header_name").focus();
 			}
