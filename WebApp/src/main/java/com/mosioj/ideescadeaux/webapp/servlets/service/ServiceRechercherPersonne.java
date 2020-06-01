@@ -1,8 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppUser;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
@@ -16,8 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
-
-import static com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository.associationExists;
+import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/rechercher_personne")
 public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet> {
@@ -41,21 +39,14 @@ public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet>
         boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
 
         // Building the initial list
-        List<User> foundUsers = UsersRepository.getUsers(userNameOrEmail,
-                                                         thisOne.id,
-                                                         onlyNonFriend,
-                                                         PAGES_HELPER.getFirstRow(request),
-                                                         PAGES_HELPER.getMaxNumberOfResults());
-
-        if (!onlyNonFriend) {
-            foundUsers.forEach(user -> user.withIsInMyNetwork(associationExists(user.id, thisOne.id)));
-        }
-
-        for (User user : foundUsers) {
-            if (UserRelationRequestsRepository.associationExists(thisOne.id, user.id)) {
-                user.freeComment = "Vous avez déjà envoyé une demande à " + user.getName();
-            }
-        }
+        List<DecoratedWebAppUser> foundUsers = UsersRepository.getUsers(userNameOrEmail,
+                                                                        thisOne.id,
+                                                                        onlyNonFriend,
+                                                                        PAGES_HELPER.getFirstRow(request),
+                                                                        PAGES_HELPER.getMaxNumberOfResults())
+                                                              .stream()
+                                                              .map(u -> new DecoratedWebAppUser(u, thisOne))
+                                                              .collect(Collectors.toList());
 
         final List<Page> pages = PAGES_HELPER.getPages(request, foundUsers.size(), this::getTotalNumberOfRecords);
         buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), isAdmin(request), thisOne));

@@ -32,28 +32,28 @@
 
 */
 
-function getRechercherPersonneCardFooterAsHTML(jsonUser) {
+function getRechercherPersonneCardFooterAsHTML(jsonDecoratedUser) {
     var footerDiv = $("<div>");
-    if (jsonUser.isInMyNetwork) {
+    if (jsonDecoratedUser.isInMyNetwork) {
         footerDiv.append(`
             <span class="verticalcenter_helper"></span>
             <img class="verticalcenter"
-                 alt="${jsonUser.name} fait déjà parti de vos amis."
-                 title="${jsonUser.name} fait déjà parti de vos amis."
+                 alt="${jsonDecoratedUser.user.name} fait déjà parti de vos amis."
+                 title="${jsonDecoratedUser.user.name} fait déjà parti de vos amis."
                  src="resources/image/friend.png">
         `);
-    } else if (typeof jsonUser.freeComment !== 'undefined') {
+    } else if (jsonDecoratedUser.hasSentARequest) {
         footerDiv.append(`
             <span class="verticalcenter_helper"></span>
             <img class="verticalcenter"
-                 alt="${jsonUser.freeComment}"
-                 title="${jsonUser.freeComment}"
+                 alt="Vous avez déjà envoyé une demande à ${jsonDecoratedUser.user.name}"
+                 title="Vous avez déjà envoyé une demande à ${jsonDecoratedUser.user.name}"
                  src="resources/image/demande_envoyee.jpg">
         `);
     } else {
         footerDiv.append(`
             <form method="POST" action="protected/demande_rejoindre_reseau">
-                <input type="hidden" name="user_id" value="${jsonUser.id}" >
+                <input type="hidden" name="user_id" value="${jsonDecoratedUser.user.id}" >
                 <button class="envoyer_demande_reseau btn btn-primary" type="submit" name="submit">Envoyer une demande</button>
             </form>
         `);
@@ -61,22 +61,22 @@ function getRechercherPersonneCardFooterAsHTML(jsonUser) {
     return footerDiv.html();
 }
 
-function getUserDiv(connectedUser, jsonUser) {
+function getUserDiv(connectedUser, jsonDecoratedUser) {
     var userDiv = $(`
         <div class="card col-auto px-0 m-3 person_card">
-            <a href="${avatarPicturePath}/large/${jsonUser.avatar}" class="thickbox img">
+            <a href="${avatarPicturePath}/large/${jsonDecoratedUser.user.avatar}" class="thickbox img">
                 <div class="row align-items-center mx-auto person_card_pic">
-                    <img src="${avatarPicturePath}/small/${jsonUser.avatar}" />
+                    <img src="${avatarPicturePath}/small/${jsonDecoratedUser.user.avatar}" />
                 </div>
             </a>
             <div class="card-body">
                 <h5 class="card-title">
-                    <a href="protected/voir_liste?id=${jsonUser.id}">${jsonUser.name}</a>
-                    <div><small>Né le ${jsonUser.readableBirthday}</small></div>
+                    <a href="protected/voir_liste?id=${jsonDecoratedUser.user.id}">${jsonDecoratedUser.user.name}</a>
+                    <div><small>Né le ${jsonDecoratedUser.readableBirthday}</small></div>
                 </h5>
             </div>
             <div class="card-footer text-center">
-                ${getRechercherPersonneCardFooterAsHTML(jsonUser)}
+                ${getRechercherPersonneCardFooterAsHTML(jsonDecoratedUser)}
             </div>
         </div>
     `);

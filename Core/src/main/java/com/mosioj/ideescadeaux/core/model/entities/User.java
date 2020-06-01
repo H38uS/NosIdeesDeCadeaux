@@ -21,7 +21,7 @@ public class User implements Comparable<User> {
     @Expose
     public String email;
 
-    /** The user's name. */
+    /** The user's name or email (if no name yet). Cannot be null or empty. */
     @Expose
     public String name;
 
@@ -29,42 +29,29 @@ public class User implements Comparable<User> {
     @Expose
     public String avatar;
 
-    // FIXME : comme pour les idées, faire un decorated user
-    /** Whether the user belongs to the network. */
-    @Expose
-    private boolean isInMyNetwork;
+    public Date birthday;
+    private Timestamp creationDate;
+    private Timestamp lastLogin;
 
-    /** The user's birthday, as a string. */
-    @Expose
-    private final String readableBirthday;
-
-    // FIXME : renommer... Uniquement utiliser si on a déjà envoyé une demande...
+    // FIXME : faire le ménage dans les champs/getters quand passé en JSON + faire une passe sur les méthodes
     @Expose
     public String freeComment;
 
-    public Date birthday;
-
-
     public int nbDaysBeforeBirthday;
-    private Timestamp creationDate;
-    private Timestamp lastLogin;
     public boolean hasBookedOneOfItsIdeas = false;
-
     private final List<Idee> ideas = new ArrayList<>();
 
     public User(int id, String name, String email, Date birthday, String avatar) {
         this.id = id;
-        this.name = name == null ? email : WordUtils.capitalize(name.trim());
+        this.name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
         this.birthday = birthday;
-        this.readableBirthday = getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.getTime()))
-                                             .orElse("- on ne sait pas...");
     }
 
     public User(int id, String name, String email, Date birthday, String avatar, int nbDaysBeforeBirthday) {
         this(id, name, email, birthday, avatar);
-        this.nbDaysBeforeBirthday = nbDaysBeforeBirthday;
+        this.nbDaysBeforeBirthday = nbDaysBeforeBirthday; // FIXME : le calculer tout le temps, en Java
     }
 
     /**
@@ -87,20 +74,6 @@ public class User implements Comparable<User> {
         this(id, name, email, birthday, avatar);
         this.creationDate = creationDate;
         this.lastLogin = lastLogin;
-    }
-
-    /**
-     * @param isInMyNetwork Whether the user belongs to the network.
-     */
-    public void withIsInMyNetwork(boolean isInMyNetwork) {
-        this.isInMyNetwork = isInMyNetwork;
-    }
-
-    /**
-     * @return Whether the user belongs to the network, or false if not computed.
-     */
-    public boolean getIsInMyNetwork() {
-        return isInMyNetwork;
     }
 
     /**
@@ -204,18 +177,13 @@ public class User implements Comparable<User> {
      * @return The name with the email or the name with the email between parenthesis.
      */
     public String getLongNameEmail() {
-        return name != null && !name.isEmpty() ? MessageFormat.format("{0} ({1})",
-                                                                      WordUtils.capitalize(name),
-                                                                      email) : email;
+        return MessageFormat.format("{0} ({1})", WordUtils.capitalize(name), email);
     }
 
     public String getMyDName() {
-        if (name == null || name.isEmpty()) {
-            return MessageFormat.format("de {0}", email);
-        }
         String vowel = "aeiuoyéè";
-        return vowel.indexOf(Character.toLowerCase(name.charAt(0))) == -1 ? MessageFormat.format("de {0}", getName())
-                : MessageFormat.format("d''{0}", getName());
+        final boolean hasVowel = vowel.indexOf(Character.toLowerCase(name.charAt(0))) == -1;
+        return hasVowel ? MessageFormat.format("de {0}", getName()) : MessageFormat.format("d''{0}", getName());
     }
 
     @Override
