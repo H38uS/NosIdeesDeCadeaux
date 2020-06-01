@@ -13,7 +13,7 @@
         <form id="rechercherPersonForm" class="mb-3" method="POST" action="protected/rechercher_personne">
             <div class="form-group">
                 <label for="name" class="required">Nom / Email de la personne</label>
-                <input type="text" class="form-control" name="name" id="name" value="${name}" />
+                <input type="text" class="form-control" name="name" id="name" value="${name}" placeholder="Taper au moins deux caractères pour commencer une recherche..." />
             </div>
             <div class="form-check">
                 <c:if test="${onlyNonFriend}">
