@@ -40,7 +40,7 @@
                                 <div class="col-auto">
                                     Vous ne trouvez pas votre bonheur ?<br/> Recherchez une liste particulière :
                                 </div>
-                                <form id="afficherliste_topmeslistes" class="form-inline" method="POST"
+                                <form id="afficherliste_topmeslistes" class="form-inline" method="GET"
                                       action="protected/afficher_listes">
                                     <input type="text" class="form-control" name="name" id="top_mes_listes_search"
                                            placeholder="Entrez un nom ou un email"/>
@@ -188,7 +188,7 @@
                                     <div class="col-auto">
                                         Consultez une autre liste :
                                     </div>
-                                    <form id="afficherliste_bottommeslistes" class="form-inline" method="POST"
+                                    <form id="afficherliste_bottommeslistes" class="form-inline" method="GET"
                                           action="protected/afficher_listes">
                                         <input type="text" class="form-control" name="name"
                                                id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email"/>
@@ -199,7 +199,7 @@
                                     <div class="col-auto">
                                         Vous ne trouvez pas votre bonheur ?<br/> Recherchez une liste particulière :
                                     </div>
-                                    <form id="afficherliste_bottommeslistes" class="form-inline" method="POST"
+                                    <form id="afficherliste_bottommeslistes" class="form-inline" method="GET"
                                           action="protected/afficher_listes">
                                         <input type="text" class="form-control" name="name"
                                                id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email"/>
@@ -214,7 +214,7 @@
                                                              -1,
                                                              function(event, ui) {
                                                                  $("#bottom_mes_listes_search").val(ui.item.email);
-                                                                 $("#afficherliste_topmeslistes").submit();
+                                                                 $("#afficherliste_bottommeslistes").submit();
                                                                  return false;
                                                              },
                                                              "#mobile_res_search",

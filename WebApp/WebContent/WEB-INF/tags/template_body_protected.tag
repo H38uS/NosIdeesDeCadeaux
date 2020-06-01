@@ -96,7 +96,7 @@
 
             <div class="container-fluid">
                 <div class="container-fluid px-0 px-lg-2">
-                <form id="afficherliste" class="justify-content-center justify-content-md-end" method="POST" action="protected/afficher_listes">
+                <form id="afficherliste" class="justify-content-center justify-content-md-end" method="GET" action="protected/afficher_listes">
                     <div class="form-row justify-content-end align-items-center mx-0">
                         <div class="col-12 col-lg-5 col-xl-6 d-none d-sm-block pb-sm-2 pl-0 pr-3">
                             Créer et partager vos envies de cadeaux avec toute votre famille et vos amis

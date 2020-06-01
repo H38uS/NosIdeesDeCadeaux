@@ -55,7 +55,7 @@
             Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
         </c:if>
         <h3 class="pb-1">Rechercher des personnes dans le réseau ${name}</h3>
-        <form id="form_rechercher_dans_reseau" method="POST" action="protected/rechercher_reseau">
+        <form id="form_rechercher_dans_reseau" method="GET" action="protected/rechercher_reseau">
             <div class="form-row justify-content-start align-items-center mx-0">
                 <div class="col-auto d-none d-md-block pl-0 pr-3">
                     <label for="name">Nom / Email de la personne</label>
