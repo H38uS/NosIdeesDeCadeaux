@@ -66,7 +66,7 @@ public class BirthdayNotifier {
         body = body.replaceAll("\\$\\$nb_jours\\$\\$", nbDays + "");
 
         try {
-            EmailSender.sendEmail(user.email, "Votre anniversaire approche... Compléter votre liste !", body).get();
+            EmailSender.sendEmail(user.email, "Votre anniversaire approche... Complétez votre liste !", body).get();
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e);
         }
