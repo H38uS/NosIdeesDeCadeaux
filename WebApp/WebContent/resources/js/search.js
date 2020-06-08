@@ -69,6 +69,8 @@ function doSearch(value, only_non_friend, page = 1) {
     });
 }
 
+// FIXME : update the address bar when a search is done : https://github.com/browserstate/history.js
+
 $(document).ready(function() {
     // input text
     $("#name").keyup(function() {

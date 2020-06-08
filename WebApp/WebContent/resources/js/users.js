@@ -62,8 +62,8 @@ function getUserDiv(connectedUser, jsonDecoratedUser) {
         return false;
     });
 
-    $(".envoyer_demande_reseau").off("click");
-    $(".envoyer_demande_reseau").click(sendRequest);
+    userDiv.find(".envoyer_demande_reseau").off("click");
+    userDiv.find(".envoyer_demande_reseau").click(sendRequest);
 
     return userDiv;
 }
