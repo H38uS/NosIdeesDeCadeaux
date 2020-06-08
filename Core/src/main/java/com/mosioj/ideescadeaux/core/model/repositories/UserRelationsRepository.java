@@ -64,14 +64,6 @@ public class UserRelationsRepository extends AbstractRepository {
     }
 
     /**
-     * @param user The user.
-     * @return All relations of the given user.
-     */
-    public static List<Relation> getRelations(int user) throws SQLException {
-        return getRelations(user, -1, -1);
-    }
-
-    /**
      * @param user            The user.
      * @param firstRow        The first row to select.
      * @param maxNumberOfRows Number of results to retrieve.

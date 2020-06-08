@@ -1,6 +1,8 @@
+// FIXME : 0 oupsi : j'ai supprimé mon idée mais je ne le voulais pas... Annuler !! -- voir les notif à envoyer
 // TODO : 0 revoir les bandes présentation liste en mode mobile - mettre l'image du owner sur une ligne avant son nom
 // TODO : 0 utiliser alert-sucess / warning / error dans les messages de statuts + le mettre tout en haut (position absolute 0 avec marge)
-// FIXME : 1 revoir le visuel recherche liste dans mes listes quand on trouve pas - au moins en mode PC -- Idem pour recherche réseau (Mes amis)
+// FIXME : 1 revoir le visuel recherche liste dans mes listes quand on trouve pas - au moins en mode PC -- Idem pour recherche réseau (Mes amis) - voir les notif à envoyer
+// TODO : 1 pouvoir visualiser ses idées supprimer et les restorer (avec ou sans réservation) - i.e. annuler ou Encore!
 // TODO : 1 faire un service pour le Encore!
 // TODO : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
 // TODO : 3 ajouter un changelog

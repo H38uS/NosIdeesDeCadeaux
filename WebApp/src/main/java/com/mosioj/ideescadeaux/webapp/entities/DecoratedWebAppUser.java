@@ -5,6 +5,8 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
+import java.util.Objects;
+
 import static com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository.associationExists;
 
 public class DecoratedWebAppUser {
@@ -31,5 +33,18 @@ public class DecoratedWebAppUser {
         readableBirthday = user.getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.getTime()))
                                .orElse("- on ne sait pas...");
         hasSentARequest = UserRelationRequestsRepository.associationExists(connectedUser.id, user.id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DecoratedWebAppUser that = (DecoratedWebAppUser) o;
+        return user.equals(that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user);
     }
 }

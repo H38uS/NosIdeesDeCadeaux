@@ -79,25 +79,9 @@ public class AfficherReseau extends AbstractListes<Relation, NetworkAccess> {
 
     @Override
     protected List<Relation> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
-
-        User user = thisOne;
-        List<Relation> relations = UserRelationsRepository.getRelations(policy.getUser().id,
-                                                                        firstRow,
-                                                                        helper.getMaxNumberOfResults());
-
-        // Ajout du flag network
-        for (Relation r : relations) {
-            if (UserRelationsRepository.associationExists(r.getSecond().id, user.id)) {
-                r.secondIsInMyNetwork = true;
-            } else {
-                User other = r.getSecond();
-                if (UserRelationRequestsRepository.associationExists(user.id, other.id)) {
-                    other.freeComment = "Vous avez déjà envoyé une demande à " + other.getName();
-                }
-            }
-        }
-
-        return relations;
+        return UserRelationsRepository.getRelations(policy.getUser().id,
+                                                    firstRow,
+                                                    helper.getMaxNumberOfResults());
     }
 
 }

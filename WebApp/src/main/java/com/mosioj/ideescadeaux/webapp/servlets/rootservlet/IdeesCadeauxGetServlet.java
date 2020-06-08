@@ -16,7 +16,6 @@ public abstract class IdeesCadeauxGetServlet<P extends SecurityPolicy> extends I
 
     @Override
     // FIXME : 0 faire une couche intermediaire pour les services pour gérer les exceptions SQL et envoyer une réponse KO
-    // FIXME : 0 déjà bien entamé, reste quelques services mal rooté
     public final void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         throw new ServletException("Method not supported");
     }

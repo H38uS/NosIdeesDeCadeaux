@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppUser;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.PagedResponse;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -22,31 +23,33 @@ public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebA
     @Test
     public void nonFriendsShouldAlwaysCome() {
 
+        final DecoratedWebAppUser decoratedMoiAutre = new DecoratedWebAppUser(moiAutre, firefox);
         when(request.getParameter("name")).thenReturn("iautre@toto.co");
 
         // We get it when looking in all users
         when(request.getParameter("only_non_friend")).thenReturn("nop");
         RechercherPersonneResponse resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
-        assertEquals(Collections.singletonList(moiAutre), resp.getMessage().getTheContent());
+        assertEquals(Collections.singletonList(decoratedMoiAutre), resp.getMessage().getTheContent());
 
         // And also when looking only for friends
         when(request.getParameter("only_non_friend")).thenReturn("on");
         resp = doTestServiceGet(RechercherPersonneResponse.class);
         System.out.println(resp.getMessage().getTheContent());
-        assertEquals(Collections.singletonList(moiAutre), resp.getMessage().getTheContent());
+        assertEquals(Collections.singletonList(decoratedMoiAutre), resp.getMessage().getTheContent());
     }
 
     @Test
     public void onlyNonFriendShouldFilterFriends() {
 
+        final DecoratedWebAppUser decoratedFriend = new DecoratedWebAppUser(friendOfFirefox, firefox);
         when(request.getParameter("name")).thenReturn("est@toto.co");
 
         // We get it when looking in all users
         when(request.getParameter("only_non_friend")).thenReturn("nop");
         RechercherPersonneResponse resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
-        assertEquals(Collections.singletonList(friendOfFirefox), resp.getMessage().getTheContent());
+        assertEquals(Collections.singletonList(decoratedFriend), resp.getMessage().getTheContent());
 
         // And not when filtering on non-friends
         when(request.getParameter("only_non_friend")).thenReturn("on");
@@ -55,7 +58,7 @@ public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebA
         assertEquals(Collections.emptyList(), resp.getMessage().getTheContent());
     }
 
-    private static class RechercherPersonneResponse extends ServiceResponse<PagedResponse<List<User>>> {
+    private static class RechercherPersonneResponse extends ServiceResponse<PagedResponse<List<DecoratedWebAppUser>>> {
         /**
          * Class constructor.
          *
@@ -65,7 +68,7 @@ public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebA
          * @param connectedUser The connected user or null if none.
          */
         public RechercherPersonneResponse(boolean isOK,
-                                          PagedResponse<List<User>> message,
+                                          PagedResponse<List<DecoratedWebAppUser>> message,
                                           boolean isAdmin,
                                           User connectedUser) {
             super(isOK, message, isAdmin, connectedUser);

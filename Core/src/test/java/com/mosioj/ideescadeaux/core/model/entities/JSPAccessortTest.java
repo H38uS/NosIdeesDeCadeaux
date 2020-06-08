@@ -59,7 +59,6 @@ public class JSPAccessortTest extends TemplateTest {
     public void testJSPOnlyRelationMethods() {
         Relation r = new Relation(u, u);
         Assert.assertEquals(u, r.getFirst());
-        Assert.assertFalse(r.getSecondIsInMyNetwork());
     }
 
     @Test

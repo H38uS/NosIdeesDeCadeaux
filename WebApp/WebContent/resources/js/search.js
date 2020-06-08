@@ -1,6 +1,4 @@
 const minLength = 3;
-const minTempsReflexion = 500;
-
 var completed = true;
 
 function doSearch(value, only_non_friend, page = 1) {
@@ -47,16 +45,16 @@ function doSearch(value, only_non_friend, page = 1) {
         }
 
         // Ajout des pages si besoin
-        $("#res").append(getPagesDiv(jsonData.pages, ""));
+        $("#res").append(getPagesDiv(jsonData.pages));
 
         // Préparation des résultats
         var usersDiv = $('<div class="row align-items-start mx-0 justify-content-center">');
         $("#res").append(usersDiv);
-        $("#res").append(getPagesDiv(jsonData.pages, ""));
+        $("#res").append(getPagesDiv(jsonData.pages));
 
         // printing users
         $.each(jsonUsers, function(i, jsonUser) {
-            usersDiv.append(getUserDiv(jsonData.connectedUser, jsonUser));
+            usersDiv.append(getUserDiv(rawData.connectedUser, jsonUser));
         });
 
         // actions des pages

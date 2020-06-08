@@ -134,6 +134,10 @@ public class User implements Comparable<User> {
         return nbDaysBeforeBirthday;
     }
 
+    /**
+     * @param token The caracter to search.
+     * @return True if this user's name or email contains the token.
+     */
     public boolean matchNameOrEmail(String token) {
         return getName().toLowerCase().contains(token.toLowerCase()) ||
                email.toLowerCase().contains(token.toLowerCase());

@@ -1,46 +1,16 @@
-/*
-    afficher reseau card-footer
-
-    <c:choose>
-        <c:when test="${relation.second.id != connected_user.id && relation.secondIsInMyNetwork}">
-            Aller voir <a href="protected/voir_liste?id=${relation.second.id}">sa liste</a>.<br/>
-            Aller voir <a href="protected/afficher_reseau?id=${relation.second.id}">ses amis</a>.<br/>
-            <a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
-            Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
-            <a class="drop_relationship" href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
-        </c:when>
-        <c:when test="${relation.second.id == connected_user.id}">
-            Vous ne pouvez pas intéragir avec vous-même !
-        </c:when>
-        <c:otherwise>
-            Vous n'êtes pas encore ami avec cette personne.<br/>
-            <c:choose>
-                <c:when test="${not empty relation.second.freeComment}">
-                    ${relation.second.freeComment}
-                </c:when>
-                <c:otherwise>
-                    <form method="POST" action="protected/demande_rejoindre_reseau">
-                        <input type="hidden" name="user_id" value="${relation.second.id}" >
-                        <input type="submit" name="submit" id="submit" value="Envoyer une demande" />
-                    </form>
-                </c:otherwise>
-            </c:choose>
-        </c:otherwise>
-    </c:choose>
-
-
-
-*/
-
-function getRechercherPersonneCardFooterAsHTML(jsonDecoratedUser) {
+function getRechercherPersonneCardFooterAsHTML(connectedUser, jsonDecoratedUser) {
     var footerDiv = $("<div>");
-    if (jsonDecoratedUser.isInMyNetwork) {
+    if (connectedUser.id === jsonDecoratedUser.user.id) {
         footerDiv.append(`
-            <span class="verticalcenter_helper"></span>
-            <img class="verticalcenter"
-                 alt="${jsonDecoratedUser.user.name} fait déjà parti de vos amis."
-                 title="${jsonDecoratedUser.user.name} fait déjà parti de vos amis."
-                 src="resources/image/friend.png">
+            Vous ne pouvez pas intéragir avec vous-même !
+        `);
+    } else if (jsonDecoratedUser.isInMyNetwork) {
+        footerDiv.append(`
+            Aller voir <a href="protected/voir_liste?id=${jsonDecoratedUser.user.id}">sa liste</a>.<br/>
+            Aller voir <a href="protected/afficher_reseau?id=${jsonDecoratedUser.user.id}">ses amis</a>.<br/>
+            <a href="protected/suggerer_relations?id=${jsonDecoratedUser.user.id}">Suggérer</a> des relations.<br/>
+            Lui <a href="protected/ajouter_idee_ami?id=${jsonDecoratedUser.user.id}">ajouter</a> une idée.<br/>
+            <a class="drop_relationship" href="protected/supprimer_relation?id=${jsonDecoratedUser.user.id}">Supprimer</a> cette personne.
         `);
     } else if (jsonDecoratedUser.hasSentARequest) {
         footerDiv.append(`
@@ -76,7 +46,7 @@ function getUserDiv(connectedUser, jsonDecoratedUser) {
                 </h5>
             </div>
             <div class="card-footer text-center">
-                ${getRechercherPersonneCardFooterAsHTML(jsonDecoratedUser)}
+                ${getRechercherPersonneCardFooterAsHTML(connectedUser, jsonDecoratedUser)}
             </div>
         </div>
     `);

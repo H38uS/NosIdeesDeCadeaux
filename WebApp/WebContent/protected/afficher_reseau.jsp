@@ -55,162 +55,25 @@
             Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
         </c:if>
         <h3 class="pb-1">Rechercher des personnes dans le réseau ${name}</h3>
-        <form id="form_rechercher_dans_reseau" method="GET" action="protected/rechercher_reseau">
+        <form id="form_rechercher_dans_reseau" method="GET" action="protected/service/rechercher_reseau">
             <div class="form-row justify-content-start align-items-center mx-0">
                 <div class="col-auto d-none d-md-block pl-0 pr-3">
                     <label for="name">Nom / Email de la personne</label>
                 </div>
                 <div class="col-12 col-sm-9 col-md-5 col-lg-5 col-xl-4 px-0">
-                    <input type="text" class="form-control" name="looking_for" id="looking_for" value="${looking_for}" placeholder="Entrer deux catactères pour filtrer les amis ${name}" />
+                    <input type="text" class="form-control" name="looking_for" id="looking_for" value="${looking_for}" placeholder="Entrer trois catactères pour filtrer les amis ${name}" />
                 </div>
                 <div class="col-auto px-0">
                     <button class="btn btn-primary d-none d-sm-block ml-2" type="submit">Rechercher !</button>
                 </div>
             </div>
-            <input type="hidden" name="id" value="${id}" />
+            <input type="hidden" id="look_in_network" name="id" value="${id}" />
             <input type="hidden" name="page" value="1" />
         </form>
         <div id="mobile_res_search_afficher_reseau" class="mobile_res_search"></div>
         <h3 class="pt-4">Réseau ${name}</h3>
-        <c:if test="${not empty pages}">
-            <div>
-                <ul class="pagination justify-content-center">
-                    <c:choose>
-                        <c:when test="${current != 1}">
-                            <li class="page-item">
-                                <a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="page-item disabled">
-                                <a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                    <c:forEach var="page" items="${pages}">
-                        <c:choose>
-                            <c:when test="${current != page.numero}">
-                                <li class="page-item">
-                                    <a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
-                                </li>
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item active">
-                                    <a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
-                                </li>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                    <c:choose>
-                        <c:when test="${current != last}">
-                            <li class="page-item">
-                                <a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="page-item disabled">
-                                <a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </ul>
-            </div>
-        </c:if>
-        <c:choose>
-            <c:when test="${empty entities}">
-                Aucune relation trouvée. <a href="protected/rechercher_personne" >Rechercher</a> des personnes à ajouter !
-            </c:when>
-            <c:otherwise>
-                <div class="row align-items-start mx-0 justify-content-start">
-                    <c:forEach var="relation" items="${entities}">
-                        <div class="card col-auto px-0 m-2 person_card">
-                            <div class="row align-items-center mx-auto person_card_pic">
-                                <img src="${avatars}/${relation.second.avatarSrcLarge}">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a href="protected/voir_liste?id=${relation.second.id}">${relation.second.name}</a>
-                                    <div><small>Né le ${relation.second.getBirthdayAsString()}</small></div>
-                                </h5>
-                            </div>
-                            <div class="card-footer">
-                                <c:choose>
-                                    <c:when test="${relation.second.id != connected_user.id && relation.secondIsInMyNetwork}">
-                                        Aller voir <a href="protected/voir_liste?id=${relation.second.id}">sa liste</a>.<br/>
-                                        Aller voir <a href="protected/afficher_reseau?id=${relation.second.id}">ses amis</a>.<br/>
-                                        <a href="protected/suggerer_relations?id=${relation.second.id}">Suggérer</a> des relations.<br/>
-                                        Lui <a href="protected/ajouter_idee_ami?id=${relation.second.id}">ajouter</a> une idée.<br/>
-                                        <a class="drop_relationship" href="protected/supprimer_relation?id=${relation.second.id}">Supprimer</a> cette personne.
-                                    </c:when>
-                                    <c:when test="${relation.second.id == connected_user.id}">
-                                        Vous ne pouvez pas intéragir avec vous-même !
-                                    </c:when>
-                                    <c:otherwise>
-                                        Vous n'êtes pas encore ami avec cette personne.<br/>
-                                        <c:choose>
-                                            <c:when test="${not empty relation.second.freeComment}">
-                                                ${relation.second.freeComment}
-                                            </c:when>
-                                            <c:otherwise>
-                                                <form method="POST" action="protected/demande_rejoindre_reseau">
-                                                    <input type="hidden" name="user_id" value="${relation.second.id}" >
-                                                    <input type="submit" name="submit" id="submit" value="Envoyer une demande" />
-                                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                                </form>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
-            </c:otherwise>
-        </c:choose>
-        <c:if test="${not empty pages}">
-            <div class="mt-3">
-                <ul class="pagination justify-content-center">
-                    <c:choose>
-                        <c:when test="${current != 1}">
-                            <li class="page-item">
-                                <a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="page-item disabled">
-                                <a class="page-link" href="${call_back}?page=${current-1}${spec_parameters}">Précédent</a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                    <c:forEach var="page" items="${pages}">
-                        <c:choose>
-                            <c:when test="${current != page.numero}">
-                                <li class="page-item">
-                                    <a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
-                                </li>
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item active">
-                                    <a class="page-link" href="${call_back}?page=${page.numero}${spec_parameters}">${page.numero}</a>
-                                </li>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                    <c:choose>
-                        <c:when test="${current != last}">
-                            <li class="page-item">
-                                <a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="page-item disabled">
-                                <a class="page-link" href="${call_back}?page=${current+1}${spec_parameters}">Suivant</a>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </ul>
-            </div>
-        </c:if>
+        <div id="res">
+        </div>
     </jsp:body>
 </t:template_body_protected>
 </html>

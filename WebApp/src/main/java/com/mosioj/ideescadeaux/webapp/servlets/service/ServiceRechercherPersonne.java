@@ -38,7 +38,7 @@ public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet>
         String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
         boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
 
-        // Building the initial list
+        // Building result list
         List<DecoratedWebAppUser> foundUsers = UsersRepository.getUsers(userNameOrEmail,
                                                                         thisOne.id,
                                                                         onlyNonFriend,
@@ -53,8 +53,7 @@ public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet>
     }
 
     /**
-     * The http request. May contain parameters.
-     *
+     * @param request The http request. May contain parameters.
      * @return The total number of records that will be produced when fetching the entire list.
      */
     private int getTotalNumberOfRecords(HttpServletRequest request) {

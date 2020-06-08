@@ -4,10 +4,9 @@ public class Relation {
 
     private final User first;
     private final User second;
-    public boolean secondIsInMyNetwork = false;
 
     /**
-     * @param first One user of this relation.
+     * @param first  One user of this relation.
      * @param second The other user of this relation.
      */
     public Relation(User first, User second) {
@@ -23,16 +22,9 @@ public class Relation {
         return second;
     }
 
-    /**
-     * @return true if and only if "second" belongs to the same network as the connected user.
-     */
-    public boolean getSecondIsInMyNetwork() {
-        return secondIsInMyNetwork;
-    }
-
     @Override
     public String toString() {
-        return "Relation [first=" + first + ", second=" + second + ", secondIsInMyNetwork=" + secondIsInMyNetwork + "]";
+        return "Relation [first=" + first + ", second=" + second + "]";
     }
 
     @Override
