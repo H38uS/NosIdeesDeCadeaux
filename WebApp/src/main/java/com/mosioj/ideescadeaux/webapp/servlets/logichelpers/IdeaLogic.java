@@ -5,19 +5,24 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
+import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.mobile.device.Device;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class IdeaLogic {
 
@@ -152,5 +157,35 @@ public class IdeaLogic {
                 logger.error("Fail to delete {} file...", large);
             }
         }
+    }
+
+    /**
+     * Fills in the user's ideas.
+     *
+     * @param connectedUser The user currently connected for this request.
+     * @param users         We want the ideas of those user list.
+     * @param device        The device used by the connected user.
+     * @return Those users as their ideas in a single list.
+     */
+    public static List<OwnerIdeas> getPersonsIdeasFromUsers(User connectedUser, List<User> users, Device device) {
+        return users.stream()
+                    .map(u -> getPersonIdeasFromUser(connectedUser, device, u))
+                    .collect(Collectors.toList());
+    }
+
+    /**
+     * Fills in the user ideas.
+     *
+     * @param connectedUser The user currently connected for this request.
+     * @param user          We want the ideas of this user.
+     * @param device        The device used by the connected user.
+     * @return Those users as their ideas in a single list.
+     */
+    private static OwnerIdeas getPersonIdeasFromUser(User connectedUser, Device device, User user) {
+        return OwnerIdeas.from(user,
+                               IdeesRepository.getIdeasOf(user.id)
+                                              .stream()
+                                              .map(i -> new DecoratedWebAppIdea(i, connectedUser, device))
+                                              .collect(Collectors.toList()));
     }
 }

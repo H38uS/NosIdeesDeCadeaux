@@ -41,12 +41,7 @@ public abstract class AbstractListes<T, P extends SecurityPolicy> extends IdeesC
         this.helper = helper;
     }
 
-    /**
-     * @param policy The security policy.
-     */
-    public AbstractListes(P policy) {
-        this(policy, ListResultWithPagesHelper.withDefaultMax()); // Default max number
-    }
+    // FIXME : ne plus utiliser les listes quand le service est migré
 
     /**
      * @return The URL argument to pass to the RootingsUtils.rootToPage method.
