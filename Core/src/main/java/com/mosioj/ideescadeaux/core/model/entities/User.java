@@ -87,7 +87,8 @@ public class User implements Comparable<User> {
      * @return The formatted birthdate.
      */
     public String getBirthdayAsString() {
-        return birthday == null ? "- on ne sait pas..." : MyDateFormatViewer.formatDayWithYearHidden(birthday.getTime());
+        return getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.getTime()))
+                            .orElse("- on ne sait pas...");
     }
 
     public String getAvatar() {

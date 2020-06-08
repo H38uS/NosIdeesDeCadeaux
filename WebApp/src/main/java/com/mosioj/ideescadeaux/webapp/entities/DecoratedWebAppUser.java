@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.webapp.entities;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
-import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 import java.util.Objects;
 
@@ -30,8 +29,7 @@ public class DecoratedWebAppUser {
     public DecoratedWebAppUser(final User user, final User connectedUser) {
         this.user = user;
         isInMyNetwork = associationExists(user.id, connectedUser.id);
-        readableBirthday = user.getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.getTime()))
-                               .orElse("- on ne sait pas...");
+        readableBirthday = user.getBirthdayAsString();
         hasSentARequest = UserRelationRequestsRepository.associationExists(connectedUser.id, user.id);
     }
 
