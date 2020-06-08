@@ -40,7 +40,7 @@ function doSearch(value, only_non_friend, page = 1) {
                 </div>
             `);
             $("#res").fadeIn('slow');
-            actionDone('Recherche terminée');
+            closeModal();
             return;
         }
 
@@ -63,7 +63,7 @@ function doSearch(value, only_non_friend, page = 1) {
             doSearch(value, only_non_friend, $(this).attr('href').substring(5));
         });
 
-        actionDone('Recherche terminée');
+        closeModal();
     }).fail(function() {
         actionError("Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
     });
