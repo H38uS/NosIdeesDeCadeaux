@@ -5,14 +5,14 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.*;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
@@ -76,6 +76,8 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         int isUpToDate = NotificationsRepository.addNotification(_OWNER_ID_,
                                                                  new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+        IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
+        assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
         int confirmedUpToDate = NotificationsRepository.addNotification(_FRIEND_ID_,
                                                                         new NotifConfirmedUpToDate(firefox, idee));
         int groupSuggestion = NotificationsRepository.addNotification(_FRIEND_ID_,
@@ -117,6 +119,7 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         assertNotifDoesNotExists(newComment);
         assertNotifDoesNotExists(newQuestion);
         assertNotifDoesNotExists(recurentUnbook);
+        assertFalse(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
     }
 
 }

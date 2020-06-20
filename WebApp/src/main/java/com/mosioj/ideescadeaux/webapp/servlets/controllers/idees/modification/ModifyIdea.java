@@ -75,7 +75,6 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
         // Check that we have a file upload request
         if (ServletFileUpload.isMultipartContent(request)) {
 
-
             final File ideaPicturePath = ParametersUtils.getIdeaPicturePath();
             final Map<String, String> parameters = ParametersUtils.readMultiFormParameters(request, ideaPicturePath);
             List<String> errors = IdeaLogic.fillIdeaOrErrors(parameters);

@@ -8,6 +8,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifBookedRemo
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUserIdParam;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -77,6 +78,9 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
 
             NotificationsRepository.remove(notification);
         }
+
+        // Deleting previous questions about whether it is up to date...
+        IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
         int userId = thisOne.id;
         IdeesRepository.remove(idea.getId());

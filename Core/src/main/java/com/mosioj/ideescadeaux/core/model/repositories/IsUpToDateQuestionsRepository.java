@@ -16,22 +16,6 @@ public class IsUpToDateQuestionsRepository extends AbstractRepository {
     }
 
     /**
-     * Removes the association if it exists.
-     *
-     * @param ideeId The idea id.
-     * @param userId The user id.
-     * @return The number of rows deleted.
-     */
-    public static int deleteAssociation(int ideeId, int userId) throws SQLException {
-        return getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
-                                                          TABLE_NAME,
-                                                          IsUpToDateColumns.IDEE_ID,
-                                                          IsUpToDateColumns.USER_ID),
-                                     ideeId,
-                                     userId);
-    }
-
-    /**
      * @param ideeId The idea id.
      */
     public static void deleteAssociations(int ideeId) {
@@ -46,6 +30,8 @@ public class IsUpToDateQuestionsRepository extends AbstractRepository {
     }
 
     /**
+     * userId is asking if this ideaId is up to date.
+     *
      * @param ideeId The idea id.
      * @param userId The user id.
      * @return Number of rows inserted.
@@ -68,7 +54,7 @@ public class IsUpToDateQuestionsRepository extends AbstractRepository {
      * @param user The user.
      * @return True if this user has already asked if this idea is up to date.
      */
-    public static boolean associationExists(Idee idea, User user) throws SQLException {
+    public static boolean associationExists(Idee idea, User user) {
         return getDb().doesReturnRows("select 1 from " + TABLE_NAME + " where " + IsUpToDateColumns.IDEE_ID + " = ?"
                                       + " and " + IsUpToDateColumns.USER_ID + " = ?", idea.getId(), user.id);
     }

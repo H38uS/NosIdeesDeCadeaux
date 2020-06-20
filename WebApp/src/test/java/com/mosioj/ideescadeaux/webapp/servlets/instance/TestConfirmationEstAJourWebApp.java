@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.MesNotifications;
@@ -13,7 +14,7 @@ import org.junit.Test;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
@@ -25,22 +26,29 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void testAskAndAnswerYes() throws SQLException {
 
-        int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
+        // Getting an idea of Firefox
+        Idee idee = IdeesRepository.getIdeasOf(firefox.id).stream().findFirst().orElseThrow(SQLException::new);
+        // Dropping former associations
+        IsUpToDateQuestionsRepository.deleteAssociations(idee.getId());
 
-        int notifId = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                              new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+        // His friend is asking if up to date
+        final NotifAskIfIsUpToDate isUpToDate = new NotifAskIfIsUpToDate(friendOfFirefox, idee);
+        int notifId = NotificationsRepository.addNotification(firefox.id, isUpToDate);
         assertNotifDoesExists(notifId);
+        IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
+        assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
+
+        // Getting it from the DB to check the parameters insertion
         NotifAskIfIsUpToDate notif = (NotifAskIfIsUpToDate) NotificationsRepository.getNotification(notifId)
                                                                                    .orElseThrow(SQLException::new);
         assertEquals(friendOfFirefox.id, notif.getUserIdParam());
 
         when(request.getRequestDispatcher(MesNotifications.URL)).thenReturn(dispatcher);
-        when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
+        when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(idee.getId() + "");
         doTestGet();
-        // doTestPost(request, response);
 
         assertNotifDoesNotExists(notifId);
+        assertFalse(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
     }
 
     @Test

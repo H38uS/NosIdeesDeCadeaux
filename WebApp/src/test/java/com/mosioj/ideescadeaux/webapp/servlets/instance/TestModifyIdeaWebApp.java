@@ -6,6 +6,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -19,8 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class TestModifyIdeaWebApp extends AbstractTestServletWebApp {
@@ -39,6 +39,8 @@ public class TestModifyIdeaWebApp extends AbstractTestServletWebApp {
 
         int notifId = NotificationsRepository.addNotification(_OWNER_ID_,
                                                               new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+        IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
+        assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
         int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_,
                                                                   new NotifIdeaAddedByFriend(moiAutre, idee));
         assertNotifDoesExists(notifId);
@@ -56,6 +58,7 @@ public class TestModifyIdeaWebApp extends AbstractTestServletWebApp {
         assertEquals(newText, idee.getText());
         assertNotifDoesNotExists(notifId);
         assertNotifDoesNotExists(addByFriend);
+        assertFalse(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.MesNotifications;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 import static com.mosioj.ideescadeaux.core.model.notifications.ParameterName.IDEA_ID;
 
 @WebServlet("/protected/confirmation_est_a_jour")
-public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
+public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModification> {
 
     private static final long serialVersionUID = -6645017540948612364L;
     public static final String IDEE_FIELD_PARAMETER = "idee";
@@ -37,8 +38,7 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
 
         Idee idea = policy.getIdea();
         IdeesRepository.touch(idea.getId());
-        int userId = thisOne.id;
-        IsUpToDateQuestionsRepository.deleteAssociation(idea.getId(), userId);
+        IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
         // Gets all notification on this idea
         List<AbstractNotification> notifications = NotificationsRepository.getNotification(IDEA_ID, idea.getId());
@@ -57,12 +57,6 @@ public class ConfirmationEstAJour extends AbstractIdea<IdeaModification> {
                                                                    new NotifConfirmedUpToDate(thisOne, idea)));
 
         RootingsUtils.rootToPage(MesNotifications.URL, request, response);
-    }
-
-    @Override
-    public void ideesKDoPOST(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, SQLException {
-        RootingsUtils.redirectToPage(MesNotifications.URL, request, response);
     }
 
 }
