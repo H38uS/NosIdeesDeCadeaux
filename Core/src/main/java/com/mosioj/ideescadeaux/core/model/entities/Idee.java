@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Idee {
@@ -70,6 +71,13 @@ public class Idee {
      */
     public Optional<User> getSurpriseBy() {
         return Optional.ofNullable(surpriseBy);
+    }
+
+    /**
+     * @return True if and only if this is a surprise.
+     */
+    public boolean isASurprise() {
+        return getSurpriseBy().isPresent();
     }
 
     /**
@@ -174,5 +182,18 @@ public class Idee {
      */
     public void maskBookingInformation() {
         bookingInformation = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Idee idee = (Idee) o;
+        return id == idee.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
