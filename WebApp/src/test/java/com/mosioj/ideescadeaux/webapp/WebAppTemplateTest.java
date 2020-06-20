@@ -109,11 +109,11 @@ public class WebAppTemplateTest {
         System.out.println();
     }
 
-    protected void assertNotifDoesNotExists(int notifId) throws SQLException {
+    protected void assertNotifDoesNotExists(int notifId) {
         Assert.assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 
-    protected void assertNotifDoesExists(int notifId) throws SQLException {
+    protected void assertNotifDoesExists(int notifId) {
         Assert.assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 }

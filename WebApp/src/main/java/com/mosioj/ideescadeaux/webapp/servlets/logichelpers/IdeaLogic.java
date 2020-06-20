@@ -184,7 +184,7 @@ public class IdeaLogic {
     private static OwnerIdeas getPersonIdeasFromUser(User connectedUser, Device device, User user) {
         return OwnerIdeas.from(user,
                                IdeesRepository.getIdeasOf(user.id)
-                                              .stream()
+                                              .parallelStream()
                                               .map(i -> new DecoratedWebAppIdea(i, connectedUser, device))
                                               .collect(Collectors.toList()));
     }

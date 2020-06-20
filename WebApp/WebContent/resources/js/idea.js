@@ -143,7 +143,7 @@ var postIdea = function(form) {
     formData.append('priority', form.find("#priority").val());
     formData.append('old_picture', form.find("#old_picture").val());
     formData.append('myfile', selectedPicture);
-    formData.append('est_surprise', form.find("#est_surprise").val());
+    formData.append('est_surprise', form.find("#est_surprise").is(":checked") ? "on" : "off");
     xhr.send(formData);
 };
 
