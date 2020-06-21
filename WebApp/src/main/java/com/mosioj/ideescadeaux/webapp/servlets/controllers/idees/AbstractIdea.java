@@ -11,7 +11,6 @@ import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -23,6 +22,7 @@ import java.util.Map;
 
 public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeauxGetAndPostServlet<P> {
 
+    // FIXME : faire une passe et supprimer tout ceux qui hérite et qui sont faits en service ?
     private static final long serialVersionUID = -1774633803227715931L;
     private static final Logger logger = LogManager.getLogger(AbstractIdea.class);
 
@@ -53,7 +53,8 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
             // Trying to resolve it from parameters
             try {
                 final File ideaPicturePath = ParametersUtils.getIdeaPicturePath();
-                final Map<String, String> parameters = ParametersUtils.readMultiFormParameters(request, ideaPicturePath);
+                final Map<String, String> parameters = ParametersUtils.readMultiFormParameters(request,
+                                                                                               ideaPicturePath);
                 from = parameters.get(FROM_URL);
             } catch (SQLException e) {
                 logger.warn("Fail to read parameters to compute the from clause...", e);
@@ -83,7 +84,7 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
                                    HttpServletResponse response,
                                    User user,
                                    Idee idea,
-                                   String landingURL) throws SQLException, ServletException {
+                                   String landingURL) throws SQLException {
 
         List<String> errors = new ArrayList<>();
         String comment = ParametersUtils.readAndEscape(request, "comment");

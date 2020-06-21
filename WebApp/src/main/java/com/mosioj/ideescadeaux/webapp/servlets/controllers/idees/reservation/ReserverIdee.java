@@ -22,6 +22,7 @@ import java.text.MessageFormat;
 @WebServlet("/protected/reserver")
 public class ReserverIdee extends AbstractIdea<IdeaInteraction> {
 
+    // FIXME : supprimer ? Et mettre le service de partout
     private static final Logger logger = LogManager.getLogger(ReserverIdee.class);
     private static final long serialVersionUID = 7349100644264613480L;
     public static final String IDEA_ID_PARAM = "idee";

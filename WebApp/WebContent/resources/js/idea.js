@@ -95,6 +95,17 @@ function setIdeaActionsToJs(my_idea) {
     my_idea.find(".mobile_actions").click(function () {
         my_idea.find(".modal").modal('show');
     });
+    my_idea.find("a.supprimerSurprise").click(function (e) {
+        e.preventDefault();
+        var id = getURLParameter($(this).attr("href"), 'idee');
+        servicePost('protected/service/supprimer_surprise',
+                    { idee : id },
+                    function(data) {
+                        my_idea.fadeOut('slow');
+                    },
+                    "Suppression de la surprise en cours...",
+                    "La surprise a bien été supprimée.");
+    });
     my_idea.find(".modal").on('show.bs.modal', function (e) {
         lastModalOpened = $(this);
     });
@@ -321,7 +332,7 @@ function getSurpriseDivAsHTMl(connectedUser, jsonIdea) {
         } else {
             content.html(`
                 Idée surprise créée le ${jsonIdea.modificationDate} par vous - la
-                <a href="protected/supprimer_surprise?idee=${jsonIdea.id}">
+                <a class="supprimerSurprise" href="?idee=${jsonIdea.id}">
                     supprimer
                 </a>.
             `);
