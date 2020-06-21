@@ -66,7 +66,7 @@ public class ServiceNameTestWebApp extends AbstractTestServletWebApp {
         NameAnswer third = resp.get(2);
         assertEquals("Iihi (tuuuuuut@hotzzzmail.fr)", first.value);
         assertEquals("Jordan.mosio@hotmail.fr (jordan.mosio@hotmailsafded.fr)", second.value);
-        assertEquals("Djoeîéèôe (jo3@hotmadzzdzil.fr)", third.value);
+        assertEquals("Djoeîéèôe (jo3@hotmadzzdzil.frtrr)", third.value);
     }
 
     @Test

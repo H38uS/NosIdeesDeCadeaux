@@ -49,7 +49,9 @@ public class ServiceAfficherListes extends ServiceGet<AllAccessToPostAndGet> {
                                                                          PAGES_HELPER.getMaxNumberOfResults());
         if (thisOne.matchNameOrEmail(nameOrEmail)) {
             users.add(0, thisOne);
-            users.remove(users.size() - 1);
+            if (users.size() > PAGES_HELPER.getMaxNumberOfResults()) {
+                users.remove(users.size() - 1);
+            }
         }
 
         // Adding the list of ideas for each user

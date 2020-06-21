@@ -1,7 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/voir_liste")
 public class ServiceVoirListe extends ServiceGet<NetworkAccess> {
@@ -34,17 +32,6 @@ public class ServiceVoirListe extends ServiceGet<NetworkAccess> {
         // Adding the list of ideas for each user
         final List<User> users = Collections.singletonList(policy.getUser());
         final List<OwnerIdeas> foundUsers = IdeaLogic.getPersonsIdeasFromUsers(thisOne, users, device);
-
-        // Suppressions des surprises pour nous...
-        final List<DecoratedWebAppIdea> thisOneIdeas = foundUsers.stream()
-                                                                 .filter(oi -> thisOne.equals(oi.getOwner()))
-                                                                 .findFirst()
-                                                                 .map(OwnerIdeas::getIdeas)
-                                                                 .orElse(Collections.emptyList());
-        final List<DecoratedWebAppIdea> surprises = thisOneIdeas.stream()
-                                                                .filter(dwai -> dwai.getIdee().isASurprise())
-                                                                .collect(Collectors.toList());
-        thisOneIdeas.removeAll(surprises);
 
         // Only one page : only fetching the list of one user...
         final List<Page> pages = Collections.singletonList(new Page(1));

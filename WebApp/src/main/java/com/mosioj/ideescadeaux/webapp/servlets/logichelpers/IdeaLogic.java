@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IdeaLogic {
 
@@ -182,10 +183,15 @@ public class IdeaLogic {
      * @return Those users as their ideas in a single list.
      */
     private static OwnerIdeas getPersonIdeasFromUser(User connectedUser, Device device, User user) {
-        return OwnerIdeas.from(user,
-                               IdeesRepository.getIdeasOf(user.id)
-                                              .parallelStream()
-                                              .map(i -> new DecoratedWebAppIdea(i, connectedUser, device))
-                                              .collect(Collectors.toList()));
+        Stream<DecoratedWebAppIdea> ideas = IdeesRepository.getIdeasOf(user.id)
+                                                           .parallelStream()
+                                                           .map(i -> new DecoratedWebAppIdea(i,
+                                                                                             connectedUser,
+                                                                                             device));
+        if (connectedUser.equals(user)) {
+            // Filter out the surprise of the connected user
+            ideas = ideas.filter(i -> !i.getIdee().isASurprise());
+        }
+        return OwnerIdeas.from(user, ideas.collect(Collectors.toList()));
     }
 }
