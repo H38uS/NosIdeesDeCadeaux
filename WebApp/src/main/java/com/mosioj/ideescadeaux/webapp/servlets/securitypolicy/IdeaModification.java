@@ -50,6 +50,16 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
             return false;
         }
 
+        // Si c'est une surprise, on ne peut que si c'est nous qui l'avons créée (et donc impossible que ce soit la nôtre)
+        if (idea.isASurprise()) {
+            if (idea.getSurpriseBy().map(connectedUser::equals).orElse(false)) {
+                return true;
+            } else {
+                lastReason = "Impossible de modifier une surprise si ce n'est pas vous qui l'avez créée.";
+                return false;
+            }
+        }
+
         int userId = connectedUser.id;
         boolean res = userId == idea.owner.id || ParentRelationshipRepository.getChildren(userId).contains(idea.owner);
         if (!res) {

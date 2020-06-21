@@ -42,7 +42,11 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void shouldNotBePossibleToModifySomeonesElseIdea() throws SQLException, IOException {
 
-        Idee idee = IdeesRepository.getIdeasOf(_FRIEND_ID_).stream().findFirst().orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdeasOf(_FRIEND_ID_)
+                                   .stream()
+                                   .filter(i -> !i.isASurprise())
+                                   .findFirst()
+                                   .orElseThrow(SQLException::new);
         final String initialText = idee.getText();
 
         Map<String, String> param = new HashMap<>();

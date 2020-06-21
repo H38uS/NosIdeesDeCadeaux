@@ -15,9 +15,9 @@ import java.sql.SQLException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
+public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
 
-    public TestDeleteIdeaWebApp() {
+    public TestServiceDeleteIdea() {
         super(new ServiceDeleteIdea());
     }
 
@@ -122,4 +122,39 @@ public class TestDeleteIdeaWebApp extends AbstractTestServletWebApp {
         assertFalse(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
     }
 
+    @Test
+    public void shouldNotBePossibleToDeleteOurSurprise() throws SQLException {
+
+        // Given
+        int ideaId = IdeesRepository.addIdea(firefox, "une surprise", null, 0, null, friendOfFirefox, friendOfFirefox);
+        assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
+
+        // Trying to delete it
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(ideaId + "");
+        StringServiceResponse resp = doTestServicePost();
+
+        // Check
+        assertFalse(resp.isOK());
+        assertEquals("Impossible de modifier une surprise si ce n'est pas vous qui l'avez créée.", resp.getMessage());
+        assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
+
+        // Delete it
+        IdeesRepository.remove(ideaId);
+    }
+
+    @Test
+    public void shouldBePossibleToDeleteOurSurprise() throws SQLException {
+
+        // Given
+        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "une surprise", null, 0, null, firefox, firefox);
+        assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
+
+        // Trying to delete it
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(ideaId + "");
+        StringServiceResponse resp = doTestServicePost();
+
+        // Check
+        assertTrue(resp.isOK());
+        assertFalse(IdeesRepository.getIdea(ideaId).isPresent());
+    }
 }

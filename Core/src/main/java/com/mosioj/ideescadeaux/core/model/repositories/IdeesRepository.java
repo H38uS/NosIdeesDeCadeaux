@@ -416,7 +416,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param user   The person.
      * @return True if and only if the user has sub booked the idea.
      */
-    public static boolean isSubBookBy(int ideaId, User user) throws SQLException {
+    public static boolean isSubBookBy(int ideaId, User user) {
         return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ? and {2} = ?",
                                                             SousReservationRepository.TABLE_NAME,
                                                             SousReservationColumns.IDEE_ID,
@@ -435,6 +435,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param image       New idea's picture.
      * @param surprisePar True if this is a surprise.
      * @param createdBy   New idea's creator (can be different from the owner, especially for surprise).
+     * @return The idea identifier.
      */
     public static int addIdea(User owner,
                               String text,
@@ -600,7 +601,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The person's id who is trying to book.
      * @return True if and only if the idea can be booked.
      */
-    public static boolean canBook(int idea, int userId) throws SQLException {
+    public static boolean canBook(int idea, int userId) {
 
         String queryText = "select count(*) " +
                            "  from {0} i " +
@@ -626,7 +627,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param userId The user id.
      * @return True if and only if a sub part of the idea can be booked.
      */
-    public static boolean canSubBook(int idea, int userId) throws SQLException {
+    public static boolean canSubBook(int idea, int userId) {
 
         String queryText = "select count(*) " +
                            "  from {0} i " +
