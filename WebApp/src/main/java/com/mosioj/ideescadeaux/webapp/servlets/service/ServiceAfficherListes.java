@@ -32,9 +32,6 @@ public class ServiceAfficherListes extends ServiceGet<AllAccessToPostAndGet> {
         super(new AllAccessToPostAndGet());
     }
 
-    // FIXME : faut ajouter les bandeaux de recherche de liste dans afficher liste dans le JS : pour tout charger d'un coup
-    // Cela permettra aussi de finir le refactor et supprimer les entités de VoirListe et AfficherListe
-
     @Override
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 

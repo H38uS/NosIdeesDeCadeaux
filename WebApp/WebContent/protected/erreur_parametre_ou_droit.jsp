@@ -4,6 +4,6 @@
 <t:normal_protected>
 	<jsp:body>
 		<h2>Erreur lors de l'affichage de la page</h2>
-		<div>Raison : ${error_message}</div>
+		<div class="alert alert-danger">Raison : ${error_message}</div>
 	</jsp:body>
 </t:normal_protected>

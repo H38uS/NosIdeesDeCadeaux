@@ -32,11 +32,6 @@ public class Page {
         this.isSelected = isSelected;
     }
 
-    // FIXME : supprimer quand toutes les pages gérées en service
-    public String getNumero() {
-        return numero.toString();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

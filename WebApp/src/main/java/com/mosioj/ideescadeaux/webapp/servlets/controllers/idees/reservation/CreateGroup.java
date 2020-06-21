@@ -1,27 +1,24 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.List;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
-import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.MesListes;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.List;
 
 @WebServlet("/protected/create_a_group")
 public class CreateGroup extends AbstractIdea<IdeaInteraction> {
@@ -47,7 +44,8 @@ public class CreateGroup extends AbstractIdea<IdeaInteraction> {
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
 
         Idee idea = policy.getIdea();
         logger.debug("Create a new group for idea : " + idea.getId());
@@ -88,7 +86,10 @@ public class CreateGroup extends AbstractIdea<IdeaInteraction> {
         }
 
         if (groupId == null) {
-            RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
+            RootingsUtils.rootToGenericSQLError(thisOne,
+                                                new Exception("Impossible de créer le groupe..."),
+                                                request,
+                                                response);
             return;
         }
 

@@ -1,23 +1,22 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @WebServlet("/protected/afficher_listes")
-public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
+public class AfficherListes extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = 1209953017190072617L;
-
-    public static final String AFFICHER_LISTES = "/protected/afficher_listes";
+    private static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
+    public static final String AFFICHER_LISTES = "protected/afficher_listes";
     protected static final String NAME_OR_EMAIL = "name";
 
     /**
@@ -28,41 +27,15 @@ public class AfficherListes extends AbstractUserListes<AllAccessToPostAndGet> {
     }
 
     @Override
-    protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) throws SQLException {
-        String nameOrEmail = ParametersUtils.readNameOrEmail(req, NAME_OR_EMAIL);
-        List<User> users = new ArrayList<>();
-        int MAX = helper.getMaxNumberOfResults();
-        User connected = thisOne;
-        if (connected.matchNameOrEmail(nameOrEmail)) {
-            users.add(connected);
-            MAX--;
-        }
-        users.addAll(UserRelationsRepository.getAllUsersInRelation(connected.id, nameOrEmail, firstRow, MAX));
-        return getPersonIdeasFromUser(users);
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException, IOException {
+        request.setAttribute("call_back", AFFICHER_LISTES);
+        final String fullURL = AFFICHER_LISTES +
+                               "?" +
+                               NAME_OR_EMAIL +
+                               "=" +
+                               ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
+        request.setAttribute("identic_call_back", fullURL);
+        RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }
-
-    @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest request) {
-        User user = thisOne;
-        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
-        int size = UserRelationsRepository.getAllUsersInRelationCount(user, nameOrEmail);
-        if (user.matchNameOrEmail(nameOrEmail)) {
-            return size + 1;
-        }
-        return size;
-    }
-
-    @Override
-    protected String getCallingURL() {
-        return AFFICHER_LISTES.substring(1);
-    }
-
-    @Override
-    protected String getSpecificParameters(HttpServletRequest req) {
-        return "&" +
-               NAME_OR_EMAIL +
-               "=" +
-               ParametersUtils.readAndEscape(req, NAME_OR_EMAIL);
-    }
-
 }

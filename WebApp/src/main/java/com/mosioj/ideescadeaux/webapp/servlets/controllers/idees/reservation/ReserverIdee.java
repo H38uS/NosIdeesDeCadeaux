@@ -7,7 +7,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentId
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.MesListes;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,26 +34,29 @@ public class ReserverIdee extends AbstractIdea<IdeaInteraction> {
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-        RootingsUtils.redirectToPage(MesListes.PROTECTED_MES_LISTES, request, response);
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
+        RootingsUtils.rootToGenericSQLError(thisOne, new Exception("Unsupported"), request, response);
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request,
+                             HttpServletResponse response) throws ServletException, SQLException {
         Idee idea = policy.getIdea();
         int userId = thisOne.id;
         logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea.getId(), userId));
 
         if (IdeesRepository.canBook(idea.getId(), userId)) {
             IdeesRepository.reserver(idea.getId(), userId);
-            for (AbstractNotification n : NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId())) {
+            for (AbstractNotification n : NotificationsRepository.getNotification(ParameterName.IDEA_ID,
+                                                                                  idea.getId())) {
                 if (n instanceof NotifRecurentIdeaUnbook) {
                     NotificationsRepository.remove(n);
                 }
             }
         }
 
-        RootingsUtils.redirectToPage(getFrom(request, MesListes.PROTECTED_MES_LISTES), request, response);
+        RootingsUtils.redirectToPage(getFrom(request, "/"), request, response);
     }
 
 }

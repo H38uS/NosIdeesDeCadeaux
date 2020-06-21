@@ -1,19 +1,22 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/protected/voir_liste")
-public class VoirListe extends MesListes {
+public class VoirListe extends IdeesCadeauxGetServlet<NetworkAccess> {
 
-    private static final long serialVersionUID = -5233551522645668356L;
+    public static final String PROTECTED_VOIR_LISTE = "/protected/voir_liste";
+    private static final String VIEW_PAGE_URL = "/protected/mes_listes.jsp";
     public static final String USER_ID_PARAM = "id";
-    public static final String PROTECTED_VOIR_LIST = "/protected/voir_liste";
 
     /**
      * Class constructor.
@@ -23,23 +26,12 @@ public class VoirListe extends MesListes {
     }
 
     @Override
-    protected List<OwnerIdeas> getDisplayedEntities(int firstRow, HttpServletRequest req) {
-        return getPersonIdeasFromUser(Collections.singletonList(policy.getUser()));
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException, IOException {
+        final String url = PROTECTED_VOIR_LISTE.substring(1);
+        request.setAttribute("call_back", url);
+        final String fullURL = url + "?" + USER_ID_PARAM + "=" + policy.getUser().id;
+        request.setAttribute("identic_call_back", fullURL);
+        RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }
-
-    @Override
-    protected int getTotalNumberOfRecords(HttpServletRequest req) {
-        return 1;
-    }
-
-    @Override
-    protected String getCallingURL() {
-        return PROTECTED_VOIR_LIST.substring(1);
-    }
-
-    @Override
-    protected String getSpecificParameters(HttpServletRequest req) {
-        return "";
-    }
-
 }

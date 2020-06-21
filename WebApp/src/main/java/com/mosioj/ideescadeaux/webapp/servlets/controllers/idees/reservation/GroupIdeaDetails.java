@@ -122,7 +122,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
                                }));
                 RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
             } else {
-                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
+                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LISTE +
                                              "?" +
                                              VoirListe.USER_ID_PARAM +
                                              "=" +

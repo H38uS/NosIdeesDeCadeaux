@@ -89,7 +89,7 @@ public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
                                .ifPresent(i -> IdeaLogic.addModificationNotification(user, i, true));
                 NotificationsRepository.removeAllType(user, NotificationType.NO_IDEA);
 
-                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LIST +
+                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LISTE +
                                              "?" +
                                              VoirListe.USER_ID_PARAM +
                                              "=" +

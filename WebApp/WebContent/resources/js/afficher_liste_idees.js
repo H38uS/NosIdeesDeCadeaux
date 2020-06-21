@@ -61,14 +61,44 @@ function displayUsersIdeasList(identicCallBack, callBack, page = 1) {
         var owners = rawData.message.theContent;
 
         if (owners.length < 1) {
-            resultDiv.append(`
-                <p class="alert alert-danger">Aucune liste trouvée...</p>
-                <p class="alert alert-info">
-                    Vous pouvez entrer un nouveau nom ci-dessous, ou cliquer sur <a href="protected/afficher_reseau?id=${connectedUser.id}">ce
-                    lien</a>
-                    pour afficher tous vos amis.
-                </p>
-            `);
+            if (isMobileView()) {
+                resultDiv.append(`
+                    <p class="alert alert-danger">Aucune liste trouvée...</p>
+                    <p class="alert alert-info">
+                        Affichez <a href="protected/afficher_reseau?id=${connectedUser.id}">mes amis</a> !
+                    </p>
+                `);
+            } else {
+                resultDiv.append(`
+                    <p class="alert alert-danger">Aucune liste trouvée...</p>
+                    <p class="alert alert-info">
+                        Vous pouvez entrer un nouveau nom ci-dessous, ou cliquez sur <a href="protected/afficher_reseau?id=${connectedUser.id}">ce
+                        lien</a>
+                        pour afficher tous vos amis.
+                    </p>
+                    <div class="alert alert-warning">
+                        <div class="row align-items-center">
+                            <div class="col-auto">Recherchez une liste particulière</div>
+                            <form id="afficherliste_bottommeslistes" class="form-inline" method="GET"
+                                  action="protected/afficher_listes">
+                                <input type="text" class="form-control" name="name"
+                                       id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email"/>
+                                <button class="btn btn-primary mx-2" type="submit">Rechercher !</button>
+                            </form>
+                        </div>
+                    </div>
+                `);
+                personAutoComplete("#bottom_mes_listes_search",
+                                   -1,
+                                   function(event, ui) {
+                                       $("#bottom_mes_listes_search").val(ui.item.email);
+                                       $("#afficherliste_bottommeslistes").submit();
+                                       return false;
+                                   },
+                                   "#mobile_res_search",
+                                   "right bottom",
+                                   "right top");
+            }
             resultDiv.fadeIn();
             closeModal();
             return;
@@ -76,6 +106,34 @@ function displayUsersIdeasList(identicCallBack, callBack, page = 1) {
 
         // Shortcuts
         getListShortcutsDiv(identicCallBack, owners).insertAfter("#resultPlaceholderForShortcuts");
+
+        // Ajout de la première possibilité de chercher d'autres personnes, si besoin
+        // Forcément au moins une personne ici
+        if (!isMobileView()) {
+            resultDiv.append(`
+                <div class="alert alert-warning">
+                    <div class="row align-items-center pb-2">
+                        <div class="col-auto">
+                            Vous ne trouvez pas votre bonheur ?<br/> Recherchez une liste particulière :
+                        </div>
+                        <form id="afficherliste_topmeslistes" class="form-inline" method="GET"
+                              action="protected/afficher_listes">
+                            <input type="text" class="form-control" name="name" id="top_mes_listes_search"
+                                   placeholder="Entrez un nom ou un email"/>
+                            <button class="btn btn-primary mx-2" type="submit">Rechercher !</button>
+                        </form>
+                    </div>
+                </div>
+            `);
+            personAutoComplete("#top_mes_listes_search",
+                               -1,
+                               function(event, ui) {
+                                   $("#top_mes_listes_search").val(ui.item.email);
+                                   $("#afficherliste_topmeslistes").submit();
+                                   return false;
+                               },
+                               "#mobile_res_search"); // osef: uniquement en non mobile
+        }
 
         // Ajout des pages si besoin
         resultDiv.append(getPagesDiv(jsonData.pages));
@@ -90,6 +148,54 @@ function displayUsersIdeasList(identicCallBack, callBack, page = 1) {
 
         // pages en bas si besoin
         resultDiv.append(getPagesDiv(jsonData.pages));
+
+        // Ajout de la deuxième possibilité de chercher d'autres personnes, si besoin
+        // Forcément au moins une personne ici
+        if (!isMobileView()) {
+            if (owners.length === 1) {
+                resultDiv.append(`
+                    <div class="alert alert-warning">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                Consultez une autre liste :
+                            </div>
+                            <form id="afficherliste_bottommeslistes" class="form-inline" method="GET"
+                                  action="protected/afficher_listes">
+                                <input type="text" class="form-control" name="name"
+                                       id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email"/>
+                                <button class="btn btn-primary mx-2" type="submit">Rechercher !</button>
+                            </form>
+                        </div>
+                    </div>
+                `);
+            } else {
+                resultDiv.append(`
+                    <div class="alert alert-warning">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                Vous ne trouvez pas votre bonheur ?<br/> Recherchez une liste particulière :
+                            </div>
+                            <form id="afficherliste_bottommeslistes" class="form-inline" method="GET"
+                                  action="protected/afficher_listes">
+                                <input type="text" class="form-control" name="name"
+                                       id="bottom_mes_listes_search" placeholder="Entrez un nom ou un email"/>
+                                <button class="btn btn-primary mx-2" type="submit">Rechercher !</button>
+                            </form>
+                        </div>
+                    </div>
+                `);
+            }
+            personAutoComplete("#bottom_mes_listes_search",
+                               -1,
+                               function(event, ui) {
+                                   $("#bottom_mes_listes_search").val(ui.item.email);
+                                   $("#afficherliste_bottommeslistes").submit();
+                                   return false;
+                               },
+                               "#mobile_res_search",
+                               "right bottom",
+                               "right top");
+        }
 
         // actions des pages
         resultDiv.find("a.page-link").click(function(e) {
