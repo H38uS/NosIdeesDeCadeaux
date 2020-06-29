@@ -67,6 +67,14 @@ public class Idee {
     }
 
     /**
+     * @return The booking type - or NONE is no booking so far.
+     */
+    public BookingInformation.BookingType getBookingType() {
+        return getBookingInformation().map(BookingInformation::getBookingType)
+                                      .orElse(BookingInformation.BookingType.NONE);
+    }
+
+    /**
      * @return The owner of the surprise if it exists
      */
     public Optional<User> getSurpriseBy() {

@@ -672,7 +672,7 @@ public class IdeesRepository extends AbstractRepository {
                                                                              GroupIdeaColumns.ID),
                                                         groupId);
                               } catch (SQLException e) {
-                                  e.printStackTrace();
+                                  logger.error(e);
                               }
                           }
                );

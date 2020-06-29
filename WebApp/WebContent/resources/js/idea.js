@@ -1,62 +1,62 @@
 function deleteIdea(e) {
 
-	e.preventDefault();
-	var id = getURLParameter($(this).attr("href"), 'ideeId');
-	var idea = $(this).closest('.idea_square');
-	
-	servicePost('protected/service/delete_idea',
-				{ ideeId : id },
-				function(data) {
-					idea.fadeOut('slow');
-				},
-				"Suppression de l'idée en cours...",
-				"L'idée a bien été supprimée.");
+    e.preventDefault();
+    var id = getURLParameter($(this).attr("href"), 'ideeId');
+    var idea = $(this).closest('.idea_square');
+
+    servicePost('protected/service/delete_idea',
+                { ideeId : id },
+                function(data) {
+                    idea.fadeOut('slow');
+                },
+                "Suppression de l'idée en cours...",
+                "L'idée a bien été supprimée.");
 }
 
 function estAJourIdea(e) {
-	
-	e.preventDefault();
-	var id = getURLParameter($(this).attr("href"), 'idee');
-	var idea = $(this).closest('.idea_square');
-	
-	servicePost('protected/service/est_a_jour',
-			{ idee : id },
-			function(data) {
-				refreshIdea(idea, id);
-			},
-			"Création de la demande en cours...",
-			"La demande a bien été créée.",
-			"Impossible de créer la demande... Peut-être existe-t-elle déjà ?");
+
+    e.preventDefault();
+    var id = getURLParameter($(this).attr("href"), 'idee');
+    var idea = $(this).closest('.idea_square');
+
+    servicePost('protected/service/est_a_jour',
+        { idee : id },
+        function(data) {
+            refreshIdea(idea, id);
+        },
+        "Création de la demande en cours...",
+        "La demande a bien été créée.",
+        "Impossible de créer la demande... Peut-être existe-t-elle déjà ?");
 }
 
 function reserverIdea(e) {
 
-	e.preventDefault();
-	var id = getURLParameter($(this).attr("href"), 'idee');
-	var idea = $(this).closest('.idea_square');
-	
-	servicePost('protected/service/reserver',
-				{ idee : id },
-				function(data) {
-					refreshIdea(idea, id);
-				},
-				"Réservation de l'idée en cours...",
-				"L'idée a bien été réservée.");
+    e.preventDefault();
+    var id = getURLParameter($(this).attr("href"), 'idee');
+    var idea = $(this).closest('.idea_square');
+
+    servicePost('protected/service/reserver',
+                { idee : id },
+                function(data) {
+                    refreshIdea(idea, id);
+                },
+                "Réservation de l'idée en cours...",
+                "L'idée a bien été réservée.");
 }
 
 function dereserverIdea(e) {
 
-	e.preventDefault();
-	var id = getURLParameter($(this).attr("href"), 'idee');
-	var idea = $(this).closest('.idea_square');
-	
-	servicePost('protected/service/dereserver',
-				{ idee : id },
-				function(data) {
-					refreshIdea(idea, id);
-				},
-				"Annulation de la réservation en cours...",
-				"La réservation de l'idée a bien été annulée.");
+    e.preventDefault();
+    var id = getURLParameter($(this).attr("href"), 'idee');
+    var idea = $(this).closest('.idea_square');
+
+    servicePost('protected/service/dereserver',
+                { idee : id },
+                function(data) {
+                    refreshIdea(idea, id);
+                },
+                "Annulation de la réservation en cours...",
+                "La réservation de l'idée a bien été annulée.");
 }
 
 function refreshIdea(idea, id) {
@@ -94,6 +94,15 @@ function setIdeaActionsToJs(my_idea) {
     my_idea.find("a.idea_dereserver").click(dereserverIdea);
     my_idea.find(".mobile_actions").click(function () {
         my_idea.find(".modal").modal('show');
+    });
+    my_idea.find("a.jeLaVeuxEncore").click(function(e) {
+        e.preventDefault();
+        var id = getURLParameter($(this).attr("href"), 'idee');
+        servicePost('protected/service/je_la_veux_encore',
+                    { idee : id },
+                    function(data) { },
+                    "Annulation des réservations en cours...",
+                    "Toutes les réservations (s'il y en avait) ont bien été supprimées sur cette idée.");
     });
     my_idea.find("a.supprimerSurprise").click(function (e) {
         e.preventDefault();
@@ -279,7 +288,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
         modalBodyDiv.append(`
             <div class="row align-items-center">
                 <div class="col-3">
-                    <a href="protected/je_le_veux_encore?idee=${jsonIdea.id}" class="img">
+                    <a href="?idee=${jsonIdea.id}" class="img jeLaVeuxEncore">
                         <img src="resources/image/encore.png"
                              title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite."
                              height="${getPictureWidth()}px"/>
@@ -605,8 +614,8 @@ function getActionTooltipForNonMobile(jsonIdea) {
         if (isTheOwnerConnected(jsonIdea)) {
             // *** Boutons pour annuler les réservations
             content.append(`
-                <a href="protected/je_le_veux_encore?idee=${jsonIdea.id}"
-                   class="img">
+                <a href="?idee=${jsonIdea.id}"
+                   class="jeLaVeuxEncore img">
                     <img src="resources/image/encore.png"
                          title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite."
                          height="${getPictureWidth()}px"/>
