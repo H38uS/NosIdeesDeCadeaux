@@ -249,7 +249,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return The number of notification this user has.
      */
-    public static int getUserNotificationCount(int userId) throws SQLException {
+    public static int getUserNotificationCount(int userId) {
         return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                             TABLE_NAME,
                                                             NotificationsColumns.OWNER), userId);
@@ -558,7 +558,7 @@ public class NotificationsRepository extends AbstractRepository {
             getDb().executeUpdate(query.toString(), message, type, "ROLE_ADMIN");
         } catch (SQLException e) {
             e.printStackTrace();
-            logger.info("Query is => " + query);
+            logger.info("Query is => {}.", query);
             logger.warn("Fail to write notification.", e);
         }
 
@@ -583,8 +583,7 @@ public class NotificationsRepository extends AbstractRepository {
                 EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Admin notification...", body);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            logger.warn("Fail to write notification.");
+            logger.warn("Fail to write notification.", e);
         }
     }
 

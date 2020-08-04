@@ -30,7 +30,9 @@ public class LoginHelper implements Filter {
     private static final Logger logger = LogManager.getLogger(LoginHelper.class);
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException {
 
         logger.trace("Do Filtering in helper...");
 
