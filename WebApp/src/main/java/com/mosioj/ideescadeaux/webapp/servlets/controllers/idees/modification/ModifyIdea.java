@@ -8,9 +8,9 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpT
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet("/protected/modifier_idee")
-public class ModifyIdea extends AbstractIdea<IdeaModification> {
+public class ModifyIdea extends IdeesCadeauxGetAndPostServlet<IdeaModification> {
 
     private static final Logger logger = LogManager.getLogger(ModifyIdea.class);
     private static final long serialVersionUID = -1774633803227715931L;
@@ -55,7 +55,6 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
         request.setAttribute("types", CategoriesRepository.getCategories());
         request.setAttribute("priorites", PrioritesRepository.getPriorities());
         request.setAttribute("idea", idea);
-        request.setAttribute("from", getFrom(request, ""));
 
         Object errors = request.getSession().getAttribute("errors");
         if (errors != null) {
@@ -66,6 +65,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }
 
+    // FIXME : supprimer le post ? Déjà fait en service
     @Override
     public void ideesKDoPOST(HttpServletRequest request,
                              HttpServletResponse response) throws ServletException, SQLException, IOException {
@@ -85,10 +85,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
                             "?" +
                             IDEE_ID_PARAM +
                             "=" +
-                            idea.getId() +
-                            "&" +
-                            "from=" +
-                            getFrom(request, "");
+                            idea.getId();
                 RootingsUtils.redirectToPage(sb, request, response);
                 return;
             } else {
@@ -145,7 +142,7 @@ public class ModifyIdea extends AbstractIdea<IdeaModification> {
 
         }
 
-        RootingsUtils.redirectToPage(getFrom(request, AjouterIdee.PROTECTED_AJOUTER_IDEE + "?" + "id=" + idea.getId()),
+        RootingsUtils.redirectToPage(AjouterIdee.PROTECTED_AJOUTER_IDEE + "?" + "id=" + idea.getId(),
                                      request,
                                      response);
     }

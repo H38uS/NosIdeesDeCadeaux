@@ -40,8 +40,7 @@
                     </div>
                 </div>
                 <div class="container border border-info bg-light rounded mb-2 p-3">
-                    <form class="mw-50" action="protected/modifier_idee?id=${idea.id}&${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="from" value="${from}" />
+                    <form class="mw-50" action="protected/modifier_idee?id=${idea.id}" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="text" class="d-none d-md-inline-block">Le texte de l'idée</label>
                             <textarea id="text" class="form-control" name="text" cols="70" rows="6">${idea.getText()}</textarea>

@@ -57,7 +57,7 @@ public class ReserverIdee extends AbstractIdea<IdeaInteraction> {
             }
         }
 
-        RootingsUtils.redirectToPage(getFrom(request, "/"), request, response);
+        RootingsUtils.redirectToPage(getFrom(request), request, response);
     }
 
 }

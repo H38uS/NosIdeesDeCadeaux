@@ -40,10 +40,9 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
      * Otherwise, returns the default value.
      *
      * @param request      Current request being processed.
-     * @param defaultValue Default value for the next redirection.
      * @return The next page to be redirected to.
      */
-    protected String getFrom(HttpServletRequest request, String defaultValue) {
+    protected String getFrom(HttpServletRequest request) {
 
         String from = ParametersUtils.readIt(request, FROM_URL);
         logger.debug(MessageFormat.format("Resolving request from: {0}", from));
@@ -60,13 +59,13 @@ public abstract class AbstractIdea<P extends SecurityPolicy> extends IdeesCadeau
                 logger.warn("Fail to read parameters to compute the from clause...", e);
             }
             if (from == null || from.trim().isEmpty()) {
-                return defaultValue;
+                return "/";
             }
         }
 
         if (!from.startsWith("/")) {
             // Looks like it is not coming from the website...
-            return defaultValue;
+            return "/";
         }
 
         return from;
