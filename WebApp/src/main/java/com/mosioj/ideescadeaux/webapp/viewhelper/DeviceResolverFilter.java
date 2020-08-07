@@ -12,7 +12,8 @@ import org.springframework.mobile.device.LiteDeviceResolver;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Provides helper functions to the views.
@@ -59,7 +60,15 @@ public class DeviceResolverFilter implements Filter {
 
         User user = (User) ((HttpServletRequest) request).getSession().getAttribute("connected_user");
         String name = user == null ? "anonymous" : user.getEmail();
-        logger.debug(MessageFormat.format("URL: {0}, demandée par {1}. Is mobile: {2}.", url, name, device.isMobile()));
+        logger.debug("URL: {}, demandée par {}. Parameters: {}. Is mobile: {}.",
+                     url,
+                     name,
+                     request.getParameterMap()
+                            .keySet()
+                            .stream()
+                            .map(key -> key + " => " + Arrays.toString(request.getParameterValues(key)))
+                            .collect(Collectors.toList()),
+                     device.isMobile());
         chain.doFilter(request, response);
     }
 
