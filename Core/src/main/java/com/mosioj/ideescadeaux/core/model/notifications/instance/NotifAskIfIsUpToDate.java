@@ -52,6 +52,7 @@ public class NotifAskIfIsUpToDate extends AbstractNotification implements NotifU
                                           param);
 
         param = "idee=" + ideaId;
+        // FIXME : 1 comme ça existe qu'en service, ce truc va planter...
         String nonSupr = MessageFormat.format(
                 "<li>Non... Il faudrait la <a href=\"protected/remove_an_idea?{0}&from=/protected/mes_notifications\">supprimer</a>.</li>",
                 param);

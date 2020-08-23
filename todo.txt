@@ -1,4 +1,3 @@
-// FIXME : 0 oupsi : j'ai supprimé mon idée mais je ne le voulais pas... Annuler !! -- voir les notif à envoyer
 // TODO : 0 revoir les bandes présentation liste en mode mobile - mettre l'image du owner sur une ligne avant son nom
 // TODO : 0 utiliser alert-sucess / warning / error dans les messages de statuts + le mettre tout en haut (position absolute 0 avec marge)
 // FIXME : 1 revoir le visuel recherche liste dans mes listes quand on trouve pas - au moins en mode PC -- Idem pour recherche réseau (Mes amis) - voir les notif à envoyer

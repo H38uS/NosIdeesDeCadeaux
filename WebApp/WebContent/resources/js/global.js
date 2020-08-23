@@ -107,14 +107,14 @@ var loadingTimeout; // Time before we display the loading animation
 var timer;
 
 function closeModal() {
-	if (typeof lastModalOpened != 'undefined') {
-		lastModalOpened.modal('hide');
-	}
-	$("body").removeClass("modal-open");
-	$(".modal-backdrop").remove();
-	clearTimeout(loadingTimeout);
-	clearTimeout(timer);
-	$("#loading_message_div").hide().removeClass();
+    if (typeof lastModalOpened != 'undefined') {
+        lastModalOpened.modal('hide');
+    }
+    $("body").removeClass("modal-open");
+    $(".modal-backdrop").remove();
+    clearTimeout(loadingTimeout);
+    clearTimeout(timer);
+    $("#loading_message_div").hide().removeClass();
 }
 
 function getHTMLPopUpMessage(image, message) {
@@ -137,30 +137,30 @@ function getHTMLPopUpMessage(image, message) {
 }
 
 function doLoading(message) {
-	closeModal();
-	loadingTimeout = setTimeout(function() {
-		$("#loading_message_div").html(getHTMLPopUpMessage("loading.gif", message))
-								 .addClass('loading')
-								 .slideDown();
-	}, 400);
+    closeModal();
+    loadingTimeout = setTimeout(function() {
+        $("#loading_message_div").html(getHTMLPopUpMessage("loading.gif", message))
+                                 .addClass('loading')
+                                 .slideDown();
+    }, 400);
 }
 function actionDone(message) {
-	closeModal();
-	$("#loading_message_div").html(getHTMLPopUpMessage("ok.png", message))
-							 .addClass('success')
-							 .slideDown();
-	timer = setTimeout(function() {
-		$("#loading_message_div").fadeOut('slow');
-	}, 5000);
+    closeModal();
+    $("#loading_message_div").html(getHTMLPopUpMessage("ok.png", message))
+                             .addClass('success')
+                             .slideDown();
+    timer = setTimeout(function() {
+        $("#loading_message_div").fadeOut('slow');
+    }, 5000);
 }
 function actionError(message) {
-	closeModal();
-	$("#loading_message_div").html(getHTMLPopUpMessage("ko.png", message))
-							 .addClass('fail')
-							 .slideDown();
-	timer = setTimeout(function() {
-		$("#loading_message_div").fadeOut('slow');
-	}, 5000);
+    closeModal();
+    $("#loading_message_div").html(getHTMLPopUpMessage("ko.png", message))
+                             .addClass('fail')
+                             .slideDown();
+    timer = setTimeout(function() {
+        $("#loading_message_div").fadeOut('slow');
+    }, 5000);
 }
 
 /* ************************ */
@@ -169,35 +169,35 @@ function actionError(message) {
 
 function servicePost(url, params, successHandler, loadingMessage, successMessage, errorMessage) {
 
-	doLoading(loadingMessage);
+    doLoading(loadingMessage);
 
-	$.post(url, params, function(data) {
-		if ( typeof data.status === "undefined" || data.status !== 'OK' ) {
-			if ( typeof data.message === "undefined" || data.message === '' ) {
-				if ( typeof errorMessage === "undefined" ) {
-					errorMessage = "Echec de la mise à jour, veuillez réessayer.<br/> Si cela ne fonctionne pas à nouveau, essayez de recharger la page (touche F5).";
-				}
-			} else {
-				errorMessage = 'Une erreur est survenue: ' + data.message;
-			}
-			actionError(errorMessage);
-		} else {
-			actionDone(successMessage);
-			successHandler(data);
-		}
-	}, "json")
-	.fail(function() {
-		actionError("Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
-	});
+    $.post(url, params, function(data) {
+        if ( typeof data.status === "undefined" || data.status !== 'OK' ) {
+            if ( typeof data.message === "undefined" || data.message === '' ) {
+                if ( typeof errorMessage === "undefined" ) {
+                    errorMessage = "Echec de la mise à jour, veuillez réessayer.<br/> Si cela ne fonctionne pas à nouveau, essayez de recharger la page (touche F5).";
+                }
+            } else {
+                errorMessage = 'Une erreur est survenue: ' + data.message;
+            }
+            actionError(errorMessage);
+        } else {
+            actionDone(successMessage);
+            successHandler(data);
+        }
+    }, "json")
+    .fail(function() {
+        actionError("Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
+    });
 }
 
 function getURLParameter(url, name) {
-	var results = new RegExp('[\?&]' + name + '=([^&]*)').exec(url);
-	if (results == null) {
-		return null;
-	} else {
-		return results[1] || 0;
-	}
+    var results = new RegExp('[\?&]' + name + '=([^&]*)').exec(url);
+    if (results == null) {
+        return null;
+    } else {
+        return results[1] || 0;
+    }
 }
 
 /* ************************ */

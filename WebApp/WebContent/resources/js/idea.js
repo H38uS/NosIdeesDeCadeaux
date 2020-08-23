@@ -1,9 +1,4 @@
-function deleteIdea(e) {
-
-    e.preventDefault();
-    var id = getURLParameter($(this).attr("href"), 'ideeId');
-    var idea = $(this).closest('.idea_square');
-
+function actualDelete(id, idea) {
     servicePost('protected/service/delete_idea',
                 { ideeId : id },
                 function(data) {
@@ -11,6 +6,56 @@ function deleteIdea(e) {
                 },
                 "Suppression de l'idée en cours...",
                 "L'idée a bien été supprimée.");
+}
+
+function deleteIdea(e) {
+
+    e.preventDefault();
+    var id = getURLParameter($(this).attr("href"), 'ideeId');
+    var idea = $(this).closest('.idea_square');
+
+    var countDown = 5;
+    var content = $(`
+        <div class="container">
+            <div class="row">
+                Marde marde marde... Je ne voulais pas supprimer cette idée !
+            </div>
+            <div class="row">
+                Pas de soucis... Elle ne sera supprimer que dans&nbsp;<span id="countDown" class="font-weight-bold">${countDown}</span>s...
+            </div>
+            <div class="row">
+                <a href="" id="annulerSuppression">Annuler</a>&nbsp;ou la&nbsp;<a href="" id="confSuppression">supprimer maintenant</a>.
+            </div>
+            <div class="row">
+                Attention à ne pas changer de page, cela annulerait la suppression de cette idée.
+            </div>
+        </div>`);
+    var countDownSpan = content.find("#countDown");
+    doLoading(content);
+
+    // Loop to let the user stop the delete
+    var timerForCancelDelete = setInterval(function() {
+        countDown--;
+        if (countDown == 0) {
+            actualDelete(id, idea);
+        } else {
+            countDownSpan.text(countDown);
+        }
+    }, 1000);
+
+    // Cancel the delete
+    content.find("#annulerSuppression").click((e) => {
+        e.preventDefault();
+        clearInterval(timerForCancelDelete);
+        closeModal();
+    });
+
+    // Force delete NOW
+    content.find("#confSuppression").click((e) => {
+        e.preventDefault();
+        clearInterval(timerForCancelDelete);
+        actualDelete(id, idea);
+    });
 }
 
 function estAJourIdea(e) {
