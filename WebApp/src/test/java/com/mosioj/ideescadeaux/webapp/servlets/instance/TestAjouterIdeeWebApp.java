@@ -1,23 +1,13 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TestAjouterIdeeWebApp extends AbstractTestServletWebApp {
 
@@ -34,38 +24,5 @@ public class TestAjouterIdeeWebApp extends AbstractTestServletWebApp {
     public void testGetSuccess() {
         doTestGet();
         verify(request).getRequestDispatcher(eq(AjouterIdee.VIEW_PAGE_URL));
-    }
-
-    @Test
-    public void testPostSuccess() throws IOException, SQLException {
-
-        int noIdea = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNoIdea());
-        assertNotifDoesExists(noIdea);
-
-        Map<String, String> param = new HashMap<>();
-        param.put("text", "Ma super idée wouhouuuu");
-        param.put("priority", "1");
-        createMultiPartRequest(param);
-        doTestPost();
-
-        verify(request, never()).setAttribute(eq("errors"), anyObject());
-        assertNotifDoesNotExists(noIdea);
-    }
-
-    @Test
-    public void testShouldAutoConvertLinks() throws IOException, SQLException {
-
-        Map<String, String> param = new HashMap<>();
-        param.put("text",
-                  "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&langue=fra et voilà");
-        param.put("priority", "1");
-        createMultiPartRequest(param);
-        doTestPost();
-
-        int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
-        assertEquals(
-                "<p>un lien <a rel=\"nofollow\" href=\"https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra\">https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra</a> et voilà</p>",
-                idee.getHtml().trim());
     }
 }

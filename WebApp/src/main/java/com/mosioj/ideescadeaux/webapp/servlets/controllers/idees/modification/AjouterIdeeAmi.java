@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 
 @WebServlet("/protected/ajouter_idee_ami")
-public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
+public class AjouterIdeeAmi extends IdeesCadeauxGetServlet<NetworkAccess> {
 
     private static final long serialVersionUID = -7053283110787519597L;
     public static final String USER_PARAMETER = "id";
@@ -34,12 +34,6 @@ public class AjouterIdeeAmi extends AbstractIdea<NetworkAccess> {
         request.setAttribute("priorites", PrioritesRepository.getPriorities());
 
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-    }
-
-    @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        // Only supported in service mode
-        RootingsUtils.redirectToPage("protected/ajouter_idee_ami?id=" + policy.getUser().getId(), request, response);
     }
 
 }
