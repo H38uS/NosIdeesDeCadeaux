@@ -56,7 +56,7 @@ public class TemplateTest {
         dataSource.setDatabaseName("test_ideeskdos");
         dataSource.setUser("mosioj");
         dataSource.setPassword("tuaD50Kv2jguyX5ncokK");
-        dataSource.setURL("jdbc:mysql://192.168.1.44/test_ideeskdos?serverTimezone=Europe/Paris&useUnicode=yes");//
+        dataSource.setURL("jdbc:mysql://192.168.1.7/test_ideeskdos?serverTimezone=Europe/Paris&useUnicode=yes");//
 
         DataSourceIdKDo.setDataSource(dataSource);
         ds = new DataSourceIdKDo();
@@ -96,11 +96,11 @@ public class TemplateTest {
         System.out.println();
     }
 
-    protected void assertNotifDoesNotExists(int notifId) throws SQLException {
+    protected void assertNotifDoesNotExists(int notifId) {
         Assert.assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 
-    protected void assertNotifDoesExists(int notifId) throws SQLException {
+    protected void assertNotifDoesExists(int notifId) {
         Assert.assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 }

@@ -15,7 +15,7 @@ public class IdeesCadeauxTaskTest {
     public static void init() {
 
         logger.info("Seting up the DB...");
-        final String url = "jdbc:mysql://192.168.1.44/test_ideeskdos?useLegacyDatetimeCode=false&serverTimezone=Europe/Paris&useUnicode=yes";
+        final String url = "jdbc:mysql://192.168.1.7/test_ideeskdos?useLegacyDatetimeCode=false&serverTimezone=Europe/Paris&useUnicode=yes";
 
         MysqlDataSource mysqlDS = new MysqlDataSource();
         mysqlDS.setDatabaseName("test_ideeskdos");
