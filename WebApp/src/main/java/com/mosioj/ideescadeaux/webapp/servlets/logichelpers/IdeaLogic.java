@@ -12,7 +12,6 @@ import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
@@ -140,13 +139,11 @@ public class IdeaLogic {
      */
     public static void removeUploadedImage(File path, String image) {
         if (image != null && !image.isEmpty()) {
-            image = StringEscapeUtils.unescapeHtml4(image); // FIXME : est-ce nécessaire ?
             String imageName = path.toString();
             try {
                 imageName = path.getCanonicalPath();
             } catch (IOException e) {
-                e.printStackTrace();
-                logger.warn(e.getMessage());
+                logger.warn(e);
             }
             logger.debug(MessageFormat.format("Deleting pictures ({1}) in {0} folder...", imageName, image));
             File small = new File(path, "small/" + image);
