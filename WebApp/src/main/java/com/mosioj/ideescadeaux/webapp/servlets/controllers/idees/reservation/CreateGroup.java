@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 @WebServlet("/protected/create_a_group")
-public class CreateGroup extends AbstractIdea<IdeaInteraction> {
+public class CreateGroup extends IdeesCadeauxGetAndPostServlet<IdeaInteraction> {
 
     private static final long serialVersionUID = -1774633803227715931L;
     private static final Logger logger = LogManager.getLogger(CreateGroup.class);

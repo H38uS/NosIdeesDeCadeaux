@@ -35,7 +35,6 @@ public class AjouterIdee extends AbstractIdea<AllAccessToPostAndGet> {
     private static final long serialVersionUID = -1774633803227715931L;
 
     public static final String VIEW_PAGE_URL = "/protected/completer_ma_liste.jsp";
-    public static final String PROTECTED_AJOUTER_IDEE = "/protected/ajouter_idee";
 
     /**
      * Class constructor.
