@@ -1,7 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -34,6 +37,10 @@ public class ServiceReserver extends ServicePost<IdeaInteraction> {
 
         if (IdeesRepository.canBook(idea.getId(), thisOne.id)) {
             IdeesRepository.reserver(idea.getId(), thisOne.id);
+            NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId())
+                                   .stream()
+                                   .filter(n -> n instanceof NotifRecurentIdeaUnbook)
+                                   .forEach(NotificationsRepository::remove);
         }
 
         buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));

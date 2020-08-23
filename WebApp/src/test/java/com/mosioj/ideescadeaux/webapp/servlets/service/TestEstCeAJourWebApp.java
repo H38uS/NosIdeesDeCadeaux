@@ -5,7 +5,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.ReserverIdee;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -30,7 +29,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                                                          NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -48,7 +47,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                                                          NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
         StringServiceResponse resp = doTestServicePost(); // bloqué par la police, impossible en utilisation classique...
 
         assertFalse(resp.isOK());
@@ -63,7 +62,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
 
         int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
-        when(request.getParameter(ReserverIdee.IDEA_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         resp = doTestServicePost();

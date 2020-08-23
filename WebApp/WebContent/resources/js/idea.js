@@ -21,7 +21,7 @@ function deleteIdea(e) {
                 Marde marde marde... Je ne voulais pas supprimer cette idée !
             </div>
             <div class="row">
-                Pas de soucis... Elle ne sera supprimer que dans&nbsp;<span id="countDown" class="font-weight-bold">${countDown}</span>s...
+                Pas de soucis... Elle ne sera supprimée que dans&nbsp;<span id="countDown" class="font-weight-bold">${countDown}</span>s...
             </div>
             <div class="row">
                 <a href="" id="annulerSuppression">Annuler</a>&nbsp;ou la&nbsp;<a href="" id="confSuppression">supprimer maintenant</a>.
