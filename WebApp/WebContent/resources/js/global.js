@@ -89,11 +89,11 @@ function isMobileView() {
 var lastModalOpened;
 
 function getPictureWidth() {
-	if ( isMobileView() ) {
-		return 30;
-	} else {
-		return 45;
-	}
+    if ( isMobileView() ) {
+        return 45;
+    } else {
+        return 30;
+    }
 }
 
 var picturePath = "protected/files/uploaded_pictures/ideas";
