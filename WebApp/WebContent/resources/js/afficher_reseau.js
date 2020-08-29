@@ -88,15 +88,13 @@ function searchNetwork(theName, networkOfUserId, page = 1) {
 $(document).ready(function() {
     $(".drop_relationship").click(dropRelationship);
 
-    // auto complete
-    personAutoComplete("#looking_for",
-                       $("#userId").html(),
-                       function(event, ui) {
-                           $("#looking_for").val(ui.item.email);
-                           $("#form_rechercher_dans_reseau").submit();
-                           return false;
-                       },
-                       "#mobile_res_search_afficher_reseau");
+    // auto search
+    $("#looking_for").keyup(function () {
+        var searchItem = $("#looking_for").val();
+        if (searchItem.length > 2) {
+            $("#form_rechercher_dans_reseau").find("button").click();
+        }
+    });
 
     $("#form_rechercher_dans_reseau").find("button").click(function(e) {
         e.preventDefault();
