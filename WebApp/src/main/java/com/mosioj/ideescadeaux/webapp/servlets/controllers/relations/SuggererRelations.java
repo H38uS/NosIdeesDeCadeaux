@@ -29,18 +29,37 @@ public class SuggererRelations extends IdeesCadeauxGetAndPostServlet<NetworkAcce
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-        req.setAttribute("user", policy.getUser());
-        RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
+    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+
+        User suggestToUser = policy.getUser();
+        String userNameOrEmail = "";
+
+        request.setAttribute("name", userNameOrEmail);
+        request.setAttribute("user", suggestToUser);
+        request.setAttribute("users", getSuggestedUsers(suggestToUser, userNameOrEmail));
+
+        RootingsUtils.rootToPage(DISPATCH_URL, request, response);
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         User suggestToUser = policy.getUser();
         String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
 
+        request.setAttribute("name", userNameOrEmail);
+        request.setAttribute("user", suggestToUser);
+        request.setAttribute("users", getSuggestedUsers(suggestToUser, userNameOrEmail));
+
+        RootingsUtils.rootToPage(DISPATCH_URL, request, response);
+    }
+
+    /**
+     * @param suggestToUser To which we want to suggest.
+     * @param userNameOrEmail The token to narrow the search.
+     * @return The list of suggestions.
+     */
+    private List<User> getSuggestedUsers(User suggestToUser, String userNameOrEmail) throws SQLException {
         int suggestedBy = thisOne.id;
         List<User> toBeSuggested = UserRelationsRepository.getAllUsersInRelationNotInOtherNetwork(suggestedBy,
                                                                                                   suggestToUser.id,
@@ -48,7 +67,6 @@ public class SuggererRelations extends IdeesCadeauxGetAndPostServlet<NetworkAcce
                                                                                                   0,
                                                                                                   50);
         toBeSuggested.remove(suggestToUser);
-
         for (User u : toBeSuggested) {
             if (UserRelationsSuggestionRepository.hasReceivedSuggestionOf(suggestToUser.id, u.id)) {
                 u.freeComment = MessageFormat.format("{0} a déjà reçu une suggestion pour {1}.",
@@ -66,12 +84,7 @@ public class SuggererRelations extends IdeesCadeauxGetAndPostServlet<NetworkAcce
                                                      suggestToUser.getName());
             }
         }
-
-        request.setAttribute("name", userNameOrEmail);
-        request.setAttribute("user", suggestToUser);
-        request.setAttribute("users", toBeSuggested);
-
-        RootingsUtils.rootToPage(DISPATCH_URL, request, response);
+        return toBeSuggested;
     }
 
 }
