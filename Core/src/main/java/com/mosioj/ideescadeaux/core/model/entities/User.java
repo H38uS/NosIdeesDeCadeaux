@@ -7,6 +7,10 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +41,7 @@ public class User implements Comparable<User> {
     @Expose
     public String freeComment;
 
-    public int nbDaysBeforeBirthday;
+    public long nbDaysBeforeBirthday;
     public boolean hasBookedOneOfItsIdeas = false;
     private final List<Idee> ideas = new ArrayList<>();
 
@@ -47,11 +51,7 @@ public class User implements Comparable<User> {
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
         this.birthday = birthday;
-    }
-
-    public User(int id, String name, String email, Date birthday, String avatar, int nbDaysBeforeBirthday) {
-        this(id, name, email, birthday, avatar);
-        this.nbDaysBeforeBirthday = nbDaysBeforeBirthday; // FIXME : le calculer tout le temps, en Java
+        this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(-1L);
     }
 
     /**
@@ -74,6 +74,29 @@ public class User implements Comparable<User> {
         this(id, name, email, birthday, avatar);
         this.creationDate = creationDate;
         this.lastLogin = lastLogin;
+    }
+
+    /**
+     * @param now      The current date for which we want to get the difference. Useful for testing.
+     * @param birthday The birth date.
+     * @return The number of days before this birthday.
+     */
+    public static Optional<Long> getNbDayBeforeBirthday(LocalDate now, Date birthday) {
+
+        if (now == null || birthday == null) {
+            return Optional.empty();
+        }
+
+        LocalDate birthDateAtCurrentYear = Instant.ofEpochMilli(birthday.getTime())
+                                                  .atZone(ZoneId.of("Europe/Paris"))
+                                                  .toLocalDate()
+                                                  .withYear(now.getYear());
+        if (birthDateAtCurrentYear.isBefore(now)) {
+            // Getting the one of the next year !
+            birthDateAtCurrentYear = birthDateAtCurrentYear.withYear(now.getYear() + 1);
+        }
+
+        return Optional.of(ChronoUnit.DAYS.between(now, birthDateAtCurrentYear));
     }
 
     /**
@@ -131,7 +154,7 @@ public class User implements Comparable<User> {
         return MessageFormat.format("large/{0}", avatar);
     }
 
-    public int getNbDaysBeforeBirthday() {
+    public long getNbDaysBeforeBirthday() {
         return nbDaysBeforeBirthday;
     }
 

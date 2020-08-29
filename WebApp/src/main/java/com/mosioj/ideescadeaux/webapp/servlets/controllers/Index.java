@@ -1,24 +1,23 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers;
 
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.MessagesAccueilRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.MessagesAccueilRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @WebServlet("/protected/index")
 public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
@@ -35,20 +34,20 @@ public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
         User me = thisOne;
-        req.setAttribute("no_birth_date_set", me.getBirthday() == null);
+        req.setAttribute("no_birth_date_set", !me.getBirthday().isPresent());
 
         // Birthday messages
         List<User> friends = UserRelationsRepository.getCloseBirthday(thisOne, NB_DAYS_MAX_BEFORE_BIRTHDAY);
-        Set<User> listIBookedSomething = new HashSet<>();
-        IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne)
-                       .parallelStream()
-                       .forEach(i -> listIBookedSomething.add(i.owner));
-        friends.parallelStream()
-               .filter(listIBookedSomething::contains)
-               .forEach(f -> f.hasBookedOneOfItsIdeas = true);
 
         req.setAttribute("userBirthday", friends);
         if (!friends.isEmpty()) {
+            Set<User> listIBookedSomething = IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne)
+                                                            .parallelStream()
+                                                            .map(Idee::getOwner)
+                                                            .collect(Collectors.toSet());
+            friends.parallelStream()
+                   .filter(listIBookedSomething::contains)
+                   .forEach(f -> f.hasBookedOneOfItsIdeas = true);
             req.setAttribute("birthdayMessage", MessagesAccueilRepository.getOneBirthdayMessage());
         }
 

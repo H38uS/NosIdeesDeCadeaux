@@ -54,16 +54,6 @@ public class UserRelationsRepository extends AbstractRepository {
     }
 
     /**
-     * @param user The user.
-     * @return The number of user in this user network.
-     */
-    public static int getRelationsCount(User user) {
-        return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                            TABLE_NAME,
-                                                            UserRelationsColumns.FIRST_USER), user.id);
-    }
-
-    /**
      * @param user            The user.
      * @param firstRow        The first row to select.
      * @param maxNumberOfRows Number of results to retrieve.
@@ -151,10 +141,8 @@ public class UserRelationsRepository extends AbstractRepository {
         PreparedStatementIdKdo ps = null;
 
         StringBuilder query = new StringBuilder();
-        query.append(
-                "select b.{0}, b.{1}, b.{2}, b.{3}, b.{8}, b.days_before_next_year_birthday, b.days_before_birthday ");
+        query.append("select b.{0}, b.{1}, b.{2}, b.{3}, b.{8} ");
         query.append("from ( ");
-
         query.append(
                 "select a.{0}, a.{1}, a.{2}, a.{3}, a.{8}, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()) +1, ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_next_year_birthday, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()), ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_birthday ");
         query.append("from ( ");
@@ -191,10 +179,7 @@ public class UserRelationsRepository extends AbstractRepository {
                                        res.getString(UsersColumns.NAME.name()),
                                        res.getString(UsersColumns.EMAIL.name()),
                                        res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name()),
-                                       res.getInt("days_before_birthday") < 0 ? res.getInt(
-                                               "days_before_next_year_birthday")
-                                               : res.getInt("days_before_birthday")));
+                                       res.getString(UsersColumns.AVATAR.name())));
                 }
             }
         } finally {
@@ -216,7 +201,7 @@ public class UserRelationsRepository extends AbstractRepository {
         List<User> users = new ArrayList<>();
 
         String query =
-                "select b.{0}, b.{1}, b.{2}, b.{3}, b.{5}, b.days_before_next_year_birthday, b.days_before_birthday " +
+                "select b.{0}, b.{1}, b.{2}, b.{3}, b.{5} " +
                 "  from ( " +
                 "          select a.{0}," +
                 "                 a.{1}, " +
@@ -250,10 +235,7 @@ public class UserRelationsRepository extends AbstractRepository {
                                        res.getString(UsersColumns.NAME.name()),
                                        res.getString(UsersColumns.EMAIL.name()),
                                        res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name()),
-                                       res.getInt("days_before_birthday") < 0 ? res.getInt(
-                                               "days_before_next_year_birthday")
-                                               : res.getInt("days_before_birthday")));
+                                       res.getString(UsersColumns.AVATAR.name())));
                 }
             }
         }
