@@ -2,9 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/protected/detail_sous_reservation")
-public class DetailSousReservation extends AbstractIdea<IdeaInteraction> {
+public class DetailSousReservation extends IdeesCadeauxGetServlet<IdeaInteraction> {
 
     private static final long serialVersionUID = -2188278918134412556L;
     private static final Logger logger = LogManager.getLogger(DetailSousReservation.class);
@@ -36,37 +35,27 @@ public class DetailSousReservation extends AbstractIdea<IdeaInteraction> {
 
     // TODO : Pouvoir suggérer de sous réserver cette idée
 
-    private void setupCommon(HttpServletRequest req, Idee idea, User user) {
+    private void setupCommon(HttpServletRequest request) {
 
+        Idee idea = policy.getIdea();
         logger.debug("Getting partial booking details for idea " + idea.getId() + "...");
-        req.setAttribute("idee", idea);
+        request.setAttribute("idee", idea);
 
         List<SousReservationEntity> reservations = SousReservationRepository.getSousReservation(idea.getId());
-        req.setAttribute("sous_reservation_existantes", reservations);
-        boolean isInThere = false;
-        for (SousReservationEntity entity : reservations) {
-            if (entity.user == user) {
-                isInThere = true;
-                break;
-            }
-        }
-        req.setAttribute("fait_parti_sous_reservation", isInThere);
+        request.setAttribute("sous_reservation_existantes", reservations);
+
+        boolean isInThere = reservations.stream()
+                                        .map(SousReservationEntity::getUser)
+                                        .map(thisOne::equals)
+                                        .reduce(false, (a, b) -> a || b);
+        request.setAttribute("fait_parti_sous_reservation", isInThere);
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-        Idee idea = policy.getIdea();
-        setupCommon(request, idea, thisOne);
+    public void ideesKDoGET(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, SQLException {
+        setupCommon(request);
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-    }
-
-    @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
-        Idee idea = policy.getIdea();
-        setupCommon(request, idea, thisOne);
-        if (sousReserver(request, response, thisOne, idea, VIEW_PAGE_URL)) {
-            RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-        }
     }
 
 }
