@@ -12,8 +12,8 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSugge
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AbstractIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.VoirListe;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -30,7 +30,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/protected/detail_du_groupe")
-public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
+public class GroupIdeaDetails extends IdeesCadeauxGetAndPostServlet<BookingGroupInteraction> {
 
     private static final long serialVersionUID = -2188278918134412556L;
     private static final Logger logger = LogManager.getLogger(GroupIdeaDetails.class);
@@ -87,6 +87,7 @@ public class GroupIdeaDetails extends AbstractIdea<BookingGroupInteraction> {
     public void ideesKDoPOST(HttpServletRequest request,
                              HttpServletResponse response) throws ServletException, SQLException {
 
+        // FIXME : 2 faut faire des services.
         IdeaGroup group = policy.getGroupId();
         String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
