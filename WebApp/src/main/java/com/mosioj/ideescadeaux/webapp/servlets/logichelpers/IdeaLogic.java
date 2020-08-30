@@ -20,7 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,36 +34,6 @@ public class IdeaLogic {
 
     private IdeaLogic() {
         // Forbidden - helper
-    }
-
-    /**
-     * @param user The user.
-     * @return True if and only if the birthday of this user is set up, and will come in less than
-     * NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY.
-     */
-    public static boolean isBirthdayClose(User user) {
-
-        if (user.birthday == null) {
-            return false;
-        }
-
-        Calendar birthday = Calendar.getInstance();
-        birthday.setTime(new Date(user.birthday.getTime()));
-
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-        today.set(Calendar.MILLISECOND, 0);
-
-        birthday.set(Calendar.YEAR, today.get(Calendar.YEAR));
-        if (birthday.before(today)) {
-            birthday.add(Calendar.YEAR, 1);
-        }
-        today.add(Calendar.DAY_OF_YEAR, NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY);
-        logger.debug(MessageFormat.format("Resovled birthday: {0}", birthday));
-
-        return birthday.before(today);
     }
 
     /**
@@ -118,7 +91,7 @@ public class IdeaLogic {
      * @param isNew Whether this is a new idea or not.
      */
     public static void addModificationNotification(User user, Idee idea, boolean isNew) {
-        if (IdeaLogic.isBirthdayClose(user)) {
+        if (user.getNbDaysBeforeBirthday() < NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY) {
             // Send a notification for each user that has no such modification notification yet
             final List<User> users = UserRelationsRepository.getAllUsersInRelation(user);
             users.parallelStream()

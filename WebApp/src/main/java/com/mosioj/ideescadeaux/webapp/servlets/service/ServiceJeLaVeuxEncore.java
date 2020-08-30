@@ -2,11 +2,11 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -46,7 +46,7 @@ public class ServiceJeLaVeuxEncore extends ServicePost<IdeaModification> {
         Set<User> toBeNotified = new HashSet<>(idea.getBookers());
 
         // Puis si l'anniversaire est proche, tous les amis !
-        if (IdeaLogic.isBirthdayClose(thisOne)) {
+        if (thisOne.getNbDaysBeforeBirthday() < NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY) {
             toBeNotified.addAll(UserRelationsRepository.getAllUsersInRelation(thisOne));
         }
 

@@ -11,8 +11,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class User implements Comparable<User> {
@@ -33,17 +31,14 @@ public class User implements Comparable<User> {
     @Expose
     public String avatar;
 
-    public Date birthday;
-    private Timestamp creationDate;
-    private Timestamp lastLogin;
-
-    // FIXME : faire le ménage dans les champs/getters quand passé en JSON + faire une passe sur les méthodes
     @Expose
-    public String freeComment;
+    public String freeComment; // utilisé dans suggestion relation en jsp - impossible de supprimer le getter pour l'instant
 
-    public long nbDaysBeforeBirthday;
-    public boolean hasBookedOneOfItsIdeas = false;
-    private final List<Idee> ideas = new ArrayList<>();
+    public Date birthday; // utilisé dans MonCompte en jsp - impossible de supprimer le getter pour l'instant
+    private Timestamp creationDate; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+    private Timestamp lastLogin; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+    public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
+    public boolean hasBookedOneOfItsIdeas = false; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
     public User(int id, String name, String email, Date birthday, String avatar) {
         this.id = id;
@@ -114,11 +109,18 @@ public class User implements Comparable<User> {
                             .orElse("- on ne sait pas...");
     }
 
+    /**
+     * Used in several JSP, impossible to delete.
+     *
+     * @return The user's avatar or the default one.
+     */
     public String getAvatar() {
         return avatar;
     }
 
     /**
+     * Used in several JSP, impossible to delete.
+     *
      * @return True if the connected user has booked one of this user ideas, or is participating to a group.
      */
     public boolean getHasBookedOneOfItsIdeas() {
@@ -126,6 +128,8 @@ public class User implements Comparable<User> {
     }
 
     /**
+     * Used in several JSP, impossible to delete.
+     *
      * @return the creationDate
      */
     public String getCreationDate() {
@@ -133,6 +137,8 @@ public class User implements Comparable<User> {
     }
 
     /**
+     * Used in several JSP, impossible to delete.
+     *
      * @return the lastLogin
      */
     public String getLastLogin() {
@@ -140,16 +146,26 @@ public class User implements Comparable<User> {
     }
 
     /**
+     * Used in several JSP, impossible to delete.
+     *
      * @return True if the user has already set up an avatar.
      */
     public boolean hasSetUpAnAvatar() {
         return !"default.png".equals(getAvatar());
     }
 
+    /**
+     * @return The small avatar picture.
+     */
     public String getAvatarSrcSmall() {
         return MessageFormat.format("small/{0}", avatar);
     }
 
+    /**
+     * Used in several JSP, impossible to delete.
+     *
+     * @return The large avatar picture.
+     */
     public String getAvatarSrcLarge() {
         return MessageFormat.format("large/{0}", avatar);
     }
@@ -188,15 +204,11 @@ public class User implements Comparable<User> {
         return name;
     }
 
-    public void setIdeas(List<Idee> ownerIdeas) {
-        ideas.clear();
-        ideas.addAll(ownerIdeas);
-    }
-
-    public List<Idee> getIdeas() {
-        return ideas;
-    }
-
+    /**
+     * Used in several JSP, impossible to delete.
+     *
+     * @return The user's free comment.
+     */
     public String getFreeComment() {
         return freeComment;
     }
@@ -208,6 +220,11 @@ public class User implements Comparable<User> {
         return MessageFormat.format("{0} ({1})", WordUtils.capitalize(name), email);
     }
 
+    /**
+     * Used in several JSP, impossible to delete.
+     *
+     * @return A computed name with an article "de" or "d'".
+     */
     public String getMyDName() {
         String vowel = "aeiuoyéè";
         final boolean hasVowel = vowel.indexOf(Character.toLowerCase(name.charAt(0))) == -1;
