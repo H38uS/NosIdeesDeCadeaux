@@ -1,10 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.rootservlet;
 
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 
 public abstract class ServiceGet<P extends SecurityPolicy> extends ServiceGetAndPost<P> {
 
@@ -18,7 +18,8 @@ public abstract class ServiceGet<P extends SecurityPolicy> extends ServiceGetAnd
     }
 
     @Override
-    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
-        throw new SQLException("POST method is not supported by this service.");
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) {
+        final String message = "POST method is not supported by this service.";
+        buildResponse(response, ServiceResponse.ko(message, isAdmin(request), thisOne));
     }
 }
