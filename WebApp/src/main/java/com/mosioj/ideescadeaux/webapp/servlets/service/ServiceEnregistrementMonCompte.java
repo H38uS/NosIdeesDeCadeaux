@@ -116,7 +116,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
 
             thisOne.email = email;
             thisOne.name = name;
-            thisOne.birthday = getAsDate(birthday);
+            thisOne.setBirthday(getAsDate(birthday));
 
             String image = parameters.get("image");
             String old = parameters.get("old_picture");

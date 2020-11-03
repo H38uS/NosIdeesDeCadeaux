@@ -135,7 +135,7 @@ public class UsersRepository extends AbstractRepository {
                                             UsersColumns.BIRTHDAY,
                                             UsersColumns.ID,
                                             UsersColumns.AVATAR);
-        getDb().executeUpdate(query, user.email, user.name, user.birthday, user.avatar, user.id);
+        getDb().executeUpdate(query, user.email, user.name, user.getBirthday().orElse(null), user.avatar, user.id);
         if (!previousEmail.equals(user.email)) {
             getDb().executeUpdate(MessageFormat.format("update USER_ROLES set {0} = ? where {1} = ? ",
                                                        UserRolesColumns.EMAIL,

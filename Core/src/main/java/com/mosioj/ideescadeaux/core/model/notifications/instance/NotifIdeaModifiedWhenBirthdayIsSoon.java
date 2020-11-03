@@ -70,4 +70,12 @@ public class NotifIdeaModifiedWhenBirthdayIsSoon extends AbstractNotification {
                                     action);
     }
 
+    @Override
+    public String toString() {
+        return "NotifIdeaModifiedWhenBirthdayIsSoon{" +
+               "id=" + id +
+               ", owner=" + getOwner() +
+               ", params=" + params +
+               '}';
+    }
 }

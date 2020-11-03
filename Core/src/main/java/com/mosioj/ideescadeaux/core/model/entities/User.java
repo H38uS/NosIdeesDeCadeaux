@@ -34,7 +34,7 @@ public class User implements Comparable<User> {
     @Expose
     public String freeComment; // utilisé dans suggestion relation en jsp - impossible de supprimer le getter pour l'instant
 
-    public Date birthday; // utilisé dans MonCompte en jsp - impossible de supprimer le getter pour l'instant
+    private Date birthday; // utilisé dans MonCompte en jsp - impossible de supprimer le getter pour l'instant
     private Timestamp creationDate; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
     private Timestamp lastLogin; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
@@ -99,6 +99,18 @@ public class User implements Comparable<User> {
      */
     public Optional<Date> getBirthday() {
         return Optional.ofNullable(birthday);
+    }
+
+    /**
+     * Sets the new birthday of this person. Can be null.
+     *
+     * @param birthday The new birthday.
+     */
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+        if (birthday != null) {
+            this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
+        }
     }
 
     /**

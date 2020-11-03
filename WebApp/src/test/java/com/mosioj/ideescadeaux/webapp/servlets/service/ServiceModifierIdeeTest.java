@@ -130,7 +130,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         // Given the users birthday is in 4 days...
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, 4);
-        firefox.birthday = new java.sql.Date(cal.getTime().getTime());
+        firefox.setBirthday(new java.sql.Date(cal.getTime().getTime()));
 
         UsersRepository.update(firefox);
 

@@ -442,13 +442,17 @@ public class NotificationsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return All notifications for this user.
      */
-    public static List<AbstractNotification> getUserNotifications(int userId,
-                                                                  NotificationType type) throws SQLException {
-        return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
-                                                                   NotificationsColumns.OWNER,
-                                                                   NotificationsColumns.TYPE),
-                                              userId,
-                                              type.name());
+    public static List<AbstractNotification> getUserNotifications(int userId, NotificationType type) {
+        try {
+            return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
+                                                                       NotificationsColumns.OWNER,
+                                                                       NotificationsColumns.TYPE),
+                                                  userId,
+                                                  type.name());
+        } catch (SQLException e) {
+            logger.error(e);
+            return Collections.emptyList();
+        }
     }
 
     /**
