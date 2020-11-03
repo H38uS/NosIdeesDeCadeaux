@@ -46,7 +46,7 @@ public class User implements Comparable<User> {
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
         this.birthday = birthday;
-        this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(-1L);
+        this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
     }
 
     /**
