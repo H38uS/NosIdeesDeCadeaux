@@ -6,6 +6,8 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentId
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.service.reservation.ServiceDereserver;
+import com.mosioj.ideescadeaux.webapp.servlets.service.reservation.ServiceReserver;
 import org.junit.Test;
 
 import java.sql.SQLException;

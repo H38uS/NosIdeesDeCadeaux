@@ -1,4 +1,4 @@
-package com.mosioj.ideescadeaux.webapp.servlets.service;
+package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;

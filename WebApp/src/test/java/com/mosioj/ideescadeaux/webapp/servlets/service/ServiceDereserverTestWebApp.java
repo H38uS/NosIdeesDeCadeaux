@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.service.reservation.ServiceDereserver;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
