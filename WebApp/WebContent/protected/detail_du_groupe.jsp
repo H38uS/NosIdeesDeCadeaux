@@ -35,14 +35,14 @@
             </c:if>
         </div>
         <h2>Vos actions</h2>
+        <div id="myActions">
         <c:choose>
             <c:when test="${not is_in_group}">
                 <div>Vous ne participez pas encore à ce groupe.</div>
                 <form method="POST" class="form-inline" action="protected/detail_du_groupe">
                     <input type="hidden" name="groupid" value="${group.id}" />
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     <label class="d-none d-sm-inline-block">S'inscrire: </label>
-                    <input class="form-control mx-2" name="amount" type="text" value="${share.amount}" />
+                    <input class="form-control mx-2" name="amount" type="text" value="" />
                     <button class="btn btn-primary mt-2 mt-sm-0 mx-auto mx-sm-0" type="submit" name="submit" id="submit">Participer</button>
                 </form>
             </c:when>
@@ -53,19 +53,37 @@
                             <label for="amount" class="d-none d-lg-inline-block">Modifier le montant :</label>
                             <input id="amount" class="form-control mt-2 mt-md-0" name="amount" type="text" value="${share.shareAmount}" />
                             <input type="hidden" name="groupid" value="${group.id}" />
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                             <button class="btn btn-primary mt-2 mt-md-0" type="submit" name="submit" id="submit">Modifier !</button>
                         </form>
-                        <form class="form-inline d-inline-block" method="POST" action="protected/detail_du_groupe">
-                            <input type="hidden" name="amount" value="annulation" />
+                        <div class="form-inline d-inline-block">
                             <input type="hidden" name="groupid" value="${group.id}" />
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                            <button class="btn btn-primary mt-2 mt-md-0" type="submit" name="submit" id="submit">Annuler ma participation</button>
-                        </form>
+                            <button class="btn btn-primary mt-2 mt-md-0" type="submit" name="submit" id="submitAnnulation">Annuler ma participation</button>
+                            <script>
+                                $("#submitAnnulation").click(function() {
+                                    var groupId = $(this).prev().val();
+                                    servicePost('protected/service/group/annulation',
+                                                { groupid : groupId },
+                                                function(data) {
+                                                    $("#myActions").html(`
+                                                        <div>Vous ne participez pas encore à ce groupe.</div>
+                                                        <form method="POST" class="form-inline" action="protected/detail_du_groupe">
+                                                            <input type="hidden" name="groupid" value="${groupId}" />
+                                                            <label class="d-none d-sm-inline-block">S'inscrire: </label>
+                                                            <input class="form-control mx-2" name="amount" type="text" value="" />
+                                                            <button class="btn btn-primary mt-2 mt-sm-0 mx-auto mx-sm-0" type="submit" name="submit" id="submit">Participer</button>
+                                                        </form>
+                                                    `);
+                                                },
+                                                "Annulation de votre participation en cours...",
+                                                "Votre participation a bien été annulée.");
+                                });
+                            </script>
+                        </div>
                     </c:if>
                 </c:forEach>
             </c:otherwise>
         </c:choose>
+        </div>
         <c:if test="${fn:length(errors) > 0}">
             <div class="alert alert-danger">
                 <p>Des erreurs sont survenues:</p>

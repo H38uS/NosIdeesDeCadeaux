@@ -1,9 +1,8 @@
-package com.mosioj.ideescadeaux.webapp.servlets.service;
+package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
-import com.mosioj.ideescadeaux.webapp.servlets.service.reservation.ServiceMesReservations;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
@@ -35,6 +34,7 @@ public class ServiceMesReservationsTestWebApp extends AbstractTestServletWebApp 
 
     private static class MyServiceResp extends ServiceResponse<List<OwnerIdeas>> {
         // for json
+
         /**
          * Class constructor.
          *

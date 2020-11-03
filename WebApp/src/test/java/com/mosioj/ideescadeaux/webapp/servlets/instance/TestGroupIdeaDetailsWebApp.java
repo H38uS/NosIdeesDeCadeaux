@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.webapp.servlets.instance;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupEvolution;
 import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -11,6 +10,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.GroupIdeaColumns;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.GroupIdeaDetails;
+import com.mosioj.ideescadeaux.webapp.servlets.service.reservation.ServiceAnnulationGroupeTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -73,50 +73,6 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testAnnulerParticipation() throws SQLException {
-
-        int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        int id = GroupIdeaRepository.createAGroup(300, 250, _OWNER_ID_);
-        GroupIdeaRepository.addNewAmount(25, moiAutre.id, id);
-        IdeesRepository.bookByGroup(idea, id);
-        assertGroupExists(id);
-
-        Idee idee = IdeesRepository.getIdea(idea).orElseThrow(SQLException::new);
-        int groupSuggestion = NotificationsRepository.addNotification(_MOI_AUTRE_,
-                                                                      new NotifGroupSuggestion(moiAutre, id, idee));
-        int groupEvolutionShouldDisapear = NotificationsRepository.addNotification(_MOI_AUTRE_,
-                                                                                   new NotifGroupEvolution(firefox,
-                                                                                                           // == _OWNER_ID_
-                                                                                                           id,
-                                                                                                           idee,
-                                                                                                           true));
-        int groupEvolutionShouldStay = NotificationsRepository.addNotification(_MOI_AUTRE_,
-                                                                               new NotifGroupEvolution(friendOfFirefox,
-                                                                                                       id,
-                                                                                                       idee,
-                                                                                                       true));
-        assertNotifDoesExists(groupSuggestion);
-        assertNotifDoesExists(groupEvolutionShouldDisapear);
-        assertNotifDoesExists(groupEvolutionShouldStay);
-
-        // Annulation de la participation de _OWNER_ID_ aka friendOfFirefox
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
-        when(request.getParameter("amount")).thenReturn("annulation");
-        doTestPost();
-
-        assertNotifDoesNotExists(groupEvolutionShouldDisapear);
-        assertNotifDoesNotExists(groupSuggestion);
-        assertNotifDoesExists(groupEvolutionShouldStay);
-
-        IdeesRepository.remove(idea);
-        assertEquals(Optional.of(0),
-                     ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                       GroupIdeaRepository.TABLE_NAME,
-                                                       GroupIdeaColumns.ID),
-                                  id));
-    }
-
-    @Test
     public void testRejoindrePuisAnnuler() throws SQLException {
 
         // On crée un groupe sur une idée
@@ -127,7 +83,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");
         IdeesRepository.bookByGroup(idea, id);
         logger.info("[Perf] OK! Vérication qu'il n'existe pas de notifications...");
-        assertGroupExists(id);
+        assertTrue(GroupIdeaRepository.getGroupDetails(id).isPresent());
         assertEquals(0,
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
@@ -152,9 +108,10 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         NotificationsRepository.removeAllType(moiAutre, NotificationType.GROUP_EVOLUTION);
 
         // Annulation de la participation
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
-        when(request.getParameter("amount")).thenReturn("annulation");
-        doTestPost();
+        ServiceAnnulationGroupeTest annulationService = new ServiceAnnulationGroupeTest();
+        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, id);
+        StringServiceResponse resp = annulationService.doTestServicePost();
+        assertTrue(resp.isOK());
         assertEquals(1,
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
@@ -196,9 +153,9 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
                                             .get(0).id);
 
         // Finalement - re - Annulation de la participation
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
-        when(request.getParameter("amount")).thenReturn("annulation");
-        doTestPost();
+        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, id);
+        resp = annulationService.doTestServicePost();
+        assertTrue(resp.isOK());
         assertEquals(1,
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
@@ -214,14 +171,6 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         // Clean up
         IdeesRepository.remove(idea);
         assertEquals(Optional.of(0),
-                     ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                       GroupIdeaRepository.TABLE_NAME,
-                                                       GroupIdeaColumns.ID),
-                                  id));
-    }
-
-    protected void assertGroupExists(int id) throws SQLException {
-        assertEquals(Optional.of(1),
                      ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
                                                        GroupIdeaRepository.TABLE_NAME,
                                                        GroupIdeaColumns.ID),

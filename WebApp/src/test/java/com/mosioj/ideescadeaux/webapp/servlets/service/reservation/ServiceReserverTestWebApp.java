@@ -1,4 +1,4 @@
-package com.mosioj.ideescadeaux.webapp.servlets.service;
+package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
@@ -6,8 +6,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentId
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
-import com.mosioj.ideescadeaux.webapp.servlets.service.reservation.ServiceDereserver;
-import com.mosioj.ideescadeaux.webapp.servlets.service.reservation.ServiceReserver;
 import org.junit.Test;
 
 import java.sql.SQLException;

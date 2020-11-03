@@ -80,6 +80,10 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
         }
     }
 
+    public void registerParameter(String parameterName, Object value) {
+        when(request.getParameter(parameterName)).thenReturn(value.toString());
+    }
+
     /**
      * Tests that all links for the current tested instance exists.
      */
@@ -115,7 +119,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
      *
      * @return The service response.
      */
-    protected StringServiceResponse doTestServicePost() {
+    public StringServiceResponse doTestServicePost() {
         return doTestServicePost(StringServiceResponse.class);
     }
 

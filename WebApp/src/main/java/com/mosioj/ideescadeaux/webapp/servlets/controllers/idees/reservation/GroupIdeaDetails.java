@@ -12,7 +12,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSugge
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.VoirListe;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
@@ -87,53 +86,10 @@ public class GroupIdeaDetails extends IdeesCadeauxGetAndPostServlet<BookingGroup
     public void ideesKDoPOST(HttpServletRequest request,
                              HttpServletResponse response) throws ServletException, SQLException {
 
-        // FIXME : 2 faut faire des services.
+        // FIXME : 2 continuer de faire des services pour (re)participer / mettre à jour le montant
+        // FIXME : 2 si le groupe n'existe plus (genre quand on se désinscrit, il faut le créer)
         IdeaGroup group = policy.getGroupId();
         String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
-
-        if ("annulation".equals(amount)) {
-            User owner = IdeesRepository.getIdeaOwnerFromGroup(group.getId()).orElseThrow(SQLException::new);
-            boolean isThereSomeoneRemaining = GroupIdeaRepository.removeUserFromGroup(thisOne, group.getId());
-            List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
-                                                                                               group.getId());
-            notifications.parallelStream()
-                         .filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name()))
-                         .forEach(NotificationsRepository::remove);
-
-            if (isThereSomeoneRemaining) {
-                // On supprime les notifications précédentes de cette personne si y'en a
-                NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                                      ParameterName.GROUP_ID,
-                                                      group.getId(),
-                                                      ParameterName.USER_ID,
-                                                      thisOne.id);
-
-                IdeesRepository.getIdeaFromGroup(group.getId())
-                               .ifPresent(idee -> group.getShares().parallelStream().forEach(s -> {
-                                   try {
-                                       NotificationsRepository.addNotification(s.getUser().id,
-                                                                               new NotifGroupEvolution(thisOne,
-                                                                                                       group.getId(),
-                                                                                                       idee,
-                                                                                                       false));
-                                   } catch (Exception e) {
-                                       e.printStackTrace();
-                                       logger.error("Fail to send group evolution notification => " + e.getMessage());
-                                   }
-                               }));
-                RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
-            } else {
-                RootingsUtils.redirectToPage(VoirListe.PROTECTED_VOIR_LISTE +
-                                             "?" +
-                                             VoirListe.USER_ID_PARAM +
-                                             "=" +
-                                             owner.id,
-                                             request,
-                                             response);
-            }
-
-            return;
-        }
 
         ParameterValidator val = ValidatorFactory.getMascValidator(amount, "montant");
         val.checkEmpty();
@@ -162,16 +118,14 @@ public class GroupIdeaDetails extends IdeesCadeauxGetAndPostServlet<BookingGroup
                                                       ParameterName.USER_ID,
                                                       thisOne.id);
 
-                IdeesRepository.getIdeaFromGroup(group.getId())
-                               .ifPresent(idee -> group.getShares()
-                                                       .parallelStream()
-                                                       .filter(s -> !s.getUser().equals(thisOne))
-                                                       .forEach(s -> NotificationsRepository.addNotification(s.getUser().id,
-                                                                                                             new NotifGroupEvolution(
-                                                                                                                     thisOne,
-                                                                                                                     group.getId(),
-                                                                                                                     idee,
-                                                                                                                     true))));
+                // On a forcément une idée pour un groupe... Sinon grosse erreur !!
+                Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
+
+                final NotifGroupEvolution groupEvolution = new NotifGroupEvolution(thisOne, group.getId(), idee, true);
+                group.getShares()
+                     .parallelStream()
+                     .filter(s -> !s.getUser().equals(thisOne))
+                     .forEach(s -> NotificationsRepository.addNotification(s.getUser().id, groupEvolution));
             } else {
                 GroupIdeaRepository.updateAmount(group.getId(), thisOne, Double.parseDouble(amount));
             }
