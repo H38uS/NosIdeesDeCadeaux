@@ -115,49 +115,25 @@ td > #imageFilePreview {
 }
 
 .verticalcenter_helper {
-	display: inline-block;
-	height: 100%;
-	vertical-align: middle;
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
 }
 
 .verticalcenter {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 #loading_message_container {
-	position: -webkit-sticky; /* Safari */
-	position:sticky;
-	top: 10px;
-	left: 0;
-	height: 1px;
-	margin-top: 10px;
-	z-index: 999;
+    z-index: 999;
 }
-#loading_message_div {
-	text-align: left;
-	padding:10px;
-	padding-left: 20px;
-	border-radius: 10px;
-}
-#loading_message_div > img {
-	vertical-align: middle;
-	margin-right: 10px;
-}
-#loading_message_div.loading {
-	background-color: #ffcc99;
-	border-left: #ff9933 8px solid;	
-}
-#loading_message_div.success {
-	background-color: #adebad;
-	border-left: #33cc33 8px solid;	
-}
-#loading_message_div.fail {
-	background-color: #ff8080;
-	border-left: #ff0000 8px solid;	
+
+#loading_message_div ul {
+    margin-bottom: 0;
 }
 
 .tooltipster-base {
-	box-sizing: initial;
+    box-sizing: initial;
 }
 
 /****************************/

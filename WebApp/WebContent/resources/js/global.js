@@ -140,14 +140,14 @@ function doLoading(message) {
     closeModal();
     loadingTimeout = setTimeout(function() {
         $("#loading_message_div").html(getHTMLPopUpMessage("loading.gif", message))
-                                 .addClass('loading')
+                                 .addClass('alert alert-warning')
                                  .slideDown();
     }, 400);
 }
 function actionDone(message) {
     closeModal();
     $("#loading_message_div").html(getHTMLPopUpMessage("ok.png", message))
-                             .addClass('success')
+                             .addClass('alert alert-success')
                              .slideDown();
     timer = setTimeout(function() {
         $("#loading_message_div").fadeOut('slow');
@@ -156,7 +156,7 @@ function actionDone(message) {
 function actionError(message) {
     closeModal();
     $("#loading_message_div").html(getHTMLPopUpMessage("ko.png", message))
-                             .addClass('fail')
+                             .addClass('alert alert-danger')
                              .slideDown();
     timer = setTimeout(function() {
         $("#loading_message_div").fadeOut('slow');

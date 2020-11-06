@@ -4,21 +4,8 @@ html, body {
 	font-size: 105%;
 }
 
-div#container {
-	position: relative; /* needed for footer positioning*/
-	margin: 0 auto; /* center, not in IE5 */
-	width: 90%;
-	height: auto !important; /* real browsers */
-	height: 100%; /* IE6: treaded as min-height*/
-	min-height: 100%; /* real browsers */
-}
-
 header #logo span a:link, header #logo span a:visited, header #logo span a:active {
 	color: #b0cff8;
-}
-
-div#content {
-	padding: 10px 10px 100px 10px; /* bottom padding for footer */
 }
 
 .huge {

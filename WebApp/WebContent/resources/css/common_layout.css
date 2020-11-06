@@ -22,14 +22,10 @@ header div > a:link, header div > a:visited, header div > a:active {
 	color: #b0cff8;
 }
 
-footer {
-	position: absolute;
-	width: 100%;
-	bottom: 0; /* stick to bottom */
-	background: #353b43;
-	text-align: center;
-	color: white;
-	min-height: 30px;
+footer > div {
+    text-align: center;
+    color: white;
+    background: #353b43;
 }
 
 footer a:link, footer a:visited, footer a:active {

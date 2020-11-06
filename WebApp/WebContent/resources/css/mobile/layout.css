@@ -1,26 +1,7 @@
 @CHARSET "UTF-8";
 
-div#container {
-	position:relative;
-	margin: 0 auto; /* center, not in IE5 */
-	width: 100%;
-	height: auto !important; /* real browsers */
-	height: 100%; /* IE6: treaded as min-height*/
-	min-height: 100%; /* real browsers */
-}
-
-
-div#content {
-	padding: 0.75rem 0.75rem 4rem 0.75rem; /* bottom padding for footer */
-}
-
 #mobile_res_search, .mobile_res_search {
 	position: absolute;
 	width: 94%;
 	left: 3%;
-}
-
-#loading_message_div {
-	margin-left: 10px;
-	margin-right: 10px;
 }
