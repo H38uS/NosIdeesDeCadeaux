@@ -14,5 +14,8 @@
         <div id="groupDetail">
         </div>
         <script src="resources/js/group.js" type="text/javascript"></script>
+        <script>
+            refreshGroup(true); // adding the suggest link
+        </script>
     </jsp:body>
 </t:normal_protected>

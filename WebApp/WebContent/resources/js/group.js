@@ -59,7 +59,7 @@ function participer() {
                     amount  : amount
                 },
                 function(data) {
-                    refreshGroup();
+                    refreshGroup(showTheSuggestLink);
                 },
                 "Enregistrement de votre participation en cours...",
                 "Votre participation a bien été enregistrée.");
@@ -72,7 +72,7 @@ function annulationParticipation() {
                 function(data) {
                     if (data.message) {
                         // true s'il reste encore des personnes dans ce groupe
-                        refreshGroup();
+                        refreshGroup(showTheSuggestLink);
                     } else {
                         $("#groupDetail").empty();
                         actionDone("Vous êtiez le dernier participant... Le groupe a été supprimé !");
@@ -82,8 +82,10 @@ function annulationParticipation() {
                 "Votre participation a bien été annulée.");
 }
 
-function refreshGroup() {
+var showTheSuggestLink = false;
+function refreshGroup(showSuggest) {
 
+    showTheSuggestLink = showSuggest;
     var groupId = getURLParameter($(location).attr('href'), "groupid");
 
     $.get("protected/service/group/detail",
@@ -100,7 +102,9 @@ function refreshGroup() {
         $("#groupDetail").empty().hide();
         $("#groupDetail").append(getGroupDetailSection(groupContent).html());
         $("#groupDetail").append(getActionDiv(groupContent).html());
-        $("#groupDetail").append(getSuggestionDiv(groupContent).html());
+        if (showTheSuggestLink) {
+            $("#groupDetail").append(getSuggestionDiv(groupContent).html());
+        }
         $("#groupDetail").find("#submitParticiper").click(participer);
         $("#groupDetail").find("#submitAnnulation").click(annulationParticipation);
 
@@ -110,6 +114,4 @@ function refreshGroup() {
         actionError(data.status + " - " + data.statusText);
     });
 }
-
-refreshGroup();
 

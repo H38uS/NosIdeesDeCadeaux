@@ -31,10 +31,6 @@ public class IdeaGroup {
         return total;
     }
 
-    public String getTotalAmount() {
-        return formattedTotal;
-    }
-
     public int getId() {
         return id;
     }

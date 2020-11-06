@@ -33,12 +33,6 @@ public class JSPAccessortTest extends TemplateTest {
     }
 
     @Test
-    public void testJSPOnlyIdeaGroupMethods() {
-        IdeaGroup group = new IdeaGroup(30, 23.03);
-        Assert.assertEquals("23,03", group.getTotalAmount());
-    }
-
-    @Test
     public void testJSPOnlyIdeeMethods() {
         Idee i = new Idee(15,
                           u,
@@ -74,13 +68,6 @@ public class JSPAccessortTest extends TemplateTest {
         Assert.assertEquals(new Time(1576135793001L), rs.getSuggestedDate());
         Assert.assertEquals(u, rs.getSuggestedTo());
         Assert.assertEquals(new ArrayList<>(), rs.getSuggestions());
-    }
-
-    @Test
-    public void testJSPOnlyShareMethods() {
-        Share s = new Share(u, 23.14, null);
-        Assert.assertEquals("23,14", s.getShareAmount());
-        Assert.assertEquals("", s.getJoinDate());
     }
 
     @Test

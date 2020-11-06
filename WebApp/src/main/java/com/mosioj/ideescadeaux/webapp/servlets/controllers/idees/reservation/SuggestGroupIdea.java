@@ -76,6 +76,7 @@ public class SuggestGroupIdea extends IdeesCadeauxGetAndPostServlet<BookingGroup
     public void ideesKDoPOST(HttpServletRequest request,
                              HttpServletResponse response) throws ServletException, SQLException {
 
+        // TODO faire un service
         IdeaGroup group = policy.getGroupId();
         Idee idee = getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
 

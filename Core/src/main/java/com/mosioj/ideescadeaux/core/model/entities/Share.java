@@ -32,12 +32,4 @@ public class Share {
     public double getAmount() {
         return amount;
     }
-
-    public String getShareAmount() {
-        return formattedAmount;
-    }
-
-    public String getJoinDate() {
-        return formattedDate;
-    }
 }
