@@ -2,22 +2,13 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.Share;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupEvolution;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,10 +17,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet("/protected/detail_du_groupe")
-public class GroupIdeaDetails extends IdeesCadeauxGetAndPostServlet<BookingGroupInteraction> {
+public class GroupIdeaDetails extends IdeesCadeauxGetServlet<BookingGroupInteraction> {
 
     private static final long serialVersionUID = -2188278918134412556L;
     private static final Logger logger = LogManager.getLogger(GroupIdeaDetails.class);
@@ -52,86 +42,16 @@ public class GroupIdeaDetails extends IdeesCadeauxGetAndPostServlet<BookingGroup
 
         IdeaGroup group = policy.getGroupId();
         logger.debug("Getting details for idea group " + group + "...");
-
-        double currentTotal = 0;
-        for (Share share : group.getShares()) {
-            currentTotal += share.getAmount();
-        }
-        double remaining = group.getTotal() - currentTotal;
-
-        Object errors = request.getSession().getAttribute("errors");
-        if (errors != null) {
-            request.setAttribute("errors", errors);
-            request.getSession().removeAttribute("errors");
-        }
-
         Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
-        User user = thisOne;
 
         // Suppression des notif's si y'en a
-        NotificationsRepository.getNotifications(user.id,
+        NotificationsRepository.getNotifications(thisOne.id,
                                                  NotificationType.GROUP_IDEA_SUGGESTION,
                                                  ParameterName.GROUP_ID,
                                                  group.getId()).forEach(NotificationsRepository::remove);
 
         request.setAttribute("idee", idee);
-        request.setAttribute("is_in_group", group.contains(thisOne));
-        request.setAttribute("group", group);
-        request.setAttribute("currentTotal", currentTotal);
-        request.setAttribute("remaining", String.format("%1$,.2f", remaining));
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
-    }
-
-    @Override
-    public void ideesKDoPOST(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, SQLException {
-
-        // FIXME : 2 continuer de faire des services pour (re)participer / mettre à jour le montant
-        // FIXME : 2 si le groupe n'existe plus (genre quand on se désinscrit, il faut le créer)
-        IdeaGroup group = policy.getGroupId();
-        String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
-
-        ParameterValidator val = ValidatorFactory.getMascValidator(amount, "montant");
-        val.checkEmpty();
-        val.checkIfAmount();
-        val.checkDoubleAmount(1.0, Double.MAX_VALUE);
-        List<String> errorsAmount = val.getErrors();
-
-        if (!errorsAmount.isEmpty()) {
-            request.getSession().setAttribute("errors", errorsAmount);
-        } else {
-            // Modification de la participation
-            boolean newMember = !group.contains(thisOne);
-            if (newMember) {
-
-                GroupIdeaRepository.addNewAmount(Double.parseDouble(amount), thisOne.id, group.getId());
-                List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.GROUP_ID,
-                                                                                                   group.getId());
-                notifications.stream()
-                             .filter(n -> n instanceof NotifGroupSuggestion && thisOne.equals(n.getOwner()))
-                             .forEach(NotificationsRepository::remove);
-
-                // On supprime les notifications précédentes de cette personne si y'en a
-                NotificationsRepository.removeAllType(NotificationType.GROUP_EVOLUTION,
-                                                      ParameterName.GROUP_ID,
-                                                      group.getId(),
-                                                      ParameterName.USER_ID,
-                                                      thisOne.id);
-
-                // On a forcément une idée pour un groupe... Sinon grosse erreur !!
-                Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
-
-                final NotifGroupEvolution groupEvolution = new NotifGroupEvolution(thisOne, group.getId(), idee, true);
-                group.getShares()
-                     .parallelStream()
-                     .filter(s -> !s.getUser().equals(thisOne))
-                     .forEach(s -> NotificationsRepository.addNotification(s.getUser().id, groupEvolution));
-            } else {
-                GroupIdeaRepository.updateAmount(group.getId(), thisOne, Double.parseDouble(amount));
-            }
-        }
-
-        RootingsUtils.redirectToPage(GET_PAGE_WITH_GROUP_ID + group.getId(), request, response);
     }
 
 }

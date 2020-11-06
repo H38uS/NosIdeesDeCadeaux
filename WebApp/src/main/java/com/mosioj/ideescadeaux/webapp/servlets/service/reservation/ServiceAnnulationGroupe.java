@@ -75,6 +75,6 @@ public class ServiceAnnulationGroupe extends ServicePost<BookingGroupInteraction
                                    .forEach(NotificationsRepository::remove);
         }
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(isThereSomeoneRemaining, isAdmin(request), thisOne));
     }
 }

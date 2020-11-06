@@ -6,19 +6,25 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class IdeaGroup {
 
     @Expose
     private final int id;
 
+    @Expose
     private final double total;
+
+    @Expose
+    private final String formattedTotal;
+
+    @Expose
     private final List<Share> shares = new ArrayList<>();
 
     public IdeaGroup(int id, double d) {
         this.id = id;
         this.total = d;
+        this.formattedTotal = String.format("%1$,.2f", total);
     }
 
     public double getTotal() {
@@ -26,7 +32,7 @@ public class IdeaGroup {
     }
 
     public String getTotalAmount() {
-        return String.format("%1$,.2f", total);
+        return formattedTotal;
     }
 
     public int getId() {
@@ -46,9 +52,7 @@ public class IdeaGroup {
      * @return true if and only if one of the share contains this user.
      */
     public boolean contains(User user) {
-        // Gets all users
-        List<User> users = getShares().stream().map(Share::getUser).collect(Collectors.toList());
-        return users.contains(user);
+        return getShares().stream().map(Share::getUser).anyMatch(u -> u.equals(user));
     }
 
     @Override

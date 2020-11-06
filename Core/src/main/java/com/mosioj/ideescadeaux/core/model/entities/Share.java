@@ -1,19 +1,28 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 import java.sql.Timestamp;
 
 public class Share {
 
+    @Expose
     private final User user;
+
+    @Expose
+    private final String formattedAmount;
+
+    @Expose
+    private final String formattedDate;
+
     private final double amount;
-    private final Timestamp joinDate;
 
     public Share(User user, double d, Timestamp joinDate) {
         this.user = user;
         this.amount = d;
-        this.joinDate = joinDate;
+        this.formattedAmount =  String.format("%1$,.2f", amount);
+        this.formattedDate = MyDateFormatViewer.formatMine(joinDate);
     }
 
     public User getUser() {
@@ -25,10 +34,10 @@ public class Share {
     }
 
     public String getShareAmount() {
-        return String.format("%1$,.2f", amount);
+        return formattedAmount;
     }
 
     public String getJoinDate() {
-        return MyDateFormatViewer.formatMine(joinDate);
+        return formattedDate;
     }
 }
