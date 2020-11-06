@@ -18,7 +18,6 @@ public abstract class IdeesCadeauxGetServlet<P extends SecurityPolicy> extends I
     }
 
     @Override
-    // FIXME : 0 regarder tous les services qui peuvent avoir plusieurs pages et les gérer dans le JS
     public final void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         logger.warn("Unsupported POST access: {}", request.getRequestURL().toString());
         throw new ServletException("Unsupported method POST");

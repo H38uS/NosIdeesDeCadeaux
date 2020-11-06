@@ -5,9 +5,12 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
+import com.mosioj.ideescadeaux.webapp.servlets.service.response.PagedResponse;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import com.mosioj.ideescadeaux.webapp.viewhelper.ListResultWithPagesHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +27,8 @@ import java.util.stream.Collectors;
 @WebServlet("/protected/service/mes_reservations")
 public class ServiceMesReservations extends ServiceGet<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = 2763424501732173771L;
+    /** The page helper. */
+    private static final ListResultWithPagesHelper PAGES_HELPER = ListResultWithPagesHelper.withDefaultMax();
 
     /** Class logger. */
     private static final Logger logger = LogManager.getLogger(ServiceMesReservations.class);
@@ -58,8 +62,18 @@ public class ServiceMesReservations extends ServiceGet<AllAccessToPostAndGet> {
         logger.trace("[Perf] OK ! Tri par user...");
         ownerIdeas.sort(Comparator.comparing(OwnerIdeas::getOwner));
 
+        logger.trace("[Perf] OK ! Génération des pages...");
+        int firstRow = PAGES_HELPER.getFirstRow(request);
+        List<OwnerIdeas> pagedOwners = ownerIdeas.stream()
+                                                 .skip(firstRow)
+                                                 .limit(PAGES_HELPER.getMaxNumberOfResults())
+                                                 .collect(Collectors.toList());
+
+        // Wrapping them with the page mechanism
+        final List<Page> pages = PAGES_HELPER.getPages(request, pagedOwners.size(), (request1) -> ownerIdeas.size());
+
         // Writing answer
         logger.trace("[Perf] OK ! Envoie de la réponse...");
-        buildResponse(response, ServiceResponse.ok(ownerIdeas, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, pagedOwners), isAdmin(request), thisOne));
     }
 }

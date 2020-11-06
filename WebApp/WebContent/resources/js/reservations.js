@@ -1,7 +1,9 @@
-function loadReservations() {
+function loadReservations(page = 1) {
     doLoading("Récupération des réservations en cours...");
     $.get(  "protected/service/mes_reservations",
-            {}
+            {
+                page : page
+            }
     ).done(function (data) {
 
         var content = $("<div></div>");
@@ -26,7 +28,10 @@ function loadReservations() {
         var ideaContainer = $("<div>").addClass("container");
         content.append(ideaContainer);
 
-        $.each(jsonData, function(i, ownerIdeas) {
+        // Ajout des pages si besoin
+        ideaContainer.append(getPagesDiv(jsonData.pages));
+
+        $.each(jsonData.theContent, function(i, ownerIdeas) {
             var ownerTitle = $(`
                 <h2 id="list_${ownerIdeas.owner.id}" class="breadcrumb mt-4 h2_list">
                     <div class="row align-items-center">
@@ -45,6 +50,15 @@ function loadReservations() {
             $.each(ownerIdeas.ideas, function(j, idea) {
                 ideaContainer.append(getIdeaDiv(connectedUser, idea));
             });
+        });
+
+        // Ajout des pages si besoin
+        ideaContainer.append(getPagesDiv(jsonData.pages));
+
+        // actions des pages
+        $("a.page-link").click(function(e) {
+            e.preventDefault();
+            loadReservations($(this).attr('href').substring(5));
         });
 
         $("#reservation_res_area").fadeIn();
