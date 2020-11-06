@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolic
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,8 +18,9 @@ public abstract class IdeesCadeauxPostServlet<P extends SecurityPolicy> extends 
     }
 
     @Override
-    public final void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) {
+    public final void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         logger.warn("Unsupported GET access: {}", request.getRequestURL().toString());
+        throw new ServletException("Unsupported method GET");
     }
 
 }

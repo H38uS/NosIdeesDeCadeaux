@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Properties;
 
 public class RootingsUtils {
@@ -82,13 +81,10 @@ public class RootingsUtils {
                                              HttpServletRequest request,
                                              HttpServletResponse response) {
 
-        logger.error(MessageFormat.format("An error occured: {0}. StackTrace: {1}",
-                                          exception.getMessage(),
-                                          Arrays.toString(exception.getStackTrace())));
+        logger.error("An error occured", exception);
 
         boolean shouldLogStack = shouldLogStack();
         if (shouldLogStack) {
-            exception.printStackTrace();
             request.setAttribute("error", exception.getMessage());
         } else {
             NotificationsRepository.logError(thisOne, exception);
