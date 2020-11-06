@@ -10,8 +10,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -70,16 +68,15 @@ public class IdeaLogic {
             return Collections.singletonList("Il semblerait que tous les paramètres soient vides...");
         }
 
-        ParameterValidator valText = ValidatorFactory.getMascValidator(text, "text");
-        valText.checkEmpty();
+        // Text validation
+        List<String> errors = ValidatorBuilder.getMascValidator(text, "text").checkEmpty().build().getErrors();
 
-        ParameterValidator valPrio = ValidatorFactory.getFemValidator(priority + "", "priorité");
-        valPrio.checkEmpty();
-        valPrio.checkIfInteger();
-
-        List<String> errors = new ArrayList<>();
-        errors.addAll(valText.getErrors());
-        errors.addAll(valPrio.getErrors());
+        // Priority validation
+        errors.addAll(ValidatorBuilder.getFemValidator(priority + "", "priorité")
+                                      .checkEmpty()
+                                      .checkIfInteger()
+                                      .build().getErrors());
+        
         return errors;
     }
 

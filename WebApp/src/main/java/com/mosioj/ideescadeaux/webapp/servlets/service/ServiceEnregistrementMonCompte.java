@@ -8,8 +8,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -96,17 +95,18 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
             String birthday = parameters.get("birthday");
             if (!birthday.isEmpty()) {
                 logger.debug(MessageFormat.format("Date de naissance: {0}", birthday));
-                ParameterValidator val = ValidatorFactory.getFemValidator(birthday, "date d'anniversaire");
-                val.checkDateFormat();
-                errors.addAll(val.getErrors());
+                errors.addAll(ValidatorBuilder.getFemValidator(birthday, "date d'anniversaire")
+                                              .checkDateFormat()
+                                              .build()
+                                              .getErrors());
             }
 
             String newPwd = parameters.get("new_password").trim();
             String confPwd = parameters.get("conf_password").trim();
 
             if (!newPwd.isEmpty()) {
-                List<String> pwdErrors1 = ci.checkPwd(ci.getValidatorPwd(newPwd));
-                List<String> pwdErrors2 = ci.checkPwd(ci.getValidatorPwd(confPwd));
+                List<String> pwdErrors1 = ci.getValidatorPwd(newPwd).getErrors();
+                List<String> pwdErrors2 = ci.getValidatorPwd(confPwd).getErrors();
                 if (!newPwd.equals(confPwd)) {
                     errors.add("Les deux mots de passe entrés ne correspondent pas.");
                 }

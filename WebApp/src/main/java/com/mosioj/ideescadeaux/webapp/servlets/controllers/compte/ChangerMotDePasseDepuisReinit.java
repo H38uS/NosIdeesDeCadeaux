@@ -37,8 +37,7 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         CompteInteractions helper = new CompteInteractions();
         User user = policy.getUser();
@@ -49,8 +48,8 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet
         String pwd1 = ParametersUtils.readAndEscape(request, "pwd1").trim();
         String pwd2 = ParametersUtils.readAndEscape(request, "pwd2").trim();
 
-        List<String> pwdErrors1 = helper.checkPwd(helper.getValidatorPwd(pwd1));
-        List<String> pwdErrors2 = helper.checkPwd(helper.getValidatorPwd(pwd2));
+        List<String> pwdErrors1 = helper.getValidatorPwd(pwd1).getErrors();
+        List<String> pwdErrors2 = helper.getValidatorPwd(pwd2).getErrors();
         if (!pwd1.equals(pwd2)) {
             pwdErrors2.add("Les deux mots de passe ne correspondent pas.");
         }

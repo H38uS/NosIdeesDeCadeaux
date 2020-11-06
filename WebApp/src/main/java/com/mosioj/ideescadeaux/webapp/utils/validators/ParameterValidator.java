@@ -6,7 +6,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -83,6 +82,9 @@ public class ParameterValidator {
         }
     }
 
+    /**
+     * Checks that the parameter is an amount.
+     */
     public void checkIfAmount() {
         try {
             Double.parseDouble(parameterValue);
@@ -91,6 +93,12 @@ public class ParameterValidator {
         }
     }
 
+    /**
+     * Checks that the parameter's value is between those two values.
+     *
+     * @param min The minimum value allowed.
+     * @param max The maximum value allowed.
+     */
     public void checkDoubleAmount(double min, double max) {
         try {
             double val = Double.parseDouble(parameterValue);
@@ -106,6 +114,11 @@ public class ParameterValidator {
         }
     }
 
+    /**
+     * Checks that the parameter's value is greater than this minimum.
+     *
+     * @param min The minimum allowed value.
+     */
     public void checkIntegerGreaterThan(int min) {
         try {
             int val = Integer.parseInt(parameterValue);
@@ -118,7 +131,7 @@ public class ParameterValidator {
         }
     }
 
-	/**
+    /**
      * Checks that the parameter size is in the given range.
      *
      * @param min The minimum allowed.
@@ -150,7 +163,7 @@ public class ParameterValidator {
      *                 query must also have exactly a string bind parameter for the parameter value.
      * @param db       The connection to use.
      */
-    public void checkIsUnique(String sqlQuery, DataSourceIdKDo db) throws SQLException {
+    public void checkIsUnique(String sqlQuery, DataSourceIdKDo db) {
         int res = db.selectCountStar(sqlQuery, parameterValue);
         if (res > 0) {
             errors.add(article + parameterName + " existe déjà.");
@@ -164,13 +177,17 @@ public class ParameterValidator {
      *                 query must also have exactly a string bind parameter for the parameter value.
      * @param db       The connection to use.
      */
-    public void checkExists(String sqlQuery, DataSourceIdKDo db) throws SQLException {
+    public void checkExists(String sqlQuery, DataSourceIdKDo db) {
         int res = db.selectCountStar(sqlQuery, parameterValue);
         if (res == 0) {
             errors.add(article + parameterName + " n'existe pas.");
         }
     }
 
+    /**
+     * Make sure the provided value complies with the expected date format.
+     * @see com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer#DATE_FORMAT
+     */
     public void checkDateFormat() {
         SimpleDateFormat sdf = new MyDateFormatViewer(MyDateFormatViewer.DATE_FORMAT);
         try {

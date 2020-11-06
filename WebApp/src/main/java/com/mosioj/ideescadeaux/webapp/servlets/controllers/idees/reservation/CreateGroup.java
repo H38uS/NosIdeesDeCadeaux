@@ -8,7 +8,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,22 +44,23 @@ public class CreateGroup extends IdeesCadeauxGetAndPostServlet<IdeaInteraction> 
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         Idee idea = policy.getIdea();
         logger.debug("Create a new group for idea : " + idea.getId());
 
-        ParameterValidator valTot = ValidatorFactory.getMascValidator(ParametersUtils.readIt(request, "total"),
-                                                                      "total");
-        valTot.checkEmpty();
-        valTot.checkIfAmount();
-        valTot.checkIntegerGreaterThan(0);
+        final String totalParam = ParametersUtils.readIt(request, "total");
+        ParameterValidator valTot = ValidatorBuilder.getMascValidator(totalParam, "total")
+                                                    .checkEmpty()
+                                                    .checkIfAmount()
+                                                    .checkIntegerGreaterThan(0)
+                                                    .build();
 
         String amountString = ParametersUtils.readIt(request, "amount");
-        ParameterValidator valAmount = ValidatorFactory.getFemValidator(amountString, "participation");
-        valAmount.checkEmpty();
-        valAmount.checkIfAmount();
+        ParameterValidator valAmount = ValidatorBuilder.getFemValidator(amountString, "participation")
+                                                       .checkEmpty()
+                                                       .checkIfAmount()
+                                                       .build();
 
         Double total = ParametersUtils.readDouble(request, "total").orElse(0d);
         valAmount.checkDoubleAmount(0, total);

@@ -63,7 +63,7 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
         String name = ParametersUtils.readAndEscape(request, "pseudo").trim();
 
         // Validation des paramètres
-        List<String> pwdErrors = helper.checkPwd(helper.getValidatorPwd(pwd));
+        List<String> pwdErrors = helper.getValidatorPwd(pwd).getErrors();
         request.setAttribute("pwd_errors", pwdErrors);
 
         List<String> emailErrors = helper.checkEmail(helper.getValidatorEmail(email), -1, false); // The user does not

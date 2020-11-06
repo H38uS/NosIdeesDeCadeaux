@@ -1,46 +1,31 @@
 package com.mosioj.ideescadeaux.webapp.servlets.logichelpers;
 
+import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
+import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
-import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorFactory;
-
 public class CompteInteractions {
 
-    private DataSourceIdKDo validatorConnection;
+    private final DataSourceIdKDo validatorConnection;
 
     public CompteInteractions() {
         validatorConnection = new DataSourceIdKDo();
     }
 
     /**
-     * Checks the validity of the pwd parameter.
-     *
-     * @param validator The validator object.
-     * @return The list of errors found.
-     */
-    public List<String> checkPwd(ParameterValidator validator) {
-        validator.checkEmpty();
-        validator.checkSize(8, 30);
-        return validator.getErrors();
-    }
-
-    /**
      * Checks the validity of the email parameter.
      *
-	 * @param validator The validator object.
+     * @param validator The validator object.
      * @param userId    The user id for who we are checking the email.
      * @return The list of errors found.
      */
-    public List<String> checkEmail(ParameterValidator validator, int userId, boolean shouldExist) throws SQLException {
-        validator.checkEmpty();
-        validator.checkIsEmailValid();
+    public List<String> checkEmail(ParameterValidator validator, int userId, boolean shouldExist) {
         if (shouldExist) {
             if (userId < 0) {
                 validator.checkExists(MessageFormat.format("select count(*) from {0} where email = ?",
@@ -62,11 +47,11 @@ public class CompteInteractions {
     }
 
     public ParameterValidator getValidatorEmail(String email) {
-        return ValidatorFactory.getNeutralValidator(email, "email");
+        return ValidatorBuilder.getNeutralValidator(email, "email").checkEmpty().checkIsEmailValid().build();
     }
 
     public ParameterValidator getValidatorPwd(String pwd) {
-        return ValidatorFactory.getMascValidator(pwd, "mot de passe");
+        return ValidatorBuilder.getMascValidator(pwd, "mot de passe").checkEmpty().checkSize(8, 30).build();
     }
 
     public String hashPwd(String pwd, List<String> pwdErrors) {
