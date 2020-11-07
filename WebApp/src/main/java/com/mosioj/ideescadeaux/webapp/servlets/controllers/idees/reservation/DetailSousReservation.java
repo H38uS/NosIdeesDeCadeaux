@@ -33,7 +33,7 @@ public class DetailSousReservation extends IdeesCadeauxGetServlet<IdeaInteractio
         super(new IdeaInteraction(IDEA_ID_PARAM));
     }
 
-    // TODO : Pouvoir suggérer de sous réserver cette idée
+    // FIXME : Pouvoir suggérer de sous réserver cette idée
 
     private void setupCommon(HttpServletRequest request) {
 
