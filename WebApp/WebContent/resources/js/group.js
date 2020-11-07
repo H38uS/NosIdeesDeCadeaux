@@ -86,9 +86,13 @@ function annulationParticipation() {
 
 var showTheSuggestLink = false;
 function refreshGroup(showSuggest) {
+    var groupId = getURLParameter($(location).attr('href'), "groupid");
+    refreshGroupWithId(groupId, showSuggest);
+}
+
+function refreshGroupWithId(groupId, showSuggest) {
 
     showTheSuggestLink = showSuggest;
-    var groupId = getURLParameter($(location).attr('href'), "groupid");
 
     $.get("protected/service/group/detail",
           { groupid : groupId }

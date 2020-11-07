@@ -19,12 +19,10 @@ public class SuggestGroupIdea extends IdeesCadeauxGetServlet<BookingGroupInterac
     /** Service group identifier parameter. */
     public static final String GROUP_ID_PARAM = "groupid";
 
-    public static final String VIEW_URL = "/protected/suggerer_groupe_idee";
+    /** The page to display. */
     public static final String VIEW_PAGE_URL = "/protected/suggest_group_idea.jsp";
 
-    /**
-     * Class constructor.
-     */
+    /** Class constructor. */
     public SuggestGroupIdea() {
         super(new BookingGroupInteraction(GROUP_ID_PARAM));
     }
