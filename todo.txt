@@ -1,5 +1,4 @@
 // TODO : 1 pouvoir visualiser ses idées supprimer et les restorer (avec ou sans réservation) - i.e. annuler ou Encore!
-// FIXME : 1 faire un service pour le Encore!
 // TODO : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
 // TODO : 3 ajouter un changelog
 // TODO : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
