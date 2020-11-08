@@ -1,4 +1,3 @@
-// FIXME : 1 pouvoir visualiser ses idées supprimées et les restorer (avec ou sans réservation) - i.e. annuler ou Encore!
 // FIXME : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
 // FIXME : 1 voir le système de notification push, notamment pour rafraichir le statut d'un groupe
 // TODO : 3 ajouter un changelog

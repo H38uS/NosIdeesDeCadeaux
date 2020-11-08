@@ -349,6 +349,30 @@ public class IdeesRepository extends AbstractRepository {
     }
 
     /**
+     * @param idIdee The deleted idea's id.
+     * @return All fields for this idea.
+     */
+    public static Optional<Idee> getDeletedIdea(int idIdee) {
+
+        StringBuilder query = getIdeaBasedSelect("IDEES_HIST");
+        query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
+
+        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
+            ps.bindParameters(idIdee);
+            if (ps.execute()) {
+                ResultSet rs = ps.getResultSet();
+                if (rs.next()) {
+                    return Optional.of(createIdeaFromQuery(rs, true));
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+
+        return Optional.empty();
+    }
+
+    /**
      * @param groupId The booking group's id.
      * @return The idea id of the idea booked by this group.
      */
@@ -786,7 +810,7 @@ public class IdeesRepository extends AbstractRepository {
                     SELECT_VALUES_FROM_IDEES,
                     TABLE_NAME,
                     IdeeColumns.ID);
-            logger.debug(query);
+            logger.trace(query);
             int nb = getDb().executeUpdate(query, ideaId);
             if (nb != 1) {
                 logger.error(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}",
@@ -904,4 +928,34 @@ public class IdeesRepository extends AbstractRepository {
         return res;
     }
 
+    /**
+     * Restores an idea from the history into the user's list.
+     *
+     * @param idea           The idea to restore.
+     * @param restoreBooking Whether to keeping the booking information or clear them.
+     */
+    public static void restoreIdea(Idee idea, boolean restoreBooking) throws SQLException {
+        final String query = MessageFormat.format(
+                "insert into IDEES ({0}) select {1} from IDEES_HIST where {2} = ?",
+                VALUES_TO_IDEES,
+                SELECT_VALUES_FROM_IDEES_HIST,
+                IdeeColumns.ID);
+        logger.trace(query);
+        int nb = getDb().executeUpdate(query, idea.getId());
+        if (nb == 1) {
+            final String deleteQuery = MessageFormat.format("delete from IDEES_HIST where {0} = ?", IdeeColumns.ID);
+            getDb().executeUpdate(deleteQuery, idea.getId());
+
+            // Mise à jour de la date de modification
+            touch(idea.getId());
+
+            // Suppression des réservations si demandé
+            if (!restoreBooking) {
+                toutDereserver(idea.getId());
+            }
+        } else {
+            logger.error("Invalid count => {}", nb);
+            throw new SQLException("Impossible de restorer cette idée...");
+        }
+    }
 }

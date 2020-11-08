@@ -51,7 +51,4 @@ public class ServiceHistoriqueIdee extends ServiceGet<AllAccessToPostAndGet> {
         buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, ownerIdeas), isAdmin(request), thisOne));
     }
 
-    // FIXME faire une option pour restorer (avec ou sans réservation)
-    // FIXME adapter le JS pour proposer cela... Et supprimer les liens commentaires etc.
-    // FIXME faire un test de restoration ! Et une méthode pour vraiment tout supprimer
 }

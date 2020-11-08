@@ -58,6 +58,33 @@ function deleteIdea(e) {
     });
 }
 
+function restore(ideaSquare, ideaId, withBooking) {
+    servicePost('protected/service/idee/restore',
+                {
+                    idee : ideaId,
+                    restoreBooking : withBooking
+                },
+                function(data) {
+                    refreshIdea(ideaSquare, ideaId);
+                },
+                "Recréation de l'idée en cours...",
+                "L'idée a bien été recréé.");
+}
+
+function restoreEmpty(e) {
+    e.preventDefault();
+    var id = getURLParameter($(this).attr("href"), 'idee');
+    var idea = $(this).closest('.idea_square');
+    restore(idea, id, false);
+}
+
+function restoreWithBooking(e) {
+    e.preventDefault();
+    var id = getURLParameter($(this).attr("href"), 'idee');
+    var idea = $(this).closest('.idea_square');
+    restore(idea, id, true);
+}
+
 function estAJourIdea(e) {
 
     e.preventDefault();
@@ -172,6 +199,9 @@ function setIdeaActionsToJs(my_idea) {
         this.blur();
         return false;
     });
+    // Restoration de l'idée
+    my_idea.find("a.restore_with_booking").click(restoreWithBooking);
+    my_idea.find("a.restore_empty").click(restoreEmpty);
 }
 
 var postIdea = function(form) {
@@ -425,6 +455,15 @@ function getReservationText(connectedUser, jsonIdea) {
     }
     // Dernier cas: pas réservée
     return "Non réservée.";
+}
+
+function getRestoreActions(connectedUser, jsonIdea) {
+    if (jsonIdea.hasBeenDeleted) {
+        return `La recréer :
+            <a href="?idee=${jsonIdea.id}" class="restore_with_booking">avec réservations</a> (erreur de suppression) ou
+            <a href="?idee=${jsonIdea.id}" class="restore_empty">sans</a> (recyclage).`;
+    }
+    return "";
 }
 
 function getPriorityIconAsHTML(jsonIdea) {
@@ -754,6 +793,7 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
             ${modificationStatusText}.<br/>
             ${getSurpriseDivAsHTMl(connectedUser, jsonIdea)}
             ${getReservationText(connectedUser, jsonIdea)}
+            ${getRestoreActions(connectedUser, jsonIdea)}
         </div>
     `);
 
