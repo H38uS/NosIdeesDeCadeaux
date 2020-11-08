@@ -17,10 +17,36 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IdeesRepository extends AbstractRepository {
 
+    /** Class logger */
     private static final Logger logger = LogManager.getLogger(IdeesRepository.class);
+
+    /** Values to select to insert in the history table */
+    private static final String SELECT_VALUES_FROM_IDEES = Stream.of(IdeeColumns.values())
+                                                                 .map(Enum::name)
+                                                                 .map(name -> "ID".equals(name) ? "ID as idee_id" : name)
+                                                                 .collect(Collectors.joining(","));
+
+    /** Values to select to insert in the idees table */
+    private static final String SELECT_VALUES_FROM_IDEES_HIST = Stream.of(IdeeColumns.values())
+                                                                      .map(Enum::name)
+                                                                      .map(name -> "ID".equals(name) ? "idee_id as ID" : name)
+                                                                      .collect(Collectors.joining(","));
+
+    /** History table values. */
+    private static final String VALUES_TO_IDEES_HIST = Stream.of(IdeeColumns.values())
+                                                             .map(Enum::name)
+                                                             .map(name -> "ID".equals(name) ? "idee_id" : name)
+                                                             .collect(Collectors.joining(","));
+
+    /** Idees table values. */
+    private static final String VALUES_TO_IDEES = Stream.of(IdeeColumns.values())
+                                                        .map(Enum::name)
+                                                        .collect(Collectors.joining(","));
 
     public static final String TABLE_NAME = "IDEES";
 
@@ -754,9 +780,14 @@ public class IdeesRepository extends AbstractRepository {
                                                        CommentsColumns.IDEA_ID),
                                   ideaId);
         } else {
-            int nb = getDb().executeUpdate(MessageFormat.format("insert into IDEES_HIST select * from {0} where {1} = ?",
-                                                                TABLE_NAME,
-                                                                IdeeColumns.ID), ideaId);
+            final String query = MessageFormat.format(
+                    "insert into IDEES_HIST ({0}) select {1} from {2} where {3} = ?",
+                    VALUES_TO_IDEES_HIST,
+                    SELECT_VALUES_FROM_IDEES,
+                    TABLE_NAME,
+                    IdeeColumns.ID);
+            logger.debug(query);
+            int nb = getDb().executeUpdate(query, ideaId);
             if (nb != 1) {
                 logger.error(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}",
                                                   nb,
