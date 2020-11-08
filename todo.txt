@@ -9,7 +9,6 @@
 // TODO : 8 ajouter une option pour montrer son année de naissance dans le réseau + les mails.
 // TODO : 8 auto génération de liens d'image à partir des liens (quand termine par .jpg / .png / etc.)
 // TODO : 8 vérifier qu'on fait un test pour chaque méthode des repository
-// TODO : 9 auto-génération des smileys
 // TODO : 9 faire une passe et remplacer les exception par des Try
 // TODO : 99 faire un preview markdown pour l'édition des idées
 // TODO : 99 vérifier régulièrement si y'a pas d'autres notif

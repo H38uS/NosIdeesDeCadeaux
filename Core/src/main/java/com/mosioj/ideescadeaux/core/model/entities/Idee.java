@@ -42,6 +42,9 @@ public class Idee {
     @Expose
     private final Priorite priorite;
 
+    @Expose
+    private final boolean hasBeenDeleted;
+
     /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     private final String text;
 
@@ -53,7 +56,8 @@ public class Idee {
                 Priorite priorite,
                 Timestamp lastModified,
                 User surpriseBy,
-                BookingInformation bookingInformation) {
+                BookingInformation bookingInformation,
+                boolean hasBeenDeleted) {
         id = pId;
         text = pText;
         this.categorie = categorie;
@@ -64,6 +68,14 @@ public class Idee {
         this.surpriseBy = surpriseBy;
         modificationDate = MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
         this.bookingInformation = bookingInformation;
+        this.hasBeenDeleted = hasBeenDeleted;
+    }
+
+    /**
+     * @return True if this idea has been deleted.
+     */
+    public boolean isDeleled() {
+        return hasBeenDeleted;
     }
 
     /**

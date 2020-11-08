@@ -17,7 +17,7 @@ public class DecoratedWebAppIdeaTest extends AbstractTestServletWebApp {
     public void testEnrichissement() {
 
         BookingInformation bi = BookingInformation.fromASingleUser(friendOfFirefox, null);
-        Idee idee = new Idee(1, firefox, "tutu", null, null, null, null, null, bi);
+        Idee idee = new Idee(1, firefox, "tutu", null, null, null, null, null, bi, false);
 
         DecoratedWebAppIdea decorated = new DecoratedWebAppIdea(idee, friendOfFirefox, device);
         Assert.assertEquals("booked_by_me_idea", decorated.getDisplayClass());

@@ -42,7 +42,8 @@ public class JSPAccessortTest extends TemplateTest {
                           null,
                           TS20191212_0829,
                           null,
-                          null);
+                          null,
+                          false);
         Assert.assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertNull(i.getCategory());
     }

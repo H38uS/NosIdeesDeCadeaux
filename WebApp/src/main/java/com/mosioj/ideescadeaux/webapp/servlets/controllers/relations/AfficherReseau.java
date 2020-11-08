@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepos
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
 import javax.servlet.ServletException;
@@ -43,6 +44,7 @@ public class AfficherReseau extends IdeesCadeauxGetServlet<NetworkAccess> {
 
         request.setAttribute("id", friend.id);
         request.setAttribute("name", friend.getMyDName());
+        request.setAttribute("looking_for", ParametersUtils.readAndEscape(request, "looking_for"));
 
         HttpSession session = request.getSession();
         Object accepted = session.getAttribute("accepted");

@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.entities;
 
 import com.google.gson.annotations.Expose;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 
 import java.util.List;
@@ -13,12 +14,21 @@ public class OwnerIdeas {
     @Expose
     private final User owner;
 
+    /** True if this idea list is the deleted ones */
+    @Expose
+    private final boolean isDeletedIdeas;
+
     @Expose
     private final List<DecoratedWebAppIdea> ideas;
 
     public OwnerIdeas(User owner, List<DecoratedWebAppIdea> ideas) {
         this.owner = owner;
         this.ideas = ideas;
+        this.isDeletedIdeas = ideas.stream()
+                                   .findAny()
+                                   .map(DecoratedWebAppIdea::getIdee)
+                                   .map(Idee::isDeleled)
+                                   .orElse(false);
     }
 
     /**
