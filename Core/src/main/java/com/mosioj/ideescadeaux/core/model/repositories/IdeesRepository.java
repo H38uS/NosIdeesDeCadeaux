@@ -701,29 +701,32 @@ public class IdeesRepository extends AbstractRepository {
      *
      * @param idea The idea's id.
      */
-    public static void remove(int idea) throws SQLException {
-        try {
+    public static void remove(Idee idea) throws SQLException {
+        final int ideaId = idea.getId();
+        if (idea.isASurprise()) {
+            toutDereserver(ideaId);
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
+                                                       CommentsRepository.TABLE_NAME,
+                                                       CommentsColumns.IDEA_ID),
+                                  ideaId);
+        } else {
             int nb = getDb().executeUpdate(MessageFormat.format("insert into IDEES_HIST select * from {0} where {1} = ?",
                                                                 TABLE_NAME,
-                                                                IdeeColumns.ID),
-                                           idea);
+                                                                IdeeColumns.ID), ideaId);
             if (nb != 1) {
-                logger.warn(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}", nb, idea));
+                logger.error(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}",
+                                                 nb,
+                                                 ideaId));
             } else {
                 getDb().executeUpdate(MessageFormat.format("update IDEES_HIST set {0} = now() where {1} = ?",
                                                            IdeeColumns.MODIFICATION_DATE,
                                                            IdeeColumns.ID),
-                                      idea);
+                                      ideaId);
             }
-        } catch (Exception ignored) {
         }
-        toutDereserver(idea);
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                   CommentsRepository.TABLE_NAME,
-                                                   CommentsColumns.IDEA_ID),
-                              idea);
-        logger.debug(MessageFormat.format("Suppression de l''idée: {0}", idea));
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, IdeeColumns.ID), idea);
+        logger.debug(MessageFormat.format("Suppression de l''idée: {0}", ideaId));
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, IdeeColumns.ID),
+                              ideaId);
     }
 
     /**

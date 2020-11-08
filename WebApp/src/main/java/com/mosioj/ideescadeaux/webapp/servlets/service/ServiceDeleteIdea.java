@@ -10,11 +10,9 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.param.NotifUser
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
-import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,9 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/delete_idea")
 public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
@@ -45,50 +43,35 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
         // Reading parameters
         logger.debug(MessageFormat.format("Deleting idea {0}.", idea.getId()));
 
-        Set<Integer> notified = new HashSet<>();
-        List<User> bookers = idea.getBookers();
-        logger.debug(MessageFormat.format("Liste des personnes qui ont réservé au moment de la suppression: {0}",
-                                          bookers));
-        for (User user : bookers) {
-            NotificationsRepository.addNotification(user.id, new NotifBookedRemove(idea, idea.owner.getName()));
-            notified.add(user.id);
-        }
-
-        String image = idea.getImage();
-        logger.debug(MessageFormat.format("Image: {0}.", image));
-        IdeaLogic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), image);
-
         List<AbstractNotification> notifications = NotificationsRepository.getNotification(ParameterName.IDEA_ID,
                                                                                            idea.getId());
-        // Pour chaque notification qui concerne cette idée
-        for (AbstractNotification notification : notifications) {
 
-            // Pour chaque notification qui a un user
-            if (notification instanceof NotifUserIdParam) {
+        // Pour les notifications qui sont lié à un user (pas le owner)
+        // On les ajoute au set à notifier
+        Set<Integer> toBeNotified = idea.getBookers().stream().map(User::getId).collect(Collectors.toSet());
+        notifications.parallelStream().filter(n -> n instanceof NotifUserIdParam)
+                     .map(n -> (NotifUserIdParam) n)
+                     .map(NotifUserIdParam::getUserIdParam)
+                     .filter(userId -> userId != idea.getOwner().getId())
+                     .forEach(toBeNotified::add);
 
-                NotifUserIdParam notifUserId = (NotifUserIdParam) notification;
-                // Si la personne n'a pas déjà été notifié, et n'est pas le owner de l'idée
-                // On lui envoie une notif
-                if (!notified.contains(notifUserId.getUserIdParam()) && idea.owner.id != notifUserId.getUserIdParam()) {
-                    NotificationsRepository.addNotification(notifUserId.getUserIdParam(),
-                                                            new NotifBookedRemove(idea, thisOne.getName()));
-                    notified.add(notifUserId.getUserIdParam());
-                }
-            }
+        // Envoie des notifications
+        final NotifBookedRemove notifBookingRemove = new NotifBookedRemove(idea, idea.owner.getName());
+        toBeNotified.forEach(id -> NotificationsRepository.addNotification(id, notifBookingRemove));
 
-            NotificationsRepository.remove(notification);
-        }
+        // Suppression des anciennes notifications
+        notifications.forEach(NotificationsRepository::remove);
 
         // Deleting previous questions about whether it is up to date...
         IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
         int userId = thisOne.id;
-        IdeesRepository.remove(idea.getId());
+        IdeesRepository.remove(idea);
 
         if (!IdeesRepository.hasIdeas(userId)) {
             NotificationsRepository.addNotification(userId, new NotifNoIdea());
         }
 
-        buildResponse(response, ServiceResponse.ok("", isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }
 }

@@ -72,7 +72,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
         doTestGet();
 
         // Ménage
-        IdeesRepository.remove(id);
+        IdeesRepository.remove(idee);
     }
 
 }

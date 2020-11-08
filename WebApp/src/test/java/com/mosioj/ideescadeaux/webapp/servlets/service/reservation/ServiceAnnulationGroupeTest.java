@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -65,7 +64,8 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         assertNotifDoesNotExists(groupSuggestion);
         assertNotifDoesExists(groupEvolutionShouldStay);
 
-        IdeesRepository.remove(idea);
-        assertFalse(GroupIdeaRepository.getGroupDetails(group).isPresent());
+        IdeesRepository.remove(idee);
+        // On conserve le groupe pour l'historique
+        assertTrue(GroupIdeaRepository.getGroupDetails(group).isPresent());
     }
 }

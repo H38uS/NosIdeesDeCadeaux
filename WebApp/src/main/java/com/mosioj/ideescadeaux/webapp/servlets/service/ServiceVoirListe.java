@@ -34,7 +34,7 @@ public class ServiceVoirListe extends ServiceGet<NetworkAccess> {
         final List<OwnerIdeas> foundUsers = IdeaLogic.getPersonsIdeasFromUsers(thisOne, users, device);
 
         // Only one page : only fetching the list of one user...
-        final List<Page> pages = Collections.singletonList(new Page(1));
+        final List<Page> pages = Collections.singletonList(Page.first());
 
         // Sending the response
         buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), isAdmin(request), thisOne));

@@ -63,8 +63,9 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(notifId);
         assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
-        assertEquals(0, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
-        assertEquals(0, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
+        // On conserve le groupe pour l'historique
+        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
+        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
     }
 
     @Test
@@ -139,7 +140,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
 
         // Delete it
-        IdeesRepository.remove(ideaId);
+        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
     }
 
     @Test

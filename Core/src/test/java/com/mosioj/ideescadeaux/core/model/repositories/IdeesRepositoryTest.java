@@ -11,6 +11,6 @@ public class IdeesRepositoryTest extends TemplateTest {
     public void testAddSmiley() throws SQLException {
         String text = "😀😑😎😣😣😲😩😨🤢🤮🚛🚑🛫✈";
         int id = IdeesRepository.addIdea(firefox, text, "", 0, "", null, null);
-        IdeesRepository.remove(id);
+        IdeesRepository.remove(IdeesRepository.getIdea(id).orElseThrow(SQLException::new));
     }
 }

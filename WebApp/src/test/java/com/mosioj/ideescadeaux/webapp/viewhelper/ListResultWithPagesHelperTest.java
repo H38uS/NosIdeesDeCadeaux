@@ -14,7 +14,7 @@ public class ListResultWithPagesHelperTest {
     @Test
     public void testDefaultPageNumber() {
         ListResultWithPagesHelper helper = ListResultWithPagesHelper.withDefaultMax();
-        assertEquals(new Page(1), helper.getPages(2).get(0));
+        assertEquals(Page.first(), helper.getPages(2).get(0));
         assertEquals(2, helper.getPages(32).size());
         assertEquals(1, helper.getPages(19).size());
         assertEquals(1, helper.getPages(20).size());

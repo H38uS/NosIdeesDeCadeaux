@@ -24,7 +24,7 @@ public class OwnerIdeas {
     /**
      * Factory method.
      *
-     * @param owner The owner.
+     * @param owner The owner of those ideas.
      * @param ideas His list of ideas.
      * @return The combined object.
      */

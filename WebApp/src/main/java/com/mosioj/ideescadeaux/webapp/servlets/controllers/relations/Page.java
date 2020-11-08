@@ -44,4 +44,11 @@ public class Page {
     public int hashCode() {
         return Objects.hash(numero);
     }
+
+    /**
+     * @return The first page.
+     */
+    public static Page first() {
+        return new Page(1);
+    }
 }

@@ -34,7 +34,7 @@ public class TestIdeaCommentWebApp extends AbstractTestServletWebApp {
         doTestGet();
 
         assertNotifDoesNotExists(newComment);
-        IdeesRepository.remove(id);
+        IdeesRepository.remove(idee);
     }
 
 }

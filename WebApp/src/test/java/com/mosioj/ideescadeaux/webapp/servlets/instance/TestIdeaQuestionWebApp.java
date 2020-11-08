@@ -40,7 +40,7 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
 
         assertNotifDoesNotExists(addByFriend);
         assertNotifDoesNotExists(newQuestion);
-        IdeesRepository.remove(id);
+        IdeesRepository.remove(idee);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
         doTestPost();
 
         assertEquals(1, QuestionsRepository.getCommentsOn(ideaId).size());
-        IdeesRepository.remove(ideaId);
+        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
         doTestPost();
 
         assertEquals(0, QuestionsRepository.getCommentsOn(ideaId).size()); // Impossible de poser une question sur une surprise !
-        IdeesRepository.remove(ideaId);
+        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
     }
 
 }

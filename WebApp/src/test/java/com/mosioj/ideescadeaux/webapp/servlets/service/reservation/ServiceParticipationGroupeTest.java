@@ -7,7 +7,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSugge
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.GroupIdeaColumns;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.GroupIdeaDetails;
 import org.apache.logging.log4j.LogManager;
@@ -15,8 +14,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +46,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(groupSuggestion);
-        IdeesRepository.remove(ideaId);
+        IdeesRepository.remove(idea);
     }
 
     @Test
@@ -152,11 +149,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // -----------------------
         // Clean up
-        IdeesRepository.remove(idea);
-        assertEquals(Optional.of(0),
-                     ds.selectInt(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                       GroupIdeaRepository.TABLE_NAME,
-                                                       GroupIdeaColumns.ID),
-                                  id));
+        IdeesRepository.remove(IdeesRepository.getIdea(idea).orElseThrow(SQLException::new));
+        // On conserve le groupe pour l'historique
+        assertTrue(GroupIdeaRepository.getGroupDetails(id).isPresent());
     }
 }

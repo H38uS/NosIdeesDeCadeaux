@@ -36,7 +36,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         doTestGet();
         assertNotifDoesNotExists(groupSuggestion);
 
-        IdeesRepository.remove(ideaId);
+        IdeesRepository.remove(idea);
     }
 
 }

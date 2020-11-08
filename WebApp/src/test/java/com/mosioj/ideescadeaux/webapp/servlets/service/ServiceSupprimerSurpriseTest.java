@@ -29,7 +29,7 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
         assertFalse(resp.isOK());
         assertEquals("Vous n'avez pas créé cette surprise.", resp.getMessage());
         assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
-        IdeesRepository.remove(ideaId);
+        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
     }
 
     @Test
@@ -60,6 +60,6 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
         // Check
         assertFalse(resp.isOK());
         assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
-        IdeesRepository.remove(ideaId);
+        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
     }
 }

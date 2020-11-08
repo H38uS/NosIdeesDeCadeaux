@@ -31,7 +31,7 @@ public class ServiceSupprimerSurprise extends ServicePost<SurpriseModification> 
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         Idee idea = policy.getIdea();
         logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea.getId(), thisOne));
-        IdeesRepository.remove(idea.getId());
+        IdeesRepository.remove(idea);
         buildResponse(response, ServiceResponse.ok("La surprise a bien été supprimée.", isAdmin(request), thisOne));
     }
 }
