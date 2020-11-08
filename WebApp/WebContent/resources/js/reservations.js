@@ -31,6 +31,12 @@ function loadReservations(page = 1) {
         // Ajout des pages si besoin
         ideaContainer.append(getPagesDiv(jsonData.pages));
 
+        if (jsonData.theContent.length == 0) {
+            ideaContainer.append(`
+                <div class="alert alert-warning">Vous n'avez actuellement aucune réservation.</div>
+            `);
+        }
+
         $.each(jsonData.theContent, function(i, ownerIdeas) {
             var ownerTitle = $(`
                 <h2 id="list_${ownerIdeas.owner.id}" class="breadcrumb mt-4 h2_list">
@@ -58,7 +64,9 @@ function loadReservations(page = 1) {
         // actions des pages
         $("a.page-link").click(function(e) {
             e.preventDefault();
-            loadReservations($(this).attr('href').substring(5));
+            var thePage = $(this).attr('href').substring(5);
+            ChangeUrl("protected/mes_reservations.jsp?page=" + thePage);
+            loadReservations(thePage);
         });
 
         $("#reservation_res_area").fadeIn();
@@ -69,4 +77,4 @@ function loadReservations(page = 1) {
     });
 }
 
-loadReservations();
+loadReservations(getURLParameter($(location).attr('href'), "page"));

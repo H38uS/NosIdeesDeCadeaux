@@ -54,6 +54,9 @@ public class ListResultWithPagesHelper {
      */
     public int getPageNumber(HttpServletRequest request) {
         int pageNumber = ParametersUtils.readInt(request, PAGE_ARG).orElse(1);
+        if (pageNumber < 1) {
+            pageNumber = 1;
+        }
         request.setAttribute("current", pageNumber);
         return pageNumber;
     }
@@ -101,7 +104,7 @@ public class ListResultWithPagesHelper {
             }
         }
         final List<Page> pages = getPages(total);
-        if (pages.size() > 0) {
+        if (pages.size() > 0 && pageNumber <= pages.size()) {
             pages.get(pageNumber - 1).setSelected(true);
         }
         return pages;

@@ -30,7 +30,14 @@ function getListShortcutsDiv(identicCallBack, owners) {
     return mesListesListUsers;
 }
 
-function displayUsersIdeasList(identicCallBack, callBack, page = 1) {
+function displayUsersIdeasList(identicCallBack, callBack, page) {
+
+    if (page == null) {
+        page = getURLParameter($(location).attr('href'), "page");
+        if (page == null) {
+            page = 1;
+        }
+    }
 
     doLoading("Récupération des idées en cours...");
     var dataServiceURL = callBack.replace("protected/", "protected/service/");
@@ -200,7 +207,10 @@ function displayUsersIdeasList(identicCallBack, callBack, page = 1) {
         // actions des pages
         resultDiv.find("a.page-link").click(function(e) {
             e.preventDefault();
-            displayUsersIdeasList(identicCallBack, callBack, $(this).attr('href').substring(5));
+            var thePage = $(this).attr('href').substring(5);
+            var newUrl = identicCallBack.includes('?') ? identicCallBack + "&page=" : identicCallBack + "?page=";
+            ChangeUrl(newUrl + thePage);
+            displayUsersIdeasList(identicCallBack, callBack, thePage);
         });
 
         shortcutResDiv.fadeIn();

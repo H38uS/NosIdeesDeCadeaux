@@ -7,6 +7,10 @@ function doSearch(value, only_non_friend, page = 1) {
     if (value.length < minLength || !completed)
         return;
 
+    if (page == null) {
+        page = 1;
+    }
+
     completed = false;
     if (only_non_friend) only_non_friend = "on";
 
@@ -61,11 +65,12 @@ function doSearch(value, only_non_friend, page = 1) {
         // actions des pages
         $("a.page-link").click(function(e) {
             e.preventDefault();
+            ChangeUrl(jspPage + "?name=" + value + "&only_non_friend=" + only_non_friend + "&page=" + $(this).attr('href').substring(5));
             doSearch(value, only_non_friend, $(this).attr('href').substring(5));
         });
 
         // Mise à jour de l'url
-        ChangeUrl(jspPage + "?name=" + value + "&only_non_friend=" + only_non_friend);
+        ChangeUrl(jspPage + "?name=" + value + "&only_non_friend=" + only_non_friend + "&page=" + page);
 
         closeModal();
     }).fail(function() {
@@ -99,5 +104,5 @@ $(document).ready(function() {
     });
 
     // First search if parameter are there
-    doSearch($("#name").val(), $("#only_non_friend").is(':checked'));
+    doSearch($("#name").val(), $("#only_non_friend").is(':checked'), getURLParameter($(location).attr('href'), "page"));
 });

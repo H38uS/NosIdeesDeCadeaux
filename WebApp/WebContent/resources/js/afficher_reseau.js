@@ -24,6 +24,10 @@ function searchNetwork(theName, networkOfUserId, page = 1) {
     if (!rechercheReseauCompleted)
         return;
 
+    if (page == null) {
+        page = 1;
+    }
+
     rechercheReseauCompleted = false;
     doLoading("Recherche en cours...");
     $("#res").empty();
@@ -76,8 +80,12 @@ function searchNetwork(theName, networkOfUserId, page = 1) {
         // actions des pages
         $("a.page-link").click(function(e) {
             e.preventDefault();
-            searchNetwork(theName, networkOfUserId, $(this).attr('href').substring(5));
+            var thePage = $(this).attr('href').substring(5);
+            ChangeUrl("protected/afficher_reseau?id=" + networkOfUserId + "&looking_for=" + theName + "&page=" + thePage);
+            searchNetwork(theName, networkOfUserId, thePage);
         });
+
+        ChangeUrl("protected/afficher_reseau?id=" + networkOfUserId + "&looking_for=" + theName + "&page=" + page);
 
         closeModal();
     }).fail(function() {
@@ -102,5 +110,5 @@ $(document).ready(function() {
     });
 
     // Initial search
-    searchNetwork($("#looking_for").val(), $("#look_in_network").val());
+    searchNetwork($("#looking_for").val(), $("#look_in_network").val(), getURLParameter($(location).attr('href'), "page"));
 });
