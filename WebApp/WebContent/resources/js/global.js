@@ -212,45 +212,66 @@ function ChangeUrl(url) {
 /* *** Pages Management *** */
 /* ************************ */
 
-function getPreviousPageButtonAsHTML(current) {
+function getPreviousPageButtonAsHTML(pages, current) {
     var previousDiv = $("<div>");
-    if (current === 1) {
-        previousDiv.append(`
-            <li class="page-item disabled">
-                <a class="page-link" href="page=${current-1}">Précédent</a>
-            </li>
-        `);
-    } else {
-        previousDiv.append(`
-            <li class="page-item">
-                <a class="page-link" href="page=${current-1}">Précédent</a>
-            </li>
-        `);
+    if (!isMobileView() || pages.length < 4) {
+        if (current === 1) {
+            previousDiv.append(`
+                <li class="page-item disabled">
+                    <a class="page-link" href="page=${current-1}">Précédent</a>
+                </li>
+            `);
+        } else {
+            previousDiv.append(`
+                <li class="page-item">
+                    <a class="page-link" href="page=${current-1}">Précédent</a>
+                </li>
+            `);
+        }
     }
     return previousDiv.html();
 }
 
-function getNextPageButtonAsHTML(current, last) {
+function getNextPageButtonAsHTML(pages, current, last) {
     var nextDiv = $("<div>");
-    if (current === last) {
-        nextDiv.append(`
-            <li class="page-item disabled">
-                <a class="page-link" href="page=${current+1}">Suivant</a>
-            </li>
-        `);
-    } else {
-        nextDiv.append(`
-            <li class="page-item">
-                <a class="page-link" href="page=${current+1}">Suivant</a>
-            </li>
-        `);
+    if (!isMobileView() || pages.length < 4) {
+        if (current === last) {
+            nextDiv.append(`
+                <li class="page-item disabled">
+                    <a class="page-link" href="page=${current+1}">Suivant</a>
+                </li>
+            `);
+        } else {
+            nextDiv.append(`
+                <li class="page-item">
+                    <a class="page-link" href="page=${current+1}">Suivant</a>
+                </li>
+            `);
+        }
     }
     return nextDiv.html();
 }
 
 function getMiddlePageContentAsHTML(pages, current) {
     var pagesDiv = $("<div>");
+    var lastOne = pages.length - 1;
+    var currentIndex = current - 1;
     $.each(pages, function(i, page) {
+        if (i > 0 && i < lastOne && i != currentIndex) {
+            // On affiche systématiquement la première et la dernière, et celle courante
+            // Pour les autres, on affiche que les distantes de 1 avec la courante
+            if (Math.abs(i - currentIndex) > 1) {
+                // Si la distance vaut 2, on met "..."
+                if (Math.abs(i - currentIndex) == 2) {
+                    pagesDiv.append(`
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    `);
+                }
+                return;
+            }
+        }
         if (page.isSelected) {
             pagesDiv.append(`
                 <li class="page-item active">
@@ -289,9 +310,9 @@ function getPagesDiv(pages) {
 
     pagesDiv.append(`
         <ul class="pagination justify-content-center">
-            ${getPreviousPageButtonAsHTML(current)}
+            ${getPreviousPageButtonAsHTML(pages, current)}
             ${getMiddlePageContentAsHTML(pages, current)}
-            ${getNextPageButtonAsHTML(current, last)}
+            ${getNextPageButtonAsHTML(pages, current, last)}
         </ul>
     `);
     return pagesDiv;
