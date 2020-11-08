@@ -1,5 +1,6 @@
 const minLength = 3;
 var completed = true;
+var jspPage = "protected/rechercher_personne";
 
 function doSearch(value, only_non_friend, page = 1) {
 
@@ -63,13 +64,14 @@ function doSearch(value, only_non_friend, page = 1) {
             doSearch(value, only_non_friend, $(this).attr('href').substring(5));
         });
 
+        // Mise à jour de l'url
+        ChangeUrl(jspPage + "?name=" + value + "&only_non_friend=" + only_non_friend);
+
         closeModal();
     }).fail(function() {
         actionError("Une erreur est survenue... Veuillez réessayer.<br/> Si cela se reproduit, envoyer un email à jordan.mosio@hotmail.fr avec la description de l'action.");
     });
 }
-
-// FIXME : update the address bar when a search is done : https://github.com/browserstate/history.js
 
 $(document).ready(function() {
     // input text

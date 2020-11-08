@@ -200,6 +200,14 @@ function getURLParameter(url, name) {
     }
 }
 
+const stateTitle = '';
+function ChangeUrl(url) {
+    if (typeof (history.pushState) != "undefined") {
+        var obj = { Title: stateTitle, Url: url };
+        history.pushState(obj, stateTitle, obj.Url);
+    } // else do nothing - we won't have the correct url and that's fine
+}
+
 /* ************************ */
 /* *** Pages Management *** */
 /* ************************ */

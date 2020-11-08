@@ -35,7 +35,9 @@
                             },
                             function(data) {
                                 $("#creationGroupForm").empty();
-                                refreshGroupWithId(data.message, true); // displaying the suggest link
+                                var groupId = data.message;
+                                refreshGroupWithId(groupId, true); // displaying the suggest link
+                                ChangeUrl("protected/detail_du_groupe?groupid=" + groupId);
                                 var idea = $(".idea_square");
                                 refreshIdea(idea, idea.attr("id").substring(5));
                             },
