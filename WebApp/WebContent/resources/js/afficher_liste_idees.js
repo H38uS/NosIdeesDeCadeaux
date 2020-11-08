@@ -116,7 +116,8 @@ function displayUsersIdeasList(identicCallBack, callBack, page) {
 
         // Ajout de la première possibilité de chercher d'autres personnes, si besoin
         // Forcément au moins une personne ici
-        if (!isMobileView()) {
+        var isDeletedIdeas = owners[0].isDeletedIdeas;
+        if (!isMobileView() && !isDeletedIdeas) {
             resultDiv.append(`
                 <div class="alert alert-warning">
                     <div class="row align-items-center pb-2">
@@ -146,8 +147,15 @@ function displayUsersIdeasList(identicCallBack, callBack, page) {
         resultDiv.append(getPagesDiv(jsonData.pages));
 
         $.each(owners, function(i, ownerIdeas) {
-            var ownerTitle = getH2UserTitle(ownerIdeas.owner, connectedUser);
+            var ownerTitle = getH2UserTitle(ownerIdeas, connectedUser);
             resultDiv.append(ownerTitle);
+            if (ownerIdeas.owner.id === connectedUser.id && !isDeletedIdeas) {
+                resultDiv.append(`
+                    <div class="alert alert-primary">
+                        Votre historique d'idées se trouve <a href="protected/idee/historique">ici</a>.
+                    </div>
+                `);
+            }
             $.each(ownerIdeas.ideas, function(j, idea) {
                 resultDiv.append(getIdeaDiv(connectedUser, idea));
             });
@@ -158,7 +166,7 @@ function displayUsersIdeasList(identicCallBack, callBack, page) {
 
         // Ajout de la deuxième possibilité de chercher d'autres personnes, si besoin
         // Forcément au moins une personne ici
-        if (!isMobileView()) {
+        if (!isMobileView() && !isDeletedIdeas) {
             if (owners.length === 1) {
                 resultDiv.append(`
                     <div class="alert alert-warning">

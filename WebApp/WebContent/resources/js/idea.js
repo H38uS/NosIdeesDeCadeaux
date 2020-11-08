@@ -550,7 +550,7 @@ function getAskIfUpToDateIconAsHTML(jsonDecoratedIdea) {
 function getCommentAndQuestionIconAsHTML(jsonDecoratedIdea) {
     var jsonIdea = jsonDecoratedIdea.idee;
     var commentAndQuestionIconDiv = $("<div>");
-    if (jsonDecoratedIdea.hasComment) {
+    if (jsonDecoratedIdea.hasComment && !jsonIdea.hasBeenDeleted) {
         commentAndQuestionIconDiv.append(`
             <div class="col-auto px-0">
                 <a href="protected/idee_commentaires?idee=${jsonIdea.id}" class="img">
@@ -561,7 +561,7 @@ function getCommentAndQuestionIconAsHTML(jsonDecoratedIdea) {
             </div>
         `);
     }
-    if (jsonDecoratedIdea.hasQuestion) {
+    if (jsonDecoratedIdea.hasQuestion && !jsonIdea.hasBeenDeleted) {
         commentAndQuestionIconDiv.append(`
             <div class="col-auto px-0">
                 <a href="protected/idee_questions?idee=${jsonIdea.id}" class="img">
@@ -577,7 +577,7 @@ function getCommentAndQuestionIconAsHTML(jsonDecoratedIdea) {
 
 function getMobileActionButtonAsHTML(jsonIdea) {
     var mobileActionDiv = $("<div>");
-    if (isMobileView()) {
+    if (isMobileView() && !jsonIdea.hasBeenDeleted) {
         mobileActionDiv.append(`
             <div class="col-auto ml-auto" data-toggle="modal" data-target="#actions-idea-${jsonIdea.id}">
                 <button class="btn btn-primary" >Actions...</button>
@@ -728,7 +728,9 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
     `);
 
     // Action tooltip: must be on the Icon div.
-    ideaIcons.append(getActionTooltipForNonMobile(jsonIdea));
+    if (!jsonIdea.hasBeenDeleted) {
+        ideaIcons.append(getActionTooltipForNonMobile(jsonIdea));
+    }
 
     // The idea : text + picture
     var theActualIdea = $(`
@@ -741,9 +743,15 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
     `);
 
     // Status text, modified date, reservation details etc.
+    var modificationStatusText;
+    if (jsonIdea.hasBeenDeleted) {
+        modificationStatusText = `Idée supprimée le ${jsonIdea.modificationDate}`;
+    } else {
+        modificationStatusText = `Dernière modification le ${jsonIdea.modificationDate}`;
+    }
     var status = $(`
         <div class="idea_square_modif_date" >
-            Dernière modification le ${jsonIdea.modificationDate}.<br/>
+            ${modificationStatusText}.<br/>
             ${getSurpriseDivAsHTMl(connectedUser, jsonIdea)}
             ${getReservationText(connectedUser, jsonIdea)}
         </div>
@@ -763,8 +771,9 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
 /* *************** ==== Construction de H2 user list === *************** */
 /* ********************************************************************* */
 
-function getH2UserTitle(ideaOwner, connectedUser) {
+function getH2UserTitle(ownerIdeas, connectedUser) {
     var imgAdd = $('<div>');
+    var ideaOwner = ownerIdeas.owner;
     if (isMobileView()) {
         imgAdd.append(`
             <img src="resources/image/ajouter_champs.png"
@@ -802,25 +811,42 @@ function getH2UserTitle(ideaOwner, connectedUser) {
         `);
     } else {
         // Le user connecté
-        return $(`
-            <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
-                <div class="row align-items-center">
-                    <div class="col-auto mx-auto my-1">
-                        <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
-                             alt="" style="height:50px;"/>
+        if (ownerIdeas.isDeletedIdeas) {
+            return $(`
+                <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
+                    <div class="row align-items-center">
+                        <div class="col-auto mx-auto my-1">
+                            <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
+                                 alt="" style="height:50px;"/>
+                        </div>
+                        <div class="mx-1">
+                            <span class="d-none d-lg-inline-block">Mes idées de cadeaux supprimées</span>
+                            <span class="d-inline-block d-lg-none">Idées supprimées</span>
+                        </div>
                     </div>
-                    <div class="mx-1">
-                        <span class="d-none d-lg-inline-block">Mes idées de cadeaux</span>
-                        <span class="d-inline-block d-lg-none">Mes idées</span>
+                </h2>
+            `);
+        } else {
+            return $(`
+                <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
+                    <div class="row align-items-center">
+                        <div class="col-auto mx-auto my-1">
+                            <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
+                                 alt="" style="height:50px;"/>
+                        </div>
+                        <div class="mx-1">
+                            <span class="d-none d-lg-inline-block">Mes idées de cadeaux</span>
+                            <span class="d-inline-block d-lg-none">Mes idées</span>
+                        </div>
+                        <div class="mx-auto">
+                            <a href="protected/ajouter_idee" class="img">
+                                ${imgAdd.html()}
+                            </a>
+                        </div>
                     </div>
-                    <div class="mx-auto">
-                        <a href="protected/ajouter_idee" class="img">
-                            ${imgAdd.html()}
-                        </a>
-                    </div>
-                </div>
-            </h2>
-        `);
+                </h2>
+            `);
+        }
     }
 }
 
