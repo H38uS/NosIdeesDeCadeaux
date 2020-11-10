@@ -263,13 +263,19 @@ function getMiddlePageContentAsHTML(pages, current) {
             if (Math.abs(i - currentIndex) > 1) {
                 // Si la distance vaut 2, on met "..."
                 if (Math.abs(i - currentIndex) == 2) {
-                    pagesDiv.append(`
-                        <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                        </li>
-                    `);
+                    if (i != 1 && i != lastOne - 1) {
+                        // Seulement si on a plus d'une page dans les "..."
+                        // i.e. si on est pas sur la deuxième ou l'avant-dernière
+                        pagesDiv.append(`
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        `);
+                        return;
+                    }
+                } else {
+                    return;
                 }
-                return;
             }
         }
         if (page.isSelected) {
