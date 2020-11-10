@@ -44,11 +44,17 @@ public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
 
         // FIXME : envoyer des notifications - quand l'anniversaire est proche + ceux qui ont réservé (si on les garde)
         // FIXME faire un test de restoration ! Et une méthode pour vraiment tout supprimer
-        // FIXME : ALTER TABLE `IDEES_HIST` ADD `idee_id` INT(11) NOT NULL AFTER `id`; -- avant déploiement
-        // FIXME : puis update IDEES_HIST set idee_id = id
-        // FIXME : ALTER TABLE `IDEES_HIST` ADD PRIMARY KEY(`id`); -- faudra supprimer les doublons...
-        // select id, count(*) from IDEES_HIST group by id having(count(*) > 1)
-        // FIXME : ALTER TABLE `IDEES_HIST` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;
+
+        // FIXME ajouter le statut => ALTER TABLE `IDEES` ADD `status` VARCHAR(50) NOT NULL AFTER `cree_le`;
+
+        // FIXME mater les doublons au cas où dans IDEES_HIST => select id, count(*) from IDEES_HIST group by id having(count(*) > 1)
+
+        // FIXME insérer les ancienns =>
+        // insert into IDEES (`owner`, `idee`, `reserve`, `type`, `groupe_kdo_id`, `priorite`, `surprise_par`, `image`, `reserve_le`, `modification_date`, `a_sous_reservation`, `cree_par`, `cree_le`, `status`)
+        // select `owner`, `idee`, `reserve`, `type`, `groupe_kdo_id`, `priorite`, `surprise_par`, `image`, `reserve_le`, `modification_date`, `a_sous_reservation`, `cree_par`, `cree_le`, 'DELETED' as `status`
+        // from IDEES_HIST
+
+        // FIXME droper la table => drop table IDEES_HIST;
 
         // Sending back the OK response
         buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));

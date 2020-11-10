@@ -17,36 +17,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class IdeesRepository extends AbstractRepository {
 
     /** Class logger */
     private static final Logger logger = LogManager.getLogger(IdeesRepository.class);
-
-    /** Values to select to insert in the history table */
-    private static final String SELECT_VALUES_FROM_IDEES = Stream.of(IdeeColumns.values())
-                                                                 .map(Enum::name)
-                                                                 .map(name -> "ID".equals(name) ? "ID as idee_id" : name)
-                                                                 .collect(Collectors.joining(","));
-
-    /** Values to select to insert in the idees table */
-    private static final String SELECT_VALUES_FROM_IDEES_HIST = Stream.of(IdeeColumns.values())
-                                                                      .map(Enum::name)
-                                                                      .map(name -> "ID".equals(name) ? "idee_id as ID" : name)
-                                                                      .collect(Collectors.joining(","));
-
-    /** History table values. */
-    private static final String VALUES_TO_IDEES_HIST = Stream.of(IdeeColumns.values())
-                                                             .map(Enum::name)
-                                                             .map(name -> "ID".equals(name) ? "idee_id" : name)
-                                                             .collect(Collectors.joining(","));
-
-    /** Idees table values. */
-    private static final String VALUES_TO_IDEES = Stream.of(IdeeColumns.values())
-                                                        .map(Enum::name)
-                                                        .collect(Collectors.joining(","));
 
     public static final String TABLE_NAME = "IDEES";
 
@@ -134,7 +109,7 @@ public class IdeesRepository extends AbstractRepository {
     /**
      * @return The SQL select/joins to select ideas.
      */
-    private static StringBuilder getIdeaBasedSelect(String sourceTableName) {
+    private static StringBuilder getIdeaBasedSelect() {
 
         CategoriesColumns cNom = CategoriesColumns.NOM;
 
@@ -172,7 +147,7 @@ public class IdeesRepository extends AbstractRepository {
         columns.append(MessageFormat.format("       u2.{0} as surpriseAvatar ", UsersColumns.AVATAR));
 
         StringBuilder query = new StringBuilder(columns);
-        query.append(MessageFormat.format("  from {0} i ", sourceTableName));
+        query.append(MessageFormat.format("  from {0} i ", TABLE_NAME));
         query.append(MessageFormat.format("  left join {0} p on i.{1} = p.{2} ",
                                           PrioritesRepository.TABLE_NAME,
                                           IdeeColumns.PRIORITE,
@@ -195,13 +170,6 @@ public class IdeesRepository extends AbstractRepository {
     }
 
     /**
-     * @return The SQL select/joins to select ideas.
-     */
-    private static StringBuilder getIdeaBasedSelect() {
-        return getIdeaBasedSelect(TABLE_NAME);
-    }
-
-    /**
      * Retrieves all ideas of a person.
      *
      * @param ownerId The person for which we are getting all the ideas.
@@ -213,6 +181,7 @@ public class IdeesRepository extends AbstractRepository {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.OWNER));
+        query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') <> ''DELETED''", IdeeColumns.STATUS));
         query.append(MessageFormat.format(" order by p.{0} desc,{1}, {2} desc, {3} desc",
                                           PrioritesColumns.ORDRE,
                                           IdeeColumns.IDEE,
@@ -246,8 +215,9 @@ public class IdeesRepository extends AbstractRepository {
 
         List<Idee> ideas = new ArrayList<>();
 
-        StringBuilder query = getIdeaBasedSelect("IDEES_HIST");
+        StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.OWNER));
+        query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') = ''DELETED''", IdeeColumns.STATUS));
         query.append(MessageFormat.format("  and i.{0} is null", IdeeColumns.SURPRISE_PAR));
         query.append(MessageFormat.format(" order by {0} desc, {1} desc",
                                           IdeeColumns.MODIFICATION_DATE,
@@ -304,6 +274,7 @@ public class IdeesRepository extends AbstractRepository {
                                           IdeeColumns.RESERVE,
                                           SousReservationColumns.ID,
                                           GroupIdeaContentColumns.GROUP_ID));
+        query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') <> ''DELETED''", IdeeColumns.STATUS));
 
         String queryText = query.toString();
         logger.trace(MessageFormat.format("{0}, {1}", queryText, thisOne.id));
@@ -332,6 +303,7 @@ public class IdeesRepository extends AbstractRepository {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
+        query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') <> ''DELETED''", IdeeColumns.STATUS));
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(idIdee);
@@ -354,8 +326,9 @@ public class IdeesRepository extends AbstractRepository {
      */
     public static Optional<Idee> getDeletedIdea(int idIdee) {
 
-        StringBuilder query = getIdeaBasedSelect("IDEES_HIST");
+        StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
+        query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') = ''DELETED''", IdeeColumns.STATUS));
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(idIdee);
@@ -385,6 +358,7 @@ public class IdeesRepository extends AbstractRepository {
                                           TABLE_NAME,
                                           IdeeColumns.GROUPE_KDO_ID));
         query.append(" ) ");
+        query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') <> ''DELETED''", IdeeColumns.STATUS));
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(groupId);
@@ -400,6 +374,8 @@ public class IdeesRepository extends AbstractRepository {
     }
 
     /**
+     * Works on both deleted and current Ideas.
+     *
      * @param groupId The booking group's id.
      * @return The owner of the idea booked by this group, or null if it does not exist.
      */
@@ -554,8 +530,9 @@ public class IdeesRepository extends AbstractRepository {
         insert.append(IdeeColumns.SURPRISE_PAR).append(",");
         insert.append(IdeeColumns.CREE_LE).append(",");
         insert.append(IdeeColumns.CREE_PAR).append(",");
+        insert.append(IdeeColumns.STATUS).append(",");
         insert.append(IdeeColumns.PRIORITE);
-        insert.append(") values (?, ?, ?, ?, now(), ?, now(), ?, ?)");
+        insert.append(") values (?, ?, ?, ?, now(), ?, now(), ?, ?, ?)");
 
         logger.debug(MessageFormat.format("Insert query: {0}", insert.toString()));
 
@@ -576,6 +553,7 @@ public class IdeesRepository extends AbstractRepository {
                               image,
                               surprisePar == null ? null : surprisePar.id,
                               createdById,
+                              StringUtils.EMPTY,
                               priorite);
 
             return ps.executeUpdate();
@@ -797,35 +775,23 @@ public class IdeesRepository extends AbstractRepository {
      */
     public static void remove(Idee idea) throws SQLException {
         final int ideaId = idea.getId();
+        logger.debug(MessageFormat.format("Suppression de l''idée: {0}", ideaId));
         if (idea.isASurprise()) {
             toutDereserver(ideaId);
             getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
                                                        CommentsRepository.TABLE_NAME,
                                                        CommentsColumns.IDEA_ID),
                                   ideaId);
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, IdeeColumns.ID),
+                                  ideaId);
         } else {
-            final String query = MessageFormat.format(
-                    "insert into IDEES_HIST ({0}) select {1} from {2} where {3} = ?",
-                    VALUES_TO_IDEES_HIST,
-                    SELECT_VALUES_FROM_IDEES,
-                    TABLE_NAME,
-                    IdeeColumns.ID);
-            logger.trace(query);
-            int nb = getDb().executeUpdate(query, ideaId);
-            if (nb != 1) {
-                logger.error(MessageFormat.format("Strange count of idea history: {0}. Idea was idea n#{1}",
-                                                  nb,
-                                                  ideaId));
-            } else {
-                getDb().executeUpdate(MessageFormat.format("update IDEES_HIST set {0} = now() where {1} = ?",
-                                                           IdeeColumns.MODIFICATION_DATE,
-                                                           IdeeColumns.ID),
-                                      ideaId);
-            }
+            getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ''DELETED'' where {2} = ?",
+                                                       TABLE_NAME,
+                                                       IdeeColumns.STATUS,
+                                                       IdeeColumns.ID),
+                                  ideaId);
+            touch(ideaId);
         }
-        logger.debug(MessageFormat.format("Suppression de l''idée: {0}", ideaId));
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, IdeeColumns.ID),
-                              ideaId);
     }
 
     /**
@@ -888,10 +854,6 @@ public class IdeesRepository extends AbstractRepository {
     public static void removeAll(int userId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, IdeeColumns.OWNER),
                               userId);
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                   "IDEES_HIST",
-                                                   IdeeColumns.OWNER),
-                              userId);
     }
 
     /**
@@ -935,27 +897,16 @@ public class IdeesRepository extends AbstractRepository {
      * @param restoreBooking Whether to keeping the booking information or clear them.
      */
     public static void restoreIdea(Idee idea, boolean restoreBooking) throws SQLException {
-        final String query = MessageFormat.format(
-                "insert into IDEES ({0}) select {1} from IDEES_HIST where {2} = ?",
-                VALUES_TO_IDEES,
-                SELECT_VALUES_FROM_IDEES_HIST,
-                IdeeColumns.ID);
-        logger.trace(query);
-        int nb = getDb().executeUpdate(query, idea.getId());
-        if (nb == 1) {
-            final String deleteQuery = MessageFormat.format("delete from IDEES_HIST where {0} = ?", IdeeColumns.ID);
-            getDb().executeUpdate(deleteQuery, idea.getId());
 
-            // Mise à jour de la date de modification
-            touch(idea.getId());
+        final String query = MessageFormat.format("update IDEES set {0} = ? where ID = ?", IdeeColumns.STATUS);
+        getDb().executeUpdate(query, StringUtils.EMPTY, idea.getId());
 
-            // Suppression des réservations si demandé
-            if (!restoreBooking) {
-                toutDereserver(idea.getId());
-            }
-        } else {
-            logger.error("Invalid count => {}", nb);
-            throw new SQLException("Impossible de restorer cette idée...");
+        // Mise à jour de la date de modification
+        touch(idea.getId());
+
+        // Suppression des réservations si demandé
+        if (!restoreBooking) {
+            toutDereserver(idea.getId());
         }
     }
 }

@@ -25,15 +25,15 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     public void testDelete() throws SQLException {
 
         int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
-        assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
-        assertEquals(0, ds.selectCountStar("select count(*) from IDEES_HIST where id = ?", id));
+        assertTrue(IdeesRepository.getIdea(id).isPresent());
+        assertFalse(IdeesRepository.getDeletedIdea(id).isPresent());
 
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
-        assertEquals(1, ds.selectCountStar("select count(*) from IDEES_HIST where id = ?", id));
+        assertFalse(IdeesRepository.getIdea(id).isPresent());
+        assertTrue(IdeesRepository.getDeletedIdea(id).isPresent());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         // Validation que cela supprime tout
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(notifId);
-        assertEquals(0, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
+        assertFalse(IdeesRepository.getIdea(id).isPresent());
         // On conserve le groupe pour l'historique
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
