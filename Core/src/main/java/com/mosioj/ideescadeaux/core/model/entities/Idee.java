@@ -48,16 +48,16 @@ public class Idee {
     /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     private final String text;
 
-    public Idee(int pId,
-                User owner,
-                String pText,
-                Categorie categorie,
-                String image,
-                Priorite priorite,
-                Timestamp lastModified,
-                User surpriseBy,
-                BookingInformation bookingInformation,
-                boolean hasBeenDeleted) {
+    private Idee(int pId,
+                 User owner,
+                 String pText,
+                 Categorie categorie,
+                 String image,
+                 Priorite priorite,
+                 Timestamp lastModified,
+                 User surpriseBy,
+                 BookingInformation bookingInformation,
+                 boolean hasBeenDeleted) {
         id = pId;
         text = pText;
         this.categorie = categorie;
@@ -220,5 +220,138 @@ public class Idee {
     @Override
     public String toString() {
         return String.valueOf(id);
+    }
+
+
+    /**
+     * @return The builder.
+     */
+    public static IdeaBuilder builder() {
+        return new IdeaBuilder();
+    }
+
+    /**
+     * Idea builder.
+     */
+    public static final class IdeaBuilder {
+
+        // Idea constructor fields
+        private int id;
+        private User owner;
+        private String text;
+        private Categorie categorie;
+        private String image;
+        private Priorite priorite;
+        private Timestamp lastModified;
+        private User surpriseBy;
+        private BookingInformation bookingInformation;
+        private boolean hasBeenDelete;
+
+        /**
+         * @param id The identifier of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        /**
+         * @param owner The owner of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withOwner(User owner) {
+            this.owner = owner;
+            return this;
+        }
+
+        /**
+         * @param text The text of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withText(String text) {
+            this.text = text;
+            return this;
+        }
+
+        /**
+         * @param categorie The categorie of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withCategory(Categorie categorie) {
+            this.categorie = categorie;
+            return this;
+        }
+
+        /**
+         * @param image The picture of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withPicture(String image) {
+            this.image = image;
+            return this;
+        }
+
+        /**
+         * @param priorite The priority of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withPriority(Priorite priorite) {
+            this.priorite = priorite;
+            return this;
+        }
+
+        /**
+         * @param lastModified The timestamp of the last modification of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withLastModificationDate(Timestamp lastModified) {
+            this.lastModified = lastModified;
+            return this;
+        }
+
+        /**
+         * @param surpriseBy The user that created this surprise.
+         * @return The idea build.
+         */
+        public IdeaBuilder withSurpriseOwner(User surpriseBy) {
+            this.surpriseBy = surpriseBy;
+            return this;
+        }
+
+        /**
+         * @param bookingInformation The booking information of this idea.
+         * @return The idea build.
+         */
+        public IdeaBuilder withBookingInformation(BookingInformation bookingInformation) {
+            this.bookingInformation = bookingInformation;
+            return this;
+        }
+
+        /**
+         * @param hasBeenDelete True if the idea has been deleted.
+         * @return The idea build.
+         */
+        public IdeaBuilder hasBeenDelete(boolean hasBeenDelete) {
+            this.hasBeenDelete = hasBeenDelete;
+            return this;
+        }
+
+        /**
+         * @return Builds the idea with the given parameters.
+         */
+        public Idee build() {
+            return new Idee(id,
+                            owner,
+                            text,
+                            categorie,
+                            image,
+                            priorite,
+                            lastModified,
+                            surpriseBy,
+                            bookingInformation,
+                            hasBeenDelete);
+        }
+
     }
 }

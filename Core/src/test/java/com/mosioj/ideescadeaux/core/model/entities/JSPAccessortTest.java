@@ -34,16 +34,13 @@ public class JSPAccessortTest extends TemplateTest {
 
     @Test
     public void testJSPOnlyIdeeMethods() {
-        Idee i = new Idee(15,
-                          u,
-                          "toto",
-                          null,
-                          "toto.png",
-                          null,
-                          TS20191212_0829,
-                          null,
-                          null,
-                          false);
+        Idee i = Idee.builder()
+                     .withId(15)
+                     .withOwner(u)
+                     .withText("toto")
+                     .withPicture("toto.png")
+                     .withLastModificationDate(TS20191212_0829)
+                     .build();
         Assert.assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertNull(i.getCategory());
     }

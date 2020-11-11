@@ -91,19 +91,21 @@ public class IdeesRepository extends AbstractRepository {
             bookingInformation = BookingInformation.fromASingleUser(bookingOwner, bookedOn);
         }
 
-        return new Idee(rs.getInt(IdeeColumns.ID.name()),
-                        owner,
-                        Escaper.transformCodeToSmiley(rs.getString(IdeeColumns.IDEE.name())),
-                        categorie,
-                        rs.getString("id_image"),
-                        new Priorite(rs.getInt(IdeeColumns.PRIORITE.name()),
-                                     rs.getString("PRIORITY_NAME"),
-                                     rs.getString("PRIORITY_PICTURE"),
-                                     rs.getInt("PRIORITY_ORDER")),
-                        rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()),
-                        surpriseBy,
-                        bookingInformation,
-                        deletedIdea);
+        return Idee.builder()
+                   .withId(rs.getInt(IdeeColumns.ID.name()))
+                   .withOwner(owner)
+                   .withText(Escaper.transformCodeToSmiley(rs.getString(IdeeColumns.IDEE.name())))
+                   .withCategory(categorie)
+                   .withPicture(rs.getString("id_image"))
+                   .withPriority(new Priorite(rs.getInt(IdeeColumns.PRIORITE.name()),
+                                              rs.getString("PRIORITY_NAME"),
+                                              rs.getString("PRIORITY_PICTURE"),
+                                              rs.getInt("PRIORITY_ORDER")))
+                   .withLastModificationDate(rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()))
+                   .withSurpriseOwner(surpriseBy)
+                   .withBookingInformation(bookingInformation)
+                   .hasBeenDelete(deletedIdea)
+                   .build();
     }
 
     /**
