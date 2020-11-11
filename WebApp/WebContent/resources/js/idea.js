@@ -151,7 +151,6 @@ function refreshIdea(idea, id) {
         div.append(newIdea);
         newIdea.unwrap();
 
-        setIdeaActionsToJs(newIdea);
         newIdea.fadeIn('slow');
 
     }).fail(function (data) {
@@ -894,11 +893,6 @@ function getH2UserTitle(ownerIdeas, connectedUser) {
 /* ********************************************************************* */
 
 $(document).ready(function() {
-
-    $("a.idea_remove").click(deleteIdea);
-    $("a.idea_est_a_jour").click(estAJourIdea);
-    $("a.idea_reserver").click(reserverIdea);
-    $("a.idea_dereserver").click(dereserverIdea);
 
     var theForm = $(".post_idea").closest('form');
     if (typeof theForm.attr("action") !== 'undefined') {
