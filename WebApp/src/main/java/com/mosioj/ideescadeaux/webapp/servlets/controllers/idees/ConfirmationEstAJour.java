@@ -25,7 +25,6 @@ import static com.mosioj.ideescadeaux.core.model.notifications.ParameterName.IDE
 @WebServlet("/protected/confirmation_est_a_jour")
 public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModification> {
 
-    private static final long serialVersionUID = -6645017540948612364L;
     public static final String IDEE_FIELD_PARAMETER = "idee";
 
     public ConfirmationEstAJour() {
@@ -53,8 +52,8 @@ public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModificatio
         asked.forEach(NotificationsRepository::remove);
 
         // Creating new confirmation notification
-        asked.forEach(a -> NotificationsRepository.addNotification(a.getUserIdParam(),
-                                                                   new NotifConfirmedUpToDate(thisOne, idea)));
+        final NotifConfirmedUpToDate confirmedUpToDate = new NotifConfirmedUpToDate(thisOne, idea);
+        asked.forEach(a -> NotificationsRepository.addNotification(a.getUserIdParam(), confirmedUpToDate));
 
         RootingsUtils.rootToPage(MesNotifications.URL, request, response);
     }

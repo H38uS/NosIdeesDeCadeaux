@@ -418,7 +418,7 @@ public class NotificationsRepository extends AbstractRepository {
 
         query += " order by n." + NotificationsColumns.ID + " desc";
 
-        logger.info(MessageFormat.format("Query: {0}", query));
+        logger.trace(MessageFormat.format("Query: {0}", query));
         logger.trace(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
 
         return getNotificationFromQuery(query, parameters);

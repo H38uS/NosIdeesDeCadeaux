@@ -69,8 +69,8 @@ public class EmailSender {
         try {
             InputStream input = EmailSender.class.getResourceAsStream("/mail.properties");
             MY_PROPERTIES.load(new InputStreamReader(input, StandardCharsets.UTF_8));
-            logger.debug("host: " + MY_PROPERTIES.getProperty("host"));
-            logger.debug("from: " + MY_PROPERTIES.getProperty("from"));
+            logger.trace("host: " + MY_PROPERTIES.getProperty("host"));
+            logger.trace("from: " + MY_PROPERTIES.getProperty("from"));
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(e);

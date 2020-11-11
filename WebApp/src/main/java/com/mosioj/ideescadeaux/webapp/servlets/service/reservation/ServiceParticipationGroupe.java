@@ -15,6 +15,8 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupIntera
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,9 @@ import java.util.List;
 
 @WebServlet("/protected/service/group/participation")
 public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteraction> {
+
+    /** Class logger */
+    private static final Logger logger = LogManager.getLogger(ServiceParticipationGroupe.class);
 
     /** Group parameter */
     public static final String GROUP_ID_PARAM = "groupid";
@@ -79,8 +84,11 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
                  .parallelStream()
                  .filter(s -> !s.getUser().equals(thisOne))
                  .forEach(s -> NotificationsRepository.addNotification(s.getUser().id, groupEvolution));
+
+            logger.info("{} vient de participer au groupe {} ({}).", thisOne, group, amount);
         } else {
             GroupIdeaRepository.updateAmount(group.getId(), thisOne, Double.parseDouble(amount));
+            logger.info("{} vient de mettre à jour sa participation au groupe {} ({}).", thisOne, group, amount);
         }
 
         buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));

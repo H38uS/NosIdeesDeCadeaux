@@ -64,4 +64,8 @@ public class IdeaGroup {
         return Objects.hash(id);
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(id);
+    }
 }
