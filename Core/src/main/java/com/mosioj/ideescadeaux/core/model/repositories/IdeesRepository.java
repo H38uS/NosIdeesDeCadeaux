@@ -508,14 +508,13 @@ public class IdeesRepository extends AbstractRepository {
      * @param createdBy   New idea's creator (can be different from the owner, especially for surprise).
      * @return The idea identifier.
      */
-    // FIXME : faut retourner directement l'idée...
-    public static int addIdea(User owner,
-                              String text,
-                              String type,
-                              int priorite,
-                              String image,
-                              User surprisePar,
-                              User createdBy) throws SQLException {
+    public static Idee addIdea(User owner,
+                               String text,
+                               String type,
+                               int priorite,
+                               String image,
+                               User surprisePar,
+                               User createdBy) throws SQLException {
 
         type = type == null ? "" : type;
         int createdById = createdBy == null ? owner.id : createdBy.id;
@@ -558,7 +557,7 @@ public class IdeesRepository extends AbstractRepository {
                               StringUtils.EMPTY,
                               priorite);
 
-            return ps.executeUpdate();
+            return getIdea(ps.executeUpdate()).orElseThrow(SQLException::new);
         }
 
     }

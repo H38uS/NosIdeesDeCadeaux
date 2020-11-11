@@ -31,13 +31,12 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
     @Test
     public void testRejoindreGroupe() throws SQLException {
 
-        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(ideaId, id);
+        IdeesRepository.bookByGroup(idee.getId(), id);
 
-        Idee idea = IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new);
         int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                      new NotifGroupSuggestion(firefox, id, idea));
+                                                                      new NotifGroupSuggestion(firefox, id, idee));
         assertNotifDoesExists(groupSuggestion);
 
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
@@ -46,7 +45,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(groupSuggestion);
-        IdeesRepository.remove(idea);
+        IdeesRepository.remove(idee);
     }
 
     @Test
@@ -54,18 +53,18 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // On crée un groupe sur une idée
         logger.info("[Perf] Démarrage...");
-        int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         logger.info("[Perf] Idée créée ! Création du groupe...");
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
         logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");
-        IdeesRepository.bookByGroup(idea, id);
+        IdeesRepository.bookByGroup(idee.getId(), id);
         logger.info("[Perf] OK! Vérication qu'il n'existe pas de notifications...");
         assertTrue(GroupIdeaRepository.getGroupDetails(id).isPresent());
         assertEquals(0,
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
-                                                              idea)
+                                                              idee.getId())
                                             .size());
 
         // -----------------------
@@ -80,7 +79,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
-                                                              idea)
+                                                              idee.getId())
                                             .size());
         logger.info("[Perf] OK! Suppression des notifications...");
         NotificationsRepository.removeAllType(moiAutre, NotificationType.GROUP_EVOLUTION);
@@ -94,7 +93,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
-                                                              idea)
+                                                              idee.getId())
                                             .size());
 
         // -----------------------
@@ -107,12 +106,12 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
-                                                              idea)
+                                                              idee.getId())
                                             .size());
         int nId = NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                            NotificationType.GROUP_EVOLUTION,
                                                            ParameterName.IDEA_ID,
-                                                           idea)
+                                                           idee.getId())
                                          .get(0).id;
 
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
@@ -123,13 +122,13 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
-                                                              idea)
+                                                              idee.getId())
                                             .size());
         assertEquals(nId,
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
-                                                              idea)
+                                                              idee.getId())
                                             .get(0).id);
 
         // Finalement - re - Annulation de la participation
@@ -140,16 +139,16 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                      NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                               NotificationType.GROUP_EVOLUTION,
                                                               ParameterName.IDEA_ID,
-                                                              idea)
+                                                              idee.getId())
                                             .size());
         assertTrue(NotificationsRepository.getNotifications(_MOI_AUTRE_,
                                                             NotificationType.GROUP_EVOLUTION,
                                                             ParameterName.IDEA_ID,
-                                                            idea).get(0).text.contains("quitté"));
+                                                            idee.getId()).get(0).text.contains("quitté"));
 
         // -----------------------
         // Clean up
-        IdeesRepository.remove(IdeesRepository.getIdea(idea).orElseThrow(SQLException::new));
+        IdeesRepository.remove(idee);
         // On conserve le groupe pour l'historique
         assertTrue(GroupIdeaRepository.getGroupDetails(id).isPresent());
     }

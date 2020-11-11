@@ -22,15 +22,14 @@ public class TestIdeaCommentWebApp extends AbstractTestServletWebApp {
     @Test
     public void test() throws SQLException {
 
-        int id = IdeesRepository.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
-        CommentsRepository.addComment(_OWNER_ID_, id, "mon pti com'");
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "avec commentaire", null, 0, null, null, null);
+        CommentsRepository.addComment(_OWNER_ID_, idee.getId(), "mon pti com'");
 
         int newComment = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNewCommentOnIdea(firefox, idee));
         assertNotifDoesExists(newComment);
 
         when(request.getRequestDispatcher(IdeaComments.VIEW_PAGE_URL)).thenReturn(dispatcher);
-        when(request.getParameter(IdeaComments.IDEA_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(IdeaComments.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         doTestGet();
 
         assertNotifDoesNotExists(newComment);

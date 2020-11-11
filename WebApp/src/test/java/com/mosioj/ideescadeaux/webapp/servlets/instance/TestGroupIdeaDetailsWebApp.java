@@ -22,11 +22,10 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
     @Test
     public void testGet() throws SQLException {
 
-        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Idee idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(ideaId, id);
+        IdeesRepository.bookByGroup(idea.getId(), id);
 
-        Idee idea = IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new);
         NotifGroupSuggestion notifGroupSuggestion = new NotifGroupSuggestion(firefox, id, idea);
         int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_, notifGroupSuggestion);
         assertNotifDoesExists(groupSuggestion);

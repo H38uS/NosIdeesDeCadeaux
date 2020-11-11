@@ -23,15 +23,13 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
     @Test
     public void testAnnulerParticipation() throws SQLException {
 
-        int idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         int group = GroupIdeaRepository.createAGroup(300, 250, _OWNER_ID_);
         GroupIdeaRepository.addNewAmount(25, moiAutre.id, group);
-        IdeesRepository.bookByGroup(idea, group);
+        IdeesRepository.bookByGroup(idee.getId(), group);
         assertTrue(GroupIdeaRepository.getGroupDetails(group).isPresent());
 
         // Les notifs à vérifier
-        Idee idee = IdeesRepository.getIdea(idea).orElseThrow(SQLException::new);
-
         // _MOI_AUTRE_ déclenche la requête d'annulation
         // On nous avait suggéré le groupe => la notif disparait
         final NotifGroupSuggestion suggestionParUnAmi = new NotifGroupSuggestion(friendOfFirefox, group, idee);

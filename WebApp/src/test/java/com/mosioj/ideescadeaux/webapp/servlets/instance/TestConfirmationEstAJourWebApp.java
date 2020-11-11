@@ -55,8 +55,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
     public void testOnANewIdea() throws SQLException {
 
         when(session.getAttribute("connected_user")).thenReturn(friendOfFirefox);
-        int id = IdeesRepository.addIdea(friendOfFirefox, "ma nouvelle idée", "", 1, null, null, null);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "ma nouvelle idée", "", 1, null, null, null);
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifAskIfIsUpToDate(firefox, idee));
 
         AbstractNotification n = NotificationsRepository.getNotification(notifId).orElseThrow(SQLException::new);

@@ -24,29 +24,29 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     @Test
     public void testDelete() throws SQLException {
 
-        int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
-        assertTrue(IdeesRepository.getIdea(id).isPresent());
-        assertFalse(IdeesRepository.getDeletedIdea(id).isPresent());
+        Idee idee = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
+        assertFalse(IdeesRepository.getDeletedIdea(idee.getId()).isPresent());
 
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        assertFalse(IdeesRepository.getIdea(id).isPresent());
-        assertTrue(IdeesRepository.getDeletedIdea(id).isPresent());
+        assertFalse(IdeesRepository.getIdea(idee.getId()).isPresent());
+        assertTrue(IdeesRepository.getDeletedIdea(idee.getId()).isPresent());
     }
 
     @Test
     public void testDeleteWithGroupBooking() throws SQLException {
 
         // Creation de l'idée
-        int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
-        assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
+        Idee idee = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
+        assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idee.getId()));
 
         // Creation du groupe
         int group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(id, group);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
+        IdeesRepository.bookByGroup(idee.getId(), group); // FIXME : faut passer l'idée et faire un set du groupe
+        // rafraichissement de l'idée
+        idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new); // FIXME supprimer quand on aura le refresh
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_,
                                                               new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);
@@ -56,13 +56,13 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
 
         // Suppression
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Validation que cela supprime tout
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(notifId);
-        assertFalse(IdeesRepository.getIdea(id).isPresent());
+        assertFalse(IdeesRepository.getIdea(idee.getId()).isPresent());
         // On conserve le groupe pour l'historique
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
         assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
@@ -71,10 +71,9 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     @Test
     public void testUnderlyingNotificationAreWellRemoved() throws SQLException {
 
-        int id = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
-        assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", id));
+        Idee idee = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
+        assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idee.getId()));
 
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         int isUpToDate = NotificationsRepository.addNotification(_OWNER_ID_,
                                                                  new NotifAskIfIsUpToDate(friendOfFirefox, idee));
         IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
@@ -108,7 +107,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertNotifDoesExists(recurentUnbook);
 
         // Suppression
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -127,35 +126,33 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     public void shouldNotBePossibleToDeleteOurSurprise() throws SQLException {
 
         // Given
-        int ideaId = IdeesRepository.addIdea(firefox, "une surprise", null, 0, null, friendOfFirefox, friendOfFirefox);
-        assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
+        Idee idee = IdeesRepository.addIdea(firefox, "une surprise", null, 0, null, friendOfFirefox, friendOfFirefox);
 
         // Trying to delete it
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(ideaId + "");
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Check
         assertFalse(resp.isOK());
         assertEquals("Impossible de modifier une surprise si ce n'est pas vous qui l'avez créée.", resp.getMessage());
-        assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
+        assertTrue(IdeesRepository.getIdea(idee.getId()).isPresent());
 
         // Delete it
-        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
+        IdeesRepository.remove(idee);
     }
 
     @Test
     public void shouldBePossibleToDeleteOurSurprise() throws SQLException {
 
         // Given
-        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "une surprise", null, 0, null, firefox, firefox);
-        assertTrue(IdeesRepository.getIdea(ideaId).isPresent());
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "une surprise", null, 0, null, firefox, firefox);
 
         // Trying to delete it
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(ideaId + "");
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Check
         assertTrue(resp.isOK());
-        assertFalse(IdeesRepository.getIdea(ideaId).isPresent());
+        assertFalse(IdeesRepository.getIdea(idee.getId()).isPresent());
     }
 }

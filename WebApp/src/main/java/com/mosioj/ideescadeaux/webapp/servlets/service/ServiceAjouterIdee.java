@@ -24,7 +24,6 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @WebServlet("/protected/service/ajouter_idee")
 public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
@@ -64,36 +63,35 @@ public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
 
                 // Ajout de l'idée
                 boolean estSurprise = "on".equals(parameters.get("est_surprise")) && !isItByMeForMe;
-                int ideaId = IdeesRepository.addIdea(addedToUser,
-                                                     parameters.get("text"),
-                                                     parameters.get("type"),
-                                                     Integer.parseInt(parameters.get("priority")),
-                                                     parameters.get("image"),
-                                                     estSurprise ? thisOne : null,
-                                                     thisOne);
+                Idee idea = IdeesRepository.addIdea(addedToUser,
+                                                    parameters.get("text"),
+                                                    parameters.get("type"),
+                                                    Integer.parseInt(parameters.get("priority")),
+                                                    parameters.get("image"),
+                                                    estSurprise ? thisOne : null,
+                                                    thisOne);
                 logger.info("Idea {} [{} / {} / {}] added.",
-                            ideaId,
+                            idea.getId(),
                             parameters.get("text"),
                             parameters.get("type"),
                             parameters.get("priority"));
 
                 // Gestion des notifications
-                final Optional<Idee> idea = IdeesRepository.getIdea(ideaId);
-                idea.ifPresent(i -> IdeaLogic.addModificationNotification(addedToUser, i, true));
+                IdeaLogic.addModificationNotification(addedToUser, idea, true);
                 if (isItByMeForMe) {
                     // Pour soit : uniquement la notif plus d'idée
                     NotificationsRepository.removeAllType(thisOne, NotificationType.NO_IDEA);
                 } else {
                     // Si ce n'est pas une surprise, envoie de notification
                     // Et suppression des notifications NO_IDEA
-                    idea.filter(i -> !estSurprise).ifPresent(i -> {
-                        NotificationsRepository.addNotification(addedToUser.id,
-                                                                new NotifIdeaAddedByFriend(thisOne, i));
+                    if (!idea.isASurprise()) {
+                        final NotifIdeaAddedByFriend addedByFriend = new NotifIdeaAddedByFriend(thisOne, idea);
+                        NotificationsRepository.addNotification(addedToUser.id, addedByFriend);
                         NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
-                    });
+                    }
                 }
 
-                sr = ServiceResponse.ok(ideaId, isAdmin(request), thisOne);
+                sr = ServiceResponse.ok(idea.getId(), isAdmin(request), thisOne);
             }
         } else {
             sr = ServiceResponse.ko("Le formulaire est incorrect...", isAdmin(request), thisOne);

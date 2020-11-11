@@ -24,18 +24,20 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
     @Test
     public void testGetQuestions() throws SQLException {
 
-        int id = IdeesRepository.addIdea(firefox, "avec questions", null, 0, null, null, null);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
-        QuestionsRepository.addComment(_FRIEND_ID_, id, "mon pti com'");
+        Idee idee = IdeesRepository.addIdea(firefox, "avec questions", null, 0, null, null, null);
+        QuestionsRepository.addComment(_FRIEND_ID_, idee.getId(), "mon pti com'");
 
-        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_, new NotifIdeaAddedByFriend(moiAutre, idee));
+        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_,
+                                                                  new NotifIdeaAddedByFriend(moiAutre, idee));
         int newQuestion = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                  new NotifNewQuestionOnIdea(friendOfFirefox, idee, true));
+                                                                  new NotifNewQuestionOnIdea(friendOfFirefox,
+                                                                                             idee,
+                                                                                             true));
         assertNotifDoesExists(addByFriend);
         assertNotifDoesExists(newQuestion);
 
         when(request.getRequestDispatcher(IdeeQuestions.VIEW_PAGE_URL)).thenReturn(dispatcher);
-        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         doTestGet();
 
         assertNotifDoesNotExists(addByFriend);
@@ -46,29 +48,31 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
     @Test
     public void testAjouterQuestion() throws SQLException {
 
-        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "sans questions", null, 0, null, null, null);
-        assertEquals(0, QuestionsRepository.getCommentsOn(ideaId).size());
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "sans questions", null, 0, null, null, null);
+        assertEquals(0, QuestionsRepository.getCommentsOn(idee.getId()).size());
 
-        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId + "");
+        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         when(request.getParameter("text")).thenReturn("Voilou voilou");
         doTestPost();
 
-        assertEquals(1, QuestionsRepository.getCommentsOn(ideaId).size());
-        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
+        assertEquals(1, QuestionsRepository.getCommentsOn(idee.getId()).size());
+        IdeesRepository.remove(idee);
     }
 
     @Test
     public void testAjouterQuestionSurUneSurprise() throws SQLException {
 
-        int ideaId = IdeesRepository.addIdea(friendOfFirefox, "sans questions", null, 0, null, firefox, firefox);
-        assertEquals(0, QuestionsRepository.getCommentsOn(ideaId).size());
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "sans questions", null, 0, null, firefox, firefox);
+        assertEquals(0, QuestionsRepository.getCommentsOn(idee.getId()).size());
 
-        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(ideaId + "");
+        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         when(request.getParameter("text")).thenReturn("Voilou voilou");
         doTestPost();
 
-        assertEquals(0, QuestionsRepository.getCommentsOn(ideaId).size()); // Impossible de poser une question sur une surprise !
-        IdeesRepository.remove(IdeesRepository.getIdea(ideaId).orElseThrow(SQLException::new));
+        assertEquals(0,
+                     QuestionsRepository.getCommentsOn(idee.getId())
+                                        .size()); // Impossible de poser une question sur une surprise !
+        IdeesRepository.remove(idee);
     }
 
 }

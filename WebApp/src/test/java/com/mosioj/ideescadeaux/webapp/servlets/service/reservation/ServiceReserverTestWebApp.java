@@ -34,34 +34,32 @@ public class ServiceReserverTestWebApp extends AbstractTestServletWebApp {
     @Test
     public void testReservationSurprise() throws SQLException {
 
-        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
         assertFalse(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
 
-        when(request.getParameter(ServiceDereserver.IDEA_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceDereserver.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
+        idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
         assertTrue(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
     }
 
     @Test
     public void bookingShouldRemoveUnbookNotification() throws SQLException {
 
-        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
-        Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
         int recurentUnbook = NotificationsRepository.addNotification(_OWNER_ID_,
                                                                      new NotifRecurentIdeaUnbook(friendOfFirefox,
                                                                                                  idee));
         assertNotifDoesExists(recurentUnbook);
 
-        when(request.getParameter(ServiceDereserver.IDEA_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(ServiceDereserver.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
+        idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
         assertNotifDoesNotExists(recurentUnbook);
         assertTrue(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
     }

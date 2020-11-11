@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -22,14 +23,14 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void test() throws SQLException {
 
-        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
         NotificationsRepository.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
         List<AbstractNotification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id,
                                                                                          NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
+        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -40,14 +41,14 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void testSurprise() throws SQLException {
 
-        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
 
         NotificationsRepository.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
         List<AbstractNotification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id,
                                                                                          NotificationType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
+        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost(); // bloqué par la police, impossible en utilisation classique...
 
         assertFalse(resp.isOK());
@@ -60,9 +61,9 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void testTriggeringItTwiceIsNotAllowed() throws SQLException {
 
-        int id = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
-        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(id + "");
+        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         resp = doTestServicePost();
