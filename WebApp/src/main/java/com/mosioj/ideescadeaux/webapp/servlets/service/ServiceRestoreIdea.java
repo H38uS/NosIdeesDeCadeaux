@@ -82,12 +82,4 @@ public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
         buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }
 
-    // Pour le déploiement
-    // FIXME ajouter le statut => ALTER TABLE `IDEES` ADD `status` VARCHAR(50) NOT NULL AFTER `cree_le`;
-    // FIXME mater les doublons au cas où dans IDEES_HIST => select id, count(*) from IDEES_HIST group by id having(count(*) > 1)
-    // FIXME insérer les ancienns =>
-    // insert into IDEES (`owner`, `idee`, `reserve`, `type`, `groupe_kdo_id`, `priorite`, `surprise_par`, `image`, `reserve_le`, `modification_date`, `a_sous_reservation`, `cree_par`, `cree_le`, `status`)
-    // select `owner`, `idee`, `reserve`, `type`, `groupe_kdo_id`, `priorite`, `surprise_par`, `image`, `reserve_le`, `modification_date`, `a_sous_reservation`, `cree_par`, `cree_le`, 'DELETED' as `status`
-    // from IDEES_HIST
-    // FIXME droper la table => drop table IDEES_HIST;
 }
