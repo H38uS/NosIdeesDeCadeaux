@@ -1,21 +1,6 @@
 package com.mosioj.ideescadeaux.core.model.notifications;
 
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifBookedRemove;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeAcceptee;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeRefusee;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifFriendshipDropped;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupEvolution;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewCommentOnIdea;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewQuestionOnIdea;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNouvelleDemandeAmi;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
+import com.mosioj.ideescadeaux.core.model.notifications.instance.*;
 
 /**
  * 50 caracters max.
@@ -42,7 +27,8 @@ public enum NotificationType {
     REJECTED_FRIENDSHIP(NotifDemandeRefusee.class, "Quelqu'un a refusé votre demande d'amis"), //
     RECURENT_IDEA_UNBOOK(NotifRecurentIdeaUnbook.class,
                          "Un amis précise qu'une idée déjà reçue est toujours d'actualité"), //
-    IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class, "Un ami vous a ajouté une idée");
+    IDEA_ADDED_BY_FRIEND(NotifIdeaAddedByFriend.class, "Un ami vous a ajouté une idée"),
+    IDEA_RESTORED(NotifIdeaRestored.class, "Un amis a supprimé puis restoré une idée que vous aviez réservé.");
 
     private final Class<? extends AbstractNotification> notificationClassName;
     private final String description;

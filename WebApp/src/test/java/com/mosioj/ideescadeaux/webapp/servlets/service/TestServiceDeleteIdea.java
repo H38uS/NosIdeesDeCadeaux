@@ -44,9 +44,9 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
 
         // Creation du groupe
         int group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(idee.getId(), group); // FIXME : faut passer l'idée et faire un set du groupe
+        IdeesRepository.bookByGroup(idee.getId(), group);
         // rafraichissement de l'idée
-        idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new); // FIXME supprimer quand on aura le refresh
+        idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
         int notifId = NotificationsRepository.addNotification(_FRIEND_ID_,
                                                               new NotifGroupEvolution(moiAutre, group, idee, true));
         assertNotifDoesExists(notifId);

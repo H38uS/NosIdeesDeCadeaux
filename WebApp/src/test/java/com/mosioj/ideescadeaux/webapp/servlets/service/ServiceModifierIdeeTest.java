@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -128,9 +128,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     public void testModifyIdeaTwiceWithBirthdaySoonShouldSendOnlyOneNotification() throws SQLException, IOException {
 
         // Given the users birthday is in 4 days...
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, 4);
-        firefox.setBirthday(new java.sql.Date(cal.getTime().getTime()));
+        firefox.setBirthday(java.sql.Date.valueOf(LocalDate.now().plusDays(4)));
 
         UsersRepository.update(firefox);
 

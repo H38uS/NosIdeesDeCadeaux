@@ -480,6 +480,26 @@ public class NotificationsRepository extends AbstractRepository {
     }
 
     /**
+     * @param type           The notification type.
+     * @param parameterName  The parameter name.
+     * @param parameterValue The paramter value.
+     * @return The list of notification having the given parameter name equals to this value.
+     */
+    public static List<AbstractNotification> getNotifications(NotificationType type,
+                                                              ParameterName parameterName,
+                                                              Object parameterValue) throws SQLException {
+        String whereClause = MessageFormat.format(
+                " exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?) and n.{5} = ?",
+                TABLE_PARAMS,
+                NOTIFICATION_ID,
+                NotificationsColumns.ID,
+                PARAMETER_NAME,
+                PARAMETER_VALUE,
+                NotificationsColumns.TYPE);
+        return getNotificationWithWhereClause(whereClause, parameterName, parameterValue, type);
+    }
+
+    /**
      * @param owner          The owner.
      * @param type           The notification type.
      * @param parameterName  The parameter name.
@@ -509,12 +529,13 @@ public class NotificationsRepository extends AbstractRepository {
      */
     public static List<AbstractNotification> getNotification(ParameterName parameterName,
                                                              Object parameterValue) throws SQLException {
-        String whereClause = MessageFormat.format(" exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?)",
-                                                  TABLE_PARAMS,
-                                                  NOTIFICATION_ID,
-                                                  NotificationsColumns.ID,
-                                                  PARAMETER_NAME,
-                                                  PARAMETER_VALUE);
+        String whereClause = MessageFormat.format(
+                " exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?)",
+                TABLE_PARAMS,
+                NOTIFICATION_ID,
+                NotificationsColumns.ID,
+                PARAMETER_NAME,
+                PARAMETER_VALUE);
         return getNotificationWithWhereClause(whereClause, parameterName, parameterValue);
     }
 

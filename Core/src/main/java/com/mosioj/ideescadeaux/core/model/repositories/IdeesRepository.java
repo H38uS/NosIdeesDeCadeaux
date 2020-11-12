@@ -497,6 +497,24 @@ public class IdeesRepository extends AbstractRepository {
     }
 
     /**
+     * Considers the creator is the owner.
+     *
+     * @param idee The idea to persists.
+     * @return The updated idea from the database.
+     */
+    public static Idee persistsIdea(Idee idee) throws SQLException {
+        String type = Optional.ofNullable(idee.getCategory()).map(Categorie::getName).orElse(null);
+        int priotity = Optional.ofNullable(idee.getPriorite()).map(Priorite::getId).orElse(1);
+        return addIdea(idee.getOwner(),
+                       idee.getText(),
+                       type,
+                       priotity,
+                       idee.getImage(),
+                       idee.getSurpriseBy().orElse(null),
+                       idee.getOwner());
+    }
+
+    /**
      * Add a new idea in the IDEES table.
      *
      * @param owner       New idea's owner.

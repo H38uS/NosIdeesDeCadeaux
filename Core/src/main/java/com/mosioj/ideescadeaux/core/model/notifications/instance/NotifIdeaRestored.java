@@ -12,20 +12,19 @@ import java.util.Map;
 /**
  * Sent when we have booked an idea and it gets deleted.
  */
-public class NotifBookedRemove extends AbstractNotification {
+public class NotifIdeaRestored extends AbstractNotification {
 
     private String ideaText;
     private String ideaOwner;
 
     /**
-     * @param idea      The idea.
-     * @param ideaOwner The idea owner name.
+     * @param idea The idea.
      */
-    public NotifBookedRemove(Idee idea, String ideaOwner) {
-        super(NotificationType.BOOKED_REMOVE);
+    public NotifIdeaRestored(Idee idea) {
+        super(NotificationType.IDEA_RESTORED);
         int size = 150;
         this.ideaText = idea.getTextSummary(size);
-        this.ideaOwner = ideaOwner;
+        this.ideaOwner = idea.getOwner().getName();
         params.put(ParameterName.IDEA_ID, idea.getId());
     }
 
@@ -35,19 +34,19 @@ public class NotifBookedRemove extends AbstractNotification {
      * @param text       The notification text.
      * @param parameters The notification parameters.
      */
-    public NotifBookedRemove(int id,
+    public NotifIdeaRestored(int id,
                              User owner,
                              String text,
                              Timestamp creationTime,
                              boolean isUnread,
                              Timestamp readOn,
                              Map<ParameterName, Object> parameters) {
-        super(NotificationType.BOOKED_REMOVE, id, owner, text, parameters, creationTime, isUnread, readOn);
+        super(NotificationType.IDEA_RESTORED, id, owner, text, parameters, creationTime, isUnread, readOn);
     }
 
     @Override
     public String getTextToInsert() {
-        return ideaOwner + " a supprimé son idée : \"" + ideaText + "\"";
+        return ideaOwner + " a restoré son idée : \"" + ideaText + "\".";
     }
 
 }
