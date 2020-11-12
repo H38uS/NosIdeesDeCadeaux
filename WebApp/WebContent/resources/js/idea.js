@@ -816,7 +816,7 @@ function getH2UserTitle(ownerIdeas, connectedUser) {
     if (isMobileView()) {
         imgAdd.append(`
             <img src="resources/image/ajouter_champs.png"
-                 style="margin-left: 10px;margin-top: -2px;"
+                 style="margin-left: 5px;margin-top: -2px;"
                  class="clickable" title="Je veux plus de cadeaux"
                  width="${getPictureWidth()}px"/>
         `);
@@ -866,6 +866,17 @@ function getH2UserTitle(ownerIdeas, connectedUser) {
                 </h2>
             `);
         } else {
+            var historyPicture = $(`
+                <img src="resources/image/history.png"
+                     class="clickable" title="Mes idées supprimées"
+                     width="${getPictureWidth()}px"/>
+            `);
+            if (isMobileView()) {
+                historyPicture.attr('style', 'margin-top: -2px;');
+            } else {
+                historyPicture.attr('style', 'margin-top: 1px;');
+            }
+            historyPicture.wrap('<div>');
             return $(`
                 <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
                     <div class="row align-items-center">
@@ -880,6 +891,11 @@ function getH2UserTitle(ownerIdeas, connectedUser) {
                         <div class="mx-auto">
                             <a href="protected/ajouter_idee" class="img">
                                 ${imgAdd.html()}
+                            </a>
+                        </div>
+                        <div class="mx-auto">
+                            <a href="protected/idee/historique" class="img">
+                                ${historyPicture.parent().html()}
                             </a>
                         </div>
                     </div>

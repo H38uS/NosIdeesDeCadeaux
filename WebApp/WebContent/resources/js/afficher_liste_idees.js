@@ -149,13 +149,6 @@ function displayUsersIdeasList(identicCallBack, callBack, page) {
         $.each(owners, function(i, ownerIdeas) {
             var ownerTitle = getH2UserTitle(ownerIdeas, connectedUser);
             resultDiv.append(ownerTitle);
-            if (ownerIdeas.owner.id === connectedUser.id && !isDeletedIdeas) {
-                resultDiv.append(`
-                    <div class="alert alert-primary">
-                        Votre historique d'idées se trouve <a href="protected/idee/historique">ici</a>.
-                    </div>
-                `);
-            }
             $.each(ownerIdeas.ideas, function(j, idea) {
                 resultDiv.append(getIdeaDiv(connectedUser, idea));
             });
