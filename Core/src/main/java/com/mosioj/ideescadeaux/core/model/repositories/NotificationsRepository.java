@@ -47,6 +47,22 @@ public class NotificationsRepository extends AbstractRepository {
     private static final Properties notificationProperties = new Properties();
 
     /**
+     * Send the notification by email.
+     *
+     * @param notification The notification.
+     */
+    public static void sendEmail(Notification notification) {
+        final String start = "<a href=\"" + notificationProperties.get("urlTillProtectedPublic");
+        String text = notification.getText()
+                                  .replaceAll("<a href=\"protected/", start + "protected/")
+                                  .replaceAll("<a href=\"public/", start + "public/");
+        String body = notificationProperties.get("mail_template").toString().replaceAll("\\$\\$text\\$\\$", text);
+        EmailSender.sendEmail(notification.getOwner().getEmail(),
+                              "Nos idées de cadeaux - Nouvelle notification !",
+                              body);
+    }
+
+    /**
      * Save and send a notification.
      *
      * @param notification The notification.
@@ -83,8 +99,7 @@ public class NotificationsRepository extends AbstractRepository {
 
             // Envoie de la notification par email si besoin
             if (activation == NotificationActivation.EMAIL || activation == NotificationActivation.EMAIL_SITE) {
-                notification.sendEmail(notification.getOwner().getEmail(),
-                                       notificationProperties.get("urlTillProtectedPublic"));
+                sendEmail(notification);
             }
         } catch (SQLException e) {
             logger.warn("Exception while trying to add a notification.", e);

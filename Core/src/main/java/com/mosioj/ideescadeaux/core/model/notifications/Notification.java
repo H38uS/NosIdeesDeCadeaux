@@ -4,22 +4,10 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.utils.EmailSender;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 import java.util.Optional;
-import java.util.Properties;
 
 public class Notification {
-
-    /** Class Logger */
-    private static final Logger logger = LogManager.getLogger(Notification.class);
 
     // FIXME : migration
     // Supprimer les notifications => DELETE from NOTIFICATIONS where type in ('GROUP_EVOLUTION', 'NEW_QUESTION_ON_IDEA', 'IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON');
@@ -32,8 +20,6 @@ public class Notification {
 
     /** The notification type, useful for database insertion. Cannot be null. */
     private final NType type;
-
-    private final Properties p; // FIXME faire un truc statique
 
     /** The notification's unique identifier. */
     public Long id;
@@ -58,13 +44,6 @@ public class Notification {
     public Notification(NType type) {
         assert type != null;
         this.type = type;
-        InputStream input = getClass().getResourceAsStream("/notif.properties");
-        p = new Properties();
-        try {
-            p.load(new InputStreamReader(input, StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            logger.error(e);
-        }
     }
 
     /**
@@ -191,23 +170,5 @@ public class Notification {
      */
     public int send() {
         return NotificationsRepository.add(duplicates());
-    }
-
-    /**
-     * Send the notification by email.
-     *
-     * @param emailAdress          The email adress.
-     * @param fullURLTillProtected The full URL.
-     */
-    // FIXME : faire un getEmailText et l'envoyer dans le repository
-    public void sendEmail(String emailAdress, Object fullURLTillProtected) {
-        String notifText = getText();
-        notifText = notifText.replaceAll("<a href=\"protected/",
-                                         MessageFormat.format("<a href=\"{0}protected/",
-                                                              fullURLTillProtected.toString()));
-        notifText = notifText.replaceAll("<a href=\"public/",
-                                         MessageFormat.format("<a href=\"{0}public/", fullURLTillProtected.toString()));
-        String body = p.get("mail_template").toString().replaceAll("\\$\\$text\\$\\$", notifText);
-        EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Nouvelle notification !", body);
     }
 }
