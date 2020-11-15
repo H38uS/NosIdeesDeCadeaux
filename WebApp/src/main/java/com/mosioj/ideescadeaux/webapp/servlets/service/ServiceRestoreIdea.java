@@ -2,11 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaRestored;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -25,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_IDEA_BIRTHDAY_SOON;
 
 @WebServlet("/protected/service/idee/restore")
 public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
@@ -48,34 +47,34 @@ public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
 
         // Parameters
         boolean restoreBooking = "true".equalsIgnoreCase(ParametersUtils.readAndEscape(request, RESTORE_BOOKING));
-        Idee idee = policy.getIdea();
+        Idee idea = policy.getIdea();
 
         // On récupère les personnes qui ont réservé avant la restoration (peut les supprimer)
-        Set<User> bookers = new HashSet<>(idee.getBookers());
+        Set<User> bookers = new HashSet<>(idea.getBookers());
 
         // Restoring the idea
-        logger.debug("Restoration de l'idée {}, avec réservation ? => {}", idee, restoreBooking);
-        IdeesRepository.restoreIdea(idee, restoreBooking);
+        logger.debug("Restoration de l'idée {}, avec réservation ? => {}", idea, restoreBooking);
+        IdeesRepository.restoreIdea(idea, restoreBooking);
 
         // Suppression des notifications passées de suppression d'idée
         // On va avoir une notification de restoration dans tous les cas
-        List<AbstractNotification> bookingRemoveNotifs = NotificationsRepository.getNotifications(NotificationType.BOOKED_REMOVE,
-                                                                                                  ParameterName.IDEA_ID,
-                                                                                                  idee.getId());
+        List<Notification> bookingRemoveNotifs = NotificationsRepository.fetcher()
+                                                                        .whereType(NType.BOOKED_REMOVE)
+                                                                        .whereIdea(idea)
+                                                                        .fetch();
         bookingRemoveNotifs.forEach(NotificationsRepository::remove);
 
         // Si l'anniversaire est proche, on ajoute tous les amis !
-        if (thisOne.getNbDaysBeforeBirthday() < NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY) {
-            final NotifIdeaModifiedWhenBirthdayIsSoon birthdayIsSoon = new NotifIdeaModifiedWhenBirthdayIsSoon(thisOne,
-                                                                                                               idee,
-                                                                                                               true);
-            UserRelationsRepository.getAllUsersInRelation(thisOne)
-                                   .forEach(u -> NotificationsRepository.addNotification(u.getId(), birthdayIsSoon));
+        if (thisOne.getNbDaysBeforeBirthday() < User.NB_DAYS_BEFORE_BIRTHDAY) {
+            final Notification birthdayIsSoon = NEW_IDEA_BIRTHDAY_SOON.with(thisOne, idea);
+            UserRelationsRepository.getAllUsersInRelation(thisOne).forEach(birthdayIsSoon::sendItTo);
         } else {
             // On notifie toutes les personnes qui avaient réservé ou reçu une notification "BOOKING_REMOVE"
-            bookers.addAll(bookingRemoveNotifs.stream().map(AbstractNotification::getOwner).collect(Collectors.toSet()));
-            final NotifIdeaRestored notifIdeaRestored = new NotifIdeaRestored(idee);
-            bookers.forEach(u -> NotificationsRepository.addNotification(u.getId(), notifIdeaRestored));
+            bookers.addAll(bookingRemoveNotifs.stream()
+                                              .map(Notification::getOwner)
+                                              .collect(Collectors.toSet()));
+            final Notification notifIdeaRestored = NType.IDEA_RESTORED.with(thisOne, idea);
+            bookers.forEach(notifIdeaRestored::sendItTo);
         }
 
         // Sending back the OK response

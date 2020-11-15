@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.junit.Before;
@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_RELATION_SUGGESTION;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -42,14 +43,11 @@ public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp 
     @Test
     public void testPostSuccess() throws SQLException {
 
-        final int otherUserNotFriendYet = 23;
-        UserRelationRequestsRepository.cancelRequest(_OWNER_ID_, otherUserNotFriendYet);
+        final User otherNotFriend = UsersRepository.getUser(23).orElseThrow(SQLException::new);
+        UserRelationRequestsRepository.cancelRequest(_OWNER_ID_, otherNotFriend.getId());
 
-        int suggestionAndAsk = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                       new NotifNewRelationSuggestion(otherUserNotFriendYet,
-                                                                                            "Toto"));
-        int suggestionAndAsked = NotificationsRepository.addNotification(otherUserNotFriendYet,
-                                                                         new NotifNewRelationSuggestion(_OWNER_ID_, "Toto"));
+        int suggestionAndAsk = NEW_RELATION_SUGGESTION.with(otherNotFriend).sendItTo(firefox);
+        int suggestionAndAsked = NEW_RELATION_SUGGESTION.with(firefox).sendItTo(otherNotFriend);
         assertNotifDoesExists(suggestionAndAsk);
         assertNotifDoesExists(suggestionAndAsked);
 

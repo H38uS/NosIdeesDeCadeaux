@@ -31,8 +31,8 @@ public class MesNotifications extends IdeesCadeauxGetServlet<AllAccessToPostAndG
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
 
         int userId = thisOne.id;
-        req.setAttribute("unread_notifications", NotificationsRepository.getUserUnReadNotifications(userId));
-        req.setAttribute("read_notifications", NotificationsRepository.getUserReadNotifications(userId));
+        req.setAttribute("unread_notifications", NotificationsRepository.getUserUnReadNotifications(thisOne));
+        req.setAttribute("read_notifications", NotificationsRepository.getUserReadNotifications(thisOne));
 
         List<ChildNotifications> childNotif = ParentRelationshipRepository.getChildren(userId)
                                                                           .stream()
@@ -48,6 +48,6 @@ public class MesNotifications extends IdeesCadeauxGetServlet<AllAccessToPostAndG
      * @return This user bounded to its notifications.
      */
     private ChildNotifications getChildNotifications(User theChild) {
-        return new ChildNotifications(theChild, NotificationsRepository.getUserNotifications(theChild));
+        return new ChildNotifications(theChild, NotificationsRepository.fetcher().whereOwner(theChild).fetch());
     }
 }

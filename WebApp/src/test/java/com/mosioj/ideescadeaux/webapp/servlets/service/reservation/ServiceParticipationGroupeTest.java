@@ -1,9 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -15,8 +14,8 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
@@ -32,14 +31,13 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
     public void testRejoindreGroupe() throws SQLException {
 
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(idee.getId(), id);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
+        IdeesRepository.bookByGroup(idee.getId(), group.getId());
 
-        int groupSuggestion = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                      new NotifGroupSuggestion(firefox, id, idee));
+        int groupSuggestion = GROUP_IDEA_SUGGESTION.with(firefox, idee, group).sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
 
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
         when(request.getParameter("amount")).thenReturn(32 + "");
         StringServiceResponse resp = doTestServicePost();
 
@@ -55,101 +53,101 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
         logger.info("[Perf] Démarrage...");
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         logger.info("[Perf] Idée créée ! Création du groupe...");
-        int id = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
         logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");
-        IdeesRepository.bookByGroup(idee.getId(), id);
+        IdeesRepository.bookByGroup(idee.getId(), group.getId());
         logger.info("[Perf] OK! Vérication qu'il n'existe pas de notifications...");
-        assertTrue(GroupIdeaRepository.getGroupDetails(id).isPresent());
-        assertEquals(0,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                              NotificationType.GROUP_EVOLUTION,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId())
-                                            .size());
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(moiAutre)
+                                           .whereIdea(idee)
+                                           .hasAny());
 
         // -----------------------
         // Participation au groupe
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
-        when(request.getParameter("amount")).thenReturn(32 + "");
+        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
+        when(request.getParameter("amount")).thenReturn(String.valueOf(32));
         logger.info("[Perf] OK! Envoie de la requête post...");
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         logger.info("[Perf] OK! Vérification des notifications...");
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                              NotificationType.GROUP_EVOLUTION,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId())
-                                            .size());
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(moiAutre)
+                                            .whereType(NType.JOIN_GROUP)
+                                            .whereIdea(idee)
+                                            .fetch().size());
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(moiAutre)
+                                           .whereType(NType.LEAVE_GROUP)
+                                           .whereIdea(idee)
+                                           .hasAny());
         logger.info("[Perf] OK! Suppression des notifications...");
-        NotificationsRepository.removeAllType(moiAutre, NotificationType.GROUP_EVOLUTION);
+        NotificationsRepository.terminator().whereOwner(moiAutre).whereType(NType.JOIN_GROUP).terminates();
 
         // Annulation de la participation
         ServiceAnnulationGroupeTest annulationService = new ServiceAnnulationGroupeTest();
-        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, id);
+        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         resp = annulationService.doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                              NotificationType.GROUP_EVOLUTION,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId())
-                                            .size());
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(moiAutre)
+                                            .whereType(NType.LEAVE_GROUP)
+                                            .whereIdea(idee)
+                                            .fetch().size());
 
         // -----------------------
         // Finalement - re - Participation au groupe
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
         when(request.getParameter("amount")).thenReturn(32 + "");
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                              NotificationType.GROUP_EVOLUTION,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId())
-                                            .size());
-        int nId = NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                           NotificationType.GROUP_EVOLUTION,
-                                                           ParameterName.IDEA_ID,
-                                                           idee.getId())
-                                         .get(0).id;
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(moiAutre)
+                                            .whereType(NType.JOIN_GROUP)
+                                            .whereIdea(idee)
+                                            .fetch().size());
+        Long nId = NotificationsRepository.fetcher()
+                                          .whereOwner(moiAutre)
+                                          .whereType(NType.JOIN_GROUP)
+                                          .whereIdea(idee)
+                                          .fetch()
+                                          .get(0).id;
 
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(id + "");
+        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
         when(request.getParameter("amount")).thenReturn(35 + "");
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                              NotificationType.GROUP_EVOLUTION,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId())
-                                            .size());
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(moiAutre)
+                                            .whereType(NType.JOIN_GROUP)
+                                            .whereIdea(idee)
+                                            .fetch().size());
         assertEquals(nId,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                              NotificationType.GROUP_EVOLUTION,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId())
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(moiAutre)
+                                            .whereType(NType.JOIN_GROUP)
+                                            .whereIdea(idee)
+                                            .fetch()
                                             .get(0).id);
 
         // Finalement - re - Annulation de la participation
-        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, id);
+        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         resp = annulationService.doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                              NotificationType.GROUP_EVOLUTION,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId())
-                                            .size());
-        assertTrue(NotificationsRepository.getNotifications(_MOI_AUTRE_,
-                                                            NotificationType.GROUP_EVOLUTION,
-                                                            ParameterName.IDEA_ID,
-                                                            idee.getId()).get(0).text.contains("quitté"));
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(moiAutre)
+                                            .whereType(NType.LEAVE_GROUP)
+                                            .whereIdea(idee)
+                                            .fetch().size());
 
         // -----------------------
         // Clean up
         IdeesRepository.remove(idee);
         // On conserve le groupe pour l'historique
-        assertTrue(GroupIdeaRepository.getGroupDetails(id).isPresent());
+        assertTrue(GroupIdeaRepository.getGroupDetails(group.getId()).isPresent());
     }
 }

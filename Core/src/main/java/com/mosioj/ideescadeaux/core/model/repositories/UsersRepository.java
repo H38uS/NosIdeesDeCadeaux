@@ -62,7 +62,10 @@ public class UsersRepository extends AbstractRepository {
      * @param id The user's id.
      * @return The user corresponding to this ID or null if not found.
      */
-    public static Optional<User> getUser(int id) {
+    public static Optional<User> getUser(Integer id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         String query = MessageFormat.format("select {0}, {1}, {2}, {3}, {5} from {4} where {0} = ?",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
@@ -358,7 +361,7 @@ public class UsersRepository extends AbstractRepository {
         IdeesRepository.removeAll(userId);
 
         // Suppression des notifications
-        NotificationsRepository.removeAll(userId);
+        NotificationsRepository.terminator().whereOwner(user).terminates();
 
         // Suppression des relations parents - enfants
         ParentRelationshipRepository.deleteAllRelationForUser(userId);

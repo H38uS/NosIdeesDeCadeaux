@@ -2,9 +2,9 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupEvolution;
+import com.mosioj.ideescadeaux.core.model.entities.Share;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -44,35 +44,29 @@ public class ServiceAnnulationGroupe extends ServicePost<BookingGroupInteraction
 
         if (isThereSomeoneRemaining) {
             // On supprime les notif's qu'on a reçu sur ce groupe
-            NotificationsRepository.getNotification(ParameterName.GROUP_ID, group.getId()).parallelStream()
-                                   .filter(n -> thisOne.equals(n.getOwner()))
-                                   .forEach(NotificationsRepository::remove);
+            NotificationsRepository.terminator()
+                                   .whereOwner(thisOne)
+                                   .whereGroupIdea(group)
+                                   .terminates();
 
             // On supprime toutes les notifcations que les autres ont reçu de nous sur ce groupe
-            NotificationsRepository.getNotification(ParameterName.GROUP_ID, group.getId()).parallelStream()
-                                   .filter(n -> n.getParameters()
-                                                 .getOrDefault(ParameterName.USER_ID, "")
-                                                 // the parameter map is giving Strings...
-                                                 .equals(String.valueOf(thisOne.getId())))
-                                   .forEach(NotificationsRepository::remove);
+            NotificationsRepository.terminator()
+                                   .whereUser(thisOne)
+                                   .whereGroupIdea(group)
+                                   .terminates();
 
             // On a forcément une idée pour un groupe... Sinon grosse erreur !!
             Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
 
             // Ajout d'une notification de départ à tous ceux qui sont encore dans le groupe
-            final NotifGroupEvolution notif = new NotifGroupEvolution(thisOne, group.getId(), idee, false);
+            final Notification leftGroup = NType.LEAVE_GROUP.with(thisOne, idee, group);
             group.getShares()
                  .parallelStream()
-                 .forEach(s -> NotificationsRepository.addNotification(s.getUser().id, notif));
-
-            NotificationsRepository.getNotification(ParameterName.GROUP_ID, group.getId()).parallelStream()
-                                   .filter(n -> n.getType().equals(NotificationType.GROUP_IDEA_SUGGESTION.name()))
-                                   .filter(n -> thisOne.equals(n.getOwner()))
-                                   .forEach(NotificationsRepository::remove);
+                 .map(Share::getUser)
+                 .forEach(leftGroup::sendItTo);
         } else {
-            // Suppression des anciennes notifications
-            NotificationsRepository.getNotification(ParameterName.GROUP_ID, group.getId()).parallelStream()
-                                   .forEach(NotificationsRepository::remove);
+            // Suppression des anciennes notifications du groupe
+            NotificationsRepository.terminator().whereGroupIdea(group).terminates();
         }
 
         buildResponse(response, ServiceResponse.ok(isThereSomeoneRemaining, isAdmin(request), thisOne));

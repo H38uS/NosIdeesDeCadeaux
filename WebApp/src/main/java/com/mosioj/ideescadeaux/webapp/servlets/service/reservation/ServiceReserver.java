@@ -1,8 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -37,10 +36,7 @@ public class ServiceReserver extends ServicePost<IdeaInteraction> {
 
         if (IdeesRepository.canBook(idea.getId(), thisOne.id)) {
             IdeesRepository.reserver(idea.getId(), thisOne.id);
-            NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId())
-                                   .stream()
-                                   .filter(n -> n instanceof NotifRecurentIdeaUnbook)
-                                   .forEach(NotificationsRepository::remove);
+            NotificationsRepository.terminator().whereType(NType.RECURENT_IDEA_UNBOOK).whereIdea(idea).terminates();
         }
 
         buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));

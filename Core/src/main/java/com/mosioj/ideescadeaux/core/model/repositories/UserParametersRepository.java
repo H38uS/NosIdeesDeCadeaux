@@ -1,11 +1,11 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserParametersColumns;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.UserParameter;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UserParametersColumns;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -88,7 +88,7 @@ public class UserParametersRepository extends AbstractRepository {
                 UserParametersColumns.PARAMETER_VALUE));
 
         query.append("from ( ");
-        for (NotificationType type : NotificationType.values()) {
+        for (NType type : NType.values()) {
             query.append(MessageFormat.format("select ''{0}'' as {1}, ''{2}'' as {3} ",
                                               type,
                                               UserParametersColumns.PARAMETER_NAME,
@@ -118,9 +118,9 @@ public class UserParametersRepository extends AbstractRepository {
                                                  rs.getInt(UserParametersColumns.USER_ID.name()),
                                                  rs.getString(UserParametersColumns.PARAMETER_NAME.name()),
                                                  rs.getString(UserParametersColumns.PARAMETER_VALUE.name()),
-                                                 NotificationType.valueOf(rs.getString(UserParametersColumns.PARAMETER_NAME
+                                                 NType.valueOf(rs.getString(UserParametersColumns.PARAMETER_NAME
                                                                                                .name()))
-                                                                 .getDescription()));
+                                                      .getDescription()));
                 }
             }
         }

@@ -1,9 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -18,9 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.mosioj.ideescadeaux.core.model.notifications.ParameterName.IDEA_ID;
+import java.util.Optional;
 
 @WebServlet("/protected/confirmation_est_a_jour")
 public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModification> {
@@ -39,21 +36,23 @@ public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModificatio
         IdeesRepository.touch(idea.getId());
         IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
-        // Gets all notification on this idea
-        List<AbstractNotification> notifications = NotificationsRepository.getNotification(IDEA_ID, idea.getId());
-
         // Gets all previous notifications asking if this idea is up to date
-        final List<NotifAskIfIsUpToDate> asked = notifications.stream()
-                                                              .filter(n -> n instanceof NotifAskIfIsUpToDate)
-                                                              .map(n -> (NotifAskIfIsUpToDate) n)
-                                                              .collect(Collectors.toList());
+        final List<Notification> asked = NotificationsRepository.fetcher()
+                                                                .whereIdea(idea)
+                                                                .whereType(NType.IS_IDEA_UP_TO_DATE)
+                                                                .fetch();
 
         // Deletes all of them
         asked.forEach(NotificationsRepository::remove);
 
         // Creating new confirmation notification
-        final NotifConfirmedUpToDate confirmedUpToDate = new NotifConfirmedUpToDate(thisOne, idea);
-        asked.forEach(a -> NotificationsRepository.addNotification(a.getUserIdParam(), confirmedUpToDate));
+        final Notification confirmedUpToDate = NType.CONFIRMED_UP_TO_DATE.with(thisOne, idea);
+        asked.stream()
+             .map(Notification::getUserParameter)
+             .filter(Optional::isPresent)
+             .map(Optional::get)
+             .map(confirmedUpToDate::setOwner)
+             .forEach(Notification::send);
 
         RootingsUtils.rootToPage(MesNotifications.URL, request, response);
     }

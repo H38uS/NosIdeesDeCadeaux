@@ -1,11 +1,9 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
-
-import java.sql.SQLException;
 
 import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
@@ -19,10 +17,10 @@ public class ServiceNotificationDeleteTestWebApp extends AbstractTestServletWebA
     }
 
     @Test
-    public void testDeleteSuccess() throws SQLException {
+    public void testDeleteSuccess() {
 
-        AbstractNotification n = NotificationsRepository.getUserNotifications(firefox).get(0);
-        when(request.getParameter(ServiceNotificationDelete.NOTIFICATION_PARAMETER)).thenReturn(n.id + "");
+        Notification n = NotificationsRepository.fetcher().whereOwner(firefox).fetch().get(0);
+        when(request.getParameter(ServiceNotificationDelete.NOTIFICATION_PARAMETER)).thenReturn(String.valueOf(n.id));
 
         StringServiceResponse resp = doTestServicePost();
 

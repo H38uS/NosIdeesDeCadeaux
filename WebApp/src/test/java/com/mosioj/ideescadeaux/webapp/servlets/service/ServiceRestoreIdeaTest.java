@@ -4,9 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Before;
@@ -16,7 +14,6 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -41,8 +38,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                                      .withText("Une nouvelle idée !")
                                                      .withOwner(firefox)
                                                      .build());
-        int groupId = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox.getId());
-        IdeesRepository.bookByGroup(idee.getId(), groupId);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox.getId());
+        IdeesRepository.bookByGroup(idee.getId(), group.getId());
         IdeesRepository.remove(idee);
 
         // Doing the restore
@@ -52,13 +49,12 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
         // The group does exist as well as the idea
         assertTrue(resp.isOK());
-        assertTrue(GroupIdeaRepository.getGroupDetails(groupId).isPresent());
-        final int foundGroupId = IdeesRepository.getIdea(idee.getId())
-                                                .flatMap(Idee::getBookingInformation)
-                                                .flatMap(BookingInformation::getBookingGroup)
-                                                .map(IdeaGroup::getId)
-                                                .orElse(-1);
-        assertEquals(groupId, foundGroupId);
+        assertTrue(GroupIdeaRepository.getGroupDetails(group.getId()).isPresent());
+        final IdeaGroup foundGroup = IdeesRepository.getIdea(idee.getId())
+                                                    .flatMap(Idee::getBookingInformation)
+                                                    .flatMap(BookingInformation::getBookingGroup)
+                                                    .orElseThrow(SQLException::new);
+        assertEquals(group, foundGroup);
     }
 
     @Test
@@ -125,16 +121,18 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
         // Notifications verifications
         assertTrue(resp.isOK());
-        List<AbstractNotification> bookingRemove = NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                                                            NotificationType.BOOKED_REMOVE,
-                                                                                            ParameterName.IDEA_ID,
-                                                                                            idee.getId());
-        assertEquals(1, bookingRemove.size());
-        assertEquals(0,
-                     NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                              NotificationType.IDEA_RESTORED,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId()).size());
+        assertEquals(1,
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.BOOKED_REMOVE)
+                                            .whereIdea(idee)
+                                            .fetch()
+                                            .size());
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(friendOfFirefox)
+                                           .whereType(NType.IDEA_RESTORED)
+                                           .whereIdea(idee)
+                                           .hasAny());
 
         // Doing the restore without the booking
         when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -145,15 +143,18 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         //   - The booking remove has been deleted (we restored the idea)
         //   - We have an idea restored notification
         assertTrue(resp.isOK());
-        assertEquals(Collections.EMPTY_LIST, NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                                                      NotificationType.BOOKED_REMOVE,
-                                                                                      ParameterName.IDEA_ID,
-                                                                                      idee.getId()));
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(friendOfFirefox)
+                                           .whereType(NType.BOOKED_REMOVE)
+                                           .whereIdea(idee)
+                                           .hasAny());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                              NotificationType.IDEA_RESTORED,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId()).size());
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.IDEA_RESTORED)
+                                            .whereIdea(idee)
+                                            .fetch()
+                                            .size());
     }
 
     @Test
@@ -164,8 +165,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                                      .withText("Une nouvelle idée !")
                                                      .withOwner(firefox)
                                                      .build());
-        int groupId = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox.getId());
-        IdeesRepository.bookByGroup(idee.getId(), groupId);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox.getId());
+        IdeesRepository.bookByGroup(idee.getId(), group.getId());
         IdeesRepository.remove(idee);
 
         // Doing the restore
@@ -176,7 +177,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         // The idea exist while the group doesn't
         assertTrue(resp.isOK());
         assertEquals(Optional.of(idee), IdeesRepository.getIdea(idee.getId()));
-        assertFalse(GroupIdeaRepository.getGroupDetails(groupId).isPresent());
+        assertFalse(GroupIdeaRepository.getGroupDetails(group.getId()).isPresent());
     }
 
     @Test
@@ -238,16 +239,18 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
         // Notifications verifications
         assertTrue(resp.isOK());
-        List<AbstractNotification> bookingRemove = NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                                                            NotificationType.BOOKED_REMOVE,
-                                                                                            ParameterName.IDEA_ID,
-                                                                                            idee.getId());
-        assertEquals(1, bookingRemove.size());
-        assertEquals(0,
-                     NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                              NotificationType.IDEA_RESTORED,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId()).size());
+        assertEquals(1,
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.BOOKED_REMOVE)
+                                            .whereIdea(idee)
+                                            .fetch()
+                                            .size());
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(friendOfFirefox)
+                                           .whereType(NType.IDEA_RESTORED)
+                                           .whereIdea(idee)
+                                           .hasAny());
 
         // Doing the restore without the booking
         when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -258,15 +261,18 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         //   - The booking remove has been deleted (we restored the idea)
         //   - We have an idea restored notification
         assertTrue(resp.isOK());
-        assertEquals(Collections.EMPTY_LIST, NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                                                      NotificationType.BOOKED_REMOVE,
-                                                                                      ParameterName.IDEA_ID,
-                                                                                      idee.getId()));
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(friendOfFirefox)
+                                           .whereType(NType.BOOKED_REMOVE)
+                                           .whereIdea(idee)
+                                           .hasAny());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                              NotificationType.IDEA_RESTORED,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId()).size());
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.IDEA_RESTORED)
+                                            .whereIdea(idee)
+                                            .fetch()
+                                            .size());
     }
 
     @Test
@@ -286,10 +292,11 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
         // Notifications verifications
         assertTrue(resp.isOK());
-        assertEquals(0, NotificationsRepository.getNotifications(theAdmin.getId(),
-                                                                 NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                                 ParameterName.IDEA_ID,
-                                                                 idee.getId()).size());
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(theAdmin)
+                                           .whereType(NType.NEW_IDEA_BIRTHDAY_SOON)
+                                           .whereIdea(idee)
+                                           .hasAny());
         assertTrue(UserRelationsRepository.associationExists(firefox.getId(), theAdmin.getId()));
 
         // Doing the restore without the booking
@@ -300,10 +307,13 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         // Notifications
         //   - We have an idea modified given birthday closed notification
         assertTrue(resp.isOK());
-        assertEquals(1, NotificationsRepository.getNotifications(theAdmin.getId(),
-                                                                 NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                                 ParameterName.IDEA_ID,
-                                                                 idee.getId()).size());
+        assertEquals(1,
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(theAdmin)
+                                            .whereType(NType.NEW_IDEA_BIRTHDAY_SOON)
+                                            .whereIdea(idee)
+                                            .fetch()
+                                            .size());
     }
 
     @Test
@@ -321,16 +331,17 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
         // Notifications verifications
         assertTrue(resp.isOK());
-        List<AbstractNotification> bookingRemove = NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                                                            NotificationType.BOOKED_REMOVE,
-                                                                                            ParameterName.IDEA_ID,
-                                                                                            idee.getId());
-        assertEquals(1, bookingRemove.size());
-        assertEquals(0,
-                     NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                              NotificationType.IDEA_RESTORED,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId()).size());
+        assertEquals(1,
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.BOOKED_REMOVE)
+                                            .whereIdea(idee)
+                                            .fetch().size());
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(friendOfFirefox)
+                                           .whereType(NType.IDEA_RESTORED)
+                                           .whereIdea(idee)
+                                           .hasAny());
 
         // Restore / Delete / Restore
         when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -343,15 +354,17 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         assertTrue(resp.isOK());
 
         // Only one notification
-        assertEquals(Collections.EMPTY_LIST, NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                                                      NotificationType.BOOKED_REMOVE,
-                                                                                      ParameterName.IDEA_ID,
-                                                                                      idee.getId()));
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(friendOfFirefox)
+                                           .whereType(NType.BOOKED_REMOVE)
+                                           .whereIdea(idee)
+                                           .hasAny());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(friendOfFirefox.getId(),
-                                                              NotificationType.IDEA_RESTORED,
-                                                              ParameterName.IDEA_ID,
-                                                              idee.getId()).size());
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.IDEA_RESTORED)
+                                            .whereIdea(idee)
+                                            .fetch().size());
     }
 
     @Test

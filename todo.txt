@@ -13,6 +13,7 @@
 // TODO : 9 faire une passe et remplacer les exception par des Try
 // TODO : 99 faire un preview markdown pour l'édition des idées
 // TODO : 99 vérifier régulièrement si y'a pas d'autres notif
+// TODO : regarder le coverage et ajouter des tests sur les services / servlet qui n'en ont pas
 
 // TODO : pouvoir mettre un rappel de date de réservation
 // TODO : pouvoir se noter des personnes pour lesquelles on veut faire une résa

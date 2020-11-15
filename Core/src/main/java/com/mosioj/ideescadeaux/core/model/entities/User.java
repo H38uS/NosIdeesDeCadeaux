@@ -15,6 +15,11 @@ import java.util.Optional;
 
 public class User implements Comparable<User> {
 
+    /**
+     * Maximum number of days to trigger the notification birthday is closed.
+     */
+    public static final int NB_DAYS_BEFORE_BIRTHDAY = 5;
+
     /** The user's id. */
     @Expose
     public final int id;

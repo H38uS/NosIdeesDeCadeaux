@@ -1,17 +1,19 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.*;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
 import java.sql.SQLException;
 
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.MODIFIED_IDEA_BIRTHDAY_SOON;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
@@ -43,17 +45,17 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idee.getId()));
 
         // Creation du groupe
-        int group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
-        IdeesRepository.bookByGroup(idee.getId(), group);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
+        IdeesRepository.bookByGroup(idee.getId(), group.getId());
         // rafraichissement de l'idée
         idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
-        int notifId = NotificationsRepository.addNotification(_FRIEND_ID_,
-                                                              new NotifGroupEvolution(moiAutre, group, idee, true));
+        int notifId = NType.JOIN_GROUP.with(moiAutre, idee, group).sendItTo(friendOfFirefox);
         assertNotifDoesExists(notifId);
-        assertEquals(GroupIdeaRepository.getGroupDetails(group),
+        assertEquals(GroupIdeaRepository.getGroupDetails(group.getId()),
                      idee.getBookingInformation().flatMap(BookingInformation::getBookingGroup));
-        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
-        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
+        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group.getId()));
+        assertEquals(1,
+                     ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group.getId()));
 
         // Suppression
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -64,38 +66,28 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertNotifDoesNotExists(notifId);
         assertFalse(IdeesRepository.getIdea(idee.getId()).isPresent());
         // On conserve le groupe pour l'historique
-        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group));
-        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group));
+        assertEquals(1, ds.selectCountStar("select count(*) from GROUP_IDEA where id = ?", group.getId()));
+        assertEquals(1,
+                     ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group.getId()));
     }
 
     @Test
     public void testUnderlyingNotificationAreWellRemoved() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
-        assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idee.getId()));
+        Idee idea = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
+        assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idea.getId()));
 
-        int isUpToDate = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                 new NotifAskIfIsUpToDate(friendOfFirefox, idee));
-        IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
-        assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
-        int confirmedUpToDate = NotificationsRepository.addNotification(_FRIEND_ID_,
-                                                                        new NotifConfirmedUpToDate(firefox, idee));
-        int groupSuggestion = NotificationsRepository.addNotification(_FRIEND_ID_,
-                                                                      new NotifGroupSuggestion(firefox, 0, idee));
-        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                  new NotifIdeaAddedByFriend(moiAutre, idee));
-        int modifiedWhenBDSoon = NotificationsRepository.addNotification(_FRIEND_ID_,
-                                                                         new NotifIdeaModifiedWhenBirthdayIsSoon(firefox,
-                                                                                                                 idee,
-                                                                                                                 false));
-        int newComment = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNewCommentOnIdea(firefox, idee));
-        int newQuestion = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                  new NotifNewQuestionOnIdea(friendOfFirefox,
-                                                                                             idee,
-                                                                                             true));
-        int recurentUnbook = NotificationsRepository.addNotification(_FRIEND_ID_,
-                                                                     new NotifRecurentIdeaUnbook(firefox, idee));
-
+        int isUpToDate = NType.IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idea).sendItTo(firefox);
+        IsUpToDateQuestionsRepository.addAssociation(idea.getId(), friendOfFirefox.getId());
+        assertTrue(IsUpToDateQuestionsRepository.associationExists(idea, friendOfFirefox));
+        int confirmedUpToDate = NType.CONFIRMED_UP_TO_DATE.with(firefox, idea).sendItTo(friendOfFirefox);
+        int groupSuggestion = NType.GROUP_IDEA_SUGGESTION.with(firefox, idea, new IdeaGroup(0, 32))
+                                                         .sendItTo(friendOfFirefox);
+        int addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idea).sendItTo(firefox);
+        int modifiedWhenBDSoon = MODIFIED_IDEA_BIRTHDAY_SOON.with(firefox, idea).sendItTo(friendOfFirefox);
+        int newComment = NType.NEW_COMMENT_ON_IDEA.with(firefox, idea).sendItTo(firefox);
+        int newQuestion = NType.NEW_QUESTION_TO_OWNER.with(friendOfFirefox, idea).sendItTo(firefox);
+        int recurentUnbook = NType.RECURENT_IDEA_UNBOOK.with(firefox, idea).sendItTo(friendOfFirefox);
         assertTrue(isUpToDate > -1);
         assertNotifDoesExists(isUpToDate);
         assertNotifDoesExists(confirmedUpToDate);
@@ -104,12 +96,9 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertNotifDoesExists(modifiedWhenBDSoon);
         assertNotifDoesExists(newComment);
         assertNotifDoesExists(newQuestion);
-        assertNotifDoesExists(recurentUnbook);
-
-        // Suppression
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        assertNotifDoesExists(recurentUnbook);/* Suppression*/
+        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idea.getId()));
         StringServiceResponse resp = doTestServicePost();
-
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(isUpToDate);
         assertNotifDoesNotExists(confirmedUpToDate);
@@ -119,7 +108,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertNotifDoesNotExists(newComment);
         assertNotifDoesNotExists(newQuestion);
         assertNotifDoesNotExists(recurentUnbook);
-        assertFalse(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
+        assertFalse(IsUpToDateQuestionsRepository.associationExists(idea, friendOfFirefox));
     }
 
     @Test

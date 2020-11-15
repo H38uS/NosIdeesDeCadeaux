@@ -1,12 +1,9 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifFriendshipDropped;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -31,17 +28,21 @@ public class ServiceSupprimerRelation extends ServicePost<NetworkAccess> {
 
         User user = policy.getUser();
         UserRelationsRepository.deleteAssociation(user.id, thisOne.id);
-        NotificationsRepository.removeAllType(thisOne,
-                                              NotificationType.ACCEPTED_FRIENDSHIP,
-                                              ParameterName.USER_ID,
-                                              user.id);
-        UsersRepository.getUser(user.id).ifPresent(u -> NotificationsRepository.removeAllType(u,
-                                                                                              NotificationType.ACCEPTED_FRIENDSHIP,
-                                                                                              ParameterName.USER_ID,
-                                                                                              thisOne));
+
+        // Deletes old notifications
+        NotificationsRepository.terminator()
+                               .whereOwner(thisOne)
+                               .whereType(NType.ACCEPTED_FRIENDSHIP)
+                               .whereUser(user)
+                               .terminates();
+        NotificationsRepository.terminator()
+                               .whereOwner(user)
+                               .whereType(NType.ACCEPTED_FRIENDSHIP)
+                               .whereUser(thisOne)
+                               .terminates();
 
         // Send a notification
-        NotificationsRepository.addNotification(user.id, new NotifFriendshipDropped(thisOne));
+        NType.FRIENDSHIP_DROPPED.with(thisOne).sendItTo(user);
 
         buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }

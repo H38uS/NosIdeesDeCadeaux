@@ -3,7 +3,8 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -16,17 +17,17 @@ public class NotificationsRepositoryTest extends TemplateTest {
         // Given this notification
         Idee idee = IdeesRepository.getIdeasOf(firefox.id).get(0);
         IdeaGroup group = new IdeaGroup(35, 200);
-        NotifGroupSuggestion suggestion = new NotifGroupSuggestion(firefox, group.getId(), idee);
-        NotificationsRepository.findNotificationMatching(firefox.id, suggestion)
+        Notification suggestion = NType.GROUP_IDEA_SUGGESTION.with(firefox, idee, group).setOwner(firefox);
+        NotificationsRepository.findNotificationsMatching(suggestion)
                                .forEach(NotificationsRepository::remove);
 
         // Nothing before
-        assertEquals(0, NotificationsRepository.findNotificationMatching(firefox.id, suggestion).size());
+        assertEquals(0, NotificationsRepository.findNotificationsMatching(suggestion).size());
 
         // Insert it
-        NotificationsRepository.addNotification(firefox.id, suggestion);
+        suggestion.sendItTo(firefox);
 
         // Should be there!
-        assertEquals(1, NotificationsRepository.findNotificationMatching(firefox.id, suggestion).size());
+        assertEquals(1, NotificationsRepository.findNotificationsMatching(suggestion).size());
     }
 }

@@ -2,10 +2,9 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifRecurentIdeaUnbook;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
@@ -46,13 +45,13 @@ public class ServiceJeLaVeuxEncore extends ServicePost<IdeaModification> {
         Set<User> toBeNotified = new HashSet<>(idea.getBookers());
 
         // Puis si l'anniversaire est proche, tous les amis !
-        if (thisOne.getNbDaysBeforeBirthday() < NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY) {
+        if (thisOne.getNbDaysBeforeBirthday() < User.NB_DAYS_BEFORE_BIRTHDAY) {
             toBeNotified.addAll(UserRelationsRepository.getAllUsersInRelation(thisOne));
         }
 
         // Notification
-        toBeNotified.forEach(u -> NotificationsRepository.addNotification(u.id,
-                                                                          new NotifRecurentIdeaUnbook(thisOne, idea)));
+        final Notification NeedAgainNotification = NType.RECURENT_IDEA_UNBOOK.with(thisOne, idea);
+        toBeNotified.forEach(NeedAgainNotification::sendItTo);
 
         // On supprime les réservations
         IdeesRepository.toutDereserver(idea.getId());

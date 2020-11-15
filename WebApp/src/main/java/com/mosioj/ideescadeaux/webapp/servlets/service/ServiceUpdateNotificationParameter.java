@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
@@ -33,7 +33,7 @@ public class ServiceUpdateNotificationParameter extends ServicePost<AllAccessToP
 
         String message = "";
         try {
-            NotificationType.valueOf(name);
+            NType.valueOf(name);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             message = "Type de notification inconnu...";

@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class ServiceUpdateNotificationParameterTestWebApp extends AbstractTestSe
     @Test
     public void testInvalidValue() {
 
-        when(request.getParameter("name")).thenReturn(NotificationType.FRIENDSHIP_DROPPED.toString());
+        when(request.getParameter("name")).thenReturn(NType.FRIENDSHIP_DROPPED.toString());
         when(request.getParameter("value")).thenReturn("toto");
 
         StringServiceResponse resp = doTestServicePost();
@@ -52,7 +52,7 @@ public class ServiceUpdateNotificationParameterTestWebApp extends AbstractTestSe
     @Test
     public void testSucces() {
 
-        when(request.getParameter("name")).thenReturn(NotificationType.FRIENDSHIP_DROPPED.toString());
+        when(request.getParameter("name")).thenReturn(NType.FRIENDSHIP_DROPPED.toString());
         when(request.getParameter("value")).thenReturn(NotificationActivation.SITE.toString());
 
         StringServiceResponse resp = doTestServicePost();

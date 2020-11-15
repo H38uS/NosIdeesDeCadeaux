@@ -2,9 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.logichelpers;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaModifiedWhenBirthdayIsSoon;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -17,7 +16,6 @@ import org.springframework.mobile.device.Device;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
@@ -32,23 +30,6 @@ public class IdeaLogic {
 
     private IdeaLogic() {
         // Forbidden - helper
-    }
-
-    /**
-     * @param user The user.
-     * @param idea The idea.
-     * @return True if it already has and if no error occured.
-     */
-    private static boolean hasIdeaModifiedNotifForThis(User user, Idee idea) {
-        try {
-            return NotificationsRepository.getNotifications(user.id,
-                                                            NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                            ParameterName.IDEA_ID,
-                                                            idea.getId()).size() == 0;
-        } catch (SQLException e) {
-            logger.error("Fail to add a notification.", e);
-            return false;
-        }
     }
 
     /**
@@ -76,7 +57,7 @@ public class IdeaLogic {
                                       .checkEmpty()
                                       .checkIfInteger()
                                       .build().getErrors());
-        
+
         return errors;
     }
 
@@ -88,16 +69,15 @@ public class IdeaLogic {
      * @param isNew Whether this is a new idea or not.
      */
     public static void addModificationNotification(User user, Idee idea, boolean isNew) {
-        if (user.getNbDaysBeforeBirthday() < NotifIdeaModifiedWhenBirthdayIsSoon.NB_DAYS_BEFORE_BIRTHDAY) {
+        if (user.getNbDaysBeforeBirthday() < User.NB_DAYS_BEFORE_BIRTHDAY) {
             // Send a notification for each user that has no such modification notification yet
             final List<User> users = UserRelationsRepository.getAllUsersInRelation(user);
             users.parallelStream()
-                 .filter(u -> hasIdeaModifiedNotifForThis(u, idea))
-                 .forEach(u -> NotificationsRepository.addNotification(u.id,
-                                                                       new NotifIdeaModifiedWhenBirthdayIsSoon(user,
-                                                                                                               idea,
-                                                                                                               isNew))
-                 );
+                 .map(u -> isNew ?
+                         NType.NEW_IDEA_BIRTHDAY_SOON.with(user, idea).setOwner(u) :
+                         NType.MODIFIED_IDEA_BIRTHDAY_SOON.with(user, idea).setOwner(u))
+                 .filter(n -> NotificationsRepository.findNotificationsMatching(n).isEmpty())
+                 .forEach(Notification::send);
         }
     }
 

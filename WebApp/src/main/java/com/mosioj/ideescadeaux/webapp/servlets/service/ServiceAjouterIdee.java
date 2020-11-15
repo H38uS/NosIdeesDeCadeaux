@@ -3,8 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
@@ -24,6 +23,8 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
 
 @WebServlet("/protected/service/ajouter_idee")
 public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
@@ -80,14 +81,19 @@ public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
                 IdeaLogic.addModificationNotification(addedToUser, idea, true);
                 if (isItByMeForMe) {
                     // Pour soit : uniquement la notif plus d'idée
-                    NotificationsRepository.removeAllType(thisOne, NotificationType.NO_IDEA);
+                    NotificationsRepository.terminator()
+                                           .whereOwner(thisOne)
+                                           .whereType(NType.NO_IDEA)
+                                           .terminates();
                 } else {
                     // Si ce n'est pas une surprise, envoie de notification
                     // Et suppression des notifications NO_IDEA
                     if (!idea.isASurprise()) {
-                        final NotifIdeaAddedByFriend addedByFriend = new NotifIdeaAddedByFriend(thisOne, idea);
-                        NotificationsRepository.addNotification(addedToUser.id, addedByFriend);
-                        NotificationsRepository.removeAllType(addedToUser, NotificationType.NO_IDEA);
+                        IDEA_ADDED_BY_FRIEND.with(thisOne, idea).sendItTo(addedToUser);
+                        NotificationsRepository.terminator()
+                                               .whereOwner(addedToUser)
+                                               .whereType(NType.NO_IDEA)
+                                               .terminates();
                     }
                 }
 

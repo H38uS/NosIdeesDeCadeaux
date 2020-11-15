@@ -2,9 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewQuestionOnIdea;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
@@ -23,6 +22,9 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_QUESTION_ON_IDEA;
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_QUESTION_TO_OWNER;
+
 @WebServlet("/protected/idee_questions")
 public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQuestions> {
 
@@ -40,18 +42,15 @@ public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQu
     /**
      * Drops all notification linked to questions of the given owner links to the given idea.
      *
-     * @param owner  The owner.
-     * @param ideaId The idea id.
+     * @param owner The owner.
+     * @param idea  The idea parameter.
      */
-    private void dropNotificationOnView(User owner, int ideaId) {
-        NotificationsRepository.removeAllType(owner,
-                                              NotificationType.IDEA_ADDED_BY_FRIEND,
-                                              ParameterName.IDEA_ID,
-                                              ideaId);
-        NotificationsRepository.removeAllType(owner,
-                                              NotificationType.NEW_QUESTION_ON_IDEA,
-                                              ParameterName.IDEA_ID,
-                                              ideaId);
+    private void dropNotificationOnView(User owner, Idee idea) {
+        NotificationsRepository.terminator()
+                               .whereOwner(owner)
+                               .whereType(NType.IDEA_ADDED_BY_FRIEND, NEW_QUESTION_ON_IDEA, NEW_QUESTION_TO_OWNER)
+                               .whereIdea(idea)
+                               .terminates();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQu
         request.setAttribute("idee", idea);
         request.setAttribute("isOwner", idea.owner == thisOne);
         request.setAttribute("comments", QuestionsRepository.getCommentsOn(idea.getId()));
-        dropNotificationOnView(thisOne, idea.getId());
+        dropNotificationOnView(thisOne, idea);
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }
 
@@ -89,15 +88,14 @@ public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQu
 
         // Removing current user, and notifying others
         toBeNotified.remove(current);
-        logger.debug(MessageFormat.format("Personnes à prévenir : {0}", toBeNotified));
-        for (User notified : toBeNotified) {
-            NotificationsRepository.addNotification(notified.id,
-                                                    new NotifNewQuestionOnIdea(current,
-                                                                               idea,
-                                                                               idea.owner.equals(notified)));
-        }
+        logger.debug("Personnes à prévenir : {}.", toBeNotified);
+        toBeNotified.stream()
+                    .map(u -> idea.owner.equals(u) ?
+                            NEW_QUESTION_TO_OWNER.with(current, idea).setOwner(u) :
+                            NEW_QUESTION_ON_IDEA.with(current, idea).setOwner(u))
+                    .forEach(Notification::send);
 
-        dropNotificationOnView(thisOne, idea.getId());
+        dropNotificationOnView(thisOne, idea);
         RootingsUtils.redirectToPage(WEB_SERVLET + "?" + IDEA_ID_PARAM + "=" + idea.getId(), request, response);
     }
 

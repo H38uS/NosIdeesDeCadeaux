@@ -1,22 +1,19 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
+import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/protected/suggestion_rejoindre_reseau")
 public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAccess> {
@@ -31,7 +28,7 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAc
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         User suggestTo = policy.getUser();
 
@@ -46,8 +43,7 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAc
         }
         if (sent.size() > 0) {
             // Send a notification
-            NotificationsRepository.addNotification(suggestTo.id,
-                                                    new NotifNewRelationSuggestion(thisOne.id, thisOne.getName()));
+            NType.NEW_RELATION_SUGGESTION.with(thisOne).sendItTo(suggestTo);
             request.setAttribute("user", UsersRepository.getUser(suggestTo.id));
             request.setAttribute("users", sent);
             RootingsUtils.rootToPage(URL_SUCCESS, request, response);

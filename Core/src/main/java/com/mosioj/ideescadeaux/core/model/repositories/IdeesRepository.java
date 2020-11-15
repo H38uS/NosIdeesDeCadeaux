@@ -301,8 +301,10 @@ public class IdeesRepository extends AbstractRepository {
      * @param idIdee The idea's id.
      * @return All fields for this idea.
      */
-    public static Optional<Idee> getIdea(int idIdee) {
-
+    public static Optional<Idee> getIdea(Integer idIdee) {
+        if (idIdee == null) {
+            return Optional.empty();
+        }
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));
         query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') <> ''DELETED''", IdeeColumns.STATUS));

@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -64,10 +65,10 @@ public class ServiceCreationGroup extends ServicePost<IdeaInteraction> {
 
         final int userId = thisOne.id;
         if (IdeesRepository.canBook(idea.getId(), userId)) {
-            final int groupId = GroupIdeaRepository.createAGroup(total, amount, userId);
-            IdeesRepository.bookByGroup(idea.getId(), groupId);
+            final IdeaGroup group = GroupIdeaRepository.createAGroup(total, amount, userId);
+            IdeesRepository.bookByGroup(idea.getId(), group.getId());
             logger.debug("Total: {}, amount: {}", total, amount);
-            buildResponse(response, ServiceResponse.ok(groupId, isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ok(group.getId(), isAdmin(request), thisOne));
         } else {
             buildResponse(response, ServiceResponse.ko("L'idée est déjà réservée.", isAdmin(request), thisOne));
         }

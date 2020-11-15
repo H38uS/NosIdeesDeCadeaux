@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -25,16 +25,20 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
 
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
 
-        NotificationsRepository.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
-        List<AbstractNotification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id,
-                                                                                         NotificationType.IS_IDEA_UP_TO_DATE);
+
+        NotificationsRepository.terminator()
+                               .whereOwner(friendOfFirefox)
+                               .whereType(NType.IS_IDEA_UP_TO_DATE)
+                               .terminates();
+        List<Notification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox,
+                                                                                 NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
+        notifs = NotificationsRepository.getUserNotifications(friendOfFirefox, NType.IS_IDEA_UP_TO_DATE);
         assertEquals(1, notifs.size());
     }
 
@@ -43,9 +47,11 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
 
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
 
-        NotificationsRepository.removeAllType(friendOfFirefox, NotificationType.IS_IDEA_UP_TO_DATE);
-        List<AbstractNotification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id,
-                                                                                         NotificationType.IS_IDEA_UP_TO_DATE);
+        NotificationsRepository.terminator()
+                               .whereOwner(friendOfFirefox)
+                               .whereType(NType.IS_IDEA_UP_TO_DATE)
+                               .terminates();
+        List<Notification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox, NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
@@ -54,7 +60,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
         assertFalse(resp.isOK());
         assertEquals("Impossible de réserver / demander des nouvelles sur cette idée... Il s'agit d'une surprise !",
                      resp.getMessage());
-        notifs = NotificationsRepository.getUserNotifications(friendOfFirefox.id, NotificationType.IS_IDEA_UP_TO_DATE);
+        notifs = NotificationsRepository.getUserNotifications(friendOfFirefox, NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size()); // On ne peut pas demander sur une surprise
     }
 

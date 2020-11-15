@@ -3,9 +3,9 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifGroupSuggestion;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGetAndPost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository.getIdeaFromGroup;
-import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationMatching;
+import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationsMatching;
 
 @WebServlet("/protected/service/group/suggest")
 public class ServiceSuggestIdeaGroup extends ServiceGetAndPost<BookingGroupInteraction> {
@@ -53,10 +53,10 @@ public class ServiceSuggestIdeaGroup extends ServiceGetAndPost<BookingGroupInter
         logger.debug("Getting potential suggestions for the group {}...", group.getId());
 
         // Tous les utilisateurs qui peuvent être intéressés, filtré sur ceux qui n'ont pas la notif
-        final NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, group.getId(), idee);
+        final Notification suggestion = NType.GROUP_IDEA_SUGGESTION.with(thisOne, idee, group);
         List<User> candidates = IdeesRepository.getPotentialGroupUser(group.getId(), thisOne.id)
                                                .stream()
-                                               .filter(u -> findNotificationMatching(u.id, suggestion).isEmpty())
+                                               .filter(u -> findNotificationsMatching(suggestion.setOwner(u)).isEmpty())
                                                .collect(Collectors.toList());
 
         logger.debug(MessageFormat.format("Potential users: {0}", candidates));
@@ -75,18 +75,18 @@ public class ServiceSuggestIdeaGroup extends ServiceGetAndPost<BookingGroupInter
         // The notification we are trying to send
         IdeaGroup group = policy.getGroupId();
         Idee idee = getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
-        final NotifGroupSuggestion suggestion = new NotifGroupSuggestion(thisOne, group.getId(), idee);
+        final Notification suggestion = NType.GROUP_IDEA_SUGGESTION.with(thisOne, idee, group);
 
         // Récupération des utilisateurs qui n'ont pas encore cette notification...
         List<User> selectedUsers = userIds.map(Integer::new)
                                           .map(UsersRepository::getUser)
                                           .filter(Optional::isPresent)
                                           .map(Optional::get)
-                                          .filter(u -> findNotificationMatching(u.id, suggestion).isEmpty())
+                                          .filter(u -> findNotificationsMatching(suggestion.setOwner(u)).isEmpty())
                                           .collect(Collectors.toList());
 
         // ... Envoie de la notification
-        selectedUsers.forEach(u -> NotificationsRepository.addNotification(u.id, suggestion));
+        selectedUsers.forEach(suggestion::sendItTo);
         logger.debug("Notification sent to: {}", selectedUsers);
 
         buildResponse(response, ServiceResponse.ok(selectedUsers, isAdmin(request), thisOne));

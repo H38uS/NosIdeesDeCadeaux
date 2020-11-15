@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -24,14 +23,11 @@ public class BirthdayNotifier {
      * @param nbDays The number of days before the next birthday.
      */
     public void findBirthdayAndSendMailToFriends(int nbDays) {
-        List<User> users;
         try {
-            users = UserRelationsRepository.getBirthday(nbDays);
+            UserRelationsRepository.getBirthday(nbDays).parallelStream().forEach(u -> sendMailToFriends(u, nbDays));
         } catch (SQLException e) {
             logger.error(MessageFormat.format("Fail to get the user list: {0}", e.getMessage()));
-            return;
         }
-        users.parallelStream().forEach(u -> sendMailToFriends(u, nbDays));
     }
 
     /**
@@ -40,14 +36,11 @@ public class BirthdayNotifier {
      * @param nbDays The number of days before the next birthday.
      */
     public void findBirthdayAndSendMailToTheLuckyOne(int nbDays) {
-        List<User> users;
         try {
-            users = UserRelationsRepository.getBirthday(nbDays);
+            UserRelationsRepository.getBirthday(nbDays).parallelStream().forEach(u -> sendMailToLuckyOne(u, nbDays));
         } catch (SQLException e) {
             logger.error(MessageFormat.format("Fail to get the user list: {0}", e.getMessage()));
-            return;
         }
-        users.parallelStream().forEach(u -> sendMailToLuckyOne(u, nbDays));
     }
 
     /**
@@ -57,10 +50,8 @@ public class BirthdayNotifier {
      * @param nbDays The number of days before the birthday comes.
      */
     private void sendMailToLuckyOne(User user, int nbDays) {
-        logger.info(MessageFormat.format("Envoie d''un mail à {0} ({1}) pour son anniversaire dans {2} jours !",
-                                         user,
-                                         user.id,
-                                         nbDays));
+
+        logger.info("Envoie d''un mail à {} ({}) pour son anniversaire dans {} jours !", user, user.id, nbDays);
 
         String body = EmailSender.MY_PROPERTIES.get("birthday_lucky").toString();
         body = body.replaceAll("\\$\\$nb_jours\\$\\$", nbDays + "");

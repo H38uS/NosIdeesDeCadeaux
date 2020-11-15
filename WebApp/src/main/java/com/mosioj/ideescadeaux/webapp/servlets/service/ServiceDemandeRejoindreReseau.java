@@ -1,9 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNouvelleDemandeAmi;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -16,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_FRIENSHIP_REQUEST;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
 public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejoindreLeReseau> {
@@ -50,21 +50,20 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
         }
 
         // Suppression des notifications
-        NotificationsRepository.removeAllType(thisOne,
-                                              NotificationType.NEW_RELATION_SUGGESTION,
-                                              ParameterName.USER_ID,
-                                              userToSendInvitation.id);
-        NotificationsRepository.removeAllType(userToSendInvitation,
-                                              NotificationType.NEW_RELATION_SUGGESTION,
-                                              ParameterName.USER_ID,
-                                              thisOne);
+        NotificationsRepository.terminator()
+                               .whereOwner(thisOne)
+                               .whereType(NType.NEW_RELATION_SUGGESTION)
+                               .whereUser(userToSendInvitation)
+                               .terminates();
+        NotificationsRepository.terminator()
+                               .whereOwner(userToSendInvitation)
+                               .whereType(NType.NEW_RELATION_SUGGESTION)
+                               .whereUser(thisOne)
+                               .terminates();
 
         // On ajoute l'association
         UserRelationRequestsRepository.insert(thisOne, userToSendInvitation);
-        NotificationsRepository.addNotification(userToSendInvitation.id,
-                                                new NotifNouvelleDemandeAmi(thisOne,
-                                                                            userToSendInvitation.id,
-                                                                            thisOne.getName()));
+        NEW_FRIENSHIP_REQUEST.with(thisOne).sendItTo(userToSendInvitation);
 
         buildResponse(response, ServiceResponse.ok("", isAdmin(request), thisOne));
     }

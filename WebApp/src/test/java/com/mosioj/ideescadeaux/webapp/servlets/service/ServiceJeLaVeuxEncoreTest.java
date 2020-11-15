@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
@@ -25,11 +26,10 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
         // Création de l'idée et réservation par un groupe
         Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
         IdeesRepository.toutDereserver(idea.getId());
-        int groupId = GroupIdeaRepository.createAGroup(20, 10, friendOfFirefox.getId());
-        IdeesRepository.bookByGroup(idea.getId(), groupId);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(20, 10, friendOfFirefox.getId());
+        IdeesRepository.bookByGroup(idea.getId(), group.getId());
 
         // Vérification que c'est bien réservé par un groupe
-        assertTrue(GroupIdeaRepository.getGroupDetails(groupId).isPresent());
         assertEquals(BookingInformation.BookingType.GROUP,
                      IdeesRepository.getIdea(idea.getId())
                                     .map(Idee::getBookingType)
@@ -41,7 +41,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
 
         // Vérification
         assertTrue(resp.isOK());
-        assertFalse(GroupIdeaRepository.getGroupDetails(groupId).isPresent());
+        assertFalse(GroupIdeaRepository.getGroupDetails(group.getId()).isPresent());
         assertEquals(BookingInformation.BookingType.NONE,
                      IdeesRepository.getIdea(idea.getId())
                                     .map(Idee::getBookingType)

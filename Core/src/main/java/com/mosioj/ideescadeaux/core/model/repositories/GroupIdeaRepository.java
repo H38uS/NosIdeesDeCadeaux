@@ -32,15 +32,15 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param total  Total amount wanted for this idea.
      * @param amount Amount paid by this user.
      * @param userId First user belonging to this new group.
-     * @return The group's idea
+     * @return The created group.
      */
-    public static int createAGroup(double total, double amount, int userId) throws SQLException {
+    public static IdeaGroup createAGroup(double total, double amount, int userId) throws SQLException {
         int id = getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1}) values (?)",
                                                                         TABLE_NAME,
                                                                         GroupIdeaColumns.NEEDED_PRICE),
                                                    total);
         addNewAmount(amount, userId, id);
-        return id;
+        return getGroupDetails(id).orElseThrow(SQLException::new);
     }
 
     /**
@@ -67,7 +67,11 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param groupId The group id.
      * @return The optional group object.
      */
-    public static Optional<IdeaGroup> getGroupDetails(int groupId) {
+    public static Optional<IdeaGroup> getGroupDetails(Integer groupId) {
+
+        if (groupId == null) {
+            return Optional.empty();
+        }
 
         Optional<IdeaGroup> group = Optional.empty();
         StringBuilder q = new StringBuilder();

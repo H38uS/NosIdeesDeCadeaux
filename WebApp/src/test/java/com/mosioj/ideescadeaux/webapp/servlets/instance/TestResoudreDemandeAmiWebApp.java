@@ -1,10 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifDemandeRefusee;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifFriendshipDropped;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNouvelleDemandeAmi;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -16,6 +12,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -50,18 +47,11 @@ public class TestResoudreDemandeAmiWebApp extends AbstractTestServletWebApp {
         assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
 
         // Ajout des notifs
-        int n1 = NotificationsRepository.addNotification(_OWNER_ID_, new NotifDemandeRefusee(_MOI_AUTRE_, "Moi Autre"));
-        int n2 = NotificationsRepository.addNotification(_MOI_AUTRE_, new NotifFriendshipDropped(firefox));
-        int newRelationSuggestion = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                            new NotifNewRelationSuggestion(_MOI_AUTRE_,
-                                                                                                 "Friend of firefox"));
-        int notRemoved = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                 new NotifNewRelationSuggestion(_FRIEND_ID_,
-                                                                                      "Friend of firefox"));
-        int newFriendshipRequest = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                           new NotifNouvelleDemandeAmi(moiAutre,
-                                                                                             _OWNER_ID_,
-                                                                                             "Moi autre"));
+        int n1 = REJECTED_FRIENDSHIP.with(moiAutre).sendItTo(firefox);
+        int n2 = NType.FRIENDSHIP_DROPPED.with(firefox).sendItTo(moiAutre);
+        int newRelationSuggestion = NEW_RELATION_SUGGESTION.with(moiAutre).sendItTo(firefox);
+        int notRemoved = NEW_RELATION_SUGGESTION.with(friendOfFirefox).sendItTo(firefox);
+        int newFriendshipRequest = NEW_FRIENSHIP_REQUEST.with(moiAutre).sendItTo(firefox);
         assertNotifDoesExists(n1);
         assertNotifDoesExists(n2);
         assertNotifDoesExists(newRelationSuggestion);

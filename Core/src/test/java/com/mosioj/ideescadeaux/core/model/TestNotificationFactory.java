@@ -1,34 +1,33 @@
 package com.mosioj.ideescadeaux.core.model;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationFactory;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
+import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.HashMap;
 
 public class TestNotificationFactory extends TemplateTest {
 
+    /** Class logger. */
     private final Logger logger = LogManager.getLogger(TestNotificationFactory.class);
 
     @Test
-    public void test() throws SQLException {
-        for (NotificationType type : NotificationType.values()) {
+    public void test() {
+        for (NType type : NType.values()) {
             logger.info(MessageFormat.format("Testing creation of type: {0}", type));
-            @SuppressWarnings("unused")
-            AbstractNotification n = NotificationFactory.buildIt(42,
-                                                                 firefox,
-                                                                 type.name(),
-                                                                 "Toto à la plage",
-                                                                 null,
-                                                                 true,
-                                                                 null,
-                                                                 new HashMap<>());
+            final IdeaGroup group = new IdeaGroup(42, 300);
+            type.with(firefox,
+                      Idee.builder()
+                          .withId(35)
+                          .withText("Toto à la plage")
+                          .withBookingInformation(BookingInformation.fromAGroup(group, null))
+                          .build(),
+                      group);
         }
     }
 

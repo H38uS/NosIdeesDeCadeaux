@@ -1,7 +1,5 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAdministration;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.CreationCompte;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -51,7 +49,6 @@ public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
     @Test
     public void testSuccess() throws SQLException {
 
-        long count = countNewInscriptionNotification();
         ds.executeUpdate("delete from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr");
         assertEquals(0,
                      ds.selectCountStar("select count(*) from USERS where email = ?",
@@ -69,14 +66,5 @@ public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
         verify(request).getRequestDispatcher(eq(CreationCompte.SUCCES_URL));
         verify(request, never()).getRequestDispatcher(eq(RootingsUtils.PUBLIC_SERVER_ERROR_JSP));
         verify(request, never()).getRequestDispatcher(eq(CreationCompte.FORM_URL));
-        assertEquals(count + 1, countNewInscriptionNotification());
     }
-
-    protected long countNewInscriptionNotification() throws SQLException {
-        return NotificationsRepository.getUserNotifications(theAdmin)
-                                      .stream()
-                                      .filter(n -> NotifAdministration.class.equals(n.getClass()))
-                                      .count();
-    }
-
 }

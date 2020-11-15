@@ -26,7 +26,7 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
 
     private boolean hasAccess(HttpServletRequest request) {
 
-        friend = ParametersUtils.readInt(request, userParameter).flatMap(UsersRepository::getUser).orElse(null);
+        friend = ParametersUtils.readInt(request, userParameter).flatMap(UsersRepository::getUser).orElse(connectedUser);
         if (friend == null) {
             lastReason = "Aucun utilisateur trouvé en paramètre.";
             return false;

@@ -1,8 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -31,7 +30,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void testAjouterIdeeAmisSuccess() throws IOException {
 
-        int noIdea = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifNoIdea());
+        int noIdea = NType.NO_IDEA.buildDefault().sendItTo(friendOfFirefox);
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();
@@ -50,7 +49,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void testAjouterSurpriseAUnAmisSuccess() throws IOException {
 
-        int noIdea = NotificationsRepository.addNotification(_FRIEND_ID_, new NotifNoIdea());
+        int noIdea = NType.NO_IDEA.buildDefault().sendItTo(friendOfFirefox);
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();
@@ -71,7 +70,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void testPostSuccess() throws IOException {
 
-        int noIdea = NotificationsRepository.addNotification(_OWNER_ID_, new NotifNoIdea());
+        int noIdea = NType.NO_IDEA.buildDefault().sendItTo(firefox);
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();
@@ -115,10 +114,10 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         final int nbIdeas = IdeesRepository.getIdeasOf(moiAutre.getId()).size();
 
         // Removing previous notifications if any
-        final NotificationType birthdayIsSoon = NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON;
+        final NType birthdayIsSoon = NType.NEW_IDEA_BIRTHDAY_SOON;
         UserRelationsRepository.getAllUsersInRelation(moiAutre)
                                .stream()
-                               .flatMap(u -> NotificationsRepository.getUserNotifications(u.getId(), birthdayIsSoon)
+                               .flatMap(u -> NotificationsRepository.getUserNotifications(u, birthdayIsSoon)
                                                                     .stream())
                                .forEach(NotificationsRepository::remove);
 
@@ -134,7 +133,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         assertEquals(Collections.emptyList(), UserRelationsRepository.getAllUsersInRelation(moiAutre)
                                                                      .stream()
                                                                      .map(u -> NotificationsRepository.getUserNotifications(
-                                                                             u.getId(),
+                                                                             u,
                                                                              birthdayIsSoon))
                                                                      .filter(notifs -> !notifs.isEmpty())
                                                                      .collect(Collectors.toList()));

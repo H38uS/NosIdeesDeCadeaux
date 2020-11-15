@@ -7,13 +7,13 @@ import java.util.List;
 public class ChildNotifications {
 
     private final User child;
-    private final List<AbstractNotification> notifications;
+    private final List<Notification> notifications;
 
     /**
      * @param child         The child user
      * @param notifications The child notifications.
      */
-    public ChildNotifications(User child, List<AbstractNotification> notifications) {
+    public ChildNotifications(User child, List<Notification> notifications) {
         this.child = child;
         this.notifications = notifications;
     }
@@ -28,7 +28,7 @@ public class ChildNotifications {
     /**
      * @return The child notifications.
      */
-    public List<AbstractNotification> getNotifications() {
+    public List<Notification> getNotifications() {
         return notifications;
     }
 }

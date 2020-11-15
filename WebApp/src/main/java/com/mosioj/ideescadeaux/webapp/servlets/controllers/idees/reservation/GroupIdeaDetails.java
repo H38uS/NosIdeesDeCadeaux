@@ -2,8 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
@@ -45,10 +44,11 @@ public class GroupIdeaDetails extends IdeesCadeauxGetServlet<BookingGroupInterac
         Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
 
         // Suppression des notif's si y'en a
-        NotificationsRepository.getNotifications(thisOne.id,
-                                                 NotificationType.GROUP_IDEA_SUGGESTION,
-                                                 ParameterName.GROUP_ID,
-                                                 group.getId()).forEach(NotificationsRepository::remove);
+        NotificationsRepository.terminator()
+                               .whereOwner(thisOne)
+                               .whereType(NType.GROUP_IDEA_SUGGESTION)
+                               .whereGroupIdea(group)
+                               .terminates();
 
         request.setAttribute("idee", idee);
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);

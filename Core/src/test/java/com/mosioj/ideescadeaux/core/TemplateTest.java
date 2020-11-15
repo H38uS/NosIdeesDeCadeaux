@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.core;
 
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
 import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
@@ -63,7 +63,7 @@ public class TemplateTest {
         String email = ds.selectString("select email from USERS where id = ?", 3).orElseThrow(SQLException::new);
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
-        for (NotificationType type : NotificationType.values()) {
+        for (NType type : NType.values()) {
             final User firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
             UserRelationsRepository.getAllUsersInRelation(firefox)
                                    .forEach(u -> {

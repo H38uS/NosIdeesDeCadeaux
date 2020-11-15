@@ -2,13 +2,17 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserter;
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.*;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
+import com.mosioj.ideescadeaux.core.model.notifications.NotificationFactory;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,84 +22,72 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-import static com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationParametersColumns.*;
+import static com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns.*;
 
 public class NotificationsRepository extends AbstractRepository {
 
+    /** Class logger. */
     private static final Logger logger = LogManager.getLogger(NotificationsRepository.class);
 
+    /** The table name storing notifications. */
     public static final String TABLE_NAME = "NOTIFICATIONS";
-    public static final String TABLE_PARAMS = "NOTIFICATION_PARAMETERS";
 
+    /** Specific type for administration notification. */
     public static final String NOTIF_TYPE_ADMIN_ERROR = "ADMIN_ERROR";
+
+    /** Specific type for administration notification. */
     public static final String NOTIF_TYPE_NEW_INSCRIPTION = "NEW_INSCRIPTION";
 
+    /** The properties used by this repository. */
     private static final Properties notificationProperties = new Properties();
-
-    private NotificationsRepository() {
-        // Forbidden
-    }
 
     /**
      * Save and send a notification.
      *
-     * @param userId The user that will receive this notification.
-     * @param notif  The notification.
+     * @param notification The notification.
      * @return The id of the notification created, or -1 if none were created.
      */
-    public static int addNotification(int userId, AbstractNotification notif) {
+    // TODO retourner un optional de Integer voire de Notification
+    public static int add(Notification notification) {
 
-        logger.info(MessageFormat.format("Creating notification {0} for user {1}", notif.getType(), userId));
+        logger.info("Creating notification {} for user {}. Parameters: user={}, idea={}, group={}.",
+                    notification.getType(),
+                    notification.getOwner(),
+                    notification.getUserParameter(),
+                    notification.getIdeaParameter(),
+                    notification.getGroupParameter());
         int id = -1;
         try {
-            NotificationActivation activation = getActivationType(userId, notif);
+            NotificationActivation activation = getActivationType(notification.getOwner().getId(), notification);
 
             // Insertion en base
             if (activation == NotificationActivation.SITE || activation == NotificationActivation.EMAIL_SITE) {
-                try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(),
-                                                                                            MessageFormat.format(
-                                                                                                    "insert into {0} (owner, text, type, creation_date) values (?, ?, ?, now())",
-                                                                                                    TABLE_NAME))) {
-                    ps.bindParameters(userId, notif.getTextToInsert(), notif.getType());
+                final String query = "insert into NOTIFICATIONS " +
+                                     " (owner, type, creation_date, user_id_param, idea_id_param, group_id_param) " +
+                                     " values " +
+                                     " (?,     ?,    now(),         ?,             ?,             ?)";
+                try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), query)) {
+                    ps.bindParameters(notification.getOwner().getId(),
+                                      notification.getType(),
+                                      notification.getUserParameter().orElse(null),
+                                      notification.getIdeaParameter().orElse(null),
+                                      notification.getGroupParameter().orElse(null));
                     id = ps.executeUpdate();
-                }
-
-                if (id > 0) {
-                    logger.debug(MessageFormat.format("Creating parameters for notification {0}", id));
-                    Map<ParameterName, Object> notifParams = notif.getParameters();
-                    for (ParameterName key : notifParams.keySet()) {
-                        try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(),
-                                                                                                    MessageFormat.format(
-                                                                                                            "insert into {0} ({1},{2},{3}) values (?, ?, ?)",
-                                                                                                            TABLE_PARAMS,
-                                                                                                            NOTIFICATION_ID,
-                                                                                                            PARAMETER_NAME,
-                                                                                                            PARAMETER_VALUE))) {
-                            ps.bindParameters(id, key, notifParams.get(key).toString());
-                            ps.executeUpdate();
-                        }
-                    }
                 }
             }
 
             // Envoie de la notification par email si besoin
             if (activation == NotificationActivation.EMAIL || activation == NotificationActivation.EMAIL_SITE) {
-                getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
-                                                          UsersColumns.EMAIL,
-                                                          UsersRepository.TABLE_NAME,
-                                                          UsersColumns.ID),
-                                     userId)
-                       .ifPresent(e -> notif.sendEmail(e, notificationProperties.get("urlTillProtectedPublic")));
+                notification.sendEmail(notification.getOwner().getEmail(),
+                                       notificationProperties.get("urlTillProtectedPublic"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            logger.warn("Exception while trying to add a notification: " + e.getMessage());
+            logger.warn("Exception while trying to add a notification.", e);
         }
 
         return id;
@@ -107,143 +99,136 @@ public class NotificationsRepository extends AbstractRepository {
      * @return The activation type. Default is EMAIL_SITE.
      */
     private static NotificationActivation getActivationType(int userId,
-                                                            AbstractNotification notif) throws SQLException {
+                                                            Notification notif) throws SQLException {
         try {
-            final String value = UserParametersRepository.getParameter(userId, notif.getType()).orElse("EMAIL_SITE");
+            final String value = UserParametersRepository.getParameter(userId, notif.getType().name())
+                                                         .orElse("EMAIL_SITE");
             return NotificationActivation.valueOf(value);
         } catch (IllegalArgumentException e) {
             return NotificationActivation.EMAIL_SITE;
         }
     }
 
-    /**
-     * @param user      The user.
-     * @param notifType The notification type.
-     */
-    public static void removeAllType(User user, NotificationType notifType) {
-        logger.info(MessageFormat.format("Delete notification {0} for user {1}", notifType.name(), user));
-        try {
-            getDb().executeUpdate(MessageFormat.format("delete from {0} where owner = ? and type = ?", TABLE_NAME),
-                                  user.id,
-                                  notifType.name());
-            getDb().executeUpdate(MessageFormat.format(
-                    "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                    NOTIFICATION_ID,
-                    NotificationsColumns.ID,
-                    TABLE_NAME));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.warn("Impossible de supprimer les notifications..." + e.getMessage());
-        }
-    }
-
-    public static void remove(AbstractNotification notification) {
-        try {
-            logger.info(MessageFormat.format("Suppression de la notification {0}", notification.id));
-            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                       TABLE_NAME,
-                                                       NotificationsColumns.ID), notification.id);
-            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                       TABLE_PARAMS,
-                                                       NOTIFICATION_ID),
-                                  notification.id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-        }
-    }
+    // -----------------------------------------------------------------------
+    // --------------------          DROP METHOD          --------------------
+    // -----------------------------------------------------------------------
 
     /**
-     * Deletes all notification that have the given owner, type and parameters.
+     * Delete the corresponding notification if found, based on the identifier.
      *
-     * @param owner          The owner.
-     * @param type           The type.
-     * @param parameterName  The parameter name.
-     * @param parameterValue The parameter value.
+     * @param notification The notification to delete.
      */
-    public static void removeAllType(User owner,
-                                     NotificationType type,
-                                     ParameterName parameterName,
-                                     Object parameterValue) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append(MessageFormat.format("delete from {0} where ", TABLE_NAME));
-            sb.append(MessageFormat.format(
-                    " exists (select 1 from {0} p where p.{1} = {2} and p.{3} = ?  and p.{4} = ?) and {5} = ? and {6} = ?",
-                    TABLE_PARAMS,
-                    NOTIFICATION_ID,
-                    NotificationsColumns.ID,
-                    PARAMETER_NAME,
-                    PARAMETER_VALUE,
-                    NotificationsColumns.OWNER,
-                    NotificationsColumns.TYPE));
-            logger.trace(sb.toString());
-            int res = getDb().executeUpdate(sb.toString(), parameterName, parameterValue, owner.id, type);
-            if (res > 0) {
-                logger.debug(MessageFormat.format("{0} notifications supprimées !", res));
+    public static void remove(Notification notification) {
+        logger.info("Suppression de la notification {}", notification.id);
+        terminator().whereId(notification.getId()).terminates();
+    }
+
+    /**
+     * @return A new terminator builder.
+     */
+    public static NotificationTerminator terminator() {
+        return new NotificationTerminator();
+    }
+
+    public static class NotificationTerminator {
+
+        /** The internal query. */
+        StringBuilder query = new StringBuilder("delete from ").append(TABLE_NAME).append(" where 1 = 1 ");
+
+        /** Parameters list */
+        List<Object> parameters = new ArrayList<>();
+
+        /**
+         * Adds an identifier filter.
+         *
+         * @param id The notification identifier.
+         * @return The builder instance.
+         */
+        public NotificationTerminator whereId(Long id) {
+            query.append(" and id = ?");
+            parameters.add(id);
+            return this;
+        }
+
+        /**
+         * Adds a filter on the notification's owner.
+         *
+         * @param owner The notification owner.
+         * @return The builder instance.
+         */
+        public NotificationTerminator whereOwner(User owner) {
+            query.append(" and owner = ? ");
+            parameters.add(owner.getId());
+            return this;
+        }
+
+        /**
+         * Adds a filter on the notification's type.
+         *
+         * @param types The notification types.
+         * @return The builder instance.
+         */
+        public NotificationTerminator whereType(NType... types) {
+            List<NType> typesList = Arrays.asList(types);
+            query.append(" and type in (")
+                 .append(typesList.stream().map(t -> "?").collect(Collectors.joining(",")))
+                 .append(")");
+            parameters.addAll(typesList);
+            return this;
+        }
+
+        /**
+         * Adds a filter on the notification's user parameter.
+         *
+         * @param user The notification's user parameter.
+         * @return The builder instance.
+         */
+        public NotificationTerminator whereUser(User user) {
+            query.append(" and user_id_param = ? ");
+            parameters.add(user.getId());
+            return this;
+        }
+
+        /**
+         * Adds a filter on the notification's idea parameter.
+         *
+         * @param idea The notification's idea parameter.
+         * @return The builder instance.
+         */
+        public NotificationTerminator whereIdea(Idee idea) {
+            query.append(" and idea_id_param = ? ");
+            parameters.add(idea.getId());
+            return this;
+        }
+
+        /**
+         * Adds a filter on the notification's group idea parameter.
+         *
+         * @param group The notification's group idea parameter.
+         * @return The builder instance.
+         */
+        public NotificationTerminator whereGroupIdea(IdeaGroup group) {
+            query.append(" and group_id_param = ? ");
+            parameters.add(group.getId());
+            return this;
+        }
+
+        /**
+         * Runs the query built so far.
+         */
+        public void terminates() {
+            try {
+                int nb = getDb().executeUpdate(query.toString(), parameters.toArray());
+                logger.debug("{} notifications deleted using {}, and {}.", nb, parameters, query);
+            } catch (SQLException e) {
+                logger.warn("Fail to execute {} with the parameters {}. Got: {}.", query, parameters, e);
             }
-
-            getDb().executeUpdate(MessageFormat.format(
-                    "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                    NOTIFICATION_ID,
-                    NotificationsColumns.ID,
-                    TABLE_NAME));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e);
         }
     }
 
-    /**
-     * Deletes all notification that have the given owner, type and parameters.
-     *
-     * @param type            The notification type.
-     * @param parameterName   The parameter name.
-     * @param parameterValue  The parameter value.
-     * @param parameterName2  Another parameter name.
-     * @param parameterValue2 Another parameter value.
-     */
-    public static void removeAllType(NotificationType type,
-                                     ParameterName parameterName,
-                                     Object parameterValue,
-                                     ParameterName parameterName2,
-                                     Object parameterValue2) throws SQLException {
-
-        final String query = "DELETE FROM " + TABLE_NAME +
-                             " WHERE " + NotificationsColumns.ID + " IN ( " +
-                             "    SELECT p1." + NOTIFICATION_ID +
-                             "      FROM " + TABLE_PARAMS + " p1 " +
-                             "      LEFT JOIN " + TABLE_PARAMS + " p2 " +
-                             "        ON p1." + NOTIFICATION_ID + " = p2." + NOTIFICATION_ID +
-                             "       AND p2." + PARAMETER_NAME + " = ? " +
-                             "       AND p2." + PARAMETER_VALUE + " = ? " +
-                             "     WHERE p1." + PARAMETER_NAME + " = ? " +
-                             "       AND p1." + PARAMETER_VALUE + " = ? " +
-                             "       AND p1.id_param IS NOT NULL " +
-                             "       AND p2.id_param IS NOT NULL) " +
-                             "   AND TYPE = ?";
-
-        logger.trace("[Perf] Executing query: {}", query);
-        logger.trace(MessageFormat.format("Paramètres: {0} / {1} / {2} / {3} / {4}",
-                                          parameterName,
-                                          parameterValue,
-                                          parameterName2,
-                                          parameterValue2,
-                                          type));
-        int nb = getDb().executeUpdate(query,
-                                       parameterName,
-                                       parameterValue,
-                                       parameterName2,
-                                       parameterValue2,
-                                       type);
-        logger.info(MessageFormat.format("Suppression de {0} Notifications.", nb));
-
-        getDb().executeUpdate(MessageFormat.format(
-                "delete from NOTIFICATION_PARAMETERS where {0} not in (select {1} from {2})",
-                NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                TABLE_NAME));
-    }
+    // -------------------------------------------------------------------
+    // --------------------          FETCHER          --------------------
+    // -------------------------------------------------------------------
 
     /**
      * @param userId The user id.
@@ -256,302 +241,253 @@ public class NotificationsRepository extends AbstractRepository {
     }
 
     /**
-     * @param userId The user id.
-     * @param notif  The notification.
-     * @return True if and only if the user has already receive this notification.
+     * @return A new fetcher builder.
      */
-    public static List<AbstractNotification> findNotificationMatching(int userId, AbstractNotification notif) {
-        try {
-            List<AbstractNotification> found = getNotificationWithWhereClause(MessageFormat.format("{0} = ? and {1} = ?",
-                                                                                                   NotificationsColumns.TYPE,
-                                                                                                   NotificationsColumns.OWNER),
-                                                                              notif.getType(),
-                                                                              userId);
-
-            // les constructions de paramètres depuis la base sont forcément en <ParameterName, String>
-            final Map<ParameterName, Object> parameters = notif.getParameters();
-            final Map<ParameterName, String> typedParameters = new HashMap<>();
-            parameters.forEach((key, value) -> typedParameters.put(key, value == null ? null : value.toString()));
-
-            // On ne conserve que ceux qui matchent les paramètres
-            return found.stream().filter(n -> n.getParameters().equals(typedParameters)).collect(Collectors.toList());
-
-        } catch (SQLException e) {
-            logger.error(e);
-        }
-        return Collections.emptyList();
+    public static NotificationFetcher fetcher() {
+        return new NotificationFetcher();
     }
 
-    /**
-     * Technical method.
-     *
-     * @param query      The query.
-     * @param parameters The parameters.
-     * @return The list of notification found.
-     */
-    private static List<AbstractNotification> getNotificationFromQuery(String query,
-                                                                       Object... parameters) throws SQLException {
+    public static class NotificationFetcher {
 
-        List<AbstractNotification> notifications = new ArrayList<>();
-        logger.trace("[Perf] getNotificationFromQuery. Query: {}. Parameters: {}", query, Arrays.toString(parameters));
+        final String query = "select  n." + NotificationsColumns.ID + "," +
+                             "        n." + NotificationsColumns.TYPE + "," +
+                             "        u." + UsersColumns.ID + " as user_id," +
+                             "        u." + UsersColumns.NAME + "," +
+                             "        u." + UsersColumns.EMAIL + "," +
+                             "        u." + UsersColumns.BIRTHDAY + "," +
+                             "        u." + UsersColumns.AVATAR + "," +
+                             "        n." + NotificationsColumns.USER_ID_PARAM + "," +
+                             "        n." + NotificationsColumns.IDEA_ID_PARAM + "," +
+                             "        n." + NotificationsColumns.GROUP_ID_PARAM +
+                             "  from " + TABLE_NAME + " n " +
+                             "  left join " + UsersRepository.TABLE_NAME + " u " +
+                             "    on u." + UsersColumns.ID + " = " + NotificationsColumns.OWNER;
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
-            ps.bindParameters(parameters);
-            if (ps.execute()) {
+        /** The internal query. */
+        StringBuilder whereClause = new StringBuilder(" where 1 = 1 ");
 
-                logger.trace("[Perf] Execution completed! Building the result...");
-                ResultSet res = ps.getResultSet();
-                int currentId = -1;
-                User owner = null;
-                String type = "";
-                String text = "";
-                Timestamp creation = null;
-                boolean isUnread = true;
-                Timestamp readOn = null;
-                Map<ParameterName, Object> notifParams = new HashMap<>();
+        /** Parameters list */
+        List<Object> parameters = new ArrayList<>();
 
-                while (res.next()) {
+        /**
+         * Adds an identifier filter.
+         *
+         * @param id The notification identifier.
+         * @return The builder instance.
+         */
+        public NotificationFetcher whereId(Long id) {
+            whereClause.append(" and n.id = ? ");
+            parameters.add(id);
+            return this;
+        }
 
-                    int id = res.getInt(NotificationsColumns.ID.name());
-                    if (currentId == -1) {
-                        currentId = id;
-                        owner = new User(res.getInt("user_id"),
-                                         res.getString(UsersColumns.NAME.name()),
-                                         res.getString(UsersColumns.EMAIL.name()),
-                                         res.getDate(UsersColumns.BIRTHDAY.name()),
-                                         res.getString(UsersColumns.AVATAR.name()));
-                        type = res.getString(NotificationsColumns.TYPE.name());
-                        text = res.getString(NotificationsColumns.TEXT.name());
-                        creation = res.getTimestamp(NotificationsColumns.CREATION_DATE.name());
-                        isUnread = "Y".equals(res.getString(NotificationsColumns.IS_UNREAD.name()));
-                        readOn = res.getTimestamp(NotificationsColumns.READ_ON.name());
-                    }
+        /**
+         * Adds a filter on the notification's owner.
+         *
+         * @param owner The notification owner.
+         * @return The builder instance.
+         */
+        public NotificationFetcher whereOwner(User owner) {
+            whereClause.append(" and n.owner = ? ");
+            parameters.add(owner.getId());
+            return this;
+        }
 
-                    if (id == currentId) {
-                        // reading parameters
-                        String name = res.getString(PARAMETER_NAME.name());
-                        if (name != null && !name.isEmpty()) {
-                            notifParams.put(ParameterName.valueOf(name),
-                                            res.getString(PARAMETER_VALUE.name()));
-                        }
-                        continue;
-                    }
+        /**
+         * Adds a filter on the notification's type.
+         *
+         * @param type The notification type.
+         * @return The builder instance.
+         */
+        public NotificationFetcher whereType(NType type) {
+            whereClause.append(" and n.type = ? ");
+            parameters.add(type.name());
+            return this;
+        }
 
-                    // New id detected, saving the notification
-                    notifications.add(NotificationFactory.buildIt(currentId,
-                                                                  owner,
-                                                                  type,
-                                                                  text,
-                                                                  creation,
-                                                                  isUnread,
-                                                                  readOn,
-                                                                  notifParams));
+        /**
+         * Adds a filter on the notification's user parameter.
+         *
+         * @param user The notification's user parameter.
+         * @return The builder instance.
+         */
+        public NotificationFetcher whereUser(User user) {
+            whereClause.append(" and n.user_id_param = ? ");
+            parameters.add(user.getId());
+            return this;
+        }
 
-                    // Initialization for the next notification
-                    currentId = id;
-                    owner = new User(res.getInt("user_id"),
-                                     res.getString(UsersColumns.NAME.name()),
-                                     res.getString(UsersColumns.EMAIL.name()),
-                                     res.getDate(UsersColumns.BIRTHDAY.name()),
-                                     res.getString(UsersColumns.AVATAR.name()));
-                    type = res.getString(NotificationsColumns.TYPE.name());
-                    text = res.getString(NotificationsColumns.TEXT.name());
-                    creation = res.getTimestamp(NotificationsColumns.CREATION_DATE.name());
-                    isUnread = "Y".equals(res.getString(NotificationsColumns.IS_UNREAD.name()));
-                    readOn = res.getTimestamp(NotificationsColumns.READ_ON.name());
-                    notifParams = new HashMap<>();
-                    String name = res.getString(PARAMETER_NAME.name());
-                    if (name != null && !name.isEmpty()) {
-                        notifParams.put(ParameterName.valueOf(name),
-                                        res.getString(PARAMETER_VALUE.name()));
-                    }
+        /**
+         * Adds a filter on the notification's idea parameter.
+         *
+         * @param idea The notification's idea parameter.
+         * @return The builder instance.
+         */
+        public NotificationFetcher whereIdea(Idee idea) {
+            whereClause.append(" and n.idea_id_param = ? ");
+            parameters.add(idea.getId());
+            return this;
+        }
+
+        /**
+         * Adds a filter on the notification's group idea parameter.
+         *
+         * @param group The notification's group idea parameter.
+         */
+        public void whereGroupIdea(IdeaGroup group) {
+            whereClause.append(" and n.group_id_param = ? ");
+            parameters.add(group.getId());
+        }
+
+        /**
+         * Adds a filter on whether this notification was read or not.
+         *
+         * @param isRead True to filter on the ones that were read, false for unread.
+         * @return The builder instance.
+         */
+        public NotificationFetcher whereRead(boolean isRead) {
+            whereClause.append(" and n.is_unread = ? ");
+            parameters.add(isRead ? "N" : "Y");
+            return this;
+        }
+
+        /**
+         * @return True if the filter selection returns at least one row.
+         */
+        public boolean hasAny() {
+            final String fullQuery = query + whereClause.toString();
+            try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), fullQuery)) {
+                ps.bindParameters(parameters.toArray());
+                if (ps.execute()) {
+                    return ps.getResultSet().next();
                 }
+            } catch (SQLException e) {
+                logger.warn("Fail to fetch the notifications...", e);
+            }
+            return false;
+        }
 
-                if (currentId != -1) {
-                    notifications.add(NotificationFactory.buildIt(currentId,
-                                                                  owner,
-                                                                  type,
-                                                                  text,
-                                                                  creation,
-                                                                  isUnread,
-                                                                  readOn,
-                                                                  notifParams));
-                }
-
+        /**
+         * @param resultSet  The notification ResultSet.
+         * @param columnName The column name to read.
+         * @return The integer value or null if not parsable or if the column's value is null.
+         */
+        private static Integer getIntegerValueOf(ResultSet resultSet, String columnName) throws SQLException {
+            try {
+                return Integer.valueOf(resultSet.getString(columnName));
+            } catch (NumberFormatException e) {
+                return null;
             }
         }
 
-        logger.trace("[Perf] Completed! Created {} objects.", notifications.size());
-        return notifications;
+        /**
+         * @param resultSet The notification ResultSet.
+         * @return The new memory notification from the value read from the database.
+         */
+        private static Notification buildIt(ResultSet resultSet) throws SQLException {
+
+            // Récupération des paramètres depuis le ResultSet
+            String type = resultSet.getString(NotificationsColumns.TYPE.name());
+            long id = resultSet.getLong(NotificationsColumns.ID.name());
+            User owner = new User(resultSet.getInt("user_id"),
+                                  resultSet.getString(UsersColumns.NAME.name()),
+                                  resultSet.getString(UsersColumns.EMAIL.name()),
+                                  resultSet.getDate(UsersColumns.BIRTHDAY.name()),
+                                  resultSet.getString(UsersColumns.AVATAR.name()));
+
+            // Reading the parameters
+            User userParameter = UsersRepository.getUser(getIntegerValueOf(resultSet, USER_ID_PARAM.name()))
+                                                .orElse(null);
+            Idee ideaParameter = IdeesRepository.getIdea(getIntegerValueOf(resultSet, IDEA_ID_PARAM.name()))
+                                                .orElse(null);
+            final Integer groupId = getIntegerValueOf(resultSet, GROUP_ID_PARAM.name());
+            IdeaGroup groupParameter = GroupIdeaRepository.getGroupDetails(groupId).orElse(null);
+
+            return NotificationFactory.builder(NType.valueOf(type))
+                                      .withAnID(id)
+                                      .belongsTo(owner)
+                                      .withUserParameter(userParameter)
+                                      .withIdeaParameter(ideaParameter)
+                                      .withGroupParameter(groupParameter)
+                                      .build();
+        }
+
+        /**
+         * @return The notification list based on previous criteria.
+         */
+        public List<Notification> fetch() {
+            List<Notification> notifications = new ArrayList<>();
+            final String fullQuery = query + whereClause.toString();
+            logger.debug("[Perf] fetch. Query: {}. Parameters: {}", fullQuery, parameters);
+            try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), fullQuery)) {
+                ps.bindParameters(parameters.toArray());
+                if (ps.execute()) {
+                    logger.trace("[Perf] Execution completed! Building the result...");
+                    ResultSet res = ps.getResultSet();
+                    while (res.next()) {
+                        try {
+                            notifications.add(buildIt(res));
+                        } catch (IllegalArgumentException e) {
+                            logger.warn("Unknown type...", e);
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                logger.warn("Fail to fetch the notifications...", e);
+            }
+            logger.trace("[Perf] Completed! Created {} objects.", notifications.size());
+            return notifications;
+        }
     }
 
     /**
-     * @param whereClause The where clause.
-     * @param parameters  The parameters.
-     * @return The notifications matched by this where clause or all.
+     * @param notification The notification.
+     * @return The list of corresponding notifications, if any.
      */
-    private static List<AbstractNotification> getNotificationWithWhereClause(String whereClause,
-                                                                             Object... parameters) throws SQLException {
+    public static List<Notification> findNotificationsMatching(Notification notification) {
+        NotificationFetcher fetcher = fetcher().whereOwner(notification.getOwner())
+                                               .whereType(notification.getType());
+        notification.getUserParameter().ifPresent(fetcher::whereUser);
+        notification.getIdeaParameter().ifPresent(fetcher::whereIdea);
+        notification.getGroupParameter().ifPresent(fetcher::whereGroupIdea);
+        return fetcher.fetch();
+    }
 
-        String query = "select  n." + NotificationsColumns.ID + "," +
-                       "        n." + NotificationsColumns.TEXT + "," +
-                       "        n." + NotificationsColumns.TYPE + "," +
-                       "        u." + UsersColumns.ID + " as user_id," +
-                       "        u." + UsersColumns.NAME + "," +
-                       "        u." + UsersColumns.EMAIL + "," +
-                       "        u." + UsersColumns.BIRTHDAY + "," +
-                       "        u." + UsersColumns.AVATAR + "," +
-                       "       np." + PARAMETER_NAME + "," +
-                       "       np." + PARAMETER_VALUE + "," +
-                       "        n." + NotificationsColumns.CREATION_DATE + "," +
-                       "        n." + NotificationsColumns.IS_UNREAD + "," +
-                       "        n." + NotificationsColumns.READ_ON +
-                       "  from " + TABLE_NAME + " n " +
-                       "  left join " + TABLE_PARAMS + " np " +
-                       "    on " + NotificationsColumns.ID + " = " + NOTIFICATION_ID +
-                       "  left join " + UsersRepository.TABLE_NAME + " u " +
-                       "    on u." + UsersColumns.ID + " = " + NotificationsColumns.OWNER;
-
-        if (!StringUtils.isBlank(whereClause)) {
-            query += " where " + whereClause;
-        }
-
-        query += " order by n." + NotificationsColumns.ID + " desc";
-
-        logger.trace(MessageFormat.format("Query: {0}", query));
-        logger.trace(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
-
-        return getNotificationFromQuery(query, parameters);
+    /**
+     * @param owner The notification owner.
+     * @return All notifications for this user.
+     */
+    public static List<Notification> getUserNotifications(User owner, NType type) {
+        return fetcher().whereOwner(owner).whereType(type).fetch();
     }
 
     /**
      * @param user The user.
-     * @return All notifications for this user.
+     * @return All read notifications of this user.
      */
-    public static List<AbstractNotification> getUserNotifications(User user) {
-        try {
-            return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ?", NotificationsColumns.OWNER),
-                                                  user.id);
-        } catch (SQLException e) {
-            logger.error(e);
-            return Collections.emptyList();
-        }
+    public static List<Notification> getUserReadNotifications(User user) {
+        return fetcher().whereOwner(user).whereRead(true).fetch();
     }
 
     /**
-     * @param userId The user id.
-     * @return All notifications for this user.
+     * @param user The user.
+     * @return All unread notifications of this user.
      */
-    public static List<AbstractNotification> getUserNotifications(int userId, NotificationType type) {
-        try {
-            return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
-                                                                       NotificationsColumns.OWNER,
-                                                                       NotificationsColumns.TYPE),
-                                                  userId,
-                                                  type.name());
-        } catch (SQLException e) {
-            logger.error(e);
-            return Collections.emptyList();
-        }
+    public static List<Notification> getUserUnReadNotifications(User user) {
+        return fetcher().whereOwner(user).whereRead(false).fetch();
     }
 
     /**
-     * @param userId The user id.
-     * @return All notifications for this user.
-     */
-    public static List<AbstractNotification> getUserReadNotifications(int userId) throws SQLException {
-        return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
-                                                                   NotificationsColumns.OWNER,
-                                                                   NotificationsColumns.IS_UNREAD),
-                                              userId,
-                                              "N");
-    }
-
-    /**
-     * @param userId The user id.
-     * @return All notifications for this user.
-     */
-    public static List<AbstractNotification> getUserUnReadNotifications(int userId) throws SQLException {
-        return getNotificationWithWhereClause(MessageFormat.format("n.{0} = ? and n.{1} = ?",
-                                                                   NotificationsColumns.OWNER,
-                                                                   NotificationsColumns.IS_UNREAD),
-                                              userId,
-                                              "Y");
-    }
-
-    /**
-     * @param type           The notification type.
-     * @param parameterName  The parameter name.
-     * @param parameterValue The paramter value.
-     * @return The list of notification having the given parameter name equals to this value.
-     */
-    public static List<AbstractNotification> getNotifications(NotificationType type,
-                                                              ParameterName parameterName,
-                                                              Object parameterValue) throws SQLException {
-        String whereClause = MessageFormat.format(
-                " exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?) and n.{5} = ?",
-                TABLE_PARAMS,
-                NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                PARAMETER_NAME,
-                PARAMETER_VALUE,
-                NotificationsColumns.TYPE);
-        return getNotificationWithWhereClause(whereClause, parameterName, parameterValue, type);
-    }
-
-    /**
-     * @param owner          The owner.
-     * @param type           The notification type.
-     * @param parameterName  The parameter name.
-     * @param parameterValue The paramter value.
-     * @return The list of notification having the given parameter name equals to this value.
-     */
-    public static List<AbstractNotification> getNotifications(int owner,
-                                                              NotificationType type,
-                                                              ParameterName parameterName,
-                                                              Object parameterValue) throws SQLException {
-        String whereClause = MessageFormat.format(
-                " exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?) and n.{5} = ? and n.{6} = ?",
-                TABLE_PARAMS,
-                NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                PARAMETER_NAME,
-                PARAMETER_VALUE,
-                NotificationsColumns.OWNER,
-                NotificationsColumns.TYPE);
-        return getNotificationWithWhereClause(whereClause, parameterName, parameterValue, owner, type);
-    }
-
-    /**
-     * @param parameterName  The parameter name.
-     * @param parameterValue The paramter value.
-     * @return The list of notification having the given parameter name equals to this value.
-     */
-    public static List<AbstractNotification> getNotification(ParameterName parameterName,
-                                                             Object parameterValue) throws SQLException {
-        String whereClause = MessageFormat.format(
-                " exists (select 1 from {0} where {1} = n.{2} and {3} = ?  and {4} = ?)",
-                TABLE_PARAMS,
-                NOTIFICATION_ID,
-                NotificationsColumns.ID,
-                PARAMETER_NAME,
-                PARAMETER_VALUE);
-        return getNotificationWithWhereClause(whereClause, parameterName, parameterValue);
-    }
-
-    /**
-     * @param notifId The notification id.
+     * @param notificationId The notification id.
      * @return The notification corresponding to this id.
      */
-    public static Optional<AbstractNotification> getNotification(int notifId) {
-        try {
-            final String whereClause = MessageFormat.format("n.{0} = ?", NotificationsColumns.ID);
-            return getNotificationWithWhereClause(whereClause, notifId).stream().findFirst();
-        } catch (SQLException e) {
-            logger.warn(e);
-            return Optional.empty();
-        }
+    public static Optional<Notification> getNotification(long notificationId) {
+        return fetcher().whereId(notificationId).fetch().stream().findFirst();
     }
+
+    // -------------------------------------------------------------------------------
+    // --------------------          ADMIN Notifications          --------------------
+    // -------------------------------------------------------------------------------
 
     /**
      * Manually sends a new notification to the ADMIN.
@@ -564,48 +500,22 @@ public class NotificationsRepository extends AbstractRepository {
         // Insert a DB notification
         logger.info("Envoie d'une notification admin de type {}...", type);
 
-        StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format(" insert into {0} ", TABLE_NAME));
-        query.append(MessageFormat.format("   ({0},{1},{2},{3}) ",
-                                          NotificationsColumns.OWNER,
-                                          NotificationsColumns.TEXT,
-                                          NotificationsColumns.TYPE,
-                                          NotificationsColumns.CREATION_DATE));
-        query.append(MessageFormat.format(" select u.{0}, ?, ?, now()",
-                                          UsersColumns.ID));
-        query.append(MessageFormat.format("   from {0} u ", UsersRepository.TABLE_NAME));
-        query.append(MessageFormat.format("   join USER_ROLES ur on ur.{0} = u.{1}",
-                                          UserRolesColumns.EMAIL,
-                                          UsersColumns.EMAIL));
-        query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
-
-        try {
-            getDb().executeUpdate(query.toString(), message, type, "ROLE_ADMIN");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.info("Query is => {}.", query);
-            logger.warn("Fail to write notification.", e);
-        }
-
         // Send emails to the ADMIN
-        query = new StringBuilder();
-        query.append(MessageFormat.format("select u.{0} ", UsersColumns.EMAIL));
-        query.append(MessageFormat.format("  from {0} u ", UsersRepository.TABLE_NAME));
-        query.append(MessageFormat.format("  join USER_ROLES ur on ur.{0} = u.{1} ",
-                                          UserRolesColumns.EMAIL,
-                                          UsersColumns.EMAIL));
-        query.append(MessageFormat.format("  where ur.{0} = ?", UserRolesColumns.ROLE));
+        String query = "select u." + UsersColumns.EMAIL +
+                       "  from " + UsersRepository.TABLE_NAME + " u " +
+                       "  join USER_ROLES ur on ur." + UserRolesColumns.EMAIL + " = u." + UsersColumns.EMAIL + " " +
+                       "  where ur." + UserRolesColumns.ROLE + " = ?";
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
+        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters("ROLE_ADMIN");
-            ps.execute();
-            ResultSet res = ps.getResultSet();
-
-            while (res.next()) {
-                String emailAdress = res.getString(UsersColumns.EMAIL.name());
-                String messageTemplate = notificationProperties.get("mail_template").toString();
-                String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
-                EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Admin notification...", body);
+            if (ps.execute()) {
+                ResultSet res = ps.getResultSet();
+                while (res.next()) {
+                    String emailAdress = res.getString(UsersColumns.EMAIL.name());
+                    String messageTemplate = notificationProperties.get("mail_template").toString();
+                    String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
+                    EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Admin notification...", body);
+                }
             }
         } catch (SQLException e) {
             logger.warn("Fail to write notification.", e);
@@ -618,7 +528,7 @@ public class NotificationsRepository extends AbstractRepository {
      * @param message The message.
      */
     public static void notifyAboutANewInscription(String message) {
-        logger.info(MessageFormat.format("New person nofication ! Message: {0}", message));
+        logger.info(MessageFormat.format("New person notification ! Message: {0}", message));
         sendAdminNotification(NOTIF_TYPE_NEW_INSCRIPTION, message);
     }
 
@@ -656,12 +566,16 @@ public class NotificationsRepository extends AbstractRepository {
         notifyAboutAnError(notifText.toString());
     }
 
+    // -------------------------------------------------------------------------
+    // --------------------          Read / Unread          --------------------
+    // -------------------------------------------------------------------------
+
     /**
      * Set the notification as read.
      *
      * @param notif The notification.
      */
-    public static void setRead(AbstractNotification notif) throws SQLException {
+    public static void setRead(Notification notif) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ? ",
                                                    TABLE_NAME,
                                                    NotificationsColumns.IS_UNREAD,
@@ -676,7 +590,7 @@ public class NotificationsRepository extends AbstractRepository {
      *
      * @param notif The notification.
      */
-    public static void setUnread(AbstractNotification notif) throws SQLException {
+    public static void setUnread(Notification notif) throws SQLException {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? ",
                                                    TABLE_NAME,
                                                    NotificationsColumns.IS_UNREAD,
@@ -685,25 +599,11 @@ public class NotificationsRepository extends AbstractRepository {
                               notif.id);
     }
 
-    public static void removeAll(int userId) throws SQLException {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                   TABLE_NAME,
-                                                   NotificationsColumns.OWNER), userId);
-        String query = MessageFormat.format("delete from {0} where not exists (select 1 from {1} n where {2} = n.{3}) ",
-                                            TABLE_PARAMS,
-                                            TABLE_NAME,
-                                            NOTIFICATION_ID,
-                                            NotificationsColumns.ID);
-        logger.trace(query);
-        getDb().executeUpdate(query);
-    }
-
     static {
         InputStream input = NotificationsRepository.class.getResourceAsStream("/notif.properties");
         try {
             notificationProperties.load(new InputStreamReader(input, StandardCharsets.UTF_8));
         } catch (IOException e) {
-            e.printStackTrace();
             logger.warn(e);
         }
     }

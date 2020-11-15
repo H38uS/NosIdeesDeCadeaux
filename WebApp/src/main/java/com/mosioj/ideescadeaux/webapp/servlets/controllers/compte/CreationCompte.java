@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
@@ -22,7 +22,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.List;
 
 @WebServlet("/public/creation_compte")
@@ -33,17 +32,10 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
     public static final String FORM_URL = "/public/creation_compte.jsp";
     private static final Logger logger = LogManager.getLogger(CreationCompte.class);
 
-    /**
-     * Class contructor.
-     */
+    /** Class contructor. */
     public CreationCompte() {
         super(new AllAccessToPostAndGet());
     }
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = -101081965549681889L;
 
     @Override
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
@@ -106,10 +98,8 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
             throw new ServletException(e.getMessage());
         }
 
-        NotificationsRepository.notifyAboutANewInscription(MessageFormat.format(
-                "A person within the site !! This is {0}.",
-                email));
-        NotificationsRepository.addNotification(thisOne.id, new NotifNoIdea());
+        NotificationsRepository.notifyAboutANewInscription("A person within the site !! This is " + email + ".");
+        NType.NO_IDEA.buildDefault().sendItTo(thisOne);
         RootingsUtils.rootToPage(SUCCES_URL, request, response);
     }
 }

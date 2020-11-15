@@ -1,17 +1,15 @@
 package com.mosioj.ideescadeaux.core.model;
 
-import static org.junit.Assert.assertEquals;
+import com.mosioj.ideescadeaux.core.TemplateTest;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
+import org.junit.Test;
 
 import java.sql.SQLException;
 
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import org.junit.Test;
-
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNoIdea;
-import com.mosioj.ideescadeaux.core.TemplateTest;
+import static org.junit.Assert.assertEquals;
 
 public class TestUser extends TemplateTest {
 
@@ -24,7 +22,7 @@ public class TestUser extends TemplateTest {
 
         int userId = UsersRepository.addNewPersonne(email, "hihi", "my_new_name");
         User user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
-        int notifId = NotificationsRepository.addNotification(userId, new NotifNoIdea());
+        int notifId = NType.NO_IDEA.buildDefault().sendItTo(user);
 
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", user.id));
         assertEquals(1,

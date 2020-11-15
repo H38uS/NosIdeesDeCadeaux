@@ -1,8 +1,9 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.relations;
 
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifNewRelationSuggestion;
-import com.mosioj.ideescadeaux.core.model.repositories.*;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -37,9 +38,9 @@ public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
+        // TODO refactor et faire un service
         int userId = thisOne.id;
 
         Map<String, String[]> params = request.getParameterMap();
@@ -72,17 +73,6 @@ public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
 
         for (int ignore : toIgnore) {
             UserRelationsSuggestionRepository.removeIfExists(userId, ignore);
-        }
-
-        List<AbstractNotification> notifications = NotificationsRepository.getUserNotifications(thisOne);
-        for (AbstractNotification n : notifications) {
-            if (n instanceof NotifNewRelationSuggestion) {
-                NotifNewRelationSuggestion notification = (NotifNewRelationSuggestion) n;
-                if (!UserRelationsSuggestionRepository.hasReceivedSuggestionFrom(userId,
-                                                                                 notification.getUserIdParam())) {
-                    NotificationsRepository.remove(notification);
-                }
-            }
         }
 
         request.setAttribute("suggestions", UserRelationsSuggestionRepository.getUserSuggestions(thisOne));

@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.AbstractNotification;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
@@ -27,7 +27,7 @@ public class NotificationModification extends SecurityPolicy {
      */
     private final String notifParameter;
 
-    private AbstractNotification notif;
+    private Notification notif;
 
     /**
      * @param notifParameter Defines the string used in HttpServletRequest to retrieve the notification id.
@@ -86,7 +86,7 @@ public class NotificationModification extends SecurityPolicy {
     /**
      * @return The notification id, or null if the checks fail.
      */
-    public AbstractNotification getNotification() {
+    public Notification getNotification() {
         return notif;
     }
 

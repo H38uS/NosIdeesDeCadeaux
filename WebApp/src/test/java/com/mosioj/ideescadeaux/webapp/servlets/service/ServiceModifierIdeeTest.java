@@ -1,10 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationType;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -20,6 +17,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.IS_IDEA_UP_TO_DATE;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
@@ -99,12 +98,10 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         assertNotEquals(newText, idee.getText());
 
-        int notifId = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                              new NotifAskIfIsUpToDate(friendOfFirefox, idee));
+        int notifId = IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idee).sendItTo(firefox);
         IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
         assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
-        int addByFriend = NotificationsRepository.addNotification(_OWNER_ID_,
-                                                                  new NotifIdeaAddedByFriend(moiAutre, idee));
+        int addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idee).sendItTo(firefox);
         assertNotifDoesExists(notifId);
         assertNotifDoesExists(addByFriend);
 
@@ -133,12 +130,12 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         UsersRepository.update(firefox);
 
         // ... and the friend has no notifications yet, and notification activated
-        NotificationsRepository.removeAll(_FRIEND_ID_);
-        assertEquals(0, NotificationsRepository.getNotifications(_FRIEND_ID_,
-                                                                 NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                                 ParameterName.USER_ID,
-                                                                 _OWNER_ID_)
-                                               .size());
+        NotificationsRepository.terminator().whereOwner(friendOfFirefox).terminates();
+        assertFalse(NotificationsRepository.fetcher()
+                                           .whereOwner(friendOfFirefox)
+                                           .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
+                                           .whereUser(firefox)
+                                           .hasAny());
 
         // ... and the user has an idea and a modification form
         int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
@@ -154,20 +151,22 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
 
         assertTrue(resp.isOK());
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_FRIEND_ID_,
-                                                              NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                              ParameterName.USER_ID,
-                                                              _OWNER_ID_)
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
+                                            .whereUser(firefox)
+                                            .fetch()
                                             .size());
 
         // A second does not
         createMultiPartRequest(param);
         doTestPost();
         assertEquals(1,
-                     NotificationsRepository.getNotifications(_FRIEND_ID_,
-                                                              NotificationType.IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON,
-                                                              ParameterName.USER_ID,
-                                                              _OWNER_ID_)
+                     NotificationsRepository.fetcher()
+                                            .whereOwner(friendOfFirefox)
+                                            .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
+                                            .whereUser(firefox)
+                                            .fetch()
                                             .size());
     }
 

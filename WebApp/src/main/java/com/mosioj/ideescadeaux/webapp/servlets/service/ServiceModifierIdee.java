@@ -2,10 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.ParameterName;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifAskIfIsUpToDate;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifConfirmedUpToDate;
-import com.mosioj.ideescadeaux.core.model.notifications.instance.NotifIdeaAddedByFriend;
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -26,6 +24,8 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
+
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.CONFIRMED_UP_TO_DATE;
 
 @WebServlet("/protected/service/modifier_idee")
 public class ServiceModifierIdee extends ServicePost<IdeaModification> {
@@ -95,17 +95,19 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                 // Suppression des demandes si y'en avait
                 IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
-                NotificationsRepository.getNotification(ParameterName.IDEA_ID, idea.getId()).forEach(n -> {
-                    if (n instanceof NotifAskIfIsUpToDate) {
-                        NotifAskIfIsUpToDate isUpToDate = (NotifAskIfIsUpToDate) n;
-                        NotificationsRepository.addNotification(isUpToDate.getUserIdParam(),
-                                                                new NotifConfirmedUpToDate(user, idea));
-                        NotificationsRepository.remove(n);
-                    }
-                    if (n instanceof NotifIdeaAddedByFriend) {
-                        NotificationsRepository.remove(n);
-                    }
-                });
+                // Mise à jour des demandes de confirmations si à jour
+                final Notification confirmationUpToDate = CONFIRMED_UP_TO_DATE.with(user, idea);
+                NotificationsRepository.fetcher()
+                                       .whereType(NType.IS_IDEA_UP_TO_DATE)
+                                       .whereIdea(idea)
+                                       .fetch()
+                                       .forEach(n -> {
+                                           n.getUserParameter().ifPresent(confirmationUpToDate::sendItTo);
+                                           NotificationsRepository.remove(n);
+                                       });
+
+                // Suppression des notifications d'ajout par un amis.
+                NotificationsRepository.terminator().whereType(NType.IDEA_ADDED_BY_FRIEND).whereIdea(idea).terminates();
             }
         }
 
