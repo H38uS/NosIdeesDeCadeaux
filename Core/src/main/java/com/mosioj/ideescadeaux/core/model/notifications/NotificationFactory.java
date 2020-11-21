@@ -4,6 +4,8 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 
+import java.sql.Timestamp;
+
 public class NotificationFactory {
 
     private NotificationFactory() {
@@ -79,6 +81,15 @@ public class NotificationFactory {
          */
         public NotificationBuilder withGroupParameter(IdeaGroup groupParameter) {
             notification.setGroupParameter(groupParameter);
+            return this;
+        }
+
+        /**
+         * @param creationTime When this notification was created.
+         * @return The builder's instance.
+         */
+        public NotificationBuilder withCreationTime(Timestamp creationTime) {
+            notification.setCreationTime(creationTime);
             return this;
         }
 

@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -271,6 +272,7 @@ public class NotificationsRepository extends AbstractRepository {
                              "        u." + UsersColumns.EMAIL + "," +
                              "        u." + UsersColumns.BIRTHDAY + "," +
                              "        u." + UsersColumns.AVATAR + "," +
+                             "        n." + NotificationsColumns.CREATION_DATE + "," +
                              "        n." + NotificationsColumns.USER_ID_PARAM + "," +
                              "        n." + NotificationsColumns.IDEA_ID_PARAM + "," +
                              "        n." + NotificationsColumns.GROUP_ID_PARAM +
@@ -409,6 +411,7 @@ public class NotificationsRepository extends AbstractRepository {
                                   resultSet.getString(UsersColumns.EMAIL.name()),
                                   resultSet.getDate(UsersColumns.BIRTHDAY.name()),
                                   resultSet.getString(UsersColumns.AVATAR.name()));
+            Timestamp creation = resultSet.getTimestamp(NotificationsColumns.CREATION_DATE.name());
 
             // Reading the parameters
             User userParameter = UsersRepository.getUser(getIntegerValueOf(resultSet, USER_ID_PARAM.name()))
@@ -424,6 +427,7 @@ public class NotificationsRepository extends AbstractRepository {
                                       .withUserParameter(userParameter)
                                       .withIdeaParameter(ideaParameter)
                                       .withGroupParameter(groupParameter)
+                                      .withCreationTime(creation)
                                       .build();
         }
 

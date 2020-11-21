@@ -4,17 +4,15 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import org.apache.commons.lang3.StringUtils;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 public class Notification {
 
     // FIXME : migration
-    // Supprimer les notifications => DELETE from NOTIFICATIONS where type in ('GROUP_EVOLUTION', 'NEW_QUESTION_ON_IDEA', 'IDEA_OF_FRIEND_MODIFIED_WHEN_BIRTHDAY_IS_SOON');
-    // Ajout colonnes => ALTER TABLE `NOTIFICATIONS` ADD `user_id_param` INT NULL AFTER `read_on`, ADD `idea_id_param` INT NULL AFTER `user_id_param`, ADD `group_id_param` INT NULL AFTER `idea_id_param`;
-    // Migration user id => update NOTIFICATIONS n set user_id_param = (select np.parameter_value from NOTIFICATION_PARAMETERS np where np.notification_id = n.id and np.parameter_name = 'USER_ID')
-    // Migration idea id => update NOTIFICATIONS n set n.idea_id_param = (select np.parameter_value from NOTIFICATION_PARAMETERS np where np.notification_id = n.id and np.parameter_name = 'IDEA_ID')
-    // Migration group id => update NOTIFICATIONS n set n.group_id_param = (select np.parameter_value from NOTIFICATION_PARAMETERS np where np.notification_id = n.id and np.parameter_name = 'GROUP_ID_PARAM')
     // ALTER TABLE `NOTIFICATIONS` DROP `text`;
     // drop table NOTIFICATION_PARAMETERS;
 
@@ -37,6 +35,9 @@ public class Notification {
 
     /** The optional group parameter for this notification. */
     private IdeaGroup groupParameter;
+
+    /** The optional creation date for this notification. */
+    private Timestamp creationTime;
 
     /**
      * Default constructor for insertion.
@@ -83,6 +84,13 @@ public class Notification {
     }
 
     /**
+     * @param creationTime When this notification was created.
+     */
+    public void setCreationTime(Timestamp creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    /**
      * @return The notification identifier. Can be null if not persisted yet.
      */
     public Long getId() {
@@ -109,7 +117,11 @@ public class Notification {
      * @return The notification text.
      */
     public String getText() {
-        return type.getText(userParameter, ideaParameter, groupParameter);
+        try {
+            return type.getText(userParameter, ideaParameter, groupParameter);
+        } catch (Exception e) {
+            return type.getDescription();
+        }
     }
 
     /**
@@ -141,12 +153,20 @@ public class Notification {
     }
 
     /**
+     * @return The creation time of this notification.
+     */
+    public String getCreationTime() {
+        return creationTime == null ? StringUtils.EMPTY : MyDateFormatViewer.formatMine(creationTime);
+    }
+
+    /**
      * @return A copy of this notification with the same parameters.
      */
     private synchronized Notification duplicates() {
         Notification notification = getType().buildDefault();
         notification.setId(getId());
         notification.setOwner(getOwner());
+        notification.setCreationTime(creationTime);
         getUserParameter().ifPresent(notification::setUserParameter);
         getIdeaParameter().ifPresent(notification::setIdeaParameter);
         getGroupParameter().ifPresent(notification::setGroupParameter);
