@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.sql.Date;
@@ -42,10 +43,10 @@ public class User implements Comparable<User> {
     private Date birthday; // utilisé dans MonCompte en jsp - impossible de supprimer le getter pour l'instant
 
     /** Formatted instant of the creation of the user. */
-    private String creationDate; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+    private String creationDate = StringUtils.EMPTY; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
 
     /** Formatted instant of the last login. */
-    private String lastLogin; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+    private String lastLogin = StringUtils.EMPTY; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
 
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
