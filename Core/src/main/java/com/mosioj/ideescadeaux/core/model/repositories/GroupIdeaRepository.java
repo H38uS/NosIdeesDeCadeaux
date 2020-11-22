@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.Optional;
 
@@ -110,7 +111,9 @@ public class GroupIdeaRepository extends AbstractRepository {
                                                res.getDate(UsersColumns.BIRTHDAY.name()),
                                                res.getString(UsersColumns.AVATAR.name())),
                                       res.getDouble(GroupIdeaContentColumns.PRICE.name()),
-                                      res.getTimestamp(GroupIdeaContentColumns.JOIN_DATE.name()));
+                                      Optional.ofNullable(res.getTimestamp(GroupIdeaContentColumns.JOIN_DATE.name()))
+                                              .map(Timestamp::toInstant)
+                                              .orElse(null));
 
                     while (res.next()) {
                         final User participant = new User(res.getInt(GroupIdeaContentColumns.USER_ID.name()),
@@ -120,7 +123,9 @@ public class GroupIdeaRepository extends AbstractRepository {
                                                           res.getString(UsersColumns.AVATAR.name()));
                         ideaGroup.addUser(participant,
                                           res.getDouble(GroupIdeaContentColumns.PRICE.name()),
-                                          res.getTimestamp(GroupIdeaContentColumns.JOIN_DATE.name()));
+                                          Optional.ofNullable(res.getTimestamp(GroupIdeaContentColumns.JOIN_DATE.name()))
+                                                  .map(Timestamp::toInstant)
+                                                  .orElse(null));
                     }
 
                     group = Optional.of(ideaGroup);

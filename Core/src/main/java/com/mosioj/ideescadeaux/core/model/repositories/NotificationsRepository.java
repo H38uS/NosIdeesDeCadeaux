@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -411,7 +412,9 @@ public class NotificationsRepository extends AbstractRepository {
                                   resultSet.getString(UsersColumns.EMAIL.name()),
                                   resultSet.getDate(UsersColumns.BIRTHDAY.name()),
                                   resultSet.getString(UsersColumns.AVATAR.name()));
-            Timestamp creation = resultSet.getTimestamp(NotificationsColumns.CREATION_DATE.name());
+            Instant creation = Optional.ofNullable(resultSet.getTimestamp(NotificationsColumns.CREATION_DATE.name()))
+                                       .map(Timestamp::toInstant)
+                                       .orElse(null);
 
             // Reading the parameters
             User userParameter = UsersRepository.getUser(getIntegerValueOf(resultSet, USER_ID_PARAM.name()))

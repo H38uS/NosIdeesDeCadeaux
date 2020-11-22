@@ -12,7 +12,8 @@ public class TimestampAdapter implements JsonSerializer<Timestamp> {
 
     @Override
     public JsonElement serialize(Timestamp date, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(MyDateFormatViewer.formatMine(date));
+        // TODO : il faut changer les Timestamp/Date en Instant ou ZonedDateTime
+        return new JsonPrimitive(MyDateFormatViewer.formatMine(date == null ? null : date.toInstant()));
     }
 
 }

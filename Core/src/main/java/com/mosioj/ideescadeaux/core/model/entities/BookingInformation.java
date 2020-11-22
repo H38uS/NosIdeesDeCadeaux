@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class BookingInformation {
      * @param group        The booking group. Not null if and only if the idea is booked by a group.
      * @param bookedOn     When the idea has been booked (can be null).
      */
-    private BookingInformation(BookingType type, User bookingOwner, IdeaGroup group, Timestamp bookedOn) {
+    private BookingInformation(BookingType type, User bookingOwner, IdeaGroup group, Instant bookedOn) {
         this.type = type;
         this.bookingOwner = bookingOwner;
         this.group = group;
@@ -65,7 +65,6 @@ public class BookingInformation {
     }
 
     /**
-     *
      * @return True if and only if this idea is booked somehow.
      */
     public boolean isBooked() {
@@ -93,15 +92,15 @@ public class BookingInformation {
         return Optional.ofNullable(group);
     }
 
-    public static BookingInformation fromAGroup(IdeaGroup group, Timestamp bookedOn) {
+    public static BookingInformation fromAGroup(IdeaGroup group, Instant bookedOn) {
         return new BookingInformation(BookingType.GROUP, null, group, bookedOn);
     }
 
-    public static BookingInformation fromASingleUser(User bookingOwner, Timestamp bookedOn) {
+    public static BookingInformation fromASingleUser(User bookingOwner, Instant bookedOn) {
         return new BookingInformation(BookingType.SINGLE_PERSON, bookingOwner, null, bookedOn);
     }
 
-    public static BookingInformation fromAPartialReservation(Timestamp bookedOn) {
+    public static BookingInformation fromAPartialReservation(Instant bookedOn) {
         return new BookingInformation(BookingType.PARTIAL, null, null, bookedOn);
     }
 

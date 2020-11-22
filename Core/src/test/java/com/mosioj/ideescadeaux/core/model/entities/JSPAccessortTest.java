@@ -39,7 +39,7 @@ public class JSPAccessortTest extends TemplateTest {
                      .withOwner(u)
                      .withText("toto")
                      .withPicture("toto.png")
-                     .withLastModificationDate(TS20191212_0829)
+                     .withLastModificationDate(TS20191212_0829.toInstant())
                      .build();
         Assert.assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertNull(i.getCategory());

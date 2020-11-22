@@ -5,7 +5,6 @@ import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -76,8 +75,8 @@ public class User implements Comparable<User> {
                 String email,
                 Date birthday,
                 String avatar,
-                Timestamp creationDate,
-                Timestamp lastLogin) {
+                Instant creationDate,
+                Instant lastLogin) {
         this(id, name, email, birthday, avatar);
         this.creationDate = MyDateFormatViewer.formatMine(creationDate);
         this.lastLogin = MyDateFormatViewer.formatMine(lastLogin);
@@ -129,7 +128,8 @@ public class User implements Comparable<User> {
      * @return The formatted birthdate.
      */
     public String getBirthdayAsString() {
-        return getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.toInstant()))
+        // FIXME : fait planter le test, pas de méthode toInstant sur les Date... Que sur les timestamp.
+        return getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.toLocalDate()))
                             .orElse("- on ne sait pas...");
     }
 

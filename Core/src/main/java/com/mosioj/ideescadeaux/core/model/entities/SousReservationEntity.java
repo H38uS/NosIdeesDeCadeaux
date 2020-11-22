@@ -21,7 +21,7 @@ public class SousReservationEntity {
     }
 
     public String getBookedOn() {
-        return MyDateFormatViewer.formatMine(bookedOn);
+        return MyDateFormatViewer.formatMine(bookedOn == null ? null : bookedOn.toInstant());
     }
 
     public int getId() {

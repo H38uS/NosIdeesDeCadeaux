@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -179,18 +180,22 @@ public class UsersRepository extends AbstractRepository {
             ResultSet res = ps.getResultSet();
             while (res.next()) {
 
-                Timestamp creation = null;
+                Instant creation = null;
                 try {
-                    creation = res.getTimestamp(UsersColumns.CREATION_DATE.name());
+                    creation = Optional.ofNullable(res.getTimestamp(UsersColumns.CREATION_DATE.name()))
+                                       .map(Timestamp::toInstant)
+                                       .orElse(null);
                 } catch (SQLException ignored) {
-                    // Plante lorsque vide - nécessaire de catcher
+                    // Plante lorsque à 00:00 etc - nécessaire de catcher
                 }
 
-                Timestamp lastLogin = null;
+                Instant lastLogin = null;
                 try {
-                    lastLogin = res.getTimestamp(UsersColumns.LAST_LOGIN.name());
+                    lastLogin = Optional.ofNullable(res.getTimestamp(UsersColumns.LAST_LOGIN.name()))
+                                        .map(Timestamp::toInstant)
+                                        .orElse(null);
                 } catch (SQLException ignored) {
-                    // Plante lorsque vide - nécessaire de catcher
+                    // Plante lorsque à 00:00 etc - nécessaire de catcher
                 }
 
                 users.add(new User(res.getInt(UsersColumns.ID.name()),

@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -29,35 +29,35 @@ public class MyDateFormatViewer extends SimpleDateFormat {
     /**
      * Format the given date using ${DATETIME_DISPLAY_FORMAT}.
      *
-     * @param date The date to format.
+     * @param pointInTime The date to format.
      * @return The formatted date or an empty string if the date is null.
      */
-    public static String formatMine(Date date) {
-        return formatOrElse(date, StringUtils.EMPTY);
+    public static String formatMine(Instant pointInTime) {
+        return formatOrElse(pointInTime, StringUtils.EMPTY);
     }
 
     /**
-     * Format the given date using ${DISPLAY_DATE_FORMAT}.
+     * Format the given date.
      *
-     * @param time The number of milliseconds since the epoch.
+     * @param date The local date to format.
      * @return The formatted date.
      */
-    public static String formatDayWithYearHidden(Instant time) {
-        return time.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime().format(DAY_FORMATTER);
+    public static String formatDayWithYearHidden(LocalDate date) {
+        return date.format(DAY_FORMATTER);
     }
 
     /**
      * Format the given date using ${DATETIME_DISPLAY_FORMAT} if not null or return the provided default value.
      *
-     * @param date          The date to format.
+     * @param pointInTime   The date to format.
      * @param defaultFormat The default string to return if the give date is null.
      * @return The formatted date.
      */
-    public static String formatOrElse(Date date, String defaultFormat) {
-        if (date == null) {
+    public static String formatOrElse(Instant pointInTime, String defaultFormat) {
+        if (pointInTime == null) {
             return defaultFormat;
         }
-        return date.toInstant().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime().format(DATE_TIME_FORMATTER);
+        return pointInTime.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime().format(DATE_TIME_FORMATTER);
     }
 
     /**

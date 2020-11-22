@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +76,9 @@ public class IdeesRepository extends AbstractRepository {
 
         // Computing the booking information
         final boolean isPartiallyBooked = "Y".equals(rs.getString(IdeeColumns.A_SOUS_RESERVATION.name()));
-        final Timestamp bookedOn = rs.getTimestamp(IdeeColumns.RESERVE_LE.name());
+        final Instant bookedOn = Optional.ofNullable(rs.getTimestamp(IdeeColumns.RESERVE_LE.name()))
+                                         .map(Timestamp::toInstant)
+                                         .orElse(null);
         BookingInformation bookingInformation;
         if (bookingOwner == null) {
             if (group == null) {
@@ -101,7 +104,9 @@ public class IdeesRepository extends AbstractRepository {
                                               rs.getString("PRIORITY_NAME"),
                                               rs.getString("PRIORITY_PICTURE"),
                                               rs.getInt("PRIORITY_ORDER")))
-                   .withLastModificationDate(rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()))
+                   .withLastModificationDate(Optional.ofNullable(rs.getTimestamp(IdeeColumns.MODIFICATION_DATE.name()))
+                                                     .map(Timestamp::toInstant)
+                                                     .orElse(null))
                    .withSurpriseOwner(surpriseBy)
                    .withBookingInformation(bookingInformation)
                    .hasBeenDelete(deletedIdea)

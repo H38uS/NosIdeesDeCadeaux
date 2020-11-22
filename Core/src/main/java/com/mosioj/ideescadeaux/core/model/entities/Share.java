@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.core.model.entities;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 public class Share {
 
@@ -18,10 +18,10 @@ public class Share {
 
     private final double amount;
 
-    public Share(User user, double d, Timestamp joinDate) {
+    public Share(User user, double d, Instant joinDate) {
         this.user = user;
         this.amount = d;
-        this.formattedAmount =  String.format("%1$,.2f", amount);
+        this.formattedAmount = String.format("%1$,.2f", amount);
         this.formattedDate = MyDateFormatViewer.formatMine(joinDate);
     }
 

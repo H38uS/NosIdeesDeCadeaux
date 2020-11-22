@@ -53,6 +53,6 @@ public class Comment {
     }
 
     public String getTime() {
-        return MyDateFormatViewer.formatMine(time);
+        return MyDateFormatViewer.formatMine(time == null ? null : time.toInstant());
     }
 }

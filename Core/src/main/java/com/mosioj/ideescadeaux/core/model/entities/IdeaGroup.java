@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.google.gson.annotations.Expose;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +39,7 @@ public class IdeaGroup {
         return shares;
     }
 
-    public void addUser(User user, double d, Timestamp timestamp) {
+    public void addUser(User user, double d, Instant timestamp) {
         shares.add(new Share(user, d, timestamp));
     }
 

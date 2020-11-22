@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
-import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +54,7 @@ public class Idee {
                  Categorie categorie,
                  String image,
                  Priorite priorite,
-                 Timestamp lastModified,
+                 Instant lastModified,
                  User surpriseBy,
                  BookingInformation bookingInformation,
                  boolean hasBeenDeleted) {
@@ -242,7 +242,7 @@ public class Idee {
         private Categorie categorie;
         private String image;
         private Priorite priorite;
-        private Timestamp lastModified;
+        private Instant lastModified;
         private User surpriseBy;
         private BookingInformation bookingInformation;
         private boolean hasBeenDelete;
@@ -305,7 +305,7 @@ public class Idee {
          * @param lastModified The timestamp of the last modification of this idea.
          * @return The idea build.
          */
-        public IdeaBuilder withLastModificationDate(Timestamp lastModified) {
+        public IdeaBuilder withLastModificationDate(Instant lastModified) {
             this.lastModified = lastModified;
             return this;
         }

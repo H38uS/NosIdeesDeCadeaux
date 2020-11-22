@@ -6,10 +6,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 public class BookingInformationTest extends TemplateTest {
 
-    private static final Timestamp MODIF_DATE = Timestamp.valueOf("2007-09-23 10:10:10.0");
+    private static final Instant MODIF_DATE = Timestamp.valueOf("2007-09-23 10:10:10.0").toInstant();
     private static final String EXPECTED_DATE_STRING = "23 septembre 2007 à 10h10";
 
     @Test

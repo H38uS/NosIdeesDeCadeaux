@@ -5,8 +5,9 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import org.apache.commons.lang3.StringUtils;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Optional;
 
 public class Notification {
@@ -85,8 +86,10 @@ public class Notification {
     /**
      * @param creationTime When this notification was created.
      */
-    public void setCreationTime(Timestamp creationTime) {
-        this.creationTime = MyDateFormatViewer.formatMine(creationTime);
+    public void setCreationTime(Instant creationTime) {
+        this.creationTime = Optional.ofNullable(creationTime)
+                                    .map(MyDateFormatViewer::formatMine)
+                                    .orElse(StringUtils.EMPTY);
     }
 
     /**
