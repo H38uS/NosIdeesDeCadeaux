@@ -1,68 +1,61 @@
 package com.mosioj.ideescadeaux.webapp.viewhelper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Provides helper functions to the views.
- * 
- * @author Jordan Mosio
  *
+ * @author Jordan Mosio
  */
 public class CachingFilter implements Filter {
 
-	/**
-	 * Class logger.
-	 */
-	private static final Logger logger = LogManager.getLogger(CachingFilter.class);
+    /** Class logger. */
+    private static final Logger logger = LogManager.getLogger(CachingFilter.class);
 
-	/**
-	 * Number of seconds of the caching. => currently 60 days
-	 */
-	private final int cacheAgeInSeconds = 3600 * 24 * 60;
-	private final int cacheAgeInMillis = cacheAgeInSeconds * 1000;
+    /** Number of seconds of the caching. => currently 60 days */
+    private static final long cacheAgeInSeconds = 3600 * 24 * 60;
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    /** Number of milliseconds of the caching. => currently 60 days */
+    private static final long cacheAgeInMillis = cacheAgeInSeconds * 1000;
 
-		if (!(response instanceof HttpServletResponse)) {
-			chain.doFilter(request, response);
-			return;
-		}
+    @Override
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException {
 
-		logger.trace("Entering CachingFilter...");
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		HttpServletRequest detailRequest = (HttpServletRequest) request;
+        if (!(response instanceof HttpServletResponse)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		String url = detailRequest.getRequestURL().toString();
-		logger.trace(MessageFormat.format("Adding {0} to the cache...", url));
-		long expiry = new Date().getTime() + cacheAgeInMillis;
-		httpResponse.setDateHeader("Expires", expiry);
-		httpResponse.setHeader("Cache-Control", "max-age=" + cacheAgeInSeconds);
+        logger.trace("Entering CachingFilter...");
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpServletRequest detailRequest = (HttpServletRequest) request;
 
-		chain.doFilter(request, response);
-	}
+        String url = detailRequest.getRequestURL().toString();
+        logger.trace(MessageFormat.format("Adding {0} to the cache...", url));
+        long expiry = new Date().getTime() + cacheAgeInMillis;
+        httpResponse.setDateHeader("Expires", expiry);
+        httpResponse.setHeader("Cache-Control", "max-age=" + cacheAgeInSeconds);
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		// Nothing to do
-	}
+        chain.doFilter(request, response);
+    }
 
-	@Override
-	public void destroy() {
-		// Nothing to do
-	}
+    @Override
+    public void init(FilterConfig filterConfig) {
+        // Nothing to do
+    }
+
+    @Override
+    public void destroy() {
+        // Nothing to do
+    }
 }

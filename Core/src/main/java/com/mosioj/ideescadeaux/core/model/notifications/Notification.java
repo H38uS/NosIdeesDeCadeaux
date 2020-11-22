@@ -5,7 +5,6 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -37,7 +36,7 @@ public class Notification {
     private IdeaGroup groupParameter;
 
     /** The optional creation date for this notification. */
-    private Timestamp creationTime;
+    private String creationTime;
 
     /**
      * Default constructor for insertion.
@@ -87,7 +86,7 @@ public class Notification {
      * @param creationTime When this notification was created.
      */
     public void setCreationTime(Timestamp creationTime) {
-        this.creationTime = creationTime;
+        this.creationTime = MyDateFormatViewer.formatMine(creationTime);
     }
 
     /**
@@ -156,7 +155,7 @@ public class Notification {
      * @return The creation time of this notification.
      */
     public String getCreationTime() {
-        return creationTime == null ? StringUtils.EMPTY : MyDateFormatViewer.formatMine(creationTime);
+        return creationTime;
     }
 
     /**
@@ -166,7 +165,7 @@ public class Notification {
         Notification notification = getType().buildDefault();
         notification.setId(getId());
         notification.setOwner(getOwner());
-        notification.setCreationTime(creationTime);
+        notification.creationTime = getCreationTime();
         getUserParameter().ifPresent(notification::setUserParameter);
         getIdeaParameter().ifPresent(notification::setIdeaParameter);
         getGroupParameter().ifPresent(notification::setGroupParameter);

@@ -17,7 +17,7 @@ public class Comment {
 
     private final User writtenBy;
     private final int idea;
-    private final Timestamp time;
+    private final Timestamp time; // TODO : il faut changer les Timestamp/Date en Instant ou ZonedDateTime
 
     public Comment(int id, String text, User writtenBy, int idea, Timestamp time) {
         super();

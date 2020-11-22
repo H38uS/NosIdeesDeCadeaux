@@ -69,6 +69,8 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
     // La base est en UTC, il faut donc ne pas utiliser MySimpleDateFormat.
     // Ou alors, avec Hibernate et que la base soit en Europe/Paris.
     public java.sql.Date getAsDate(String date) {
+        // TODO : il faut changer les Timestamp/Date en Instant ou ZonedDateTime
+        // Attention : bien modifié le check en parallèle
         SimpleDateFormat format = new SimpleDateFormat(MyDateFormatViewer.DATE_FORMAT);
         Date parsed;
         try {

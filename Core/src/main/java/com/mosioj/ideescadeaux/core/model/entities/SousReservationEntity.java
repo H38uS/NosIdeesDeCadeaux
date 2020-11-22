@@ -10,7 +10,7 @@ public class SousReservationEntity {
     public int ideeId;
     public User user;
     public String comment;
-    private final Timestamp bookedOn;
+    private final Timestamp bookedOn; // TODO : il faut changer les Timestamp/Date en Instant ou ZonedDateTime
 
     public SousReservationEntity(int id, int ideeId, User user, String comment, Timestamp bookedOn) {
         this.id = id;

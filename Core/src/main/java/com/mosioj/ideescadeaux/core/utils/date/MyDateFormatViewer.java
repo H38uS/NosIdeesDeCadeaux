@@ -5,22 +5,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 public class MyDateFormatViewer extends SimpleDateFormat {
 
-    private static final long serialVersionUID = 3200032903715571847L;
+    /** Class logger. */
     private static final Logger logger = LogManager.getLogger(MyDateFormatViewer.class);
 
-    private static final String DATETIME_DISPLAY_FORMAT = "d MMMM yyyy à HH'h'mm";
+    /** Pattern to parse a news date. */
     public static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static final String DISPLAY_DATE_FORMAT = "d MMMM";
 
-    /** Date Formatter */
-    private static final SimpleDateFormat MODIFICATION_DATE_FORMAT = new MyDateFormatViewer(DATETIME_DISPLAY_FORMAT);
-    private static final SimpleDateFormat DAY_FORMATER = new MyDateFormatViewer(DISPLAY_DATE_FORMAT);
+    /** Date Formatter for a timestamp */
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMMM yyyy à HH'h'mm");
+
+    /** Date Formatter for a day */
+    private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("d MMMM");
 
     /**
      * Format the given date using ${DATETIME_DISPLAY_FORMAT}.
@@ -38,8 +42,8 @@ public class MyDateFormatViewer extends SimpleDateFormat {
      * @param time The number of milliseconds since the epoch.
      * @return The formatted date.
      */
-    public static String formatDayWithYearHidden(long time) {
-        return DAY_FORMATER.format(new Date(time));
+    public static String formatDayWithYearHidden(Instant time) {
+        return time.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime().format(DAY_FORMATTER);
     }
 
     /**
@@ -53,7 +57,7 @@ public class MyDateFormatViewer extends SimpleDateFormat {
         if (date == null) {
             return defaultFormat;
         }
-        return MODIFICATION_DATE_FORMAT.format(date);
+        return date.toInstant().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime().format(DATE_TIME_FORMATTER);
     }
 
     /**

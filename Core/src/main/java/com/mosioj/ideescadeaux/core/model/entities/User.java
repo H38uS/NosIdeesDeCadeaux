@@ -39,10 +39,17 @@ public class User implements Comparable<User> {
     @Expose
     public String freeComment; // utilisé dans suggestion relation en jsp - impossible de supprimer le getter pour l'instant
 
+    // TODO : il faut changer les Timestamp/Date en Instant ou ZonedDateTime
     private Date birthday; // utilisé dans MonCompte en jsp - impossible de supprimer le getter pour l'instant
-    private Timestamp creationDate; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
-    private Timestamp lastLogin; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+
+    /** Formatted instant of the creation of the user. */
+    private String creationDate; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+
+    /** Formatted instant of the last login. */
+    private String lastLogin; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
+
     public boolean hasBookedOneOfItsIdeas = false; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
     public User(int id, String name, String email, Date birthday, String avatar) {
@@ -72,8 +79,8 @@ public class User implements Comparable<User> {
                 Timestamp creationDate,
                 Timestamp lastLogin) {
         this(id, name, email, birthday, avatar);
-        this.creationDate = creationDate;
-        this.lastLogin = lastLogin;
+        this.creationDate = MyDateFormatViewer.formatMine(creationDate);
+        this.lastLogin = MyDateFormatViewer.formatMine(lastLogin);
     }
 
     /**
@@ -122,7 +129,7 @@ public class User implements Comparable<User> {
      * @return The formatted birthdate.
      */
     public String getBirthdayAsString() {
-        return getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.getTime()))
+        return getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.toInstant()))
                             .orElse("- on ne sait pas...");
     }
 
@@ -150,7 +157,7 @@ public class User implements Comparable<User> {
      * @return the creationDate
      */
     public String getCreationDate() {
-        return MyDateFormatViewer.formatMine(creationDate);
+        return creationDate;
     }
 
     /**
@@ -159,7 +166,7 @@ public class User implements Comparable<User> {
      * @return the lastLogin
      */
     public String getLastLogin() {
-        return MyDateFormatViewer.formatMine(lastLogin);
+        return lastLogin;
     }
 
     /**
