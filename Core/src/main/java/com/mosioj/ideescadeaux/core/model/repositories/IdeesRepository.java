@@ -272,7 +272,7 @@ public class IdeesRepository extends AbstractRepository {
         // - Qu'on a réservé
         // - Qu'on a sous-réservé
         // - Dont on fait parti d'un groupe
-        query.append(MessageFormat.format(" where i.{0} = ? or s.{1} is not null or gc.{2} is not null \n",
+        query.append(MessageFormat.format(" where (i.{0} = ? or s.{1} is not null or gc.{2} is not null) \n",
                                           IdeeColumns.RESERVE,
                                           SousReservationColumns.ID,
                                           GroupIdeaContentColumns.GROUP_ID));
