@@ -76,7 +76,7 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                 } else {
                     // Modification de l'image
                     // On supprime la précédente
-                    if (!"default.png".equals(old)) {
+                    if (!"default.png".equals(old) && !old.equals("undefined")) {
                         IdeaLogic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), old);
                     }
                     logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));

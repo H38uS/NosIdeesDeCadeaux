@@ -12,10 +12,6 @@ import java.util.Optional;
 
 public class Notification {
 
-    // FIXME : migration
-    // ALTER TABLE `NOTIFICATIONS` DROP `text`;
-    // drop table NOTIFICATION_PARAMETERS;
-
     /** The notification type, useful for database insertion. Cannot be null. */
     private final NType type;
 
