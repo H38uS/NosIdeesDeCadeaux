@@ -26,9 +26,9 @@
         <form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
                     authentication-failure-url="/public/error.jsp"/>
         <csrf disabled="true"/>
+        <!-- 12 096 000 = 144j -->
         <remember-me remember-me-parameter="remember-me" remember-me-cookie="remember-me"
-                     token-validity-seconds="12096000"
-                     data-source-ref="springDS"/>
+                     token-validity-seconds="12096000"/>
         <logout logout-success-url="/public/index.jsp"/>
     </http>
 
