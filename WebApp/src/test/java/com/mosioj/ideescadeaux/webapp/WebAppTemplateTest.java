@@ -74,7 +74,7 @@ public class WebAppTemplateTest {
         dataSource.setDatabaseName("test_ideeskdos");
         dataSource.setUser("mosioj");
         dataSource.setPassword("tuaD50Kv2jguyX5ncokK");
-        dataSource.setURL("jdbc:mysql://192.168.1.7/test_ideeskdos?serverTimezone=Europe/Paris");
+        dataSource.setURL("jdbc:mysql://nas-jmo/test_ideeskdos?serverTimezone=Europe/Paris");
 
         DataSourceIdKDo.setDataSource(dataSource);
         ds = new DataSourceIdKDo();
