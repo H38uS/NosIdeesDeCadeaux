@@ -107,7 +107,7 @@ public enum NType {
     NEW_QUESTION_TO_OWNER("Quelqu'un a posté une nouvelle question ou nouvelle réponse sur une idée", (u, i, g) -> {
         final String link = "<a href=\"protected/idee_questions?idee=" + i.getId() + "\">le lire</a>";
         return MessageFormat.format(
-                "Quelqu'un a ajouté une nouvelle question / une nouvelle réponse sur l''idée \"{0}\". Aller {1}.",
+                "Quelqu''un a ajouté une nouvelle question / une nouvelle réponse sur l''idée \"{0}\". Aller {1}.",
                 i.getTextSummary(50),
                 link);
     }),
