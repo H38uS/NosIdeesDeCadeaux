@@ -411,7 +411,7 @@ function getSurpriseDivAsHTMl(connectedUser, jsonIdea) {
     if (typeof jsonIdea.surpriseBy !== 'undefined') {
         var content = $("<div>");
         if (connectedUser.id !== jsonIdea.surpriseBy.id) {
-            content.text(`Idée surprise créée le ${jsonIdea.modificationDate} par ${jsonIdea.surpriseBy.name}.`);
+            content.html(`Idée surprise créée le ${jsonIdea.modificationDate} par ${jsonIdea.surpriseBy.name}.`);
         } else {
             content.html(`
                 Idée surprise créée le ${jsonIdea.modificationDate} par vous - la
