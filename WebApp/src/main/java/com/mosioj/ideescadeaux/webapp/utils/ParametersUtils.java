@@ -122,7 +122,7 @@ public class ParametersUtils {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
         g.dispose();
-        logger.debug("Resize done!");
+        logger.trace("Resize done!");
 
         return resizedImage;
     }
@@ -178,11 +178,11 @@ public class ParametersUtils {
                         File tmpUploadedFile = new File(largeFolder, "TMP_" + image);
                         logger.debug("Uploading file : " + tmpUploadedFile.getCanonicalPath());
                         fi.write(tmpUploadedFile);
-                        logger.debug(MessageFormat.format("File size: {0} kos.", (tmpUploadedFile.length() / 1024)));
-                        logger.debug(MessageFormat.format("Memory (free / total): ( {0} Ko / {1} Ko ). Max: {2} Ko.",
+                        logger.debug(MessageFormat.format("File size: {3} kos. - Memory (free / total): ( {0} Ko / {1} Ko ). Max: {2} Ko.",
                                                           Runtime.getRuntime().freeMemory() / 1024,
                                                           Runtime.getRuntime().totalMemory() / 1024,
-                                                          Runtime.getRuntime().maxMemory() / 1024));
+                                                          Runtime.getRuntime().maxMemory() / 1024,
+                                                          (tmpUploadedFile.length() / 1024)));
 
                         try {
                             // Creation de la vignette
@@ -201,7 +201,7 @@ public class ParametersUtils {
                                 resizeImageJpg = originalImage;
                             }
                             ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
-                            logger.debug("Releasing the image resources...");
+                            logger.trace("Releasing the image resources...");
                             originalImage.flush();
 
                         } catch (OutOfMemoryError e) {
@@ -214,7 +214,7 @@ public class ParametersUtils {
                         if (!tmpUploadedFile.delete()) {
                             logger.warn("Cannot delete " + tmpUploadedFile);
                         }
-                        logger.debug(MessageFormat.format("Passing image parameter: {0}", image));
+                        logger.trace(MessageFormat.format("Passing image parameter: {0}", image));
                         parameters.put("image", image);
                     }
                 } else {

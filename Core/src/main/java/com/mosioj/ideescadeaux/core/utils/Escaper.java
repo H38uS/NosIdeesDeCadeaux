@@ -62,9 +62,8 @@ public class Escaper {
      * @param initialName The initial upload name.
      * @return The computed name to use, with the png extension.
      */
-    public static String computeImageName(String initialName) {
+    public static String computeImageName(final String initialName) {
 
-        logger.debug("Initial image name: " + initialName);
         String fileName = initialName;
         if (fileName.contains(".")) {
             // Drop all of them
@@ -91,7 +90,7 @@ public class Escaper {
             fileName = fileName + "_" + id;
         }
 
-        logger.debug("Computed image name: " + fileName + ".png");
+        logger.debug("Computed image name '{}.png' from '{}'.", fileName, initialName);
         return fileName + ".png";
     }
 

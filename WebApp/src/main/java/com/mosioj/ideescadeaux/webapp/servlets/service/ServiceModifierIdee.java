@@ -13,6 +13,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -60,26 +60,25 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                 message.append("</ul>");
                 sr = ServiceResponse.ko(message.toString(), isAdmin(request), thisOne);
             } else {
-                logger.info(MessageFormat.format("Modifying an idea [''{0}'' / ''{1}'' / ''{2}'']",
-                                                 parameters.get("text"),
-                                                 parameters.get("type"),
-                                                 parameters.get("priority")));
+                logger.info("Modifying the idea {} of {}. Parameters: ['{}' / '{}' / '{}']",
+                            idea.getId(),
+                            idea.getOwner(),
+                            parameters.get("text"),
+                            parameters.get("type"),
+                            parameters.get("priority"));
                 String image = parameters.get("image");
-                String old = parameters.get("old_picture");
-                logger.debug("Image précédente: " + old + " / Nouvelle image: " + image);
-                if (image == null || image.isEmpty() || "null".equals(image)) {
-                    if (old != null && !old.equals("undefined")) {
-                        image = old;
-                    } else {
-                        image = null;
-                    }
+                String old = idea.getImage();
+                if (StringUtils.isBlank(image) || "null".equals(image)) {
+                    // pas de nouvelle image
+                    image = old;
+                    logger.debug("No new image... Keeping {}.", old);
                 } else {
                     // Modification de l'image
                     // On supprime la précédente
-                    if (!"default.png".equals(old) && !old.equals("undefined")) {
+                    if (!"default.png".equals(old) && !StringUtils.isBlank(old)) {
                         IdeaLogic.removeUploadedImage(ParametersUtils.getIdeaPicturePath(), old);
                     }
-                    logger.debug(MessageFormat.format("Updating image from {0} to {1}.", old, image));
+                    logger.debug("Updating image from {} to {}.", old, image);
                 }
 
                 IdeesRepository.modifier(idea.getId(),
