@@ -25,7 +25,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
 
         // Création de l'idée et réservation par un groupe
         Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
-        IdeesRepository.toutDereserver(idea.getId());
+        IdeesRepository.toutDereserver(idea);
         IdeaGroup group = GroupIdeaRepository.createAGroup(20, 10, friendOfFirefox.getId());
         IdeesRepository.bookByGroup(idea.getId(), group.getId());
 
@@ -49,15 +49,15 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void sousreservationMustBeCancelled() throws SQLException {
+    public void sousreservationMustBeKept() throws SQLException {
 
         // Création de l'idée et réservation par une sous-réservation
         Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
-        IdeesRepository.toutDereserver(idea.getId());
+        IdeesRepository.toutDereserver(idea);
         IdeesRepository.sousReserver(idea.getId());
         SousReservationRepository.sousReserver(idea.getId(), friendOfFirefox.getId(), "voilou");
 
-        // Vérification que c'est bien réservé par un groupe
+        // Vérification que c'est bien réservé en tant que réservation partielle
         assertTrue(SousReservationRepository.getSousReservation(idea.getId()).size() > 0);
         assertEquals(BookingInformation.BookingType.PARTIAL,
                      IdeesRepository.getIdea(idea.getId())
@@ -70,8 +70,8 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
 
         // Vérification
         assertTrue(resp.isOK());
-        assertFalse(SousReservationRepository.getSousReservation(idea.getId()).size() > 0);
-        assertEquals(BookingInformation.BookingType.NONE,
+        assertTrue(SousReservationRepository.getSousReservation(idea.getId()).size() > 0);
+        assertEquals(BookingInformation.BookingType.PARTIAL,
                      IdeesRepository.getIdea(idea.getId())
                                     .map(Idee::getBookingType)
                                     .orElseThrow(SQLException::new));
@@ -82,7 +82,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
 
         // Création de l'idée et réservation par un groupe
         Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
-        IdeesRepository.toutDereserver(idea.getId());
+        IdeesRepository.toutDereserver(idea);
         IdeesRepository.reserver(idea.getId(), friendOfFirefox.getId());
 
         // Vérification que c'est bien réservé par un groupe

@@ -749,16 +749,52 @@ public class IdeesRepository extends AbstractRepository {
         return getDb().selectCountStar(query, userId, userId, idea, userId, userId) > 0;
     }
 
+    /**
+     * Supprime toutes les réservations sauf les sous réservations...
+     *
+     * @param idee L'idée qu'on doit déréserver.
+     */
+    public static void toutDereserverSaufSousReservation(Idee idee) throws SQLException {
+
+        // Suppression des groupes potentiels
+        getDb().selectInt("select " + IdeeColumns.GROUPE_KDO_ID + " from IDEES where " + IdeeColumns.ID + " = ?",
+                          idee.getId())
+               .ifPresent(groupId -> {
+                              try {
+                                  getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                                             GroupIdeaRepository.TABLE_NAME_CONTENT,
+                                                                             GroupIdeaContentColumns.GROUP_ID),
+                                                        groupId);
+                                  getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
+                                                                             GroupIdeaRepository.TABLE_NAME,
+                                                                             GroupIdeaColumns.ID),
+                                                        groupId);
+                              } catch (SQLException e) {
+                                  logger.error(e);
+                              }
+                          }
+               );
+
+        // Mise a zero des flags
+        getDb().executeUpdate(MessageFormat.format(
+                "update {0} set {2} = null, {3} = null, {4} = null where {1} = ?",
+                TABLE_NAME,
+                IdeeColumns.ID,
+                IdeeColumns.RESERVE,
+                IdeeColumns.RESERVE_LE,
+                IdeeColumns.GROUPE_KDO_ID), idee.getId());
+    }
 
     /**
      * Supprime tout type de réservation sur l'idée. Fait aussi le ménage pour les groupes sous-jacent etc.
      *
-     * @param idea L'idée qu'on doit déréserver.
+     * @param idee L'idée qu'on doit déréserver.
      */
-    public static void toutDereserver(int idea) throws SQLException {
+    public static void toutDereserver(Idee idee) throws SQLException {
 
         // Suppression des groupes potentiels
-        getDb().selectInt("select " + IdeeColumns.GROUPE_KDO_ID + " from IDEES where " + IdeeColumns.ID + " = ?", idea)
+        getDb().selectInt("select " + IdeeColumns.GROUPE_KDO_ID + " from IDEES where " + IdeeColumns.ID + " = ?",
+                          idee.getId())
                .ifPresent(groupId -> {
                               try {
                                   getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
@@ -778,8 +814,7 @@ public class IdeesRepository extends AbstractRepository {
         // Des sous-reservations
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
                                                    SousReservationRepository.TABLE_NAME,
-                                                   SousReservationColumns.IDEE_ID),
-                              idea);
+                                                   SousReservationColumns.IDEE_ID), idee.getId());
 
         // Mise a zero des flags
         getDb().executeUpdate(MessageFormat.format(
@@ -789,9 +824,7 @@ public class IdeesRepository extends AbstractRepository {
                 IdeeColumns.A_SOUS_RESERVATION,
                 IdeeColumns.RESERVE,
                 IdeeColumns.RESERVE_LE,
-                IdeeColumns.GROUPE_KDO_ID),
-                              idea);
-
+                IdeeColumns.GROUPE_KDO_ID), idee.getId());
     }
 
     /**
@@ -803,7 +836,7 @@ public class IdeesRepository extends AbstractRepository {
         final int ideaId = idea.getId();
         logger.debug(MessageFormat.format("Suppression de l''idée: {0}", ideaId));
         if (idea.isASurprise()) {
-            toutDereserver(ideaId);
+            toutDereserver(idea);
             getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
                                                        CommentsRepository.TABLE_NAME,
                                                        CommentsColumns.IDEA_ID),
@@ -932,7 +965,7 @@ public class IdeesRepository extends AbstractRepository {
 
         // Suppression des réservations si demandé
         if (!restoreBooking) {
-            toutDereserver(idea.getId());
+            toutDereserver(idea);
         }
     }
 }

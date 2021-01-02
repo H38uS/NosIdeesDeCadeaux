@@ -28,9 +28,7 @@ public class ServiceJeLaVeuxEncore extends ServicePost<IdeaModification> {
     /** The service parameter. */
     public static final String IDEA_ID_PARAM = "idee";
 
-    /**
-     * Class constructor.
-     */
+    /** Class constructor. */
     public ServiceJeLaVeuxEncore() {
         super(new IdeaModification(IDEA_ID_PARAM));
     }
@@ -54,7 +52,7 @@ public class ServiceJeLaVeuxEncore extends ServicePost<IdeaModification> {
         toBeNotified.forEach(NeedAgainNotification::sendItTo);
 
         // On supprime les réservations
-        IdeesRepository.toutDereserver(idea.getId());
+        IdeesRepository.toutDereserverSaufSousReservation(idea);
 
         buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
     }
