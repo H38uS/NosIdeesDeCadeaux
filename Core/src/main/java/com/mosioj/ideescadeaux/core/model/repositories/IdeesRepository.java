@@ -333,7 +333,11 @@ public class IdeesRepository extends AbstractRepository {
      * @param idIdee The deleted idea's id.
      * @return All fields for this idea.
      */
-    public static Optional<Idee> getDeletedIdea(int idIdee) {
+    public static Optional<Idee> getDeletedIdea(Integer idIdee) {
+
+        if (idIdee == null) {
+            return Optional.empty();
+        }
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.ID));

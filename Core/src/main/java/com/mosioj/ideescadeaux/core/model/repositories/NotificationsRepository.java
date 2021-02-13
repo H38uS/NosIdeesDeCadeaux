@@ -419,8 +419,9 @@ public class NotificationsRepository extends AbstractRepository {
             // Reading the parameters
             User userParameter = UsersRepository.getUser(getIntegerValueOf(resultSet, USER_ID_PARAM.name()))
                                                 .orElse(null);
-            Idee ideaParameter = IdeesRepository.getIdea(getIntegerValueOf(resultSet, IDEA_ID_PARAM.name()))
-                                                .orElse(null);
+            final Integer ideaId = getIntegerValueOf(resultSet, IDEA_ID_PARAM.name());
+            Idee ideaParameter = IdeesRepository.getIdea(ideaId)
+                                                .orElse(IdeesRepository.getDeletedIdea(ideaId).orElse(null));
             final Integer groupId = getIntegerValueOf(resultSet, GROUP_ID_PARAM.name());
             IdeaGroup groupParameter = GroupIdeaRepository.getGroupDetails(groupId).orElse(null);
 
