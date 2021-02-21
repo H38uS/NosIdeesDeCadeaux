@@ -23,7 +23,7 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet
     public static final String VIEW_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit.jsp";
     public static final String tokenParameter = "tokenId";
     public static final String userIdParameter = "userIdParam";
-    private static final String SUCCES_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit_succes.jsp";
+    public static final String SUCCES_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit_succes.jsp";
 
     public ChangerMotDePasseDepuisReinit() {
         super(new PasswordChangeRequest(tokenParameter, userIdParameter));
