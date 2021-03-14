@@ -37,6 +37,11 @@ public class TestMetaDataWebApp extends WebAppTemplateTest {
         availableLinks.add("protected/est_a_jour");
         availableLinks.add("protected/remove_an_idea");
 
+        // Lien d'onglets JS
+        availableLinks.add("#procurations");
+        availableLinks.add("#notifications");
+        availableLinks.add("#infos");
+
         boolean hasError = false;
         for (String reference : referencedLinks) {
             if (!StringUtils.isBlank(reference) && !availableLinks.contains(reference)) {
