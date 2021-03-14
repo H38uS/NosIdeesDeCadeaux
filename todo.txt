@@ -1,8 +1,10 @@
 // FIXME : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
-// FIXME : 1 voir le système de notification push, notamment pour rafraichir le statut d'un groupe
+// FIXME : 1 voir le système de notification push, notamment pour rafraichir le statut d'un groupe + pour vérifier en JS que le nombre de notification n'a pas bougé
 // FIXME : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
+// FIXME : 5 mettre à jour bootstrap
 // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
 // TODO : 3 ajouter un changelog
+// TODO : 4 faire un preview markdown pour l'édition des idées
 // TODO : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
 // TODO : 7 ordonnancer les résa de plus de 3 mois dans (mes réservations) ? + les mettre dans un tableau au moins en mode pc - ajouter la date de l'action!!
 // TODO : 8 tester les services quand on a pas les droits
@@ -10,25 +12,19 @@
 // TODO : 8 ajouter une option pour montrer son année de naissance dans le réseau + les mails.
 // TODO : 8 auto génération de liens d'image à partir des liens (quand termine par .jpg / .png / etc.)
 // TODO : 8 vérifier qu'on fait un test pour chaque méthode des repository
-// TODO : 9 faire une passe et remplacer les exception par des Try
-// TODO : 99 faire un preview markdown pour l'édition des idées
-// TODO : 99 vérifier régulièrement si y'a pas d'autres notif
 // TODO : regarder le coverage et ajouter des tests sur les services / servlet qui n'en ont pas
 
 // TODO : pouvoir mettre un rappel de date de réservation
 // TODO : pouvoir se noter des personnes pour lesquelles on veut faire une résa
-// TODO : voir pour utiliser hibernate
 // TODO : notification followers quand on ajoute des idées, les modifie etc.
 // TODO : configurer le nombre de jour pour le rappel d'anniversaire
 // TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
 // TODO : pouvoir éditer un commentaire
-// TODO : mettre le focus sur le champs recherche dans mes listes
 // TODO : faire du javascript pour les discussions
 // TODO : pouvoir se noter des idées en privé, puis les décaler en public
 // TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
 // TODO : pouvoir modifier le niveau de log depuis l'administration
-// TODO : quand tout est fini: voir pour javax persistence et ce que ça peut apporter ?
+// TODO : quand tout est fini: voir pour javax persistence/hibernate et ce que ça peut apporter ?
 // TODO bug avec l'IPhone, pas assez de padding sous le champs recherche
 // TODO pouvoir déréserver toutes ses idées
-// TODO vérifier en JS que le nombre de notification n'a pas bougé
 // TODO faire une appli androïd !!
