@@ -1,7 +1,7 @@
 <%@  taglib  uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <body>
-    <div class="container px-0">
+    <div class="container px-0 pb-3 pb-sm-3 pb-md-1">
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu_content" aria-controls="menu_content" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,10 +58,10 @@
             </div>
         </nav>
     </header>
-    <div class="pt-2 container" style="padding-bottom:3rem">
+    <div class="pt-2 container pb-5 pb-sm-4 pb-md-4">
         <jsp:doBody/>
     </div>
-    <footer class="page-footer fixed-bottom">
+    <footer class="fixed-bottom">
         <div class="container">
             &#9400; 2020 NosIdeesCadeaux ${application_version} - Tous droits réservés - <a href="public/remerciements.jsp">Remerciements</a>
         </div>
