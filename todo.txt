@@ -1,8 +1,8 @@
 // FIXME : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
 // FIXME : 1 voir le système de notification push, notamment pour rafraichir le statut d'un groupe
-// TODO : 3 ajouter un changelog
 // FIXME : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
 // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
+// TODO : 3 ajouter un changelog
 // TODO : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
 // TODO : 7 ordonnancer les résa de plus de 3 mois dans (mes réservations) ? + les mettre dans un tableau au moins en mode pc - ajouter la date de l'action!!
 // TODO : 8 tester les services quand on a pas les droits
