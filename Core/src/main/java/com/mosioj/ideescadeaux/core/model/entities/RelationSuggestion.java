@@ -1,36 +1,44 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.google.gson.annotations.Expose;
+
 import java.sql.Time;
 import java.util.List;
 
 public class RelationSuggestion {
 
-	public User suggestedBy;
-	public User suggestedTo;
-	public List<User> suggestions;
-	private Time suggestedDate;
+    @Expose
+    public User suggestedBy;
 
-	public RelationSuggestion(User suggestedBy, User suggestedTo, List<User> suggestions, Time suggestedDate) {
-		this.suggestedBy = suggestedBy;
-		this.suggestedTo = suggestedTo;
-		this.suggestions = suggestions;
-		this.suggestedDate = suggestedDate;
-	}
+    @Expose
+    public User suggestedTo;
 
-	public User getSuggestedBy() {
-		return suggestedBy;
-	}
+    @Expose
+    public List<User> suggestions;
 
-	public User getSuggestedTo() {
-		return suggestedTo;
-	}
+    private final Time suggestedDate;
 
-	public List<User> getSuggestions() {
-		return suggestions;
-	}
+    public RelationSuggestion(User suggestedBy, User suggestedTo, List<User> suggestions, Time suggestedDate) {
+        this.suggestedBy = suggestedBy;
+        this.suggestedTo = suggestedTo;
+        this.suggestions = suggestions;
+        this.suggestedDate = suggestedDate;
+    }
 
-	public Time getSuggestedDate() {
-		return suggestedDate;
-	}
+    public User getSuggestedBy() {
+        return suggestedBy;
+    }
+
+    public User getSuggestedTo() {
+        return suggestedTo;
+    }
+
+    public List<User> getSuggestions() {
+        return suggestions;
+    }
+
+    public Time getSuggestedDate() {
+        return suggestedDate;
+    }
 
 }

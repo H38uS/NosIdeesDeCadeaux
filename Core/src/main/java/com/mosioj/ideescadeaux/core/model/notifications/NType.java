@@ -82,7 +82,7 @@ public enum NType {
 
     NEW_RELATION_SUGGESTION("On vous suggère une demande d'ami",
                             (u, i, g) -> u.getName() +
-                                         " vous a suggérer des amis ! <a href=\"protected/suggestion_amis\">Aller voir</a>..."),
+                                         " vous a suggérer des amis ! <a href=\"protected/afficher_reseau\">Aller voir</a>..."),
 
 
     NEW_COMMENT_ON_IDEA("Quelqu'un a posté un nouveau commentaire sur une idée", (u, i, g) -> {

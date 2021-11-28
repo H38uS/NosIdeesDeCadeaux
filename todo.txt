@@ -1,8 +1,13 @@
+// FIXME : les images en mark down => y'a une balise native pour les gérer, le détecter en fonction de l'extension => ![Image][1]
+// FIXME : les nouveauté
 // FIXME : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
-// FIXME : 1 voir le système de notification push, notamment pour rafraichir le statut d'un groupe + pour vérifier en JS que le nombre de notification n'a pas bougé
-// FIXME : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
+
 // FIXME : 5 mettre à jour bootstrap
 // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
+// FIXME : pouvoir se noter des personnes pour lesquelles on veut faire une résa => on reçoit alors une notif lorsque la personne modifie/ajoute une idée!
+
+// TODO : 1 voir le système de notification push, notamment pour rafraichir le statut d'un groupe + pour vérifier en JS que le nombre de notification n'a pas bougé
+// TODO : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.
 // TODO : 3 ajouter un changelog
 // TODO : 4 faire un preview markdown pour l'édition des idées
 // TODO : 6 pouvoir inviter des gens via email dans ajouter amis si on ne les trouve pas
@@ -15,7 +20,7 @@
 // TODO : regarder le coverage et ajouter des tests sur les services / servlet qui n'en ont pas
 
 // TODO : pouvoir mettre un rappel de date de réservation
-// TODO : pouvoir se noter des personnes pour lesquelles on veut faire une résa
+
 // TODO : notification followers quand on ajoute des idées, les modifie etc.
 // TODO : configurer le nombre de jour pour le rappel d'anniversaire
 // TODO : bouton pour dire "mes idées sont à jour" ie on met à jour la date de modification
@@ -25,6 +30,4 @@
 // TODO : Si on change d'abonnement, elastic search ? Faut 2-4Go de RAM
 // TODO : pouvoir modifier le niveau de log depuis l'administration
 // TODO : quand tout est fini: voir pour javax persistence/hibernate et ce que ça peut apporter ?
-// TODO bug avec l'IPhone, pas assez de padding sous le champs recherche
 // TODO pouvoir déréserver toutes ses idées
-// TODO faire une appli androïd !!

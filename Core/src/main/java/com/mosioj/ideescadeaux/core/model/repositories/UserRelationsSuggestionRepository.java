@@ -25,17 +25,6 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
     }
 
     /**
-     * @param userId The user id.
-     * @return True if the given user has received at least one suggestion.
-     */
-    public static boolean hasReceivedSuggestion(int userId) {
-        return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ?",
-                                                           TABLE_NAME,
-                                                           UserRelationsSuggestionColumns.SUGGESTED_TO),
-                                      userId);
-    }
-
-    /**
      * @param suggestedTo The person who receives the suggestion.
      * @param userId      The user id.
      * @return True if and only if suggestedTo has received a notification for userId.
@@ -108,8 +97,8 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
                                             UserRelationsSuggestionColumns.USER_ID) +
                        MessageFormat.format(" where {0} = ? ", UserRelationsSuggestionColumns.SUGGESTED_TO) +
                        MessageFormat.format(" order by u1.{0}, u3.{1}", UsersColumns.NAME, UsersColumns.NAME);
-        logger.info(query);
 
+        logger.trace(query);
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
                                                                     query)) {
             ps.bindParameters(user.id);

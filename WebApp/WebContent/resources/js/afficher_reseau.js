@@ -93,22 +93,108 @@ function searchNetwork(theName, networkOfUserId, page = 1) {
     });
 }
 
-$(document).ready(function() {
-    $(".drop_relationship").click(dropRelationship);
+function reloadSuggestionIfAny() {
 
-    // auto search
-    $("#looking_for").keyup(function () {
-        var searchItem = $("#looking_for").val();
-        if (searchItem.length > 2) {
-            $("#form_rechercher_dans_reseau").find("button").click();
+    $.get("protected/service/suggestion_amis")
+    .done(function (data) {
+
+        var rawData = JSON.parse(data);
+        if (rawData.status !== 'OK') {
+            actionError(rawData.message);
+            return;
         }
-    });
 
-    $("#form_rechercher_dans_reseau").find("button").click(function(e) {
-        e.preventDefault();
-        searchNetwork($("#looking_for").val(), $("#look_in_network").val());
-    });
+        var resDiv = $("#new_friend_suggestions");
+        resDiv.empty().hide();
+        var jsonData = rawData.message;
+        if (jsonData.length === 0) {
+            return;
+        }
 
-    // Initial search
-    searchNetwork($("#looking_for").val(), $("#look_in_network").val(), getURLParameter($(location).attr('href'), "page"));
+        var container = $("<div></div>");
+        container.append(`<h3 class="pb-1">Suggestions de nouveaux amis</h3>`);
+        var infoDiv = $(`<div class="alert alert-info"></div>`);
+        $.each(jsonData, function(i, suggestion) {
+            infoDiv.append(`<h3>De la part de ${suggestion.suggestedBy.name}</h3>`);
+            var suggestionTable = $(`<table>
+                                         <thead>
+                                             <tr>
+                                                 <th>Nom</th>
+                                                 <th>Email</th>
+                                                 <th>Envoyer une demande</th>
+                                                 <th>Ne rien faire</th>
+                                             </tr>
+                                         </thead>
+                                     </table>`);
+            $.each(suggestion.suggestions, function(j, suggestedUser) {
+                suggestionTable.append(`
+                    <tr>
+                        <td>
+                            <label for="selected_${suggestedUser.id}" >${suggestedUser.name}</label>
+                        </td>
+                        <td>
+                            <label for="selected_${suggestedUser.id}" >${suggestedUser.email}</label>
+                        </td>
+                        <td class="center">
+                            <input type="checkbox" name="selected_${suggestedUser.id}" id="selected_${suggestedUser.id}" />
+                            <span class="checkbox"></span>
+                        </td>
+                        <td class="center">
+                            <input type="checkbox" name="rejected_${suggestedUser.id}" id="rejected_${suggestedUser.id}" />
+                            <span class="checkbox"></span>
+                        </td>
+                    </tr>
+                `);
+            })
+            infoDiv.append(suggestionTable);
+            submitBtn = $(`
+                <button class="btn btn-primary" type="submit" name="submit" id="submit-suggestion-${suggestion.suggestedBy.id}">Sauvegarder</button>
+            `);
+            submitBtn.click(function () {
+                var selected = [];
+                $('input[name^="selected_"]').each(function() {
+                    selected.push([$(this).attr("id"), $(this).is(":checked")]);
+                });
+                var rejected = [];
+                $('input[name^="rejected_"]').each(function() {
+                    rejected.push([$(this).attr("id"), $(this).is(":checked")]);
+                });
+                servicePost('protected/service/suggestion_amis',
+                            {
+                                selected : selected,
+                                rejected : rejected
+                            },
+                            function(data) {
+                                reloadSuggestionIfAny();
+                            },
+                            'Mise à jour des suggestions et envois des demandes...',
+                            'Les demandes ont bien été envoyées / les suggestions bien supprimés !');
+            });
+            infoDiv.append(submitBtn);
+        });
+
+        container.append(infoDiv);
+        resDiv.append(container).fadeIn();
+    }).fail(function (data) {
+        actionError(data.status + " - " + data.statusText);
+    });
+}
+
+// Loading suggestions
+reloadSuggestionIfAny();
+
+// Initialization
+$(".drop_relationship").click(dropRelationship);
+// auto search
+$("#looking_for").keyup(function () {
+    var searchItem = $("#looking_for").val();
+    if (searchItem.length > 2) {
+        $("#form_rechercher_dans_reseau").find("button").click();
+    }
 });
+$("#form_rechercher_dans_reseau").find("button").click(function(e) {
+    e.preventDefault();
+    searchNetwork($("#looking_for").val(), $("#look_in_network").val());
+});
+// Initial search
+searchNetwork($("#looking_for").val(), $("#look_in_network").val(), getURLParameter($(location).attr('href'), "page"));

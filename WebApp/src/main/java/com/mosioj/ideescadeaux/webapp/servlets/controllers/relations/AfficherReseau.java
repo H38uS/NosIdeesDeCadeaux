@@ -39,7 +39,7 @@ public class AfficherReseau extends IdeesCadeauxGetServlet<NetworkAccess> {
         if (userId == friend.id) {
             // Uniquement sur notre compte
             request.setAttribute("demandes", UserRelationRequestsRepository.getRequests(userId));
-            request.setAttribute("suggestions", UserRelationsSuggestionRepository.hasReceivedSuggestion(userId));
+            request.setAttribute("suggestions", UserRelationsSuggestionRepository.getUserSuggestions(thisOne));
         }
 
         request.setAttribute("id", friend.id);

@@ -5,7 +5,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <t:template_head_includes>
-    <script src="resources/js/afficher_reseau.js" type="text/javascript"></script>
 </t:template_head_includes>
 <t:template_body_protected>
     <jsp:body>
@@ -51,12 +50,7 @@
                 </form>
             </div>
         </c:if>
-        <c:if test="${not empty suggestions && suggestions}">
-            <h3 class="pb-1">Suggestions de nouveaux amis</h3>
-            <div class="alert alert-info">
-            Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
-            </div>
-        </c:if>
+        <div id="new_friend_suggestions"></div>
         <h3 class="pb-1">Rechercher des personnes dans le réseau ${name}</h3>
         <form id="form_rechercher_dans_reseau" method="GET" action="protected/service/rechercher_reseau">
             <div class="form-row justify-content-start align-items-center mx-0">
@@ -77,6 +71,7 @@
         <h3 class="pt-4">Réseau ${name}</h3>
         <div id="res">
         </div>
+        <script src="resources/js/afficher_reseau.js" type="text/javascript"></script>
     </jsp:body>
 </t:template_body_protected>
 </html>
