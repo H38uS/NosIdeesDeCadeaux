@@ -52,7 +52,10 @@
             </div>
         </c:if>
         <c:if test="${not empty suggestions && suggestions}">
+            <h3 class="pb-1">Suggestions de nouveaux amis</h3>
+            <div class="alert alert-info">
             Vos amis vous suggèrent de nouvelles relations ! <a href="protected/suggestion_amis">Aller voir</a>...
+            </div>
         </c:if>
         <h3 class="pb-1">Rechercher des personnes dans le réseau ${name}</h3>
         <form id="form_rechercher_dans_reseau" method="GET" action="protected/service/rechercher_reseau">

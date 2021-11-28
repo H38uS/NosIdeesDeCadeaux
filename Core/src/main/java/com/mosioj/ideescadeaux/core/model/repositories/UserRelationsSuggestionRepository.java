@@ -37,20 +37,6 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
 
     /**
      * @param suggestedTo The person who receives the suggestion.
-     * @param suggestedBy The person who sends the suggestion.
-     * @return True if and only if there is at least one suggestion from suggestedBy to suggestedTo.
-     */
-    public static boolean hasReceivedSuggestionFrom(int suggestedTo, int suggestedBy) {
-        return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
-                                                           TABLE_NAME,
-                                                           UserRelationsSuggestionColumns.SUGGESTED_TO,
-                                                           UserRelationsSuggestionColumns.SUGGESTED_BY),
-                                      suggestedTo,
-                                      suggestedBy);
-    }
-
-    /**
-     * @param suggestedTo The person who receives the suggestion.
      * @param userId      The user id.
      * @return True if and only if suggestedTo has received a notification for userId.
      */
@@ -97,9 +83,9 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
         List<RelationSuggestion> suggestions = new ArrayList<>();
 
         String query = MessageFormat.format(
-                "select u1.{0} by_id,   u1.{1} by_name,   u1.{2} by_email,   u1.{3} by_avatar,   u1.{4} by_birthday" +
-                "              u2.{0} to_id,   u2.{1} to_name,   u2.{2} to_email,   u2.{3} to_avatar,   u2.{4} to_birthday" +
-                "              u3.{0} user_id, u3.{1} user_name, u3.{2} user_email, u3.{3} user_avatar, u3.{4} user_birthday" +
+                "select u1.{0} by_id,   u1.{1} by_name,   u1.{2} by_email,   u1.{3} by_avatar,   u1.{4} by_birthday," +
+                "              u2.{0} to_id,   u2.{1} to_name,   u2.{2} to_email,   u2.{3} to_avatar,   u2.{4} to_birthday," +
+                "              u3.{0} user_id, u3.{1} user_name, u3.{2} user_email, u3.{3} user_avatar, u3.{4} user_birthday," +
                 "              " +
                 UserRelationsSuggestionColumns.SUGGESTION_DATE,
                 UsersColumns.ID,
@@ -122,6 +108,7 @@ public class UserRelationsSuggestionRepository extends AbstractRepository {
                                             UserRelationsSuggestionColumns.USER_ID) +
                        MessageFormat.format(" where {0} = ? ", UserRelationsSuggestionColumns.SUGGESTED_TO) +
                        MessageFormat.format(" order by u1.{0}, u3.{1}", UsersColumns.NAME, UsersColumns.NAME);
+        logger.info(query);
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
                                                                     query)) {

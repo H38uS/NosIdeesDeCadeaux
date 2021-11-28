@@ -44,11 +44,11 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAc
         if (sent.size() > 0) {
             // Send a notification
             NType.NEW_RELATION_SUGGESTION.with(thisOne).sendItTo(suggestTo);
-            request.setAttribute("user", UsersRepository.getUser(suggestTo.id));
+            request.setAttribute("user", UsersRepository.getUser(suggestTo.id).orElseThrow(SQLException::new));
             request.setAttribute("users", sent);
             RootingsUtils.rootToPage(URL_SUCCESS, request, response);
         } else {
-            request.setAttribute("user", UsersRepository.getUser(suggestTo.id));
+            request.setAttribute("user", UsersRepository.getUser(suggestTo.id).orElseThrow(SQLException::new));
             RootingsUtils.rootToPage(URL_ERROR, request, response);
         }
     }

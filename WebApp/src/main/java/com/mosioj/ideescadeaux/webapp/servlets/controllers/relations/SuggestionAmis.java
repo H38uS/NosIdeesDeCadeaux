@@ -33,6 +33,7 @@ public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
 
     @Override
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+        // FIXME refactor et faire un service
         req.setAttribute("suggestions", UserRelationsSuggestionRepository.getUserSuggestions(thisOne));
         RootingsUtils.rootToPage(DISPATCH_URL, req, resp);
     }
@@ -40,7 +41,7 @@ public class SuggestionAmis extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
     @Override
     public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        // TODO refactor et faire un service
+        // FIXME refactor et faire un service
         int userId = thisOne.id;
 
         Map<String, String[]> params = request.getParameterMap();
