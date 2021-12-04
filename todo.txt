@@ -1,6 +1,6 @@
+// FIXME : pouvoir se noter des personnes pour lesquelles on veut faire une résa => on reçoit alors une notif lorsque la personne modifie/ajoute une idée!
 // FIXME : 5 mettre à jour bootstrap
 // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
-// FIXME : pouvoir se noter des personnes pour lesquelles on veut faire une résa => on reçoit alors une notif lorsque la personne modifie/ajoute une idée!
 
 // TODO : 1 voir le système de notification push, notamment pour rafraichir le statut d'un groupe + pour vérifier en JS que le nombre de notification n'a pas bougé
 // TODO : 4 Faire un test manuel où on se déconnecte. Voir ce que ça donne avec un autre onglet et un service JS.

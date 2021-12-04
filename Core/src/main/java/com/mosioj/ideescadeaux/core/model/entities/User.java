@@ -129,7 +129,6 @@ public class User implements Comparable<User> {
      * @return The formatted birthdate.
      */
     public String getBirthdayAsString() {
-        // FIXME : fait planter le test, pas de méthode toInstant sur les Date... Que sur les timestamp.
         return getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.toLocalDate()))
                             .orElse("- on ne sait pas...");
     }
