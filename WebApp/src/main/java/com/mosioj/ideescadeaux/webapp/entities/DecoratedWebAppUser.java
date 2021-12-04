@@ -45,4 +45,14 @@ public class DecoratedWebAppUser {
     public int hashCode() {
         return Objects.hash(user);
     }
+
+    @Override
+    public String toString() {
+        return "DecoratedWebAppUser{" +
+               "user=" + user +
+               ", isInMyNetwork=" + isInMyNetwork +
+               ", readableBirthday='" + readableBirthday + '\'' +
+               ", hasSentARequest=" + hasSentARequest +
+               '}';
+    }
 }
