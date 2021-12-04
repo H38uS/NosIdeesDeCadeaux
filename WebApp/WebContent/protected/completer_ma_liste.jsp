@@ -12,8 +12,15 @@
 <t:template_body_protected>
     <jsp:body>
         <h3>Ajouter une nouvelle idée</h3>
-        <div class="alert alert-info">
+        <div class="alert alert-primary">
             Avant d'ajouter une idée, je voudrais consulter <a href="protected/voir_liste?id=${connected_user.id}">ma liste</a>.
+            <div>
+                Les idées sont affichées en utilisant le format <a href="https://commonmark.org/">markdown</a> (légèrement étendu).
+                <ul class="mb-0">
+                    <li>Allez voir le <a href="https://commonmark.org/help/tutorial/">tutoriel complet</a></li>
+                    <li>Ou la liste des <a href="https://commonmark.org/help/">fonctionnalités de base</a></li>
+                </ul>
+            </div>
         </div>
         <div id="idea_creation_result" class="container">
         </div>

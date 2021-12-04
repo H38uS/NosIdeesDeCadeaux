@@ -29,6 +29,13 @@
             </div>
         </c:if>
         <h3>Ajouter une nouvelle idée à <a href="protected/voir_liste?id=${user.id}">${user.name}</a></h3>
+        <div class="alert alert-primary">
+            Les idées sont affichées en utilisant le format <a href="https://commonmark.org/">markdown</a> (légèrement étendu).
+            <ul class="mb-0">
+                <li>Allez voir le <a href="https://commonmark.org/help/tutorial/">tutoriel complet</a></li>
+                <li>Ou la liste des <a href="https://commonmark.org/help/">fonctionnalités de base</a></li>
+            </ul>
+        </div>
         <div id="idea_creation_result" class="container">
         </div>
         <div class="container border border-info bg-light rounded mb-2 p-3">

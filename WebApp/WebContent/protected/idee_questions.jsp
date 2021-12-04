@@ -4,12 +4,21 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
     <jsp:body>
-        <div class="alert alert-primary pb-0">
-            Cette page permet d'échanger des questions entre le propriétaire de l'idée et les intéressés. Donc:
-            <ul>
-                <li>Le propriétaire de l'idée verra tout ce qui est écris ici...</li>
-                <li>... Mais les commentaires seront anonymes.</li>
-            </ul>
+        <div class="alert alert-primary">
+            <div>
+                Cette page permet d'échanger des questions entre le propriétaire de l'idée et les intéressés. Donc:
+                <ul>
+                    <li>Le propriétaire de l'idée verra tout ce qui est écris ici...</li>
+                    <li>... Mais les commentaires seront anonymes.</li>
+                </ul>
+            </div>
+            <div>
+                Les idées sont affichées en utilisant le format <a href="https://commonmark.org/">markdown</a> (légèrement étendu).
+                <ul class="mb-0">
+                    <li>Allez voir le <a href="https://commonmark.org/help/tutorial/">tutoriel complet</a></li>
+                    <li>Ou la liste des <a href="https://commonmark.org/help/">fonctionnalités de base</a></li>
+                </ul>
+            </div>
         </div>
         <c:choose>
             <c:when test="${isOwner}">

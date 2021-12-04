@@ -4,10 +4,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
     <jsp:body>
-        <p class="alert alert-primary">
+        <div class="alert alert-primary">
+            <p>
             A la différence des questions, cette page permet de discuter entre participant autour d'une idée, pour mieux s'organiser.
             Le propriétaire de l'idée ne pourra donc <strong>rien voir</strong> de ce qu'il se passe ici !
-        </p>
+            </p>
+            <div>
+                Les idées sont affichées en utilisant le format <a href="https://commonmark.org/">markdown</a> (légèrement étendu).
+                <ul class="mb-0">
+                    <li>Allez voir le <a href="https://commonmark.org/help/tutorial/">tutoriel complet</a></li>
+                    <li>Ou la liste des <a href="https://commonmark.org/help/">fonctionnalités de base</a></li>
+                </ul>
+            </div>
+        </div>
         <h2>Commenter une idée</h2>
         <h3>Rappel de l'idée</h3>
         <div class="container">
