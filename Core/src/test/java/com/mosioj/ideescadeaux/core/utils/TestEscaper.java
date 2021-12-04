@@ -35,22 +35,22 @@ public class TestEscaper {
                 "<a href=\"http://tutu.com\">tutu.com</a>",
                 "<a hReF=\"http://tutu.com\">tutu.com</a>toto<a href=\"http://tutu.com\">tutu.com</a><a href=\"http://tutu.com\">tutu.com</a>",
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
-                // "<script>alert('toto');</script>", -- fais via le html escape utils
-                // "<sCrIpt>alert('toto');</sCripT>",
                 "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra et voilà",
                 "http://www.amazon.fr",
-                "http://www.amazon.fr http://www.amazon.fr http://www.amazon.fr"
+                "http://www.amazon.fr http://www.amazon.fr http://www.amazon.fr",
+                "https://phototrend.fr/wp-content/uploads/2014/12/jpeg-1.jpg",
+                "[image](http://ma.super.jpeg.image.jpeg)"
         };
 
         String[] expected = new String[]{
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>toto<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a><a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
-                // ">alert('toto');>",
-                // ">alert('toto');>",
                 "un lien [https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra](https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra) et voilà",
                 "[http://www.amazon.fr](http://www.amazon.fr)",
-                "[http://www.amazon.fr](http://www.amazon.fr) [http://www.amazon.fr](http://www.amazon.fr) [http://www.amazon.fr](http://www.amazon.fr)"
+                "[http://www.amazon.fr](http://www.amazon.fr) [http://www.amazon.fr](http://www.amazon.fr) [http://www.amazon.fr](http://www.amazon.fr)",
+                "![https://phototrend.fr/wp-content/uploads/2014/12/jpeg-1.jpg](https://phototrend.fr/wp-content/uploads/2014/12/jpeg-1.jpg)",
+                "![image](http://ma.super.jpeg.image.jpeg)"
         };
 
         for (int i = 0; i < sources.length; i++) {

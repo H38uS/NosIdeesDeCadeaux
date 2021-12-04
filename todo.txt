@@ -1,7 +1,4 @@
-// FIXME : les images en mark down => y'a une balise native pour les gérer, le détecter en fonction de l'extension => ![Image][1]
-// FIXME : les nouveauté
 // FIXME : 1 documenter dans les ajouts / modifications d'idées + questions/commentaires qu'on peut faire smiley et MD
-
 // FIXME : 5 mettre à jour bootstrap
 // FIXME : 6 dans les questions, faire une couleur différente si c'est le owner qui répond
 // FIXME : pouvoir se noter des personnes pour lesquelles on veut faire une résa => on reçoit alors une notif lorsque la personne modifie/ajoute une idée!
