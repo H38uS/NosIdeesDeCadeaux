@@ -42,6 +42,11 @@ public class TestMetaDataWebApp extends WebAppTemplateTest {
         availableLinks.add("#notifications");
         availableLinks.add("#infos");
 
+        // Tutoriels et doc
+        availableLinks.add("https://commonmark.org/help/tutorial/");
+        availableLinks.add("https://commonmark.org/");
+        availableLinks.add("https://commonmark.org/help/");
+
         boolean hasError = false;
         for (String reference : referencedLinks) {
             if (!StringUtils.isBlank(reference) && !availableLinks.contains(reference)) {
