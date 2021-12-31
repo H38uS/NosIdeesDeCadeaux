@@ -57,7 +57,7 @@ public class DataSourceIdKDo {
             statement.bindParameters(parameters);
             if (statement.execute()) {
                 ResultSet res = statement.getResultSet();
-                if (res.first()) {
+                if (res.next()) {
                     int value = res.getInt(1);
                     return res.wasNull() ? Optional.empty() : Optional.of(value);
                 }
@@ -132,7 +132,7 @@ public class DataSourceIdKDo {
             ps.bindParameters(parameters);
             ps.execute();
             ResultSet res = ps.getResultSet();
-            return res.first();
+            return res.next();
         } catch (SQLException e) {
             logger.error(e);
             return false;
@@ -149,7 +149,7 @@ public class DataSourceIdKDo {
             statement.bindParameters(parameters);
             if (statement.execute()) {
                 ResultSet res = statement.getResultSet();
-                if (res.first()) {
+                if (res.next()) {
                     return Optional.ofNullable(res.getString(1));
                 }
             }
