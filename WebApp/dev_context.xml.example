@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+    <Resource  name="jdbc/web-db" auth="Container"  type="javax.sql.DataSource"
+              maxActive="20"  maxIdle="10"  maxWait="10000" removeAbandoned="true"
+              username="${db.username}"  password="${db.password}"  driverClassName="com.mysql.jdbc.Driver"
+              url="${db.url}" validationQuery="select 1" testOnBorrow="true" />
+    <Realm className="org.apache.catalina.realm.LockOutRealm">
+    <Realm className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/web-db" digest="SHA"
+               userTable="USERS" userNameCol="email" userCredCol="password"
+               userRoleTable="USER_ROLES" roleNameCol="role" localDataSource="true" />
+    </Realm>
+</Context>

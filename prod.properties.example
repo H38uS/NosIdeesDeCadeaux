@@ -1,0 +1,8 @@
+db.username=
+db.password=
+db.url=jdbc:mysql://localhost/db_name
+base_url=https://domain.fr/${project.name}
+work_dir=/home/username/domain.fr/NcAlp38WarWork
+mail.host=localhost
+mail.from=ne-pas-repondre@domain.fr
+googleCaptchaSecretKey=somethingProvidedByGoogle

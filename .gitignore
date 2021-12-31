@@ -5,3 +5,7 @@ testLogs/
 *.iml
 release.properties
 *.releaseBackup
+/dev.properties
+/prod.properties
+WebApp/WebContent/META-INF/context_local.xml
+dev_context.xml
