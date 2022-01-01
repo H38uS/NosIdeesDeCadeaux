@@ -12,7 +12,7 @@
     </modules>
 
     <scm>
-        <developerConnection>scm:git:file://C:/Users/JORDAN/OneDrive/Dev/SauvegardeProgramme/Git/NosIdeesDeCadeaux</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com/H38uS/NosIdeesDeCadeaux.git</developerConnection>
         <tag>NosIdeesDeCadeaux-1.1.29</tag>
     </scm>
 
