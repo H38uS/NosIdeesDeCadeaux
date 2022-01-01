@@ -44,8 +44,8 @@ public class Escaper {
         };
     }
 
-    private static final String HTTPS_REGEX = "(^|[^\"(\\[])(https?://[^\\s]*)";
-    private static final String HTTPS_REPLACEMENT = "$1[$2]($2)";
+    private static final String HTTPS_REGEX = "(^|[^\"(\\[])(((https?://[^\\s]{40})[^\\s]*([^\\s]{5}))|(https?://[^\\s]*))";
+    private static final String HTTPS_REPLACEMENT = "$1[$4[...]$5$6]($2)";
 
     private static final String MARK_DOWN_IMAGE_URL_REGEX = "(?i)(\\[[^\\s]*]\\(https?://[^\\s]*(\\.jpg|\\.jpeg|\\.png|\\.gif)\\))";
     private static final String MARK_DOWN_IMAGE_URL_REPLACEMENT = "!$1";
@@ -58,6 +58,8 @@ public class Escaper {
         String val = initialText.replaceAll("(?i)<a href=\"?([^\\s\"]*)\"?( target=\"?_blank\"?)?>([^\\s]*)</a>",
                                             "<a href=\"$1\" target=\"_blank\">$3</a>");
         val = val.replaceAll(HTTPS_REGEX, HTTPS_REPLACEMENT);
+        // Used to remove the additional [...] if not required after all
+        val = val.replaceAll("\\[\\[...](https?://)", "[$1");
         val = val.replaceAll(MARK_DOWN_IMAGE_URL_REGEX, MARK_DOWN_IMAGE_URL_REPLACEMENT);
         return val;
     }

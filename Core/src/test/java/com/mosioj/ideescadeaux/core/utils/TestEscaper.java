@@ -37,20 +37,24 @@ public class TestEscaper {
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
                 "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra et voilà",
                 "http://www.amazon.fr",
+                "hihihttp://www.amazon.fr",
                 "http://www.amazon.fr http://www.amazon.fr http://www.amazon.fr",
                 "https://phototrend.fr/wp-content/uploads/2014/12/jpeg-1.jpg",
-                "[image](http://ma.super.jpeg.image.jpeg)"
+                "[image](http://ma.super.jpeg.image.jpeg)",
+                "https://www.decathlon.fr/p/ceinture-porte-bidon-de-ski-de-fond-xc-s-belt-100-adulte/_/R-p-180257?mc=8525020&gclid=Cj0KCQiA2NaNBhDvARIsAEw55hiTobURp-hjrulXH2wY4HxoeIONYTlty-TBZuEU74STIQ32EA0UWIwaAh31EALw_wcB"
         };
 
         String[] expected = new String[]{
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>toto<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a><a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
                 "<a href=\"http://tutu.com\" target=\"_blank\">tutu.com</a>",
-                "un lien [https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra](https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra) et voilà",
+                "un lien [https://www.liveffn.com/cgi-bin/resultats.php?co[...]e=fra](https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&amp;langue=fra) et voilà",
                 "[http://www.amazon.fr](http://www.amazon.fr)",
+                "hihi[http://www.amazon.fr](http://www.amazon.fr)",
                 "[http://www.amazon.fr](http://www.amazon.fr) [http://www.amazon.fr](http://www.amazon.fr) [http://www.amazon.fr](http://www.amazon.fr)",
-                "![https://phototrend.fr/wp-content/uploads/2014/12/jpeg-1.jpg](https://phototrend.fr/wp-content/uploads/2014/12/jpeg-1.jpg)",
-                "![image](http://ma.super.jpeg.image.jpeg)"
+                "![https://phototrend.fr/wp-content/uploads/2014/12[...]1.jpg](https://phototrend.fr/wp-content/uploads/2014/12/jpeg-1.jpg)",
+                "![image](http://ma.super.jpeg.image.jpeg)",
+                "[https://www.decathlon.fr/p/ceinture-porte-bidon-[...]w_wcB](https://www.decathlon.fr/p/ceinture-porte-bidon-de-ski-de-fond-xc-s-belt-100-adulte/_/R-p-180257?mc=8525020&gclid=Cj0KCQiA2NaNBhDvARIsAEw55hiTobURp-hjrulXH2wY4HxoeIONYTlty-TBZuEU74STIQ32EA0UWIwaAh31EALw_wcB)"
         };
 
         for (int i = 0; i < sources.length; i++) {
