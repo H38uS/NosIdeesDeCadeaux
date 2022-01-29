@@ -4,13 +4,15 @@ import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ParameterValidator;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.List;
 
 public class CompteInteractions {
+
+    /** Password encoder. */
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private final DataSourceIdKDo validatorConnection;
 
@@ -54,18 +56,11 @@ public class CompteInteractions {
         return ValidatorBuilder.getMascValidator(pwd, "mot de passe").checkEmpty().checkSize(8, 30).build();
     }
 
-    public String hashPwd(String pwd, List<String> pwdErrors) {
-        StringBuilder hashPwd = new StringBuilder();
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA");
-            md.update(pwd.getBytes());
-            byte[] digest = md.digest();
-            for (byte b : digest) {
-                hashPwd.append(String.format("%02x", b & 0xff));
-            }
-        } catch (NoSuchAlgorithmException e) {
-            pwdErrors.add("Echec du chiffrement du mot de passe. Erreur: " + e.getMessage());
-        }
-        return hashPwd.toString();
+    /**
+     * @param pwd The raw password text.
+     * @return The password hashed.
+     */
+    public static String hashPwd(String pwd) {
+        return encoder.encode(pwd);
     }
 }

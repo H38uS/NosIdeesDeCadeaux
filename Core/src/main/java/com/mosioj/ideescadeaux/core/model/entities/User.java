@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.core.model.entities;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 import java.sql.Date;
 import java.text.MessageFormat;
@@ -23,6 +23,9 @@ public class User implements Comparable<User> {
     /** The user's id. */
     @Expose
     public final int id;
+
+    /** The user's hashed password. */
+    private final String password;
 
     /** The user's email. Cannot be null or empty. */
     @Expose
@@ -52,13 +55,18 @@ public class User implements Comparable<User> {
 
     public boolean hasBookedOneOfItsIdeas = false; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
-    public User(int id, String name, String email, Date birthday, String avatar) {
+    public User(int id, String name, String email, Date birthday, String avatar, final String password) {
         this.id = id;
         this.name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
         this.birthday = birthday;
         this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
+        this.password = password;
+    }
+
+    public User(int id, String name, String email, Date birthday, String avatar) {
+        this(id, name, email, birthday, avatar, "dummy");
     }
 
     /**
@@ -77,8 +85,9 @@ public class User implements Comparable<User> {
                 Date birthday,
                 String avatar,
                 Instant creationDate,
-                Instant lastLogin) {
-        this(id, name, email, birthday, avatar);
+                Instant lastLogin,
+                String password) {
+        this(id, name, email, birthday, avatar, password);
         this.creationDate = MyDateFormatViewer.formatMine(creationDate);
         this.lastLogin = MyDateFormatViewer.formatMine(lastLogin);
     }
@@ -145,7 +154,7 @@ public class User implements Comparable<User> {
     /**
      * Used in several JSP, impossible to delete.
      *
-     * @return True if the connected user has booked one of this user ideas, or is participating to a group.
+     * @return True if the connected user has booked one of this user ideas, or is participating in a group.
      */
     public boolean getHasBookedOneOfItsIdeas() {
         return hasBookedOneOfItsIdeas;
@@ -199,7 +208,7 @@ public class User implements Comparable<User> {
     }
 
     /**
-     * @param token The caracter to search.
+     * @param token The character to search.
      * @return True if this user's name or email contains the token.
      */
     public boolean matchNameOrEmail(String token) {
@@ -280,5 +289,12 @@ public class User implements Comparable<User> {
     @Override
     public int compareTo(User other) {
         return getName().compareTo(other.getName());
+    }
+
+    /**
+     * @return The user's hashed password.
+     */
+    public String getPassword() {
+        return password;
     }
 }

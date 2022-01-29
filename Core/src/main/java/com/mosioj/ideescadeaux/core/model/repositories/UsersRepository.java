@@ -67,13 +67,14 @@ public class UsersRepository extends AbstractRepository {
         if (id == null) {
             return Optional.empty();
         }
-        String query = MessageFormat.format("select {0}, {1}, {2}, {3}, {5} from {4} where {0} = ?",
+        String query = MessageFormat.format("select {0}, {1}, {2}, {3}, {5}, {6} from {4} where {0} = ?",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
                                             UsersColumns.BIRTHDAY,
                                             TABLE_NAME,
-                                            UsersColumns.AVATAR);
+                                            UsersColumns.AVATAR,
+                                            UsersColumns.PASSWORD);
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters(id);
             if (ps.execute()) {
@@ -83,7 +84,8 @@ public class UsersRepository extends AbstractRepository {
                                                 res.getString(UsersColumns.NAME.name()),
                                                 res.getString(UsersColumns.EMAIL.name()),
                                                 res.getDate(UsersColumns.BIRTHDAY.name()),
-                                                res.getString(UsersColumns.AVATAR.name())));
+                                                res.getString(UsersColumns.AVATAR.name()),
+                                                res.getString(UsersColumns.PASSWORD.name())));
                 }
             }
         } catch (SQLException e) {
@@ -156,14 +158,15 @@ public class UsersRepository extends AbstractRepository {
 
         List<User> users = new ArrayList<>();
 
-        String query = MessageFormat.format("select {0},{1},{2},{3},{4},{5},{6} ",
+        String query = MessageFormat.format("select {0},{1},{2},{3},{4},{5},{6},{7} ",
                                             UsersColumns.ID,
                                             UsersColumns.NAME,
                                             UsersColumns.EMAIL,
                                             UsersColumns.BIRTHDAY,
                                             UsersColumns.AVATAR,
                                             UsersColumns.CREATION_DATE,
-                                            UsersColumns.LAST_LOGIN) +
+                                            UsersColumns.LAST_LOGIN,
+                                            UsersColumns.PASSWORD) +
                        MessageFormat.format("  from {0} u ", TABLE_NAME) +
                        MessageFormat.format(" order by {0}, {1}, {2} ",
                                             UsersColumns.NAME,
@@ -204,7 +207,8 @@ public class UsersRepository extends AbstractRepository {
                                    res.getDate(UsersColumns.BIRTHDAY.name()),
                                    res.getString(UsersColumns.AVATAR.name()),
                                    creation,
-                                   lastLogin));
+                                   lastLogin,
+                                   res.getString(UsersColumns.PASSWORD.name())));
             }
 
         }
@@ -236,12 +240,13 @@ public class UsersRepository extends AbstractRepository {
         nameToMatch = sanitizeSQLLike(nameToMatch);
 
         StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("select {0},{1},{2},{3},{4} ",
+        query.append(MessageFormat.format("select {0},{1},{2},{3},{4},{5} ",
                                           UsersColumns.ID,
                                           UsersColumns.NAME,
                                           UsersColumns.EMAIL,
                                           UsersColumns.BIRTHDAY,
-                                          UsersColumns.AVATAR));
+                                          UsersColumns.AVATAR,
+                                          UsersColumns.PASSWORD));
         query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
         query.append(MessageFormat.format(" where (lower({0}) like ? ESCAPE ''!''   ", UsersColumns.NAME));
         query.append(MessageFormat.format("    or  lower({0}) like ? ESCAPE ''!'' ) ", UsersColumns.EMAIL));
@@ -278,7 +283,8 @@ public class UsersRepository extends AbstractRepository {
                                    res.getString(UsersColumns.NAME.name()),
                                    res.getString(UsersColumns.EMAIL.name()),
                                    res.getDate(UsersColumns.BIRTHDAY.name()),
-                                   res.getString(UsersColumns.AVATAR.name())));
+                                   res.getString(UsersColumns.AVATAR.name()),
+                                   res.getString(UsersColumns.PASSWORD.name())));
             }
         }
 

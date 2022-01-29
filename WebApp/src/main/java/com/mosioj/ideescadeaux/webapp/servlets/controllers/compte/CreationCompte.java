@@ -78,7 +78,7 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
         }
 
         // Password hash
-        String hashPwd = helper.hashPwd(pwd, pwdErrors);
+        String hashPwd = CompteInteractions.hashPwd(pwd);
 
         // Retour au formulaire si un paramètre est incorrect
         if (!pwdErrors.isEmpty() || !emailErrors.isEmpty() || !captchaOk) {

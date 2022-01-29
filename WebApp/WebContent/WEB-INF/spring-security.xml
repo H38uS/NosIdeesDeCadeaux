@@ -1,44 +1,53 @@
-<beans:beans xmlns="http://www.springframework.org/schema/security"
+<beans:beans xmlns:security="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.6.xsd">
 
-    <http pattern="/public/reinitialiser_mot_de_passe" create-session="never">
-        <csrf disabled="true"/>
-        <form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
-                    authentication-failure-url="/public/error.jsp"/>
-        <logout logout-success-url="/public/index.jsp"/>
-    </http>
-    <http pattern="/public/changer_mot_de_passe_depuis_reinit" create-session="never">
-        <csrf disabled="true"/>
-        <form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
-                    authentication-failure-url="/public/error.jsp"/>
-        <logout logout-success-url="/public/index.jsp"/>
-    </http>
+    <beans:bean id="PasswordHashUpdateFilter" class="com.mosioj.ideescadeaux.webapp.filter.PasswordHashUpdateFilter"/>
 
-    <http auto-config="true">
-        <intercept-url pattern="/" access="permitAll"/>
-        <intercept-url pattern="/public" access="permitAll"/>
-        <intercept-url pattern="/protected/administration/**" access="hasRole('ROLE_ADMIN')"/>
-        <intercept-url pattern="/protected/mon_compte" access="isFullyAuthenticated()"/>
-        <intercept-url pattern="/protected/**" access="hasRole('ROLE_USER')"/>
-        <intercept-url pattern="/manage/**" access="hasRole('ROLE_MANAGER')"/>
-        <form-login login-page="/public/login.jsp" username-parameter="j_username" password-parameter="j_password"
-                    authentication-failure-url="/public/error.jsp"/>
-        <csrf disabled="true"/>
+    <security:http pattern="/public/reinitialiser_mot_de_passe" create-session="never">
+        <security:form-login login-page="/public/login.jsp"
+                             username-parameter="j_username"
+                             password-parameter="j_password"
+                             authentication-failure-url="/public/error.jsp"/>
+        <security:logout logout-success-url="/public/index.jsp"/>
+        <security:csrf disabled="true"/>
+    </security:http>
+    <security:http pattern="/public/changer_mot_de_passe_depuis_reinit" create-session="never">
+        <security:form-login login-page="/public/login.jsp"
+                             username-parameter="j_username"
+                             password-parameter="j_password"
+                             authentication-failure-url="/public/error.jsp"/>
+        <security:logout logout-success-url="/public/index.jsp"/>
+        <security:csrf disabled="true"/>
+    </security:http>
+    <security:http auto-config="true">
+        <security:intercept-url pattern="/" access="permitAll"/>
+        <security:intercept-url pattern="/public" access="permitAll"/>
+        <security:intercept-url pattern="/protected/administration/**" access="hasRole('ROLE_ADMIN')"/>
+        <security:intercept-url pattern="/protected/mon_compte" access="isFullyAuthenticated()"/>
+        <security:intercept-url pattern="/protected/**" access="hasRole('ROLE_USER')"/>
+        <security:intercept-url pattern="/manage/**" access="hasRole('ROLE_MANAGER')"/>
+        <security:form-login login-page="/public/login.jsp"
+                             username-parameter="j_username"
+                             password-parameter="j_password"
+                             authentication-failure-url="/public/error.jsp"/>
+        <security:csrf disabled="true"/>
         <!-- 12 096 000 = 144j -->
-        <remember-me token-validity-seconds="12096000" key="TaFS43L58oOSrE7xPQIyVv+MeqFwB2RIHxtkpPtqY6NhFV5qXfWMyGndvOhzfs2Bfry2E4tWPw9/HmicA7P0NvDqdQzdhDlh9Lwxgpuw64vR4NmDVAuJZPwHRfBllT4Axx5d5kWjGoW7eFXbNwM3oi05xYtQNGbnswyQWwIDAQABAoIBAQCRjPOQI56fHrOsufjbH5fzzMLeowIPU7AscbFlOz9t6z7Xon8zA/LrAnKr/OyF2CpMSEDSDNYWoC8t1TkBdViHUJ+hbU7hsuST121LHWGXmf9QEWQsN+HGT48a60rf6rzBgR9tjGwmHSucqGiirvQtx5VJ4BpdTOYo3757hv1fKExQhYCZ7h6RrJZLrsJsXnQu94T+/sQ5q2WxNGQa1+clIBPp7cWXyka/q0MpDPZIzkI994HmPrniZyKUdPHMfIwoa4qAVlKkAUqH9CF4Ij+iMu1JTryyrP4uYV+h9rFuCHBHnfGEo0EaB5yiWa+fEyjwSdba5w3fEbHkdP+zZ/chAoGBAM4da7NtMBaRBH3XeDnOT6VR7Aen5BQqjLgLww20pmPPYGy0UFLKFe6tNra7k2PTvPHNTiWtNTeerTkTkGSPhA0xF+JEe5pWsurMuOMfQXGwjoNNtYhOl72pBBBba2Pv5lzTfU0PQ4soMlld4N9HKI4NH0ewVvaKCj2kvJkML1nzAoGBAMk5IlSZ95yoFyAcK5LoYFu65Rq3TMeFteIqExHg8HWtaE5z6kNXXMS6WIHfPFfrW+UfMHPEqBO+Xrs/Ik7kko1kcSbPKGbZLOaZEmp79vIiIUkTzCgV9VkykyoZMupuVhQz" />
-        <logout logout-success-url="/public/index.jsp"/>
-    </http>
+        <security:remember-me token-validity-seconds="12096000"
+                              key="TaFS43L58oOSrE7xPQIyVv+MeqFwB2RIHxtkpPtqY6NhFV5qXfWMyGndvOhzfs2Bfry2E4tWPw9/HmicA7P0NvDqdQzdhDlh9Lwxgpuw64vR4NmDVAuJZPwHRfBllT4Axx5d5kWjGoW7eFXbNwM3oi05xYtQNGbnswyQWwIDAQABAoIBAQCRjPOQI56fHrOsufjbH5fzzMLeowIPU7AscbFlOz9t6z7Xon8zA/LrAnKr/OyF2CpMSEDSDNYWoC8t1TkBdViHUJ+hbU7hsuST121LHWGXmf9QEWQsN+HGT48a60rf6rzBgR9tjGwmHSucqGiirvQtx5VJ4BpdTOYo3757hv1fKExQhYCZ7h6RrJZLrsJsXnQu94T+/sQ5q2WxNGQa1+clIBPp7cWXyka/q0MpDPZIzkI994HmPrniZyKUdPHMfIwoa4qAVlKkAUqH9CF4Ij+iMu1JTryyrP4uYV+h9rFuCHBHnfGEo0EaB5yiWa+fEyjwSdba5w3fEbHkdP+zZ/chAoGBAM4da7NtMBaRBH3XeDnOT6VR7Aen5BQqjLgLww20pmPPYGy0UFLKFe6tNra7k2PTvPHNTiWtNTeerTkTkGSPhA0xF+JEe5pWsurMuOMfQXGwjoNNtYhOl72pBBBba2Pv5lzTfU0PQ4soMlld4N9HKI4NH0ewVvaKCj2kvJkML1nzAoGBAMk5IlSZ95yoFyAcK5LoYFu65Rq3TMeFteIqExHg8HWtaE5z6kNXXMS6WIHfPFfrW+UfMHPEqBO+Xrs/Ik7kko1kcSbPKGbZLOaZEmp79vIiIUkTzCgV9VkykyoZMupuVhQz"/>
+        <security:logout logout-success-url="/public/index.jsp"/>
+        <security:custom-filter before="FORM_LOGIN_FILTER" ref="PasswordHashUpdateFilter"/>
+    </security:http>
 
-    <authentication-manager>
-        <authentication-provider>
-            <password-encoder hash="sha"/>
-            <jdbc-user-service data-source-ref="springDS"
-                               users-by-username-query="select email, password, true from USERS where email = ?"
-                               authorities-by-username-query="select email, role from USER_ROLES where email = ? "/>
-        </authentication-provider>
-    </authentication-manager>
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:password-encoder hash="bcrypt"/>
+            <security:jdbc-user-service data-source-ref="springDS"
+                                        users-by-username-query="select email, password, true from USERS where email = ?"
+                                        authorities-by-username-query="select email, role from USER_ROLES where email = ? "/>
+        </security:authentication-provider>
+    </security:authentication-manager>
 
     <beans:bean class="com.mosioj.ideescadeaux.webapp.utils.AuthenticationListener"/>
 

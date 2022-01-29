@@ -142,7 +142,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
                 logger.debug(MessageFormat.format("Updating user {0}. Email: {1}, name: {2}", thisOne, email, name));
                 UsersRepository.update(thisOne);
                 if (!newPwd.isEmpty()) {
-                    String digested = ci.hashPwd(newPwd, errors);
+                    String digested = CompteInteractions.hashPwd(newPwd);
                     UsersRepository.updatePassword(thisOne.id, digested);
                 }
             }

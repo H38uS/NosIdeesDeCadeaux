@@ -20,7 +20,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-version>4.2.3.RELEASE</spring-version>
     </properties>
 
     <repositories>
@@ -144,6 +143,11 @@
                 <groupId>com.atlassian.commonmark</groupId>
                 <artifactId>commonmark</artifactId>
                 <version>0.17.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.9</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

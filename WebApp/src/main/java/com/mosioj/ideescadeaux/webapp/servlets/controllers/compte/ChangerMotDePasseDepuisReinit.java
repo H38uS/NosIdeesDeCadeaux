@@ -54,7 +54,7 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet
             pwdErrors2.add("Les deux mots de passe ne correspondent pas.");
         }
 
-        String digested = helper.hashPwd(pwd1, pwdErrors1);
+        String digested = CompteInteractions.hashPwd(pwd1);
 
         if (!pwdErrors1.isEmpty() || !pwdErrors2.isEmpty()) {
             request.setAttribute("pwd1_error", pwdErrors1);
