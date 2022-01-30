@@ -148,6 +148,13 @@ public class User implements Comparable<User> {
         return Optional.of(ChronoUnit.DAYS.between(now, birthDateAtCurrentYear));
     }
 
+    /**
+     * Updates the last login date time to now.
+     */
+    public void touchLastLogin() {
+        lastLogin = LocalDateTime.now();
+    }
+
     // Setters & Getters
 
     /**
@@ -289,6 +296,14 @@ public class User implements Comparable<User> {
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
     }
 
     // Utils & interfaces

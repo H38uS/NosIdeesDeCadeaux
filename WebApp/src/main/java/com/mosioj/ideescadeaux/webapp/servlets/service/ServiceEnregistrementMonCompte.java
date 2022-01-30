@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -63,7 +63,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
         buildResponse(response, ans);
     }
 
-    public List<String> processSave(File filePath, Map<String, String> parameters) throws SQLException {
+    public List<String> processSave(File filePath, Map<String, String> parameters) {
 
         CompteInteractions ci = new CompteInteractions();
         String info = parameters.get("modif_info_gen");
@@ -122,11 +122,11 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
 
             if (errors.isEmpty()) {
                 logger.debug(MessageFormat.format("Updating user {0}. Email: {1}, name: {2}", thisOne, email, name));
-                UsersRepository.update(thisOne);
                 if (!newPwd.isEmpty()) {
                     String digested = CompteInteractions.hashPwd(newPwd);
-                    UsersRepository.updatePassword(thisOne.id, digested);
+                    thisOne.setPassword(digested);
                 }
+                HibernateUtil.update(thisOne);
             }
         }
         return errors;

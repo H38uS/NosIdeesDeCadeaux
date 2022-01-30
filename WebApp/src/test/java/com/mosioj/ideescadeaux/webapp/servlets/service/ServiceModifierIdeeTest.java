@@ -5,7 +5,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification.ModifyIdea;
 import org.junit.Test;
@@ -126,8 +126,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
 
         // Given the users birthday is in 4 days...
         firefox.setBirthday(LocalDate.now().plusDays(4));
-
-        UsersRepository.update(firefox);
+        HibernateUtil.update(firefox);
 
         // ... and the friend has no notifications yet, and notification activated
         NotificationsRepository.terminator().whereOwner(friendOfFirefox).terminates();

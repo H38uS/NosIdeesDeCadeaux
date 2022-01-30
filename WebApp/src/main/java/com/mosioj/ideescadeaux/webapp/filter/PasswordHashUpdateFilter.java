@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.filter;
 
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 
 public class PasswordHashUpdateFilter extends GenericFilterBean {
 
@@ -37,17 +37,13 @@ public class PasswordHashUpdateFilter extends GenericFilterBean {
 
             final String email = request.getParameter("j_username");
             final String pwd = request.getParameter("j_password");
-            UsersRepository.getId(email)
-                           .flatMap(UsersRepository::getUser)
+            UsersRepository.getUser(email)
                            .filter(u -> !StringUtils.isBlank(pwd))
                            .filter(u -> oldHash(pwd).equals(u.getPassword()))
                            .ifPresent(u -> {
                                logger.info("Migrating hash algorithm for {}...", email);
-                               try {
-                                   UsersRepository.updatePassword(u.getId(), CompteInteractions.hashPwd(pwd));
-                               } catch (SQLException e) {
-                                   logger.error(e);
-                               }
+                               u.setPassword(CompteInteractions.hashPwd(pwd));
+                               HibernateUtil.update(u);
                            });
         }
         chain.doFilter(request, response);

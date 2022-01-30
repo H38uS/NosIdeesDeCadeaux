@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PasswordChangeRequest;
@@ -64,7 +64,8 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet
         }
 
         UserChangePwdRequestRepository.deleteAssociation(user.id);
-        UsersRepository.updatePassword(user.id, digested);
+        user.setPassword(digested);
+        HibernateUtil.update(user);
 
         RootingsUtils.rootToPage(SUCCES_PAGE_URL, request, response);
     }

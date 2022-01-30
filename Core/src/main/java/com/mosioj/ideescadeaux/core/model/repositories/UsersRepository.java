@@ -8,6 +8,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.sql.ResultSet;
@@ -41,13 +42,13 @@ public class UsersRepository extends AbstractRepository {
      */
     public static int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
         int userId = getDb().executeUpdateGeneratedKey(MessageFormat.format(
-                "insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
-                TABLE_NAME,
-                UsersColumns.EMAIL,
-                UsersColumns.PASSWORD,
-                UsersColumns.LAST_LOGIN,
-                UsersColumns.CREATION_DATE,
-                UsersColumns.NAME),
+                                                               "insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
+                                                               TABLE_NAME,
+                                                               UsersColumns.EMAIL,
+                                                               UsersColumns.PASSWORD,
+                                                               UsersColumns.LAST_LOGIN,
+                                                               UsersColumns.CREATION_DATE,
+                                                               UsersColumns.NAME),
                                                        email,
                                                        digestedPwd,
                                                        name);
@@ -57,6 +58,25 @@ public class UsersRepository extends AbstractRepository {
                                           email,
                                           "ROLE_USER");
         return userId;
+    }
+
+    /**
+     * @param email The user's email.
+     * @return The corresponding user, if it exists.
+     */
+    public static Optional<User> getUser(String email) {
+        return HibernateUtil.doQueryOptional(s -> getUser(email, s));
+    }
+
+    /**
+     * @param email   The user's email.
+     * @param session The hibernate session.
+     * @return The corresponding user, if it exists.
+     */
+    public static Optional<User> getUser(String email, Session session) {
+        Query<User> query = session.createQuery("FROM USERS WHERE email = :email ", User.class);
+        query.setParameter("email", email);
+        return query.uniqueResultOptional();
     }
 
     /**
@@ -122,40 +142,11 @@ public class UsersRepository extends AbstractRepository {
     }
 
     /**
-     * Persists the user configuration in DB.
-     *
-     * @param user The user to update.
-     */
-    public static void update(User user) throws SQLException {
-        logger.trace(MessageFormat.format("Updating user {0}. Avatar: {1}", user.id, user.avatar));
-        String previousEmail = getDb().selectString(MessageFormat.format("select {0} from {1} where {2} = ?",
-                                                                         UsersColumns.EMAIL,
-                                                                         TABLE_NAME,
-                                                                         UsersColumns.ID),
-                                                    user.id)
-                                      .orElseThrow(() -> new SQLException("L'utilisateur n'existe pas."));
-        String query = MessageFormat.format("update {0} set {1} = ?, {2} = ?, {3} = ?, {5} = ? where {4} = ?",
-                                            TABLE_NAME,
-                                            UsersColumns.EMAIL,
-                                            UsersColumns.NAME,
-                                            UsersColumns.BIRTHDAY,
-                                            UsersColumns.ID,
-                                            UsersColumns.AVATAR);
-        getDb().executeUpdate(query, user.email, user.name, user.getBirthday().orElse(null), user.avatar, user.id);
-        if (!previousEmail.equals(user.email)) {
-            getDb().executeUpdate(MessageFormat.format("update USER_ROLES set {0} = ? where {1} = ? ",
-                                                       UserRolesColumns.EMAIL,
-                                                       UserRolesColumns.EMAIL),
-                                  user.email,
-                                  previousEmail);
-        }
-    }
-
-    /**
      * @return All the users in DB. Only used for administration
      */
     public static List<User> getAllUsers() {
-        return HibernateUtil.doQueryFetch(s -> s.createQuery("FROM USERS ORDER BY creation_date DESC", User.class).list());
+        return HibernateUtil.doQueryFetch(s -> s.createQuery("FROM USERS ORDER BY creation_date DESC", User.class)
+                                                .list());
     }
 
     /**
@@ -267,21 +258,6 @@ public class UsersRepository extends AbstractRepository {
         });
     }
 
-    /**
-     * Update the user password.
-     *
-     * @param userId      The user id.
-     * @param digestedPwd The new obfuscated password.
-     */
-    public static void updatePassword(int userId, String digestedPwd) throws SQLException {
-        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ?",
-                                                   TABLE_NAME,
-                                                   UsersColumns.PASSWORD,
-                                                   UsersColumns.ID),
-                              digestedPwd,
-                              userId);
-    }
-
     public static void deleteUser(User user) throws SQLException {
 
         logger.info(MessageFormat.format("Suppression de {0}...", user));
@@ -332,14 +308,10 @@ public class UsersRepository extends AbstractRepository {
      * @param email The user's email.
      */
     public static void touch(String email) throws SQLException {
-        getDb().executeUpdate("update " +
-                              TABLE_NAME +
-                              " set " +
-                              UsersColumns.LAST_LOGIN +
-                              " = now() where " +
-                              UsersColumns.EMAIL +
-                              " = ?",
-                              email);
+        getUser(email).ifPresent(u -> {
+            u.touchLastLogin();
+            HibernateUtil.update(u);
+        });
     }
 
 }

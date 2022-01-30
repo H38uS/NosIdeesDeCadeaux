@@ -16,11 +16,11 @@ public class Relation {
     @Expose
     public int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "first_user")
     private User first;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "second_user")
     private User second;
 
