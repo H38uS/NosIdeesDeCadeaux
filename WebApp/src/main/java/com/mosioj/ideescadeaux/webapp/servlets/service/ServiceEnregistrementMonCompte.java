@@ -20,9 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,21 +63,6 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
         buildResponse(response, ans);
     }
 
-    // La base est en UTC, il faut donc ne pas utiliser MySimpleDateFormat.
-    // Ou alors, avec Hibernate et que la base soit en Europe/Paris.
-    public java.sql.Date getAsDate(String date) {
-        // TODO : il faut changer les Timestamp/Date en Instant ou ZonedDateTime
-        // Attention : bien modifié le check en parallèle
-        SimpleDateFormat format = new SimpleDateFormat(MyDateFormatViewer.DATE_FORMAT);
-        Date parsed;
-        try {
-            parsed = format.parse(date);
-        } catch (ParseException e) {
-            return null;
-        }
-        return new java.sql.Date(parsed.getTime());
-    }
-
     public List<String> processSave(File filePath, Map<String, String> parameters) throws SQLException {
 
         CompteInteractions ci = new CompteInteractions();
@@ -118,7 +100,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
 
             thisOne.email = email;
             thisOne.name = name;
-            thisOne.setBirthday(getAsDate(birthday));
+            MyDateFormatViewer.getAsDate(birthday).ifPresent(thisOne::setBirthday);
 
             String image = parameters.get("image");
             String old = parameters.get("old_picture");

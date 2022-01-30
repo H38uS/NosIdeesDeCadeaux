@@ -4,64 +4,87 @@ import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+@Entity(name = "USERS")
 public class User implements Comparable<User> {
 
-    /**
-     * Maximum number of days to trigger the notification birthday is closed.
-     */
+    /** Maximum number of days to trigger the notification birthday is closed. */
     public static final int NB_DAYS_BEFORE_BIRTHDAY = 5;
 
     /** The user's id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
-    public final int id;
+    public int id;
 
     /** The user's hashed password. */
-    private final String password;
+    @Column(length = 300)
+    private String password;
 
     /** The user's email. Cannot be null or empty. */
+    @Column(length = 100, unique = true)
     @Expose
     public String email;
 
     /** The user's name or email (if no name yet). Cannot be null or empty. */
+    @Column(length = 100)
     @Expose
     public String name;
 
+    @Column
+    private LocalDate birthday; // utilisé dans MonCompte en jsp - impossible de supprimer le getter pour l'instant
+    // FIXME faire le ménage des JSP
+
     /** The user's profile picture. */
+    @Column(length = 200)
     @Expose
     public String avatar;
 
-    @Expose
-    public String freeComment; // utilisé dans suggestion relation en jsp - impossible de supprimer le getter pour l'instant
-
-    // TODO : il faut changer les Timestamp/Date en Instant ou ZonedDateTime
-    private Date birthday; // utilisé dans MonCompte en jsp - impossible de supprimer le getter pour l'instant
+    /** Formatted instant of the last login. */
+    @Column(name="last_login")
+    private LocalDateTime lastLogin; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
 
     /** Formatted instant of the creation of the user. */
-    private String creationDate = StringUtils.EMPTY; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+    @Column(updatable = false, name = "creation_date")
+    @CreationTimestamp
+    @Expose
+    private LocalDateTime creationDate; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
 
-    /** Formatted instant of the last login. */
-    private String lastLogin = StringUtils.EMPTY; // utilisé dans l'admin en jsp - impossible de supprimer le getter pour l'instant
+    /** Last time this user was updated. */
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
+    @Transient
+    @Expose
+    public String freeComment; // utilisé dans suggestion relation en jsp - impossible de supprimer le getter pour l'instant
+    // FIXME : rien à faire ici...
+
+    @Transient
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
-    public boolean hasBookedOneOfItsIdeas = false; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
+    public User() {
+        // Hibernate constructor
+    }
 
     public User(int id, String name, String email, Date birthday, String avatar, final String password) {
         this.id = id;
         this.name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
-        this.birthday = birthday;
-        this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
+        this.birthday = birthday == null ? null : birthday.toLocalDate();
+        this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), this.birthday).orElse(Long.MAX_VALUE);
         this.password = password;
     }
 
@@ -88,8 +111,24 @@ public class User implements Comparable<User> {
                 Instant lastLogin,
                 String password) {
         this(id, name, email, birthday, avatar, password);
-        this.creationDate = MyDateFormatViewer.formatMine(creationDate);
-        this.lastLogin = MyDateFormatViewer.formatMine(lastLogin);
+        this.creationDate = LocalDateTime.from(creationDate);
+        this.lastLogin = LocalDateTime.from(lastLogin);
+    }
+
+    @PostLoad
+    private void postLoad() {
+        freeComment = StringUtils.EMPTY;
+        nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
+        avatar = Optional.ofNullable(avatar).orElse("default.png");
+    }
+
+    /**
+     * @param token The character to search.
+     * @return True if this user's name or email contains the token.
+     */
+    public boolean matchNameOrEmail(String token) {
+        return getName().toLowerCase().contains(token.toLowerCase()) ||
+               email.toLowerCase().contains(token.toLowerCase());
     }
 
     /**
@@ -97,28 +136,24 @@ public class User implements Comparable<User> {
      * @param birthday The birth date.
      * @return The number of days before this birthday.
      */
-    public static Optional<Long> getNbDayBeforeBirthday(LocalDate now, Date birthday) {
-
+    public static Optional<Long> getNbDayBeforeBirthday(LocalDate now, LocalDate birthday) {
         if (now == null || birthday == null) {
             return Optional.empty();
         }
-
-        LocalDate birthDateAtCurrentYear = Instant.ofEpochMilli(birthday.getTime())
-                                                  .atZone(ZoneId.of("Europe/Paris"))
-                                                  .toLocalDate()
-                                                  .withYear(now.getYear());
+        LocalDate birthDateAtCurrentYear = birthday.withYear(now.getYear());
         if (birthDateAtCurrentYear.isBefore(now)) {
             // Getting the one of the next year !
             birthDateAtCurrentYear = birthDateAtCurrentYear.withYear(now.getYear() + 1);
         }
-
         return Optional.of(ChronoUnit.DAYS.between(now, birthDateAtCurrentYear));
     }
+
+    // Setters & Getters
 
     /**
      * @return The birthday if set by the users.
      */
-    public Optional<Date> getBirthday() {
+    public Optional<LocalDate> getBirthday() {
         return Optional.ofNullable(birthday);
     }
 
@@ -127,7 +162,7 @@ public class User implements Comparable<User> {
      *
      * @param birthday The new birthday.
      */
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
         if (birthday != null) {
             this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
@@ -138,7 +173,7 @@ public class User implements Comparable<User> {
      * @return The formatted birthdate.
      */
     public String getBirthdayAsString() {
-        return getBirthday().map(b -> MyDateFormatViewer.formatDayWithYearHidden(b.toLocalDate()))
+        return getBirthday().map(MyDateFormatViewer::formatDayWithYearHidden)
                             .orElse("- on ne sait pas...");
     }
 
@@ -154,19 +189,10 @@ public class User implements Comparable<User> {
     /**
      * Used in several JSP, impossible to delete.
      *
-     * @return True if the connected user has booked one of this user ideas, or is participating in a group.
-     */
-    public boolean getHasBookedOneOfItsIdeas() {
-        return hasBookedOneOfItsIdeas;
-    }
-
-    /**
-     * Used in several JSP, impossible to delete.
-     *
      * @return the creationDate
      */
     public String getCreationDate() {
-        return creationDate;
+        return MyDateFormatViewer.formatOrElse(creationDate, StringUtils.EMPTY);
     }
 
     /**
@@ -175,7 +201,7 @@ public class User implements Comparable<User> {
      * @return the lastLogin
      */
     public String getLastLogin() {
-        return lastLogin;
+        return MyDateFormatViewer.formatOrElse(lastLogin, StringUtils.EMPTY);
     }
 
     /**
@@ -203,17 +229,11 @@ public class User implements Comparable<User> {
         return MessageFormat.format("large/{0}", avatar);
     }
 
+    /**
+     * @return The number of days before the birthday.
+     */
     public long getNbDaysBeforeBirthday() {
         return nbDaysBeforeBirthday;
-    }
-
-    /**
-     * @param token The character to search.
-     * @return True if this user's name or email contains the token.
-     */
-    public boolean matchNameOrEmail(String token) {
-        return getName().toLowerCase().contains(token.toLowerCase()) ||
-               email.toLowerCase().contains(token.toLowerCase());
     }
 
     /**
@@ -264,6 +284,15 @@ public class User implements Comparable<User> {
         return hasVowel ? MessageFormat.format("de {0}", getName()) : MessageFormat.format("d''{0}", getName());
     }
 
+    /**
+     * @return The user's hashed password.
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    // Utils & interfaces
+
     @Override
     public int hashCode() {
         return id;
@@ -289,12 +318,5 @@ public class User implements Comparable<User> {
     @Override
     public int compareTo(User other) {
         return getName().compareTo(other.getName());
-    }
-
-    /**
-     * @return The user's hashed password.
-     */
-    public String getPassword() {
-        return password;
     }
 }

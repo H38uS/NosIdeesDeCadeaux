@@ -1,11 +1,7 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
-import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.junit.Test;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -13,22 +9,15 @@ import static org.junit.Assert.assertEquals;
 
 public class UserTest {
 
-    /** Date formatter. */
-    private static final SimpleDateFormat SDF = new MyDateFormatViewer(MyDateFormatViewer.DATE_FORMAT);
-
-    private static Date toDate(String date) throws ParseException {
-        return new Date(SDF.parse(date).getTime());
-    }
-
     @Test
-    public void testNbDayBeforeBirthday() throws ParseException {
+    public void testNbDayBeforeBirthday() {
 
         // Some dates
-        final Date _4mai2020 = toDate("2020-05-04");
-        final Date _10mai2020 = toDate("2020-05-10");
-        final Date _31decembre2020 = toDate("2020-12-31");
-        final Date _1janvier2021 = toDate("2021-01-01");
-        final Date _4mai1989 = toDate("1989-05-04");
+        final LocalDate _4mai2020 = LocalDate.of(2020, 5, 4);
+        final LocalDate _10mai2020 = LocalDate.of(2020, 5, 10);
+        final LocalDate _31decembre2020 = LocalDate.of(2020, 12, 31);
+        final LocalDate _1janvier2021 = LocalDate.of(2021, 1, 1);
+        final LocalDate _4mai1989 = LocalDate.of(1989, 5, 4);
 
         // Giving null to an argument returns an empty option
         assertEquals(Optional.empty(), User.getNbDayBeforeBirthday(null, null));

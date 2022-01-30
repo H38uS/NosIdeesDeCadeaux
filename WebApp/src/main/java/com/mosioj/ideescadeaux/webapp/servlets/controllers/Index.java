@@ -1,10 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.MessagesAccueilRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppUser;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/index")
@@ -37,17 +36,13 @@ public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
         req.setAttribute("no_birth_date_set", !me.getBirthday().isPresent());
 
         // Birthday messages
-        List<User> friends = UserRelationsRepository.getCloseBirthday(thisOne, NB_DAYS_MAX_BEFORE_BIRTHDAY);
+        List<DecoratedWebAppUser> friends = UserRelationsRepository.getCloseBirthday(thisOne, NB_DAYS_MAX_BEFORE_BIRTHDAY)
+                                                                   .stream()
+                                                                   .map(u -> new DecoratedWebAppUser(u, thisOne))
+                                                                   .collect(Collectors.toList());
 
         req.setAttribute("userBirthday", friends);
         if (!friends.isEmpty()) {
-            Set<User> listIBookedSomething = IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne)
-                                                            .parallelStream()
-                                                            .map(Idee::getOwner)
-                                                            .collect(Collectors.toSet());
-            friends.parallelStream()
-                   .filter(listIBookedSomething::contains)
-                   .forEach(f -> f.hasBookedOneOfItsIdeas = true);
             req.setAttribute("birthdayMessage", MessagesAccueilRepository.getOneBirthdayMessage());
         }
 

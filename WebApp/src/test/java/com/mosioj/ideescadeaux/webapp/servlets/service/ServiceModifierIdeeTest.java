@@ -125,7 +125,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     public void testModifyIdeaTwiceWithBirthdaySoonShouldSendOnlyOneNotification() throws SQLException, IOException {
 
         // Given the users birthday is in 4 days...
-        firefox.setBirthday(java.sql.Date.valueOf(LocalDate.now().plusDays(4)));
+        firefox.setBirthday(LocalDate.now().plusDays(4));
 
         UsersRepository.update(firefox);
 

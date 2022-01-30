@@ -10,7 +10,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
     @Before
     public void setBirthdayToYesterday() {
-        firefox.setBirthday(Date.valueOf(LocalDate.now().minusDays(1)));
+        firefox.setBirthday(LocalDate.now().minusDays(1));
     }
 
     @Test
@@ -279,7 +278,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     public void restoringSendsBirthdayNotification() throws SQLException {
 
         // The birthday is closed!
-        firefox.setBirthday(Date.valueOf(LocalDate.now().plusDays(3)));
+        firefox.setBirthday(LocalDate.now().plusDays(3));
         // Given a deleted idea with a booking by a person
         Idee idee = IdeesRepository.persistsIdea(Idee.builder()
                                                      .withText("Une nouvelle idée !")

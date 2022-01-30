@@ -18,6 +18,7 @@
     <Loggers>
         <logger name="org" level="warn"/>
         <logger name="com.mosioj.ideescadeaux" level="debug"/>
+        <logger name="org.hibernate.SQL" level="${console_log_level}"/>
         <Root>
             <AppenderRef ref="Console" level="${console_log_level}"/>
             <AppenderRef ref="RollingFile"/>

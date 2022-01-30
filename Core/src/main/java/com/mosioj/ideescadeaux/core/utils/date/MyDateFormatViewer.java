@@ -7,9 +7,12 @@ import org.apache.logging.log4j.Logger;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.TimeZone;
 
 public class MyDateFormatViewer extends SimpleDateFormat {
@@ -54,10 +57,25 @@ public class MyDateFormatViewer extends SimpleDateFormat {
      * @return The formatted date.
      */
     public static String formatOrElse(Instant pointInTime, String defaultFormat) {
+        // FIXME remove quand tout est passé en LocalDateTime
         if (pointInTime == null) {
             return defaultFormat;
         }
-        return pointInTime.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime().format(DATE_TIME_FORMATTER);
+        return formatOrElse(pointInTime.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime(), defaultFormat);
+    }
+
+    /**
+     * Format the given date using ${DATETIME_DISPLAY_FORMAT} if not null or return the provided default value.
+     *
+     * @param time          The local date time to format.
+     * @param defaultFormat The default string to return if the give date is null.
+     * @return The formatted date.
+     */
+    public static String formatOrElse(LocalDateTime time, String defaultFormat) {
+        if (time == null) {
+            return defaultFormat;
+        }
+        return time.format(DATE_TIME_FORMATTER);
     }
 
     /**
@@ -70,5 +88,17 @@ public class MyDateFormatViewer extends SimpleDateFormat {
         calendar.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
         logger.trace(calendar.getTimeZone());
         setTimeZone(calendar.getTimeZone());
+    }
+
+    /**
+     * @param date The date string to parse.
+     * @return The corresponding date if it succeeds to parse it.
+     */
+    public static Optional<LocalDate> getAsDate(String date) {
+        try {
+            return Optional.of(LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE)); // yyyy-MM-dd
+        } catch (NullPointerException | DateTimeParseException e) {
+            return Optional.empty();
+        }
     }
 }

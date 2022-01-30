@@ -129,11 +129,25 @@
                 <artifactId>json-simple</artifactId>
                 <version>1.1.1</version>
             </dependency>
+
+            <!-- Hibernate library -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>5.6.5.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
+                <version>5.6.5.Final</version>
+            </dependency>
+
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>8.0.28</version>
             </dependency>
+
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
@@ -158,6 +172,8 @@
             <properties>
                 <application.shouldLogStack>true</application.shouldLogStack>
                 <console_log_level>debug</console_log_level>
+                <db.showSQL>true</db.showSQL>
+                <ddl-auto-mode>update</ddl-auto-mode>
             </properties>
             <build>
                 <plugins>
@@ -187,6 +203,8 @@
             <properties>
                 <application.shouldLogStack>false</application.shouldLogStack>
                 <console_log_level>error</console_log_level>
+                <db.showSQL>false</db.showSQL>
+                <ddl-auto-mode>validate</ddl-auto-mode>
             </properties>
             <build>
                 <plugins>

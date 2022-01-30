@@ -18,7 +18,6 @@ public class JSPAccessortTest extends TemplateTest {
 
     @Test
     public void testJSPOnlyUserMethods() {
-        Assert.assertFalse(u.getHasBookedOneOfItsIdeas());
         Assert.assertEquals("", u.getCreationDate());
         Assert.assertEquals("", u.getLastLogin());
         Assert.assertFalse(u.hasSetUpAnAvatar());

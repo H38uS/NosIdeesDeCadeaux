@@ -43,21 +43,21 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <c:choose>
-                                    <c:when test="${user.nbDaysBeforeBirthday == 0}">
-                                        C'est l'anniversaire ${user.myDName} aujourd'hui !
+                                    <c:when test="${user.user.nbDaysBeforeBirthday == 0}">
+                                        C'est l'anniversaire ${user.user.myDName} aujourd'hui !
                                     </c:when>
-                                    <c:when test="${user.nbDaysBeforeBirthday == 1}">
-                                        L'anniversaire ${user.myDName} est demain !
+                                    <c:when test="${user.user.nbDaysBeforeBirthday == 1}">
+                                        L'anniversaire ${user.user.myDName} est demain !
                                     </c:when>
                                     <c:otherwise>
-                                        L'anniversaire ${user.myDName} arrive dans ${user.nbDaysBeforeBirthday} jours !
+                                        L'anniversaire ${user.user.myDName} arrive dans ${user.user.nbDaysBeforeBirthday} jours !
                                     </c:otherwise>
                                 </c:choose>
                                 <span class="px-1 d-none d-lg-inline">
-                                    <a href="protected/voir_liste?id=${user.id}">Aller jeter un coup d'oeil à sa liste...</a>
+                                    <a href="protected/voir_liste?id=${user.user.id}">Aller jeter un coup d'oeil à sa liste...</a>
                                 </span>
                                 <span class="px-1 d-lg-none">
-                                    <a href="protected/voir_liste?id=${user.id}">Voir sa liste</a>
+                                    <a href="protected/voir_liste?id=${user.user.id}">Voir sa liste</a>
                                 </span>
 							</li>
 							</c:forEach>

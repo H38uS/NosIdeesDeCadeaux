@@ -5,14 +5,13 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.MessageFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -154,66 +153,8 @@ public class UsersRepository extends AbstractRepository {
     /**
      * @return All the users in DB. Only used for administration
      */
-    public static List<User> getAllUsers() throws SQLException {
-
-        List<User> users = new ArrayList<>();
-
-        String query = MessageFormat.format("select {0},{1},{2},{3},{4},{5},{6},{7} ",
-                                            UsersColumns.ID,
-                                            UsersColumns.NAME,
-                                            UsersColumns.EMAIL,
-                                            UsersColumns.BIRTHDAY,
-                                            UsersColumns.AVATAR,
-                                            UsersColumns.CREATION_DATE,
-                                            UsersColumns.LAST_LOGIN,
-                                            UsersColumns.PASSWORD) +
-                       MessageFormat.format("  from {0} u ", TABLE_NAME) +
-                       MessageFormat.format(" order by {0}, {1}, {2} ",
-                                            UsersColumns.NAME,
-                                            UsersColumns.EMAIL,
-                                            UsersColumns.ID);
-
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
-                                                                    query)) {
-
-            if (!ps.execute()) {
-                throw new SQLException("No result set available.");
-            }
-
-            ResultSet res = ps.getResultSet();
-            while (res.next()) {
-
-                Instant creation = null;
-                try {
-                    creation = Optional.ofNullable(res.getTimestamp(UsersColumns.CREATION_DATE.name()))
-                                       .map(Timestamp::toInstant)
-                                       .orElse(null);
-                } catch (SQLException ignored) {
-                    // Plante lorsque à 00:00 etc - nécessaire de catcher
-                }
-
-                Instant lastLogin = null;
-                try {
-                    lastLogin = Optional.ofNullable(res.getTimestamp(UsersColumns.LAST_LOGIN.name()))
-                                        .map(Timestamp::toInstant)
-                                        .orElse(null);
-                } catch (SQLException ignored) {
-                    // Plante lorsque à 00:00 etc - nécessaire de catcher
-                }
-
-                users.add(new User(res.getInt(UsersColumns.ID.name()),
-                                   res.getString(UsersColumns.NAME.name()),
-                                   res.getString(UsersColumns.EMAIL.name()),
-                                   res.getDate(UsersColumns.BIRTHDAY.name()),
-                                   res.getString(UsersColumns.AVATAR.name()),
-                                   creation,
-                                   lastLogin,
-                                   res.getString(UsersColumns.PASSWORD.name())));
-            }
-
-        }
-
-        return users;
+    public static List<User> getAllUsers() {
+        return HibernateUtil.doQueryFetch(s -> s.createQuery("FROM USERS ORDER BY creation_date DESC", User.class).list());
     }
 
     /**
