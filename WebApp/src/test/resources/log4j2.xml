@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" packages="com.mosioj.utils">
 
-	<Appenders>
-		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
-		</Console>
-		<File name="File" fileName="testLogs/IdeesDeCadeaux.log" append="true">
-			<PatternLayout
-				pattern="%d{HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n" />
-		</File>
-		<ErrorAppender name="errorNotifier" />
-	</Appenders>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd/MM/yyyy HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n"/>
+        </Console>
+        <File name="File" fileName="testLogs/IdeesDeCadeaux.log" append="true">
+            <PatternLayout
+                    pattern="%d{HH'h 'mm'min 'ss's 'SSS'ms'} %-5level %c{1} - %msg%n"/>
+        </File>
+        <ErrorAppender name="errorNotifier"/>
+    </Appenders>
 
-	<Loggers>
-		<logger name="org" level="warn" />
-		<logger name="com.mosioj" level="debug" />
-		<Root>
-			<AppenderRef ref="Console" />
-			<AppenderRef ref="File" />
-			<AppenderRef ref="errorNotifier" level="error" />
-		</Root>
-	</Loggers>
+    <Loggers>
+        <logger name="org.hibernate" level="info"/>
+        <logger name="org" level="warn"/>
+        <logger name="com.mosioj" level="debug"/>
+        <Root>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="errorNotifier" level="error"/>
+        </Root>
+    </Loggers>
 </Configuration>

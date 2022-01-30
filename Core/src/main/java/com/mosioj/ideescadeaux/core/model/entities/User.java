@@ -120,6 +120,7 @@ public class User implements Comparable<User> {
         freeComment = StringUtils.EMPTY;
         nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
         avatar = Optional.ofNullable(avatar).orElse("default.png");
+        name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());
     }
 
     /**

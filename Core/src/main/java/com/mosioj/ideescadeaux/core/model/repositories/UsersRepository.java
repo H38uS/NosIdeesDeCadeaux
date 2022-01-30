@@ -84,61 +84,20 @@ public class UsersRepository extends AbstractRepository {
      * @return The user corresponding to this ID or null if not found.
      */
     public static Optional<User> getUser(Integer id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-        String query = MessageFormat.format("select {0}, {1}, {2}, {3}, {5}, {6} from {4} where {0} = ?",
-                                            UsersColumns.ID,
-                                            UsersColumns.NAME,
-                                            UsersColumns.EMAIL,
-                                            UsersColumns.BIRTHDAY,
-                                            TABLE_NAME,
-                                            UsersColumns.AVATAR,
-                                            UsersColumns.PASSWORD);
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
-            ps.bindParameters(id);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                if (res.next()) {
-                    return Optional.of(new User(res.getInt(UsersColumns.ID.name()),
-                                                res.getString(UsersColumns.NAME.name()),
-                                                res.getString(UsersColumns.EMAIL.name()),
-                                                res.getDate(UsersColumns.BIRTHDAY.name()),
-                                                res.getString(UsersColumns.AVATAR.name()),
-                                                res.getString(UsersColumns.PASSWORD.name())));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.warn(e);
-        }
-        return Optional.empty();
+        return HibernateUtil.doQueryOptional(s -> Optional.ofNullable(s.get(User.class, id)));
     }
 
     /**
-     * @param email The identifier of the person (currently the email).
-     * @return This person's id.
+     * @param nameOrEmail The name or email of the person.
+     * @return All the matching persons.
      */
-    public static Optional<Integer> getId(String email) {
-        return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ?",
-                                                      UsersColumns.ID,
-                                                      TABLE_NAME,
-                                                      UsersColumns.EMAIL),
-                                 email);
-    }
-
-    /**
-     * @param nameOrEmail The name or email of the person..
-     * @return This person's id.
-     */
-    public static Optional<Integer> getIdFromNameOrEmail(String nameOrEmail) {
-        return getDb().selectInt(MessageFormat.format("select {0} from {1} where {2} = ? or {3} = ? limit 1",
-                                                      UsersColumns.ID,
-                                                      TABLE_NAME,
-                                                      UsersColumns.EMAIL,
-                                                      UsersColumns.NAME),
-                                 nameOrEmail,
-                                 nameOrEmail);
+    public static List<User> getUserFromNameOrEmail(String nameOrEmail) {
+        return HibernateUtil.doQueryFetch(s -> {
+            Query<User> query = s.createQuery("from USERS where email = :nameOrEmail or name = :nameOrEmail",
+                                              User.class);
+            query.setParameter("nameOrEmail", nameOrEmail);
+            return query.list();
+        });
     }
 
     /**

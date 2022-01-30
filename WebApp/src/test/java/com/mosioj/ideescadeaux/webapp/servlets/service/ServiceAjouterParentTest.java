@@ -11,9 +11,9 @@ import java.sql.SQLException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class ServiceAjouterParentTestWebApp extends AbstractTestServletWebApp {
+public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
 
-    public ServiceAjouterParentTestWebApp() {
+    public ServiceAjouterParentTest() {
         super(new ServiceAjouterParent());
     }
 
@@ -46,7 +46,7 @@ public class ServiceAjouterParentTestWebApp extends AbstractTestServletWebApp {
         StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
-        assertEquals("L'ajout du parent a échoué : il n'existe pas de compte pour le nom ou l'email passé en paramètre.",
+        assertEquals("L'ajout du parent a échoué : il n'existe pas (ou trop) de compte pour le nom ou l'email passé en paramètre.",
                      resp.getMessage());
     }
 

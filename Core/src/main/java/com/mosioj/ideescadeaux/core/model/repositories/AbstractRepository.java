@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import java.text.MessageFormat;
-
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
+
+import java.text.MessageFormat;
 
 public abstract class AbstractRepository {
 

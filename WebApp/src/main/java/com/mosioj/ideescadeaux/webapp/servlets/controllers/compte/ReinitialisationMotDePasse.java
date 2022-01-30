@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserChangePwdRequestRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
@@ -68,14 +69,14 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<Al
             return;
         }
 
-        Optional<Integer> userIdOpt = UsersRepository.getId(email1);
+        Optional<User> userIdOpt = UsersRepository.getUser(email1);
         if (!userIdOpt.isPresent()) {
             // L'email n'existe pas. On affiche la page de base pour éviter plus d'info aux pirates.
             ideesKDoGET(request, response);
             return;
         }
 
-        int userId = userIdOpt.get();
+        int userId = userIdOpt.get().getId();
         int token = new Random().nextInt();
         UserChangePwdRequestRepository.deleteAssociation(userId);
         UserChangePwdRequestRepository.createNewRequest(userId, token);

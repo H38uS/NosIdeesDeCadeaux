@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.List;
 
 @WebServlet("/protected/service/ajouter_parent")
 public class ServiceAjouterParent extends ServicePost<AllAccessToPostAndGet> {
@@ -34,9 +36,10 @@ public class ServiceAjouterParent extends ServicePost<AllAccessToPostAndGet> {
 
         ServiceResponse<String> resp;
 
-        Integer parentId = UsersRepository.getIdFromNameOrEmail(nameOrEmail).orElse(null);
-        if (parentId != null) {
+        List<User> possibleParents = UsersRepository.getUserFromNameOrEmail(nameOrEmail);
+        if (possibleParents.size() == 1) {
             int userId = thisOne.id;
+            final int parentId = possibleParents.get(0).id;
             if (parentId == userId) {
                 resp = ServiceResponse.ko("Vous ne pouvez pas vous ajouter vous-même...", isAdmin(request), thisOne);
             } else if (ParentRelationshipRepository.noRelationExists(parentId, userId)) {
@@ -50,7 +53,7 @@ public class ServiceAjouterParent extends ServicePost<AllAccessToPostAndGet> {
             }
         } else {
             resp = ServiceResponse.ko(
-                    "L'ajout du parent a échoué : il n'existe pas de compte pour le nom ou l'email passé en paramètre.",
+                    "L'ajout du parent a échoué : il n'existe pas (ou trop) de compte pour le nom ou l'email passé en paramètre.",
                     isAdmin(request),
                     thisOne);
         }

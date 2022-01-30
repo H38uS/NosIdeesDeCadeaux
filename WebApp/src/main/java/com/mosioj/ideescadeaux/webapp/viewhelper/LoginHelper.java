@@ -50,7 +50,7 @@ public class LoginHelper implements Filter {
             User user = (User) session.getAttribute("connected_user");
             if (user == null) {
                 try {
-                    user = UsersRepository.getId(name).flatMap(UsersRepository::getUser).orElseThrow(SQLException::new);
+                    user = UsersRepository.getUser(name).orElseThrow(SQLException::new);
                     // Storing the new one
                     session.setAttribute("connected_user", user);
                 } catch (SQLException e) {

@@ -23,7 +23,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
         when(request.isUserInRole("ROLE_ADMIN")).thenReturn(true);
         assertTrue(request.isUserInRole("ROLE_ADMIN"));
 
-        UsersRepository.getId("to_be_deleted@djizjdz.cekj").flatMap(UsersRepository::getUser).ifPresent(u -> {
+        UsersRepository.getUser("to_be_deleted@djizjdz.cekj").ifPresent(u -> {
             try {
                 UsersRepository.deleteUser(u);
             } catch (SQLException e) {
@@ -46,7 +46,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
     public void testNotAdmin() throws SQLException {
 
         assertFalse(request.isUserInRole("ROLE_ADMIN"));
-        UsersRepository.getId("to_be_deleted@djizjdz.cekj").flatMap(UsersRepository::getUser).ifPresent(u -> {
+        UsersRepository.getUser("to_be_deleted@djizjdz.cekj").ifPresent(u -> {
             try {
                 UsersRepository.deleteUser(u);
             } catch (SQLException e) {
