@@ -1,9 +1,37 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+
+import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity(name = "USER_RELATIONS")
 public class Relation {
 
-    private final User first;
-    private final User second;
+    /** The relation's id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
+    public int id;
+
+    @ManyToOne
+    @JoinColumn(name = "first_user")
+    private User first;
+
+    @ManyToOne
+    @JoinColumn(name = "second_user")
+    private User second;
+
+    /** Formatted instant of the creation of the relation. */
+    @Column(updatable = false, name = "relation_date")
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+
+    public Relation() {
+        // Hibernate use
+    }
 
     /**
      * @param first  One user of this relation.

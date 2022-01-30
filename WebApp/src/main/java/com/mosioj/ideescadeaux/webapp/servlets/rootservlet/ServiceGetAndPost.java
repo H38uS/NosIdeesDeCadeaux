@@ -43,7 +43,7 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
     public final void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) {
         try {
             serviceGet(request, response);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.error(e);
             buildResponse(response,
                           ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(),
@@ -56,7 +56,7 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
     public final void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) {
         try {
             servicePost(request, response);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.error(e);
             buildResponse(response,
                           ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(),

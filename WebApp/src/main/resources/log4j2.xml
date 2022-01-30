@@ -36,6 +36,7 @@
         <logger name="com.mosioj.ideescadeaux.webapp.viewhelper.DeviceResolverFilter" level="debug" additivity="false">
             <AppenderRef ref="AccessLogs"/>
         </logger>
+        <logger name="org.hibernate" level="info"/>
         <logger name="org.hibernate.SQL" level="${console_log_level}"/>
         <Root>
             <AppenderRef ref="Console" level="${console_log_level}"/>

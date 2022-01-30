@@ -8,6 +8,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.query.Query;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -240,46 +241,30 @@ public class UsersRepository extends AbstractRepository {
      * @param selectOnlyNonFriends True to select only non friends.
      * @return The number of users matching this name/email.
      */
-    public static int getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) {
+    public static long getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) {
 
-        nameToMatch = sanitizeSQLLike(nameToMatch);
+        final String theNameToMatch = sanitizeSQLLike(nameToMatch);
 
-        StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("select {0} ", "count(*)"));
-        query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
-        query.append(MessageFormat.format(" where ({0} like ? ESCAPE ''!''   ", UsersColumns.NAME));
-        query.append(MessageFormat.format("    or  {0} like ? ESCAPE ''!'' ) ", UsersColumns.EMAIL));
-        query.append(MessageFormat.format("   and {0} <> ? ", UsersColumns.ID));
+        StringBuilder queryText = new StringBuilder();
+        queryText.append("select count(*)");
+        queryText.append("  from USERS u ");
+        queryText.append(MessageFormat.format(" where ({0} like :name ESCAPE ''!''   ", UsersColumns.NAME));
+        queryText.append(MessageFormat.format("    or  {0} like :name ESCAPE ''!'' ) ", UsersColumns.EMAIL));
+        queryText.append(MessageFormat.format("   and {0} <> :id ", UsersColumns.ID));
         if (selectOnlyNonFriends) {
-            query.append("   and not exists ( ");
-            query.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
-            query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
-            query.append(MessageFormat.format("    and {0} = u.{1} ",
-                                              UserRelationsColumns.SECOND_USER,
-                                              UsersColumns.ID));
-            query.append("   ) ");
+            queryText.append("   and not exists ( ");
+            queryText.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
+            queryText.append(MessageFormat.format("  where {0} = :id   ", UserRelationsColumns.FIRST_USER));
+            queryText.append(MessageFormat.format("    and {0} = u.id ", UserRelationsColumns.SECOND_USER));
+            queryText.append("   ) ");
         }
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
-            if (selectOnlyNonFriends) {
-                ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip, userIdToSkip);
-            } else {
-                ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip);
-            }
-
-            if (!ps.execute()) {
-                throw new SQLException("No result set available.");
-            }
-
-            ResultSet res = ps.getResultSet();
-            if (res.next()) {
-                return res.getInt(1);
-            }
-        } catch (SQLException e) {
-            logger.error(e);
-        }
-
-        return 0;
+        return HibernateUtil.doQuerySingle(s -> {
+            Query<Long> query = s.createQuery(queryText.toString(), Long.class);
+            query.setParameter("name", theNameToMatch);
+            query.setParameter("id", userIdToSkip);
+            return query.getSingleResult();
+        });
     }
 
     /**

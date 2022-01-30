@@ -61,6 +61,6 @@ public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet>
         String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
         String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
         boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
-        return UsersRepository.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
+        return (int) UsersRepository.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
     }
 }
