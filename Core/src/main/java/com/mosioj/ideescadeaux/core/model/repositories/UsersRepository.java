@@ -1,20 +1,18 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.UserRole;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +21,7 @@ import java.util.Optional;
  *
  * @author Jordan Mosio
  */
-public class UsersRepository extends AbstractRepository {
+public class UsersRepository {
 
     public static final String TABLE_NAME = "USERS";
     private static final Logger logger = LogManager.getLogger(UsersRepository.class);
@@ -40,24 +38,15 @@ public class UsersRepository extends AbstractRepository {
      * @param name        The user name.
      * @return the created user id.
      */
-    public static int addNewPersonne(String email, String digestedPwd, String name) throws SQLException {
-        int userId = getDb().executeUpdateGeneratedKey(MessageFormat.format(
-                                                               "insert into {0} ({1},{2},{3},{4},{5}) values (?, ?, now(), now(), ?)",
-                                                               TABLE_NAME,
-                                                               UsersColumns.EMAIL,
-                                                               UsersColumns.PASSWORD,
-                                                               UsersColumns.LAST_LOGIN,
-                                                               UsersColumns.CREATION_DATE,
-                                                               UsersColumns.NAME),
-                                                       email,
-                                                       digestedPwd,
-                                                       name);
-        getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into USER_ROLES ({0},{1}) values (?, ?)",
-                                                               UserRolesColumns.EMAIL,
-                                                               UserRolesColumns.ROLE),
-                                          email,
-                                          "ROLE_USER");
-        return userId;
+    public static int addNewPersonne(final String email, final String digestedPwd, final String name) {
+        return HibernateUtil.doQueryOptional(s -> {
+            Transaction t = s.beginTransaction();
+            final User user = new User(email, name, digestedPwd);
+            Integer userId = (Integer) s.save(user);
+            s.save(new UserRole(user, UserRole.RoleName.ROLE_USER));
+            t.commit();
+            return Optional.of(userId);
+        }).orElse(-1);
     }
 
     /**
@@ -111,76 +100,48 @@ public class UsersRepository extends AbstractRepository {
     /**
      * Excludes the current user.
      *
-     * @param nameToMatch          The name or email.
+     * @param pNameToMatch         The name or email.
      * @param userIdToSkip         The id not to select.
      * @param selectOnlyNonFriends True to select only non friends.
      * @param firstRow             The first index.
      * @param limit                Maximum result size.
      * @return The list of users.
      */
-    public static List<User> getUsers(String nameToMatch,
+    public static List<User> getUsers(String pNameToMatch,
                                       int userIdToSkip,
                                       boolean selectOnlyNonFriends,
                                       int firstRow,
                                       int limit) throws SQLException {
 
-        List<User> users = new ArrayList<>();
         logger.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.",
-                                          nameToMatch,
+                                          pNameToMatch,
                                           userIdToSkip));
 
-        nameToMatch = sanitizeSQLLike(nameToMatch);
+        final String nameToMatch = HibernateUtil.sanitizeSQLLike(pNameToMatch);
 
         StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("select {0},{1},{2},{3},{4},{5} ",
-                                          UsersColumns.ID,
-                                          UsersColumns.NAME,
-                                          UsersColumns.EMAIL,
-                                          UsersColumns.BIRTHDAY,
-                                          UsersColumns.AVATAR,
-                                          UsersColumns.PASSWORD));
         query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
-        query.append(MessageFormat.format(" where (lower({0}) like ? ESCAPE ''!''   ", UsersColumns.NAME));
-        query.append(MessageFormat.format("    or  lower({0}) like ? ESCAPE ''!'' ) ", UsersColumns.EMAIL));
-        query.append(MessageFormat.format("   and {0} <> ? ", UsersColumns.ID));
+        query.append(MessageFormat.format(" where (lower({0}) like :pNameToMatch ESCAPE ''!''   ", UsersColumns.NAME));
+        query.append(MessageFormat.format("    or  lower({0}) like :pNameToMatch ESCAPE ''!'' ) ", UsersColumns.EMAIL));
+        query.append("   and id <> :userIdToSkip ");
         if (selectOnlyNonFriends) {
             query.append("   and not exists ( ");
             query.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
-            query.append(MessageFormat.format("  where {0} = ?     ", UserRelationsColumns.FIRST_USER));
-            query.append(MessageFormat.format("    and {0} = u.{1} ",
-                                              UserRelationsColumns.SECOND_USER,
-                                              UsersColumns.ID));
+            query.append(MessageFormat.format("  where {0} = :userIdToSkip ", UserRelationsColumns.FIRST_USER));
+            query.append(MessageFormat.format("    and {0} = u.id ", UserRelationsColumns.SECOND_USER));
             query.append("   ) ");
         }
         query.append(MessageFormat.format(" order by {0}, {1}, {2} ",
                                           UsersColumns.NAME,
                                           UsersColumns.EMAIL,
                                           UsersColumns.ID));
-        query.append(" 						LIMIT ?, ? ");
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
-            if (selectOnlyNonFriends) {
-                ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip, userIdToSkip, firstRow, limit);
-            } else {
-                ps.bindParameters(nameToMatch, nameToMatch, userIdToSkip, firstRow, limit);
-            }
-
-            if (!ps.execute()) {
-                throw new SQLException("No result set available.");
-            }
-
-            ResultSet res = ps.getResultSet();
-            while (res.next()) {
-                users.add(new User(res.getInt(UsersColumns.ID.name()),
-                                   res.getString(UsersColumns.NAME.name()),
-                                   res.getString(UsersColumns.EMAIL.name()),
-                                   res.getDate(UsersColumns.BIRTHDAY.name()),
-                                   res.getString(UsersColumns.AVATAR.name()),
-                                   res.getString(UsersColumns.PASSWORD.name())));
-            }
-        }
-
-        return users;
+        return HibernateUtil.doQueryFetch(s -> s.createQuery(query.toString(), User.class)
+                                                .setParameter("pNameToMatch", nameToMatch)
+                                                .setParameter("userIdToSkip", userIdToSkip)
+                                                .setFirstResult(firstRow)
+                                                .setMaxResults(limit)
+                                                .list());
     }
 
     /**
@@ -193,7 +154,7 @@ public class UsersRepository extends AbstractRepository {
      */
     public static long getTotalUsers(String nameToMatch, int userIdToSkip, boolean selectOnlyNonFriends) {
 
-        final String theNameToMatch = sanitizeSQLLike(nameToMatch);
+        final String theNameToMatch = HibernateUtil.sanitizeSQLLike(nameToMatch);
 
         StringBuilder queryText = new StringBuilder();
         queryText.append("select count(*)");
@@ -218,7 +179,6 @@ public class UsersRepository extends AbstractRepository {
     }
 
     public static void deleteUser(User user) throws SQLException {
-
         logger.info(MessageFormat.format("Suppression de {0}...", user));
         int userId = user.id;
 
@@ -252,13 +212,18 @@ public class UsersRepository extends AbstractRepository {
         UserRelationsSuggestionRepository.removeAllFromAndTo(userId);
         UserRelationRequestsRepository.removeAllFromAndTo(userId);
 
-        // Suppression des roles
-        getDb().executeUpdate(MessageFormat.format("delete from USER_ROLES where {0} = ?", UserRolesColumns.EMAIL),
-                              user.email);
-
         // Et !! Suppression du user
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?", TABLE_NAME, UsersColumns.ID),
-                              userId);
+        HibernateUtil.doSomeWork(s -> {
+            // On ne peut pas se baser sur le CASCADE... Il faudrait être sûr que tous les objets soient chargés
+            Transaction t = s.beginTransaction();
+            // Les roles
+            s.createQuery("delete from USER_ROLES where email = :email")
+             .setParameter("email", user.email)
+             .executeUpdate();
+            // Et le user !
+            getUser(user.email, s).ifPresent(s::delete);
+            t.commit();
+        });
     }
 
     /**

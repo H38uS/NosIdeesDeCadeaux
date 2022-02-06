@@ -78,6 +78,13 @@ public class User implements Comparable<User> {
         // Hibernate constructor
     }
 
+    public User(String email, String name, String hashPwd) {
+        // Constructeur pour la création de compte
+        this.email = email;
+        this.name = name;
+        this.password = hashPwd;
+    }
+
     public User(int id, String name, String email, Date birthday, String avatar, final String password) {
         this.id = id;
         this.name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());

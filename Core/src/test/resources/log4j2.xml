@@ -8,6 +8,7 @@
     </Appenders>
 
     <Loggers>
+        <logger name="org.hibernate" level="info"/>
         <logger name="org" level="warn"/>
         <logger name="com.mosioj.ideescadeaux" level="debug"/>
         <Root>

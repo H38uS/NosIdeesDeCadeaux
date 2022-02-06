@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class ServiceRechercherPersonneTestWebApp extends AbstractTestServletWebApp {
+public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
 
-    public ServiceRechercherPersonneTestWebApp() {
+    public ServiceRechercherPersonneTest() {
         super(new ServiceRechercherPersonne());
     }
 

@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -112,5 +113,21 @@ public class HibernateUtil {
                   .withOptions()
                   .jdbcTimeZone(TimeZone.getTimeZone("Europe/Paris"))
                   .openSession();
+    }
+
+    private static String escapeMySQL(String nameToMatch) {
+        nameToMatch = nameToMatch.replaceAll("!", "!!");
+        nameToMatch = nameToMatch.replaceAll("%", "!%");
+        nameToMatch = nameToMatch.replaceAll("_", "!_");
+        nameToMatch = nameToMatch.replaceAll("\\[", "![");
+        return nameToMatch;
+    }
+
+    /**
+     * @param parameter The initial parameter
+     * @return Appends % to the prefix and the suffix and sanitize the data.
+     */
+    public static String sanitizeSQLLike(String parameter) {
+        return MessageFormat.format("%{0}%", escapeMySQL(parameter).toLowerCase());
     }
 }

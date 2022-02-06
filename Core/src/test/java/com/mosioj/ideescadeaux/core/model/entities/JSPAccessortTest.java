@@ -1,12 +1,15 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
+import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class JSPAccessortTest extends TemplateTest {
@@ -18,11 +21,12 @@ public class JSPAccessortTest extends TemplateTest {
 
     @Test
     public void testJSPOnlyUserMethods() {
-        Assert.assertEquals("", u.getCreationDate());
+        Assert.assertEquals(MyDateFormatViewer.formatOrElse(LocalDateTime.of(2017, 5, 21, 20, 42), StringUtils.EMPTY),
+                            u.getCreationDate());
         Assert.assertEquals("", u.getLastLogin());
         Assert.assertFalse(u.hasSetUpAnAvatar());
         Assert.assertEquals("large/default.png", u.getAvatarSrcLarge());
-        Assert.assertNull(u.getFreeComment());
+        Assert.assertEquals(StringUtils.EMPTY, u.getFreeComment());
     }
 
     @Test

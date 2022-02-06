@@ -4,6 +4,7 @@
     <persistence-unit name="com.mosioj.ideescadeaux">
         <description>Nos idees de cadeaux</description>
         <class>com.mosioj.ideescadeaux.core.model.entities.User</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.UserRole</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.Relation</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

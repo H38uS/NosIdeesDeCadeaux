@@ -52,7 +52,7 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
         // Récupération des paramètres
         String pwd = ParametersUtils.readIt(request, "pwd");
         String email = ParametersUtils.readAndEscape(request, "email").trim();
-        String name = ParametersUtils.readAndEscape(request, "pseudo").trim();
+        String nameParam = ParametersUtils.readAndEscape(request, "pseudo").trim();
 
         // Validation des paramètres
         List<String> pwdErrors = helper.getValidatorPwd(pwd).getErrors();
@@ -87,7 +87,7 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
         }
 
         // Les paramètres sont ok, on s'occupe de la requête
-        name = name.trim().isEmpty() ? email : name;
+        final String name = nameParam.trim().isEmpty() ? email : nameParam;
         UsersRepository.addNewPersonne(email, hashPwd, name);
         session.invalidate();
         request.login(email, pwd);

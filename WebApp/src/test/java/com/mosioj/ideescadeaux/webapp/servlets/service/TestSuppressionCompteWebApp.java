@@ -18,7 +18,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testSuccess() throws SQLException {
+    public void testSuccess() {
 
         when(request.isUserInRole("ROLE_ADMIN")).thenReturn(true);
         assertTrue(request.isUserInRole("ROLE_ADMIN"));
@@ -34,7 +34,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
         int userId = UsersRepository.addNewPersonne("to_be_deleted@djizjdz.cekj", "a", "to_be_deleted");
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
 
-        when(request.getParameter(ServiceSuppressionCompte.USER_ID_PARAM)).thenReturn(userId + "");
+        when(request.getParameter(ServiceSuppressionCompte.USER_ID_PARAM)).thenReturn(String.format("%d", userId));
 
         StringServiceResponse resp = doTestServicePost();
 
