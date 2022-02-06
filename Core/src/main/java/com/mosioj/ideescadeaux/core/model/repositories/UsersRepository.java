@@ -180,7 +180,7 @@ public class UsersRepository {
 
     public static void deleteUser(User user) throws SQLException {
         logger.info(MessageFormat.format("Suppression de {0}...", user));
-        int userId = user.id;
+        final int userId = user.id;
 
         // Suppression des commentaires
         CommentsRepository.deleteAll(userId);
@@ -209,13 +209,16 @@ public class UsersRepository {
 
         // Suppression des relations, des suggestions et des demandes
         UserRelationsRepository.removeAllAssociationsTo(userId);
-        UserRelationsSuggestionRepository.removeAllFromAndTo(userId);
         UserRelationRequestsRepository.removeAllFromAndTo(userId);
 
         // Et !! Suppression du user
         HibernateUtil.doSomeWork(s -> {
             // On ne peut pas se baser sur le CASCADE... Il faudrait être sûr que tous les objets soient chargés
             Transaction t = s.beginTransaction();
+
+            // Suppression des relations, des suggestions et des demandes
+            UserRelationsSuggestionRepository.removeAllFromAndTo(s, userId);
+
             // Les roles
             s.createQuery("delete from USER_ROLES where email = :email")
              .setParameter("email", user.email)

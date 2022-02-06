@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.core.utils.db;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -76,6 +77,22 @@ public class HibernateUtil {
         try (Session session = HibernateUtil.getASession()) {
             return operation.fetch(session);
         }
+    }
+
+    /**
+     * @param queryText The query text.
+     * @param parameters The query parameters.
+     * @return True if the query returns some rows.
+     */
+    public static boolean doesReturnRows(String queryText, Object... parameters) {
+        return doQueryOptional(s -> {
+            Query<Integer> query = s.createQuery("select 1 from USERS where exists ( " + queryText + " )",
+                                                 Integer.class);
+            for (int i = 0; i < parameters.length; i++) {
+                query.setParameter(i, parameters[i]);
+            }
+            return query.uniqueResultOptional();
+        }).isPresent();
     }
 
     // ================ Shortcut to save / delete an object

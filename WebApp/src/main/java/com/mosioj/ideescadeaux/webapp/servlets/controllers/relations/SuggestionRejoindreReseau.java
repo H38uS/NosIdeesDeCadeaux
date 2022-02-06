@@ -12,8 +12,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @WebServlet("/protected/suggestion_rejoindre_reseau")
 public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAccess> {
@@ -34,13 +35,14 @@ public class SuggestionRejoindreReseau extends IdeesCadeauxPostServlet<NetworkAc
 
         List<Integer> suggestedUsers = getSelectedChoices(request.getParameterMap(), "selected_");
 
-        // Persist suggestion
-        List<User> sent = new ArrayList<>();
-        for (int toBeAdded : suggestedUsers) {
-            if (UserRelationsSuggestionRepository.newSuggestion(thisOne.id, suggestTo.id, toBeAdded)) {
-                UsersRepository.getUser(toBeAdded).ifPresent(sent::add);
-            }
-        }
+        // Persist suggestions
+        List<User> sent = suggestedUsers.stream()
+                                        .map(UsersRepository::getUser)
+                                        .filter(Optional::isPresent)
+                                        .map(Optional::get)
+                                        .collect(Collectors.toList());
+        sent.forEach(u -> UserRelationsSuggestionRepository.newSuggestion(thisOne, suggestTo, u));
+
         if (sent.size() > 0) {
             // Send a notification
             NType.NEW_RELATION_SUGGESTION.with(thisOne).sendItTo(suggestTo);

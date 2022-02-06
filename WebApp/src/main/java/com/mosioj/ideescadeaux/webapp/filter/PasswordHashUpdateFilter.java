@@ -37,14 +37,17 @@ public class PasswordHashUpdateFilter extends GenericFilterBean {
 
             final String email = request.getParameter("j_username");
             final String pwd = request.getParameter("j_password");
-            UsersRepository.getUser(email)
-                           .filter(u -> !StringUtils.isBlank(pwd))
-                           .filter(u -> oldHash(pwd).equals(u.getPassword()))
-                           .ifPresent(u -> {
-                               logger.info("Migrating hash algorithm for {}...", email);
-                               u.setPassword(CompteInteractions.hashPwd(pwd));
-                               HibernateUtil.update(u);
-                           });
+            if (email != null && pwd != null) {
+                final String trimmedEmail = email.trim();
+                UsersRepository.getUser(trimmedEmail)
+                               .filter(u -> !StringUtils.isBlank(pwd))
+                               .filter(u -> oldHash(pwd).equals(u.getPassword()))
+                               .ifPresent(u -> {
+                                   logger.info("Migrating hash algorithm for {}...", trimmedEmail);
+                                   u.setPassword(CompteInteractions.hashPwd(pwd));
+                                   HibernateUtil.update(u);
+                               });
+            }
         }
         chain.doFilter(request, response);
     }

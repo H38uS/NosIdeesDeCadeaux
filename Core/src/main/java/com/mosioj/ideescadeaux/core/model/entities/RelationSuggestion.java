@@ -1,44 +1,47 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Time;
-import java.util.List;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
+@Entity(name = "USER_RELATIONS_SUGGESTION")
 public class RelationSuggestion {
 
+    /** The table's id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
+    public int id;
+
+    @ManyToOne
+    @JoinColumn(name = "suggested_by")
     @Expose
     public User suggestedBy;
 
+    @ManyToOne
+    @JoinColumn(name = "suggested_to")
     @Expose
     public User suggestedTo;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     @Expose
-    public List<User> suggestions;
+    public User suggestion;
 
-    private final Time suggestedDate;
+    /** Last time this relation was updated. */
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime suggestedDate;
 
-    public RelationSuggestion(User suggestedBy, User suggestedTo, List<User> suggestions, Time suggestedDate) {
-        this.suggestedBy = suggestedBy;
-        this.suggestedTo = suggestedTo;
-        this.suggestions = suggestions;
-        this.suggestedDate = suggestedDate;
+    public RelationSuggestion() {
+        // For Hibernate
     }
 
-    public User getSuggestedBy() {
-        return suggestedBy;
+    public RelationSuggestion(User userMakingSuggestion, User toUser, User suggestedUser) {
+        this.suggestedBy = userMakingSuggestion;
+        this.suggestedTo = toUser;
+        this.suggestion = suggestedUser;
     }
-
-    public User getSuggestedTo() {
-        return suggestedTo;
-    }
-
-    public List<User> getSuggestions() {
-        return suggestions;
-    }
-
-    public Time getSuggestedDate() {
-        return suggestedDate;
-    }
-
 }

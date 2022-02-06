@@ -114,63 +114,69 @@ function reloadSuggestionIfAny() {
         var container = $("<div></div>");
         container.append(`<h3 class="pb-1">Suggestions de nouveaux amis</h3>`);
         var infoDiv = $(`<div class="alert alert-info"></div>`);
+        var previous;
+        var suggestionTable;
         $.each(jsonData, function(i, suggestion) {
-            infoDiv.append(`<h3>De la part de ${suggestion.suggestedBy.name}</h3>`);
-            var suggestionTable = $(`<table>
-                                         <thead>
-                                             <tr>
-                                                 <th>Nom</th>
-                                                 <th>Email</th>
-                                                 <th>Envoyer une demande</th>
-                                                 <th>Ne rien faire</th>
-                                             </tr>
-                                         </thead>
-                                     </table>`);
-            $.each(suggestion.suggestions, function(j, suggestedUser) {
-                suggestionTable.append(`
-                    <tr>
-                        <td>
-                            <label for="selected_${suggestedUser.id}" >${suggestedUser.name}</label>
-                        </td>
-                        <td>
-                            <label for="selected_${suggestedUser.id}" >${suggestedUser.email}</label>
-                        </td>
-                        <td class="center">
-                            <input type="checkbox" name="selected_${suggestedUser.id}" id="selected_${suggestedUser.id}" />
-                            <span class="checkbox"></span>
-                        </td>
-                        <td class="center">
-                            <input type="checkbox" name="rejected_${suggestedUser.id}" id="rejected_${suggestedUser.id}" />
-                            <span class="checkbox"></span>
-                        </td>
-                    </tr>
+            console.log(previous)
+            if (typeof previous === 'undefined' || previous !== suggestion.suggestedBy.id) {
+                // new user detected
+                infoDiv.append(`<h3>De la part de ${suggestion.suggestedBy.name}</h3>`);
+                suggestionTable = $(`<table>
+                                             <thead>
+                                                 <tr>
+                                                     <th>Nom</th>
+                                                     <th>Email</th>
+                                                     <th>Envoyer une demande</th>
+                                                     <th>Ne rien faire</th>
+                                                 </tr>
+                                             </thead>
+                                         </table>`);
+                infoDiv.append(suggestionTable);
+                submitBtn = $(`
+                    <button class="btn btn-primary" type="submit" name="submit" id="submit-suggestion-${suggestion.suggestedBy.id}">Sauvegarder</button>
                 `);
-            })
-            infoDiv.append(suggestionTable);
-            submitBtn = $(`
-                <button class="btn btn-primary" type="submit" name="submit" id="submit-suggestion-${suggestion.suggestedBy.id}">Sauvegarder</button>
+                submitBtn.click(function () {
+                    var selected = [];
+                    $('input[name^="selected_"]').each(function() {
+                        selected.push([$(this).attr("id"), $(this).is(":checked")]);
+                    });
+                    var rejected = [];
+                    $('input[name^="rejected_"]').each(function() {
+                        rejected.push([$(this).attr("id"), $(this).is(":checked")]);
+                    });
+                    servicePost('protected/service/suggestion_amis',
+                                {
+                                    selected : selected,
+                                    rejected : rejected
+                                },
+                                function(data) {
+                                    reloadSuggestionIfAny();
+                                },
+                                'Mise à jour des suggestions et envois des demandes...',
+                                'Les demandes ont bien été envoyées / les suggestions bien supprimés !');
+                });
+                infoDiv.append(submitBtn);
+            }
+            // adding all the suggestions
+            suggestionTable.append(`
+                <tr>
+                    <td>
+                        <label for="selected_${suggestion.suggestion.id}" >${suggestion.suggestion.name}</label>
+                    </td>
+                    <td>
+                        <label for="selected_${suggestion.suggestion.id}" >${suggestion.suggestion.email}</label>
+                    </td>
+                    <td class="center">
+                        <input type="checkbox" name="selected_${suggestion.suggestion.id}" id="selected_${suggestion.suggestion.id}" />
+                        <span class="checkbox"></span>
+                    </td>
+                    <td class="center">
+                        <input type="checkbox" name="rejected_${suggestion.suggestion.id}" id="rejected_${suggestion.suggestion.id}" />
+                        <span class="checkbox"></span>
+                    </td>
+                </tr>
             `);
-            submitBtn.click(function () {
-                var selected = [];
-                $('input[name^="selected_"]').each(function() {
-                    selected.push([$(this).attr("id"), $(this).is(":checked")]);
-                });
-                var rejected = [];
-                $('input[name^="rejected_"]').each(function() {
-                    rejected.push([$(this).attr("id"), $(this).is(":checked")]);
-                });
-                servicePost('protected/service/suggestion_amis',
-                            {
-                                selected : selected,
-                                rejected : rejected
-                            },
-                            function(data) {
-                                reloadSuggestionIfAny();
-                            },
-                            'Mise à jour des suggestions et envois des demandes...',
-                            'Les demandes ont bien été envoyées / les suggestions bien supprimés !');
-            });
-            infoDiv.append(submitBtn);
+            previous = suggestion.suggestedBy.id;
         });
 
         container.append(infoDiv);

@@ -83,13 +83,8 @@ public class ServiceSuggestionAmis extends ServiceGetAndPost<AllAccessToPostAndG
                  });
 
         toIgnore.forEach(i -> {
-            try {
-                UserRelationsSuggestionRepository.removeIfExists(userId, i);
-                logger.info("Suppression de la suggestion de {} à {}.", i, thisOne);
-            } catch (SQLException e) {
-                logger.error(e);
-                e.printStackTrace();
-            }
+            UserRelationsSuggestionRepository.removeIfExists(userId, i);
+            logger.info("Suppression de la suggestion de {} à {}.", i, thisOne);
         });
 
         if (errors.isEmpty()) {

@@ -55,5 +55,8 @@
                 Aucune personne trouvée.
             </div>
         </c:if>
+        <script>
+
+        </script>
     </jsp:body>
 </t:normal_protected>

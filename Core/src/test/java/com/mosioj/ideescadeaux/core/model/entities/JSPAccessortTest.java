@@ -7,10 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class JSPAccessortTest extends TemplateTest {
 
@@ -60,15 +58,6 @@ public class JSPAccessortTest extends TemplateTest {
         Assert.assertEquals(u, rr.getSent_by());
         Assert.assertEquals(u, rr.getSent_to());
         Assert.assertEquals(new Date(1576135793001L), rr.getRequest_date());
-    }
-
-    @Test
-    public void testJSPOnlyRelationSuggestionMethods() {
-        RelationSuggestion rs = new RelationSuggestion(u, u, new ArrayList<>(), new Time(1576135793001L));
-        Assert.assertEquals(u, rs.getSuggestedBy());
-        Assert.assertEquals(new Time(1576135793001L), rs.getSuggestedDate());
-        Assert.assertEquals(u, rs.getSuggestedTo());
-        Assert.assertEquals(new ArrayList<>(), rs.getSuggestions());
     }
 
     @Test

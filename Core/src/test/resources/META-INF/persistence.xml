@@ -6,6 +6,7 @@
         <class>com.mosioj.ideescadeaux.core.model.entities.User</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.UserRole</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.Relation</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
