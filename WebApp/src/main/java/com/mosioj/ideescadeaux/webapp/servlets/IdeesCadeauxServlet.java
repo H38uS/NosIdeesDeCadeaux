@@ -18,14 +18,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * An intermediate servlet for test purpose. Increase the visibility of tested method.
  *
  * @author Jordan Mosio
  */
-@SuppressWarnings("serial")
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
     /** Class logger */
@@ -63,7 +63,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
      * @param request The http request.
      * @return True if the user is an admin.
      */
-    public static boolean isAdmin(HttpServletRequest request) {
+    public static boolean isAdmin(HttpServletRequest request) { // FIXME l'ajouter en attribut de l'utilisateur...
         return request.isUserInRole("ROLE_ADMIN");
     }
 
@@ -205,26 +205,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         } catch (SQLException | ServletException | IOException e) {
             RootingsUtils.rootToGenericSQLError(thisOne, e, request, response);
         }
-    }
-
-    /**
-     * @param params Parameters received in this request.
-     * @param prefix The prefix to substract to get the id from the key.
-     * @return The list of selected integers.
-     */
-    protected List<Integer> getSelectedChoices(Map<String, String[]> params, String prefix) {
-        List<Integer> toBeAsked = new ArrayList<>();
-        for (String key : params.keySet()) {
-            String[] values = params.get(key);
-            if (key.startsWith(prefix) && values.length == 1 && "on".equals(values[0])) {
-                String id = key.substring(prefix.length());
-                try {
-                    toBeAsked.add(Integer.parseInt(id));
-                } catch (NumberFormatException ignored) {
-                }
-            }
-        }
-        return toBeAsked;
     }
 
     /**

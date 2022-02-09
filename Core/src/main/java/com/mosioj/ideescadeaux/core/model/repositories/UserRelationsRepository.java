@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.core.model.entities.Relation;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -287,10 +288,10 @@ public class UserRelationsRepository extends AbstractRepository {
      */
     public static void deleteAssociation(int firstUserId, int secondUserId) throws SQLException {
         getDb().executeUpdate(MessageFormat.format(
-                "delete from {0} where ({1} = ? and {2} = ?) or ({1} = ? and {2} = ?)",
-                TABLE_NAME,
-                UserRelationsColumns.FIRST_USER,
-                UserRelationsColumns.SECOND_USER),
+                                      "delete from {0} where ({1} = ? and {2} = ?) or ({1} = ? and {2} = ?)",
+                                      TABLE_NAME,
+                                      UserRelationsColumns.FIRST_USER,
+                                      UserRelationsColumns.SECOND_USER),
                               firstUserId,
                               secondUserId,
                               secondUserId,
@@ -477,72 +478,36 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param limit           Maximal size of the result.
      * @return All users matching the name/email that are in suggestedBy network, but not in suggestedTo network.
      */
-    public static List<User> getAllUsersInRelationNotInOtherNetwork(int suggestedBy,
-                                                                    int suggestedTo,
+    public static List<User> getAllUsersInRelationNotInOtherNetwork(User suggestedBy,
+                                                                    User suggestedTo,
                                                                     String userNameOrEmail,
                                                                     int firstRow,
-                                                                    int limit) throws SQLException {
+                                                                    int limit) {
 
-        List<User> users = new ArrayList<>();
-        PreparedStatementIdKdo ps = null;
         logger.debug(suggestedBy + " / " + suggestedTo + " / " + userNameOrEmail);
 
-        StringBuilder query = new StringBuilder();
-        query.append("select u.{0}, u.{1}, u.{2}, u.{7}, u.{8} ");
-        query.append("  from {3} u, {4} r ");
-        query.append(" where u.{0} = r.{6} and r.{5} = ? ");
-        query.append("   and (lower(u.{1}) like ? ESCAPE ''!'' or lower(u.{2}) like ? ESCAPE ''!'') ");
-        query.append("   and not exists ");
-        query.append("       ( ");
-        query.append("          select 1 ");
-        query.append("            from {4} r2 ");
-        query.append("            join {3} u2 ");
-        query.append("              on u2.{0} = r2.{6} and r2.{5} = ? ");
-        query.append("           where (lower(u2.{1}) like ? ESCAPE ''!'' or lower(u2.{2}) like ? ESCAPE ''!'') ");
-        query.append("             and r.{6} = r2.{6} ");
-        query.append("       ) ");
-        query.append(" order by {1}, {2}, {0} ");
-        query.append(" LIMIT ?, ? ");
+        String query = "select u" +
+                       "  from USERS u, USER_RELATIONS r " +
+                       " where u.id = r.second and r.first = :suggestedBy " +
+                       "   and (lower(u.name) like :userNameOrEmail ESCAPE '!' or lower(u.email) like :userNameOrEmail ESCAPE '!') " +
+                       "   and not exists " +
+                       "       ( " +
+                       "          select 1 " +
+                       "            from USER_RELATIONS r2 " +
+                       "            join USERS u2 " +
+                       "              on u2.id = r2.second and r2.first = :suggestedTo " +
+                       "           where (lower(u2.name) like :userNameOrEmail ESCAPE '!' or lower(u2.email) like :userNameOrEmail ESCAPE '!') " +
+                       "             and r.second = r2.second " +
+                       "       ) " +
+                       " order by u.name, u.email, u.id ";
 
-        try {
-            String formatedQuery = MessageFormat.format(query.toString(),
-                                                        UsersColumns.ID.name(),
-                                                        UsersColumns.NAME.name(),
-                                                        UsersColumns.EMAIL.name(),
-                                                        UsersRepository.TABLE_NAME,
-                                                        TABLE_NAME,
-                                                        UserRelationsColumns.FIRST_USER,
-                                                        UserRelationsColumns.SECOND_USER,
-                                                        UsersColumns.AVATAR,
-                                                        UsersColumns.BIRTHDAY);
-
-            ps = new PreparedStatementIdKdo(getDb(), formatedQuery);
-            userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
-            ps.bindParameters(suggestedBy,
-                              userNameOrEmail,
-                              userNameOrEmail,
-                              suggestedTo,
-                              userNameOrEmail,
-                              userNameOrEmail,
-                              firstRow,
-                              limit);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    users.add(new User(res.getInt(UsersColumns.ID.name()),
-                                       res.getString(UsersColumns.NAME.name()),
-                                       res.getString(UsersColumns.EMAIL.name()),
-                                       res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name())));
-                }
-            }
-        } finally {
-            if (ps != null) {
-                ps.close();
-            }
-        }
-
-        return users;
+        final String theUserNameOrEmail = sanitizeSQLLike(userNameOrEmail);
+        return HibernateUtil.doQueryFetch(s -> s.createQuery(query, User.class)
+                                                .setParameter("suggestedBy", suggestedBy)
+                                                .setParameter("suggestedTo", suggestedTo)
+                                                .setParameter("userNameOrEmail", theUserNameOrEmail)
+                                                .setFirstResult(firstRow)
+                                                .setMaxResults(limit).list());
     }
 
     public static List<User> getAllUsersInRelation(int userId,

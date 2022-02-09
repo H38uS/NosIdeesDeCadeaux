@@ -24,7 +24,6 @@ public class JSPAccessortTest extends TemplateTest {
         Assert.assertEquals("", u.getLastLogin());
         Assert.assertFalse(u.hasSetUpAnAvatar());
         Assert.assertEquals("large/default.png", u.getAvatarSrcLarge());
-        Assert.assertEquals(StringUtils.EMPTY, u.getFreeComment());
     }
 
     @Test

@@ -17,7 +17,7 @@
                     <c:forEach var="accept" items="${accepted}">
                         <li>
                             ${accept.name} :
-                            <a href="protected/suggerer_relations?id=${accept.id}">Suggérer</a> des relations
+                            <a href="protected/suggerer_relations.jsp?id=${accept.id}">Suggérer</a> des relations
                         </li>
                     </c:forEach>
                 </ul>

@@ -31,7 +31,7 @@ public class RelationSuggestion {
     public User suggestion;
 
     /** Last time this relation was updated. */
-    @Column
+    @Column(name = "suggestion_date")
     @UpdateTimestamp
     private LocalDateTime suggestedDate;
 

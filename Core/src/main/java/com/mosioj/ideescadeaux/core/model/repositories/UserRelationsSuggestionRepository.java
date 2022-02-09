@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.List;
 
@@ -53,10 +54,14 @@ public class UserRelationsSuggestionRepository {
      */
     public static void removeIfExists(int suggestedTo, int user) {
         final String text = "delete from USER_RELATIONS_SUGGESTION where suggested_to = :to and user_id = :id";
-        HibernateUtil.doSomeWork(s -> s.createQuery(text)
-                                       .setParameter("to", suggestedTo)
-                                       .setParameter("id", user)
-                                       .executeUpdate());
+        HibernateUtil.doSomeWork(s -> {
+            Transaction t = s.beginTransaction();
+            s.createQuery(text)
+             .setParameter("to", suggestedTo)
+             .setParameter("id", user)
+             .executeUpdate();
+            t.commit();
+        });
     }
 
     public static void removeAllFromAndTo(Session s, int userId) {

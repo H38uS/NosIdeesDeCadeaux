@@ -67,11 +67,6 @@ public class User implements Comparable<User> {
     private LocalDateTime updatedAt;
 
     @Transient
-    @Expose
-    public String freeComment; // utilisé dans suggestion relation en jsp - impossible de supprimer le getter pour l'instant
-    // FIXME : rien à faire ici...
-
-    @Transient
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
     public User() {
@@ -124,7 +119,6 @@ public class User implements Comparable<User> {
 
     @PostLoad
     private void postLoad() {
-        freeComment = StringUtils.EMPTY;
         nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
         avatar = Optional.ofNullable(avatar).orElse("default.png");
         name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());
@@ -270,15 +264,6 @@ public class User implements Comparable<User> {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Used in several JSP, impossible to delete.
-     *
-     * @return The user's free comment.
-     */
-    public String getFreeComment() {
-        return freeComment;
     }
 
     /**

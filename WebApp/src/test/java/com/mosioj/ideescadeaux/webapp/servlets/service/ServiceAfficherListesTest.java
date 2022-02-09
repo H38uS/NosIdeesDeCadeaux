@@ -88,8 +88,7 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
     @Test
     public void shouldBeAbleToMatchMultiple() throws SQLException {
 
-        final User jo = UsersRepository.getUser(22).orElseThrow(SQLException::new);
-        when(session.getAttribute("connected_user")).thenReturn(jo);
+        when(session.getAttribute("connected_user")).thenReturn(jo3);
         when(request.getParameter(ServiceAfficherListes.NAME_OR_EMAIL)).thenReturn("trr");
 
         // Act
@@ -102,7 +101,7 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
                                  .stream()
                                  .map(OwnerIdeas::getOwner)
                                  .collect(Collectors.toList());
-        assertEquals(Arrays.asList(jo, UsersRepository.getUser(6).orElseThrow(SQLException::new)), users);
+        assertEquals(Arrays.asList(jo3, UsersRepository.getUser(6).orElseThrow(SQLException::new)), users);
     }
 
     private static class AfficherListeResponse extends ServiceResponse<PagedResponse<List<OwnerIdeas>>> {
