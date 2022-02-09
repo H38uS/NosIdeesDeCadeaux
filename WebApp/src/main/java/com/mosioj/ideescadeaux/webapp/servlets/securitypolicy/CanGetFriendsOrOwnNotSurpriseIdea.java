@@ -53,7 +53,7 @@ public final class CanGetFriendsOrOwnNotSurpriseIdea extends SecurityPolicy impl
         }
 
         // Enfin, uniquement si on est amis
-        if (!UserRelationsRepository.associationExists(connectedUser.id, idea.owner.id)) {
+        if (!UserRelationsRepository.associationExists(connectedUser, idea.owner)) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
             return false;
         }

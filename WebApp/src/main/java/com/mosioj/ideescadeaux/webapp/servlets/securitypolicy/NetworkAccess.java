@@ -33,7 +33,7 @@ public final class NetworkAccess extends SecurityPolicy implements UserSecurityC
         }
 
         final boolean isMe = connectedUser.equals(friend);
-        final boolean res = isMe || UserRelationsRepository.associationExists(friend.id, connectedUser.id);
+        final boolean res = isMe || UserRelationsRepository.associationExists(friend, connectedUser);
         if (!res) {
             lastReason = "Vous n'êtes pas ami avec cette personne.";
             return false;

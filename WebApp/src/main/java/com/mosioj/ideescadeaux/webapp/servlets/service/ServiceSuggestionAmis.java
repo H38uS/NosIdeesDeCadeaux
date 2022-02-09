@@ -66,7 +66,7 @@ public class ServiceSuggestionAmis extends ServiceGetAndPost<AllAccessToPostAndG
                  .forEach(u -> {
                      try {
                          UserRelationsSuggestionRepository.removeIfExists(userId, u.id);
-                         if (u.id == userId || UserRelationsRepository.associationExists(u.id, userId)) {
+                         if (u.id == userId || UserRelationsRepository.associationExists(u, thisOne)) {
                              errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", u.getName()));
                              return;
                          }

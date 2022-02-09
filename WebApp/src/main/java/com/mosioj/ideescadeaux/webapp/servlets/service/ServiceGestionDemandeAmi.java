@@ -137,7 +137,7 @@ public class ServiceGestionDemandeAmi extends ServiceGetAndPost<AllAccessToPostA
                                    .map(UsersRepository::getUser)
                                    .filter(Optional::isPresent)
                                    .map(Optional::get)
-                                   .filter(u -> !UserRelationsRepository.associationExists(thisOne.id, u.id))
+                                   .filter(u -> !UserRelationsRepository.associationExists(thisOne, u))
                                    .filter(u -> UserRelationRequestsRepository.associationExists(u.id, thisOne.id))
                                    .collect(Collectors.toList());
     }

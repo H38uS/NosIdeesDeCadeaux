@@ -36,7 +36,7 @@ public class DecoratedWebAppUser {
 
     public DecoratedWebAppUser(final User user, final User connectedUser) {
         this.user = user;
-        isInMyNetwork = associationExists(user.id, connectedUser.id);
+        isInMyNetwork = associationExists(user, connectedUser);
         readableBirthday = user.getBirthdayAsString();
         hasSentARequest = UserRelationRequestsRepository.associationExists(connectedUser.id, user.id);
         boolean hasBookedOneOfItsIdeas = false;

@@ -296,7 +296,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                            .whereType(NType.NEW_IDEA_BIRTHDAY_SOON)
                                            .whereIdea(idee)
                                            .hasAny());
-        assertTrue(UserRelationsRepository.associationExists(firefox.getId(), theAdmin.getId()));
+        assertTrue(UserRelationsRepository.associationExists(firefox, theAdmin));
 
         // Doing the restore without the booking
         when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));

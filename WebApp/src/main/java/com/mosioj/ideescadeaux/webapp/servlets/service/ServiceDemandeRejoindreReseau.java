@@ -42,7 +42,7 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
             return;
         }
 
-        if (UserRelationsRepository.associationExists(thisOne.id, userToSendInvitation.id)) {
+        if (UserRelationsRepository.associationExists(thisOne, userToSendInvitation)) {
             buildResponse(response,
                           ServiceResponse.ko(MessageFormat.format("Vous faites déjà parti du réseau de {0}.",
                                                                   userToSendInvitation.getName()),

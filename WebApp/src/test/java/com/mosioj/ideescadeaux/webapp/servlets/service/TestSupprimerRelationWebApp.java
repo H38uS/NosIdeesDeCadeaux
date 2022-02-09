@@ -21,9 +21,9 @@ public class TestSupprimerRelationWebApp extends AbstractTestServletWebApp {
     public void testSuppressionRelationEtSuppressionNotifs() throws SQLException {
 
         UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
-        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
         UserRelationsRepository.addAssociation(_OWNER_ID_, _MOI_AUTRE_);
-        assertTrue(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertTrue(UserRelationsRepository.associationExists(firefox, moiAutre));
 
         int notifId = ACCEPTED_FRIENDSHIP.with(moiAutre).sendItTo(firefox);
         assertNotifDoesExists(notifId);
@@ -32,7 +32,7 @@ public class TestSupprimerRelationWebApp extends AbstractTestServletWebApp {
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
         assertNotifDoesNotExists(notifId);
     }
 

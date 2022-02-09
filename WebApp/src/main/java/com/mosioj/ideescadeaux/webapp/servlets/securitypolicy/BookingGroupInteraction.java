@@ -60,7 +60,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
             return false;
         }
 
-        if (!UserRelationsRepository.associationExists(connectedUser.id, ideaOwner.id)) {
+        if (!UserRelationsRepository.associationExists(connectedUser, ideaOwner)) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
             return false;
         }

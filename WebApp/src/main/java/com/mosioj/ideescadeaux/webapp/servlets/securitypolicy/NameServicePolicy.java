@@ -27,11 +27,11 @@ public final class NameServicePolicy extends SecurityPolicy {
         this.userParameter = userParameter;
     }
 
-    protected boolean hasRight(HttpServletRequest request) throws SQLException {
+    private boolean hasRight(HttpServletRequest request) throws SQLException {
 
         user = ParametersUtils.readInt(request, userParameter).flatMap(UsersRepository::getUser).orElse(connectedUser);
 
-        if (!user.equals(connectedUser) && !UserRelationsRepository.associationExists(user.id, connectedUser.id)) {
+        if (!user.equals(connectedUser) && !UserRelationsRepository.associationExists(user, connectedUser)) {
             // On regarde
             // Soit son propre réseau
             // Soit celui d'un ami

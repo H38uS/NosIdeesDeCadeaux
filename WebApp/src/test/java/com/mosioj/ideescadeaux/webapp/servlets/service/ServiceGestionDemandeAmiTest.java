@@ -26,7 +26,7 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
     public void testImpossibleToAcceptIfNotAsked() throws SQLException {
 
         UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
-        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
 
         when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
 
@@ -36,14 +36,14 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
 
         doTestPost();
 
-        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
     }
 
     @Test
     public void testAcceptationAmitieEtSuppressionNotif() throws SQLException {
 
         UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
-        assertFalse(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
 
         // Ajout des notifs
         int n1 = REJECTED_FRIENDSHIP.with(moiAutre).sendItTo(firefox);
@@ -69,7 +69,7 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
         when(request.getParameterMap()).thenReturn(params);
         doTestPost();
 
-        assertTrue(UserRelationsRepository.associationExists(_OWNER_ID_, _MOI_AUTRE_));
+        assertTrue(UserRelationsRepository.associationExists(firefox, moiAutre));
         assertNotifDoesNotExists(n1);
         assertNotifDoesNotExists(n2);
         assertNotifDoesNotExists(newRelationSuggestion);

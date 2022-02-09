@@ -51,7 +51,7 @@ public class IdeaInteraction extends SecurityPolicy implements IdeaSecurityCheck
             return false;
         }
 
-        if (UserRelationsRepository.associationExists(connectedUser.id, idea.owner.id)) {
+        if (UserRelationsRepository.associationExists(connectedUser, idea.owner)) {
             // OK si on est pote (interdit le owner)
             return true;
         }

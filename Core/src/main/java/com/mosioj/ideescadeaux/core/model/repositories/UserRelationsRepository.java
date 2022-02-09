@@ -249,12 +249,12 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param second Another user id.
      * @return True if and only if the two guys are friends. False for the owner.
      */
-    public static boolean associationExists(int first, int second) {
+    public static boolean associationExists(User first, User second) {
         String query = MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
                                             TABLE_NAME,
                                             UserRelationsColumns.FIRST_USER,
                                             UserRelationsColumns.SECOND_USER);
-        return getDb().doesReturnRows(query, first, second);
+        return getDb().doesReturnRows(query, first.id, second.id);
     }
 
     /**

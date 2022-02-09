@@ -56,7 +56,7 @@ public final class CanAskReplyToQuestions extends SecurityPolicy implements Idea
         }
 
         // Enfin, uniquement si on est amis
-        if (!UserRelationsRepository.associationExists(userId, idea.owner.id)) {
+        if (!UserRelationsRepository.associationExists(connectedUser, idea.owner)) {
             lastReason = "Vous n'avez pas accès aux idées de cette personne.";
             return false;
         }
