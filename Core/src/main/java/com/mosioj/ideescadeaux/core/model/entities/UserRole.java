@@ -20,7 +20,8 @@ public class UserRole {
     public User user;
 
     /** The user's email. Cannot be null or empty. */
-    @Column(length = 15)
+    @Column( length = 15)
+    @Enumerated(EnumType.STRING)
     public RoleName role;
 
     public UserRole() {
