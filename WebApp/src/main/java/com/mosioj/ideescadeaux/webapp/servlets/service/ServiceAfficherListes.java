@@ -40,7 +40,7 @@ public class ServiceAfficherListes extends ServiceGet<AllAccessToPostAndGet> {
         String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
 
         // Getting the user list
-        List<User> users = UserRelationsRepository.getAllUsersInRelation(thisOne.id,
+        List<User> users = UserRelationsRepository.getAllUsersInRelation(thisOne,
                                                                          nameOrEmail,
                                                                          firstRow,
                                                                          PAGES_HELPER.getMaxNumberOfResults());

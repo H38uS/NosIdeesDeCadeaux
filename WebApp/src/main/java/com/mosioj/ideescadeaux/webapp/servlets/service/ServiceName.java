@@ -7,7 +7,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NameServicePolicy;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.NameAnswer;
 import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,7 +48,7 @@ public class ServiceName extends ServiceGet<NameServicePolicy> {
             MAX--;
         }
 
-        res.addAll(UserRelationsRepository.getAllNamesOrEmailsInRelation(current.id, param, 0, MAX));
+        res.addAll(UserRelationsRepository.getAllUsersInRelationWithPossibleTypo(current.id, param, 0, MAX));
 
         // Building the JSON answer
         List<NameAnswer> users = res.stream().map(NameAnswer::new).collect(Collectors.toList());

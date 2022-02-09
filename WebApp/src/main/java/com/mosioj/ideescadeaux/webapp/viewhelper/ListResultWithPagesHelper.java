@@ -42,7 +42,7 @@ public class ListResultWithPagesHelper {
     }
 
     /**
-     * @return The actual maximum number of results to provide.
+     * @return The actual maximum number of results to provide per page.
      */
     public int getMaxNumberOfResults() {
         return maxNumberOfResults;

@@ -17,7 +17,7 @@
             <property name="hibernate.connection.password" value="tuaD50Kv2jguyX5ncokK"/>
             <property name="hibernate.jdbc.time_zone" value="Europe/Paris"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
-            <property name="show_sql" value="${db.showSQL}"/>
+            <property name="show_sql" value="true"/>
             <property name="hibernate.current_session_context_class" value="thread"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.connection.provider_class"

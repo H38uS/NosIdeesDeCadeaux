@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.entities.Relation;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppUser;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
@@ -44,11 +44,13 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
         LOGGER.trace("Received: {}", nameOrEmail);
 
         // Loading the list
-        List<Relation> raw = UserRelationsRepository.getRelations(policy.getUser(), 1, -1);
+        // FIXME : 00 ne semble pas matcher Another quand on teste dans la UI...
+        List<User> raw = UserRelationsRepository.getAllUsersInRelation(policy.getUser(),
+                                                                       nameOrEmail,
+                                                                       1,
+                                                                       PAGES_HELPER.getMaxNumberOfResults());
 
         List<DecoratedWebAppUser> relations = raw.stream()
-                                                 .map(Relation::getSecond)
-                                                 .filter(u -> u.matchNameOrEmail(nameOrEmail))
                                                  .map(r -> new DecoratedWebAppUser(r, thisOne))
                                                  .collect(Collectors.toList());
         LOGGER.trace("Matched: {}", relations);
@@ -62,7 +64,7 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
      * @return The total number of records that will be produced when fetching the entire list.
      */
     protected int getTotalNumberOfRecords(HttpServletRequest request) {
-        return UserRelationsRepository.getRelationsCount(policy.getUser().id,
-                                                         ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM));
+        final String userNameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
+        return UserRelationsRepository.getAllUsersInRelationCount(policy.getUser(), userNameOrEmail);
     }
 }
