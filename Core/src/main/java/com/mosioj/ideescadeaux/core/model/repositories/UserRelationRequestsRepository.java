@@ -23,13 +23,9 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param sent_to Sent to this user.
      * @return True if and only if sent_by has sent a request to sent_to.
      */
-    public static boolean associationExists(int sent_by, int sent_to) {
-        return getDb().doesReturnRows(MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
-                                                           TABLE_NAME,
-                                                           UserRelationRequestsColumns.SENT_BY_USER,
-                                                           UserRelationRequestsColumns.SENT_TO_USER),
-                                      sent_by,
-                                      sent_to);
+    public static boolean associationExists(User sent_by, User sent_to) {
+        final String query = "select 1 from USER_RELATION_REQUESTS where sent_by = ?0 and sent_to = ?1";
+        return HibernateUtil.doesReturnRows(query, sent_by, sent_to);
     }
 
     /**

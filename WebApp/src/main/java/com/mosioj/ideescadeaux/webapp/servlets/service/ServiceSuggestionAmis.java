@@ -70,7 +70,7 @@ public class ServiceSuggestionAmis extends ServiceGetAndPost<AllAccessToPostAndG
                              errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", u.getName()));
                              return;
                          }
-                         if (UserRelationRequestsRepository.associationExists(userId, u.id)) {
+                         if (UserRelationRequestsRepository.associationExists(thisOne, u)) {
                              errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.", u.getName()));
                              return;
                          }

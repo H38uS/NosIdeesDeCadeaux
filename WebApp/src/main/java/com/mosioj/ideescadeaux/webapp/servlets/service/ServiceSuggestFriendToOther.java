@@ -50,13 +50,13 @@ public class ServiceSuggestFriendToOther extends ServiceGet<NetworkAccess> {
                                                               suggestToUser.getName(),
                                                               u.getName());
             }
-            if (UserRelationRequestsRepository.associationExists(suggestToUser.id, u.id)) {
+            if (UserRelationRequestsRepository.associationExists(suggestToUser, u)) {
                 ps.isPossible = false;
                 ps.reasonIfNotPossible = MessageFormat.format("{0} a déjà envoyé une demande à {1}.",
                                                               suggestToUser.getName(),
                                                               u.getName());
             }
-            if (UserRelationRequestsRepository.associationExists(u.id, suggestToUser.id)) {
+            if (UserRelationRequestsRepository.associationExists(u, suggestToUser)) {
                 ps.isPossible = false;
                 ps.reasonIfNotPossible = MessageFormat.format("{0} a déjà envoyé une demande à {1}.",
                                                               u.getName(),

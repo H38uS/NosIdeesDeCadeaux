@@ -34,7 +34,7 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
         User userToSendInvitation = policy.getUser();
         request.setAttribute("name", userToSendInvitation.getName());
 
-        if (UserRelationRequestsRepository.associationExists(thisOne.id, userToSendInvitation.id)) {
+        if (UserRelationRequestsRepository.associationExists(thisOne, userToSendInvitation)) {
             buildResponse(response,
                           ServiceResponse.ko(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.",
                                                                   userToSendInvitation.getName()),

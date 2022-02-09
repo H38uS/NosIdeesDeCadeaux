@@ -61,11 +61,11 @@ public class ServiceSuggestionAmisTest extends AbstractTestServletWebApp {
         // Then I have sent a new friendship request and only one new :'(
         assertTrue(resp.isOK());
         // a new friend with 7!
-        assertTrue(UserRelationRequestsRepository.associationExists(_OWNER_ID_, 7));
-        assertFalse(UserRelationsSuggestionRepository.hasReceivedSuggestionOf(_OWNER_ID_, 7));
+        assertTrue(UserRelationRequestsRepository.associationExists(firefox, seven));
+        assertFalse(UserRelationsSuggestionRepository.hasReceivedSuggestionOf(_MOI_AUTRE_, 7));
         // but not with 8...
-        assertFalse(UserRelationRequestsRepository.associationExists(_OWNER_ID_, 8));
-        assertFalse(UserRelationsSuggestionRepository.hasReceivedSuggestionOf(_OWNER_ID_, 8));
+        assertFalse(UserRelationRequestsRepository.associationExists(firefox, eight));
+        assertFalse(UserRelationsSuggestionRepository.hasReceivedSuggestionOf(_MOI_AUTRE_, 8));
     }
 
 }

@@ -38,7 +38,7 @@ public class DecoratedWebAppUser {
         this.user = user;
         isInMyNetwork = associationExists(user, connectedUser);
         readableBirthday = user.getBirthdayAsString();
-        hasSentARequest = UserRelationRequestsRepository.associationExists(connectedUser.id, user.id);
+        hasSentARequest = UserRelationRequestsRepository.associationExists(connectedUser, user);
         boolean hasBookedOneOfItsIdeas = false;
         try {
             hasBookedOneOfItsIdeas = IdeesRepository.getIdeasWhereIDoParticipateIn(connectedUser)
