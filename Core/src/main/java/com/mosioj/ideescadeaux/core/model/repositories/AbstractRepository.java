@@ -6,6 +6,8 @@ import java.text.MessageFormat;
 
 public abstract class AbstractRepository {
 
+    // FIXME : à supprimer quand utilise que Hibernate?
+
     /**
      * The database specific connection.
      */
