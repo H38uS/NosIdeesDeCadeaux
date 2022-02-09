@@ -11,9 +11,9 @@ import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
-public class ServiceEnregistrementMonCompteTestWebApp extends AbstractTestServletWebApp {
+public class ServiceEnregistrementMonCompteTest extends AbstractTestServletWebApp {
 
-    public ServiceEnregistrementMonCompteTestWebApp() {
+    public ServiceEnregistrementMonCompteTest() {
         super(new ServiceEnregistrementMonCompte());
     }
 
@@ -42,10 +42,9 @@ public class ServiceEnregistrementMonCompteTestWebApp extends AbstractTestServle
          *
          * @param isOK    True if there is no error.
          * @param message The JSon response message.
-         * @param isAdmin Whether the user is an admin.
          */
-        public MyServiceResp(boolean isOK, User message, boolean isAdmin, User connectedUser) {
-            super(isOK, message, isAdmin, connectedUser);
+        public MyServiceResp(boolean isOK, User message, User connectedUser) {
+            super(isOK, message, connectedUser);
         }
     }
 }

@@ -57,7 +57,7 @@ public class ServiceSuggestFriendToOtherTest extends AbstractTestServletWebApp {
                                           List<PossibleSuggestion> message,
                                           boolean isAdmin,
                                           User connectedUser) {
-            super(isOK, message, isAdmin, connectedUser);
+            super(isOK, message, connectedUser);
         }
     }
 }

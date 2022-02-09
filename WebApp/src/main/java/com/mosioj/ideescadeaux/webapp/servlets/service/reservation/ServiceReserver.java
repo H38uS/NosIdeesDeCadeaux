@@ -39,6 +39,6 @@ public class ServiceReserver extends ServicePost<IdeaInteraction> {
             NotificationsRepository.terminator().whereType(NType.RECURENT_IDEA_UNBOOK).whereIdea(idea).terminates();
         }
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

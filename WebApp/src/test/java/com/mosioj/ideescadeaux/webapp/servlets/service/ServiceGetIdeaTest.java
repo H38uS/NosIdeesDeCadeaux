@@ -13,9 +13,9 @@ import java.sql.SQLException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class ServiceGetIdeaTestWebApp extends AbstractTestServletWebApp {
+public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
 
-    public ServiceGetIdeaTestWebApp() {
+    public ServiceGetIdeaTest() {
         super(new ServiceGetIdea());
     }
 
@@ -104,7 +104,7 @@ public class ServiceGetIdeaTestWebApp extends AbstractTestServletWebApp {
          * @param isAdmin Whether the user is an admin.
          */
         public DecoratedWebAppIdeaServiceResponse(boolean isOK, DecoratedWebAppIdea idea, boolean isAdmin, User connectedUser) {
-            super(isOK, idea, isAdmin, connectedUser);
+            super(isOK, idea, connectedUser);
         }
     }
 }

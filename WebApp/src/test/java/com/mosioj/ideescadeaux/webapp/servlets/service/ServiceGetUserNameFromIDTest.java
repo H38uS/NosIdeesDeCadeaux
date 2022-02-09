@@ -9,9 +9,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class ServiceGetUserNameFromIDTestWebApp extends AbstractTestServletWebApp {
+public class ServiceGetUserNameFromIDTest extends AbstractTestServletWebApp {
 
-    public ServiceGetUserNameFromIDTestWebApp() {
+    public ServiceGetUserNameFromIDTest() {
         super(new ServiceGetUserNameFromID());
     }
 
@@ -35,10 +35,9 @@ public class ServiceGetUserNameFromIDTestWebApp extends AbstractTestServletWebAp
          *
          * @param isOK    True if there is no error.
          * @param message The JSon response message.
-         * @param isAdmin Whether the user is an admin.
          */
-        public ThisServiceResp(boolean isOK, User message, boolean isAdmin, User connectedUser) {
-            super(isOK, message, isAdmin, connectedUser);
+        public ThisServiceResp(boolean isOK, User message, User connectedUser) {
+            super(isOK, message, connectedUser);
         }
     }
 }

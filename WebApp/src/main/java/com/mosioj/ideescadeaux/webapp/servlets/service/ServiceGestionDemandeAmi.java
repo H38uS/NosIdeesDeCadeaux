@@ -34,7 +34,6 @@ public class ServiceGestionDemandeAmi extends ServiceGetAndPost<AllAccessToPostA
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
         buildResponse(response,
                       ServiceResponse.ok(UserRelationRequestsRepository.getRequests(thisOne.id),
-                                         isAdmin(request),
                                          thisOne));
     }
 
@@ -67,7 +66,7 @@ public class ServiceGestionDemandeAmi extends ServiceGetAndPost<AllAccessToPostA
             clearNotifications(u);
         });
 
-        buildResponse(response, ServiceResponse.ok(accepted.stream().map(User::getName), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(accepted.stream().map(User::getName), thisOne));
     }
 
     private void clearNotifications(User fromUser) {

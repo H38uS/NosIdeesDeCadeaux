@@ -36,7 +36,7 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
     protected void dealWithUnauthorizedPolicyAccess(HttpServletRequest request,
                                                     HttpServletResponse response,
                                                     P policy) {
-        buildResponse(response, ServiceResponse.ko(policy.getLastReason(), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ko(policy.getLastReason(), thisOne));
     }
 
     @Override
@@ -46,9 +46,7 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
         } catch (Exception e) {
             logger.error(e);
             buildResponse(response,
-                          ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(),
-                                             isAdmin(request),
-                                             thisOne));
+                          ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(), thisOne));
         }
     }
 
@@ -59,9 +57,7 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
         } catch (Exception e) {
             logger.error(e);
             buildResponse(response,
-                          ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(),
-                                             isAdmin(request),
-                                             thisOne));
+                          ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(), thisOne));
         }
     }
 

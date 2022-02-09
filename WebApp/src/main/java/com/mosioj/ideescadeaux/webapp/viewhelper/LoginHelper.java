@@ -90,8 +90,6 @@ public class LoginHelper implements Filter {
             if (initial != null) {
                 request.setAttribute("initial_connected_user", initial);
             }
-
-            request.setAttribute("is_admin", httpServletRequest.isUserInRole("ROLE_ADMIN"));
         }
 
         chain.doFilter(request, response);

@@ -39,7 +39,7 @@ public class ServiceSuggestionAmis extends ServiceGetAndPost<AllAccessToPostAndG
         List<RelationSuggestion> suggestions = UserRelationsSuggestionRepository.getUserSuggestions(thisOne);
 
         // Writing answer
-        buildResponse(response, ServiceResponse.ok(suggestions, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(suggestions, thisOne));
     }
 
     @Override
@@ -88,10 +88,9 @@ public class ServiceSuggestionAmis extends ServiceGetAndPost<AllAccessToPostAndG
         if (errors.isEmpty()) {
             buildResponse(response,
                           ServiceResponse.ok(UserRelationsSuggestionRepository.getUserSuggestions(thisOne),
-                                             isAdmin(request),
                                              thisOne));
         } else {
-            buildResponse(response, ServiceResponse.ko(errors, isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ko(errors, thisOne));
         }
     }
 

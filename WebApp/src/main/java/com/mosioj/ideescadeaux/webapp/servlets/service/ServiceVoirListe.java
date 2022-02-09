@@ -37,6 +37,6 @@ public class ServiceVoirListe extends ServiceGet<NetworkAccess> {
         final List<Page> pages = Collections.singletonList(Page.first());
 
         // Sending the response
-        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), thisOne));
     }
 }

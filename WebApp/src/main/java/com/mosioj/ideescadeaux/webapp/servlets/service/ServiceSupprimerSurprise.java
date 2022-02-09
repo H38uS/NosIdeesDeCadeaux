@@ -32,6 +32,6 @@ public class ServiceSupprimerSurprise extends ServicePost<SurpriseModification> 
         Idee idea = policy.getIdea();
         logger.debug(MessageFormat.format("Suppression de la surprise {0} par {1}.", idea.getId(), thisOne));
         IdeesRepository.remove(idea);
-        buildResponse(response, ServiceResponse.ok("La surprise a bien été supprimée.", isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok("La surprise a bien été supprimée.", thisOne));
     }
 }

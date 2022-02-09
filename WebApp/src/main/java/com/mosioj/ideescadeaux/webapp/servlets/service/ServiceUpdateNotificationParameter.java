@@ -46,12 +46,12 @@ public class ServiceUpdateNotificationParameter extends ServicePost<AllAccessToP
         }
 
         if (!message.isEmpty()) {
-            buildResponse(response, ServiceResponse.ko(message, isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ko(message, thisOne));
             return;
         }
 
         // Valid parameters, doing the update
         UserParametersRepository.insertUpdateParameter(thisOne, name, value);
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

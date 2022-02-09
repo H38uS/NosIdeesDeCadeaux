@@ -59,7 +59,7 @@ public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
                 message.append("<ul>");
                 errors.forEach(e -> message.append("<li>").append(e).append("</li>"));
                 message.append("</ul>");
-                sr = ServiceResponse.ko(message.toString(), isAdmin(request), thisOne);
+                sr = ServiceResponse.ko(message.toString(), thisOne);
             } else {
 
                 // Ajout de l'idée
@@ -97,10 +97,10 @@ public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
                     }
                 }
 
-                sr = ServiceResponse.ok(idea.getId(), isAdmin(request), thisOne);
+                sr = ServiceResponse.ok(idea.getId(), thisOne);
             }
         } else {
-            sr = ServiceResponse.ko("Le formulaire est incorrect...", isAdmin(request), thisOne);
+            sr = ServiceResponse.ko("Le formulaire est incorrect...", thisOne);
         }
 
         buildResponse(response, sr);

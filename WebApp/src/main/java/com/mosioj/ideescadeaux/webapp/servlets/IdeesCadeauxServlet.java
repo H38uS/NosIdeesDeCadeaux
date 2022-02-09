@@ -60,14 +60,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
                                                              P policy);
 
     /**
-     * @param request The http request.
-     * @return True if the user is an admin.
-     */
-    public static boolean isAdmin(HttpServletRequest request) { // FIXME l'ajouter en attribut de l'utilisateur...
-        return request.isUserInRole("ROLE_ADMIN");
-    }
-
-    /**
      * Internal class for GET processing, post security checks.
      *
      * @param request  The http request.

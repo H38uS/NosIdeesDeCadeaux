@@ -49,7 +49,7 @@ public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet>
                                                               .collect(Collectors.toList());
 
         final List<Page> pages = PAGES_HELPER.getPages(request, foundUsers.size(), this::getTotalNumberOfRecords);
-        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), thisOne));
     }
 
     /**

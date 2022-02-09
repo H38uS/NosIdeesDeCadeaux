@@ -40,7 +40,7 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
             buildResponse(response,
                           ServiceResponse.ko(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.",
                                                                   userToSendInvitation.getName()),
-                                             isAdmin(request), thisOne));
+                                             thisOne));
             return;
         }
 
@@ -48,7 +48,7 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
             buildResponse(response,
                           ServiceResponse.ko(MessageFormat.format("Vous faites déjà parti du réseau de {0}.",
                                                                   userToSendInvitation.getName()),
-                                             isAdmin(request), thisOne));
+                                             thisOne));
             return;
         }
 
@@ -68,7 +68,7 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
         HibernateUtil.saveit(new RelationRequest(thisOne, userToSendInvitation));
         NEW_FRIENSHIP_REQUEST.with(thisOne).sendItTo(userToSendInvitation);
 
-        buildResponse(response, ServiceResponse.ok(StringUtils.EMPTY, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(StringUtils.EMPTY, thisOne));
     }
 
 }

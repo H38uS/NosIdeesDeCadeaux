@@ -70,6 +70,6 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
             NType.NO_IDEA.buildDefault().sendItTo(thisOne);
         }
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

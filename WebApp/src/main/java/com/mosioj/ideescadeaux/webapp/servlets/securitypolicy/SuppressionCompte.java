@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 
@@ -30,7 +29,7 @@ public class SuppressionCompte extends SecurityPolicy {
             return false;
         }
 
-        if (!IdeesCadeauxServlet.isAdmin(request)) {
+        if (!connectedUser.isAdmin()) {
             lastReason = "Non, mais non.";
             return false;
         }

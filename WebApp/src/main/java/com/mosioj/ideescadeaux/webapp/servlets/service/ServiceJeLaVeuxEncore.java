@@ -54,6 +54,6 @@ public class ServiceJeLaVeuxEncore extends ServicePost<IdeaModification> {
         // On supprime les réservations
         IdeesRepository.toutDereserverSaufSousReservation(idea);
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

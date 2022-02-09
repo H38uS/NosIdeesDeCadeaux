@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.IdeesCadeauxServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.UserSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
@@ -40,7 +39,7 @@ public final class ChildAdministration extends SecurityPolicy implements UserSec
             return false;
         }
 
-        final boolean isAdmin = IdeesCadeauxServlet.isAdmin(request);
+        final boolean isAdmin = connectedUser.isAdmin();
         if (ParentRelationshipRepository.noRelationExists(connectedUser.id, child.id) && !isAdmin) {
             lastReason = "Vous n'êtes pas un parent de cette personne...";
             return false;

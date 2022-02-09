@@ -41,20 +41,19 @@ public class ServiceAjouterParent extends ServicePost<AllAccessToPostAndGet> {
             int userId = thisOne.id;
             final int parentId = possibleParents.get(0).id;
             if (parentId == userId) {
-                resp = ServiceResponse.ko("Vous ne pouvez pas vous ajouter vous-même...", isAdmin(request), thisOne);
+                resp = ServiceResponse.ko("Vous ne pouvez pas vous ajouter vous-même...", thisOne);
             } else if (ParentRelationshipRepository.noRelationExists(parentId, userId)) {
                 logger.debug(MessageFormat.format("Ajout du parent: {0}.", parentId));
                 ParentRelationshipRepository.addProcuration(parentId, userId);
                 resp = ServiceResponse.ok(UsersRepository.getUser(parentId)
                                                          .orElseThrow(SQLException::new)
-                                                         .getName(), isAdmin(request), thisOne);
+                                                         .getName(), thisOne);
             } else {
-                resp = ServiceResponse.ko("L'ajout du parent a échoué : il existe déjà.", isAdmin(request), thisOne);
+                resp = ServiceResponse.ko("L'ajout du parent a échoué : il existe déjà.", thisOne);
             }
         } else {
             resp = ServiceResponse.ko(
                     "L'ajout du parent a échoué : il n'existe pas (ou trop) de compte pour le nom ou l'email passé en paramètre.",
-                    isAdmin(request),
                     thisOne);
         }
 

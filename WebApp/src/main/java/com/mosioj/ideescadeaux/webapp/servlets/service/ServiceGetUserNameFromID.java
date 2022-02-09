@@ -28,6 +28,6 @@ public class ServiceGetUserNameFromID extends ServiceGet<NetworkAccess> {
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
         User user = policy.getUser();
         logger.debug(MessageFormat.format("Récupération du nom de l''utilisateur {0}", user));
-        buildResponse(response, ServiceResponse.ok(user, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(user, thisOne));
     }
 }

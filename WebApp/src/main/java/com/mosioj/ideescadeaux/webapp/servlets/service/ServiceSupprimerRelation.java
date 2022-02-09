@@ -44,7 +44,7 @@ public class ServiceSupprimerRelation extends ServicePost<NetworkAccess> {
         // Send a notification
         NType.FRIENDSHIP_DROPPED.with(thisOne).sendItTo(user);
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 
 }

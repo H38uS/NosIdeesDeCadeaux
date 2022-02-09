@@ -39,7 +39,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         String message = "Le formulaire n'a pas le bon format.";
-        ServiceResponse<?> ans = ServiceResponse.ko(message, isAdmin(request), thisOne);
+        ServiceResponse<?> ans = ServiceResponse.ko(message, thisOne);
         if (ServletFileUpload.isMultipartContent(request)) {
 
             Map<String, String> parameters = ParametersUtils.readMultiFormParameters(request, FILE_PATH);
@@ -47,7 +47,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
             if (errors == null || errors.isEmpty()) {
                 request.setAttribute("connected_user", thisOne);
                 request.getSession().setAttribute("connected_user", thisOne);
-                ans = ServiceResponse.ok(thisOne, isAdmin(request), thisOne);
+                ans = ServiceResponse.ok(thisOne, thisOne);
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<ul>");
@@ -56,7 +56,7 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
                 }
                 sb.append("</ul>");
                 message = sb.toString();
-                ans = ServiceResponse.ko(message, isAdmin(request), thisOne);
+                ans = ServiceResponse.ko(message, thisOne);
             }
         }
 

@@ -36,6 +36,6 @@ public class ServiceGetIdea extends ServiceGet<CanGetFriendsOrOwnNotSurpriseIdea
         DecoratedWebAppIdea decorated = new DecoratedWebAppIdea(idee, thisOne, device);
 
         // Writing answer
-        buildResponse(response, ServiceResponse.ok(decorated, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(decorated, thisOne));
     }
 }

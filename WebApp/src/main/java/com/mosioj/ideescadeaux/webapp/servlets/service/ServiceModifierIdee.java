@@ -43,7 +43,7 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         Idee idea = policy.getIdea();
-        ServiceResponse<?> sr = ServiceResponse.ok(idea.getId(), isAdmin(request), thisOne);
+        ServiceResponse<?> sr = ServiceResponse.ok(idea.getId(), thisOne);
 
         // Check that we have a file upload request
         if (ServletFileUpload.isMultipartContent(request)) {
@@ -58,7 +58,7 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                 message.append("<ul>");
                 errors.forEach(e -> message.append("<li>").append(e).append("</li>"));
                 message.append("</ul>");
-                sr = ServiceResponse.ko(message.toString(), isAdmin(request), thisOne);
+                sr = ServiceResponse.ko(message.toString(), thisOne);
             } else {
                 logger.info("Modifying the idea {} of {}. Parameters: ['{}' / '{}' / '{}']",
                             idea.getId(),

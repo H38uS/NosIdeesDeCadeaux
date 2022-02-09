@@ -32,7 +32,7 @@ public class ServiceEstAJour extends ServicePost<IdeaInteractionBookingUpToDate>
     public void servicePost(HttpServletRequest request, HttpServletResponse response) {
         Idee idea = policy.getIdea();
         boolean status = askIfUpToDate(idea);
-        buildResponse(response, new ServiceResponse<>(status, "", isAdmin(request), thisOne));
+        buildResponse(response, new ServiceResponse<>(status, "", thisOne));
     }
 
     /**

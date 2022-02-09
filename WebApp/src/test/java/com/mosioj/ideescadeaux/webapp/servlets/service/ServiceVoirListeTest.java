@@ -95,7 +95,7 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
                                  PagedResponse<List<OwnerIdeas>> message,
                                  boolean isAdmin,
                                  User connectedUser) {
-            super(isOK, message, isAdmin, connectedUser);
+            super(isOK, message, connectedUser);
         }
     }
 }

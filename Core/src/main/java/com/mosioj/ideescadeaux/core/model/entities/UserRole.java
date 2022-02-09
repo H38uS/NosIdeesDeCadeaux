@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity(name = "USER_ROLES")
 public class UserRole {
@@ -31,5 +32,18 @@ public class UserRole {
     public UserRole(User user, RoleName role) {
         this.user = user;
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRole userRole = (UserRole) o;
+        return id == userRole.id || (Objects.equals(user, userRole.user) && role == userRole.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user, role);
     }
 }

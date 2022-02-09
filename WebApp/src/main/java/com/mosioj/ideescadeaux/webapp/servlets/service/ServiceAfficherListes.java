@@ -58,7 +58,7 @@ public class ServiceAfficherListes extends ServiceGet<AllAccessToPostAndGet> {
         final List<Page> pages = PAGES_HELPER.getPages(request, foundUsers.size(), this::getTotalNumberOfRecords);
 
         // Sending the response
-        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, foundUsers), thisOne));
     }
 
     /**

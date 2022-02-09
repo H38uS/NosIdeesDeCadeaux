@@ -59,6 +59,6 @@ public class ServiceSuggestionRejoindreReseau extends ServicePost<NetworkAccess>
         }
 
         final String message = "Les utilisateurs suivants ont bien été ajouté: " + selectedOnes;
-        buildResponse(response, ServiceResponse.ok(message, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(message, thisOne));
     }
 }

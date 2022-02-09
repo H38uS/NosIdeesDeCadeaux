@@ -78,7 +78,7 @@ public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
         }
 
         // Sending back the OK response
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 
 }

@@ -230,7 +230,7 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
          * @param isAdmin Whether the user is an admin.
          */
         public StringServiceResponse(boolean isOK, String message, boolean isAdmin, User connectedUser) {
-            super(isOK, message, isAdmin, connectedUser);
+            super(isOK, message, connectedUser);
         }
     }
 

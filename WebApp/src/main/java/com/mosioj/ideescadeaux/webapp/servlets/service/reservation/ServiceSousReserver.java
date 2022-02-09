@@ -32,13 +32,13 @@ public class ServiceSousReserver extends ServicePost<IdeaInteraction> {
 
         if (StringUtils.isBlank(comment)) {
             final String message = "Le commentaire ne peut pas être vide !";
-            buildResponse(response, ServiceResponse.ko(message, isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ko(message, thisOne));
             return;
         }
 
         if (!IdeesRepository.canSubBook(idea.getId(), thisOne.id)) {
             final String message = "L'idée a déjà été réservée, ou vous en avez déjà réservé une sous partie.";
-            buildResponse(response, ServiceResponse.ko(message, isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ko(message, thisOne));
             return;
         }
 
@@ -46,7 +46,7 @@ public class ServiceSousReserver extends ServicePost<IdeaInteraction> {
         IdeesRepository.sousReserver(idea.getId());
         SousReservationRepository.sousReserver(idea.getId(), thisOne.id, comment);
         final String message = "La réservation a bien été créée.";
-        buildResponse(response, ServiceResponse.ok(message, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(message, thisOne));
     }
 
 }

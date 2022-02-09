@@ -71,7 +71,7 @@ public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
                                           PagedResponse<List<DecoratedWebAppUser>> message,
                                           boolean isAdmin,
                                           User connectedUser) {
-            super(isOK, message, isAdmin, connectedUser);
+            super(isOK, message, connectedUser);
         }
     }
 }

@@ -69,6 +69,6 @@ public class ServiceAnnulationGroupe extends ServicePost<BookingGroupInteraction
             NotificationsRepository.terminator().whereGroupIdea(group).terminates();
         }
 
-        buildResponse(response, ServiceResponse.ok(isThereSomeoneRemaining, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

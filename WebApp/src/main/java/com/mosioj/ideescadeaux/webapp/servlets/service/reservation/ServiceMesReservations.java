@@ -74,6 +74,6 @@ public class ServiceMesReservations extends ServiceGet<AllAccessToPostAndGet> {
 
         // Writing answer
         logger.trace("[Perf] OK ! Envoie de la réponse...");
-        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, pagedOwners), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, pagedOwners), thisOne));
     }
 }

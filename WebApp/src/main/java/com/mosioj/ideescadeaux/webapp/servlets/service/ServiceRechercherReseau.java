@@ -55,7 +55,7 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
         LOGGER.trace("Matched: {}", relations);
 
         final List<Page> pages = PAGES_HELPER.getPages(request, relations.size(), this::getTotalNumberOfRecords);
-        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, relations), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, relations), thisOne));
     }
 
     /**

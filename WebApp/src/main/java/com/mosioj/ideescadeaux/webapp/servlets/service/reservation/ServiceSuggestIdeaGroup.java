@@ -60,7 +60,7 @@ public class ServiceSuggestIdeaGroup extends ServiceGetAndPost<BookingGroupInter
                                                .collect(Collectors.toList());
 
         logger.debug(MessageFormat.format("Potential users: {0}", candidates));
-        buildResponse(response, ServiceResponse.ok(candidates, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(candidates, thisOne));
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ServiceSuggestIdeaGroup extends ServiceGetAndPost<BookingGroupInter
         selectedUsers.forEach(suggestion::sendItTo);
         logger.debug("Notification sent to: {}", selectedUsers);
 
-        buildResponse(response, ServiceResponse.ok(selectedUsers, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(selectedUsers, thisOne));
     }
 
 }

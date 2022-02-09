@@ -31,49 +31,45 @@ public class ServiceResponse<T> {
      *
      * @param isOK          True if there is no error.
      * @param message       The JSon response message.
-     * @param isAdmin       Whether the user is an admin.
      * @param connectedUser The connected user or null if none.
      */
-    public ServiceResponse(boolean isOK, T message, boolean isAdmin, User connectedUser) {
+    public ServiceResponse(boolean isOK, T message, User connectedUser) {
         status = isOK ? "OK" : "KO";
         this.message = message;
-        this.isAdmin = isAdmin;
+        this.isAdmin = connectedUser.isAdmin();
         this.connectedUser = connectedUser;
     }
 
     /**
      * Factory method for working protected answers with empty message.
      *
-     * @param isAdmin       Whether the user is an admin.
      * @param connectedUser The connected user or null if none.
      * @return The response built from parameters.
      */
-    public static ServiceResponse<String> ok(boolean isAdmin, User connectedUser) {
-        return new ServiceResponse<>(true, "", isAdmin, connectedUser);
+    public static ServiceResponse<String> ok(User connectedUser) {
+        return new ServiceResponse<>(true, "", connectedUser);
     }
 
     /**
      * Factory method for working protected answers.
      *
      * @param message       The JSon response message.
-     * @param isAdmin       Whether the user is an admin.
      * @param connectedUser The connected user or null if none.
      * @return The response built from parameters.
      */
-    public static <T> ServiceResponse<T> ok(T message, boolean isAdmin, User connectedUser) {
-        return new ServiceResponse<>(true, message, isAdmin, connectedUser);
+    public static <T> ServiceResponse<T> ok(T message, User connectedUser) {
+        return new ServiceResponse<>(true, message, connectedUser);
     }
 
     /**
      * Factory method for non working answers in protected sessions.
      *
      * @param message       The JSon response message.
-     * @param isAdmin       Whether the user is an admin.
      * @param connectedUser The connected user or null if none.
      * @return The response built from parameters.
      */
-    public static <T> ServiceResponse<T> ko(T message, boolean isAdmin, User connectedUser) {
-        return new ServiceResponse<>(false, message, isAdmin, connectedUser);
+    public static <T> ServiceResponse<T> ko(T message, User connectedUser) {
+        return new ServiceResponse<>(false, message, connectedUser);
     }
 
     /**

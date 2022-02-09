@@ -39,6 +39,6 @@ public class ServiceDereserver extends ServicePost<IdeaInteraction> {
                                           userId));
         IdeesRepository.dereserver(idea.getId(), userId);
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

@@ -65,7 +65,7 @@ public class ServiceSuggestFriendToOther extends ServiceGet<NetworkAccess> {
         }).collect(Collectors.toList());
 
         // Returning the response object
-        buildResponse(response, ServiceResponse.ok(possibleSuggestions, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(possibleSuggestions, thisOne));
     }
 
 }

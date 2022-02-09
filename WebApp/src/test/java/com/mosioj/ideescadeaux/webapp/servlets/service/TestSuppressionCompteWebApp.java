@@ -20,8 +20,8 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
     @Test
     public void testSuccess() {
 
-        when(request.isUserInRole("ROLE_ADMIN")).thenReturn(true);
-        assertTrue(request.isUserInRole("ROLE_ADMIN"));
+        when(session.getAttribute("connected_user")).thenReturn(theAdmin);
+        assertTrue(theAdmin.isAdmin());
 
         UsersRepository.getUser("to_be_deleted@djizjdz.cekj").ifPresent(u -> {
             try {
@@ -45,7 +45,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
     @Test
     public void testNotAdmin() throws SQLException {
 
-        assertFalse(request.isUserInRole("ROLE_ADMIN"));
+        assertFalse(firefox.isAdmin());
         UsersRepository.getUser("to_be_deleted@djizjdz.cekj").ifPresent(u -> {
             try {
                 UsersRepository.deleteUser(u);

@@ -20,6 +20,6 @@ public abstract class ServiceGet<P extends SecurityPolicy> extends ServiceGetAnd
     @Override
     public void servicePost(HttpServletRequest request, HttpServletResponse response) {
         final String message = "POST method is not supported by this service.";
-        buildResponse(response, ServiceResponse.ko(message, isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ko(message, thisOne));
     }
 }

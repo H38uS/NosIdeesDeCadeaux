@@ -57,7 +57,7 @@ public class ServiceCreationGroup extends ServicePost<IdeaInteraction> {
         List<String> errors = valTot.getErrors();
         errors.addAll(valAmount.getErrors());
         if (!errors.isEmpty()) {
-            buildResponse(response, ServiceResponse.ko(errors, isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ko(errors, thisOne));
             return;
         }
 
@@ -68,9 +68,9 @@ public class ServiceCreationGroup extends ServicePost<IdeaInteraction> {
             final IdeaGroup group = GroupIdeaRepository.createAGroup(total, amount, userId);
             IdeesRepository.bookByGroup(idea.getId(), group.getId());
             logger.debug("Total: {}, amount: {}", total, amount);
-            buildResponse(response, ServiceResponse.ok(group.getId(), isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ok(group.getId(), thisOne));
         } else {
-            buildResponse(response, ServiceResponse.ko("L'idée est déjà réservée.", isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ko("L'idée est déjà réservée.", thisOne));
         }
     }
 }

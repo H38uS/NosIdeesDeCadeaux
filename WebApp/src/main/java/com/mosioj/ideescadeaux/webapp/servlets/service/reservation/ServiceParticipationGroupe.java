@@ -52,7 +52,7 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
                                                     .getErrors();
 
         if (!errorsAmount.isEmpty()) {
-            buildResponse(response, ServiceResponse.ko(errorsAmount, isAdmin(request), thisOne));
+            buildResponse(response, ServiceResponse.ko(errorsAmount, thisOne));
             return;
         }
 
@@ -95,6 +95,6 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
             logger.info("{} vient de mettre à jour sa participation au groupe {} ({}).", thisOne, group, amount);
         }
 
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

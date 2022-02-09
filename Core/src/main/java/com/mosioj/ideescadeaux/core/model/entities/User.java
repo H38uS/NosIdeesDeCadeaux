@@ -8,15 +8,17 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 @Entity(name = "USERS")
-public class User implements Comparable<User> {
+public class User implements Comparable<User>, Serializable {
 
     /** Maximum number of days to trigger the notification birthday is closed. */
     public static final int NB_DAYS_BEFORE_BIRTHDAY = 5;
@@ -68,6 +70,9 @@ public class User implements Comparable<User> {
     @Transient
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserRole> roles;
+
     public User() {
         // Hibernate constructor
     }
@@ -98,6 +103,10 @@ public class User implements Comparable<User> {
         nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), birthday).orElse(Long.MAX_VALUE);
         avatar = Optional.ofNullable(avatar).orElse("default.png");
         name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());
+    }
+
+    public boolean isAdmin() {
+        return roles.contains(new UserRole(this, UserRole.RoleName.ROLE_ADMIN));
     }
 
     /**

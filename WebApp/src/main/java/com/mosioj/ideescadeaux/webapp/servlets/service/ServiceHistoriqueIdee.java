@@ -48,7 +48,7 @@ public class ServiceHistoriqueIdee extends ServiceGet<AllAccessToPostAndGet> {
         final List<Page> pages = PAGES_HELPER.getPages(request, ideas.size(), (r) -> allDeletedIdeas.size());
 
         // Sending the response
-        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, ownerIdeas), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(PagedResponse.from(pages, ownerIdeas), thisOne));
     }
 
 }

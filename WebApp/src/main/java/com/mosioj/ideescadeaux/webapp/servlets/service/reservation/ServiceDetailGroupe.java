@@ -32,6 +32,6 @@ public class ServiceDetailGroupe extends ServiceGet<BookingGroupInteraction> {
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
         IdeaGroup group = policy.getGroupId();
         logger.debug("Getting details for idea group " + group + "...");
-        buildResponse(response, ServiceResponse.ok(new DecoratedIdeaGroup(group, thisOne), isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(new DecoratedIdeaGroup(group, thisOne), thisOne));
     }
 }

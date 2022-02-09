@@ -28,6 +28,6 @@ public class ServiceNotificationDelete extends ServicePost<NotificationModificat
     public void servicePost(HttpServletRequest request, HttpServletResponse response) {
         NotificationsRepository.remove(policy.getNotification());
         logger.info(MessageFormat.format("Suppression de la notification {0}", policy.getNotification()));
-        buildResponse(response, ServiceResponse.ok(isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(thisOne));
     }
 }

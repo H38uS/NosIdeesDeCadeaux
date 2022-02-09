@@ -36,9 +36,9 @@ public class ServiceSuppressionCompte extends ServicePost<SuppressionCompte> {
             User user = policy.getUserToDelete();
             logger.info(MessageFormat.format("Suppression du compte {0} (id: {1})", user, user.id));
             UsersRepository.deleteUser(user);
-            ans = ServiceResponse.ok(isAdmin(request), thisOne);
+            ans = ServiceResponse.ok(thisOne);
         } catch (Exception e) {
-            ans = ServiceResponse.ko(e.getMessage(), isAdmin(request), thisOne);
+            ans = ServiceResponse.ko(e.getMessage(), thisOne);
             logger.error(e.getMessage());
             e.printStackTrace();
         }
