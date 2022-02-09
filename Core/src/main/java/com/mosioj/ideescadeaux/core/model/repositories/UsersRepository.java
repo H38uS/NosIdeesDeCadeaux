@@ -209,7 +209,6 @@ public class UsersRepository {
 
         // Suppression des relations, des suggestions et des demandes
         UserRelationsRepository.removeAllAssociationsTo(userId);
-        UserRelationRequestsRepository.removeAllFromAndTo(userId);
 
         // Et !! Suppression du user
         HibernateUtil.doSomeWork(s -> {
@@ -218,6 +217,7 @@ public class UsersRepository {
 
             // Suppression des relations, des suggestions et des demandes
             UserRelationsSuggestionRepository.removeAllFromAndTo(s, userId);
+            UserRelationRequestsRepository.removeAllFromAndTo(s, user);
 
             // Les roles
             s.createQuery("delete from USER_ROLES where email = :email")

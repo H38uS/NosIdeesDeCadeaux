@@ -1,10 +1,12 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
 import com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGetAndPost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -64,23 +66,18 @@ public class ServiceSuggestionAmis extends ServiceGetAndPost<AllAccessToPostAndG
                  .filter(Optional::isPresent)
                  .map(Optional::get)
                  .forEach(u -> {
-                     try {
-                         UserRelationsSuggestionRepository.removeIfExists(userId, u.id);
-                         if (u.id == userId || UserRelationsRepository.associationExists(u, thisOne)) {
-                             errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", u.getName()));
-                             return;
-                         }
-                         if (UserRelationRequestsRepository.associationExists(thisOne, u)) {
-                             errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.", u.getName()));
-                             return;
-                         }
-                         // On ajoute l'association
-                         UserRelationRequestsRepository.insert(thisOne, u);
-                         logger.info("Envoie d'une demande de {} à {}.", thisOne, u);
-                     } catch (SQLException e) {
-                         logger.error(e);
-                         e.printStackTrace();
+                     UserRelationsSuggestionRepository.removeIfExists(userId, u.id);
+                     if (u.id == userId || UserRelationsRepository.associationExists(u, thisOne)) {
+                         errors.add(MessageFormat.format("{0} fait déjà parti de votre réseau.", u.getName()));
+                         return;
                      }
+                     if (UserRelationRequestsRepository.associationExists(thisOne, u)) {
+                         errors.add(MessageFormat.format("Vous avez déjà envoyé une demande à {0}.", u.getName()));
+                         return;
+                     }
+                     // On ajoute l'association
+                     HibernateUtil.saveit(new RelationRequest(thisOne, u));
+                     logger.info("Envoie d'une demande de {} à {}.", thisOne, u);
                  });
 
         toIgnore.forEach(i -> {

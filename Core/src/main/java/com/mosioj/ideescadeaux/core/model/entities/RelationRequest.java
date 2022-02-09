@@ -33,4 +33,8 @@ public class RelationRequest {
         // For hibernate
     }
 
+    public RelationRequest(User sendBy, User sentTo) {
+        this.sent_by = sendBy;
+        this.sent_to = sentTo;
+    }
 }

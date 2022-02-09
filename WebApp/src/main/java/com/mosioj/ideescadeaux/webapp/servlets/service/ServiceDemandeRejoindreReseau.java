@@ -1,10 +1,12 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
@@ -63,7 +65,7 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
                                .terminates();
 
         // On ajoute l'association
-        UserRelationRequestsRepository.insert(thisOne, userToSendInvitation);
+        HibernateUtil.saveit(new RelationRequest(thisOne, userToSendInvitation));
         NEW_FRIENSHIP_REQUEST.with(thisOne).sendItTo(userToSendInvitation);
 
         buildResponse(response, ServiceResponse.ok(StringUtils.EMPTY, isAdmin(request), thisOne));
