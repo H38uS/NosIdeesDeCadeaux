@@ -47,7 +47,7 @@ public class ServiceSuggestionAmis extends ServiceGetAndPost<AllAccessToPostAndG
         final List<String> selectedRejectedList = request.getParameterMap()
                                                          .values()
                                                          .stream()
-                                                         .filter(array -> "true".equals(array[1]) || "false".equals(array[1]))
+                                                         .filter(array -> "true".equals(array[1]))
                                                          .map(array -> {
                                                              // ["selected_13", false] or ["rejected_15", true]
                                                              // => rejected_15 (keep only first identifier + for the true

@@ -51,7 +51,7 @@ public class ServiceSuggestionAmisTest extends AbstractTestServletWebApp {
         final String selectedOne = "selected_" + 7;
         final String rejectedOne = "rejected_" + 8;
         params.put(selectedOne, new String[]{selectedOne, "true"});
-        params.put(rejectedOne, new String[]{rejectedOne, "false"});
+        params.put(rejectedOne, new String[]{rejectedOne, "true"});
         when(request.getParameterMap()).thenReturn(params);
         ServiceResponse<?> resp = doTestServicePost(ServiceResponse.class);
 
