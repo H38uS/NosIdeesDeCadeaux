@@ -44,7 +44,7 @@ public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp 
     public void testPostSuccess() throws SQLException {
 
         final User otherNotFriend = UsersRepository.getUser(23).orElseThrow(SQLException::new);
-        UserRelationRequestsRepository.cancelRequest(_OWNER_ID_, otherNotFriend.getId());
+        UserRelationRequestsRepository.cancelRequest(firefox, otherNotFriend);
 
         int suggestionAndAsk = NEW_RELATION_SUGGESTION.with(otherNotFriend).sendItTo(firefox);
         int suggestionAndAsked = NEW_RELATION_SUGGESTION.with(firefox).sendItTo(otherNotFriend);

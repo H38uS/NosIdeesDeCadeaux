@@ -23,33 +23,7 @@
                 </ul>
             </div>
         </c:if>
-        <c:if test="${not empty demandes}">
-            <div class="container border border-info bg-light rounded p-3 mb-3">
-                <h3>Demandes reçues</h3>
-                <form method="POST" action="protected/resoudre_demande_ami">
-                    <c:forEach var="demande" items="${demandes}">
-                        <div class="row align-items-center">
-                            <div class="col-6 word-break-all">
-                                <span>${demande.sent_by.name} (${demande.sent_by.email})</span>
-                            </div>
-                            <div class="col-3">
-                                <input type="radio" id="acc_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Accepter">
-                                <label for="acc_choix_${demande.sent_by.id}">Accepter</label>
-                            </div>
-                            <div class="col-3">
-                                <input type="radio" id="ref_choix_${demande.sent_by.id}" name="choix_${demande.sent_by.id}" value="Refuser">
-                                <label for="ref_choix_${demande.sent_by.id}">Refuser</label>
-                            </div>
-                        </div>
-                    </c:forEach>
-                    <div class="center">
-                        <button class="btn btn-primary" type="submit" id="submit" name="submit">Sauvegarder</button>
-                    </div>
-                    <input type="hidden" name="id" value="${id}" />
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                </form>
-            </div>
-        </c:if>
+        <div id="res_demandes"></div>
         <div id="new_friend_suggestions"></div>
         <h3 class="pb-1">Rechercher des personnes dans le réseau ${name}</h3>
         <form id="form_rechercher_dans_reseau" method="GET" action="protected/service/rechercher_reseau">

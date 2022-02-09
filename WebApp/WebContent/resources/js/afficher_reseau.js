@@ -1,22 +1,3 @@
-function dropRelationship(e) {
-
-    e.preventDefault();
-
-    if (!confirm("Etes-vous sûr de supprimer cette relation ?")) {
-        return;
-    }
-
-    var userId = getURLParameter($(this).attr("href"), 'id');
-    var card = $(this).closest(".card");
-    servicePost('protected/service/supprimer_relation',
-                { id : userId },
-                function(data) {
-                    card.fadeOut('slow');
-                },
-                'Suppression de la relation en cours...',
-                'La relation a bien été supprimée.');
-}
-
 var rechercheReseauCompleted = true;
 
 function searchNetwork(theName, networkOfUserId, page = 1) {
@@ -185,6 +166,84 @@ function reloadSuggestionIfAny() {
         actionError(data.status + " - " + data.statusText);
     });
 }
+
+function submit_requests() {
+    var selected = [];
+    $('input[name^="acc_choix_"]').each(function() {
+        selected.push([$(this).attr("id"), $(this).is(":checked")]);
+    });
+    var rejected = [];
+    $('input[name^="ref_choix_"]').each(function() {
+        rejected.push([$(this).attr("id"), $(this).is(":checked")]);
+    });
+    servicePost('protected/service/resoudre_demande_ami',
+                {
+                    selected : selected,
+                    rejected : rejected
+                },
+                function(data) {
+                    reloadFriendShipIfAny();
+                },
+                'Mise à jour des demandes et envoie des choix...',
+                'Décisions bien prises en compte !');
+}
+
+function reloadFriendShipIfAny() {
+
+    $.get("protected/service/resoudre_demande_ami")
+    .done(function (data) {
+
+        var rawData = JSON.parse(data);
+        if (rawData.status !== 'OK') {
+            actionError(rawData.message);
+            return;
+        }
+
+        var resDiv = $("#res_demandes");
+        resDiv.empty().hide();
+        var jsonData = rawData.message;
+        if (jsonData.length === 0) {
+            return;
+        }
+
+        var container = $(`<div class="container border border-info bg-light rounded p-3 mb-3"></div>`);
+        container.append("<h3>Demandes reçues</h3>");
+        var requestsDiv = $(`<div></div>`);
+
+        $.each(jsonData, function(i, request) {
+            requestsDiv.append(`
+                <div class="row align-items-center">
+                    <div class="col-6 word-break-all">
+                        <span>${request.sent_by.name} (${request.sent_by.email})</span>
+                    </div>
+                    <div class="col-3">
+                        <input type="radio" id="acc_choix_${request.sent_by.id}" name="acc_choix_${request.sent_by.id}" value="Accepter">
+                        <label for="acc_choix_${request.sent_by.id}">Accepter</label>
+                    </div>
+                    <div class="col-3">
+                        <input type="radio" id="ref_choix_${request.sent_by.id}" name="ref_choix_${request.sent_by.id}" value="Refuser">
+                        <label for="ref_choix_${request.sent_by.id}">Refuser</label>
+                    </div>
+                </div>
+            `);
+            container.append(requestsDiv);
+        });
+
+        container.append(`
+            <div class="center">
+                <button class="btn btn-primary" type="submit" id="submit_requests" name="submit_requests">Sauvegarder</button>
+            </div>
+        `);
+        resDiv.append(container).fadeIn();
+        $("#submit_requests").click(submit_requests);
+
+    }).fail(function (data) {
+       actionError(data.status + " - " + data.statusText);
+    });
+}
+
+// Loading new friendship requests
+reloadFriendShipIfAny();
 
 // Loading suggestions
 reloadSuggestionIfAny();

@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
@@ -33,12 +34,14 @@ public class ServiceSuggestionAmisTest extends AbstractTestServletWebApp {
 
         // Given two persons that are not yet our friends
         // for whom we have received a suggestion to ask them for friendship
+        User seven = UsersRepository.getUser(7).orElseThrow(SQLException::new);
+        User eight = UsersRepository.getUser(8).orElseThrow(SQLException::new);
         UserRelationsRepository.deleteAssociation(_OWNER_ID_, 7);
         UserRelationsRepository.deleteAssociation(_OWNER_ID_, 8);
         UserRelationsSuggestionRepository.removeIfExists(_OWNER_ID_, 7);
         UserRelationsSuggestionRepository.removeIfExists(_OWNER_ID_, 8);
-        UserRelationRequestsRepository.cancelRequest(_OWNER_ID_, 7);
-        UserRelationRequestsRepository.cancelRequest(_OWNER_ID_, 8);
+        UserRelationRequestsRepository.cancelRequest(firefox, seven);
+        UserRelationRequestsRepository.cancelRequest(firefox, eight);
         UserRelationsSuggestionRepository.newSuggestion(theAdmin,
                                                         firefox,
                                                         UsersRepository.getUser(7).orElseThrow(SQLException::new));

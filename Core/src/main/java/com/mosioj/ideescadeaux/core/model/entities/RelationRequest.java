@@ -1,29 +1,36 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
-import java.sql.Date;
+import com.google.gson.annotations.Expose;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+
+@Entity(name = "USER_RELATION_REQUESTS")
 public class RelationRequest {
 
-	private final User sent_by;
-	private final User sent_to;
-	private final Date request_date;
+    /** The table's id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int id;
 
-	public RelationRequest(User sent_by, User sent_to, Date request_date) {
-		this.sent_by = sent_by;
-		this.sent_to = sent_to;
-		this.request_date = request_date;
-	}
+    @ManyToOne
+    @JoinColumn(name = "sent_by_user")
+    @Expose
+    public User sent_by;
 
-	public User getSent_by() {
-		return sent_by;
-	}
+    @ManyToOne
+    @JoinColumn(name = "sent_to_user")
+    @Expose
+    public User sent_to;
 
-	public User getSent_to() {
-		return sent_to;
-	}
+    @Column(name = "request_date")
+    @UpdateTimestamp
+    @Expose
+    public LocalDate request_date;
 
-	public Date getRequest_date() {
-		return request_date;
-	}
+    public RelationRequest() {
+        // For hibernate
+    }
 
 }

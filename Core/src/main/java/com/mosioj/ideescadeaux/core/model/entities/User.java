@@ -10,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.sql.Date;
 import java.text.MessageFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -22,7 +21,7 @@ public class User implements Comparable<User> {
     /** Maximum number of days to trigger the notification birthday is closed. */
     public static final int NB_DAYS_BEFORE_BIRTHDAY = 5;
 
-    /** The user's id. */
+    /** The table's id. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
@@ -92,29 +91,6 @@ public class User implements Comparable<User> {
 
     public User(int id, String name, String email, Date birthday, String avatar) {
         this(id, name, email, birthday, avatar, "dummy");
-    }
-
-    /**
-     * Administration constructor.
-     *
-     * @param id           The user's ID.
-     * @param name         The user's name.
-     * @param email        The user's email.
-     * @param avatar       The user's avatar.
-     * @param creationDate When this user has been created.
-     * @param lastLogin    When it has last logged in.
-     */
-    public User(int id,
-                String name,
-                String email,
-                Date birthday,
-                String avatar,
-                Instant creationDate,
-                Instant lastLogin,
-                String password) {
-        this(id, name, email, birthday, avatar, password);
-        this.creationDate = LocalDateTime.from(creationDate);
-        this.lastLogin = LocalDateTime.from(lastLogin);
     }
 
     @PostLoad

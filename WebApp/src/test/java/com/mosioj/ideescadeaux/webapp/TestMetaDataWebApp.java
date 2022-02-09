@@ -33,7 +33,6 @@ public class TestMetaDataWebApp extends WebAppTemplateTest {
         lookForReferenceInJSP(referencedLinks, referenceMap, new File(web, "protected"));
 
         // Ajout des services
-        availableLinks.add("protected/supprimer_relation");
         availableLinks.add("protected/est_a_jour");
         availableLinks.add("protected/remove_an_idea");
 

@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -49,14 +48,6 @@ public class JSPAccessortTest extends TemplateTest {
     public void testJSPOnlyRelationMethods() {
         Relation r = new Relation(u, u);
         Assert.assertEquals(u, r.getFirst());
-    }
-
-    @Test
-    public void testJSPOnlyRelationRequestMethods() {
-        RelationRequest rr = new RelationRequest(u, u, new Date(1576135793001L));
-        Assert.assertEquals(u, rr.getSent_by());
-        Assert.assertEquals(u, rr.getSent_to());
-        Assert.assertEquals(new Date(1576135793001L), rr.getRequest_date());
     }
 
     @Test

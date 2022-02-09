@@ -417,8 +417,8 @@ public class NotificationsRepository extends AbstractRepository {
                                        .orElse(null);
 
             // Reading the parameters
-            User userParameter = UsersRepository.getUser(getIntegerValueOf(resultSet, USER_ID_PARAM.name()))
-                                                .orElse(null);
+            final Integer userId = getIntegerValueOf(resultSet, USER_ID_PARAM.name());
+            User userParameter = userId == null ? null : UsersRepository.getUser(userId).orElse(null);
             final Integer ideaId = getIntegerValueOf(resultSet, IDEA_ID_PARAM.name());
             Idee ideaParameter = IdeesRepository.getIdea(ideaId)
                                                 .orElse(IdeesRepository.getDeletedIdea(ideaId).orElse(null));

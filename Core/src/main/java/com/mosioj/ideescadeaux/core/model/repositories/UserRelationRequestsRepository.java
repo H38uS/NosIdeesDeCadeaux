@@ -1,15 +1,13 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationRequestsColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+import org.hibernate.Transaction;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserRelationRequestsRepository extends AbstractRepository {
@@ -54,48 +52,11 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param userId The user id.
      * @return The list of request of frienship this user has received.
      */
-    public static List<RelationRequest> getRequests(int userId) throws SQLException {
-
-        List<RelationRequest> requests = new ArrayList<>();
-        String query =
-                "select {0},{1},{2}," +
-                "       u1.{5} as by_name, u1.{6} as by_email, u1.{7} as by_birthday, u1.{8} as by_avatar," +
-                "       u2.{5} as to_name, u2.{6} as to_email, u2.{7} as to_birthday, u2.{8} as to_avatar " +
-                "  from {3} urr " +
-                "  left join {4} u1 on u1.id = urr.{0} " +
-                "  left join {4} u2 on u2.id = urr.{1} " +
-                " where {1} = ? ";
-
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
-                                                                    MessageFormat.format(query,
-                                                                                         UserRelationRequestsColumns.SENT_BY_USER,
-                                                                                         UserRelationRequestsColumns.SENT_TO_USER,
-                                                                                         UserRelationRequestsColumns.REQUEST_DATE,
-                                                                                         TABLE_NAME,
-                                                                                         UsersRepository.TABLE_NAME,
-                                                                                         UsersColumns.NAME,
-                                                                                         UsersColumns.EMAIL,
-                                                                                         UsersColumns.BIRTHDAY,
-                                                                                         UsersColumns.AVATAR))) {
-            ps.bindParameters(userId);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    requests.add(new RelationRequest(new User(res.getInt(UserRelationRequestsColumns.SENT_BY_USER.name()),
-                                                              res.getString("by_name"),
-                                                              res.getString("by_email"),
-                                                              res.getDate("by_birthday"),
-                                                              res.getString("by_avatar")),
-                                                     new User(res.getInt(UserRelationRequestsColumns.SENT_TO_USER.name()),
-                                                              res.getString("to_name"),
-                                                              res.getString("to_email"),
-                                                              res.getDate("to_birthday"),
-                                                              res.getString("to_avatar")),
-                                                     res.getDate(UserRelationRequestsColumns.REQUEST_DATE.name())));
-                }
-            }
-        }
-        return requests;
+    public static List<RelationRequest> getRequests(int userId) {
+        final String query = "from USER_RELATION_REQUESTS where sent_to_user = :id";
+        return HibernateUtil.doQueryFetch(s -> s.createQuery(query, RelationRequest.class)
+                                                .setParameter("id", userId)
+                                                .list());
     }
 
     /**
@@ -104,13 +65,15 @@ public class UserRelationRequestsRepository extends AbstractRepository {
      * @param userThatSendTheRequest    The user who sent the request.
      * @param userThatReceiveTheRequest The user who received it.
      */
-    public static void cancelRequest(int userThatSendTheRequest, int userThatReceiveTheRequest) throws SQLException {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
-                                                   TABLE_NAME,
-                                                   UserRelationRequestsColumns.SENT_BY_USER,
-                                                   UserRelationRequestsColumns.SENT_TO_USER),
-                              userThatSendTheRequest,
-                              userThatReceiveTheRequest);
+    public static void cancelRequest(User userThatSendTheRequest, User userThatReceiveTheRequest) {
+        HibernateUtil.doSomeWork(s -> {
+            Transaction t = s.beginTransaction();
+            s.createQuery("delete from USER_RELATION_REQUESTS where sent_by = :by and sent_to = :to")
+             .setParameter("by", userThatSendTheRequest)
+             .setParameter("to", userThatReceiveTheRequest)
+             .executeUpdate();
+            t.commit();
+        });
     }
 
     public static void removeAllFromAndTo(int userId) throws SQLException {

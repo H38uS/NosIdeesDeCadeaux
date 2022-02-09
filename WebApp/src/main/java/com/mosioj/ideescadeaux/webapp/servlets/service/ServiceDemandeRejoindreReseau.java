@@ -8,6 +8,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.PeutDemanderARejoindreLeReseau;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +66,7 @@ public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejo
         UserRelationRequestsRepository.insert(thisOne, userToSendInvitation);
         NEW_FRIENSHIP_REQUEST.with(thisOne).sendItTo(userToSendInvitation);
 
-        buildResponse(response, ServiceResponse.ok("", isAdmin(request), thisOne));
+        buildResponse(response, ServiceResponse.ok(StringUtils.EMPTY, isAdmin(request), thisOne));
     }
 
 }

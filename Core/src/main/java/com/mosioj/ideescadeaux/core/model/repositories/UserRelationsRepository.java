@@ -263,21 +263,25 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param userThatSendTheRequest    The user that is asking to be friend.
      * @param userThatReceiveTheRequest The user that is asked to be friend.
      */
-    public static void addAssociation(int userThatSendTheRequest, int userThatReceiveTheRequest) throws SQLException {
-        getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
-                                                               TABLE_NAME,
-                                                               UserRelationsColumns.FIRST_USER,
-                                                               UserRelationsColumns.SECOND_USER,
-                                                               UserRelationsColumns.RELATION_DATE),
-                                          userThatSendTheRequest,
-                                          userThatReceiveTheRequest);
-        getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
-                                                               TABLE_NAME,
-                                                               UserRelationsColumns.FIRST_USER,
-                                                               UserRelationsColumns.SECOND_USER,
-                                                               UserRelationsColumns.RELATION_DATE),
-                                          userThatReceiveTheRequest,
-                                          userThatSendTheRequest);
+    public static void addAssociation(int userThatSendTheRequest, int userThatReceiveTheRequest) {
+        try {
+            getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
+                                                                   TABLE_NAME,
+                                                                   UserRelationsColumns.FIRST_USER,
+                                                                   UserRelationsColumns.SECOND_USER,
+                                                                   UserRelationsColumns.RELATION_DATE),
+                                              userThatSendTheRequest,
+                                              userThatReceiveTheRequest);
+            getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
+                                                                   TABLE_NAME,
+                                                                   UserRelationsColumns.FIRST_USER,
+                                                                   UserRelationsColumns.SECOND_USER,
+                                                                   UserRelationsColumns.RELATION_DATE),
+                                              userThatReceiveTheRequest,
+                                              userThatSendTheRequest);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
     }
 
     /**

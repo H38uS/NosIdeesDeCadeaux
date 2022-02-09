@@ -1,11 +1,10 @@
-package com.mosioj.ideescadeaux.webapp.servlets.instance;
+package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.AfficherReseau;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.ResoudreDemandeAmi;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -17,10 +16,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class TestResoudreDemandeAmiWebApp extends AbstractTestServletWebApp {
+public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
 
-    public TestResoudreDemandeAmiWebApp() {
-        super(new ResoudreDemandeAmi());
+    public ServiceGestionDemandeAmiTest() {
+        super(new ServiceGestionDemandeAmi());
     }
 
     @Test
@@ -52,18 +51,21 @@ public class TestResoudreDemandeAmiWebApp extends AbstractTestServletWebApp {
         int newRelationSuggestion = NEW_RELATION_SUGGESTION.with(moiAutre).sendItTo(firefox);
         int notRemoved = NEW_RELATION_SUGGESTION.with(friendOfFirefox).sendItTo(firefox);
         int newFriendshipRequest = NEW_FRIENSHIP_REQUEST.with(moiAutre).sendItTo(firefox);
+        int otherWaynewFriendshipRequest = NEW_FRIENSHIP_REQUEST.with(firefox).sendItTo(moiAutre);
         assertNotifDoesExists(n1);
         assertNotifDoesExists(n2);
         assertNotifDoesExists(newRelationSuggestion);
         assertNotifDoesExists(notRemoved);
         assertNotifDoesExists(newFriendshipRequest);
+        assertNotifDoesExists(otherWaynewFriendshipRequest);
 
         // Ajout de la demande d'ami
         UserRelationRequestsRepository.insert(moiAutre, firefox);
 
         when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
         Map<String, String[]> params = new HashMap<>();
-        params.put("choix_" + _MOI_AUTRE_, new String[]{"Accepter"});
+        final String accepted = "acc_choix_" + _MOI_AUTRE_;
+        params.put(accepted, new String[]{accepted, "true"});
         when(request.getParameterMap()).thenReturn(params);
         doTestPost();
 
@@ -73,6 +75,6 @@ public class TestResoudreDemandeAmiWebApp extends AbstractTestServletWebApp {
         assertNotifDoesNotExists(newRelationSuggestion);
         assertNotifDoesExists(notRemoved);
         assertNotifDoesNotExists(newFriendshipRequest);
+        assertNotifDoesNotExists(otherWaynewFriendshipRequest);
     }
-
 }
