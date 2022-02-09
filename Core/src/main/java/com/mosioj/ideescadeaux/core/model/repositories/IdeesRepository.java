@@ -5,8 +5,8 @@ import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserte
 import com.mosioj.ideescadeaux.core.model.entities.*;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.*;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -442,35 +442,28 @@ public class IdeesRepository extends AbstractRepository {
                                           UsersColumns.AVATAR));
 
         // On sélectionne toutes les relations (= second_user) du owner (= first_user) de l'idée...
-        query.append(MessageFormat.format("  from {0} ur \n", UserRelationsRepository.TABLE_NAME));
+        query.append("  from USER_RELATIONS ur \n");
 
         // [ Pour récupérer les infos des users ]
         query.append(MessageFormat.format(" inner join {0} u \n", UsersRepository.TABLE_NAME));
-        query.append(MessageFormat.format("    on u.{0} = ur.{1} \n",
-                                          UsersColumns.ID,
-                                          UserRelationsColumns.SECOND_USER));
+        query.append(MessageFormat.format("    on u.{0} = ur.second_user \n", UsersColumns.ID));
 
         // Récupération du owner de l'idée de ce groupe
         query.append(MessageFormat.format(" inner join {0} i \n", TABLE_NAME));
-        query.append(MessageFormat.format("    on ur.{0} = i.{1} \n",
-                                          UserRelationsColumns.FIRST_USER,
-                                          IdeeColumns.OWNER));
+        query.append(MessageFormat.format("    on ur.first_user = i.{0} \n", IdeeColumns.OWNER));
         query.append(MessageFormat.format("   and i.{0} = ? \n", IdeeColumns.GROUPE_KDO_ID));
 
         // On filtre sur les personnes qui sont amis avec l'utilisateur connecté
-        query.append(MessageFormat.format(" inner join {0} friends \n", UserRelationsRepository.TABLE_NAME));
-        query.append(MessageFormat.format("    on friends.{0} = ? \n", UserRelationsColumns.FIRST_USER));
-        query.append(MessageFormat.format("   and friends.{0} = ur.{1} \n",
-                                          UserRelationsColumns.SECOND_USER,
-                                          UserRelationsColumns.SECOND_USER));
+        query.append(" inner join USER_RELATIONS friends \n");
+        query.append("    on friends.first_user = ? \n");
+        query.append("   and friends.second_user = ur.second_user \n");
 
         // ... Qui ne sont pas déjà dans le groupe !
         query.append(MessageFormat.format(
-                " where not exists (select 1 from {0} g where g.{1} = ? and g.{2} = ur.{3}) \n",
+                " where not exists (select 1 from {0} g where g.{1} = ? and g.{2} = ur.second_user) \n",
                 GroupIdeaRepository.TABLE_NAME_CONTENT,
                 GroupIdeaContentColumns.GROUP_ID,
-                GroupIdeaContentColumns.USER_ID,
-                UserRelationsColumns.SECOND_USER));
+                GroupIdeaContentColumns.USER_ID));
         query.append(MessageFormat.format("  order by coalesce(u.{0}, {1})", UsersColumns.NAME, UsersColumns.EMAIL));
 
         logger.trace(query);
@@ -604,7 +597,7 @@ public class IdeesRepository extends AbstractRepository {
         query.append("set reserve = ?, reserve_le = now() ");
         query.append("where id = ? ");
 
-        logger.trace("Query: " + query.toString());
+        logger.trace("Query: " + query);
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(userId, idea);
             ps.execute();
@@ -623,7 +616,7 @@ public class IdeesRepository extends AbstractRepository {
         query.append("set ").append(IdeeColumns.A_SOUS_RESERVATION).append(" = 'Y', reserve_le = now() ");
         query.append("where id = ? ");
 
-        logger.trace("Query: " + query.toString());
+        logger.trace("Query: " + query);
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(idea);
             ps.execute();
@@ -659,7 +652,7 @@ public class IdeesRepository extends AbstractRepository {
         query.append("set reserve = null, reserve_le = null ");
         query.append("where id = ? and reserve = ?");
 
-        logger.trace("Query: " + query.toString());
+        logger.trace("Query: " + query);
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
             ps.bindParameters(idea, userId);
             ps.execute();
@@ -707,21 +700,17 @@ public class IdeesRepository extends AbstractRepository {
 
         String queryText = "select count(*) " +
                            "  from {0} i " +
-                           " inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) " +
-                           " where i.id = ? and {1} is null and i.{2} is null and {3} <> ? and {8} = ''N''";
+                           " inner join USER_RELATIONS r on i.{3} = r.first_user and r.second_user = ? " +
+                           " where i.id = ? and {1} is null and i.{2} is null and {3} <> ? and {4} = ''N''";
 
         String query = MessageFormat.format(queryText,
                                             TABLE_NAME,
                                             IdeeColumns.RESERVE,
                                             IdeeColumns.GROUPE_KDO_ID,
                                             IdeeColumns.OWNER,
-                                            UserRelationsRepository.TABLE_NAME,
-                                            IdeeColumns.OWNER,
-                                            UserRelationsColumns.FIRST_USER,
-                                            UserRelationsColumns.SECOND_USER,
                                             IdeeColumns.A_SOUS_RESERVATION);
         logger.trace(query);
-        return getDb().selectCountStar(query, userId, userId, idea, userId) > 0;
+        return getDb().selectCountStar(query, userId, idea, userId) > 0;
     }
 
     /**
@@ -733,7 +722,7 @@ public class IdeesRepository extends AbstractRepository {
 
         String queryText = "select count(*) " +
                            "  from {0} i " +
-                           " inner join {4} r on (i.{5} = r.{6} and r.{7} = ?) or (i.{5} = r.{7} and r.{6} = ?) " +
+                           " inner join USER_RELATIONS r on i.{3} = r.first_user and r.second_user = ? " +
                            " where i.id = ? and {1} is null and i.{2} is null and {3} <> ? " +
                            MessageFormat.format("  and not exists (select 1 from {0} where i.id = {1} and {2} = ?)",
                                                 SousReservationRepository.TABLE_NAME,
@@ -744,13 +733,9 @@ public class IdeesRepository extends AbstractRepository {
                                             TABLE_NAME,
                                             IdeeColumns.RESERVE,
                                             IdeeColumns.GROUPE_KDO_ID,
-                                            IdeeColumns.OWNER,
-                                            UserRelationsRepository.TABLE_NAME,
-                                            IdeeColumns.OWNER,
-                                            UserRelationsColumns.FIRST_USER,
-                                            UserRelationsColumns.SECOND_USER);
+                                            IdeeColumns.OWNER);
         logger.trace(query);
-        return getDb().selectCountStar(query, userId, userId, idea, userId, userId) > 0;
+        return getDb().selectCountStar(query, userId, idea, userId, userId) > 0;
     }
 
     /**
@@ -894,14 +879,14 @@ public class IdeesRepository extends AbstractRepository {
         text = Escaper.escapeIdeaText(text);
         text = Escaper.transformSmileyToCode(text);
         getDb().executeUpdate(MessageFormat.format(
-                "update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
-                TABLE_NAME,
-                IdeeColumns.IDEE,
-                IdeeColumns.TYPE,
-                IdeeColumns.PRIORITE,
-                IdeeColumns.IMAGE,
-                IdeeColumns.MODIFICATION_DATE,
-                IdeeColumns.ID),
+                                      "update {0} set {1} = ?, {2} = ?, {3} = ?, {4} = ?, {5} = now() where {6} = ?",
+                                      TABLE_NAME,
+                                      IdeeColumns.IDEE,
+                                      IdeeColumns.TYPE,
+                                      IdeeColumns.PRIORITE,
+                                      IdeeColumns.IMAGE,
+                                      IdeeColumns.MODIFICATION_DATE,
+                                      IdeeColumns.ID),
                               text,
                               type,
                               priority,

@@ -9,13 +9,16 @@ import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class UserRelationsRepository extends AbstractRepository {
@@ -33,25 +36,15 @@ public class UserRelationsRepository extends AbstractRepository {
      * @return The number of user in this user network.
      */
     public static int getRelationsCount(int userId, String nameOrEmail) {
-
-        String query = "select count(*) " +
-                       "from {0} urr " +
-                       "left join {1} u1 on u1.id = urr.{2} " +
-                       "where {3} = ? " +
-                       "  and (lower(u1.{4}) like ? ESCAPE ''!'' or lower(u1.{5}) like ? ESCAPE ''!'') ";
-        String formatedQuery = MessageFormat.format(
-                query,
-                TABLE_NAME,
-                UsersRepository.TABLE_NAME,
-                UserRelationsColumns.SECOND_USER,
-                UserRelationsColumns.FIRST_USER,
-                UsersColumns.NAME,
-                UsersColumns.EMAIL);
-
-        return getDb().selectCountStar(formatedQuery,
-                                       userId,
-                                       sanitizeSQLLike(nameOrEmail),
-                                       sanitizeSQLLike(nameOrEmail));
+        String queryText = "select count(*) " +
+                           "  from USER_RELATIONS urr " +
+                           "  left join USERS u1 on u1.id = urr.first_user " +
+                           " where second_user = :id " +
+                           "   and (lower(u1.name) like :nameOrEmail ESCAPE ''!'' or lower(u1.email) like :nameOrEmail ESCAPE ''!'') ";
+        return HibernateUtil.doQuerySingle(s -> s.createQuery(queryText, Integer.class)
+                                                 .setParameter("id", userId)
+                                                 .setParameter("nameOrEmail", sanitizeSQLLike(nameOrEmail))
+                                                 .uniqueResult());
     }
 
     /**
@@ -60,75 +53,21 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param maxNumberOfRows Number of results to retrieve.
      * @return The list of relations this use has.
      */
-    public static List<Relation> getRelations(int user, int firstRow, int maxNumberOfRows) throws SQLException {
-
-        List<Relation> relations = new ArrayList<>();
-
-        String query =
-                "select {1}, {2}," +
-                "       u1.{4} as first_name,  u1.{5} as first_email,  u1.{6} as first_avatar,  u1.{7} as first_birthday, " +
-                "       u2.{4} as second_name, u2.{5} as second_email, u2.{6} as second_avatar, u2.{7} as second_birthday " +
-                "  from {0} urr " +
-                "  left join {3} u1 on u1.id = urr.{1} " +
-                "  left join {3} u2 on u2.id = urr.{2} " +
-                " where {1} = ? " +
-                " order by coalesce(u2.{4}, u2.{5}) ";
-
-        if (firstRow > -1 && maxNumberOfRows > 0) {
-            query += " LIMIT ?, ? ";
-        }
-
-        String formatedQuery = MessageFormat.format(query,
-                                                    TABLE_NAME,
-                                                    UserRelationsColumns.FIRST_USER,
-                                                    UserRelationsColumns.SECOND_USER,
-                                                    UsersRepository.TABLE_NAME,
-                                                    UsersColumns.NAME,
-                                                    UsersColumns.EMAIL,
-                                                    UsersColumns.AVATAR,
-                                                    UsersColumns.BIRTHDAY);
-        logger.trace(formatedQuery);
-
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), formatedQuery)) {
-
-            if (firstRow > -1 && maxNumberOfRows > 0) {
-                ps.bindParameters(user, firstRow, maxNumberOfRows);
-            } else {
-                ps.bindParameters(user);
+    public static List<Relation> getRelations(User user, int firstRow, int maxNumberOfRows) {
+        String queryText = "from USER_RELATIONS urr where first_user = :id";
+        List<Relation> unsortedRes = HibernateUtil.doQueryFetch(s -> {
+            Query<Relation> query = s.createQuery(queryText, Relation.class).setParameter("id", user.id);
+            if (firstRow > -1) {
+                query.setFirstResult(firstRow);
             }
-
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-
-                    Date firstBirthday = null;
-                    try {
-                        firstBirthday = res.getDate("first_birthday");
-                    } catch (SQLException ignored) {
-                        // Plante lorsque vide - nécessaire de catcher
-                    }
-                    Date secondBirthday = null;
-                    try {
-                        secondBirthday = res.getDate("second_birthday");
-                    } catch (SQLException ignored) {
-                        // Plante lorsque vide - nécessaire de catcher
-                    }
-
-                    relations.add(new Relation(new User(res.getInt(UserRelationsColumns.FIRST_USER.name()),
-                                                        res.getString("first_name"),
-                                                        res.getString("first_email"),
-                                                        firstBirthday,
-                                                        res.getString("first_avatar")),
-                                               new User(res.getInt(UserRelationsColumns.SECOND_USER.name()),
-                                                        res.getString("second_name"),
-                                                        res.getString("second_email"),
-                                                        secondBirthday,
-                                                        res.getString("second_avatar"))));
-                }
+            if (maxNumberOfRows > 0) {
+                query.setMaxResults(maxNumberOfRows);
             }
-        }
+            return query.list();
+        });
 
-        return relations;
+        unsortedRes.sort(Comparator.comparing(Relation::getSecond));
+        return unsortedRes;
     }
 
     /**
@@ -250,11 +189,8 @@ public class UserRelationsRepository extends AbstractRepository {
      * @return True if and only if the two guys are friends. False for the owner.
      */
     public static boolean associationExists(User first, User second) {
-        String query = MessageFormat.format("select 1 from {0} where {1} = ? and {2} = ?",
-                                            TABLE_NAME,
-                                            UserRelationsColumns.FIRST_USER,
-                                            UserRelationsColumns.SECOND_USER);
-        return getDb().doesReturnRows(query, first.id, second.id);
+        final String query = "select 1 from USER_RELATIONS where first_user = ?0 and second_user = ?1";
+        return HibernateUtil.doesReturnRows(query, first, second);
     }
 
     /**
@@ -263,52 +199,40 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param userThatSendTheRequest    The user that is asking to be friend.
      * @param userThatReceiveTheRequest The user that is asked to be friend.
      */
-    public static void addAssociation(int userThatSendTheRequest, int userThatReceiveTheRequest) {
-        try {
-            getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
-                                                                   TABLE_NAME,
-                                                                   UserRelationsColumns.FIRST_USER,
-                                                                   UserRelationsColumns.SECOND_USER,
-                                                                   UserRelationsColumns.RELATION_DATE),
-                                              userThatSendTheRequest,
-                                              userThatReceiveTheRequest);
-            getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?,?,now())",
-                                                                   TABLE_NAME,
-                                                                   UserRelationsColumns.FIRST_USER,
-                                                                   UserRelationsColumns.SECOND_USER,
-                                                                   UserRelationsColumns.RELATION_DATE),
-                                              userThatReceiveTheRequest,
-                                              userThatSendTheRequest);
-        } catch (SQLException e) {
-            logger.error(e);
-        }
+    public static void addAssociation(User userThatSendTheRequest, User userThatReceiveTheRequest) {
+        HibernateUtil.doSomeWork(s -> {
+            Transaction t = s.beginTransaction();
+            s.save(new Relation(userThatSendTheRequest, userThatReceiveTheRequest));
+            s.save(new Relation(userThatReceiveTheRequest, userThatSendTheRequest));
+            t.commit();
+        });
     }
 
     /**
      * Drops a friendship.
      *
-     * @param firstUserId  One user id.
-     * @param secondUserId Another user id.
+     * @param firstUser  One user id.
+     * @param secondUser Another user id.
      */
-    public static void deleteAssociation(int firstUserId, int secondUserId) throws SQLException {
-        getDb().executeUpdate(MessageFormat.format(
-                                      "delete from {0} where ({1} = ? and {2} = ?) or ({1} = ? and {2} = ?)",
-                                      TABLE_NAME,
-                                      UserRelationsColumns.FIRST_USER,
-                                      UserRelationsColumns.SECOND_USER),
-                              firstUserId,
-                              secondUserId,
-                              secondUserId,
-                              firstUserId);
+    public static void deleteAssociation(User firstUser, User secondUser) {
+        HibernateUtil.doSomeWork(s -> {
+            Transaction t = s.beginTransaction();
+            final String queryString =
+                    "delete from USER_RELATIONS " +
+                    " where (first_user = :first and second_user = :second) " +
+                    "    or (first_user = :second and second_user = :first)";
+            s.createQuery(queryString)
+             .setParameter("first", firstUser)
+             .setParameter("second", secondUser)
+             .executeUpdate();
+            t.commit();
+        });
     }
 
-    public static void removeAllAssociationsTo(int userId) throws SQLException {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? or {2} = ?",
-                                                   TABLE_NAME,
-                                                   UserRelationsColumns.FIRST_USER,
-                                                   UserRelationsColumns.SECOND_USER),
-                              userId,
-                              userId);
+    public static void removeAllAssociationsTo(Session s, User user) {
+        s.createQuery("delete from USER_RELATIONS where first_user = :user or second_user = :user")
+         .setParameter("user", user)
+         .executeUpdate();
     }
 
     /**

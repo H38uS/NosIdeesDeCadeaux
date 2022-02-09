@@ -8,7 +8,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.AfficherReseau;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,9 +23,9 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testImpossibleToAcceptIfNotAsked() throws SQLException {
+    public void testImpossibleToAcceptIfNotAsked() {
 
-        UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        UserRelationsRepository.deleteAssociation(firefox, moiAutre);
         assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
 
         when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
@@ -41,9 +40,9 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testAcceptationAmitieEtSuppressionNotif() throws SQLException {
+    public void testAcceptationAmitieEtSuppressionNotif() {
 
-        UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        UserRelationsRepository.deleteAssociation(firefox, moiAutre);
         assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
 
         // Ajout des notifs

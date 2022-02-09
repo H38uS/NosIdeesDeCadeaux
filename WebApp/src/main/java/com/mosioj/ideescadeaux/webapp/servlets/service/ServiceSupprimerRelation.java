@@ -11,7 +11,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 
 @WebServlet("/protected/service/supprimer_relation")
 public class ServiceSupprimerRelation extends ServicePost<NetworkAccess> {
@@ -24,10 +23,10 @@ public class ServiceSupprimerRelation extends ServicePost<NetworkAccess> {
     }
 
     @Override
-    public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+    public void servicePost(HttpServletRequest request, HttpServletResponse response) {
 
         User user = policy.getUser();
-        UserRelationsRepository.deleteAssociation(user.id, thisOne.id);
+        UserRelationsRepository.deleteAssociation(user, thisOne);
 
         // Deletes old notifications
         NotificationsRepository.terminator()

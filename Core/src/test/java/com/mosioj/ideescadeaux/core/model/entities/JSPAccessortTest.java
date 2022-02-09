@@ -45,12 +45,6 @@ public class JSPAccessortTest extends TemplateTest {
     }
 
     @Test
-    public void testJSPOnlyRelationMethods() {
-        Relation r = new Relation(u, u);
-        Assert.assertEquals(u, r.getFirst());
-    }
-
-    @Test
     public void testJSPOnlySousReservationEntityMethods() {
         SousReservationEntity sre = new SousReservationEntity(56, 14, u, "toto", TS20191212_0829);
         Assert.assertEquals("12 décembre 2019 à 08h29", sre.getBookedOn());

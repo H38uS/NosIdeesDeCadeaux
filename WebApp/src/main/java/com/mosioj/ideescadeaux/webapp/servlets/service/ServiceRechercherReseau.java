@@ -16,7 +16,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,14 +37,14 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
     }
 
     @Override
-    public void serviceGet(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+    public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
 
         // Getting the parameter
         final String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM).toLowerCase();
         LOGGER.trace("Received: {}", nameOrEmail);
 
         // Loading the list
-        List<Relation> raw = UserRelationsRepository.getRelations(policy.getUser().id, 1, -1);
+        List<Relation> raw = UserRelationsRepository.getRelations(policy.getUser(), 1, -1);
 
         List<DecoratedWebAppUser> relations = raw.stream()
                                                  .map(Relation::getSecond)

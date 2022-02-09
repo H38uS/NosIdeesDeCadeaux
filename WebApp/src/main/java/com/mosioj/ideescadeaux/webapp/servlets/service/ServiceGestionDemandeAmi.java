@@ -54,7 +54,7 @@ public class ServiceGestionDemandeAmi extends ServiceGetAndPost<AllAccessToPostA
         List<User> accepted = getCollect(selectedRejectedList, "acc_choix_");
         accepted.forEach(u -> {
             logger.info("Approbation de la demande par {} de l'utilisateur {}.", thisOne, u);
-            UserRelationsRepository.addAssociation(u.id, thisOne.id);
+            UserRelationsRepository.addAssociation(u, thisOne);
             UserRelationRequestsRepository.cancelRequest(u, thisOne);
             NType.ACCEPTED_FRIENDSHIP.with(thisOne).sendItTo(u);
             clearNotifications(u);

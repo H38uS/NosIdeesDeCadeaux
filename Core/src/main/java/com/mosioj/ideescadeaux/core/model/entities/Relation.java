@@ -42,10 +42,6 @@ public class Relation {
         this.second = second;
     }
 
-    public User getFirst() {
-        return first;
-    }
-
     public User getSecond() {
         return second;
     }

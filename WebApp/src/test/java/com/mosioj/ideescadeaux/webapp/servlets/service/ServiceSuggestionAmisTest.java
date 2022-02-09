@@ -36,8 +36,8 @@ public class ServiceSuggestionAmisTest extends AbstractTestServletWebApp {
         // for whom we have received a suggestion to ask them for friendship
         User seven = UsersRepository.getUser(7).orElseThrow(SQLException::new);
         User eight = UsersRepository.getUser(8).orElseThrow(SQLException::new);
-        UserRelationsRepository.deleteAssociation(_OWNER_ID_, 7);
-        UserRelationsRepository.deleteAssociation(_OWNER_ID_, 8);
+        UserRelationsRepository.deleteAssociation(firefox, seven);
+        UserRelationsRepository.deleteAssociation(firefox, eight);
         UserRelationsSuggestionRepository.removeIfExists(_OWNER_ID_, 7);
         UserRelationsSuggestionRepository.removeIfExists(_OWNER_ID_, 8);
         UserRelationRequestsRepository.cancelRequest(firefox, seven);

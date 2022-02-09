@@ -5,7 +5,6 @@ import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRe
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,10 +19,10 @@ public class ServiceSuggestionRejoindreReseauTest extends AbstractTestServletWeb
     }
 
     @Test
-    public void testEnvoieSuggestion() throws SQLException {
+    public void testEnvoieSuggestion() {
 
         // Given Djoeee (22) is not a friend of admin, and has not received any suggestion
-        UserRelationsRepository.deleteAssociation(theAdmin.id, jo3.id);
+        UserRelationsRepository.deleteAssociation(theAdmin, jo3);
         UserRelationsSuggestionRepository.removeIfExists(theAdmin.id, jo3.id);
 
         // When posting a suggestion request

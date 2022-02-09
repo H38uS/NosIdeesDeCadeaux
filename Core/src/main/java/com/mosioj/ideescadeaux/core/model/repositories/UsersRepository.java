@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.UserRole;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
@@ -126,9 +125,9 @@ public class UsersRepository {
         query.append("   and id <> :userIdToSkip ");
         if (selectOnlyNonFriends) {
             query.append("   and not exists ( ");
-            query.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
-            query.append(MessageFormat.format("  where {0} = :userIdToSkip ", UserRelationsColumns.FIRST_USER));
-            query.append(MessageFormat.format("    and {0} = u.id ", UserRelationsColumns.SECOND_USER));
+            query.append(" select 1 from USER_RELATIONS  ");
+            query.append("  where first_user = :userIdToSkip ");
+            query.append("    and second_user = u.id ");
             query.append("   ) ");
         }
         query.append(MessageFormat.format(" order by {0}, {1}, {2} ",
@@ -164,9 +163,9 @@ public class UsersRepository {
         queryText.append(MessageFormat.format("   and {0} <> :id ", UsersColumns.ID));
         if (selectOnlyNonFriends) {
             queryText.append("   and not exists ( ");
-            queryText.append(MessageFormat.format(" select 1 from {0}  ", UserRelationsRepository.TABLE_NAME));
-            queryText.append(MessageFormat.format("  where {0} = :id   ", UserRelationsColumns.FIRST_USER));
-            queryText.append(MessageFormat.format("    and {0} = u.id ", UserRelationsColumns.SECOND_USER));
+            queryText.append(" select 1 from USER_RELATIONS  ");
+            queryText.append("  where first_user = :id   ");
+            queryText.append("    and second_user = u.id ");
             queryText.append("   ) ");
         }
 
@@ -207,9 +206,6 @@ public class UsersRepository {
         // Suppression des paramètres utilisateurs
         UserParametersRepository.deleteAllUserParameters(userId);
 
-        // Suppression des relations, des suggestions et des demandes
-        UserRelationsRepository.removeAllAssociationsTo(userId);
-
         // Et !! Suppression du user
         HibernateUtil.doSomeWork(s -> {
             // On ne peut pas se baser sur le CASCADE... Il faudrait être sûr que tous les objets soient chargés
@@ -218,6 +214,7 @@ public class UsersRepository {
             // Suppression des relations, des suggestions et des demandes
             UserRelationsSuggestionRepository.removeAllFromAndTo(s, userId);
             UserRelationRequestsRepository.removeAllFromAndTo(s, user);
+            UserRelationsRepository.removeAllAssociationsTo(s, user);
 
             // Les roles
             s.createQuery("delete from USER_ROLES where email = :email")

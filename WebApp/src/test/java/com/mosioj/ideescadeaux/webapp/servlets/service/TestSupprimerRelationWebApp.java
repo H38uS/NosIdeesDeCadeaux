@@ -4,8 +4,6 @@ import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.ACCEPTED_FRIENDSHIP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,11 +16,11 @@ public class TestSupprimerRelationWebApp extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testSuppressionRelationEtSuppressionNotifs() throws SQLException {
+    public void testSuppressionRelationEtSuppressionNotifs() {
 
-        UserRelationsRepository.deleteAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        UserRelationsRepository.deleteAssociation(firefox, moiAutre);
         assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
-        UserRelationsRepository.addAssociation(_OWNER_ID_, _MOI_AUTRE_);
+        UserRelationsRepository.addAssociation(firefox, moiAutre);
         assertTrue(UserRelationsRepository.associationExists(firefox, moiAutre));
 
         int notifId = ACCEPTED_FRIENDSHIP.with(moiAutre).sendItTo(firefox);
