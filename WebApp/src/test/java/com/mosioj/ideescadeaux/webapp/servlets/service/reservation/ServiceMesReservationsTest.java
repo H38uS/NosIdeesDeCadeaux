@@ -70,11 +70,9 @@ public class ServiceMesReservationsTest extends AbstractTestServletWebApp {
          *
          * @param isOK    True if there is no error.
          * @param message The JSon response message.
-         * @param isAdmin Whether the user is an admin.
          */
         public MyServiceResp(boolean isOK,
                              PagedResponse<List<OwnerIdeas>> message,
-                             boolean isAdmin,
                              User connectedUser) {
             super(isOK, message, connectedUser);
         }

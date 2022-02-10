@@ -88,12 +88,10 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
          *
          * @param isOK          True if there is no error.
          * @param message       The JSon response message.
-         * @param isAdmin       Whether the user is an admin.
          * @param connectedUser The connected user or null if none.
          */
         public VoirListeResponse(boolean isOK,
                                  PagedResponse<List<OwnerIdeas>> message,
-                                 boolean isAdmin,
                                  User connectedUser) {
             super(isOK, message, connectedUser);
         }

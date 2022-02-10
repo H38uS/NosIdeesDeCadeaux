@@ -29,7 +29,7 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
     private static final ListResultWithPagesHelper PAGES_HELPER = ListResultWithPagesHelper.withDefaultMax();
 
     private static final String USER_ID_PARAM = "id";
-    private static final String SEARCH_USER_PARAM = "looking_for";
+    protected static final String SEARCH_USER_PARAM = "looking_for";
 
     /** Class constructor. */
     public ServiceRechercherReseau() {
@@ -44,10 +44,9 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
         LOGGER.trace("Received: {}", nameOrEmail);
 
         // Loading the list
-        // FIXME : 00 ne semble pas matcher Another quand on teste dans la UI...
         List<User> raw = UserRelationsRepository.getAllUsersInRelation(policy.getUser(),
                                                                        nameOrEmail,
-                                                                       1,
+                                                                       PAGES_HELPER.getFirstRow(request),
                                                                        PAGES_HELPER.getMaxNumberOfResults());
 
         List<DecoratedWebAppUser> relations = raw.stream()

@@ -64,12 +64,10 @@ public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
          *
          * @param isOK          True if there is no error.
          * @param message       The JSon response message.
-         * @param isAdmin       Whether the user is an admin.
          * @param connectedUser The connected user or null if none.
          */
         public RechercherPersonneResponse(boolean isOK,
                                           PagedResponse<List<DecoratedWebAppUser>> message,
-                                          boolean isAdmin,
                                           User connectedUser) {
             super(isOK, message, connectedUser);
         }
