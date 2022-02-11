@@ -24,10 +24,12 @@ public class MyDateFormatViewer extends SimpleDateFormat {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     /** Date Formatter for a timestamp */
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMMM yyyy à HH'h'mm");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMMM yyyy à HH'h'mm")
+                                                                                  .withLocale(Locale.FRENCH);
 
     /** Date Formatter for a day */
-    private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("d MMMM");
+    private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("d MMMM")
+                                                                            .withLocale(Locale.FRENCH);
 
     /**
      * Format the given date using ${DATETIME_DISPLAY_FORMAT}.
