@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ public class ServiceName extends ServiceGet<NameServicePolicy> {
     }
 
     @Override
-    public void serviceGet(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+    public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
 
         User current = policy.getRootNetwork();
         String param = ParametersUtils.readAndEscape(request, NAME_OR_EMAIL).toLowerCase();
@@ -48,7 +47,7 @@ public class ServiceName extends ServiceGet<NameServicePolicy> {
             MAX--;
         }
 
-        res.addAll(UserRelationsRepository.getAllUsersInRelationWithPossibleTypo(current.id, param, 0, MAX));
+        res.addAll(UserRelationsRepository.getAllUsersInRelationWithPossibleTypo(current, param, 0, MAX));
 
         // Building the JSON answer
         List<NameAnswer> users = res.stream().map(NameAnswer::new).collect(Collectors.toList());

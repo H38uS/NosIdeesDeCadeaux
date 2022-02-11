@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class ServiceNameTestWebApp extends AbstractTestServletWebApp {
+public class ServiceNameTest extends AbstractTestServletWebApp {
 
-    public ServiceNameTestWebApp() {
+    public ServiceNameTest() {
         super(new ServiceName());
     }
 

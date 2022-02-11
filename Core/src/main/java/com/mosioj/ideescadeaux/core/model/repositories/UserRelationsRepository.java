@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class UserRelationsRepository extends AbstractRepository {
@@ -195,166 +195,120 @@ public class UserRelationsRepository extends AbstractRepository {
     }
 
     /**
-     * @param userId          The user id.
+     * @param length The length of the token to match.
+     * @return The query String to catch errors.
+     */
+    private static String prepareErrorQuery(int length) {
+        final StringBuilder one_error_query = new StringBuilder(
+                " select u " +
+                "   from USERS u, USER_RELATIONS r " +
+                "  where u.id = r.first" +
+                "    and r.second = ?0" +
+                "    and ( ");
+
+        int paramIndex = 1;
+        for (int i = 0; i < length; i++) {
+            if (i > 0) {
+                one_error_query.append(" or ");
+            }
+            one_error_query.append("    lower(name)  like ?").append(paramIndex++).append(" ESCAPE '!' ");
+            one_error_query.append(" or lower(email) like ?").append(paramIndex++).append(" ESCAPE '!' ");
+        }
+        one_error_query.append(
+                "              ) " +
+                "  order by u.name, u.email, u.id ");
+        return one_error_query.toString();
+    }
+
+    /**
+     * @param user            The user.
      * @param userNameOrEmail The user or email to look for. Allow one character mistake.
      * @param firstRow        The first row to fetch.
      * @param limit           Maximum number of results.
      * @return The list of users.
      */
-    public static List<User> getAllUsersInRelationWithPossibleTypo(int userId,
+    public static List<User> getAllUsersInRelationWithPossibleTypo(User user,
                                                                    String userNameOrEmail,
                                                                    int firstRow,
-                                                                   int limit) throws SQLException {
+                                                                   int limit) {
 
-        List<User> users = new ArrayList<>();
-        userNameOrEmail = sanitizeSQLLike(userNameOrEmail);
-        int length = userNameOrEmail.length() - StringUtils.countMatches(userNameOrEmail, "!") - 2;
-        PreparedStatementIdKdo ps = null;
+        final String sanitizedToken = sanitizeSQLLike(userNameOrEmail);
+        int length = sanitizedToken.length() - StringUtils.countMatches(sanitizedToken, "!") - 2;
 
-        StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("select res.{0}, res.{1}, res.{2}, res.{3}, res.{4} \n ",
-                                          UsersColumns.ID,
-                                          UsersColumns.NAME,
-                                          UsersColumns.EMAIL,
-                                          UsersColumns.BIRTHDAY,
-                                          UsersColumns.AVATAR));
-        query.append("  from ( \n ");
+        // Exact matches
+        final String exact_query =
+                " select u " +
+                "   from USERS u, USER_RELATIONS r " +
+                "  where u.id = r.first" +
+                "    and r.second = :user " +
+                "    and (lower(name)  like :nameOrEmail ESCAPE '!' " +
+                "         or " +
+                "         lower(email) like :nameOrEmail ESCAPE '!')" +
+                "  order by u.name, u.email, u.id ";
 
-        query.append(MessageFormat.format("select 10 as pertinence, u.{0}, u.{1}, u.{2}, u.{3}, u.{4} \n ",
-                                          UsersColumns.ID,
-                                          UsersColumns.NAME,
-                                          UsersColumns.EMAIL,
-                                          UsersColumns.BIRTHDAY,
-                                          UsersColumns.AVATAR));
-        query.append(MessageFormat.format("  from {0} u, {1} r \n ", UsersRepository.TABLE_NAME, TABLE_NAME));
-        query.append(MessageFormat.format(" where u.{0} = r.{1} \n ",
-                                          UsersColumns.ID,
-                                          UserRelationsColumns.FIRST_USER));
-        query.append(MessageFormat.format("   and r.{0} = ? \n ", UserRelationsColumns.SECOND_USER));
-        query.append(MessageFormat.format("   and ( lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.NAME));
-        query.append(MessageFormat.format(" or lower(u.{0}) like ? ESCAPE ''!'') \n ", UsersColumns.EMAIL));
+        LinkedHashSet<User> result = new LinkedHashSet<>(HibernateUtil.doQueryFetch(s -> {
 
-        // une erreur
+            Query<User> query = s.createQuery(exact_query, User.class);
+            query.setParameter("user", user);
+            query.setParameter("nameOrEmail", sanitizedToken);
+
+            query.setFirstResult(firstRow);
+            query.setMaxResults(limit);
+            return query.list();
+        }));
+
+        // une erreur de typo dans la recherche
         if (length > 0) {
-            query.append(" union \n ");
-
-            query.append(MessageFormat.format("select 2 as pertinence, u.{0}, u.{1}, u.{2}, u.{3}, u.{4} \n ",
-                                              UsersColumns.ID,
-                                              UsersColumns.NAME,
-                                              UsersColumns.EMAIL,
-                                              UsersColumns.BIRTHDAY,
-                                              UsersColumns.AVATAR));
-            query.append(MessageFormat.format("  from {0} u, {1} r \n ", UsersRepository.TABLE_NAME, TABLE_NAME));
-            query.append(MessageFormat.format(" where u.{0} = r.{1} \n ",
-                                              UsersColumns.ID,
-                                              UserRelationsColumns.FIRST_USER));
-            query.append(MessageFormat.format("   and r.{0} = ? \n ", UserRelationsColumns.SECOND_USER));
-            query.append("   and ( \n ");
-            for (int i = 0; i < length; i++) {
-                if (i > 0) {
-                    query.append(" or ");
+            final String one_error_query = prepareErrorQuery(length);
+            result.addAll(HibernateUtil.doQueryFetch(s -> {
+                Query<User> query = s.createQuery(one_error_query, User.class);
+                Object[] parameters = new Object[2 * length];
+                for (int i = 1; i < sanitizedToken.length() - 1; i++) {
+                    if ('!' == sanitizedToken.charAt(i)) {
+                        continue;
+                    }
+                    String toBeSearched = MessageFormat.format("{0}_{1}",
+                                                               sanitizedToken.substring(0, i),
+                                                               sanitizedToken.substring(i + 1));
+                    parameters[2 * (i - 1)] = toBeSearched; // for names
+                    parameters[2 * (i - 1) + 1] = toBeSearched; // for emails
                 }
-                query.append(MessageFormat.format("    lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.NAME));
-                query.append(MessageFormat.format(" or lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.EMAIL));
-            }
-            query.append("                        )\n ");
+                query.setParameter(0, user);
+                for (int i = 0; i < parameters.length; i++) {
+                    query.setParameter(i + 1, parameters[i]);
+                }
+                query.setFirstResult(firstRow);
+                query.setMaxResults(limit);
+                return query.list();
+            }));
         }
 
-        // deux erreurs
+        // deux erreurs de typo dans la recherche
         if (length > 1) {
-            query.append(" union \n ");
-
-            query.append(MessageFormat.format("select 1 as pertinence, u.{0}, u.{1}, u.{2}, u.{3}, u.{4} \n ",
-                                              UsersColumns.ID,
-                                              UsersColumns.NAME,
-                                              UsersColumns.EMAIL,
-                                              UsersColumns.BIRTHDAY,
-                                              UsersColumns.AVATAR));
-            query.append(MessageFormat.format("  from {0} u, {1} r \n ", UsersRepository.TABLE_NAME, TABLE_NAME));
-            query.append(MessageFormat.format(" where u.{0} = r.{1} \n ",
-                                              UsersColumns.ID,
-                                              UserRelationsColumns.FIRST_USER));
-            query.append(MessageFormat.format("   and r.{0} = ? \n ", UserRelationsColumns.SECOND_USER));
-            query.append("   and ( \n ");
-            for (int i = 0; i < length - 1; i++) {
-                if (i > 0) {
-                    query.append(" or ");
-                }
-                query.append(MessageFormat.format("    lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.NAME));
-                query.append(MessageFormat.format(" or lower(u.{0}) like ? ESCAPE ''!'' \n ", UsersColumns.EMAIL));
-            }
-            query.append("                        )\n ");
-        }
-
-        query.append("       ) res \n ");
-        query.append(MessageFormat.format(" group by res.{0}, res.{1}, res.{2}, res.{3}, res.{4} \n ",
-                                          UsersColumns.ID,
-                                          UsersColumns.NAME,
-                                          UsersColumns.EMAIL,
-                                          UsersColumns.BIRTHDAY,
-                                          UsersColumns.AVATAR));
-        query.append(" order by sum(pertinence) desc, 2, 3 \n ");
-        query.append(" LIMIT ?, ? \n ");
-        logger.trace(query.toString());
-
-        try {
-            ps = new PreparedStatementIdKdo(getDb(), query.toString());
-            int size = length > 1 ? 2 * length + 7 + 2 * (length - 1) : 8;
-            if (length == 0) size = 5;
-            Object[] parameters = new Object[size];
-            parameters[0] = userId;
-            parameters[1] = userNameOrEmail;
-            parameters[2] = userNameOrEmail;
-            if (length > 0) {
-                parameters[3] = userId;
-            }
-
-            // une erreur => 2*length elements
-            for (int i = 1; i < userNameOrEmail.length() - 1; i++) {
-                if ('!' == userNameOrEmail.charAt(i)) {
-                    continue;
-                }
-                String toBeSearched = MessageFormat.format("{0}_{1}",
-                                                           userNameOrEmail.substring(0, i),
-                                                           userNameOrEmail.substring(i + 1));
-                parameters[2 * (i - 1) + 4] = toBeSearched; // for names
-                parameters[2 * (i - 1) + 5] = toBeSearched; // for emails
-            }
-            if (length > 1) { // deux erreurs => 2 * (length - 1) elements
-                parameters[2 * length + 4] = userId;
-                for (int i = 1; i < userNameOrEmail.length() - 2; i++) {
-                    if ('!' == userNameOrEmail.charAt(i) || '!' == userNameOrEmail.charAt(i + 1)) {
+            final String two_errors_query = prepareErrorQuery(length);
+            result.addAll(HibernateUtil.doQueryFetch(s -> {
+                Query<User> query = s.createQuery(two_errors_query, User.class);
+                Object[] parameters = new Object[2 * length];
+                for (int i = 1; i < sanitizedToken.length() - 2; i++) {
+                    if ('!' == sanitizedToken.charAt(i) || '!' == sanitizedToken.charAt(i + 1)) {
                         continue;
                     }
                     String toBeSearched = MessageFormat.format("{0}__{1}",
-                                                               userNameOrEmail.substring(0, i),
-                                                               userNameOrEmail.substring(i + 2));
-                    parameters[2 * length + 2 * (i - 1) + 5] = toBeSearched; // for names
-                    parameters[2 * length + 2 * (i - 1) + 6] = toBeSearched; // for emails
+                                                               sanitizedToken.substring(0, i),
+                                                               sanitizedToken.substring(i + 2));
+                    parameters[2 * (i - 1)] = toBeSearched; // for names
+                    parameters[2 * (i - 1) + 1] = toBeSearched; // for emails
                 }
-            }
-            parameters[parameters.length - 2] = firstRow;
-            parameters[parameters.length - 1] = limit;
-            logger.trace(MessageFormat.format("Parameters: {0}", Arrays.toString(parameters)));
-            ps.bindParameters(parameters);
-
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    users.add(new User(res.getInt(UsersColumns.ID.name()),
-                                       res.getString(UsersColumns.NAME.name()),
-                                       res.getString(UsersColumns.EMAIL.name()),
-                                       res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name())));
+                query.setParameter(0, user);
+                for (int i = 0; i < parameters.length; i++) {
+                    query.setParameter(i + 1, parameters[i]);
                 }
-            }
-        } finally {
-            if (ps != null) {
-                ps.close();
-            }
+                query.setFirstResult(firstRow);
+                query.setMaxResults(limit);
+                return query.list();
+            }));
         }
-
-        return users;
+        return new ArrayList<>(result);
     }
 
     /**
