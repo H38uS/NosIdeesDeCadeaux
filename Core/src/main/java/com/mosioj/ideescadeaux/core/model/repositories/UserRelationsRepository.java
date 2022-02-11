@@ -316,11 +316,11 @@ public class UserRelationsRepository {
                              " or lower(u1.email) like :nameOrEmail ESCAPE '!')");
         }
         return HibernateUtil.doQuerySingle(s -> {
-            Query<Integer> query = s.createQuery(queryText.toString(), Integer.class).setParameter("id", user);
+            Query<Long> query = s.createQuery(queryText.toString(), Long.class).setParameter("id", user);
             if (shouldFilterWithNameOrEmail) {
                 query.setParameter("nameOrEmail", HibernateUtil.sanitizeSQLLike(nameOrEmail));
             }
-            return query.uniqueResult();
+            return query.uniqueResult().intValue();
         });
     }
 }
