@@ -44,7 +44,8 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
         try {
             serviceGet(request, response);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Error when fetching {}", request.getRequestURL().toString());
+            logger.error("The error: ", e);
             buildResponse(response,
                           ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(), thisOne));
         }
@@ -55,7 +56,8 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
         try {
             servicePost(request, response);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Error when fetching {}", request.getRequestURL().toString());
+            logger.error("The error: ", e);
             buildResponse(response,
                           ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(), thisOne));
         }

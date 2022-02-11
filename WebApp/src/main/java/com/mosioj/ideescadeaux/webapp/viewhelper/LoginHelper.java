@@ -92,6 +92,7 @@ public class LoginHelper implements Filter {
             }
         }
 
+        request.setAttribute("is_admin", httpServletRequest.isUserInRole("ROLE_ADMIN"));
         chain.doFilter(request, response);
     }
 
