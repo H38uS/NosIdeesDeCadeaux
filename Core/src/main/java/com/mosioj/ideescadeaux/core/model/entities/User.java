@@ -84,18 +84,14 @@ public class User implements Comparable<User>, Serializable {
         this.password = hashPwd;
     }
 
-    public User(int id, String name, String email, Date birthday, String avatar, final String password) {
+    public User(int id, String name, String email, Date birthday, String avatar) {
+        // FIXME : supprimer quand tout est migré sur Hibernate
         this.id = id;
         this.name = name == null || name.trim().isEmpty() ? email : WordUtils.capitalize(name.trim());
         this.email = email;
         this.avatar = avatar == null ? "default.png" : avatar;
         this.birthday = birthday == null ? null : birthday.toLocalDate();
         this.nbDaysBeforeBirthday = getNbDayBeforeBirthday(LocalDate.now(), this.birthday).orElse(Long.MAX_VALUE);
-        this.password = password;
-    }
-
-    public User(int id, String name, String email, Date birthday, String avatar) {
-        this(id, name, email, birthday, avatar, "dummy");
     }
 
     @PostLoad
