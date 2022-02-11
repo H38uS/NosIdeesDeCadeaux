@@ -1,10 +1,7 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.entities.Relation;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRelationsColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -13,16 +10,14 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class UserRelationsRepository extends AbstractRepository {
+public class UserRelationsRepository {
 
-    public static final String TABLE_NAME = "USER_RELATIONS";
     private static final Logger logger = LogManager.getLogger(UserRelationsRepository.class);
 
     private UserRelationsRepository() {
@@ -34,112 +29,21 @@ public class UserRelationsRepository extends AbstractRepository {
      * @param inNbDaysMax The number of days to select the birthday.
      * @return The list of users with birthday coming (less than 30 days).
      */
-    public static List<User> getCloseBirthday(User user, int inNbDaysMax) throws SQLException {
-
-        List<User> users = new ArrayList<>();
-        PreparedStatementIdKdo ps = null;
-
-        StringBuilder query = new StringBuilder();
-        query.append("select b.{0}, b.{1}, b.{2}, b.{3}, b.{8} ");
-        query.append("from ( ");
-        query.append(
-                "select a.{0}, a.{1}, a.{2}, a.{3}, a.{8}, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()) +1, ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_next_year_birthday, TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()), ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_birthday ");
-        query.append("from ( ");
-        query.append("select u.{0}, u.{1}, u.{2}, u.{3}, u.{8} ");
-        query.append("from {4} urr ");
-        query.append("left join {5} u on u.{0} = urr.{7} ");
-        query.append("where {6} = ? ");
-        query.append(") a ");
-
-        query.append(") b ");
-        query.append(
-                "where (b.days_before_birthday >= 0 and b.days_before_birthday < ?) or b.days_before_next_year_birthday < ? ");
-        query.append("order by b.days_before_next_year_birthday ");
-
-        try {
-            String realQuery = MessageFormat.format(query.toString(),
-                                                    UsersColumns.ID,
-                                                    UsersColumns.NAME,
-                                                    UsersColumns.EMAIL,
-                                                    UsersColumns.BIRTHDAY,
-                                                    TABLE_NAME,
-                                                    UsersRepository.TABLE_NAME,
-                                                    UserRelationsColumns.FIRST_USER,
-                                                    UserRelationsColumns.SECOND_USER,
-                                                    UsersColumns.AVATAR);
-            logger.trace(realQuery);
-            ps = new PreparedStatementIdKdo(getDb(), realQuery);
-            ps.bindParameters(user.id, inNbDaysMax, inNbDaysMax);
-
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    users.add(new User(res.getInt(UsersColumns.ID.name()),
-                                       res.getString(UsersColumns.NAME.name()),
-                                       res.getString(UsersColumns.EMAIL.name()),
-                                       res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name())));
-                }
-            }
-        } finally {
-            if (ps != null) {
-                ps.close();
-            }
-        }
-
-        return users;
+    public static List<User> getCloseBirthday(User user, int inNbDaysMax) {
+        return getAllUsersInRelation(user).stream()
+                                          .filter(u -> u.nbDaysBeforeBirthday <= inNbDaysMax)
+                                          .collect(Collectors.toList());
     }
-
 
     /**
      * @param inNbDays Number of days before the birthday.
      * @return The list of users with birthday coming (less than 30 days).
      */
-    public static List<User> getBirthday(int inNbDays) throws SQLException {
-
-        List<User> users = new ArrayList<>();
-
-        String query =
-                "select b.{0}, b.{1}, b.{2}, b.{3}, b.{5} " +
-                "  from ( " +
-                "          select a.{0}," +
-                "                 a.{1}, " +
-                "                 a.{2}," +
-                "                 a.{3}," +
-                "                 a.{5}," +
-                "                 TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()) +1, ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_next_year_birthday," +
-                "                 TIMESTAMPDIFF(DAY, CURDATE(), STR_TO_DATE( CONCAT(YEAR(CURDATE()), ''-'', MONTH(a.{3}), ''-'', DAY(a.{3}) ), ''%Y-%m-%d'' )) as days_before_birthday " +
-                "            from (select u.{0}, u.{1}, u.{2}, u.{3}, u.{5} " +
-                "                   from {4} u) a " +
-                "       ) b " +
-                " where b.days_before_birthday = ? or b.days_before_next_year_birthday = ? " +
-                " order by b.{0} ";
-
-        String realQuery = MessageFormat.format(query,
-                                                UsersColumns.ID,
-                                                UsersColumns.NAME,
-                                                UsersColumns.EMAIL,
-                                                UsersColumns.BIRTHDAY,
-                                                UsersRepository.TABLE_NAME,
-                                                UsersColumns.AVATAR);
-
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), realQuery)) {
-            logger.trace(realQuery);
-            ps.bindParameters(inNbDays, inNbDays);
-
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    users.add(new User(res.getInt(UsersColumns.ID.name()),
-                                       res.getString(UsersColumns.NAME.name()),
-                                       res.getString(UsersColumns.EMAIL.name()),
-                                       res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name())));
-                }
-            }
-        }
-
-        return users;
+    public static List<User> getBirthday(int inNbDays) {
+        return UsersRepository.getAllUsers()
+                              .stream()
+                              .filter(u -> u.nbDaysBeforeBirthday <= inNbDays)
+                              .collect(Collectors.toList());
     }
 
     /**
@@ -232,7 +136,7 @@ public class UserRelationsRepository extends AbstractRepository {
                                                                    int firstRow,
                                                                    int limit) {
 
-        final String sanitizedToken = sanitizeSQLLike(userNameOrEmail);
+        final String sanitizedToken = HibernateUtil.sanitizeSQLLike(userNameOrEmail);
         int length = sanitizedToken.length() - StringUtils.countMatches(sanitizedToken, "!") - 2;
 
         // Exact matches
@@ -342,7 +246,7 @@ public class UserRelationsRepository extends AbstractRepository {
                        "       ) " +
                        " order by u.name, u.email, u.id ";
 
-        final String theUserNameOrEmail = sanitizeSQLLike(userNameOrEmail);
+        final String theUserNameOrEmail = HibernateUtil.sanitizeSQLLike(userNameOrEmail);
         return HibernateUtil.doQueryFetch(s -> s.createQuery(query, User.class)
                                                 .setParameter("suggestedBy", suggestedBy)
                                                 .setParameter("suggestedTo", suggestedTo)
@@ -374,7 +278,7 @@ public class UserRelationsRepository extends AbstractRepository {
         return HibernateUtil.doQueryFetch(s -> {
             Query<User> query = s.createQuery(queryText.toString(), User.class).setParameter("id", user);
             if (shouldFilterWithNameOrEmail) {
-                query.setParameter("nameOrEmail", sanitizeSQLLike(nameOrEmail));
+                query.setParameter("nameOrEmail", HibernateUtil.sanitizeSQLLike(nameOrEmail));
             }
             if (firstRow > -1) {
                 query.setFirstResult(firstRow);
@@ -414,7 +318,7 @@ public class UserRelationsRepository extends AbstractRepository {
         return HibernateUtil.doQuerySingle(s -> {
             Query<Integer> query = s.createQuery(queryText.toString(), Integer.class).setParameter("id", user);
             if (shouldFilterWithNameOrEmail) {
-                query.setParameter("nameOrEmail", sanitizeSQLLike(nameOrEmail));
+                query.setParameter("nameOrEmail", HibernateUtil.sanitizeSQLLike(nameOrEmail));
             }
             return query.uniqueResult();
         });

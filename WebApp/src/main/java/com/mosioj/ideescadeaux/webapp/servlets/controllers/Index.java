@@ -9,7 +9,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServle
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +29,7 @@ public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
     }
 
     @Override
-    public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
+    public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
 
         User me = thisOne;
         req.setAttribute("no_birth_date_set", !me.getBirthday().isPresent());

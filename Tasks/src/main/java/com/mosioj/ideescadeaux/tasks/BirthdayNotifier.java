@@ -3,11 +3,10 @@ package com.mosioj.ideescadeaux.tasks;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -23,11 +22,7 @@ public class BirthdayNotifier {
      * @param nbDays The number of days before the next birthday.
      */
     public void findBirthdayAndSendMailToFriends(int nbDays) {
-        try {
-            UserRelationsRepository.getBirthday(nbDays).parallelStream().forEach(u -> sendMailToFriends(u, nbDays));
-        } catch (SQLException e) {
-            logger.error(MessageFormat.format("Fail to get the user list: {0}", e.getMessage()));
-        }
+        UserRelationsRepository.getBirthday(nbDays).parallelStream().forEach(u -> sendMailToFriends(u, nbDays));
     }
 
     /**
@@ -36,11 +31,7 @@ public class BirthdayNotifier {
      * @param nbDays The number of days before the next birthday.
      */
     public void findBirthdayAndSendMailToTheLuckyOne(int nbDays) {
-        try {
-            UserRelationsRepository.getBirthday(nbDays).parallelStream().forEach(u -> sendMailToLuckyOne(u, nbDays));
-        } catch (SQLException e) {
-            logger.error(MessageFormat.format("Fail to get the user list: {0}", e.getMessage()));
-        }
+        UserRelationsRepository.getBirthday(nbDays).parallelStream().forEach(u -> sendMailToLuckyOne(u, nbDays));
     }
 
     /**
