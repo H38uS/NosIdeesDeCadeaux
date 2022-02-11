@@ -40,9 +40,11 @@ public class IdeesCadeauxTask {
         BirthdayNotifier bn = new BirthdayNotifier();
 
         // A la personne, pour qu'elle mette à jour ses idées
+        logger.info("Envoie des mails aux personnes qui ont leur anniversaire qui arrive...");
         bn.findBirthdayAndSendMailToTheLuckyOne(20);
 
         // Au poto, pour qu'ils réservent les idées !
+        logger.info("Envoie aux copains pour les prévenir !");
         bn.findBirthdayAndSendMailToFriends(15);
         bn.findBirthdayAndSendMailToFriends(5);
     }

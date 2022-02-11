@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.CreationCompte;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -49,6 +50,13 @@ public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
     @Test
     public void testSuccess() throws SQLException {
 
+        UsersRepository.getUser("tartenpiontoto@hotmaildzndqudn.fr").ifPresent(u -> {
+            try {
+                UsersRepository.deleteUser(u);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
         ds.executeUpdate("delete from USERS where email = ?", "tartenpiontoto@hotmaildzndqudn.fr");
         assertEquals(0,
                      ds.selectCountStar("select count(*) from USERS where email = ?",

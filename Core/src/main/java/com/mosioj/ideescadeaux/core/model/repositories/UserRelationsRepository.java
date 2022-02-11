@@ -42,7 +42,7 @@ public class UserRelationsRepository {
     public static List<User> getBirthday(int inNbDays) {
         return UsersRepository.getAllUsers()
                               .stream()
-                              .filter(u -> u.nbDaysBeforeBirthday <= inNbDays)
+                              .filter(u -> u.nbDaysBeforeBirthday == inNbDays)
                               .collect(Collectors.toList());
     }
 
