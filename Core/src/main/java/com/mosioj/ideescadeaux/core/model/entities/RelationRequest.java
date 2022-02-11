@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity(name = "USER_RELATION_REQUESTS")
 public class RelationRequest {
@@ -27,7 +27,7 @@ public class RelationRequest {
     @Column(name = "request_date")
     @UpdateTimestamp
     @Expose
-    public LocalDate request_date;
+    public LocalDateTime request_date;
 
     public RelationRequest() {
         // For hibernate
