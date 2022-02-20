@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -34,7 +34,7 @@ public class ModifyIdea extends IdeesCadeauxGetServlet<IdeaModification> {
         Idee idea = policy.getIdea();
 
         request.setAttribute("types", CategoriesRepository.getCategories());
-        request.setAttribute("priorites", PrioritesRepository.getPriorities());
+        request.setAttribute("priorites", PrioritiesRepository.getPriorities());
         request.setAttribute("idea", idea);
 
         Object errors = request.getSession().getAttribute("errors");

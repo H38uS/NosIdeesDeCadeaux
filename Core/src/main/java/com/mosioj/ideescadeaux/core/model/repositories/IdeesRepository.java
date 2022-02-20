@@ -126,9 +126,9 @@ public class IdeesRepository extends AbstractRepository {
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.GROUPE_KDO_ID));
         columns.append(MessageFormat.format("       i.{0} as id_image, ", IdeeColumns.IMAGE));
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.PRIORITE));
-        columns.append(MessageFormat.format("       p.{0} as PRIORITY_NAME, ", PrioritesColumns.NOM));
-        columns.append(MessageFormat.format("       p.{0} as PRIORITY_PICTURE, ", PrioritesColumns.IMAGE));
-        columns.append(MessageFormat.format("       p.{0} as PRIORITY_ORDER, ", PrioritesColumns.ORDRE));
+        columns.append(MessageFormat.format("       p.{0} as PRIORITY_NAME, ", "nom"));
+        columns.append(MessageFormat.format("       p.{0} as PRIORITY_PICTURE, ", "image"));
+        columns.append(MessageFormat.format("       p.{0} as PRIORITY_ORDER, ", "ordre"));
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.RESERVE_LE));
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.MODIFICATION_DATE));
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.A_SOUS_RESERVATION));
@@ -153,10 +153,7 @@ public class IdeesRepository extends AbstractRepository {
 
         StringBuilder query = new StringBuilder(columns);
         query.append(MessageFormat.format("  from {0} i ", TABLE_NAME));
-        query.append(MessageFormat.format("  left join {0} p on i.{1} = p.{2} ",
-                                          PrioritesRepository.TABLE_NAME,
-                                          IdeeColumns.PRIORITE,
-                                          PrioritesColumns.ID));
+        query.append(MessageFormat.format("  left join PRIORITES p on i.{0} = p.id ", IdeeColumns.PRIORITE));
         query.append(MessageFormat.format("  left join CATEGORIES c on i.{0} = c.{1} ",
                                           IdeeColumns.TYPE,
                                           "nom"));
@@ -186,8 +183,7 @@ public class IdeesRepository extends AbstractRepository {
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format("where i.{0} = ?", IdeeColumns.OWNER));
         query.append(MessageFormat.format("  and coalesce(i.{0}, ''THERE'') <> ''DELETED''", IdeeColumns.STATUS));
-        query.append(MessageFormat.format(" order by p.{0} desc,{1}, {2} desc, {3} desc",
-                                          PrioritesColumns.ORDRE,
+        query.append(MessageFormat.format(" order by p.ordre desc,{0}, {1} desc, {2} desc",
                                           IdeeColumns.IDEE,
                                           IdeeColumns.MODIFICATION_DATE,
                                           IdeeColumns.ID));

@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -29,7 +29,7 @@ public class AjouterIdee extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
     public void ideesKDoGET(HttpServletRequest request,
                             HttpServletResponse resp) throws ServletException, SQLException {
         request.setAttribute("types", CategoriesRepository.getCategories());
-        request.setAttribute("priorites", PrioritesRepository.getPriorities());
+        request.setAttribute("priorites", PrioritiesRepository.getPriorities());
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);
     }
 

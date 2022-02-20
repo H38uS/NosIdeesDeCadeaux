@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.PrioritesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NetworkAccess;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -31,7 +31,7 @@ public class AjouterIdeeAmi extends IdeesCadeauxGetServlet<NetworkAccess> {
         User user = policy.getUser();
         request.setAttribute("user", user);
         request.setAttribute("types", CategoriesRepository.getCategories());
-        request.setAttribute("priorites", PrioritesRepository.getPriorities());
+        request.setAttribute("priorites", PrioritiesRepository.getPriorities());
 
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }

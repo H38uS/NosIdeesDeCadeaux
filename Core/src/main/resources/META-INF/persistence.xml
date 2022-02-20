@@ -9,6 +9,7 @@
         <class>com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.RelationRequest</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.Categorie</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.Priorite</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
