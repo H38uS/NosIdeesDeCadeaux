@@ -1,21 +1,11 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
+import com.mosioj.ideescadeaux.core.model.entities.Categorie;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+
 import java.util.List;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.CategoriesColumns;
-import com.mosioj.ideescadeaux.core.model.entities.Categorie;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-public class CategoriesRepository extends AbstractRepository {
-
-    private static final Logger logger = LogManager.getLogger(CategoriesRepository.class);
-    public static final String TABLE_NAME = "CATEGORIES";
+public class CategoriesRepository {
 
     private CategoriesRepository() {
         // Forbidden
@@ -24,28 +14,7 @@ public class CategoriesRepository extends AbstractRepository {
     /**
      * @return The available list of categories.
      */
-    public static List<Categorie> getCategories() throws SQLException {
-
-        List<Categorie> categories = new ArrayList<>();
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
-                                                                    MessageFormat.format(
-                                                                            "select {0},{1},{2},{3} from {4}",
-                                                                            CategoriesColumns.NOM,
-                                                                            CategoriesColumns.IMAGE,
-                                                                            CategoriesColumns.ALT,
-                                                                            CategoriesColumns.TITLE,
-                                                                            TABLE_NAME))) {
-            if (ps.execute()) {
-                ResultSet rs = ps.getResultSet();
-                while (rs.next()) {
-                    categories.add(new Categorie(rs.getString(CategoriesColumns.NOM.name()),
-                                                 rs.getString(CategoriesColumns.ALT.name()),
-                                                 rs.getString(CategoriesColumns.IMAGE.name()),
-                                                 rs.getString(CategoriesColumns.TITLE.name())));
-                }
-            }
-        }
-
-        return categories;
+    public static List<Categorie> getCategories() {
+        return HibernateUtil.doQueryFetch(s -> s.createQuery("from CATEGORIES", Categorie.class).list());
     }
 }

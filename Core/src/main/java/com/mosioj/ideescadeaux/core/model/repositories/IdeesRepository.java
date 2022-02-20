@@ -69,9 +69,9 @@ public class IdeesRepository extends AbstractRepository {
         Categorie categorie = null;
         if (!StringUtils.isBlank(rs.getString(IdeeColumns.TYPE.name()))) {
             categorie = new Categorie(rs.getString(IdeeColumns.TYPE.name()),
-                                      rs.getString(CategoriesColumns.ALT.name()),
-                                      rs.getString(CategoriesColumns.IMAGE.name()),
-                                      rs.getString(CategoriesColumns.TITLE.name()));
+                                      rs.getString("alt"),
+                                      rs.getString("image"),
+                                      rs.getString("title"));
         }
 
         // Computing the booking information
@@ -118,8 +118,6 @@ public class IdeesRepository extends AbstractRepository {
      */
     private static StringBuilder getIdeaBasedSelect() {
 
-        CategoriesColumns cNom = CategoriesColumns.NOM;
-
         StringBuilder columns = new StringBuilder();
         columns.append(MessageFormat.format("select i.{0}, ", IdeeColumns.ID));
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.IDEE));
@@ -134,9 +132,9 @@ public class IdeesRepository extends AbstractRepository {
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.RESERVE_LE));
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.MODIFICATION_DATE));
         columns.append(MessageFormat.format("       i.{0}, ", IdeeColumns.A_SOUS_RESERVATION));
-        columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.IMAGE));
-        columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.ALT));
-        columns.append(MessageFormat.format("       c.{0}, ", CategoriesColumns.TITLE));
+        columns.append(MessageFormat.format("       c.{0}, ", "image"));
+        columns.append(MessageFormat.format("       c.{0}, ", "alt"));
+        columns.append(MessageFormat.format("       c.{0}, ", "title"));
         columns.append(MessageFormat.format("       u.{0} as userId, ", UsersColumns.ID));
         columns.append(MessageFormat.format("       u.{0} as userName, ", UsersColumns.NAME));
         columns.append(MessageFormat.format("       u.{0}, ", UsersColumns.EMAIL));
@@ -159,10 +157,9 @@ public class IdeesRepository extends AbstractRepository {
                                           PrioritesRepository.TABLE_NAME,
                                           IdeeColumns.PRIORITE,
                                           PrioritesColumns.ID));
-        query.append(MessageFormat.format("  left join {0} c on i.{1} = c.{2} ",
-                                          CategoriesRepository.TABLE_NAME,
+        query.append(MessageFormat.format("  left join CATEGORIES c on i.{0} = c.{1} ",
                                           IdeeColumns.TYPE,
-                                          cNom));
+                                          "nom"));
         query.append(MessageFormat.format("  left join {0} u on u.id = i.{1} ",
                                           UsersRepository.TABLE_NAME,
                                           IdeeColumns.RESERVE));

@@ -10,7 +10,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationFactory;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserRolesColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
 import org.apache.logging.log4j.LogManager;
@@ -526,8 +525,8 @@ public class NotificationsRepository extends AbstractRepository {
         // Send emails to the ADMIN
         String query = "select u." + UsersColumns.EMAIL +
                        "  from " + UsersRepository.TABLE_NAME + " u " +
-                       "  join USER_ROLES ur on ur." + UserRolesColumns.EMAIL + " = u." + UsersColumns.EMAIL + " " +
-                       "  where ur." + UserRolesColumns.ROLE + " = ?";
+                       "  join USER_ROLES ur on ur.email = u.email " +
+                       "  where ur.role = ?";
 
         try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
             ps.bindParameters("ROLE_ADMIN");
@@ -625,7 +624,11 @@ public class NotificationsRepository extends AbstractRepository {
     static {
         InputStream input = NotificationsRepository.class.getResourceAsStream("/notif.properties");
         try {
-            notificationProperties.load(new InputStreamReader(input, StandardCharsets.UTF_8));
+            if (input == null) {
+                logger.error("Cannot find the notif.properties resources...");
+            } else {
+                notificationProperties.load(new InputStreamReader(input, StandardCharsets.UTF_8));
+            }
         } catch (IOException e) {
             logger.warn(e);
         }
