@@ -48,7 +48,7 @@ public class DecoratedWebAppIdea {
         try {
             tempQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
         this.idee = idee;
@@ -81,7 +81,7 @@ public class DecoratedWebAppIdea {
         try {
             return CommentsRepository.getNbComments(idee.getId()) > 0;
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
         return false;
     }

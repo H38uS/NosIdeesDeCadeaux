@@ -41,7 +41,7 @@ public class MessagesAccueilRepository extends AbstractRepository {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
             e.printStackTrace();
         }
 

@@ -28,7 +28,7 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
         try {
             response.getOutputStream().print(ans.asJSon(response));
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
     }
 

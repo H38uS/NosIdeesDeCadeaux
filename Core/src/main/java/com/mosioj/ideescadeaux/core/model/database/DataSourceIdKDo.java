@@ -63,7 +63,7 @@ public class DataSourceIdKDo {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
         return Optional.empty();
     }
@@ -87,12 +87,11 @@ public class DataSourceIdKDo {
      *
      * @param query      The SQL query.
      * @param parameters Optional bindable parameters.
-     * @return The generated key value.
      */
-    public int executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
+    public void executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
         try (PreparedStatementIdKdoInserter statement = new PreparedStatementIdKdoInserter(this, query)) {
             statement.bindParameters(parameters);
-            return statement.executeUpdate();
+            statement.executeUpdate();
         }
     }
 
@@ -134,7 +133,7 @@ public class DataSourceIdKDo {
             ResultSet res = ps.getResultSet();
             return res.next();
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
             return false;
         }
     }

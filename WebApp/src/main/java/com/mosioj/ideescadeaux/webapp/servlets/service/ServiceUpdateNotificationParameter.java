@@ -35,13 +35,13 @@ public class ServiceUpdateNotificationParameter extends ServicePost<AllAccessToP
         try {
             NType.valueOf(name);
         } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            logger.error("Une erreur est survenue...", e);
             message = "Type de notification inconnu...";
         }
         try {
             NotificationActivation.valueOf(value);
         } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            logger.error("Une erreur est survenue...", e);
             message = "Valeur inconnue...";
         }
 

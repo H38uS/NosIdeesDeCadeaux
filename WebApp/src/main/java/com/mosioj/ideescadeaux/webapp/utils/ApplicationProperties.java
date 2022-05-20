@@ -31,7 +31,7 @@ public class ApplicationProperties {
         try {
             prop.load(RootingsUtils.class.getResourceAsStream("/application.properties"));
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
     }
 }

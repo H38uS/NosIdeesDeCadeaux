@@ -36,7 +36,7 @@ public class RootingsUtils {
         try {
             rd.forward(request, response);
         } catch (IOException | ServletException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class RootingsUtils {
         try {
             rd.forward(request, response);
         } catch (IOException | ServletException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
     }
 }

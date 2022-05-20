@@ -197,7 +197,7 @@ public class IdeesRepository extends AbstractRepository {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
         return ideas;
@@ -232,7 +232,7 @@ public class IdeesRepository extends AbstractRepository {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
         return ideas;
@@ -316,7 +316,7 @@ public class IdeesRepository extends AbstractRepository {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
         return Optional.empty();
@@ -345,7 +345,7 @@ public class IdeesRepository extends AbstractRepository {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
         return Optional.empty();
@@ -375,7 +375,7 @@ public class IdeesRepository extends AbstractRepository {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
         return Optional.empty();
@@ -754,7 +754,7 @@ public class IdeesRepository extends AbstractRepository {
                                                                              GroupIdeaColumns.ID),
                                                         groupId);
                               } catch (SQLException e) {
-                                  logger.error(e);
+                                  logger.error("Une erreur est survenue...", e);
                               }
                           }
                );
@@ -790,7 +790,7 @@ public class IdeesRepository extends AbstractRepository {
                                                                              GroupIdeaColumns.ID),
                                                         groupId);
                               } catch (SQLException e) {
-                                  logger.error(e);
+                                  logger.error("Une erreur est survenue...", e);
                               }
                           }
                );
@@ -810,7 +810,7 @@ public class IdeesRepository extends AbstractRepository {
                     IdeeColumns.RESERVE_LE,
                     IdeeColumns.GROUPE_KDO_ID), idee.getId());
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
     }

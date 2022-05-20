@@ -55,7 +55,7 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
             request.setAttribute("log_files", logFiles);
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
 
         String memory = MessageFormat.format("Memory (free / total): ({0} Ko / {1} Ko). Max: {2} Ko.",

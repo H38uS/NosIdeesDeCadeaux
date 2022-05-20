@@ -50,7 +50,7 @@ public class BirthdayNotifier {
         try {
             EmailSender.sendEmail(user.email, "Votre anniversaire approche... Complétez votre liste !", body).get();
         } catch (InterruptedException | ExecutionException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
     }
 
@@ -71,7 +71,7 @@ public class BirthdayNotifier {
                                    try {
                                        sendMail(u, user, nbDays).get();
                                    } catch (InterruptedException | ExecutionException e) {
-                                       logger.error(e);
+                                       logger.error("Une erreur est survenue...", e);
                                    }
                                });
     }

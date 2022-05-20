@@ -39,7 +39,7 @@ public class ServiceSuppressionCompte extends ServicePost<SuppressionCompte> {
             ans = ServiceResponse.ok(thisOne);
         } catch (Exception e) {
             ans = ServiceResponse.ko(e.getMessage(), thisOne);
-            logger.error(e.getMessage());
+            logger.error("Une erreur est survenue...", e);
             e.printStackTrace();
         }
 

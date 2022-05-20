@@ -95,7 +95,7 @@ public class ServiceResponse<T> {
         try {
             content = new String(content.getBytes(StandardCharsets.UTF_8), response.getCharacterEncoding());
         } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
+            logger.error("Une erreur est survenue...", e);
             e.printStackTrace();
         }
         return content;

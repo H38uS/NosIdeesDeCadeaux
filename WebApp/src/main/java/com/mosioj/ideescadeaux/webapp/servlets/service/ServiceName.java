@@ -58,7 +58,7 @@ public class ServiceName extends ServiceGet<NameServicePolicy> {
             content = new String(content.getBytes(StandardCharsets.UTF_8), response.getCharacterEncoding());
             response.getOutputStream().print(content);
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
     }
 

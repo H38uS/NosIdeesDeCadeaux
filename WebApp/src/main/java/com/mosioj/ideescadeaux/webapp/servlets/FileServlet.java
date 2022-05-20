@@ -56,7 +56,7 @@ public class FileServlet extends HttpServlet {
             try {
                 fileName = file.getCanonicalPath();
             } catch (Exception e) {
-                logger.error(e);
+                logger.error("Une erreur est survenue...", e);
                 e.printStackTrace();
             }
             logger.error(MessageFormat.format("File {0} does not exist.", fileName));

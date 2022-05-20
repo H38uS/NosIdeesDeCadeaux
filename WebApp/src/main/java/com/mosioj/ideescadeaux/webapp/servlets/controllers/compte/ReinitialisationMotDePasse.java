@@ -87,7 +87,7 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<Al
             request.setAttribute("email", email1);
             RootingsUtils.rootToPage(SUCCES_PAGE_URL, request, response);
         } catch (InterruptedException | ExecutionException e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
             request.setAttribute("email1_error", Collections.singleton("Echec de l'envoie du mail."));
             RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
         }

@@ -205,7 +205,7 @@ public class ParametersUtils {
                             originalImage.flush();
 
                         } catch (OutOfMemoryError e) {
-                            logger.error(e);
+                            logger.error("Une erreur est survenue...", e);
                             // On copy juste le fichier
                             FileUtils.copyFile(tmpUploadedFile, new File(largeFolder, image));
                             FileUtils.copyFile(tmpUploadedFile, new File(smallFolder, image));
@@ -225,7 +225,7 @@ public class ParametersUtils {
                 }
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
             throw new SQLException(e);
         }
 

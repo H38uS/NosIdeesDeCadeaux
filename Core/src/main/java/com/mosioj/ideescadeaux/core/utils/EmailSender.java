@@ -68,12 +68,13 @@ public class EmailSender {
     static {
         try {
             InputStream input = EmailSender.class.getResourceAsStream("/mail.properties");
+            assert input != null;
             MY_PROPERTIES.load(new InputStreamReader(input, StandardCharsets.UTF_8));
             logger.trace("host: " + MY_PROPERTIES.getProperty("host"));
             logger.trace("from: " + MY_PROPERTIES.getProperty("from"));
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error(e);
+            logger.error("Une erreur est survenue...", e);
         }
         SYSTEM_PROP.setProperty("mail.smtp.host", MY_PROPERTIES.getProperty("host"));
     }
