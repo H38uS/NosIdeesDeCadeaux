@@ -4,7 +4,7 @@ function getGroupDetailSection(groupContent) {
     res.append("<h2>Détail du groupe</h2>");
     res.append(`<p>Montant total souhaité : ${groupContent.group.formattedTotal}€</p>`);
     var shares = $("<ul>");
-    $.each(groupContent.group.shares, function(i, share) {
+    $.each(groupContent.group.ideaGroupContents, function(i, share) {
         shares.append(`<li>${share.user.name} : ${share.formattedAmount}€ - <small>depuis le ${share.formattedDate}</small></li>`);
     });
     res.append(shares);
