@@ -93,9 +93,11 @@ public class UserRelationsRepository {
     }
 
     public static void removeAllAssociationsTo(Session s, User user) {
+        Transaction t = s.beginTransaction();
         s.createQuery("delete from USER_RELATIONS where first_user = :user or second_user = :user")
          .setParameter("user", user)
          .executeUpdate();
+        t.commit();
     }
 
     /**

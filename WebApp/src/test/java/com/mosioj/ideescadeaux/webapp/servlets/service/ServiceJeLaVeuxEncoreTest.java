@@ -26,7 +26,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
         // Création de l'idée et réservation par un groupe
         Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
         IdeesRepository.toutDereserver(idea);
-        IdeaGroup group = GroupIdeaRepository.createAGroup(20, 10, friendOfFirefox.getId());
+        IdeaGroup group = GroupIdeaRepository.createAGroup(20, 10, friendOfFirefox);
         IdeesRepository.bookByGroup(idea.getId(), group.getId());
 
         // Vérification que c'est bien réservé par un groupe

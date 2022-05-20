@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Représente la table de personnes.
@@ -184,9 +185,6 @@ public class UsersRepository {
         // Suppression des commentaires
         CommentsRepository.deleteAll(userId);
 
-        // Suppression des participations aux groupes
-        GroupIdeaRepository.removeUserFromAllGroups(user);
-
         // Suppression des idées
         // Suppression de l'historique des idées
         IdeesRepository.removeAll(userId);
@@ -206,7 +204,7 @@ public class UsersRepository {
         // Suppression des paramètres utilisateurs
         UserParametersRepository.deleteAllUserParameters(userId);
 
-        // Et !! Suppression du user
+        // Et !! Suppression de l'utilisateur
         HibernateUtil.doSomeWork(s -> {
             // On ne peut pas se baser sur le CASCADE... Il faudrait être sûr que tous les objets soient chargés
             Transaction t = s.beginTransaction();
@@ -215,6 +213,16 @@ public class UsersRepository {
             UserRelationsSuggestionRepository.removeAllFromAndTo(s, userId);
             UserRelationRequestsRepository.removeAllFromAndTo(s, user);
             UserRelationsRepository.removeAllAssociationsTo(s, user);
+
+            // Suppression de toutes les participations aux groupes
+            GroupIdeaContentRepository.removeAllParticipationsOf(s, user);
+
+            // Suppression des groupes vides
+            GroupIdeaRepository.getAllGroups(s)
+                               .stream()
+                               .filter(g -> g.getShares().isEmpty())
+                               .collect(Collectors.toList())
+                               .forEach(GroupIdeaRepository::deleteGroup);
 
             // Les roles
             s.createQuery("delete from USER_ROLES where email = :email")

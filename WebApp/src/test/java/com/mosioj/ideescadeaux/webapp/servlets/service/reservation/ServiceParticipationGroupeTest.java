@@ -31,7 +31,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
     public void testRejoindreGroupe() throws SQLException {
 
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
         IdeesRepository.bookByGroup(idee.getId(), group.getId());
 
         int groupSuggestion = GROUP_IDEA_SUGGESTION.with(firefox, idee, group).sendItTo(firefox);
@@ -53,7 +53,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
         logger.info("[Perf] Démarrage...");
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         logger.info("[Perf] Idée créée ! Création du groupe...");
-        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
         logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");
         IdeesRepository.bookByGroup(idee.getId(), group.getId());
         logger.info("[Perf] OK! Vérication qu'il n'existe pas de notifications...");
@@ -99,7 +99,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
         // -----------------------
         // Finalement - re - Participation au groupe
         when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
-        when(request.getParameter("amount")).thenReturn(32 + "");
+        when(request.getParameter("amount")).thenReturn(String.valueOf(32));
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,

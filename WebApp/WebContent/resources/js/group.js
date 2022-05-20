@@ -18,7 +18,7 @@ function getActionDiv(groupContent) {
         res.append(`
             <div class="form-inline d-inline">
                 <label for="amount" class="d-none d-lg-inline-block">Modifier le montant :</label>
-                <input id="amount" class="form-control mt-2 mt-md-0" name="amount" type="text" value="${groupContent.userShare.formattedAmount}" />
+                <input id="amount" class="form-control mt-2 mt-md-0" name="amount" type="text" value="${groupContent.userIdeaGroupContent.formattedAmount}" />
                 <input type="hidden" name="groupid" value="${groupContent.group.id}" />
                 <button class="btn btn-primary mt-2 mt-md-0" type="submit" name="submit" id="submitParticiper">Modifier !</button>
             </div>

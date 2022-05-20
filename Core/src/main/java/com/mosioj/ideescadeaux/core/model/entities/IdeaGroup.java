@@ -2,45 +2,51 @@ package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.google.gson.annotations.Expose;
 
-import java.time.Instant;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity(name = "GROUP_IDEA")
 public class IdeaGroup {
 
+    /** The table's id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
-    private final int id;
+    private int id;
+
+    @Column(name = "needed_price")
+    @Expose
+    public double total;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @Expose
+    private List<IdeaGroupContent> ideaGroupContents = new ArrayList<>();
 
     @Expose
-    private final double total;
+    private String formattedTotal;
 
-    @Expose
-    private final String formattedTotal;
-
-    @Expose
-    private final List<Share> shares = new ArrayList<>();
-
-    public IdeaGroup(int id, double d) {
-        this.id = id;
-        this.total = d;
-        this.formattedTotal = String.format("%1$,.2f", total);
+    public IdeaGroup() {
+        // For Hibernate
     }
 
-    public double getTotal() {
-        return total;
+    public IdeaGroup(int id, double total) {
+        this.id = id;
+        this.total = total;
+    }
+
+    @PostLoad
+    private void postLoad() {
+        this.formattedTotal = String.format("%1$,.2f", total);
     }
 
     public int getId() {
         return id;
     }
 
-    public List<Share> getShares() {
-        return shares;
-    }
-
-    public void addUser(User user, double d, Instant timestamp) {
-        shares.add(new Share(user, d, timestamp));
+    public List<IdeaGroupContent> getShares() {
+        return ideaGroupContents;
     }
 
     /**
@@ -48,7 +54,7 @@ public class IdeaGroup {
      * @return true if and only if one of the share contains this user.
      */
     public boolean contains(User user) {
-        return getShares().stream().map(Share::getUser).anyMatch(u -> u.equals(user));
+        return getShares().stream().map(IdeaGroupContent::getUser).anyMatch(u -> u.equals(user));
     }
 
     @Override

@@ -52,8 +52,8 @@ public class BookingInformation {
             return getBookingOwner().isPresent() ? Collections.singletonList(getBookingOwner().get()) : Collections.emptyList();
         }
         if (type == BookingType.GROUP) {
-            final List<Share> shares = getBookingGroup().map(IdeaGroup::getShares).orElse(Collections.emptyList());
-            return shares.stream().map(Share::getUser).collect(Collectors.toList());
+            final List<IdeaGroupContent> ideaGroupContents = getBookingGroup().map(IdeaGroup::getShares).orElse(Collections.emptyList());
+            return ideaGroupContents.stream().map(IdeaGroupContent::getUser).collect(Collectors.toList());
         }
         if (type == BookingType.PARTIAL) {
             return SousReservationRepository.getSousReservation(ideaId)

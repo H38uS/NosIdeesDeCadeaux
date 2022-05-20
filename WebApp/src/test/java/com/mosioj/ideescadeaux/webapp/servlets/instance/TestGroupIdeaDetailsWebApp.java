@@ -24,7 +24,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
     public void testGet() throws SQLException {
 
         Idee idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, _MOI_AUTRE_);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
         IdeesRepository.bookByGroup(idea.getId(), group.getId());
 
         Notification notifGroupSuggestion = NType.GROUP_IDEA_SUGGESTION.with(firefox, idea, group);

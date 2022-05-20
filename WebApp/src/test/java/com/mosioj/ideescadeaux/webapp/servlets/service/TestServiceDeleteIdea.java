@@ -45,7 +45,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idee.getId()));
 
         // Creation du groupe
-        IdeaGroup group = GroupIdeaRepository.createAGroup(200, 10, _MOI_AUTRE_);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(200, 10, moiAutre);
         IdeesRepository.bookByGroup(idee.getId(), group.getId());
         // rafraichissement de l'idée
         idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);

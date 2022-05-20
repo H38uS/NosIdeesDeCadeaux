@@ -38,7 +38,18 @@ public class MyDateFormatViewer extends SimpleDateFormat {
      * @return The formatted date or an empty string if the date is null.
      */
     public static String formatMine(Instant pointInTime) {
+        // FIXME remove quand tout est passé en LocalDateTime
         return formatOrElse(pointInTime, StringUtils.EMPTY);
+    }
+
+    /**
+     * Format the given date using ${DATETIME_DISPLAY_FORMAT}.
+     *
+     * @param localDateTime The date to format.
+     * @return The formatted date or an empty string if the date is null.
+     */
+    public static String formatMine(LocalDateTime localDateTime) {
+        return formatOrElse(localDateTime, StringUtils.EMPTY);
     }
 
     /**

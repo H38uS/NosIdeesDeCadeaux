@@ -59,9 +59,11 @@ public class UserRelationRequestsRepository {
      * @param user The user id for whom to drop all requests.
      */
     public static void removeAllFromAndTo(Session s, User user) {
+        Transaction t = s.beginTransaction();
         s.createQuery("delete from USER_RELATION_REQUESTS where sent_by = :by or sent_to = :to")
          .setParameter("by", user)
          .setParameter("to", user)
          .executeUpdate();
+        t.commit();
     }
 }

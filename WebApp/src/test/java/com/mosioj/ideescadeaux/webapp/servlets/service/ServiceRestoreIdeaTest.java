@@ -37,7 +37,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                                      .withText("Une nouvelle idée !")
                                                      .withOwner(firefox)
                                                      .build());
-        IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox.getId());
+        IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox);
         IdeesRepository.bookByGroup(idee.getId(), group.getId());
         IdeesRepository.remove(idee);
 
@@ -164,7 +164,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                                      .withText("Une nouvelle idée !")
                                                      .withOwner(firefox)
                                                      .build());
-        IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox.getId());
+        IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox);
         IdeesRepository.bookByGroup(idee.getId(), group.getId());
         IdeesRepository.remove(idee);
 

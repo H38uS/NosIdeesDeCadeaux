@@ -3,14 +3,17 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaContentRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -24,9 +27,15 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
     public void testAnnulerParticipation() throws SQLException {
 
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
-        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, _OWNER_ID_);
-        GroupIdeaRepository.addNewAmount(25, moiAutre.id, group.getId());
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, firefox);
+        GroupIdeaContentRepository.addNewAmount(group, moiAutre, 25);
         IdeesRepository.bookByGroup(idee.getId(), group.getId());
+
+        assertEquals(2,
+                     (int) GroupIdeaRepository.getGroupDetails(group.getId())
+                                              .map(IdeaGroup::getShares)
+                                              .map(List::size)
+                                              .orElse(-1));
 
         // Les notifs à vérifier
         // _MOI_AUTRE_ déclenche la requête d'annulation

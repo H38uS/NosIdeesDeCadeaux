@@ -1,11 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroupContent;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.Share;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.Notification;
-import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaContentRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -60,7 +60,7 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
         boolean newMember = !group.contains(thisOne);
         if (newMember) {
 
-            GroupIdeaRepository.addNewAmount(Double.parseDouble(amount), thisOne.id, group.getId());
+            GroupIdeaContentRepository.addNewAmount(group, thisOne, Double.parseDouble(amount));
 
             // On participe, aka plus de suggestion de participation...
             NotificationsRepository.terminator()
@@ -85,13 +85,13 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
             final Notification groupEvolution = NType.JOIN_GROUP.with(thisOne, idee, group);
             group.getShares()
                  .parallelStream()
-                 .map(Share::getUser)
+                 .map(IdeaGroupContent::getUser)
                  .filter(u -> !u.equals(thisOne))
                  .forEach(groupEvolution::sendItTo);
 
             logger.info("{} vient de participer au groupe {} ({}).", thisOne, group, amount);
         } else {
-            GroupIdeaRepository.updateAmount(group.getId(), thisOne, Double.parseDouble(amount));
+            GroupIdeaContentRepository.updateAmount(group, thisOne, Double.parseDouble(amount));
             logger.info("{} vient de mettre à jour sa participation au groupe {} ({}).", thisOne, group, amount);
         }
 

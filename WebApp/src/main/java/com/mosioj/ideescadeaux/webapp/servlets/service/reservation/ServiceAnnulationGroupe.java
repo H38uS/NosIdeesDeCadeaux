@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
+import com.mosioj.ideescadeaux.core.model.entities.IdeaGroupContent;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.Share;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
@@ -40,7 +40,10 @@ public class ServiceAnnulationGroupe extends ServicePost<BookingGroupInteraction
 
         IdeaGroup group = policy.getGroupId();
         logger.info("Annulation de la participation de {} au groupe {}.", thisOne, group.getId());
-        boolean isThereSomeoneRemaining = GroupIdeaRepository.removeUserFromGroup(thisOne, group.getId());
+        boolean isThereSomeoneRemaining = GroupIdeaRepository.removeUserFromGroup(thisOne, group);
+
+        // On a forcément une idée pour un groupe... Sinon grosse erreur !!
+        Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
 
         if (isThereSomeoneRemaining) {
             // On supprime les notif's qu'on a reçu sur ce groupe
@@ -55,18 +58,17 @@ public class ServiceAnnulationGroupe extends ServicePost<BookingGroupInteraction
                                    .whereGroupIdea(group)
                                    .terminates();
 
-            // On a forcément une idée pour un groupe... Sinon grosse erreur !!
-            Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
-
             // Ajout d'une notification de départ à tous ceux qui sont encore dans le groupe
             final Notification leftGroup = NType.LEAVE_GROUP.with(thisOne, idee, group);
             group.getShares()
                  .parallelStream()
-                 .map(Share::getUser)
+                 .map(IdeaGroupContent::getUser)
                  .forEach(leftGroup::sendItTo);
         } else {
             // Suppression des anciennes notifications du groupe
             NotificationsRepository.terminator().whereGroupIdea(group).terminates();
+            // Suppression de la réservation par groupe
+            IdeesRepository.toutDereserver(idee);
         }
 
         buildResponse(response, ServiceResponse.ok(thisOne));

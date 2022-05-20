@@ -257,11 +257,11 @@ public class IdeesRepository extends AbstractRepository {
 
         // Les groupes
         query.append(MessageFormat.format(" left join {0} g on i.{1} = g.{2} \n",
-                                          GroupIdeaRepository.TABLE_NAME,
+                                          "GROUP_IDEA",
                                           IdeeColumns.GROUPE_KDO_ID,
                                           GroupIdeaColumns.ID));
         query.append(MessageFormat.format(" left join {0} gc on g.{1} = gc.{2} and gc.{3} = ? \n",
-                                          GroupIdeaRepository.TABLE_NAME_CONTENT,
+                                          "GROUP_IDEA_CONTENT",
                                           GroupIdeaColumns.ID,
                                           GroupIdeaContentColumns.GROUP_ID,
                                           GroupIdeaContentColumns.USER_ID));
@@ -355,7 +355,7 @@ public class IdeesRepository extends AbstractRepository {
      * @param groupId The booking group's id.
      * @return The idea id of the idea booked by this group.
      */
-    public static Optional<Idee> getIdeaFromGroup(int groupId) throws SQLException {
+    public static Optional<Idee> getIdeaFromGroup(int groupId) {
 
         StringBuilder query = getIdeaBasedSelect();
         query.append(MessageFormat.format(" where i.{0} = ( ", IdeeColumns.ID));
@@ -374,6 +374,8 @@ public class IdeesRepository extends AbstractRepository {
                     return Optional.of(createIdeaFromQuery(rs, false));
                 }
             }
+        } catch (SQLException e) {
+            logger.error(e);
         }
 
         return Optional.empty();
@@ -454,7 +456,7 @@ public class IdeesRepository extends AbstractRepository {
         // ... Qui ne sont pas déjà dans le groupe !
         query.append(MessageFormat.format(
                 " where not exists (select 1 from {0} g where g.{1} = ? and g.{2} = ur.second_user) \n",
-                GroupIdeaRepository.TABLE_NAME_CONTENT,
+                "GROUP_IDEA_CONTENT",
                 GroupIdeaContentColumns.GROUP_ID,
                 GroupIdeaContentColumns.USER_ID));
         query.append(MessageFormat.format("  order by coalesce(u.{0}, {1})", UsersColumns.NAME, UsersColumns.EMAIL));
@@ -744,11 +746,11 @@ public class IdeesRepository extends AbstractRepository {
                .ifPresent(groupId -> {
                               try {
                                   getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                                             GroupIdeaRepository.TABLE_NAME_CONTENT,
+                                                                             "GROUP_IDEA_CONTENT",
                                                                              GroupIdeaContentColumns.GROUP_ID),
                                                         groupId);
                                   getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                                             GroupIdeaRepository.TABLE_NAME,
+                                                                             "GROUP_IDEA",
                                                                              GroupIdeaColumns.ID),
                                                         groupId);
                               } catch (SQLException e) {
@@ -772,7 +774,7 @@ public class IdeesRepository extends AbstractRepository {
      *
      * @param idee L'idée qu'on doit déréserver.
      */
-    public static void toutDereserver(Idee idee) throws SQLException {
+    public static void toutDereserver(Idee idee) {
 
         // Suppression des groupes potentiels
         getDb().selectInt("select " + IdeeColumns.GROUPE_KDO_ID + " from IDEES where " + IdeeColumns.ID + " = ?",
@@ -780,11 +782,11 @@ public class IdeesRepository extends AbstractRepository {
                .ifPresent(groupId -> {
                               try {
                                   getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                                             GroupIdeaRepository.TABLE_NAME_CONTENT,
+                                                                             "GROUP_IDEA_CONTENT",
                                                                              GroupIdeaContentColumns.GROUP_ID),
                                                         groupId);
                                   getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
-                                                                             GroupIdeaRepository.TABLE_NAME,
+                                                                             "GROUP_IDEA",
                                                                              GroupIdeaColumns.ID),
                                                         groupId);
                               } catch (SQLException e) {
@@ -794,19 +796,23 @@ public class IdeesRepository extends AbstractRepository {
                );
 
         // Des sous-reservations
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                   SousReservationRepository.TABLE_NAME,
-                                                   SousReservationColumns.IDEE_ID), idee.getId());
+        try {
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                       SousReservationRepository.TABLE_NAME,
+                                                       SousReservationColumns.IDEE_ID), idee.getId());
+            // Mise a zero des flags
+            getDb().executeUpdate(MessageFormat.format(
+                    "update {0} set {2} = ''N'', {3} = null, {4} = null, {5} = null where {1} = ?",
+                    TABLE_NAME,
+                    IdeeColumns.ID,
+                    IdeeColumns.A_SOUS_RESERVATION,
+                    IdeeColumns.RESERVE,
+                    IdeeColumns.RESERVE_LE,
+                    IdeeColumns.GROUPE_KDO_ID), idee.getId());
+        } catch (SQLException e) {
+            logger.error(e);
+        }
 
-        // Mise a zero des flags
-        getDb().executeUpdate(MessageFormat.format(
-                "update {0} set {2} = ''N'', {3} = null, {4} = null, {5} = null where {1} = ?",
-                TABLE_NAME,
-                IdeeColumns.ID,
-                IdeeColumns.A_SOUS_RESERVATION,
-                IdeeColumns.RESERVE,
-                IdeeColumns.RESERVE_LE,
-                IdeeColumns.GROUPE_KDO_ID), idee.getId());
     }
 
     /**
