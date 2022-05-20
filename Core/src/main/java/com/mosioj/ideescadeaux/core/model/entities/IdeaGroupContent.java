@@ -35,9 +35,11 @@ public class IdeaGroupContent {
     @UpdateTimestamp
     private LocalDateTime joinDate;
 
+    @Transient
     @Expose
     private String formattedAmount;
 
+    @Transient
     @Expose
     private String formattedDate;
 

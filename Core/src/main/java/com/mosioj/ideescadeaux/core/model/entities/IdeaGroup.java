@@ -24,6 +24,7 @@ public class IdeaGroup {
     @Expose
     private List<IdeaGroupContent> ideaGroupContents = new ArrayList<>();
 
+    @Transient
     @Expose
     private String formattedTotal;
 
