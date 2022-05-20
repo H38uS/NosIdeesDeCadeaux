@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
@@ -52,18 +51,4 @@ public class UserRelationRequestsRepository {
         });
     }
 
-    /**
-     * Deletes all queries bound to this user.
-     *
-     * @param s      The current Hibernate session.
-     * @param user The user id for whom to drop all requests.
-     */
-    public static void removeAllFromAndTo(Session s, User user) {
-        Transaction t = s.beginTransaction();
-        s.createQuery("delete from USER_RELATION_REQUESTS where sent_by = :by or sent_to = :to")
-         .setParameter("by", user)
-         .setParameter("to", user)
-         .executeUpdate();
-        t.commit();
-    }
 }

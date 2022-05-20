@@ -210,19 +210,31 @@ public class UsersRepository {
             Transaction t = s.beginTransaction();
 
             // Suppression des relations, des suggestions et des demandes
-            UserRelationsSuggestionRepository.removeAllFromAndTo(s, userId);
-            UserRelationRequestsRepository.removeAllFromAndTo(s, user);
-            UserRelationsRepository.removeAllAssociationsTo(s, user);
+            s.createQuery(
+                     "delete from USER_RELATIONS_SUGGESTION where suggested_by = :id or suggested_to = :id or user_id = :id")
+             .setParameter("id", userId)
+             .executeUpdate();
+            s.createQuery("delete from USER_RELATION_REQUESTS where sent_by = :by or sent_to = :to")
+             .setParameter("by", user)
+             .setParameter("to", user)
+             .executeUpdate();
+            s.createQuery("delete from USER_RELATIONS where first_user = :user or second_user = :user")
+             .setParameter("user", user)
+             .executeUpdate();
 
             // Suppression de toutes les participations aux groupes
-            GroupIdeaContentRepository.removeAllParticipationsOf(s, user);
+            s.createQuery("delete from IdeaGroupContent where user_id = :user")
+             .setParameter("user", user)
+             .executeUpdate();
 
             // Suppression des groupes vides
             GroupIdeaRepository.getAllGroups(s)
                                .stream()
                                .filter(g -> g.getShares().isEmpty())
                                .collect(Collectors.toList())
-                               .forEach(GroupIdeaRepository::deleteGroup);
+                               .forEach(g -> s.createQuery("Delete from GROUP_IDEA where id = :id")
+                                              .setParameter("id", g.getId())
+                                              .executeUpdate());
 
             // Les roles
             s.createQuery("delete from USER_ROLES where email = :email")

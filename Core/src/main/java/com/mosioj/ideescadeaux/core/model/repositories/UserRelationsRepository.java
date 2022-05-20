@@ -6,7 +6,6 @@ import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
@@ -90,14 +89,6 @@ public class UserRelationsRepository {
              .executeUpdate();
             t.commit();
         });
-    }
-
-    public static void removeAllAssociationsTo(Session s, User user) {
-        Transaction t = s.beginTransaction();
-        s.createQuery("delete from USER_RELATIONS where first_user = :user or second_user = :user")
-         .setParameter("user", user)
-         .executeUpdate();
-        t.commit();
     }
 
     /**

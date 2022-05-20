@@ -84,16 +84,4 @@ public class GroupIdeaContentRepository {
         });
     }
 
-    /**
-     * @param session The Hibernate session.
-     * @param user    The user that will remove all participations.
-     */
-    public static void removeAllParticipationsOf(Session session, User user) {
-        Transaction t = session.beginTransaction();
-        session.createQuery("delete from IdeaGroupContent where user_id = :user")
-               .setParameter("user", user)
-               .executeUpdate();
-        t.commit();
-    }
-
 }

@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 import com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
@@ -62,13 +61,6 @@ public class UserRelationsSuggestionRepository {
              .executeUpdate();
             t.commit();
         });
-    }
-
-    public static void removeAllFromAndTo(Session s, int userId) {
-        s.createQuery(
-                 "delete from USER_RELATIONS_SUGGESTION where suggested_by = :id or suggested_to = :id or user_id = :id")
-         .setParameter("id", userId)
-         .executeUpdate();
     }
 
 }
