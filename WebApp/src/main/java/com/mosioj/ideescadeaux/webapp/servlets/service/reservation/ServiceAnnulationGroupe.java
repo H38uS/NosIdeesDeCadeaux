@@ -71,6 +71,6 @@ public class ServiceAnnulationGroupe extends ServicePost<BookingGroupInteraction
             IdeesRepository.toutDereserver(idee);
         }
 
-        buildResponse(response, ServiceResponse.ok(thisOne));
+        buildResponse(response, ServiceResponse.ok(isThereSomeoneRemaining, thisOne));
     }
 }
