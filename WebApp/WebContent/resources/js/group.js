@@ -119,6 +119,9 @@ function refreshGroupWithId(groupId, showSuggest) {
     }).fail(function (data) {
         actionError(data.status + " - " + data.statusText);
     });
+
+    var idea = $(".idea_square");
+    refreshIdea(idea, idea.attr("id").substring(5));
 }
 
 // ============== Suggestion de groupes
