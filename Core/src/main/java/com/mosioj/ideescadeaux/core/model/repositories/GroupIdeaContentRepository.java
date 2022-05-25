@@ -81,6 +81,7 @@ public class GroupIdeaContentRepository {
              .setParameter("user", user)
              .executeUpdate();
             t.commit();
+            group.getShares().remove(new IdeaGroupContent(group, user, 0));
         });
     }
 

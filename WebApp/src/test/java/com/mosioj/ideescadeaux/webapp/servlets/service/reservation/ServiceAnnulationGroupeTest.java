@@ -6,6 +6,7 @@ import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaContentRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
+import static com.mosioj.ideescadeaux.core.model.notifications.NType.LEAVE_GROUP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -69,5 +71,33 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         IdeesRepository.remove(idee);
         // On conserve le groupe pour l'historique
         assertTrue(GroupIdeaRepository.getGroupDetails(group.getId()).isPresent());
+    }
+
+    @Test
+    public void testNoNotificationsAreSentToOurselfWhenWeLeaveTheGroup() throws SQLException {
+
+        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, firefox);
+        GroupIdeaContentRepository.addNewAmount(group, moiAutre, 25);
+        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+
+        // Quand on annule notre participation
+        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
+        when(request.getParameter(ServiceAnnulationGroupe.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
+        StringServiceResponse resp = doTestServicePost();
+
+        // Alors uniquement firefox reçoit une notification
+        assertTrue(resp.isOK());
+        assertEquals(1,
+                     NotificationsRepository.findNotificationsMatching(LEAVE_GROUP.with(moiAutre, idee, group)
+                                                                                  .setOwner(firefox)).size());
+        assertEquals(0,
+                     NotificationsRepository.findNotificationsMatching(LEAVE_GROUP.with(moiAutre, idee, group)
+                                                                                  .setOwner(moiAutre)).size());
+
+        // Nettoyage
+        GroupIdeaContentRepository.removeParticipationOfTo(group, moiAutre);
+        GroupIdeaRepository.deleteGroup(group);
+        IdeesRepository.remove(idee);
     }
 }
