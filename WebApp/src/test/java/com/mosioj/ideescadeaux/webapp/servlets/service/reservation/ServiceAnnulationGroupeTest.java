@@ -9,7 +9,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Set;
 
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.LEAVE_GROUP;
@@ -38,7 +38,7 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         assertEquals(2,
                      (int) GroupIdeaRepository.getGroupDetails(group.getId())
                                               .map(IdeaGroup::getShares)
-                                              .map(List::size)
+                                              .map(Set::size)
                                               .orElse(-1));
 
         // Les notifs à vérifier
