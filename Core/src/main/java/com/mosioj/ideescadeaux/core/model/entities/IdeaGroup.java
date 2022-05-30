@@ -3,9 +3,9 @@ package com.mosioj.ideescadeaux.core.model.entities;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity(name = "GROUP_IDEA")
 public class IdeaGroup {
@@ -22,7 +22,7 @@ public class IdeaGroup {
 
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
     @Expose
-    private List<IdeaGroupContent> ideaGroupContents = new ArrayList<>();
+    private Set<IdeaGroupContent> ideaGroupContents = new HashSet<>();
 
     @Transient
     @Expose
@@ -46,7 +46,7 @@ public class IdeaGroup {
         return id;
     }
 
-    public List<IdeaGroupContent> getShares() {
+    public Set<IdeaGroupContent> getShares() {
         return ideaGroupContents;
     }
 

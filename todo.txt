@@ -1,5 +1,4 @@
 // FIXME : passer en mode hibernate avec les entités, trop chiant là !!
-// FIXME : utiliser des Set dans les entités quand possible
 // FIXME : faire une table dédiée pour les booking information
 // FIXME : puis regarder le chargement LAZY, notamment pour les User sur chaque entité??
 
