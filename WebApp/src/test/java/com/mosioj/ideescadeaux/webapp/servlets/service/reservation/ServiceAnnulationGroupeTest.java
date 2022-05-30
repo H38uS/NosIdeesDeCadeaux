@@ -13,14 +13,41 @@ import java.util.Set;
 
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.LEAVE_GROUP;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
 
     public ServiceAnnulationGroupeTest() {
         super(new ServiceAnnulationGroupe());
+    }
+
+    @Test
+    public void testAnnulerAvecUnSeulMembre() throws SQLException {
+
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("toto")
+                                                    .withPriority(p));
+        IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, firefox);
+        IdeesRepository.bookByGroup(idee, group);
+        assertEquals(1,
+                     (int) GroupIdeaRepository.getGroupDetails(group.getId())
+                                              .map(IdeaGroup::getShares)
+                                              .map(Set::size)
+                                              .orElse(-1));
+
+        // Annulation de la participation de firefox
+        when(request.getParameter(ServiceAnnulationGroupe.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
+        StringServiceResponse resp = doTestServicePost();
+
+        // Le groupe doit avoir été supprimé, ainsi que sa référence dans l'idée
+        assertTrue(resp.isOK());
+        assertTrue(IdeesRepository.canBook(IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new),
+                                           firefox));
+        assertFalse(GroupIdeaRepository.getGroupDetails(group.getId()).isPresent());
+        IdeesRepository.trueRemove(idee);
     }
 
     @Test
