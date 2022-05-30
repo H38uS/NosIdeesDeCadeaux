@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.text.StringEscapeUtils;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.text.MessageFormat;
@@ -29,6 +30,7 @@ public class Idee {
 
     /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
     @Column(name = "idee")
+    @Type(type = "text")
     public String text;
 
     @ManyToOne
