@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GroupIdeaRepository {
@@ -89,7 +90,7 @@ public class GroupIdeaRepository {
     public static boolean removeUserFromGroup(User user, IdeaGroup group) {
         GroupIdeaContentRepository.removeParticipationOfTo(group, user);
         boolean isTheGroupEmpty = getGroupDetails(group.getId()).map(IdeaGroup::getShares)
-                                                                .map(List::isEmpty)
+                                                                .map(Set::isEmpty)
                                                                 .orElse(true);
 
         if (isTheGroupEmpty) {

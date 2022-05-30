@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BookingInformation {
@@ -52,8 +53,8 @@ public class BookingInformation {
             return getBookingOwner().isPresent() ? Collections.singletonList(getBookingOwner().get()) : Collections.emptyList();
         }
         if (type == BookingType.GROUP) {
-            final List<IdeaGroupContent> ideaGroupContents = getBookingGroup().map(IdeaGroup::getShares)
-                                                                              .orElse(Collections.emptyList());
+            final Set<IdeaGroupContent> ideaGroupContents = getBookingGroup().map(IdeaGroup::getShares)
+                                                                             .orElse(Collections.emptySet());
             return ideaGroupContents.stream().map(IdeaGroupContent::getUser).collect(Collectors.toList());
         }
         if (type == BookingType.PARTIAL) {
