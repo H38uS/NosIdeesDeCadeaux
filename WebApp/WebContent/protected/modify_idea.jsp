@@ -68,7 +68,7 @@
                                 <option value="1">Sélectionnez une priorité</option>
                                 <c:forEach var="priorite" items="${priorites}">
                                     <c:choose>
-                                        <c:when test="${priorite.id == idea.priorite.id}">
+                                        <c:when test="${priorite.id == idea.priority.id}">
                                             <option value="${priorite.id}" selected="selected">${priorite.name}</option>
                                         </c:when>
                                         <c:otherwise>

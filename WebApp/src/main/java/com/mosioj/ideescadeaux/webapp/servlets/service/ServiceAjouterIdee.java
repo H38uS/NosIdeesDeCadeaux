@@ -4,8 +4,10 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AjouterIdee;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -64,13 +66,17 @@ public class ServiceAjouterIdee extends ServicePost<NetworkAccess> {
 
                 // Ajout de l'idée
                 boolean estSurprise = "on".equals(parameters.get("est_surprise")) && !isItByMeForMe;
-                Idee idea = IdeesRepository.addIdea(addedToUser,
-                                                    parameters.get("text"),
-                                                    parameters.get("type"),
-                                                    Integer.parseInt(parameters.get("priority")),
-                                                    parameters.get("image"),
-                                                    estSurprise ? thisOne : null,
-                                                    thisOne);
+                final Idee.IdeaBuilder builder = Idee.builder()
+                                                     .withOwner(addedToUser)
+                                                     .withText(parameters.get("text"))
+                                                     .withPicture(parameters.get("image"))
+                                                     .withSurpriseOwner(estSurprise ? thisOne : null)
+                                                     .withCreatedBy(thisOne);
+                CategoriesRepository.getCategory(parameters.get("type")).ifPresent(builder::withCategory);
+                PrioritiesRepository.getPriority(Integer.parseInt(parameters.get("priority")))
+                                    .ifPresent(builder::withPriority);
+                Idee idea = IdeesRepository.saveTheIdea(builder);
+
                 logger.info("Idea {} [{} / {} / {}] added.",
                             idea.getId(),
                             parameters.get("text"),

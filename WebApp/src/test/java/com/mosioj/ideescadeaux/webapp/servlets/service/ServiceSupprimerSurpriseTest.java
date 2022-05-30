@@ -1,7 +1,9 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
@@ -20,7 +22,13 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
     public void shouldNotBePossibleToDeleteOurSurpriseAddedByFriend() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.addIdea(firefox, "une surprise", null, 0, null, friendOfFirefox, friendOfFirefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(firefox)
+                                                    .withText("une surprise")
+                                                    .withPriority(p)
+                                                    .withSurpriseOwner(friendOfFirefox)
+                                                    .withCreatedBy(friendOfFirefox));
         when(request.getParameter(ServiceSupprimerSurprise.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
 
         // Act
@@ -30,14 +38,20 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
         assertFalse(resp.isOK());
         assertEquals("Vous n'avez pas créé cette surprise.", resp.getMessage());
         assertTrue(IdeesRepository.getIdea(idee.getId()).isPresent());
-        IdeesRepository.remove(idee);
+        IdeesRepository.trueRemove(idee);
     }
 
     @Test
     public void shouldBePossibleToDeleteASupriseWeMade() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "une surprise", null, 0, null, firefox, firefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("une surprise")
+                                                    .withPriority(p)
+                                                    .withSurpriseOwner(firefox)
+                                                    .withCreatedBy(firefox));
         when(request.getParameter(ServiceSupprimerSurprise.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
 
         // Act
@@ -52,7 +66,12 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
     public void shouldNotBePossibleToDeleteNonSuprise() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "une surprise", null, 0, null, null, friendOfFirefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("une surprise")
+                                                    .withPriority(p)
+                                                    .withCreatedBy(friendOfFirefox));
         when(request.getParameter(ServiceSupprimerSurprise.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
 
         // Act
@@ -61,6 +80,6 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
         // Check
         assertFalse(resp.isOK());
         assertTrue(IdeesRepository.getIdea(idee.getId()).isPresent());
-        IdeesRepository.remove(idee);
+        IdeesRepository.trueRemove(idee);
     }
 }

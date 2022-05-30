@@ -164,39 +164,6 @@ public class IdeesRepository {
     }
 
     /**
-     * Add a new idea in the IDEES table.
-     *
-     * @param owner       New idea's owner.
-     * @param text        New idea's text.
-     * @param type        New idea's type.
-     * @param priority    New idea's priority.
-     * @param image       New idea's picture.
-     * @param surprisePar True if this is a surprise.
-     * @param createdBy   New idea's creator (can be different from the owner, especially for surprise).
-     * @return The idea identifier.
-     */
-    public static Idee addIdea(User owner,
-                               String text,
-                               String type,
-                               int priority,
-                               String image,
-                               User surprisePar,
-                               User createdBy) {
-        // FIXME : remplacer de partout par les appels au builder directement
-        Idee.IdeaBuilder builder = Idee.builder()
-                                       .withOwner(owner)
-                                       .withText(text)
-                                       .withPicture(image)
-                                       .withSurpriseOwner(surprisePar)
-                                       .withCreatedBy(createdBy);
-
-        CategoriesRepository.getCategory(type).ifPresent(builder::withCategory);
-        PrioritiesRepository.getPriority(priority).ifPresent(builder::withPriority);
-
-        return saveTheIdea(builder);
-    }
-
-    /**
      * Book an idea.
      *
      * @param idea The idea's id.

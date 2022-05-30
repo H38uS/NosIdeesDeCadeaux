@@ -2,11 +2,9 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaContentRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
@@ -28,7 +26,11 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
     @Test
     public void testAnnulerParticipation() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("toto")
+                                                    .withPriority(p));
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, firefox);
         GroupIdeaContentRepository.addNewAmount(group, moiAutre, 25);
         IdeesRepository.bookByGroup(idee, group);
@@ -76,7 +78,11 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
     @Test
     public void testNoNotificationsAreSentToOurselfWhenWeLeaveTheGroup() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("toto")
+                                                    .withPriority(p));
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, firefox);
         GroupIdeaContentRepository.addNewAmount(group, moiAutre, 25);
         IdeesRepository.bookByGroup(idee, group);

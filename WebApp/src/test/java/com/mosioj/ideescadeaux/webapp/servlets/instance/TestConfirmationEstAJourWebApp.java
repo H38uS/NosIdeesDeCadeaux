@@ -1,11 +1,13 @@
 package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.MesNotifications;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.ConfirmationEstAJour;
@@ -55,7 +57,11 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
     public void testOnANewIdea() throws SQLException {
 
         when(session.getAttribute("connected_user")).thenReturn(friendOfFirefox);
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "ma nouvelle idée", "", 1, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(1).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("ma nouvelle idée")
+                                                    .withPriority(p));
         int notifId = NType.IS_IDEA_UP_TO_DATE.with(firefox, idee).sendItTo(friendOfFirefox);
 
         Notification n = NotificationsRepository.getNotification(notifId).orElseThrow(SQLException::new);

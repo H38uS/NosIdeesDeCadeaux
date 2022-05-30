@@ -1,8 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -40,7 +42,12 @@ public class ServiceMesReservationsTest extends AbstractTestServletWebApp {
     public void deletedIdeasAreNotInMyBooking() throws SQLException {
 
         // Deleting a booked idea
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "Deleted IDea", null, 0, null, null, friendOfFirefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("Deleted IDea")
+                                                    .withPriority(p)
+                                                    .withCreatedBy(friendOfFirefox));
         IdeesRepository.reserver(idee, firefox);
         IdeesRepository.remove(idee);
         assertFalse(IdeesRepository.getIdea(idee.getId()).isPresent());

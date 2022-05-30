@@ -1,10 +1,12 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
@@ -23,8 +25,11 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void test() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
-
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("reservation")
+                                                    .withPriority(p));
 
         NotificationsRepository.terminator()
                                .whereOwner(friendOfFirefox)
@@ -45,13 +50,20 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void testSurprise() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("reservation")
+                                                    .withPriority(p)
+                                                    .withSurpriseOwner(firefox)
+                                                    .withCreatedBy(firefox));
 
         NotificationsRepository.terminator()
                                .whereOwner(friendOfFirefox)
                                .whereType(NType.IS_IDEA_UP_TO_DATE)
                                .terminates();
-        List<Notification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox, NType.IS_IDEA_UP_TO_DATE);
+        List<Notification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox,
+                                                                                 NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
         when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
@@ -67,7 +79,11 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void testTriggeringItTwiceIsNotAllowed() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("reservation")
+                                                    .withPriority(p));
 
         when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();

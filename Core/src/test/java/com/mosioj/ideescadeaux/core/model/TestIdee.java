@@ -20,7 +20,7 @@ public class TestIdee extends TemplateTest {
 
         idee = ideaFactory("toto &lt; &quot;6&quot;");
         Assert.assertEquals("toto...", idee.getTextSummary(7));
-        Assert.assertEquals("toto &lt;...", idee.getTextSummary(10));
+        Assert.assertEquals("toto <...", idee.getTextSummary(9));
 
     }
 

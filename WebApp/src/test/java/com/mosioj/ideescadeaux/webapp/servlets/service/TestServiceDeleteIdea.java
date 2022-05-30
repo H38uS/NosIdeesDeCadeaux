@@ -3,10 +3,12 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
@@ -24,9 +26,13 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testDelete() {
+    public void testDelete() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(firefox)
+                                                    .withText("generated")
+                                                    .withPriority(p));
         assertFalse(IdeesRepository.getDeletedIdea(idee.getId()).isPresent());
 
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -41,7 +47,11 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     public void testDeleteWithGroupBooking() throws SQLException {
 
         // Creation de l'idée
-        Idee idee = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(firefox)
+                                                    .withText("generated")
+                                                    .withPriority(p));
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idee.getId()));
 
         // Creation du groupe
@@ -72,9 +82,13 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testUnderlyingNotificationAreWellRemoved() {
+    public void testUnderlyingNotificationAreWellRemoved() throws SQLException {
 
-        Idee idea = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idea = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(firefox)
+                                                    .withText("generated")
+                                                    .withPriority(p));
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idea.getId()));
 
         int isUpToDate = NType.IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idea).sendItTo(firefox);
@@ -115,7 +129,13 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     public void shouldNotBePossibleToDeleteOurSurprise() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.addIdea(firefox, "une surprise", null, 0, null, friendOfFirefox, friendOfFirefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(firefox)
+                                                    .withText("une surprise")
+                                                    .withPriority(p)
+                                                    .withSurpriseOwner(friendOfFirefox)
+                                                    .withCreatedBy(friendOfFirefox));
 
         // Trying to delete it
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -131,10 +151,16 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void shouldBePossibleToDeleteOurSurprise() {
+    public void shouldBePossibleToDeleteOurSurprise() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "une surprise", null, 0, null, firefox, firefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("une surprise")
+                                                    .withPriority(p)
+                                                    .withSurpriseOwner(firefox)
+                                                    .withCreatedBy(firefox));
 
         // Trying to delete it
         when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));

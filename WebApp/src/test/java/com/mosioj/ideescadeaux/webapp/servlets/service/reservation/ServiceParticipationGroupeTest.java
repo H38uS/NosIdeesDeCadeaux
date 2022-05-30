@@ -2,10 +2,12 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.GroupIdeaDetails;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +32,11 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
     @Test
     public void testRejoindreGroupe() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("toto")
+                                                    .withPriority(p));
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
         IdeesRepository.bookByGroup(idee, group);
 
@@ -51,7 +57,11 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // On crée un groupe sur une idée
         logger.info("[Perf] Démarrage...");
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("toto")
+                                                    .withPriority(p));
         logger.info("[Perf] Idée créée ! Création du groupe...");
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
         logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");

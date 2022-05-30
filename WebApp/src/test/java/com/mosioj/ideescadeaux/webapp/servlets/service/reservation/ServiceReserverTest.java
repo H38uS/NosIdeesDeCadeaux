@@ -2,7 +2,9 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import org.junit.Test;
 
@@ -33,7 +35,13 @@ public class ServiceReserverTest extends AbstractTestServletWebApp {
     @Test
     public void testReservationSurprise() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, firefox, firefox);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("reservation")
+                                                    .withPriority(p)
+                                                    .withSurpriseOwner(firefox)
+                                                    .withCreatedBy(firefox));
         assertFalse(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
 
         when(request.getParameter(ServiceDereserver.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -47,7 +55,11 @@ public class ServiceReserverTest extends AbstractTestServletWebApp {
     @Test
     public void bookingShouldRemoveUnbookNotification() throws SQLException {
 
-        Idee idee = IdeesRepository.addIdea(friendOfFirefox, "reservation", "", 0, null, null, null);
+        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("reservation")
+                                                    .withPriority(p));
 
         int recurentUnbook = RECURENT_IDEA_UNBOOK.with(friendOfFirefox, idee).sendItTo(firefox);
         assertNotifDoesExists(recurentUnbook);

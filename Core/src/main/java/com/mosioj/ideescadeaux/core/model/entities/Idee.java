@@ -113,6 +113,7 @@ public class Idee {
 
     @PostLoad
     public void postLoad() {
+        this.text = Escaper.transformCodeToSmiley(text);
         this.htmlText = Escaper.interpreteMarkDown(text);
         this.modificationDate = MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
         this.bookingInformation = BookingInformation.fromAllPossibilities(bookedBy, group, isSubBooked, bookedOn);
@@ -329,8 +330,9 @@ public class Idee {
         /**
          * @param categorie The categorie of this idea.
          */
-        public void withCategory(Categorie categorie) {
+        public IdeaBuilder withCategory(Categorie categorie) {
             this.categorie = categorie;
+            return this;
         }
 
         /**
@@ -345,8 +347,9 @@ public class Idee {
         /**
          * @param priority The priority of this idea.
          */
-        public void withPriority(Priority priority) {
+        public IdeaBuilder withPriority(Priority priority) {
             this.priority = priority;
+            return this;
         }
 
         /**
