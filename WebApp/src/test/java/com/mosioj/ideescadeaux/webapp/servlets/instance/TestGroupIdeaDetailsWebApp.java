@@ -25,7 +25,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
 
         Idee idea = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
-        IdeesRepository.bookByGroup(idea.getId(), group.getId());
+        IdeesRepository.bookByGroup(idea, group);
 
         Notification notifGroupSuggestion = NType.GROUP_IDEA_SUGGESTION.with(firefox, idea, group);
         int groupSuggestion = notifGroupSuggestion.sendItTo(firefox);

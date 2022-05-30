@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class BookingInformation {
      * @param group        The booking group. Not null if and only if the idea is booked by a group.
      * @param bookedOn     When the idea has been booked (can be null).
      */
-    private BookingInformation(BookingType type, User bookingOwner, IdeaGroup group, Instant bookedOn) {
+    private BookingInformation(BookingType type, User bookingOwner, IdeaGroup group, LocalDateTime bookedOn) {
         this.type = type;
         this.bookingOwner = bookingOwner;
         this.group = group;
@@ -52,7 +52,8 @@ public class BookingInformation {
             return getBookingOwner().isPresent() ? Collections.singletonList(getBookingOwner().get()) : Collections.emptyList();
         }
         if (type == BookingType.GROUP) {
-            final List<IdeaGroupContent> ideaGroupContents = getBookingGroup().map(IdeaGroup::getShares).orElse(Collections.emptyList());
+            final List<IdeaGroupContent> ideaGroupContents = getBookingGroup().map(IdeaGroup::getShares)
+                                                                              .orElse(Collections.emptyList());
             return ideaGroupContents.stream().map(IdeaGroupContent::getUser).collect(Collectors.toList());
         }
         if (type == BookingType.PARTIAL) {
@@ -92,15 +93,34 @@ public class BookingInformation {
         return Optional.ofNullable(group);
     }
 
-    public static BookingInformation fromAGroup(IdeaGroup group, Instant bookedOn) {
+    public static BookingInformation fromAllPossibilities(User bookedBy,
+                                                          IdeaGroup group,
+                                                          String isSubBooked,
+                                                          LocalDateTime bookedOn) {
+        if (bookedBy == null) {
+            if (group == null) {
+                if ("Y".equals(isSubBooked)) {
+                    return BookingInformation.fromAPartialReservation(bookedOn);
+                } else {
+                    return BookingInformation.noBooking();
+                }
+            } else {
+                return BookingInformation.fromAGroup(group, bookedOn);
+            }
+        } else {
+            return BookingInformation.fromASingleUser(bookedBy, bookedOn);
+        }
+    }
+
+    public static BookingInformation fromAGroup(IdeaGroup group, LocalDateTime bookedOn) {
         return new BookingInformation(BookingType.GROUP, null, group, bookedOn);
     }
 
-    public static BookingInformation fromASingleUser(User bookingOwner, Instant bookedOn) {
+    public static BookingInformation fromASingleUser(User bookingOwner, LocalDateTime bookedOn) {
         return new BookingInformation(BookingType.SINGLE_PERSON, bookingOwner, null, bookedOn);
     }
 
-    public static BookingInformation fromAPartialReservation(Instant bookedOn) {
+    public static BookingInformation fromAPartialReservation(LocalDateTime bookedOn) {
         return new BookingInformation(BookingType.PARTIAL, null, null, bookedOn);
     }
 

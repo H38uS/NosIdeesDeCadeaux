@@ -66,7 +66,7 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
         // Suppression de l'idée
         IdeesRepository.remove(idea);
 
-        if (!IdeesRepository.hasIdeas(thisOne.id)) {
+        if (!IdeesRepository.hasIdeas(thisOne)) {
             NType.NO_IDEA.buildDefault().sendItTo(thisOne);
         }
 

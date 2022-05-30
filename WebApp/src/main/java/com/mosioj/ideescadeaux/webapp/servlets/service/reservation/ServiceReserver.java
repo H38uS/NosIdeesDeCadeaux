@@ -34,8 +34,8 @@ public class ServiceReserver extends ServicePost<IdeaInteraction> {
         Idee idea = policy.getIdea();
         logger.debug(MessageFormat.format("Réservation de l''idée {0} par {1}.", idea.getId(), thisOne));
 
-        if (IdeesRepository.canBook(idea.getId(), thisOne.id)) {
-            IdeesRepository.reserver(idea.getId(), thisOne.id);
+        if (IdeesRepository.canBook(idea, thisOne)) {
+            IdeesRepository.reserver(idea, thisOne);
             NotificationsRepository.terminator().whereType(NType.RECURENT_IDEA_UNBOOK).whereIdea(idea).terminates();
         }
 

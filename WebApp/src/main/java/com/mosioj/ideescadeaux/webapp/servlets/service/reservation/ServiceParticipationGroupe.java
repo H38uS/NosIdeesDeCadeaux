@@ -41,7 +41,7 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
     @Override
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        IdeaGroup group = policy.getGroupId();
+        IdeaGroup group = policy.getGroup();
         String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
 
         List<String> errorsAmount = ValidatorBuilder.getMascValidator(amount, "montant")
@@ -80,7 +80,7 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
                                    .terminates();
 
             // On a forcément une idée pour un groupe... Sinon grosse erreur !!
-            Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
+            Idee idee = IdeesRepository.getIdeaFromGroup(group).orElseThrow(SQLException::new);
 
             final Notification groupEvolution = NType.JOIN_GROUP.with(thisOne, idee, group);
             group.getShares()

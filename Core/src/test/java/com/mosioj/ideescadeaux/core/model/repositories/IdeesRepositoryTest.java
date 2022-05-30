@@ -11,7 +11,7 @@ public class IdeesRepositoryTest extends TemplateTest {
     @Test
     public void testAddSmiley() throws SQLException {
         String text = "😀😑😎😣😣😲😩😨🤢🤮🚛🚑🛫✈";
-        Idee idee = IdeesRepository.addIdea(firefox, text, "", 0, "", null, null);
+        Idee idee = IdeesRepository.addIdea(firefox, text, "bd", 5, "", null, null);
         IdeesRepository.remove(idee);
     }
 }

@@ -4,13 +4,20 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroupContent;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class GroupIdeaRepository extends AbstractRepository {
+public class GroupIdeaRepository {
+
+    /** Class logger */
+    private static final Logger logger = LogManager.getLogger(GroupIdeaRepository.class);
 
     private GroupIdeaRepository() {
         // Forbidden
@@ -63,13 +70,15 @@ public class GroupIdeaRepository extends AbstractRepository {
      * @param group The group.
      */
     public static void deleteGroup(IdeaGroup group) {
-        HibernateUtil.doSomeWork(s -> {
-            Transaction t = s.beginTransaction();
-            s.createQuery("Delete from GROUP_IDEA where id = :id")
-             .setParameter("id", group.getId())
-             .executeUpdate();
-            t.commit();
-        });
+        if (group != null) {
+            HibernateUtil.doSomeWork(s -> {
+                Transaction t = s.beginTransaction();
+                s.createQuery("Delete from GROUP_IDEA where id = :id")
+                 .setParameter("id", group.getId())
+                 .executeUpdate();
+                t.commit();
+            });
+        }
     }
 
     /**
@@ -88,5 +97,43 @@ public class GroupIdeaRepository extends AbstractRepository {
             deleteGroup(group);
         }
         return !isTheGroupEmpty;
+    }
+
+    /**
+     * @param user The user that might have participated.
+     * @return All the groups this user participated in.
+     */
+    public static List<IdeaGroup> getParticipationOf(User user) {
+        final String query = "select igc.group " +
+                             "  from IdeaGroupContent igc " +
+                             " where igc.user = :user ";
+        return HibernateUtil.doQueryFetch(s -> s.createQuery(query, IdeaGroup.class).setParameter("user", user).list());
+    }
+
+    /**
+     * @param group         The booking group's id.
+     * @param connectedUser The connected user.
+     * @return The list of users that can contribute to this group. They must also belong to the user relationship.
+     */
+    public static List<User> getPotentialGroupUser(IdeaGroup group, User connectedUser) {
+
+        Optional<User> ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(group);
+        if (!ideaOwner.isPresent()) {
+            // No owner ?! No potential users
+            logger.error("No idea or idea owner corresponding to group {}...", group.getId());
+            return Collections.emptyList();
+        }
+
+        List<User> ideaOwnerFriends = UserRelationsRepository.getAllUsersInRelation(ideaOwner.get());
+        List<User> myFriends = UserRelationsRepository.getAllUsersInRelation(connectedUser);
+        List<User> groupMember = group.getShares().stream().map(IdeaGroupContent::getUser).collect(Collectors.toList());
+
+        // Les amis du owner
+        return ideaOwnerFriends.stream()
+                               // qui sont aussi nos amis
+                               .filter(myFriends::contains)
+                               // ... qui ne sont pas déjà dans le groupe !
+                               .filter(u -> !groupMember.contains(u))
+                               .collect(Collectors.toList());
     }
 }

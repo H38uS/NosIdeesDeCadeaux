@@ -26,7 +26,7 @@ public class GroupIdeaContentRepository {
      * @return The corresponding user, if it exists.
      */
     public static Optional<IdeaGroupContent> getParticipationOf(IdeaGroup group, User user, Session session) {
-        final String queryString = "FROM IdeaGroupContent WHERE group_id = :group and user_id = :user";
+        final String queryString = "FROM IdeaGroupContent WHERE group = :group and user = :user";
         Query<IdeaGroupContent> query = session.createQuery(queryString, IdeaGroupContent.class);
         query.setParameter("group", group);
         query.setParameter("user", user);
@@ -64,6 +64,24 @@ public class GroupIdeaContentRepository {
         getParticipationOf(group, user).ifPresent(p -> {
             p.amount = newAmount;
             HibernateUtil.update(p);
+        });
+    }
+
+    /**
+     * Removes the participations to the group if it exists.
+     *
+     * @param group The group.
+     */
+    public static void removeParticipationTo(IdeaGroup group) {
+        HibernateUtil.doSomeWork(s -> {
+            Transaction t = s.beginTransaction();
+            s.createQuery("delete from IdeaGroupContent where group_id = :group ")
+             .setParameter("group", group)
+             .executeUpdate();
+            t.commit();
+            if (group != null) {
+                group.getShares().clear();
+            }
         });
     }
 

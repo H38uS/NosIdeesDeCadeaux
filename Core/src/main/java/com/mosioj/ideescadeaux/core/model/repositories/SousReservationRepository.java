@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.SousReservationColumns;
@@ -23,6 +24,64 @@ public class SousReservationRepository extends AbstractRepository {
 
     private SousReservationRepository() {
         // Forbidden
+    }
+
+    /**
+     * Supprime la sous réservation éventuelle de cette idée.
+     *
+     * @param idee L'idée.
+     */
+    public static void remove(Idee idee) {
+        try {
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                       SousReservationRepository.TABLE_NAME,
+                                                       SousReservationColumns.IDEE_ID), idee.getId());
+        } catch (SQLException e) {
+            logger.error("Une erreur est survenue...", e);
+        }
+    }
+
+    /**
+     * Supprime la sous réservation éventuelle de cette idée pour cet utilisateur.
+     *
+     * @param idee L'idée.
+     * @param user L'utilisateur qui avait fait une sous-réservation.
+     */
+    public static void cancel(Idee idee, User user) {
+        try {
+            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
+                                                       SousReservationRepository.TABLE_NAME,
+                                                       SousReservationColumns.IDEE_ID,
+                                                       SousReservationColumns.USER_ID),
+                                  idee,
+                                  user.id);
+        } catch (SQLException e) {
+            logger.error("Une erreur est survenue...", e);
+        }
+    }
+
+    /**
+     * @param user The user.
+     * @return The list of ideas the user is participating in.
+     */
+    public static List<Idee> getMySubBooking(User user) {
+
+        final String query = "select IDEE_ID from SOUS_RESERVATION where USER_ID = ?";
+        List<Idee> ideas = new ArrayList<>();
+
+        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
+            ps.bindParameters(user.id);
+            if (ps.execute()) {
+                ResultSet res = ps.getResultSet();
+                while (res.next()) {
+                    IdeesRepository.getIdea(res.getInt("IDEE_ID")).ifPresent(ideas::add);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Une erreur est survenue...", e);
+        }
+
+        return ideas;
     }
 
     public static void sousReserver(int idea, int userId, String comment) throws SQLException {

@@ -5,12 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class BookingInformationTest extends TemplateTest {
 
-    private static final Instant MODIF_DATE = Timestamp.valueOf("2007-09-23 10:10:10.0").toInstant();
+    private static final LocalDateTime MODIF_DATE = LocalDateTime.of(2007, 9, 23, 10, 10, 10);
     private static final String EXPECTED_DATE_STRING = "23 septembre 2007 à 10h10";
 
     @Test

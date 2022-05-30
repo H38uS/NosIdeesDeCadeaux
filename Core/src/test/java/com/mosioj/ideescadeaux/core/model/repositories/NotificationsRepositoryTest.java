@@ -15,7 +15,7 @@ public class NotificationsRepositoryTest extends TemplateTest {
     public void shouldRightlyDetectNotificationAssertion() {
 
         // Given this notification
-        Idee idee = IdeesRepository.getIdeasOf(firefox.id).get(0);
+        Idee idee = IdeesRepository.getIdeasOf(firefox).get(0);
         IdeaGroup group = new IdeaGroup(35, 200);
         Notification suggestion = NType.GROUP_IDEA_SUGGESTION.with(firefox, idee, group).setOwner(firefox);
         NotificationsRepository.findNotificationsMatching(suggestion)

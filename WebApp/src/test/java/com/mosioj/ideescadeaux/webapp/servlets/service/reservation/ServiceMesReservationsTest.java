@@ -33,7 +33,7 @@ public class ServiceMesReservationsTest extends AbstractTestServletWebApp {
         assertEquals("test@toto.com", first.getOwner().email);
         assertEquals("Test@toto.com", first.getOwner().name);
         assertEquals(4, first.getOwner().id);
-        assertEquals("<p>toto</p>\n<p>tutu</p>", first.getIdeas().get(0).getIdee().getHtml().trim());
+        assertEquals("<p>reservation</p>", first.getIdeas().get(0).getIdee().getHtml().trim());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ServiceMesReservationsTest extends AbstractTestServletWebApp {
 
         // Deleting a booked idea
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "Deleted IDea", null, 0, null, null, friendOfFirefox);
-        IdeesRepository.reserver(idee.getId(), firefox.getId());
+        IdeesRepository.reserver(idee, firefox);
         IdeesRepository.remove(idee);
         assertFalse(IdeesRepository.getIdea(idee.getId()).isPresent());
         assertTrue(IdeesRepository.getDeletedIdea(idee.getId()).isPresent());

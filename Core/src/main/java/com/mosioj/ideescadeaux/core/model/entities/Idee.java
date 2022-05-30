@@ -3,73 +3,148 @@ package com.mosioj.ideescadeaux.core.model.entities;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
+import org.apache.commons.text.StringEscapeUtils;
+import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.*;
 import java.text.MessageFormat;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Entity(name = "IDEES")
 public class Idee {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
-    private final int id;
+    private int id;
 
+    @ManyToOne
+    @JoinColumn(name = "owner")
     @Expose
-    public final User owner;
+    public User owner;
 
-    @Expose
-    private final Categorie categorie;
+    /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
+    @Column(name = "idee")
+    public String text;
 
-    @Expose
-    private final String image;
+    @ManyToOne
+    @JoinColumn(name = "reserve")
+    public User bookedBy;
 
-    /** Le text échappé de l'utilisateur, converti en markdown. */
+    @ManyToOne
+    @JoinColumn(name = "type")
     @Expose
-    private final String htmlText;
+    public Categorie categorie;
+
+    @ManyToOne
+    @JoinColumn(name = "groupe_kdo_id")
+    public IdeaGroup group;
+
+    @ManyToOne
+    @JoinColumn(name = "priorite")
+    @Expose
+    public Priority priority;
+
+    @ManyToOne
+    @JoinColumn(name = "surprise_par")
+    @Expose
+    private User surpriseBy;
+
+    @Column(length = 100)
+    @Expose
+    public String image;
+
+    @Column(name = "reserve_le")
+    public LocalDateTime bookedOn;
 
     /** La date de modification dans un format lisible. */
-    @Expose
-    private final String modificationDate;
+    @Column(name = "modification_date")
+    public LocalDateTime lastModified;
 
-    @Expose
-    private final User surpriseBy;
+    // FIXME : référencer directement la sous réservation -- le mettre dans la nouvelle table booking info
+    @Column(length = 1, name = "a_sous_reservation")
+    public String isSubBooked = "N";
 
+    @ManyToOne
+    @JoinColumn(updatable = false, name = "cree_par")
+    public User createdBy;
+
+    @Column(updatable = false, name = "cree_le")
+    @CreationTimestamp
+    private LocalDateTime createdOn;
+
+    @Column(length = 50)
+    public String status;
+
+    // ===========================
+    // +++++++++++++++++++++++++++
+    // Other fields, non DB stored
+    // +++++++++++++++++++++++++++
+    // ===========================
+
+    /** Le text échappé de l'utilisateur, converti en markdown. */
+    @Transient
+    @Expose
+    private String htmlText;
+
+    /** La date de modification dans un format lisible. */
+    @Transient
+    @Expose
+    private String modificationDate;
+
+    @Transient
     @Expose
     private BookingInformation bookingInformation;
 
+    @Transient
     @Expose
-    private final Priorite priorite;
+    public boolean hasBeenDeleted;
 
-    @Expose
-    private final boolean hasBeenDeleted;
-
-    /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
-    private final String text;
-
-    private Idee(int pId,
-                 User owner,
-                 String pText,
-                 Categorie categorie,
-                 String image,
-                 Priorite priorite,
-                 Instant lastModified,
-                 User surpriseBy,
-                 BookingInformation bookingInformation,
-                 boolean hasBeenDeleted) {
-        id = pId;
-        text = pText;
-        this.categorie = categorie;
-        htmlText = Escaper.interpreteMarkDown(text);
-        this.image = image;
-        this.owner = owner;
-        this.priorite = priorite;
-        this.surpriseBy = surpriseBy;
-        modificationDate = MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
-        this.bookingInformation = bookingInformation;
-        this.hasBeenDeleted = hasBeenDeleted;
+    /**
+     * Class constructor.
+     */
+    public Idee() {
+        // For Hibernate
     }
+
+    @PostLoad
+    public void postLoad() {
+        this.htmlText = Escaper.interpreteMarkDown(text);
+        this.modificationDate = MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
+        this.bookingInformation = BookingInformation.fromAllPossibilities(bookedBy, group, isSubBooked, bookedOn);
+        this.hasBeenDeleted = "DELETED".equals(status);
+    }
+
+    /**
+     * Mask booking information when providing the idea of the connected user.
+     */
+    public void maskBookingInformation() {
+        bookingInformation = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Idee idee = (Idee) o;
+        return id == idee.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(id);
+    }
+
+    // Getters
 
     /**
      * @return True if this idea has been deleted.
@@ -110,8 +185,8 @@ public class Idee {
     /**
      * @return The priority of this idea.
      */
-    public Priorite getPriorite() {
-        return priorite;
+    public Priority getPriority() {
+        return priority;
     }
 
     /**
@@ -198,35 +273,9 @@ public class Idee {
     }
 
     /**
-     * Mask booking information when providing the idea of the connected user.
-     */
-    public void maskBookingInformation() {
-        bookingInformation = null;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Idee idee = (Idee) o;
-        return id == idee.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(id);
-    }
-
-
-    /**
      * @return The builder.
      */
-    public static IdeaBuilder builder() {
+    public static IdeaBuilder builder() { // FIXME à supprimer
         return new IdeaBuilder();
     }
 
@@ -241,11 +290,11 @@ public class Idee {
         private String text;
         private Categorie categorie;
         private String image;
-        private Priorite priorite;
-        private Instant lastModified;
+        private Priority priority;
+        private LocalDateTime lastModified;
         private User surpriseBy;
         private BookingInformation bookingInformation;
-        private boolean hasBeenDelete;
+        private User createdBy;
 
         /**
          * @param id The identifier of this idea.
@@ -270,17 +319,18 @@ public class Idee {
          * @return The idea build.
          */
         public IdeaBuilder withText(String text) {
+            text = StringEscapeUtils.unescapeHtml4(text);
+            text = Escaper.escapeIdeaText(text);
+            text = Escaper.transformSmileyToCode(text);
             this.text = text;
             return this;
         }
 
         /**
          * @param categorie The categorie of this idea.
-         * @return The idea build.
          */
-        public IdeaBuilder withCategory(Categorie categorie) {
+        public void withCategory(Categorie categorie) {
             this.categorie = categorie;
-            return this;
         }
 
         /**
@@ -293,19 +343,17 @@ public class Idee {
         }
 
         /**
-         * @param priorite The priority of this idea.
-         * @return The idea build.
+         * @param priority The priority of this idea.
          */
-        public IdeaBuilder withPriority(Priorite priorite) {
-            this.priorite = priorite;
-            return this;
+        public void withPriority(Priority priority) {
+            this.priority = priority;
         }
 
         /**
          * @param lastModified The timestamp of the last modification of this idea.
          * @return The idea build.
          */
-        public IdeaBuilder withLastModificationDate(Instant lastModified) {
+        public IdeaBuilder withLastModificationDate(LocalDateTime lastModified) {
             this.lastModified = lastModified;
             return this;
         }
@@ -329,11 +377,11 @@ public class Idee {
         }
 
         /**
-         * @param hasBeenDelete True if the idea has been deleted.
+         * @param createdBy The user that created this idea.
          * @return The idea build.
          */
-        public IdeaBuilder hasBeenDelete(boolean hasBeenDelete) {
-            this.hasBeenDelete = hasBeenDelete;
+        public IdeaBuilder withCreatedBy(User createdBy) {
+            this.createdBy = createdBy;
             return this;
         }
 
@@ -341,16 +389,18 @@ public class Idee {
          * @return Builds the idea with the given parameters.
          */
         public Idee build() {
-            return new Idee(id,
-                            owner,
-                            text,
-                            categorie,
-                            image,
-                            priorite,
-                            lastModified,
-                            surpriseBy,
-                            bookingInformation,
-                            hasBeenDelete);
+            Idee idee = new Idee();
+            idee.id = id;
+            idee.owner = owner;
+            idee.text = text;
+            idee.categorie = categorie;
+            idee.image = image;
+            idee.priority = priority;
+            idee.lastModified = lastModified;
+            idee.surpriseBy = surpriseBy;
+            idee.bookingInformation = bookingInformation;
+            idee.createdBy = createdBy;
+            return idee;
         }
 
     }

@@ -69,7 +69,7 @@ public class Administration extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
         RootingsUtils.rootToPage(DISPATCH_URL, request, response);
     }
 
-    protected void checkForIdeasPictures(HttpServletRequest request) throws SQLException {
+    protected void checkForIdeasPictures(HttpServletRequest request) {
 
         // Get all pictures
         List<String> imagesInIdeas = IdeesRepository.getAllImages();

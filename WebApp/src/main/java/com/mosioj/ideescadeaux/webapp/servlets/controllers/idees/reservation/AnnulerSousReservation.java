@@ -35,11 +35,11 @@ public class AnnulerSousReservation extends IdeesCadeauxPostServlet<IdeaInteract
         User user = thisOne;
         Idee idea = policy.getIdea();
 
-        if (IdeesRepository.isSubBookBy(idea.getId(), user)) {
+        if (IdeesRepository.isSubBookBy(idea, user)) {
             logger.debug(MessageFormat.format("Suppression des sous réservations de {0} sur l''idée {1}",
                                               user,
                                               idea.getId()));
-            IdeesRepository.dereserverSousPartie(idea.getId(), user);
+            IdeesRepository.dereserverSousPartie(idea, user);
         }
 
         final String url = DetailSousReservation.URL + "?" + IDEA_ID_PARAM + "=" + idea.getId();

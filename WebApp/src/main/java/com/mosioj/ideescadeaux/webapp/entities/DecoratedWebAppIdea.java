@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.webapp.entities;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.entities.*;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
@@ -54,7 +54,7 @@ public class DecoratedWebAppIdea {
         this.idee = idee;
         hasComment = tempComment;
         hasQuestion = tempQuestion;
-        hasAskedIfUpToDate = IdeesRepository.hasUserAskedIfUpToDate(idee.getId(), connectedUser.id);
+        hasAskedIfUpToDate = IsUpToDateQuestionsRepository.associationExists(idee, connectedUser);
 
         // calcul de la display class
         displayClass = computeDisplayClass(idee, connectedUser);
@@ -64,9 +64,9 @@ public class DecoratedWebAppIdea {
         }
 
         if (device.isMobile()) {
-            Priorite priorite = idee.getPriorite();
-            if (priorite != null && priorite.getImage() != null) {
-                priorite.image = priorite.getImage().replaceAll("width=\"[0-9]+px\"",
+            Priority priority = idee.getPriority();
+            if (priority != null && priority.getImage() != null) {
+                priority.image = priority.getImage().replaceAll("width=\"[0-9]+px\"",
                                                                 "width=\"" +
                                                                 ParametersUtils.MOBILE_PICTURE_WIDTH +
                                                                 "px\"");

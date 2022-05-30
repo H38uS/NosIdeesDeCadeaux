@@ -467,9 +467,9 @@ function getRestoreActions(connectedUser, jsonIdea) {
 
 function getPriorityIconAsHTML(jsonIdea) {
     var priorityIconDiv = $("<div>");
-    if (typeof jsonIdea.priorite.image !== 'undefined') {
+    if (typeof jsonIdea.priority.image !== 'undefined') {
         priorityIconDiv.append(`
-            <div class="col-auto pr-0 pl-1">${jsonIdea.priorite.image}</div>
+            <div class="col-auto pr-0 pl-1">${jsonIdea.priority.image}</div>
         `);
     }
     return priorityIconDiv.html();

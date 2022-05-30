@@ -13,16 +13,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class ServiceReserverTestWebApp extends AbstractTestServletWebApp {
+public class ServiceReserverTest extends AbstractTestServletWebApp {
 
-    public ServiceReserverTestWebApp() {
+    public ServiceReserverTest() {
         super(new ServiceReserver());
     }
 
     @Test
     public void testSuccess() {
 
-        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox.id).get(0);
+        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
         when(request.getParameter(ServiceDereserver.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
 
         StringServiceResponse resp = doTestServicePost();

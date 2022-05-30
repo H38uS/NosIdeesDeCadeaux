@@ -24,7 +24,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testDelete() throws SQLException {
+    public void testDelete() {
 
         Idee idee = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertFalse(IdeesRepository.getDeletedIdea(idee.getId()).isPresent());
@@ -46,7 +46,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
 
         // Creation du groupe
         IdeaGroup group = GroupIdeaRepository.createAGroup(200, 10, moiAutre);
-        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+        IdeesRepository.bookByGroup(idee, group);
         // rafraichissement de l'idée
         idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
         int notifId = NType.JOIN_GROUP.with(moiAutre, idee, group).sendItTo(friendOfFirefox);
@@ -72,7 +72,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testUnderlyingNotificationAreWellRemoved() throws SQLException {
+    public void testUnderlyingNotificationAreWellRemoved() {
 
         Idee idea = IdeesRepository.addIdea(firefox, "generated", "", 0, null, null, null);
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idea.getId()));
@@ -131,7 +131,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void shouldBePossibleToDeleteOurSurprise() throws SQLException {
+    public void shouldBePossibleToDeleteOurSurprise() {
 
         // Given
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "une surprise", null, 0, null, firefox, firefox);

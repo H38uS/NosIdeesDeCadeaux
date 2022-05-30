@@ -60,11 +60,27 @@ public class HibernateUtil {
     /**
      * @param <T>       The type of result.
      * @param operation The operation to perform.
-     * @return The list of rows found.
+     * @return The optional row found.
      */
     public static <T> Optional<T> doQueryOptional(HibernateSessionQueryOptional<T> operation) {
         try (Session session = HibernateUtil.getASession()) {
             return operation.fetch(session);
+        }
+    }
+
+    /**
+     * @param <T>       The type of result.
+     * @param operation The operation to perform.
+     * @return The optional row found which is either the first element or an empty option if no element.
+     */
+    public static <T> Optional<T> doQueryOptionalFromListOperation(HibernateSessionQueryFetch<T> operation) {
+        try (Session session = HibernateUtil.getASession()) {
+            List<T> items = operation.fetch(session);
+            if (items.size() == 0) {
+                return Optional.empty();
+            } else {
+                return Optional.of(items.get(0));
+            }
         }
     }
 
@@ -80,7 +96,7 @@ public class HibernateUtil {
     }
 
     /**
-     * @param queryText The query text.
+     * @param queryText  The query text.
      * @param parameters The query parameters.
      * @return True if the query returns some rows.
      */

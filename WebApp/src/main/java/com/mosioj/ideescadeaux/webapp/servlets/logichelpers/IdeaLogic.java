@@ -130,7 +130,7 @@ public class IdeaLogic {
      * @return Those users as their ideas in a single list.
      */
     private static OwnerIdeas getPersonIdeasFromUser(User connectedUser, Device device, User user) {
-        Stream<DecoratedWebAppIdea> ideas = IdeesRepository.getIdeasOf(user.id)
+        Stream<DecoratedWebAppIdea> ideas = IdeesRepository.getIdeasOf(user)
                                                            .parallelStream()
                                                            .map(i -> new DecoratedWebAppIdea(i,
                                                                                              connectedUser,

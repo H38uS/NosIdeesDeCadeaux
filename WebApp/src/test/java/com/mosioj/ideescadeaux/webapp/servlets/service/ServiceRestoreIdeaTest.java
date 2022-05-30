@@ -33,12 +33,9 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     public void restoringBookingShouldKeepTheGroup() throws SQLException {
 
         // Given a deleted idea with a group
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox);
-        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+        IdeesRepository.bookByGroup(idee, group);
         IdeesRepository.remove(idee);
 
         // Doing the restore
@@ -60,11 +57,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     public void restoringBookingShouldKeepTheBooking() throws SQLException {
 
         // Given a deleted idea with a booking by a person
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
-        IdeesRepository.reserver(idee.getId(), friendOfFirefox.getId());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
+        IdeesRepository.reserver(idee, friendOfFirefox);
         IdeesRepository.remove(idee);
 
         // Doing the restore
@@ -84,10 +78,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     public void restoringBookingShouldKeepTheSubBooking() throws SQLException {
 
         // Given a deleted idea with a partial booking
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         SousReservationRepository.sousReserver(idee.getId(), friendOfFirefox.getId(), "Ma sous-rés!");
         IdeesRepository.remove(idee);
 
@@ -106,14 +97,11 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void restoringBookingSendsNotifications() throws SQLException {
+    public void restoringBookingSendsNotifications() {
 
         // Given a deleted idea with a booking by a person
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
-        IdeesRepository.reserver(idee.getId(), friendOfFirefox.getId());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
+        IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
         deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
@@ -160,12 +148,9 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     public void restoringNonBookingShouldDeleteTheGroup() throws SQLException {
 
         // Given a deleted idea with a group
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         IdeaGroup group = GroupIdeaRepository.createAGroup(50, 30, friendOfFirefox);
-        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+        IdeesRepository.bookByGroup(idee, group);
         IdeesRepository.remove(idee);
 
         // Doing the restore
@@ -183,32 +168,26 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     public void restoringNonBookingShouldDeleteTheBooking() throws SQLException {
 
         // Given a deleted idea with a booking by a person
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
-        IdeesRepository.reserver(idee.getId(), friendOfFirefox.getId());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
+        IdeesRepository.reserver(idee, friendOfFirefox);
         IdeesRepository.remove(idee);
 
         // Doing the restore
         when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
         when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("false");
         StringServiceResponse resp = doTestServicePost();
+        idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
 
         // The idea exist while the booking doesn't
         assertTrue(resp.isOK());
-        assertEquals(Optional.of(idee), IdeesRepository.getIdea(idee.getId()));
-        assertTrue(IdeesRepository.canBook(idee.getId(), friendOfFirefox.getId()));
+        assertTrue(IdeesRepository.canBook(idee, friendOfFirefox));
     }
 
     @Test
     public void restoringNonBookingShouldDeleteTheSubBooking() throws SQLException {
 
         // Given a deleted idea with a partial booking
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         SousReservationRepository.sousReserver(idee.getId(), friendOfFirefox.getId(), "Ma sous-rés!");
         IdeesRepository.remove(idee);
 
@@ -224,14 +203,11 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void restoringNonBookingDoesSendUpdateNotification() throws SQLException {
+    public void restoringNonBookingDoesSendUpdateNotification() {
 
         // Given a deleted idea with a booking by a person
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
-        IdeesRepository.reserver(idee.getId(), friendOfFirefox.getId());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
+        IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
         deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
@@ -275,16 +251,13 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void restoringSendsBirthdayNotification() throws SQLException {
+    public void restoringSendsBirthdayNotification() {
 
         // The birthday is closed!
         firefox.setBirthday(LocalDate.now().plusDays(3));
         // Given a deleted idea with a booking by a person
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
-        IdeesRepository.reserver(idee.getId(), friendOfFirefox.getId());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
+        IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
         deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
@@ -316,14 +289,11 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void multipleDeleteRestoreShouldNotStackNotifications() throws SQLException {
+    public void multipleDeleteRestoreShouldNotStackNotifications() {
 
         // Given a deleted idea with a booking by a person
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .build());
-        IdeesRepository.reserver(idee.getId(), friendOfFirefox.getId());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
+        IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
         deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
@@ -370,11 +340,10 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
     public void surpriseAreDefinitelyGone() throws SQLException {
 
         // Given a deleted surprise
-        Idee idee = IdeesRepository.persistsIdea(Idee.builder()
-                                                     .withText("Une nouvelle idée !")
-                                                     .withOwner(firefox)
-                                                     .withSurpriseOwner(friendOfFirefox)
-                                                     .build());
+        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
+                                                    .withText("Une nouvelle idée !")
+                                                    .withOwner(firefox)
+                                                    .withSurpriseOwner(friendOfFirefox));
         IdeesRepository.remove(idee);
 
         // The surprise is really deleted... It cannot be retrieved anymore.

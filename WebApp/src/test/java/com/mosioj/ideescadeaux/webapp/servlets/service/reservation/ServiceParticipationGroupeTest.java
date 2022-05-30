@@ -32,7 +32,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
-        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+        IdeesRepository.bookByGroup(idee, group);
 
         int groupSuggestion = GROUP_IDEA_SUGGESTION.with(firefox, idee, group).sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
@@ -55,7 +55,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
         logger.info("[Perf] Idée créée ! Création du groupe...");
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
         logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");
-        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+        IdeesRepository.bookByGroup(idee, group);
         logger.info("[Perf] OK! Vérication qu'il n'existe pas de notifications...");
         assertFalse(NotificationsRepository.fetcher()
                                            .whereOwner(moiAutre)

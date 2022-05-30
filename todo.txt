@@ -1,4 +1,7 @@
 // FIXME : passer en mode hibernate avec les entités, trop chiant là !!
+// FIXME : utiliser des Set dans les entités quand possible
+// FIXME : faire une table dédiée pour les booking information
+// FIXME : puis regarder le chargement LAZY, notamment pour les User sur chaque entité??
 
 // FIXME : pouvoir se noter des personnes pour lesquelles on veut faire une résa => on reçoit alors une notif lorsque la personne modifie/ajoute une idée!
 // FIXME : 5 mettre à jour bootstrap

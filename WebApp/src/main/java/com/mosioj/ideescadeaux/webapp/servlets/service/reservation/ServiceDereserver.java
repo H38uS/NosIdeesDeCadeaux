@@ -37,7 +37,7 @@ public class ServiceDereserver extends ServicePost<IdeaInteraction> {
         logger.debug(MessageFormat.format("Annulation de la réservation de l''idée {0} par {1}.",
                                           idea.getId(),
                                           userId));
-        IdeesRepository.dereserver(idea.getId(), userId);
+        IdeesRepository.dereserver(idea, thisOne);
 
         buildResponse(response, ServiceResponse.ok(thisOne));
     }

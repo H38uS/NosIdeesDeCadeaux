@@ -185,10 +185,6 @@ public class UsersRepository {
         // Suppression des commentaires
         CommentsRepository.deleteAll(userId);
 
-        // Suppression des idées
-        // Suppression de l'historique des idées
-        IdeesRepository.removeAll(userId);
-
         // Suppression des notifications
         NotificationsRepository.terminator().whereOwner(user).terminates();
 
@@ -208,6 +204,12 @@ public class UsersRepository {
         HibernateUtil.doSomeWork(s -> {
             // On ne peut pas se baser sur le CASCADE... Il faudrait être sûr que tous les objets soient chargés
             Transaction t = s.beginTransaction();
+
+            // Suppression des idées
+            // Suppression de l'historique des idées
+            s.createQuery("delete from IDEES where owner = :owner")
+             .setParameter("owner", user)
+             .executeUpdate();
 
             // Suppression des relations, des suggestions et des demandes
             s.createQuery(

@@ -39,7 +39,10 @@ public class MyDateFormatViewer extends SimpleDateFormat {
      */
     public static String formatMine(Instant pointInTime) {
         // FIXME remove quand tout est passé en LocalDateTime
-        return formatOrElse(pointInTime, StringUtils.EMPTY);
+        if (pointInTime == null) {
+            return StringUtils.EMPTY;
+        }
+        return formatOrElse(pointInTime.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime(), StringUtils.EMPTY);
     }
 
     /**
@@ -60,21 +63,6 @@ public class MyDateFormatViewer extends SimpleDateFormat {
      */
     public static String formatDayWithYearHidden(LocalDate date) {
         return date.format(DAY_FORMATTER);
-    }
-
-    /**
-     * Format the given date using ${DATETIME_DISPLAY_FORMAT} if not null or return the provided default value.
-     *
-     * @param pointInTime   The date to format.
-     * @param defaultFormat The default string to return if the give date is null.
-     * @return The formatted date.
-     */
-    public static String formatOrElse(Instant pointInTime, String defaultFormat) {
-        // FIXME remove quand tout est passé en LocalDateTime
-        if (pointInTime == null) {
-            return defaultFormat;
-        }
-        return formatOrElse(pointInTime.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime(), defaultFormat);
     }
 
     /**

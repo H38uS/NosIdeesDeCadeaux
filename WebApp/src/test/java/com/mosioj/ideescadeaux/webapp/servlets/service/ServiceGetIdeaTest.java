@@ -23,7 +23,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
     public void itIsPossibleToGetAFriendIdea() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox.id)
+        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox)
                                    .stream()
                                    .filter(i -> !i.isASurprise())
                                    .findFirst()
@@ -42,7 +42,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
     public void itIsPossibleToGetAFriendSurpriseIdea() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox.id)
+        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox)
                                    .stream()
                                    .filter(Idee::isASurprise)
                                    .findFirst()
@@ -61,7 +61,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
     public void itIsPossibleToGetOurIdea() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.getIdeasOf(firefox.id)
+        Idee idee = IdeesRepository.getIdeasOf(firefox)
                                    .stream()
                                    .filter(i -> !i.isASurprise())
                                    .findFirst()
@@ -80,7 +80,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
     public void itIsNotPossibleToGetOurOwnSurprise() throws SQLException {
 
         // Given
-        Idee idee = IdeesRepository.getIdeasOf(firefox.id)
+        Idee idee = IdeesRepository.getIdeasOf(firefox)
                                    .stream()
                                    .filter(Idee::isASurprise)
                                    .findFirst()

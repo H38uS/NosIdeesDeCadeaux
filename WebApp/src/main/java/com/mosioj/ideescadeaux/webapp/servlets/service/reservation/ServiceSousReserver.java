@@ -36,14 +36,14 @@ public class ServiceSousReserver extends ServicePost<IdeaInteraction> {
             return;
         }
 
-        if (!IdeesRepository.canSubBook(idea.getId(), thisOne.id)) {
+        if (!IdeesRepository.canSubBook(idea, thisOne)) {
             final String message = "L'idée a déjà été réservée, ou vous en avez déjà réservé une sous partie.";
             buildResponse(response, ServiceResponse.ko(message, thisOne));
             return;
         }
 
         // succès
-        IdeesRepository.sousReserver(idea.getId());
+        IdeesRepository.sousReserver(idea);
         SousReservationRepository.sousReserver(idea.getId(), thisOne.id, comment);
         final String message = "La réservation a bien été créée.";
         buildResponse(response, ServiceResponse.ok(message, thisOne));

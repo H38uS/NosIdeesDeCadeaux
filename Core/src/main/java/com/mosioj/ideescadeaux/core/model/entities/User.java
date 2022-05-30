@@ -14,8 +14,8 @@ import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity(name = "USERS")
 public class User implements Comparable<User>, Serializable {
@@ -71,7 +71,7 @@ public class User implements Comparable<User>, Serializable {
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<UserRole> roles;
+    private Set<UserRole> roles;
 
     public User() {
         // Hibernate constructor

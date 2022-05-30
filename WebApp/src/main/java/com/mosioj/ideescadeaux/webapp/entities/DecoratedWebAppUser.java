@@ -7,7 +7,6 @@ import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 
 import javax.persistence.Transient;
-import java.sql.SQLException;
 import java.util.Objects;
 
 import static com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository.associationExists;
@@ -39,19 +38,13 @@ public class DecoratedWebAppUser {
         isInMyNetwork = associationExists(user, connectedUser);
         readableBirthday = user.getBirthdayAsString();
         hasSentARequest = UserRelationRequestsRepository.associationExists(connectedUser, user);
-        boolean hasBookedOneOfItsIdeas = false;
-        try {
-            hasBookedOneOfItsIdeas = IdeesRepository.getIdeasWhereIDoParticipateIn(connectedUser)
-                                                    .parallelStream()
-                                                    .map(Idee::getOwner)
-                                                    .map(user::equals)
-                                                    .filter(Boolean.TRUE::equals)
-                                                    .findFirst()
-                                                    .orElse(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        this.hasBookedOneOfItsIdeas = hasBookedOneOfItsIdeas;
+        this.hasBookedOneOfItsIdeas = IdeesRepository.getIdeasWhereIDoParticipateIn(connectedUser)
+                                                     .parallelStream()
+                                                     .map(Idee::getOwner)
+                                                     .map(user::equals)
+                                                     .filter(Boolean.TRUE::equals)
+                                                     .findFirst()
+                                                     .orElse(false);
     }
 
     /**

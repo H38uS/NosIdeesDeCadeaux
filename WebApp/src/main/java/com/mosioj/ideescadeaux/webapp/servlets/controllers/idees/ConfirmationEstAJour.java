@@ -33,7 +33,7 @@ public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModificatio
                             HttpServletResponse response) throws ServletException, SQLException {
 
         Idee idea = policy.getIdea();
-        IdeesRepository.touch(idea.getId());
+        IdeesRepository.touch(idea);
         IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
         // Gets all previous notifications asking if this idea is up to date

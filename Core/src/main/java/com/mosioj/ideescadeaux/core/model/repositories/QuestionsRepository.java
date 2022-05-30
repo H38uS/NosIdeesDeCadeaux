@@ -6,7 +6,7 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.CommentsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

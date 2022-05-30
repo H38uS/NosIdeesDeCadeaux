@@ -63,10 +63,9 @@ public class ServiceCreationGroup extends ServicePost<IdeaInteraction> {
 
         final double amount = ParametersUtils.readDouble(request, "amount").orElse(0d);
 
-        final int userId = thisOne.id;
-        if (IdeesRepository.canBook(idea.getId(), userId)) {
+        if (IdeesRepository.canBook(idea, thisOne)) {
             final IdeaGroup group = GroupIdeaRepository.createAGroup(total, amount, thisOne);
-            IdeesRepository.bookByGroup(idea.getId(), group.getId());
+            IdeesRepository.bookByGroup(idea, group);
             logger.debug("Total: {}, amount: {}", total, amount);
             buildResponse(response, ServiceResponse.ok(group.getId(), thisOne));
         } else {

@@ -31,7 +31,7 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, firefox);
         GroupIdeaContentRepository.addNewAmount(group, moiAutre, 25);
-        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+        IdeesRepository.bookByGroup(idee, group);
 
         assertEquals(2,
                      (int) GroupIdeaRepository.getGroupDetails(group.getId())
@@ -79,7 +79,7 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.addIdea(friendOfFirefox, "toto", null, 0, null, null, null);
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, firefox);
         GroupIdeaContentRepository.addNewAmount(group, moiAutre, 25);
-        IdeesRepository.bookByGroup(idee.getId(), group.getId());
+        IdeesRepository.bookByGroup(idee, group);
 
         // Quand on annule notre participation
         when(session.getAttribute("connected_user")).thenReturn(moiAutre);
@@ -98,6 +98,6 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         // Nettoyage
         GroupIdeaContentRepository.removeParticipationOfTo(group, moiAutre);
         GroupIdeaRepository.deleteGroup(group);
-        IdeesRepository.remove(idee);
+        IdeesRepository.trueRemove(idee);
     }
 }

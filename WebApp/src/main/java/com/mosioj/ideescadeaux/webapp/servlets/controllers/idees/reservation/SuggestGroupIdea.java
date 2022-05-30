@@ -31,8 +31,8 @@ public class SuggestGroupIdea extends IdeesCadeauxGetServlet<BookingGroupInterac
     public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         // Parameters
-        IdeaGroup group = policy.getGroupId();
-        Idee idee = getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
+        IdeaGroup group = policy.getGroup();
+        Idee idee = getIdeaFromGroup(group).orElseThrow(SQLException::new);
 
         // JSP variables
         request.setAttribute("idee", idee);

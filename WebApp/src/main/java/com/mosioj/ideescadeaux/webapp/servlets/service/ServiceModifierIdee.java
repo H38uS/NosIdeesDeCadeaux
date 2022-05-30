@@ -1,12 +1,13 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.Notification;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaModification;
@@ -81,21 +82,21 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                     logger.debug("Updating image from {} to {}.", old, image);
                 }
 
-                IdeesRepository.modifier(idea.getId(),
-                                         parameters.get("text"),
-                                         parameters.get("type"),
-                                         parameters.get("priority"),
-                                         image);
-                User user = thisOne;
+                idea.text = parameters.get("text");
+                idea.categorie = CategoriesRepository.getCategory(parameters.get("type")).orElse(null);
+                idea.priority = PrioritiesRepository.getPriority(Integer.parseInt(parameters.get("priority")))
+                                                    .orElse(null);
+                idea.image = image;
+                HibernateUtil.update(idea);
 
                 // Ajout de notification aux amis si l'anniversaire approche
-                IdeaLogic.addModificationNotification(user, policy.getIdea(), false);
+                IdeaLogic.addModificationNotification(thisOne, policy.getIdea(), false);
 
                 // Suppression des demandes si y'en avait
                 IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
 
                 // Mise à jour des demandes de confirmations si à jour
-                final Notification confirmationUpToDate = CONFIRMED_UP_TO_DATE.with(user, idea);
+                final Notification confirmationUpToDate = CONFIRMED_UP_TO_DATE.with(thisOne, idea);
                 NotificationsRepository.fetcher()
                                        .whereType(NType.IS_IDEA_UP_TO_DATE)
                                        .whereIdea(idea)

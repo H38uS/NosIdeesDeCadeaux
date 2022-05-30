@@ -38,12 +38,12 @@ public class ServiceAnnulationGroupe extends ServicePost<BookingGroupInteraction
     @Override
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        IdeaGroup group = policy.getGroupId();
+        IdeaGroup group = policy.getGroup();
         logger.info("Annulation de la participation de {} au groupe {}.", thisOne, group.getId());
         boolean isThereSomeoneRemaining = GroupIdeaRepository.removeUserFromGroup(thisOne, group);
 
         // On a forcément une idée pour un groupe... Sinon grosse erreur !!
-        Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdeaFromGroup(group).orElseThrow(SQLException::new);
 
         if (isThereSomeoneRemaining) {
             // On supprime les notif's qu'on a reçu sur ce groupe

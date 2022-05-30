@@ -24,10 +24,10 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
     public void groupsShouldBeDeleted() throws SQLException {
 
         // Création de l'idée et réservation par un groupe
-        Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
+        Idee idea = IdeesRepository.getIdeasOf(firefox).stream().findAny().orElseThrow(SQLException::new);
         IdeesRepository.toutDereserver(idea);
         IdeaGroup group = GroupIdeaRepository.createAGroup(20, 10, friendOfFirefox);
-        IdeesRepository.bookByGroup(idea.getId(), group.getId());
+        IdeesRepository.bookByGroup(idea, group);
 
         // Vérification que c'est bien réservé par un groupe
         assertEquals(BookingInformation.BookingType.GROUP,
@@ -52,9 +52,9 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
     public void sousreservationMustBeKept() throws SQLException {
 
         // Création de l'idée et réservation par une sous-réservation
-        Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
+        Idee idea = IdeesRepository.getIdeasOf(firefox).stream().findAny().orElseThrow(SQLException::new);
         IdeesRepository.toutDereserver(idea);
-        IdeesRepository.sousReserver(idea.getId());
+        IdeesRepository.sousReserver(idea);
         SousReservationRepository.sousReserver(idea.getId(), friendOfFirefox.getId(), "voilou");
 
         // Vérification que c'est bien réservé en tant que réservation partielle
@@ -81,9 +81,9 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
     public void bookingShouldBeRemoved() throws SQLException {
 
         // Création de l'idée et réservation par un groupe
-        Idee idea = IdeesRepository.getIdeasOf(firefox.getId()).stream().findAny().orElseThrow(SQLException::new);
+        Idee idea = IdeesRepository.getIdeasOf(firefox).stream().findAny().orElseThrow(SQLException::new);
         IdeesRepository.toutDereserver(idea);
-        IdeesRepository.reserver(idea.getId(), friendOfFirefox.getId());
+        IdeesRepository.reserver(idea, friendOfFirefox);
 
         // Vérification que c'est bien réservé par un groupe
         assertEquals(BookingInformation.BookingType.SINGLE_PERSON,

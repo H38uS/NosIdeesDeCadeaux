@@ -28,7 +28,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
     public void testAskAndAnswerYes() throws SQLException {
 
         // Getting an idea of Firefox
-        Idee idee = IdeesRepository.getIdeasOf(firefox.id).stream().findFirst().orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdeasOf(firefox).stream().findFirst().orElseThrow(SQLException::new);
         // Dropping former associations
         IsUpToDateQuestionsRepository.deleteAssociations(idee.getId());
 

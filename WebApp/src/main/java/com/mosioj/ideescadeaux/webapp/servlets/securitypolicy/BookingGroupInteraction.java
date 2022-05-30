@@ -53,7 +53,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
         }
 
         // Le owner de l'idée sur laquelle existe ce groupe
-        User ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(theGroup.getId()).orElse(null);
+        User ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(theGroup).orElse(null);
         if (ideaOwner == null) {
             lastReason = "Ce groupe n'appartient à personne.";
             logger.error("Un groupe n'appartient à aucune idée... => " + theGroup.getId());
@@ -91,7 +91,7 @@ public final class BookingGroupInteraction extends SecurityPolicy {
     /**
      * @return The resolved group id, or null if the checks failed.
      */
-    public IdeaGroup getGroupId() {
+    public IdeaGroup getGroup() {
         return theGroup;
     }
 

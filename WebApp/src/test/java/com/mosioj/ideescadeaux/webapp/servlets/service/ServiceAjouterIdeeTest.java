@@ -111,7 +111,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         assertFalse(moiAutre.getBirthday().isPresent());
         assertFalse(UserRelationsRepository.getAllUsersInRelation(moiAutre).isEmpty());
         when(session.getAttribute("connected_user")).thenReturn(moiAutre);
-        final int nbIdeas = IdeesRepository.getIdeasOf(moiAutre.getId()).size();
+        final int nbIdeas = IdeesRepository.getIdeasOf(moiAutre).size();
 
         // Removing previous notifications if any
         final NType birthdayIsSoon = NType.NEW_IDEA_BIRTHDAY_SOON;
@@ -129,7 +129,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        assertEquals(nbIdeas + 1, IdeesRepository.getIdeasOf(moiAutre.getId()).size());
+        assertEquals(nbIdeas + 1, IdeesRepository.getIdeasOf(moiAutre).size());
         assertEquals(Collections.emptyList(), UserRelationsRepository.getAllUsersInRelation(moiAutre)
                                                                      .stream()
                                                                      .map(u -> NotificationsRepository.getUserNotifications(

@@ -36,7 +36,7 @@ public class ServiceHistoriqueIdee extends ServiceGet<AllAccessToPostAndGet> {
         int firstRow = PAGES_HELPER.getFirstRow(request);
 
         // Building the result
-        final List<Idee> allDeletedIdeas = IdeesRepository.getDeletedIdeasOf(thisOne.id);
+        final List<Idee> allDeletedIdeas = IdeesRepository.getDeletedIdeasOf(thisOne);
         final List<DecoratedWebAppIdea> ideas = allDeletedIdeas.stream()
                                                                .map(i -> new DecoratedWebAppIdea(i, thisOne, device))
                                                                .skip(firstRow)

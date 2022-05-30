@@ -26,7 +26,6 @@ public class GroupIdeaDetails extends IdeesCadeauxGetServlet<BookingGroupInterac
     public static final String GROUP_ID_PARAM = "groupid";
 
     public static final String VIEW_PAGE_URL = "/protected/detail_du_groupe.jsp";
-    public static final String GET_PAGE_WITH_GROUP_ID = "/protected/detail_du_groupe?groupid=";
 
     /**
      * Class constructor.
@@ -39,9 +38,9 @@ public class GroupIdeaDetails extends IdeesCadeauxGetServlet<BookingGroupInterac
     public void ideesKDoGET(HttpServletRequest request,
                             HttpServletResponse response) throws ServletException, SQLException {
 
-        IdeaGroup group = policy.getGroupId();
+        IdeaGroup group = policy.getGroup();
         logger.debug("Getting details for idea group " + group + "...");
-        Idee idee = IdeesRepository.getIdeaFromGroup(group.getId()).orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdeaFromGroup(group).orElseThrow(SQLException::new);
 
         // Suppression des notif's si y'en a
         NotificationsRepository.terminator()

@@ -15,6 +15,7 @@ public class JSPAccessortTest extends TemplateTest {
 
     User u = firefox;
     public static final Timestamp TS20191212_0829 = new Timestamp(1576135793001L);
+    public static final LocalDateTime LDT_20191212_0829 = LocalDateTime.of(2019, 12, 12, 8, 29);
 
     @Test
     public void testJSPOnlyUserMethods() {
@@ -38,7 +39,7 @@ public class JSPAccessortTest extends TemplateTest {
                      .withOwner(u)
                      .withText("toto")
                      .withPicture("toto.png")
-                     .withLastModificationDate(TS20191212_0829.toInstant())
+                     .withLastModificationDate(LDT_20191212_0829)
                      .build();
         Assert.assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertNull(i.getCategory());

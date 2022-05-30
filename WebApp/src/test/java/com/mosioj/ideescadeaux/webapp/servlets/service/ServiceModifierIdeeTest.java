@@ -31,13 +31,13 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void modifyingOurIdeaIsAllowed() throws SQLException, IOException {
 
-        Idee idee = IdeesRepository.getIdeasOf(_OWNER_ID_).stream().findFirst().orElseThrow(SQLException::new);
+        Idee idee = IdeesRepository.getIdeasOf(firefox).stream().findFirst().orElseThrow(SQLException::new);
         final String initialText = idee.getText();
 
         Map<String, String> param = new HashMap<>();
         param.put("text", initialText + "aa");
         param.put("type", "");
-        param.put("priority", String.valueOf(idee.getPriorite().getId()));
+        param.put("priority", String.valueOf(idee.getPriority().getId()));
         createMultiPartRequest(param);
 
         when(request.getParameter(ServiceModifierIdee.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
@@ -51,7 +51,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void shouldNotBePossibleToModifySomeonesElseIdea() throws SQLException, IOException {
 
-        Idee idee = IdeesRepository.getIdeasOf(_FRIEND_ID_)
+        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox)
                                    .stream()
                                    .filter(i -> !i.isASurprise())
                                    .findFirst()
@@ -61,7 +61,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         Map<String, String> param = new HashMap<>();
         param.put("text", initialText + "aa");
         param.put("type", "");
-        param.put("priority", String.valueOf(idee.getPriorite().getId()));
+        param.put("priority", String.valueOf(idee.getPriority().getId()));
         createMultiPartRequest(param);
 
         when(request.getParameter(ServiceModifierIdee.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));

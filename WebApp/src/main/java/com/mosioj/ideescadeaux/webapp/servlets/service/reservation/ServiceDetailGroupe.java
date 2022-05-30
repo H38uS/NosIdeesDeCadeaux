@@ -30,7 +30,7 @@ public class ServiceDetailGroupe extends ServiceGet<BookingGroupInteraction> {
 
     @Override
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
-        IdeaGroup group = policy.getGroupId();
+        IdeaGroup group = policy.getGroup();
         logger.debug("Getting details for idea group " + group + "...");
         buildResponse(response, ServiceResponse.ok(new DecoratedIdeaGroup(group, thisOne), thisOne));
     }

@@ -6,6 +6,7 @@ import org.apache.commons.text.WordUtils;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity(name = "CATEGORIES")
 public class Categorie {
@@ -30,13 +31,6 @@ public class Categorie {
         // For Hibernate
     }
 
-    public Categorie(String pName, String pAlt, String pImage, String pTitle) {
-        name = pName;
-        alt = pAlt;
-        image = pImage;
-        title = pTitle;
-    }
-
     public String getName() {
         return name;
     }
@@ -53,4 +47,19 @@ public class Categorie {
         return title;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Categorie categorie = (Categorie) o;
+        if (name == null) {
+            return categorie.name == null;
+        }
+        return name.equals(categorie.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }
