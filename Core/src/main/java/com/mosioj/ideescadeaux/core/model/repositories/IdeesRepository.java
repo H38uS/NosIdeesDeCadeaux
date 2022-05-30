@@ -274,7 +274,7 @@ public class IdeesRepository {
         // Mise a zero des flags
         idee.group = null;
         idee.bookedBy = null;
-        idee.lastModified = null;
+        idee.bookedOn = null;
 
         HibernateUtil.update(idee);
     }
