@@ -19,7 +19,7 @@ public class IdeaGroupContent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id_content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private IdeaGroup group;
 

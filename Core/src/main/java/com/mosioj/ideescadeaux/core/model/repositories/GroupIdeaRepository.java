@@ -25,11 +25,21 @@ public class GroupIdeaRepository {
     }
 
     /**
+     * @return The base select for the group loading all the details in one go.
+     */
+    private static String getBaseSelect() {
+        return "select g " +
+               "  from GROUP_IDEA g " +
+               "  left join fetch g.ideaGroupContents contents " +
+               "  left join fetch contents.user ";
+    }
+
+    /**
      * @param session The Hibernate session.
      * @return All groups in the database.
      */
     public static List<IdeaGroup> getAllGroups(Session session) {
-        return session.createQuery("from GROUP_IDEA", IdeaGroup.class).list();
+        return session.createQuery(getBaseSelect(), IdeaGroup.class).list();
     }
 
     /**
@@ -62,7 +72,10 @@ public class GroupIdeaRepository {
         if (groupId == null) {
             return Optional.empty();
         }
-        return HibernateUtil.doQueryOptional(s -> Optional.ofNullable(s.get(IdeaGroup.class, groupId)));
+        final String queryText = getBaseSelect() + " where g.id = :groupId";
+        return HibernateUtil.doQueryOptional(s -> s.createQuery(queryText, IdeaGroup.class)
+                                                   .setParameter("groupId", groupId)
+                                                   .uniqueResultOptional());
     }
 
     /**
@@ -72,6 +85,7 @@ public class GroupIdeaRepository {
      */
     public static void deleteGroup(IdeaGroup group) {
         if (group != null) {
+            NotificationsRepository.terminator().whereGroupIdea(group).terminates();
             HibernateUtil.doSomeWork(s -> {
                 Transaction t = s.beginTransaction();
                 s.createQuery("Delete from GROUP_IDEA where id = :id")
@@ -105,9 +119,7 @@ public class GroupIdeaRepository {
      * @return All the groups this user participated in.
      */
     public static List<IdeaGroup> getParticipationOf(User user) {
-        final String query = "select igc.group " +
-                             "  from IdeaGroupContent igc " +
-                             " where igc.user = :user ";
+        final String query = getBaseSelect() + " where contents.user = :user ";
         return HibernateUtil.doQueryFetch(s -> s.createQuery(query, IdeaGroup.class).setParameter("user", user).list());
     }
 

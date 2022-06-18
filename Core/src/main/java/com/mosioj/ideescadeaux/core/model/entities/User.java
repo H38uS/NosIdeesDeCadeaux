@@ -70,7 +70,7 @@ public class User implements Comparable<User>, Serializable {
     @Transient
     public long nbDaysBeforeBirthday; // utilisé dans l'index en jsp - impossible de supprimer le getter pour l'instant
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private Set<UserRole> roles;
 
     public User() {

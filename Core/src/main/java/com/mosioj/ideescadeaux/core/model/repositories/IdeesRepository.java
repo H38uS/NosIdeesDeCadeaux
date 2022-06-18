@@ -26,15 +26,30 @@ public class IdeesRepository {
     }
 
     /**
+     * @return The idea base select to load all linked entities in one go
+     */
+    private static String getIdeaBaseSelect() {
+        return "select i " +
+               "  from IDEES i " +
+               "  left join fetch i.owner " +
+               "  left join fetch i.bookedBy " +
+               "  left join fetch i.surpriseBy " +
+               "  left join fetch i.createdBy " +
+               "  left join fetch i.group g " +
+               "  left join fetch g.ideaGroupContents contents " +
+               "  left join fetch contents.user " +
+               "  left join fetch i.categorie " +
+               "  left join fetch i.priority p ";
+    }
+
+    /**
      * Retrieves all ideas of a person.
      *
      * @param owner The person for which we are getting all the ideas.
      * @return The person's ideas list.
      */
     public static List<Idee> getIdeasOf(User owner) {
-        final String query = "select i " +
-                             "  from IDEES i " +
-                             "  left join PRIORITES p on p.id = i.priority " +
+        final String query = getIdeaBaseSelect() +
                              " where i.owner = :owner " +
                              "   and coalesce(i.status, 'THERE') <> 'DELETED' " +
                              " order by p.order desc, i.text, i.lastModified desc, i.id desc";
@@ -49,10 +64,10 @@ public class IdeesRepository {
      * @return The person's ideas list.
      */
     public static List<Idee> getDeletedIdeasOf(User owner) {
-        final String query = " from IDEES " +
-                             "where owner = :owner " +
-                             "  and coalesce(status, 'THERE') = 'DELETED' " +
-                             "order by lastModified desc, id desc";
+        final String query = getIdeaBaseSelect() +
+                             "where i.owner = :owner " +
+                             "  and coalesce(i.status, 'THERE') = 'DELETED' " +
+                             "order by i.lastModified desc, i.id desc";
         return HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class).setParameter("owner", owner).list());
     }
 
@@ -64,7 +79,8 @@ public class IdeesRepository {
         long start = System.nanoTime();
         // On sélectionne uniquement les idées
         // - Qu'on a réservé
-        final String bookedIdeasQuery = "from IDEES where bookedBy = :user";
+        final String bookedIdeasQuery = getIdeaBaseSelect() +
+                                        " where i.bookedBy = :user";
         List<Idee> booked = HibernateUtil.doQueryFetch(s -> s.createQuery(bookedIdeasQuery, Idee.class)
                                                              .setParameter("user", thisOne)
                                                              .list());
@@ -96,7 +112,9 @@ public class IdeesRepository {
         if (idIdee == null) {
             return Optional.empty();
         }
-        final String query = "from IDEES where id = :id and coalesce(status, 'THERE') <> 'DELETED'";
+        final String query = getIdeaBaseSelect() +
+                             " where i.id = :id " +
+                             "   and coalesce(i.status, 'THERE') <> 'DELETED'";
         return HibernateUtil.doQueryOptionalFromListOperation(s -> s.createQuery(query, Idee.class)
                                                                     .setParameter("id", idIdee)
                                                                     .list());
@@ -110,7 +128,9 @@ public class IdeesRepository {
         if (idIdee == null) {
             return Optional.empty();
         }
-        final String query = "from IDEES where id = :id and coalesce(status, 'THERE') = 'DELETED'";
+        final String query = getIdeaBaseSelect() +
+                             " where i.id = :id" +
+                             "   and coalesce(i.status, 'THERE') = 'DELETED'";
         return HibernateUtil.doQueryOptionalFromListOperation(s -> s.createQuery(query, Idee.class)
                                                                     .setParameter("id", idIdee)
                                                                     .list());
@@ -121,7 +141,9 @@ public class IdeesRepository {
      * @return The idea id of the idea booked by this group.
      */
     public static Optional<Idee> getIdeaFromGroup(IdeaGroup group) {
-        final String query = "from IDEES where group = :group and coalesce(status, 'THERE') <> 'DELETED'";
+        final String query = getIdeaBaseSelect() +
+                             " where i.group = :group" +
+                             "   and coalesce(i.status, 'THERE') <> 'DELETED'";
         return HibernateUtil.doQueryOptionalFromListOperation(s -> s.createQuery(query, Idee.class)
                                                                     .setParameter("group", group)
                                                                     .list());
@@ -305,6 +327,10 @@ public class IdeesRepository {
         CommentsRepository.deleteAll(idea);
         HibernateUtil.doSomeWork(s -> {
             Transaction t = s.beginTransaction();
+            if (idea.group != null) {
+                GroupIdeaRepository.deleteGroup(idea.group);
+                NotificationsRepository.terminator().whereIdea(idea).terminates();
+            }
             s.createQuery("delete from IDEES where id = :id").setParameter("id", idea.getId()).executeUpdate();
             t.commit();
         });

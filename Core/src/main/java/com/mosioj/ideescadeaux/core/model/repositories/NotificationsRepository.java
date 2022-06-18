@@ -403,6 +403,7 @@ public class NotificationsRepository extends AbstractRepository {
          */
         private static Notification buildIt(ResultSet resultSet) throws SQLException {
 
+            // FIXME : faudra faire un left join pour ne pas faire 18 000 requêtes
             // Récupération des paramètres depuis le ResultSet
             String type = resultSet.getString(NotificationsColumns.TYPE.name());
             long id = resultSet.getLong(NotificationsColumns.ID.name());
@@ -422,7 +423,8 @@ public class NotificationsRepository extends AbstractRepository {
             Idee ideaParameter = IdeesRepository.getIdea(ideaId)
                                                 .orElse(IdeesRepository.getDeletedIdea(ideaId).orElse(null));
             final Integer groupId = getIntegerValueOf(resultSet, GROUP_ID_PARAM.name());
-            IdeaGroup groupParameter = GroupIdeaRepository.getGroupDetails(groupId).orElse(null);
+            IdeaGroup groupParameter = ideaParameter != null ? ideaParameter.group :
+                    GroupIdeaRepository.getGroupDetails(groupId).orElse(null);
 
             return NotificationFactory.builder(NType.valueOf(type))
                                       .withAnID(id)

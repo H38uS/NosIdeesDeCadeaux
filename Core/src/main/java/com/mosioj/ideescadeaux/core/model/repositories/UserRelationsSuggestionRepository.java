@@ -39,7 +39,12 @@ public class UserRelationsSuggestionRepository {
      * @return The suggestions for this user.
      */
     public static List<RelationSuggestion> getUserSuggestions(User user) {
-        final String queryString = "from USER_RELATIONS_SUGGESTION where suggested_to = :to";
+        final String queryString = "select urs " +
+                                   "  from USER_RELATIONS_SUGGESTION urs " +
+                                   "  left join fetch urs.suggestedBy " +
+                                   "  left join fetch urs.suggestedTo " +
+                                   "  left join fetch urs.suggestion " +
+                                   " where suggested_to = :to ";
         return HibernateUtil.doQueryFetch(s -> s.createQuery(queryString, RelationSuggestion.class)
                                                 .setParameter("to", user.id)
                                                 .list());

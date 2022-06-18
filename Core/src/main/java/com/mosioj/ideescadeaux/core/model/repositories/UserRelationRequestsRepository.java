@@ -28,7 +28,11 @@ public class UserRelationRequestsRepository {
      * @return The list of request of frienship this user has received.
      */
     public static List<RelationRequest> getRequests(int userId) {
-        final String query = "from USER_RELATION_REQUESTS where sent_to_user = :id";
+        final String query = "select urr " +
+                             "  from USER_RELATION_REQUESTS urr " +
+                             "  left join fetch urr.sent_by " +
+                             "  left join fetch urr.sent_to " +
+                             " where sent_to_user = :id";
         return HibernateUtil.doQueryFetch(s -> s.createQuery(query, RelationRequest.class)
                                                 .setParameter("id", userId)
                                                 .list());

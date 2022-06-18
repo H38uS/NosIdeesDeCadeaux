@@ -16,7 +16,7 @@ public class UserRole {
     public int id;
 
     /** The user's email. Cannot be null or empty. */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email", referencedColumnName = "email")
     public User user;
 

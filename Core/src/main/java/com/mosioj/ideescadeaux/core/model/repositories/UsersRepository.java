@@ -63,8 +63,12 @@ public class UsersRepository {
      * @return The corresponding user, if it exists.
      */
     public static Optional<User> getUser(String email, Session session) {
-        Query<User> query = session.createQuery("FROM USERS WHERE email = :email ", User.class);
-        query.setParameter("email", email);
+        final String queryTest = "select u " +
+                                 "FROM USERS u " +
+                                 "  left join fetch u.roles " +
+                                 " WHERE u.email = :email ";
+        Query<User> query = session.createQuery(queryTest, User.class)
+                                   .setParameter("email", email);
         return query.uniqueResultOptional();
     }
 
@@ -73,7 +77,13 @@ public class UsersRepository {
      * @return The user corresponding to this ID or null if not found.
      */
     public static Optional<User> getUser(Integer id) {
-        return HibernateUtil.doQueryOptional(s -> Optional.ofNullable(s.get(User.class, id)));
+        return HibernateUtil.doQueryOptional(s -> {
+            final String queryTest = "select u " +
+                                     "FROM USERS u " +
+                                     "  left join fetch u.roles " +
+                                     " WHERE u.id = :id ";
+            return s.createQuery(queryTest, User.class).setParameter("id", id).uniqueResultOptional();
+        });
     }
 
     /**
@@ -82,9 +92,11 @@ public class UsersRepository {
      */
     public static List<User> getUserFromNameOrEmail(String nameOrEmail) {
         return HibernateUtil.doQueryFetch(s -> {
-            Query<User> query = s.createQuery("from USERS where email = :nameOrEmail or name = :nameOrEmail",
-                                              User.class);
-            query.setParameter("nameOrEmail", nameOrEmail);
+            final String queryText = "select u " +
+                                     "  from USERS u " +
+                                     "  left join fetch u.roles " +
+                                     " where u.email = :nameOrEmail or u.name = :nameOrEmail";
+            Query<User> query = s.createQuery(queryText, User.class).setParameter("nameOrEmail", nameOrEmail);
             return query.list();
         });
     }
@@ -93,8 +105,11 @@ public class UsersRepository {
      * @return All the users in DB. Only used for administration
      */
     public static List<User> getAllUsers() {
-        return HibernateUtil.doQueryFetch(s -> s.createQuery("FROM USERS ORDER BY creation_date DESC", User.class)
-                                                .list());
+        final String queryText = "select u " +
+                                 "  FROM USERS u " +
+                                 "  left join fetch u.roles " +
+                                 " ORDER BY u.creation_date DESC";
+        return HibernateUtil.doQueryFetch(s -> s.createQuery(queryText, User.class).list());
     }
 
     /**
@@ -120,10 +135,12 @@ public class UsersRepository {
         final String nameToMatch = HibernateUtil.sanitizeSQLLike(pNameToMatch);
 
         StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format("  from {0} u ", TABLE_NAME));
-        query.append(MessageFormat.format(" where (lower({0}) like :pNameToMatch ESCAPE ''!''   ", UsersColumns.NAME));
-        query.append(MessageFormat.format("    or  lower({0}) like :pNameToMatch ESCAPE ''!'' ) ", UsersColumns.EMAIL));
-        query.append("   and id <> :userIdToSkip ");
+        query.append("select u ");
+        query.append("  from USERS u ");
+        query.append("  left join fetch u.roles ");
+        query.append(" where (lower(u.name) like :pNameToMatch ESCAPE '!' ");
+        query.append("    or  lower(u.email) like :pNameToMatch ESCAPE '!' ) ");
+        query.append("   and u.id <> :userIdToSkip ");
         if (selectOnlyNonFriends) {
             query.append("   and not exists ( ");
             query.append(" select 1 from USER_RELATIONS  ");
@@ -131,10 +148,7 @@ public class UsersRepository {
             query.append("    and second_user = u.id ");
             query.append("   ) ");
         }
-        query.append(MessageFormat.format(" order by {0}, {1}, {2} ",
-                                          UsersColumns.NAME,
-                                          UsersColumns.EMAIL,
-                                          UsersColumns.ID));
+        query.append(" order by u.name, u.email, u.id ");
 
         return HibernateUtil.doQueryFetch(s -> s.createQuery(query.toString(), User.class)
                                                 .setParameter("pNameToMatch", nameToMatch)

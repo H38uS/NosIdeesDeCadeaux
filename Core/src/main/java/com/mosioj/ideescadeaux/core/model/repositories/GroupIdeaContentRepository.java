@@ -26,7 +26,11 @@ public class GroupIdeaContentRepository {
      * @return The corresponding user, if it exists.
      */
     public static Optional<IdeaGroupContent> getParticipationOf(IdeaGroup group, User user, Session session) {
-        final String queryString = "FROM IdeaGroupContent WHERE group = :group and user = :user";
+        final String queryString = "select igc " +
+                                   "  FROM IdeaGroupContent igc " +
+                                   "  left join fetch igc.user " +
+                                   " WHERE igc.group = :group " +
+                                   "   and igc.user = :user";
         Query<IdeaGroupContent> query = session.createQuery(queryString, IdeaGroupContent.class);
         query.setParameter("group", group);
         query.setParameter("user", user);
