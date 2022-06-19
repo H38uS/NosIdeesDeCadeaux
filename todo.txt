@@ -1,3 +1,5 @@
+// FIXME : passer les sous réservations en hibernate + JS + ajouter le bandeau utilisateur
+
 // FIXME : passer en mode hibernate avec les entités, trop chiant là !!
 // FIXME : faire une table dédiée pour les booking information
 // FIXME : puis regarder le chargement LAZY, notamment pour les User sur chaque entité??

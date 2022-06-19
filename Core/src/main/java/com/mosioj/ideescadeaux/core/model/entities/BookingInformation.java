@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 public class BookingInformation {
 
+    // FIXME : en faire une table et mettre une colonne dans IDEES
+
     /** The booking type. */
     @Expose
     protected final BookingType type;
