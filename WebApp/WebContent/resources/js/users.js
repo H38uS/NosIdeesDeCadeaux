@@ -29,7 +29,7 @@ function getRechercherPersonneCardFooterAsHTML(connectedUser, jsonDecoratedUser)
             Aller voir <a href="protected/afficher_reseau?id=${jsonDecoratedUser.user.id}">ses amis</a>.<br/>
             <a href="protected/suggerer_relations.jsp?id=${jsonDecoratedUser.user.id}">Suggérer</a> des relations.<br/>
             Lui <a href="protected/ajouter_idee_ami?id=${jsonDecoratedUser.user.id}">ajouter</a> une idée.<br/>
-            <a class="drop_relationship" href="protected/supprimer_relation?id=${jsonDecoratedUser.user.id}">Supprimer</a> cette personne.
+            <a class="drop_relationship" href="protected/supprimer_relation?id=${jsonDecoratedUser.user.id}">Supprimer</a> cette relation.
         `);
     } else if (jsonDecoratedUser.hasSentARequest) {
         footerDiv.append(`

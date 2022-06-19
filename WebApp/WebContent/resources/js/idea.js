@@ -255,7 +255,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
         if (jsonIdea.bookingInformation.type === "NONE") {
             modalBodyDiv.append(`
                 <div class="row align-items-center">
-                    <div class="col-3 pr-0">
+                    <div class="col-4 text-center pr-0">
                         <a href="protected/reserver?idee=${jsonIdea.id}" class="img idea_reserver">
                             <img src="resources/image/reserver.png"
                                  class="clickable"
@@ -263,12 +263,12 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
                                  width="${getPictureWidth()}px" />
                         </a>
                     </div>
-                    <div class="col-9 pl-0 text-left">
+                    <div class="col-8 pl-0 text-left">
                         Réserver l'idée
                     </div>
                 </div>
                 <div class="row align-items-center">
-                    <div class="col-3 pr-0">
+                    <div class="col-4 text-center pr-0">
                         <a href="protected/sous_reserver?idee=${jsonIdea.id}" class="img">
                             <img src="resources/image/sous_partie.png"
                                  class="clickable"
@@ -276,12 +276,12 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
                                  width="${getPictureWidth()}px" />
                         </a>
                     </div>
-                    <div class="col-9 pl-0 text-left">
+                    <div class="col-8 pl-0 text-left">
                         Réserver une sous-partie de l'idée
                     </div>
                 </div>
                 <div class="row align-items-center">
-                    <div class="col-3 pr-0">
+                    <div class="col-4 text-center pr-0">
                         <a href="protected/create_a_group?idee=${jsonIdea.id}" class="img">
                             <img src="resources/image/grouper.png"
                                  class="clickable"
@@ -289,7 +289,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
                                  width="${getPictureWidth()}px" />
                         </a>
                     </div>
-                    <div class="col-9 pl-0 text-left">
+                    <div class="col-8 pl-0 text-left">
                         Créer un groupe
                     </div>
                 </div>
@@ -299,26 +299,26 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
         // Connected user is the owner
         modalBodyDiv.append(`
             <div class="row align-items-center">
-                <div class="col-3">
+                <div class="col-4 text-center">
                     <a href="protected/modifier_idee?id=${jsonIdea.id}" class="img">
                         <img src="resources/image/modifier.png"
                              title="Modifier cette idée"
                              width="${getPictureWidth()}px"/>
                     </a>
                 </div>
-                <div class="col-9 pl-0 text-left">
+                <div class="col-8 pl-0 text-left">
                     Modifier cette idée
                 </div>
             </div>
             <div class="row align-items-center">
-                <div class="col-3">
+                <div class="col-4 text-center">
                     <a href="protected/remove_an_idea?ideeId=${jsonIdea.id}" class="img idea_remove">
                         <img src="resources/image/supprimer.png"
                              title="Supprimer cette idée"
                              width="${getPictureWidth()}px"/>
                     </a>
                 </div>
-                <div class="col-9 pl-0 text-left">
+                <div class="col-8 pl-0 text-left">
                     Supprimer cette idée
                 </div>
             </div>
@@ -328,7 +328,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
         if (!isTheOwnerConnected(jsonIdea)) {
             modalBodyDiv.append(`
                 <div class="row align-items-center">
-                    <div class="col-3 pr-0">
+                    <div class="col-4 text-center pr-0">
                         <a href="protected/est_a_jour?idee=${jsonIdea.id}" class="img idea_est_a_jour">
                             <img src="resources/image/a_jour.png"
                                  class="clickable"
@@ -336,7 +336,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
                                  width="${getPictureWidth()}px" />
                         </a>
                     </div>
-                    <div class="col-9 pl-0 text-left">
+                    <div class="col-8 pl-0 text-left">
                         Demander si c'est à jour
                     </div>
                 </div>
@@ -344,7 +344,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
         }
         modalBodyDiv.append(`
             <div class="row align-items-center">
-                <div class="col-3 pr-0">
+                <div class="col-4 text-center pr-0">
                     <a href="protected/idee_questions?idee=${jsonIdea.id}" class="img">
                         <img src="resources/image/questions.png"
                              class="clickable"
@@ -352,7 +352,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
                              width="${getPictureWidth()}px" />
                     </a>
                 </div>
-                <div class="col-9 pl-0 text-left">
+                <div class="col-8 pl-0 text-left">
                     Poser une question à ${jsonIdea.owner.name} / voir les existantes
                 </div>
             </div>
@@ -361,14 +361,14 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
     if (isTheOwnerConnected(jsonIdea)) {
         modalBodyDiv.append(`
             <div class="row align-items-center">
-                <div class="col-3">
+                <div class="col-4 text-center">
                     <a href="?idee=${jsonIdea.id}" class="img jeLaVeuxEncore">
                         <img src="resources/image/encore.png"
                              title="J'ai déjà reçu cette idée, mais je la veux à nouveau ou je veux la suite."
                              height="${getPictureWidth()}px"/>
                     </a>
                 </div>
-                <div class="col-9 pl-0 text-left">
+                <div class="col-8 pl-0 text-left">
                     Annuler toutes les réservations
                 </div>
             </div>
@@ -376,14 +376,14 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
     } else {
         modalBodyDiv.append(`
             <div class="row align-items-center">
-                <div class="col-3 pr-0">
+                <div class="col-4 text-center pr-0">
                     <a href="protected/idee_commentaires?idee=${jsonIdea.id}" class="img">
                         <img src="resources/image/commentaires.png"
                              title="Ajouter un commentaire / voir les existants"
                              width="${getPictureWidth()}px" />
                     </a>
                 </div>
-                <div class="col-9 pl-0 text-left">
+                <div class="col-8 pl-0 text-left">
                     Ajouter un commentaire / voir les existants
                 </div>
             </div>
@@ -810,95 +810,132 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
 /* *************** ==== Construction de H2 user list === *************** */
 /* ********************************************************************* */
 
-function getH2UserTitle(ownerIdeas, connectedUser) {
-    var imgAdd = $('<div>');
-    var ideaOwner = ownerIdeas.owner;
-    if (isMobileView()) {
-        imgAdd.append(`
-            <img src="resources/image/ajouter_champs.png"
-                 style="margin-left: 5px;margin-top: -2px;"
-                 class="clickable" title="Je veux plus de cadeaux"
-                 width="${getPictureWidth()}px"/>
+function getH2UserTitleTooltip(ownerIdeas, connectedUser) {
+    var content = $('<div>');
+    if (ownerIdeas.owner.id !== connectedUser.id) {
+        content.append(`
+            Aller voir <a href="protected/voir_liste?id=${ownerIdeas.owner.id}">sa liste</a>.<br/>
+            Aller voir <a href="protected/afficher_reseau?id=${ownerIdeas.owner.id}">ses amis</a>.<br/>
+            <a href="protected/suggerer_relations.jsp?id=${ownerIdeas.owner.id}">Suggérer</a> des relations.<br/>
+            Lui <a href="protected/ajouter_idee_ami?id=${ownerIdeas.owner.id}">ajouter</a> une idée.<br/>
+            <a class="drop_relationship" href="protected/supprimer_relation?id=${ownerIdeas.owner.id}">Supprimer</a> cette relation.
         `);
     } else {
-        imgAdd.append(`
-            <img src="resources/image/ajouter_champs.png"
-                 style="margin-left: 10px;margin-top: 1px;"
-                 class="clickable" title="Je veux plus de cadeaux"
-                 width="${getPictureWidth()}px"/>
+        if (ownerIdeas.isDeletedIdeas) {
+            content.append(`
+                Aller voir <a href="protected/voir_liste?id=${ownerIdeas.owner.id}">ma liste</a>.<br/>
+                Aller voir <a href="protected/afficher_reseau?id=${ownerIdeas.owner.id}">mes amis</a>.<br/>
+                Aller voir <a href="protected/mes_reservations.jsp">mes réservations</a>.<br/>
+                Je veux plus de <a href="protected/ajouter_idee">cadeaux</a>.<br/>
+            `);
+        } else {
+            content.append(`
+                Aller voir <a href="protected/voir_liste?id=${ownerIdeas.owner.id}">ma liste</a>.<br/>
+                Aller voir <a href="protected/afficher_reseau?id=${ownerIdeas.owner.id}">mes amis</a>.<br/>
+                Aller voir <a href="protected/mes_reservations.jsp">mes réservations</a>.<br/>
+                Je veux plus de <a href="protected/ajouter_idee">cadeaux</a>.<br/>
+                Aller voir mes <a href="protected/idee/historique">anciennes idées</a>.<br/>
+            `);
+        }
+    }
+
+    if (isMobileView()) {
+        container = $(`
+            <div class="modal fade" id="actions-user-${ownerIdeas.owner.id}" tabindex="-1" role="dialog" aria-hidden="true">
         `);
+        var ideaMobileModalContent = $(`
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Choisissez une action</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body normal_size">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        `);
+        ideaMobileModalContent.find(".modal-body").append(content);
+        container.append(ideaMobileModalContent);
+    } else {
+        container = $('<div class="outer_top_tooltiptext">')
+        content.addClass('top_tooltiptext pl-4');
+        container.append(content);
+    }
+
+    return $('<div>').append(container).html();
+}
+
+function getH2UserTitle(ownerIdeas, connectedUser) {
+    var ideaOwner = ownerIdeas.owner;
+    var actionButtonMobile = '';
+    if (isMobileView()) {
+        actionButtonMobile = $(`
+            <div>
+                <div class="col-auto ml-auto my-auto" data-toggle="modal" data-target="#actions-user-${ownerIdeas.owner.id}">
+                    <button class="btn btn-primary" >...</button>
+                </div>
+            </div>
+        `).html();
     }
     if (ideaOwner.id !== connectedUser.id) {
-        return $(`
-            <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
-                <div class="row align-items-center">
-                    <div class="col-auto mx-auto my-1">
+        res = $(`
+            <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list col-12 top_tooltip">
+                <div class="row align-items-center justify-content-center">
+                    <div class="ml-2 ml-lg-none my-1">
                         <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
                              alt="" style="height:50px;"/>
                     </div>
-                    <div class="mx-1">
+                    <div class="mx-2">
                         <span class="d-none d-lg-inline-block">${ideaOwner.name}</span>
                         <span class="d-inline-block d-lg-none">${ideaOwner.name}</span>
                     </div>
-                    <div class="mx-auto">
-                        <a href="protected/ajouter_idee_ami?id=${ideaOwner.id}" class="img">
-                            ${imgAdd.html()}
-                        </a>
-                    </div>
                 </div>
+                ${actionButtonMobile}
+                ${getH2UserTitleTooltip(ownerIdeas, connectedUser)}
             </h2>
         `);
+        res.find(".drop_relationship").click(dropRelationship);
+        return res;
     } else {
         // Le user connecté
         if (ownerIdeas.isDeletedIdeas) {
             return $(`
-                <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
-                    <div class="row align-items-center">
-                        <div class="col-auto mx-auto my-1">
+                <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list col-12 top_tooltip">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="ml-2 ml-lg-none my-1">
                             <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
                                  alt="" style="height:50px;"/>
                         </div>
-                        <div class="mx-1">
+                        <div class="mx-2">
                             <span class="d-none d-lg-inline-block">Mes idées de cadeaux supprimées</span>
                             <span class="d-inline-block d-lg-none">Idées supprimées</span>
                         </div>
                     </div>
+                    ${actionButtonMobile}
+                    ${getH2UserTitleTooltip(ownerIdeas, connectedUser)}
                 </h2>
             `);
         } else {
-            var historyPicture = $(`
-                <img src="resources/image/history.png"
-                     class="clickable" title="Mes idées supprimées"
-                     width="${getPictureWidth()}px"/>
-            `);
-            if (isMobileView()) {
-                historyPicture.attr('style', 'margin-top: -2px;');
-            } else {
-                historyPicture.attr('style', 'margin-top: 1px;');
-            }
-            historyPicture.wrap('<div>');
             return $(`
-                <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list">
-                    <div class="row align-items-center">
-                        <div class="col-auto mx-auto my-1">
+                <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list col-12 top_tooltip">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="ml-2 ml-lg-none my-1">
                             <img src="protected/files/uploaded_pictures/avatars/small/${ideaOwner.avatar}"
                                  alt="" style="height:50px;"/>
                         </div>
-                        <div class="mx-1">
+                        <div class="mx-2">
                             <span class="d-none d-lg-inline-block">Mes idées de cadeaux</span>
                             <span class="d-inline-block d-lg-none">Mes idées</span>
                         </div>
-                        <div class="mx-auto">
-                            <a href="protected/ajouter_idee" class="img">
-                                ${imgAdd.html()}
-                            </a>
-                        </div>
-                        <div class="mx-auto">
-                            <a href="protected/idee/historique" class="img">
-                                ${historyPicture.parent().html()}
-                            </a>
-                        </div>
                     </div>
+                    ${actionButtonMobile}
+                    ${getH2UserTitleTooltip(ownerIdeas, connectedUser)}
                 </h2>
             `);
         }

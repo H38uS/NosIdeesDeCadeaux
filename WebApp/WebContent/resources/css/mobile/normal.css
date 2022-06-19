@@ -85,6 +85,10 @@
 	display: none;
 }
 
+.normal_size {
+    font-size: 1rem;
+}
+
 /****************************/
 /* *** Search box idées *** */
 /****************************/

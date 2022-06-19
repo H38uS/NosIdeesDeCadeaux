@@ -99,6 +99,7 @@
 /*******************/
 /* *** Tooltip *** */
 /*******************/
+
 .top_tooltip {
 	position: relative;
 	display: inline-block;
@@ -129,6 +130,10 @@
 	z-index: 1;
 	bottom: 100%;
 	left: 0%;
+}
+
+h2.top_tooltip .outer_top_tooltiptext .top_tooltiptext {
+    font-size: 1rem;
 }
 
 .top_tooltip .top_tooltiptext a {
