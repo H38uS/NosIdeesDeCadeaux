@@ -131,28 +131,30 @@ function dereserverIdea(e) {
                 "La réservation de l'idée a bien été annulée.");
 }
 
+function refreshIdeaFromJSON(idea, rawIdeaJsonData) {
+    if (rawIdeaJsonData.status !== 'OK') {
+      actionError(rawIdeaJsonData.message);
+      return;
+    }
+
+    idea.wrap("<span></span>");
+    var div = idea.parent();
+    idea.remove();
+
+    var newIdea = getIdeaDiv(rawIdeaJsonData.connectedUser, rawIdeaJsonData.message);
+    newIdea.hide();
+    div.append(newIdea);
+    newIdea.unwrap();
+
+    newIdea.fadeIn('slow');
+}
+
 function refreshIdea(idea, id) {
     $.get("protected/service/get_idea",
           {idee : id}
     ).done(function (data) {
-
         var rawData = JSON.parse(data);
-        if (rawData.status !== 'OK') {
-          actionError(rawData.message);
-          return;
-        }
-
-        idea.wrap("<span></span>");
-        var div = idea.parent();
-        idea.remove();
-
-        var newIdea = getIdeaDiv(rawData.connectedUser, rawData.message);
-        newIdea.hide();
-        div.append(newIdea);
-        newIdea.unwrap();
-
-        newIdea.fadeIn('slow');
-
+        refreshIdeaFromJSON(idea, rawData);
     }).fail(function (data) {
         actionError(data.status + " - " + data.statusText);
     });
@@ -810,28 +812,28 @@ function getIdeaDiv(connectedUser, jsonDecoratedIdea) {
 /* *************** ==== Construction de H2 user list === *************** */
 /* ********************************************************************* */
 
-function getH2UserTitleTooltip(ownerIdeas, connectedUser) {
+function getH2UserTitleTooltip(ideaOwner, isDeletedIdeas, connectedUser) {
     var content = $('<div>');
-    if (ownerIdeas.owner.id !== connectedUser.id) {
+    if (ideaOwner.id !== connectedUser.id) {
         content.append(`
-            Aller voir <a href="protected/voir_liste?id=${ownerIdeas.owner.id}">sa liste</a>.<br/>
-            Aller voir <a href="protected/afficher_reseau?id=${ownerIdeas.owner.id}">ses amis</a>.<br/>
-            <a href="protected/suggerer_relations.jsp?id=${ownerIdeas.owner.id}">Suggérer</a> des relations.<br/>
-            Lui <a href="protected/ajouter_idee_ami?id=${ownerIdeas.owner.id}">ajouter</a> une idée.<br/>
-            <a class="drop_relationship" href="protected/supprimer_relation?id=${ownerIdeas.owner.id}">Supprimer</a> cette relation.
+            Aller voir <a href="protected/voir_liste?id=${ideaOwner.id}">sa liste</a>.<br/>
+            Aller voir <a href="protected/afficher_reseau?id=${ideaOwner.id}">ses amis</a>.<br/>
+            <a href="protected/suggerer_relations.jsp?id=${ideaOwner.id}">Suggérer</a> des relations.<br/>
+            Lui <a href="protected/ajouter_idee_ami?id=${ideaOwner.id}">ajouter</a> une idée.<br/>
+            <a class="drop_relationship" href="protected/supprimer_relation?id=${ideaOwner.id}">Supprimer</a> cette relation.
         `);
     } else {
-        if (ownerIdeas.isDeletedIdeas) {
+        if (isDeletedIdeas) {
             content.append(`
-                Aller voir <a href="protected/voir_liste?id=${ownerIdeas.owner.id}">ma liste</a>.<br/>
-                Aller voir <a href="protected/afficher_reseau?id=${ownerIdeas.owner.id}">mes amis</a>.<br/>
+                Aller voir <a href="protected/voir_liste?id=${ideaOwner.id}">ma liste</a>.<br/>
+                Aller voir <a href="protected/afficher_reseau?id=${ideaOwner.id}">mes amis</a>.<br/>
                 Aller voir <a href="protected/mes_reservations.jsp">mes réservations</a>.<br/>
                 Je veux plus de <a href="protected/ajouter_idee">cadeaux</a>.<br/>
             `);
         } else {
             content.append(`
-                Aller voir <a href="protected/voir_liste?id=${ownerIdeas.owner.id}">ma liste</a>.<br/>
-                Aller voir <a href="protected/afficher_reseau?id=${ownerIdeas.owner.id}">mes amis</a>.<br/>
+                Aller voir <a href="protected/voir_liste?id=${ideaOwner.id}">ma liste</a>.<br/>
+                Aller voir <a href="protected/afficher_reseau?id=${ideaOwner.id}">mes amis</a>.<br/>
                 Aller voir <a href="protected/mes_reservations.jsp">mes réservations</a>.<br/>
                 Je veux plus de <a href="protected/ajouter_idee">cadeaux</a>.<br/>
                 Aller voir mes <a href="protected/idee/historique">anciennes idées</a>.<br/>
@@ -841,7 +843,7 @@ function getH2UserTitleTooltip(ownerIdeas, connectedUser) {
 
     if (isMobileView()) {
         container = $(`
-            <div class="modal fade" id="actions-user-${ownerIdeas.owner.id}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="actions-user-${ideaOwner.id}" tabindex="-1" role="dialog" aria-hidden="true">
         `);
         var ideaMobileModalContent = $(`
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -871,13 +873,12 @@ function getH2UserTitleTooltip(ownerIdeas, connectedUser) {
     return $('<div>').append(container).html();
 }
 
-function getH2UserTitle(ownerIdeas, connectedUser) {
-    var ideaOwner = ownerIdeas.owner;
+function getH2UserTitle(ideaOwner, isDeletedIdeas, connectedUser) {
     var actionButtonMobile = '';
     if (isMobileView()) {
         actionButtonMobile = $(`
             <div>
-                <div class="col-auto ml-auto my-auto" data-toggle="modal" data-target="#actions-user-${ownerIdeas.owner.id}">
+                <div class="col-auto ml-auto my-auto" data-toggle="modal" data-target="#actions-user-${ideaOwner.id}">
                     <button class="btn btn-primary" >...</button>
                 </div>
             </div>
@@ -897,14 +898,14 @@ function getH2UserTitle(ownerIdeas, connectedUser) {
                     </div>
                 </div>
                 ${actionButtonMobile}
-                ${getH2UserTitleTooltip(ownerIdeas, connectedUser)}
+                ${getH2UserTitleTooltip(ideaOwner, isDeletedIdeas, connectedUser)}
             </h2>
         `);
         res.find(".drop_relationship").click(dropRelationship);
         return res;
     } else {
         // Le user connecté
-        if (ownerIdeas.isDeletedIdeas) {
+        if (isDeletedIdeas) {
             return $(`
                 <h2 id="list_${ideaOwner.id}" class="breadcrumb mt-4 h2_list col-12 top_tooltip">
                     <div class="row align-items-center justify-content-center">
@@ -918,7 +919,7 @@ function getH2UserTitle(ownerIdeas, connectedUser) {
                         </div>
                     </div>
                     ${actionButtonMobile}
-                    ${getH2UserTitleTooltip(ownerIdeas, connectedUser)}
+                    ${getH2UserTitleTooltip(ideaOwner, isDeletedIdeas, connectedUser)}
                 </h2>
             `);
         } else {
@@ -935,7 +936,7 @@ function getH2UserTitle(ownerIdeas, connectedUser) {
                         </div>
                     </div>
                     ${actionButtonMobile}
-                    ${getH2UserTitleTooltip(ownerIdeas, connectedUser)}
+                    ${getH2UserTitleTooltip(ideaOwner, isDeletedIdeas, connectedUser)}
                 </h2>
             `);
         }

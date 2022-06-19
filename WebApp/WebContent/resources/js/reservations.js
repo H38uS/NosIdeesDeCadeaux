@@ -38,21 +38,7 @@ function loadReservations(page = 1) {
         }
 
         $.each(jsonData.theContent, function(i, ownerIdeas) {
-            var ownerTitle = $(`
-                <h2 id="list_${ownerIdeas.owner.id}" class="breadcrumb mt-4 h2_list">
-                    <div class="row align-items-center">
-                        <div class="col-auto mx-auto my-1">
-                            <img src="protected/files/uploaded_pictures/avatars/small/${ownerIdeas.owner.avatar}"
-                                 alt="" style="height:50px;"/>
-                        </div>
-                        <div class="mx-1">
-                            <span class="d-none d-lg-inline-block">${ownerIdeas.owner.name}</span>
-                            <span class="d-inline-block d-lg-none">${ownerIdeas.owner.name}</span>
-                        </div>
-                    </div>
-                </h2>
-            `);
-            ideaContainer.append(ownerTitle);
+            ideaContainer.append(getH2UserTitle(ownerIdeas.owner, ownerIdeas.isDeletedIdeas, connectedUser));
             $.each(ownerIdeas.ideas, function(j, idea) {
                 ideaContainer.append(getIdeaDiv(connectedUser, idea));
             });

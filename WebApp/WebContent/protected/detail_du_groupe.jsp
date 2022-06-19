@@ -4,12 +4,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <t:normal_protected>
     <jsp:body>
-        <h2>L'idée ${idee.owner.myDName} - <a href="protected/voir_liste?id=${idee.owner.id}">Sa liste</a></h2>
+        <div id="userGroupDiv"></div>
         <div class="container">
-            <div id="idea_placeholder"></div>
-            <script>
-                refreshIdea($("#idea_placeholder"), ${idee.id});
-            </script>
+            <div id="idea-${idee.id}" class="idea_square"></div>
         </div>
         <div id="groupDetail">
         </div>

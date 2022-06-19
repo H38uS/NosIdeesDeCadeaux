@@ -121,7 +121,15 @@ function refreshGroupWithId(groupId, showSuggest) {
     });
 
     var idea = $(".idea_square");
-    refreshIdea(idea, idea.attr("id").substring(5));
+    $.get("protected/service/get_idea",
+          {idee : idea.attr("id").substring(5)}
+    ).done(function (data) {
+        var rawData = JSON.parse(data);
+        $("#userGroupDiv").html(getH2UserTitle(rawData.message.idee.owner, false, rawData.connectedUser));
+        refreshIdeaFromJSON(idea, rawData);
+    }).fail(function (data) {
+        actionError(data.status + " - " + data.statusText);
+    });
 }
 
 // ============== Suggestion de groupes

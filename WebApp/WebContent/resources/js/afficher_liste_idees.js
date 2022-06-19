@@ -147,7 +147,7 @@ function displayUsersIdeasList(identicCallBack, callBack, page) {
         resultDiv.append(getPagesDiv(jsonData.pages));
 
         $.each(owners, function(i, ownerIdeas) {
-            var ownerTitle = getH2UserTitle(ownerIdeas, connectedUser);
+            var ownerTitle = getH2UserTitle(ownerIdeas.owner, ownerIdeas.isDeletedIdeas, connectedUser);
             resultDiv.append(ownerTitle);
             $.each(ownerIdeas.ideas, function(j, idea) {
                 resultDiv.append(getIdeaDiv(connectedUser, idea));
