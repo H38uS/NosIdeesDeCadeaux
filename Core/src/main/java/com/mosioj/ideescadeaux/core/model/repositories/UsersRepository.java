@@ -108,7 +108,7 @@ public class UsersRepository {
         final String queryText = "select u " +
                                  "  FROM USERS u " +
                                  "  left join fetch u.roles " +
-                                 " ORDER BY u.creation_date DESC";
+                                 " ORDER BY u.creationDate DESC";
         return HibernateUtil.doQueryFetch(s -> s.createQuery(queryText, User.class).list());
     }
 
