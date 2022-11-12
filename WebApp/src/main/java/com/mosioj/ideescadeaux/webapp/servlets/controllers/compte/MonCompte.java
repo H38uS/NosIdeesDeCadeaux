@@ -38,7 +38,7 @@ public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
         User current = thisOne;
         request.setAttribute("user", current);
 
-        List<UserParameter> userNotificationParameters = UserParametersRepository.getUserNotificationParameters(current.id);
+        List<UserParameter> userNotificationParameters = UserParametersRepository.getUserNotificationParameters(current);
         request.setAttribute("notif_types", userNotificationParameters);
 
         request.setAttribute("parents", ParentRelationshipRepository.getParents(current.id));

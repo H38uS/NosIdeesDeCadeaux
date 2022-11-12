@@ -73,6 +73,9 @@ public class User implements Comparable<User>, Serializable {
     @OneToMany(mappedBy = "user")
     private Set<UserRole> roles;
 
+    @OneToMany
+    public Set<UserParameter> parameters;
+
     public User() {
         // Hibernate constructor
     }

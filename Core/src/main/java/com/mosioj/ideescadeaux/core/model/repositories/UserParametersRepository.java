@@ -1,34 +1,28 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.UserParameter;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UserParametersColumns;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+import org.hibernate.Transaction;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class UserParametersRepository extends AbstractRepository {
-
-    public static final String TABLE_NAME = "USER_PARAMETERS";
-    private static final Logger logger = LogManager.getLogger(UserParametersRepository.class);
+public class UserParametersRepository {
 
     private UserParametersRepository() {
         // Forbidden
     }
 
-    public static void deleteAllUserParameters(int userId) throws SQLException {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                   TABLE_NAME,
-                                                   UserParametersColumns.USER_ID), userId);
+    public static void deleteAllUserParameters(int userId) {
+        HibernateUtil.doSomeWork(s -> {
+            Transaction t = s.beginTransaction();
+            s.createQuery("delete from USER_PARAMETERS where user_id = :user_id")
+             .setParameter("user_id", userId)
+             .executeUpdate();
+            t.commit();
+        });
     }
 
     /**
@@ -38,93 +32,50 @@ public class UserParametersRepository extends AbstractRepository {
      * @param paramName  The parameter name.
      * @param paramValue The new value to insert/update.
      */
-    public static void insertUpdateParameter(User user, String paramName, String paramValue) throws SQLException {
-        int nb = getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? and {3} = ?",
-                                                            TABLE_NAME,
-                                                            UserParametersColumns.PARAMETER_VALUE,
-                                                            UserParametersColumns.USER_ID,
-                                                            UserParametersColumns.PARAMETER_NAME),
-                                       paramValue,
-                                       user.id,
-                                       paramName);
-        if (nb == 0) {
-            getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}, {2}, {3}) values (?, ?, ?)",
-                                                       TABLE_NAME,
-                                                       UserParametersColumns.PARAMETER_VALUE,
-                                                       UserParametersColumns.USER_ID,
-                                                       UserParametersColumns.PARAMETER_NAME),
-                                  paramValue,
-                                  user.id,
-                                  paramName);
+    public static void insertUpdateParameter(User user, String paramName, String paramValue) {
+        Optional<UserParameter> parameter = getParameter(user.id, paramName);
+        parameter.ifPresent(p -> {
+            p.parameterValue = paramValue;
+            HibernateUtil.update(p);
+        });
+        if (!parameter.isPresent()) {
+            HibernateUtil.saveit(new UserParameter(user, paramName, paramValue));
         }
     }
 
-    public static Optional<String> getParameter(int userId, String paramName) throws SQLException {
-        String query = MessageFormat.format("select {0} from {1} where {2} = ? and {3} = ?",
-                                            UserParametersColumns.PARAMETER_VALUE,
-                                            TABLE_NAME,
-                                            UserParametersColumns.PARAMETER_NAME,
-                                            UserParametersColumns.USER_ID);
-        logger.trace(query);
-        return getDb().selectString(query,
-                                    paramName,
-                                    userId);
+    public static Optional<UserParameter> getParameter(int userId, String paramName) {
+        final String query = "from USER_PARAMETERS where parameter_name = :name and user_id = :user_id";
+        return HibernateUtil.doQueryOptional(s -> s.createQuery(query, UserParameter.class)
+                                                   .setParameter("name", paramName)
+                                                   .setParameter("user_id", userId)
+                                                   .uniqueResultOptional());
     }
 
     /**
-     * @param userId The user id.
+     * @param user The user.
      * @return The notification parameters for this user.
      */
-    public static List<UserParameter> getUserNotificationParameters(int userId) throws SQLException {
+    public static List<UserParameter> getUserNotificationParameters(final User user) {
 
-        List<UserParameter> params = new ArrayList<>();
+        // Existing parameters set by the user
+        List<UserParameter> definedParameters = HibernateUtil.doQueryFetch(
+                s -> s.createQuery("from USER_PARAMETERS where user_id = :user_id", UserParameter.class)
+                      .setParameter("user_id", user.id)
+                      .list());
 
-        StringBuilder query = new StringBuilder();
-        query.append(MessageFormat.format(
-                "select coalesce(t.{0}, -1) as {0},? as {1},n.{2},coalesce(t.{3}, n.{3}) as {3} ",
-                UserParametersColumns.ID,
-                UserParametersColumns.USER_ID,
-                UserParametersColumns.PARAMETER_NAME,
-                UserParametersColumns.PARAMETER_VALUE));
+        // Adding any missing ones
+        Set<NType> allTypes = new HashSet<>(Arrays.asList(NType.values()));
+        allTypes.removeAll(definedParameters.stream()
+                                            .map(UserParameter::getParameterName)
+                                            .map(NType::valueOf)
+                                            .collect(Collectors.toSet()));
+        definedParameters.addAll(allTypes.stream()
+                                         .map(n -> new UserParameter(user, n.name(), "EMAIL_SITE"))
+                                         .collect(Collectors.toList()));
 
-        query.append("from ( ");
-        for (NType type : NType.values()) {
-            query.append(MessageFormat.format("select ''{0}'' as {1}, ''{2}'' as {3} ",
-                                              type,
-                                              UserParametersColumns.PARAMETER_NAME,
-                                              NotificationActivation.EMAIL_SITE,
-                                              UserParametersColumns.PARAMETER_VALUE));
-            query.append(" from dual union all ");
-        }
-        query.delete(query.length() - "union all ".length(), query.length());
-        query.append("          ) n ");
+        // Sort by name
+        definedParameters.sort(Comparator.comparing(a -> a.parameterName));
 
-        query.append(MessageFormat.format("  left join {0} t ", TABLE_NAME));
-        query.append(MessageFormat.format("    on n.{0} = t.{1}",
-                                          UserParametersColumns.PARAMETER_NAME,
-                                          UserParametersColumns.PARAMETER_NAME));
-        query.append(MessageFormat.format("   and t.{0} = ? ", UserParametersColumns.USER_ID));
-        query.append(MessageFormat.format(" where t.{0} = ? or t.{0} is null ", UserParametersColumns.USER_ID));
-        query.append(MessageFormat.format(" order by n.{0}", UserParametersColumns.PARAMETER_NAME));
-
-        logger.trace(query);
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query.toString())) {
-            ps.bindParameters(userId, userId, userId);
-
-            if (ps.execute()) {
-                ResultSet rs = ps.getResultSet();
-                while (rs.next()) {
-                    params.add(new UserParameter(rs.getInt(UserParametersColumns.ID.name()),
-                                                 rs.getInt(UserParametersColumns.USER_ID.name()),
-                                                 rs.getString(UserParametersColumns.PARAMETER_NAME.name()),
-                                                 rs.getString(UserParametersColumns.PARAMETER_VALUE.name()),
-                                                 NType.valueOf(rs.getString(UserParametersColumns.PARAMETER_NAME
-                                                                                               .name()))
-                                                      .getDescription()));
-                }
-            }
-        }
-
-        return params;
+        return definedParameters;
     }
 }

@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserte
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.UserParameter;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
@@ -118,6 +119,7 @@ public class NotificationsRepository extends AbstractRepository {
                                                             Notification notif) throws SQLException {
         try {
             final String value = UserParametersRepository.getParameter(userId, notif.getType().name())
+                                                         .map(UserParameter::getParameterName)
                                                          .orElse("EMAIL_SITE");
             return NotificationActivation.valueOf(value);
         } catch (IllegalArgumentException e) {

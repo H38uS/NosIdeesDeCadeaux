@@ -66,16 +66,9 @@ public class TemplateTest {
         for (NType type : NType.values()) {
             final User firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
             UserRelationsRepository.getAllUsersInRelation(firefox)
-                                   .forEach(u -> {
-                                       try {
-                                           UserParametersRepository.insertUpdateParameter(u,
-                                                                                          type.name(),
-                                                                                          NotificationActivation.SITE.name());
-                                       } catch (SQLException e) {
-                                           e.printStackTrace();
-                                           Assert.fail();
-                                       }
-                                   });
+                                   .forEach(u -> UserParametersRepository.insertUpdateParameter(u,
+                                                                                                type.name(),
+                                                                                                NotificationActivation.SITE.name()));
             UserParametersRepository.insertUpdateParameter(firefox, type.name(), NotificationActivation.SITE.name());
         }
     }

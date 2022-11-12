@@ -5,6 +5,7 @@
         <description>Nos idees de cadeaux</description>
         <class>com.mosioj.ideescadeaux.core.model.entities.User</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.UserRole</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.UserParameter</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.Relation</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.RelationRequest</class>

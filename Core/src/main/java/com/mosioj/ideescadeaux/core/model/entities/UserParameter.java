@@ -1,38 +1,49 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
+import com.mosioj.ideescadeaux.core.model.notifications.NType;
+
+import javax.persistence.*;
+
+@Entity(name = "USER_PARAMETERS")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "parameter_name"}))
 public class UserParameter {
 
-	private int id;
-	public int userId;
-	public String parameterName;
-	public String parameterValue;
-	public String description;
+    /** The table's id. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int id;
 
-	public UserParameter(int id, int userId, String parameterName, String parameterValue, String description) {
-		this.id = id;
-		this.userId = userId;
-		this.parameterName = parameterName;
-		this.parameterValue = parameterValue;
-		this.description = description;
-	}
+    /** The user's id. Cannot be null or empty. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    public User user;
 
-	public int getId() {
-		return id;
-	}
+    @Column(name = "parameter_name", length = 100)
+    public String parameterName;
 
-	public int getUserId() {
-		return userId;
-	}
+    @Column(name = "parameter_value", length = 500)
+    public String parameterValue;
 
-	public String getParameterName() {
-		return parameterName;
-	}
+    public UserParameter() {
+        // Hibernate one
+    }
 
-	public String getParameterValue() {
-		return parameterValue;
-	}
-	
-	public String getParameterDescription() {
-		return description;
-	}
+    public UserParameter(User user, String parameterName, String parameterValue) {
+        this.user = user;
+        this.parameterName = parameterName;
+        this.parameterValue = parameterValue;
+    }
+
+    public String getParameterName() {
+        return parameterName;
+    }
+
+    public String getParameterValue() {
+        return parameterValue;
+    }
+
+    public String getParameterDescription() {
+        return NType.valueOf(parameterName).getDescription();
+    }
+
 }
