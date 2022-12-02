@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -65,15 +66,19 @@ public class BirthdayNotifier {
                                          user.getMyDName(),
                                          user.id,
                                          nbDays));
-        UserRelationsRepository.getAllUsersInRelation(user)
-                               .parallelStream()
-                               .forEach(u -> {
-                                   try {
-                                       sendMail(u, user, nbDays).get();
-                                   } catch (InterruptedException | ExecutionException e) {
-                                       logger.error("Une erreur est survenue...", e);
-                                   }
-                               });
+        List<User> friends = UserRelationsRepository.getAllUsersInRelation(user);
+        logger.info("Envoie d'une notification à {} pour l'anniversaire de {} ({})",
+                    friends,
+                    user.getMyDName(),
+                    user.id);
+        friends.parallelStream()
+               .forEach(u -> {
+                   try {
+                       sendMail(u, user, nbDays).get();
+                   } catch (InterruptedException | ExecutionException e) {
+                       logger.error("Une erreur est survenue lors de l'envoie à " + u + "...", e);
+                   }
+               });
     }
 
     /**
@@ -85,11 +90,11 @@ public class BirthdayNotifier {
      * @return The mail task.
      */
     private Future<?> sendMail(User toUser, User birthdayUser, int nbDays) {
-        logger.info(MessageFormat.format("Envoie d''un mail à {0} pour l''anniversaire {1} ({2}) dans {3} jours !",
-                                         toUser,
-                                         birthdayUser.getMyDName(),
-                                         birthdayUser.id,
-                                         nbDays));
+        logger.trace(MessageFormat.format("Envoie d''un mail à {0} pour l''anniversaire {1} ({2}) dans {3} jours !",
+                                          toUser,
+                                          birthdayUser.getMyDName(),
+                                          birthdayUser.id,
+                                          nbDays));
 
         String body = EmailSender.MY_PROPERTIES.get("birthday").toString();
 
