@@ -61,6 +61,7 @@ function getUserDiv(connectedUser, jsonDecoratedUser) {
             <div class="card-body">
                 <h5 class="card-title">
                     <a href="protected/voir_liste?id=${jsonDecoratedUser.user.id}">${jsonDecoratedUser.user.name}</a>
+                    <div class="font-italic"><small>${jsonDecoratedUser.user.email}</small></div>
                     <div><small>Né le ${jsonDecoratedUser.readableBirthday}</small></div>
                 </h5>
             </div>
