@@ -73,7 +73,7 @@ public class User implements Comparable<User>, Serializable {
     @OneToMany(mappedBy = "user")
     private Set<UserRole> roles;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     public Set<UserParameter> parameters;
 
     public User() {
