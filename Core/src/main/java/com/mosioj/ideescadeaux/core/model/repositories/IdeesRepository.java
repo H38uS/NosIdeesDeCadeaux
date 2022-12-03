@@ -274,12 +274,12 @@ public class IdeesRepository {
      * @return True if and only if a sub part of the idea can be booked.
      */
     public static boolean canSubBook(Idee idea, User user) {
-        return canBook(idea, user) &&
-               user != null &&
-               SousReservationRepository.getSousReservation(idea.getId())
-                                        .stream()
-                                        .map(SousReservationEntity::getUser)
-                                        .noneMatch(user::equals);
+        return canBook(idea, user) ||
+               ("Y".equals(idea.isSubBooked) &&
+                SousReservationRepository.getSousReservation(idea.getId())
+                                         .stream()
+                                         .map(SousReservationEntity::getUser)
+                                         .noneMatch(user::equals));
     }
 
     /**
