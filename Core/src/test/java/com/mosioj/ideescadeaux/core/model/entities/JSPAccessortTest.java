@@ -58,6 +58,7 @@ public class JSPAccessortTest extends TemplateTest {
         UserParameter up = new UserParameter(firefox, "NO_IDEA", "titi");
         Assert.assertEquals(NType.NO_IDEA.getDescription(), up.getParameterDescription());
         Assert.assertEquals("titi", up.getParameterValue());
+        Assert.assertEquals(0, up.getId());
     }
 
 }

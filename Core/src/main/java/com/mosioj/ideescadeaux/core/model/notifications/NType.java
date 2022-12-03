@@ -244,4 +244,13 @@ public enum NType {
     private interface TextFetcher {
         String getText(final User user, final Idee idea, final IdeaGroup group);
     }
+
+    public static boolean exists(String value) {
+        try {
+            NType.valueOf(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 }

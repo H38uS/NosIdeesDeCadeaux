@@ -34,6 +34,10 @@ public class UserParameter {
         this.parameterValue = parameterValue;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getParameterName() {
         return parameterName;
     }

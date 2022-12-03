@@ -63,10 +63,16 @@ public class UserParametersRepository {
                       .setParameter("user_id", user.id)
                       .list());
 
+        // Remove any unknown parameter
+        definedParameters.removeAll(definedParameters.stream()
+                                                     .filter(p -> !NType.exists(p.parameterName))
+                                                     .collect(Collectors.toList()));
+
         // Adding any missing ones
         Set<NType> allTypes = new HashSet<>(Arrays.asList(NType.values()));
         allTypes.removeAll(definedParameters.stream()
                                             .map(UserParameter::getParameterName)
+                                            .filter(NType::exists)
                                             .map(NType::valueOf)
                                             .collect(Collectors.toSet()));
         definedParameters.addAll(allTypes.stream()
