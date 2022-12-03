@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
@@ -38,8 +38,8 @@ public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
         verify(request, atMost(4)).getParameter(anyString());
 
         // Parameters were invalid
-        verify(request).setAttribute(eq("email_errors"), anyObject());
-        verify(request).setAttribute(eq("pwd_errors"), anyObject());
+        verify(request).setAttribute(eq("email_errors"), any());
+        verify(request).setAttribute(eq("pwd_errors"), any());
 
         // Error in processing
         verify(request).getRequestDispatcher(eq(CreationCompte.FORM_URL));

@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
@@ -81,7 +81,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        verify(request, never()).setAttribute(eq("errors"), anyObject());
+        verify(request, never()).setAttribute(eq("errors"), any());
         assertNotifDoesNotExists(noIdea);
     }
 
