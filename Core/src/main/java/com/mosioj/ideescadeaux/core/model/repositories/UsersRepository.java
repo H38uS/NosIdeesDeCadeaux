@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Représente la table de personnes.
@@ -102,6 +101,18 @@ public class UsersRepository {
     }
 
     /**
+     * @return All the ADMIN users in DB.
+     */
+    public static List<User> getAllAdmins() {
+        final String queryText = "select u " +
+                                 "  FROM USERS u " +
+                                 "  left join fetch u.roles r " +
+                                 " where r.role = 'ROLE_ADMIN'" +
+                                 " ORDER BY u.creationDate DESC";
+        return HibernateUtil.doQueryFetch(s -> s.createQuery(queryText, User.class).list());
+    }
+
+    /**
      * @return All the users in DB. Only used for administration
      */
     public static List<User> getAllUsers() {
@@ -126,7 +137,7 @@ public class UsersRepository {
                                       int userIdToSkip,
                                       boolean selectOnlyNonFriends,
                                       int firstRow,
-                                      int limit) throws SQLException {
+                                      int limit) {
 
         logger.debug(MessageFormat.format("Getting users from search token: ''{0}'' for user {1}.",
                                           pNameToMatch,
@@ -247,7 +258,7 @@ public class UsersRepository {
             GroupIdeaRepository.getAllGroups(s)
                                .stream()
                                .filter(g -> g.getShares().isEmpty())
-                               .collect(Collectors.toList())
+                               .toList()
                                .forEach(g -> s.createQuery("Delete from GROUP_IDEA where id = :id")
                                               .setParameter("id", g.getId())
                                               .executeUpdate());

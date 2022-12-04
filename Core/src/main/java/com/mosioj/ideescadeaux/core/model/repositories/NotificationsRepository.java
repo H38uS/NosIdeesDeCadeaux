@@ -1,6 +1,5 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
@@ -22,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
@@ -499,25 +497,14 @@ public class NotificationsRepository extends AbstractRepository {
         logger.info("Envoie d'une notification admin de type {}...", type);
 
         // Send emails to the ADMIN
-        String query = "select u." + UsersColumns.EMAIL +
-                       "  from " + UsersRepository.TABLE_NAME + " u " +
-                       "  join USER_ROLES ur on ur.email = u.email " +
-                       "  where ur.role = ?";
-
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
-            ps.bindParameters("ROLE_ADMIN");
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    String emailAdress = res.getString(UsersColumns.EMAIL.name());
-                    String messageTemplate = notificationProperties.get("mail_template").toString();
-                    String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
-                    EmailSender.sendEmail(emailAdress, "Nos idées de cadeaux - Admin notification...", body);
-                }
-            }
-        } catch (SQLException e) {
-            logger.warn("Fail to write notification.", e);
-        }
+        String messageTemplate = notificationProperties.get("mail_template").toString();
+        String body = messageTemplate.replaceAll("\\$\\$text\\$\\$", Matcher.quoteReplacement(message));
+        UsersRepository.getAllAdmins()
+                       .stream()
+                       .map(User::getEmail)
+                       .forEach(email -> EmailSender.sendEmail(email,
+                                                               "Nos idées de cadeaux - Admin notification...",
+                                                               body));
     }
 
     /**
