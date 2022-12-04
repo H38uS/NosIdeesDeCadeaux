@@ -1,24 +1,20 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.SousReservationColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+import org.hibernate.query.NativeQuery;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SousReservationRepository extends AbstractRepository {
-
-    /** Class logger */
-    private static final Logger logger = LogManager.getLogger(SousReservationRepository.class);
 
     public static final String TABLE_NAME = "SOUS_RESERVATION";
 
@@ -59,21 +55,12 @@ public class SousReservationRepository extends AbstractRepository {
     public static List<Idee> getMySubBooking(User user) {
 
         final String query = "select IDEE_ID from SOUS_RESERVATION where USER_ID = ?";
-        List<Idee> ideas = new ArrayList<>();
-
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
-            ps.bindParameters(user.id);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    IdeesRepository.getIdea(res.getInt("IDEE_ID")).ifPresent(ideas::add);
-                }
-            }
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-        }
-
-        return ideas;
+        List<Integer> res = HibernateUtil.doQueryFetch(s -> {
+            NativeQuery<Integer> sqlQuery = s.createSQLQuery(query);
+            sqlQuery.setParameter(1, user.id);
+            return sqlQuery.list();
+        });
+        return res.stream().map(IdeesRepository::getIdea).filter(Optional::isPresent).map(Optional::get).toList();
     }
 
     public static void sousReserver(int idea, int userId, String comment) {
@@ -89,8 +76,6 @@ public class SousReservationRepository extends AbstractRepository {
     }
 
     public static List<SousReservationEntity> getSousReservation(int ideeId) {
-
-        List<SousReservationEntity> reservations = new ArrayList<>();
 
         String query = MessageFormat.format("select t.{0},t.{1},t.{2},t.{3},t.{4},u.{5},u.{6},u.{7},u.{8}",
                                             SousReservationColumns.ID,
@@ -109,26 +94,22 @@ public class SousReservationRepository extends AbstractRepository {
                                             UsersColumns.ID) +
                        MessageFormat.format(" where t.{0} = ? ", SousReservationColumns.IDEE_ID);
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
-            ps.bindParameters(ideeId);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    reservations.add(new SousReservationEntity(res.getInt(SousReservationColumns.ID.name()),
-                                                               res.getInt(SousReservationColumns.IDEE_ID.name()),
-                                                               new User(res.getInt(SousReservationColumns.USER_ID.name()),
-                                                                        res.getString(UsersColumns.NAME.name()),
-                                                                        res.getString(UsersColumns.EMAIL.name()),
-                                                                        res.getDate(UsersColumns.BIRTHDAY.name()),
-                                                                        res.getString(UsersColumns.AVATAR.name())),
-                                                               res.getString(SousReservationColumns.COMMENT.name()),
-                                                               res.getTimestamp(SousReservationColumns.DATE_RESERVATION.name())));
-                }
-            }
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-        }
+        List<Object[]> res = HibernateUtil.doQueryFetch(s -> {
+            NativeQuery<Object[]> sqlQuery = s.createSQLQuery(query);
+            sqlQuery.setParameter(1, ideeId);
+            return sqlQuery.list();
+        });
 
-        return reservations;
+        return res.stream()
+                  .map(r -> new SousReservationEntity((Integer) r[0],
+                                                      (Integer) r[1],
+                                                      new User((Integer) r[2],
+                                                               (String) r[5],
+                                                               (String) r[6],
+                                                               (Date) r[7],
+                                                               (String) r[8]),
+                                                      (String) r[3],
+                                                      (Timestamp) r[4]))
+                  .toList();
     }
 }
