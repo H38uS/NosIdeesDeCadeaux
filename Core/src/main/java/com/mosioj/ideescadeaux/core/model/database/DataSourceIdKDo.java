@@ -1,9 +1,11 @@
 package com.mosioj.ideescadeaux.core.model.database;
 
+import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.NativeQuery;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -49,6 +51,23 @@ public class DataSourceIdKDo {
         return selectInt(query, parameters).orElse(0);
     }
 
+    private static <T> void bindParameters(NativeQuery<T> query, Object... parameters) {
+        for (int i = 0; i < parameters.length; i++) {
+            Object p = parameters[i];
+            if (p == null) {
+                query.setParameter(i + 1, null);
+            } else if (p instanceof Double || p instanceof Integer) {
+                query.setParameter(i + 1, p);
+            } else if (p instanceof User) {
+                query.setParameter(i + 1, ((User) p).getId());
+            } else if (p instanceof Idee) {
+                query.setParameter(i + 1, ((Idee) p).getId());
+            } else {
+                query.setParameter(i + 1, p.toString());
+            }
+        }
+    }
+
     /**
      * @param query      The sql query.
      * @param parameters Optional bindable parameters.
@@ -57,10 +76,8 @@ public class DataSourceIdKDo {
     public Optional<Integer> selectInt(String query, Object... parameters) {
         return HibernateUtil.doQuerySingle(s -> {
             // FIXME : faudra faire autrement
-            final Query<BigInteger> sqlQuery = s.createSQLQuery(query);
-            for (int i = 0; i < parameters.length; i++) {
-                sqlQuery.setParameter(i + 1, parameters[i]);
-            }
+            final NativeQuery<BigInteger> sqlQuery = s.createSQLQuery(query);
+            DataSourceIdKDo.bindParameters(sqlQuery, parameters);
             return sqlQuery.uniqueResultOptional().map(BigInteger::intValue);
         });
     }
@@ -74,10 +91,8 @@ public class DataSourceIdKDo {
      */
     public int executeUpdate(String query, Object... parameters) {
         return HibernateUtil.doSomeExecutionWork(s -> {
-            final Query<?> sqlQuery = s.createSQLQuery(query);
-            for (int i = 0; i < parameters.length; i++) {
-                sqlQuery.setParameter(i + 1, parameters[i]);
-            }
+            final NativeQuery<?> sqlQuery = s.createSQLQuery(query);
+            DataSourceIdKDo.bindParameters(sqlQuery, parameters);
             return sqlQuery.executeUpdate();
         });
     }
@@ -91,10 +106,8 @@ public class DataSourceIdKDo {
      */
     public int executeInsert(String query, Object... parameters) {
         return HibernateUtil.doSomeExecutionWork(s -> {
-            final Query<?> sqlQuery = s.createSQLQuery(query);
-            for (int i = 0; i < parameters.length; i++) {
-                sqlQuery.setParameter(i + 1, parameters[i]);
-            }
+            final NativeQuery<?> sqlQuery = s.createSQLQuery(query);
+            DataSourceIdKDo.bindParameters(sqlQuery, parameters);
             sqlQuery.executeUpdate();
             BigInteger result = (BigInteger) s.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult();
             return result.intValue();

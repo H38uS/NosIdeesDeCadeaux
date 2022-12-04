@@ -7,12 +7,16 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.CommentsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.query.NativeQuery;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,9 +104,7 @@ public class CommentsRepository extends AbstractRepository {
      * @param ideaId The idea id.
      * @return The list of comment on this idea.
      */
-    public static List<Comment> getCommentsOn(int ideaId) throws SQLException {
-
-        List<Comment> comments = new ArrayList<>();
+    public static List<Comment> getCommentsOn(int ideaId) {
 
         String query = MessageFormat.format(
                 "select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5} as userId, c.{6},u.{7},u.{8} ",
@@ -123,26 +125,22 @@ public class CommentsRepository extends AbstractRepository {
                        MessageFormat.format(" where c.{0} = ? ", CommentsColumns.IDEA_ID) +
                        MessageFormat.format(" order by c.{0} desc ", CommentsColumns.WRITTEN_ON);
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
-                                                                    query)) {
-            ps.bindParameters(ideaId);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    comments.add(new Comment(res.getInt(CommentsColumns.ID.name()),
-                                             Escaper.transformCodeToSmiley(res.getString(CommentsColumns.TEXT.name())),
-                                             new User(res.getInt("userId"),
-                                                      res.getString(UsersColumns.NAME.name()),
-                                                      res.getString(UsersColumns.EMAIL.name()),
-                                                      res.getDate(UsersColumns.BIRTHDAY.name()),
-                                                      res.getString(UsersColumns.AVATAR.name())),
-                                             res.getInt(CommentsColumns.IDEA_ID.name()),
-                                             res.getTimestamp(CommentsColumns.WRITTEN_ON.name())));
-                }
-            }
-        }
-
-        return comments;
+        List<Object[]> res = HibernateUtil.doQueryFetch(s -> {
+            NativeQuery<Object[]> sqlQuery = s.createSQLQuery(query);
+            sqlQuery.setParameter(1, ideaId);
+            return sqlQuery.list();
+        });
+        return res.stream()
+                  .map(r -> new Comment((Integer) r[0],
+                                        Escaper.transformCodeToSmiley((String) r[2]),
+                                        new User((Integer) r[5],
+                                                 (String) r[3],
+                                                 (String) r[4],
+                                                 (Date) r[8],
+                                                 r[7].toString()),
+                                        (Integer) r[1],
+                                        (Timestamp) r[6]))
+                  .toList();
     }
 
     /**

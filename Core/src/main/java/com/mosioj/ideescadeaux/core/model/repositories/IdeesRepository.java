@@ -91,7 +91,7 @@ public class IdeesRepository {
                                                      .map(IdeesRepository::getIdeaFromGroup)
                                                      .filter(Optional::isPresent)
                                                      .map(Optional::get)
-                                                     .collect(Collectors.toList());
+                                                     .toList();
 
         // Combining the three
         booked.addAll(subBooked);
@@ -322,7 +322,7 @@ public class IdeesRepository {
      *
      * @param idea The idea.
      */
-    public static void trueRemove(Idee idea) throws SQLException {
+    public static void trueRemove(Idee idea) {
         toutDereserver(idea);
         CommentsRepository.deleteAll(idea);
         HibernateUtil.doSomeWork(s -> {
