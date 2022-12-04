@@ -32,7 +32,7 @@ public class IsUpToDateQuestionsRepository extends AbstractRepository {
      * @return Number of rows inserted.
      */
     public static int addAssociation(int ideeId, int userId) {
-        return getDb().executeUpdate(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
+        return getDb().executeInsert(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
                                                           TABLE_NAME,
                                                           IsUpToDateColumns.IDEE_ID,
                                                           IsUpToDateColumns.USER_ID),

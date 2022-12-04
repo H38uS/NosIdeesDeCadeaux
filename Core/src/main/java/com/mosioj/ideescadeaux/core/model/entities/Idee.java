@@ -276,6 +276,13 @@ public class Idee {
     }
 
     /**
+     * @return The idea group if any.
+     */
+    public Optional<IdeaGroup> getGroup() {
+        return Optional.ofNullable(group);
+    }
+
+    /**
      * @return The builder.
      */
     public static IdeaBuilder builder() { // FIXME à supprimer

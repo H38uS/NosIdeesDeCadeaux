@@ -31,19 +31,19 @@ public class QuestionsRepository extends AbstractRepository {
      * @param ideaId The idea id.
      * @param text   The comment text.
      */
-    public static void addComment(int userId, Integer ideaId, String text) throws SQLException {
+    public static void addComment(int userId, Integer ideaId, String text) {
         text = StringEscapeUtils.unescapeHtml4(text);
         text = Escaper.escapeIdeaText(text);
         text = Escaper.transformSmileyToCode(text);
-        getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
-                                                               TABLE_NAME,
-                                                               CommentsColumns.IDEA_ID,
-                                                               CommentsColumns.TEXT,
-                                                               CommentsColumns.WRITTEN_BY,
-                                                               CommentsColumns.WRITTEN_ON),
-                                          ideaId,
-                                          text,
-                                          userId);
+        getDb().executeInsert(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
+                                                   TABLE_NAME,
+                                                   CommentsColumns.IDEA_ID,
+                                                   CommentsColumns.TEXT,
+                                                   CommentsColumns.WRITTEN_BY,
+                                                   CommentsColumns.WRITTEN_ON),
+                              ideaId,
+                              text,
+                              userId);
     }
 
     /**
@@ -99,16 +99,17 @@ public class QuestionsRepository extends AbstractRepository {
 
         List<Comment> comments = new ArrayList<>();
 
-        String query = MessageFormat.format("select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5}, u.{6} as userId, u.{8}, c.{7} ",
-                                            CommentsColumns.ID,
-                                            CommentsColumns.IDEA_ID,
-                                            CommentsColumns.TEXT,
-                                            UsersColumns.NAME,
-                                            UsersColumns.EMAIL,
-                                            UsersColumns.BIRTHDAY,
-                                            UsersColumns.ID,
-                                            CommentsColumns.WRITTEN_ON,
-                                            UsersColumns.AVATAR) +
+        String query = MessageFormat.format(
+                "select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5}, u.{6} as userId, u.{8}, c.{7} ",
+                CommentsColumns.ID,
+                CommentsColumns.IDEA_ID,
+                CommentsColumns.TEXT,
+                UsersColumns.NAME,
+                UsersColumns.EMAIL,
+                UsersColumns.BIRTHDAY,
+                UsersColumns.ID,
+                CommentsColumns.WRITTEN_ON,
+                UsersColumns.AVATAR) +
                        MessageFormat.format("  from {0} c ", TABLE_NAME) +
                        MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ",
                                             UsersRepository.TABLE_NAME,
@@ -145,16 +146,17 @@ public class QuestionsRepository extends AbstractRepository {
      */
     public static Optional<Comment> getComment(Integer commentId) {
 
-        String query = MessageFormat.format("select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5}, u.{6} as userId, u.{8}, c.{7} ",
-                                            CommentsColumns.ID,
-                                            CommentsColumns.IDEA_ID,
-                                            CommentsColumns.TEXT,
-                                            UsersColumns.NAME,
-                                            UsersColumns.EMAIL,
-                                            UsersColumns.BIRTHDAY,
-                                            UsersColumns.ID,
-                                            CommentsColumns.WRITTEN_ON,
-                                            UsersColumns.AVATAR) +
+        String query = MessageFormat.format(
+                "select c.{0}, c.{1}, c.{2}, u.{3}, u.{4}, u.{5}, u.{6} as userId, u.{8}, c.{7} ",
+                CommentsColumns.ID,
+                CommentsColumns.IDEA_ID,
+                CommentsColumns.TEXT,
+                UsersColumns.NAME,
+                UsersColumns.EMAIL,
+                UsersColumns.BIRTHDAY,
+                UsersColumns.ID,
+                CommentsColumns.WRITTEN_ON,
+                UsersColumns.AVATAR) +
                        MessageFormat.format("  from {0} c ", TABLE_NAME) +
                        MessageFormat.format(" inner join {0} u on u.{1} = c.{2} ",
                                             UsersRepository.TABLE_NAME,
@@ -194,7 +196,7 @@ public class QuestionsRepository extends AbstractRepository {
                               commentId);
     }
 
-    public static void deleteAll(int userId) throws SQLException {
+    public static void deleteAll(int userId) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
                                                    TABLE_NAME,
                                                    CommentsColumns.WRITTEN_BY), userId);

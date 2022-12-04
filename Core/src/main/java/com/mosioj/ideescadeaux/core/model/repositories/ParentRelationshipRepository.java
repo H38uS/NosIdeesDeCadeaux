@@ -116,7 +116,7 @@ public class ParentRelationshipRepository extends AbstractRepository {
      *
      * @param child The parent's child.
      */
-    public static void deleteParents(User child) throws SQLException {
+    public static void deleteParents(User child) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
                                                    TABLE_NAME,
                                                    ParentRelationshipColumns.CHILD_ID), child.id);
@@ -126,8 +126,8 @@ public class ParentRelationshipRepository extends AbstractRepository {
      * @param parentId The parent id.
      * @param childId  The child id.
      */
-    public static void addProcuration(int parentId, int childId) throws SQLException {
-        getDb().executeUpdate(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?, ?, now())",
+    public static void addProcuration(int parentId, int childId) {
+        getDb().executeInsert(MessageFormat.format("insert into {0} ({1},{2},{3}) values (?, ?, now())",
                                                    TABLE_NAME,
                                                    ParentRelationshipColumns.PARENT_ID,
                                                    ParentRelationshipColumns.CHILD_ID,
@@ -136,7 +136,7 @@ public class ParentRelationshipRepository extends AbstractRepository {
                               childId);
     }
 
-    public static void deleteAllRelationForUser(int userId) throws SQLException {
+    public static void deleteAllRelationForUser(int userId) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? or {2} = ?",
                                                    TABLE_NAME,
                                                    ParentRelationshipColumns.PARENT_ID,

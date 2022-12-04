@@ -1,7 +1,6 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdoInserter;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
@@ -13,13 +12,16 @@ import com.mosioj.ideescadeaux.core.model.notifications.NotificationFactory;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.query.NativeQuery;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -28,8 +30,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
-
-import static com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns.*;
 
 public class NotificationsRepository extends AbstractRepository {
 
@@ -89,14 +89,12 @@ public class NotificationsRepository extends AbstractRepository {
                                      " (owner, type, creation_date, user_id_param, idea_id_param, group_id_param) " +
                                      " values " +
                                      " (?,     ?,    now(),         ?,             ?,             ?)";
-                try (PreparedStatementIdKdoInserter ps = new PreparedStatementIdKdoInserter(getDb(), query)) {
-                    ps.bindParameters(notification.getOwner().getId(),
-                                      notification.getType(),
-                                      notification.getUserParameter().orElse(null),
-                                      notification.getIdeaParameter().orElse(null),
-                                      notification.getGroupParameter().orElse(null));
-                    id = ps.executeUpdate();
-                }
+                id = getDb().executeInsert(query,
+                                           notification.getOwner().getId(),
+                                           notification.getType().name(),
+                                           notification.getUserParameter().orElse(null),
+                                           notification.getIdeaParameter().orElse(null),
+                                           notification.getGroupParameter().orElse(null));
             }
 
             // Envoie de la notification par email si besoin
@@ -371,58 +369,45 @@ public class NotificationsRepository extends AbstractRepository {
          */
         public boolean hasAny() {
             final String fullQuery = query + whereClause.toString();
-            try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), fullQuery)) {
-                ps.bindParameters(parameters.toArray());
-                if (ps.execute()) {
-                    return ps.getResultSet().next();
-                }
-            } catch (SQLException e) {
-                logger.warn("Fail to fetch the notifications...", e);
-            }
-            return false;
+            return getDb().doesReturnRows(fullQuery, parameters.toArray());
         }
 
         /**
-         * @param resultSet  The notification ResultSet.
-         * @param columnName The column name to read.
-         * @return The integer value or null if not parsable or if the column's value is null.
-         */
-        private static Integer getIntegerValueOf(ResultSet resultSet, String columnName) throws SQLException {
-            try {
-                return Integer.valueOf(resultSet.getString(columnName));
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }
-
-        /**
-         * @param resultSet The notification ResultSet.
+         * @param row A single notification as an object array.
          * @return The new memory notification from the value read from the database.
          */
-        private static Notification buildIt(ResultSet resultSet) throws SQLException {
+        private static Notification buildIt(Object[] row) {
+            /* Expected columns
+                0 => n.ID,
+                1 => n.TYPE,
+                2 => u.ID as user_id,
+                3 => u.NAME,
+                4 => u.EMAIL,
+                5 => u.BIRTHDAY,
+                6 => u.AVATAR,
+                7 => n.CREATION_DATE,
+                8 => n.USER_ID_PARAM,
+                9 => n.IDEA_ID_PARAM,
+               10 => n.GROUP_ID_PARAM
+             */
 
-            // FIXME : faudra faire un left join pour ne pas faire 18 000 requêtes
+            // FIXME : faudra faire un left join pour ne pas faire 18 000 requêtes - quand on passera par Hibernate
+
             // Récupération des paramètres depuis le ResultSet
-            String type = resultSet.getString(NotificationsColumns.TYPE.name());
-            long id = resultSet.getLong(NotificationsColumns.ID.name());
-            User owner = new User(resultSet.getInt("user_id"),
-                                  resultSet.getString(UsersColumns.NAME.name()),
-                                  resultSet.getString(UsersColumns.EMAIL.name()),
-                                  resultSet.getDate(UsersColumns.BIRTHDAY.name()),
-                                  resultSet.getString(UsersColumns.AVATAR.name()));
-            Instant creation = Optional.ofNullable(resultSet.getTimestamp(NotificationsColumns.CREATION_DATE.name()))
-                                       .map(Timestamp::toInstant)
-                                       .orElse(null);
+            String type = (String) row[1];
+            long id = Long.valueOf((Integer) row[0]);
+            User owner = new User((Integer) row[2], (String) row[3], (String) row[4], (Date) row[5], (String) row[6]);
+            Instant creation = Optional.ofNullable((Timestamp) row[7]).map(Timestamp::toInstant).orElse(null);
 
             // Reading the parameters
-            final Integer userId = getIntegerValueOf(resultSet, USER_ID_PARAM.name());
-            User userParameter = userId == null ? null : UsersRepository.getUser(userId).orElse(null);
-            final Integer ideaId = getIntegerValueOf(resultSet, IDEA_ID_PARAM.name());
+            User userParameter = Optional.ofNullable((Integer) row[8]).flatMap(UsersRepository::getUser).orElse(null);
+            final Integer ideaId = (Integer) row[9];
             Idee ideaParameter = IdeesRepository.getIdea(ideaId)
                                                 .orElse(IdeesRepository.getDeletedIdea(ideaId).orElse(null));
-            final Integer groupId = getIntegerValueOf(resultSet, GROUP_ID_PARAM.name());
-            IdeaGroup groupParameter = ideaParameter != null ? ideaParameter.group :
-                    GroupIdeaRepository.getGroupDetails(groupId).orElse(null);
+            final Integer groupId = (Integer) row[10];
+            IdeaGroup groupParameter = Optional.ofNullable(ideaParameter)
+                                               .flatMap(Idee::getGroup)
+                                               .orElse(GroupIdeaRepository.getGroupDetails(groupId).orElse(null));
 
             return NotificationFactory.builder(NType.valueOf(type))
                                       .withAnID(id)
@@ -438,27 +423,18 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The notification list based on previous criteria.
          */
         public List<Notification> fetch() {
-            List<Notification> notifications = new ArrayList<>();
             final String fullQuery = query + whereClause.toString();
             logger.debug("[Perf] fetch. Query: {}. Parameters: {}", fullQuery, parameters);
-            try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), fullQuery)) {
-                ps.bindParameters(parameters.toArray());
-                if (ps.execute()) {
-                    logger.trace("[Perf] Execution completed! Building the result...");
-                    ResultSet res = ps.getResultSet();
-                    while (res.next()) {
-                        try {
-                            notifications.add(buildIt(res));
-                        } catch (IllegalArgumentException e) {
-                            logger.warn("Unknown type...", e);
-                        }
-                    }
+            List<Object[]> rows = HibernateUtil.doQueryFetch(s -> {
+                // FIXME faudra y faire une entité
+                final NativeQuery<Object[]> sqlQuery = s.createSQLQuery(fullQuery);
+                for (int i = 0; i < parameters.size(); i++) {
+                    sqlQuery.setParameter(i + 1, parameters.get(i));
                 }
-            } catch (SQLException e) {
-                logger.warn("Fail to fetch the notifications...", e);
-            }
-            logger.trace("[Perf] Completed! Created {} objects.", notifications.size());
-            return notifications;
+                return sqlQuery.list();
+            });
+            logger.trace("[Perf] Execution completed! Building the result...");
+            return rows.stream().map(NotificationFetcher::buildIt).collect(Collectors.toList());
         }
     }
 

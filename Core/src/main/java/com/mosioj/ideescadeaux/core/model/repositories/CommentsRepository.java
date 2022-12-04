@@ -32,19 +32,19 @@ public class CommentsRepository extends AbstractRepository {
      * @param ideaId The idea id.
      * @param text   The text of the comment.
      */
-    public static void addComment(int userId, Integer ideaId, String text) throws SQLException {
+    public static void addComment(int userId, Integer ideaId, String text) {
         text = StringEscapeUtils.unescapeHtml4(text);
         text = Escaper.escapeIdeaText(text);
         text = Escaper.transformSmileyToCode(text);
-        getDb().executeUpdateGeneratedKey(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
-                                                               TABLE_NAME,
-                                                               CommentsColumns.IDEA_ID,
-                                                               CommentsColumns.TEXT,
-                                                               CommentsColumns.WRITTEN_BY,
-                                                               CommentsColumns.WRITTEN_ON),
-                                          ideaId,
-                                          text,
-                                          userId);
+        getDb().executeInsert(MessageFormat.format("insert into {0} ({1},{2},{3},{4}) values (?,?,?, now())",
+                                                   TABLE_NAME,
+                                                   CommentsColumns.IDEA_ID,
+                                                   CommentsColumns.TEXT,
+                                                   CommentsColumns.WRITTEN_BY,
+                                                   CommentsColumns.WRITTEN_ON),
+                              ideaId,
+                              text,
+                              userId);
     }
 
     /**
@@ -206,7 +206,7 @@ public class CommentsRepository extends AbstractRepository {
      *
      * @param idee The idea.
      */
-    public static void deleteAll(Idee idee) throws SQLException {
+    public static void deleteAll(Idee idee) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? ",
                                                    CommentsRepository.TABLE_NAME,
                                                    CommentsColumns.IDEA_ID), idee.getId());
@@ -216,7 +216,7 @@ public class CommentsRepository extends AbstractRepository {
     /**
      * @param userId The user id.
      */
-    public static void deleteAll(int userId) throws SQLException {
+    public static void deleteAll(int userId) {
         getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
                                                    TABLE_NAME,
                                                    CommentsColumns.WRITTEN_BY), userId);

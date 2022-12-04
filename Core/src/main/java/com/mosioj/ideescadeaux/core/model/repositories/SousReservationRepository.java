@@ -77,7 +77,7 @@ public class SousReservationRepository extends AbstractRepository {
     }
 
     public static void sousReserver(int idea, int userId, String comment) {
-        getDb().executeUpdate(MessageFormat.format("insert into {0}({1},{2},{3},{4}) values (?, ?, ?, now()) ",
+        getDb().executeInsert(MessageFormat.format("insert into {0}({1},{2},{3},{4}) values (?, ?, ?, now()) ",
                                                    TABLE_NAME,
                                                    SousReservationColumns.IDEE_ID,
                                                    SousReservationColumns.USER_ID,

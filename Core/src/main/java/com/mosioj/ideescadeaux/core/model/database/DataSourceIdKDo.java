@@ -8,8 +8,8 @@ import org.hibernate.query.Query;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -55,19 +55,14 @@ public class DataSourceIdKDo {
      * @return The result of the first row on the first column.
      */
     public Optional<Integer> selectInt(String query, Object... parameters) {
-        try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
-            statement.bindParameters(parameters);
-            if (statement.execute()) {
-                ResultSet res = statement.getResultSet();
-                if (res.next()) {
-                    int value = res.getInt(1);
-                    return res.wasNull() ? Optional.empty() : Optional.of(value);
-                }
+        return HibernateUtil.doQuerySingle(s -> {
+            // FIXME : faudra faire autrement
+            final Query<BigInteger> sqlQuery = s.createSQLQuery(query);
+            for (int i = 0; i < parameters.length; i++) {
+                sqlQuery.setParameter(i + 1, parameters[i]);
             }
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-        }
-        return Optional.empty();
+            return sqlQuery.uniqueResultOptional().map(BigInteger::intValue);
+        });
     }
 
     /**
@@ -88,16 +83,22 @@ public class DataSourceIdKDo {
     }
 
     /**
-     * Execute a DML statement : insert / update / delete.
+     * Execute an insert statement and return the generated key.
      *
      * @param query      The SQL query.
      * @param parameters Optional bindable parameters.
+     * @return The number of rows inserted / updated / deleted.
      */
-    public void executeUpdateGeneratedKey(String query, Object... parameters) throws SQLException {
-        try (PreparedStatementIdKdoInserter statement = new PreparedStatementIdKdoInserter(this, query)) {
-            statement.bindParameters(parameters);
-            statement.executeUpdate();
-        }
+    public int executeInsert(String query, Object... parameters) {
+        return HibernateUtil.doSomeExecutionWork(s -> {
+            final Query<?> sqlQuery = s.createSQLQuery(query);
+            for (int i = 0; i < parameters.length; i++) {
+                sqlQuery.setParameter(i + 1, parameters[i]);
+            }
+            sqlQuery.executeUpdate();
+            BigInteger result = (BigInteger) s.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult();
+            return result.intValue();
+        });
     }
 
     /**
@@ -132,33 +133,7 @@ public class DataSourceIdKDo {
      */
     public boolean doesReturnRows(String query, Object... parameters) {
         query = "select 1 from dual where exists ( " + query + " )";
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(this, query)) {
-            ps.bindParameters(parameters);
-            ps.execute();
-            ResultSet res = ps.getResultSet();
-            return res.next();
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-            return false;
-        }
-    }
-
-    /**
-     * @param query      The sql query.
-     * @param parameters Optional bindable parameters.
-     * @return The result of the first row on the first column.
-     */
-    public Optional<String> selectString(String query, Object... parameters) throws SQLException {
-        try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
-            statement.bindParameters(parameters);
-            if (statement.execute()) {
-                ResultSet res = statement.getResultSet();
-                if (res.next()) {
-                    return Optional.ofNullable(res.getString(1));
-                }
-            }
-        }
-        return Optional.empty();
+        return selectInt(query, parameters).isPresent();
     }
 
 }

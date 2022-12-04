@@ -7,7 +7,6 @@ import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
-import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.*;
@@ -67,17 +66,9 @@ public class WebAppTemplateTest {
 
     @BeforeClass
     public static void init() throws SQLException {
-
-        MysqlDataSource dataSource = new MysqlDataSource();
-
-        dataSource.setDatabaseName("test_ideeskdos");
-        dataSource.setUser("mosioj");
-        dataSource.setPassword("tuaD50Kv2jguyX5ncokK");
-        dataSource.setURL("jdbc:mysql://nas-jmo/test_ideeskdos?serverTimezone=Europe/Paris");
-
-        DataSourceIdKDo.setDataSource(dataSource);
+        
         ds = new DataSourceIdKDo();
-        String email = ds.selectString("select email from USERS where id = ?", 3).orElseThrow(SQLException::new);
+        String email = UsersRepository.getUser(3).map(User::getEmail).orElseThrow(SQLException::new);
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
         for (NType type : NType.values()) {
@@ -94,8 +85,7 @@ public class WebAppTemplateTest {
     public void printLine() {
         int length = name.getMethodName().length() + "============ Running ".length() + " ============".length();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++)
-            sb.append("=");
+        sb.append("=".repeat(Math.max(0, length)));
         LOGGER.info(sb);
         System.out.println();
         System.out.println();
