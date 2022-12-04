@@ -3,16 +3,9 @@ package com.mosioj.ideescadeaux.core.model.database;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.query.NativeQuery;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.math.BigInteger;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Optional;
 
 /**
@@ -21,26 +14,6 @@ import java.util.Optional;
  * @author Jordan Mosio
  */
 public class DataSourceIdKDo {
-
-    private final Logger logger = LogManager.getLogger(DataSourceIdKDo.class);
-
-    /**
-     * The internal datasource.
-     */
-    private static DataSource ds;
-
-    /**
-     * @return A new connection. Warning : it must be closed.
-     */
-    protected Connection getAConnection() {
-        try {
-            return getDatasource().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.warn("Fail to get a connection... => " + e.getMessage());
-            throw new RuntimeException("Impossible to get a connection...");
-        }
-    }
 
     /**
      * @param query      The sql query.
@@ -116,31 +89,6 @@ public class DataSourceIdKDo {
             BigInteger result = (BigInteger) s.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult();
             return result.intValue();
         });
-    }
-
-    /**
-     * !!!! Only for test !!!!
-     *
-     * @param newDS The new data source.
-     */
-    public static void setDataSource(DataSource newDS) {
-        ds = newDS;
-    }
-
-    /**
-     * @return The data source to use.
-     */
-    private static DataSource getDatasource() {
-        if (ds == null) {
-            try {
-                Context initCtx = new InitialContext();
-                Context envCtx = (Context) initCtx.lookup("java:comp/env");
-                ds = (DataSource) envCtx.lookup("jdbc/web-db");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return ds;
     }
 
     /**

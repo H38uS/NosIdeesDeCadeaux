@@ -1,18 +1,18 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.MessagesAccueilColumns;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.hibernate.query.NativeQuery;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public class MessagesAccueilRepository extends AbstractRepository {
 
-    private static final Logger logger = LogManager.getLogger(MessagesAccueilRepository.class);
     private static final String TABLE_NAME = "MESSAGES_ACCUEIL";
 
     private static MessagesAccueilRepository instance;
@@ -27,25 +27,18 @@ public class MessagesAccueilRepository extends AbstractRepository {
      */
     public Map<String, List<String>> getThem() {
 
-        Map<String, List<String>> res = new HashMap<>();
+        String query = MessageFormat.format("select {0}, {1} from {2}",
+                                            MessagesAccueilColumns.TYPE,
+                                            MessagesAccueilColumns.TEXT,
+                                            TABLE_NAME);
 
-        String query = MessageFormat.format("select {0}, {1} from {2}", MessagesAccueilColumns.TYPE, MessagesAccueilColumns.TEXT, TABLE_NAME);
-
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(), query)) {
-            if (ps.execute()) {
-                ResultSet rs = ps.getResultSet();
-                while (rs.next()) {
-                    String type = rs.getString(MessagesAccueilColumns.TYPE.name());
-                    List<String> list = res.computeIfAbsent(type, k -> new ArrayList<>());
-                    list.add(rs.getString(MessagesAccueilColumns.TEXT.name()));
-                }
-            }
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-            e.printStackTrace();
-        }
-
-        return res;
+        List<Object[]> res = HibernateUtil.doQueryFetch(s -> ((NativeQuery<Object[]>) s.createSQLQuery(query)).list());
+        return res.stream()
+                  .map(r -> new ImmutablePair<>((String) r[0], (String) r[1]))
+                  .collect(groupingBy(p -> p.left)).entrySet()
+                  .stream()
+                  .collect(Collectors.toMap(Map.Entry::getKey,
+                                            e -> e.getValue().stream().map(ImmutablePair::getRight).toList()));
     }
 
     /**

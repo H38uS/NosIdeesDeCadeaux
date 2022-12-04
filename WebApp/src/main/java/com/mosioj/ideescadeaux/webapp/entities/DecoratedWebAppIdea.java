@@ -78,12 +78,7 @@ public class DecoratedWebAppIdea {
         if (isOwnerByConnectedUser) {
             return false;
         }
-        try {
-            return CommentsRepository.getNbComments(idee.getId()) > 0;
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-        }
-        return false;
+        return CommentsRepository.getNbComments(idee.getId()) > 0;
     }
 
     /**
