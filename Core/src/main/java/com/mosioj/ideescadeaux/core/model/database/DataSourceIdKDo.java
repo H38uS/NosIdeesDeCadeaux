@@ -76,9 +76,13 @@ public class DataSourceIdKDo {
     public Optional<Integer> selectInt(String query, Object... parameters) {
         return HibernateUtil.doQuerySingle(s -> {
             // FIXME : faudra faire autrement
-            final NativeQuery<BigInteger> sqlQuery = s.createSQLQuery(query);
+            final NativeQuery<?> sqlQuery = s.createSQLQuery(query);
             DataSourceIdKDo.bindParameters(sqlQuery, parameters);
-            return sqlQuery.uniqueResultOptional().map(BigInteger::intValue);
+            return sqlQuery.uniqueResultOptional().map(res -> {
+                if (res instanceof BigInteger)
+                    return ((BigInteger) res).intValue();
+                return (Integer) res;
+            });
         });
     }
 
