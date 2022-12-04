@@ -10,7 +10,6 @@ import javax.persistence.Persistence;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TimeZone;
 
 public class HibernateUtil {
@@ -36,13 +35,16 @@ public class HibernateUtil {
     }
 
     /**
-     * @param <T>       The type of result.
-     * @param operation The operation to perform.
-     * @return The optional row found.
+     * Performs some work on a new brand session and returns its results.
+     *
+     * @param operation Operations to perform.
      */
-    public static <T> List<T> doQueryFetch(HibernateSessionQueryFetch<T> operation) {
+    public static <T> T doSomeExecutionWork(HibernateSessionExecuteUpdate<T> operation) {
         try (Session session = HibernateUtil.getASession()) {
-            return operation.fetch(session);
+            Transaction t = session.beginTransaction();
+            T result = operation.executeUpdate(session);
+            t.commit();
+            return result;
         }
     }
 
@@ -51,7 +53,7 @@ public class HibernateUtil {
      * @param operation The operation to perform.
      * @return The optional row found.
      */
-    public static <T> Set<T> doQueryFetchAsSet(HibernateSessionQueryFetchAsSet<T> operation) {
+    public static <T> List<T> doQueryFetch(HibernateSessionQueryFetch<T> operation) {
         try (Session session = HibernateUtil.getASession()) {
             return operation.fetch(session);
         }
@@ -163,4 +165,5 @@ public class HibernateUtil {
     public static String sanitizeSQLLike(String parameter) {
         return MessageFormat.format("%{0}%", escapeMySQL(parameter).toLowerCase());
     }
+
 }

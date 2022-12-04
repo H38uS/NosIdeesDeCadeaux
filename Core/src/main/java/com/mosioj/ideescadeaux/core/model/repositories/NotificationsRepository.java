@@ -235,12 +235,8 @@ public class NotificationsRepository extends AbstractRepository {
          * Runs the query built so far.
          */
         public void terminates() {
-            try {
-                int nb = getDb().executeUpdate(query.toString(), parameters.toArray());
-                logger.debug("{} notifications deleted using {}, and {}.", nb, parameters, query);
-            } catch (SQLException e) {
-                logger.warn("Fail to execute {} with the parameters {}. Got: {}.", query, parameters, e);
-            }
+            int nb = getDb().executeUpdate(query.toString(), parameters.toArray());
+            logger.debug("{} notifications deleted using {}, and {}.", nb, parameters, query);
         }
     }
 
@@ -601,7 +597,7 @@ public class NotificationsRepository extends AbstractRepository {
      *
      * @param notif The notification.
      */
-    public static void setRead(Notification notif) throws SQLException {
+    public static void setRead(Notification notif) {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ? ",
                                                    TABLE_NAME,
                                                    NotificationsColumns.IS_UNREAD,
@@ -616,7 +612,7 @@ public class NotificationsRepository extends AbstractRepository {
      *
      * @param notif The notification.
      */
-    public static void setUnread(Notification notif) throws SQLException {
+    public static void setUnread(Notification notif) {
         getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? ",
                                                    TABLE_NAME,
                                                    NotificationsColumns.IS_UNREAD,

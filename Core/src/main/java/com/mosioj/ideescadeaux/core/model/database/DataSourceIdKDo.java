@@ -1,7 +1,9 @@
 package com.mosioj.ideescadeaux.core.model.database;
 
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.query.Query;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -75,11 +77,14 @@ public class DataSourceIdKDo {
      * @param parameters Optional bindable parameters.
      * @return The number of rows inserted / updated / deleted.
      */
-    public int executeUpdate(String query, Object... parameters) throws SQLException {
-        try (PreparedStatementIdKdo statement = new PreparedStatementIdKdo(this, query)) {
-            statement.bindParameters(parameters);
-            return statement.executeUpdate();
-        }
+    public int executeUpdate(String query, Object... parameters) {
+        return HibernateUtil.doSomeExecutionWork(s -> {
+            final Query<?> sqlQuery = s.createSQLQuery(query);
+            for (int i = 0; i < parameters.length; i++) {
+                sqlQuery.setParameter(i + 1, parameters[i]);
+            }
+            return sqlQuery.executeUpdate();
+        });
     }
 
     /**

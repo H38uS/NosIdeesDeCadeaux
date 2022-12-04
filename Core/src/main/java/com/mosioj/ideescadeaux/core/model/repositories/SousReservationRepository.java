@@ -32,13 +32,9 @@ public class SousReservationRepository extends AbstractRepository {
      * @param idee L'idée.
      */
     public static void remove(Idee idee) {
-        try {
-            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                       SousReservationRepository.TABLE_NAME,
-                                                       SousReservationColumns.IDEE_ID), idee.getId());
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-        }
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
+                                                   SousReservationRepository.TABLE_NAME,
+                                                   SousReservationColumns.IDEE_ID), idee.getId());
     }
 
     /**
@@ -48,16 +44,12 @@ public class SousReservationRepository extends AbstractRepository {
      * @param user L'utilisateur qui avait fait une sous-réservation.
      */
     public static void cancel(Idee idee, User user) {
-        try {
-            getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
-                                                       SousReservationRepository.TABLE_NAME,
-                                                       SousReservationColumns.IDEE_ID,
-                                                       SousReservationColumns.USER_ID),
-                                  idee,
-                                  user.id);
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-        }
+        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ? and {2} = ?",
+                                                   SousReservationRepository.TABLE_NAME,
+                                                   SousReservationColumns.IDEE_ID,
+                                                   SousReservationColumns.USER_ID),
+                              idee,
+                              user.id);
     }
 
     /**
@@ -84,7 +76,7 @@ public class SousReservationRepository extends AbstractRepository {
         return ideas;
     }
 
-    public static void sousReserver(int idea, int userId, String comment) throws SQLException {
+    public static void sousReserver(int idea, int userId, String comment) {
         getDb().executeUpdate(MessageFormat.format("insert into {0}({1},{2},{3},{4}) values (?, ?, ?, now()) ",
                                                    TABLE_NAME,
                                                    SousReservationColumns.IDEE_ID,
