@@ -93,10 +93,6 @@ public class PreparedStatementIdKdo implements Closeable {
         }
     }
 
-    public int executeUpdate() throws SQLException {
-        return ps.executeUpdate();
-    }
-
     public boolean execute() throws SQLException {
         return ps.execute();
     }

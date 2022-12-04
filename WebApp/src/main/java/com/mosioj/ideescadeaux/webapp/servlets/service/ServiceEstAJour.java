@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serial;
 import java.text.MessageFormat;
 
 import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.findNotificationsMatching;
@@ -20,7 +21,9 @@ import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepos
 @WebServlet("/protected/service/est_a_jour")
 public class ServiceEstAJour extends ServicePost<IdeaInteractionBookingUpToDate> {
 
+    @Serial
     private static final long serialVersionUID = 2642366164643542379L;
+
     public static final String IDEE_FIELD_PARAMETER = "idee";
     private static final Logger logger = LogManager.getLogger(ServiceEstAJour.class);
 
@@ -47,13 +50,12 @@ public class ServiceEstAJour extends ServicePost<IdeaInteractionBookingUpToDate>
             return false;
         }
 
-        if (IsUpToDateQuestionsRepository.addAssociation(idea.getId(), thisOne.id) == 1) {
-            final Notification isUpToDate = NType.IS_IDEA_UP_TO_DATE.with(thisOne, idea).setOwner(idea.getOwner());
-            if (findNotificationsMatching(isUpToDate).isEmpty()) {
-                // seulement si la notification n'existe pas encore
-                isUpToDate.sendItTo(idea.getOwner());
-                return true;
-            }
+        IsUpToDateQuestionsRepository.addAssociation(idea.getId(), thisOne.id);
+        final Notification isUpToDate = NType.IS_IDEA_UP_TO_DATE.with(thisOne, idea).setOwner(idea.getOwner());
+        if (findNotificationsMatching(isUpToDate).isEmpty()) {
+            // seulement si la notification n'existe pas encore
+            isUpToDate.sendItTo(idea.getOwner());
+            return true;
         }
 
         return false;

@@ -1,14 +1,13 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
-import com.mosioj.ideescadeaux.core.model.database.PreparedStatementIdKdo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.ParentRelationshipColumns;
 import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+import org.hibernate.query.NativeQuery;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Date;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ParentRelationshipRepository extends AbstractRepository {
@@ -23,78 +22,60 @@ public class ParentRelationshipRepository extends AbstractRepository {
      * @param parentId The parent id.
      * @return Tous les comptes qui sont gérés par procuration
      */
-    public static List<User> getChildren(int parentId) throws SQLException {
+    public static List<User> getChildren(int parentId) {
 
-        List<User> users = new ArrayList<>();
+        String query = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
+                                            ParentRelationshipColumns.ID,
+                                            UsersColumns.NAME,
+                                            UsersColumns.EMAIL,
+                                            UsersColumns.BIRTHDAY,
+                                            UsersColumns.AVATAR) +
+                       MessageFormat.format("   from {0} t ", TABLE_NAME) +
+                       MessageFormat.format("   left join {0} u", UsersRepository.TABLE_NAME) +
+                       MessageFormat.format("     on u.{0} = t.{1}",
+                                            UsersColumns.ID,
+                                            ParentRelationshipColumns.CHILD_ID) +
+                       MessageFormat.format("  where t.{0} = ?", ParentRelationshipColumns.PARENT_ID);
 
-        String sb = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
-                                         ParentRelationshipColumns.ID,
-                                         UsersColumns.NAME,
-                                         UsersColumns.EMAIL,
-                                         UsersColumns.BIRTHDAY,
-                                         UsersColumns.AVATAR) +
-                    MessageFormat.format("   from {0} t ", TABLE_NAME) +
-                    MessageFormat.format("   left join {0} u", UsersRepository.TABLE_NAME) +
-                    MessageFormat.format("     on u.{0} = t.{1}", UsersColumns.ID, ParentRelationshipColumns.CHILD_ID) +
-                    MessageFormat.format("  where t.{0} = ?", ParentRelationshipColumns.PARENT_ID);
+        List<Object[]> res = HibernateUtil.doQueryFetch(s -> {
+            NativeQuery<Object[]> sqlQuery = s.createSQLQuery(query);
+            sqlQuery.setParameter(1, parentId);
+            return sqlQuery.list();
+        });
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
-                                                                    sb)) {
-            ps.bindParameters(parentId);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    users.add(new User(res.getInt(ParentRelationshipColumns.ID.name()),
-                                       res.getString(UsersColumns.NAME.name()),
-                                       res.getString(UsersColumns.EMAIL.name()),
-                                       res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name())));
-                }
-            }
-
-        }
-
-        return users;
+        return res.stream()
+                  .map(r -> new User((Integer) r[0], (String) r[1], (String) r[2], (Date) r[3], (String) r[4]))
+                  .toList();
     }
 
     /**
      * @param childId The child's id.
      * @return Les détenants de la procuration. Peut être vide.
      */
-    public static List<User> getParents(int childId) throws SQLException {
+    public static List<User> getParents(int childId) {
 
-        List<User> users = new ArrayList<>();
+        String query = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
+                                            ParentRelationshipColumns.ID,
+                                            UsersColumns.NAME,
+                                            UsersColumns.EMAIL,
+                                            UsersColumns.BIRTHDAY,
+                                            UsersColumns.AVATAR) +
+                       MessageFormat.format("   from {0} t ", TABLE_NAME) +
+                       MessageFormat.format("   left join {0} u", UsersRepository.TABLE_NAME) +
+                       MessageFormat.format("     on u.{0} = t.{1}",
+                                            UsersColumns.ID,
+                                            ParentRelationshipColumns.PARENT_ID) +
+                       MessageFormat.format("  where t.{0} = ?", ParentRelationshipColumns.CHILD_ID);
 
-        String sb = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
-                                         ParentRelationshipColumns.ID,
-                                         UsersColumns.NAME,
-                                         UsersColumns.EMAIL,
-                                         UsersColumns.BIRTHDAY,
-                                         UsersColumns.AVATAR) +
-                    MessageFormat.format("   from {0} t ", TABLE_NAME) +
-                    MessageFormat.format("   left join {0} u", UsersRepository.TABLE_NAME) +
-                    MessageFormat.format("     on u.{0} = t.{1}",
-                                         UsersColumns.ID,
-                                         ParentRelationshipColumns.PARENT_ID) +
-                    MessageFormat.format("  where t.{0} = ?", ParentRelationshipColumns.CHILD_ID);
+        List<Object[]> res = HibernateUtil.doQueryFetch(s -> {
+            NativeQuery<Object[]> sqlQuery = s.createSQLQuery(query);
+            sqlQuery.setParameter(1, childId);
+            return sqlQuery.list();
+        });
 
-        try (PreparedStatementIdKdo ps = new PreparedStatementIdKdo(getDb(),
-                                                                    sb)) {
-            ps.bindParameters(childId);
-            if (ps.execute()) {
-                ResultSet res = ps.getResultSet();
-                while (res.next()) {
-                    users.add(new User(res.getInt(ParentRelationshipColumns.ID.name()),
-                                       res.getString(UsersColumns.NAME.name()),
-                                       res.getString(UsersColumns.EMAIL.name()),
-                                       res.getDate(UsersColumns.BIRTHDAY.name()),
-                                       res.getString(UsersColumns.AVATAR.name())));
-                }
-            }
-
-        }
-
-        return users;
+        return res.stream()
+                  .map(r -> new User((Integer) r[0], (String) r[1], (String) r[2], (Date) r[3], (String) r[4]))
+                  .toList();
     }
 
     /**

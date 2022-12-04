@@ -29,15 +29,14 @@ public class IsUpToDateQuestionsRepository extends AbstractRepository {
      *
      * @param ideeId The idea id.
      * @param userId The user id.
-     * @return Number of rows inserted.
      */
-    public static int addAssociation(int ideeId, int userId) {
-        return getDb().executeInsert(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
-                                                          TABLE_NAME,
-                                                          IsUpToDateColumns.IDEE_ID,
-                                                          IsUpToDateColumns.USER_ID),
-                                     ideeId,
-                                     userId);
+    public static void addAssociation(int ideeId, int userId) {
+        getDb().executeInsert(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
+                                                   TABLE_NAME,
+                                                   IsUpToDateColumns.IDEE_ID,
+                                                   IsUpToDateColumns.USER_ID),
+                              ideeId,
+                              userId);
     }
 
     /**
