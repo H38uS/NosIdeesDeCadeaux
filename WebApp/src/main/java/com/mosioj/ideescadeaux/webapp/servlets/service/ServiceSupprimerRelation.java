@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/protected/service/supprimer_relation")
 public class ServiceSupprimerRelation extends ServicePost<NetworkAccess> {
 
-    private static final long serialVersionUID = -4896678945281607617L;
     public static final String USER_PARAMETER = "id";
 
     public ServiceSupprimerRelation() {

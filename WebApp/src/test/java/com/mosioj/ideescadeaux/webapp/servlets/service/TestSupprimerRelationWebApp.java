@@ -5,7 +5,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.ACCEPTED_FRIENDSHIP;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.ACCEPTED_FRIENDSHIP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

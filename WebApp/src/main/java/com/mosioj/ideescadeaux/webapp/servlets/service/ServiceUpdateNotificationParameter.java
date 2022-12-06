@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
@@ -18,7 +18,6 @@ import java.sql.SQLException;
 @WebServlet("/protected/service/update_notification_parameter")
 public class ServiceUpdateNotificationParameter extends ServicePost<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = 8087174276226168482L;
     private static final Logger logger = LogManager.getLogger(ServiceUpdateNotificationParameter.class);
 
     public ServiceUpdateNotificationParameter() {

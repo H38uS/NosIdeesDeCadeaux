@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.CONFIRMED_UP_TO_DATE;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.CONFIRMED_UP_TO_DATE;
 
 @WebServlet("/protected/service/modifier_idee")
 public class ServiceModifierIdee extends ServicePost<IdeaModification> {

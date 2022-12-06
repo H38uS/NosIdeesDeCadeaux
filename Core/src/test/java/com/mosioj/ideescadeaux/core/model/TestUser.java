@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.core.model;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import org.junit.Test;
 

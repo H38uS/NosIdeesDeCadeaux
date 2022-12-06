@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -18,12 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_FRIENSHIP_REQUEST;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_FRIENSHIP_REQUEST;
 
 @WebServlet("/protected/service/demande_rejoindre_reseau")
 public class ServiceDemandeRejoindreReseau extends ServicePost<PeutDemanderARejoindreLeReseau> {
 
-    private static final long serialVersionUID = 3683476983071872342L;
     public static final String USER_ID_PARAM = "user_id";
 
     public ServiceDemandeRejoindreReseau() {

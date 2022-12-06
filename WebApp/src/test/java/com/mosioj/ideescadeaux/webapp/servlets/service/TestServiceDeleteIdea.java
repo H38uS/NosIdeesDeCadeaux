@@ -4,7 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
@@ -15,8 +15,8 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.MODIFIED_IDEA_BIRTHDAY_SOON;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.IDEA_ADDED_BY_FRIEND;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.MODIFIED_IDEA_BIRTHDAY_SOON;
 import static org.junit.Assert.*;
 
 public class TestServiceDeleteIdea extends AbstractTestServletWebApp {

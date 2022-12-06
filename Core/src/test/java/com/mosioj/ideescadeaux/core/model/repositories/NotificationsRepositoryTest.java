@@ -3,8 +3,8 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

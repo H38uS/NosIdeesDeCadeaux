@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.core.model.notifications;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import org.junit.Test;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_QUESTION_TO_OWNER;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_TO_OWNER;
 import static org.junit.Assert.assertEquals;
 
 public class NTypeTest {

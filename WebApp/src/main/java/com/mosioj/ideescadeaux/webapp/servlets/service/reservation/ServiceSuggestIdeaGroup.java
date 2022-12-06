@@ -3,8 +3,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGetAndPost;
@@ -78,7 +78,7 @@ public class ServiceSuggestIdeaGroup extends ServiceGetAndPost<BookingGroupInter
         final Notification suggestion = NType.GROUP_IDEA_SUGGESTION.with(thisOne, idee, group);
 
         // Récupération des utilisateurs qui n'ont pas encore cette notification...
-        List<User> selectedUsers = userIds.map(Integer::new)
+        List<User> selectedUsers = userIds.map(Integer::valueOf)
                                           .map(UsersRepository::getUser)
                                           .filter(Optional::isPresent)
                                           .map(Optional::get)

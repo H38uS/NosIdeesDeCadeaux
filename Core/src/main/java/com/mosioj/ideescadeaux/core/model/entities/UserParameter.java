@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 
 import javax.persistence.*;
 

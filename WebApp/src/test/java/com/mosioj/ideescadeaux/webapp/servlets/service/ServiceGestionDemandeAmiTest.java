@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.*;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

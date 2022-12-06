@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -27,7 +27,6 @@ import java.util.Set;
 public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
 
     private static final Logger logger = LogManager.getLogger(ServiceDeleteIdea.class);
-    private static final long serialVersionUID = 2642366164643542379L;
     public static final String IDEE_ID_PARAM = "ideeId";
 
     public ServiceDeleteIdea() {

@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
@@ -20,7 +20,6 @@ import java.sql.SQLException;
 @WebServlet("/protected/detail_du_groupe")
 public class GroupIdeaDetails extends IdeesCadeauxGetServlet<BookingGroupInteraction> {
 
-    private static final long serialVersionUID = -2188278918134412556L;
     private static final Logger logger = LogManager.getLogger(GroupIdeaDetails.class);
 
     public static final String GROUP_ID_PARAM = "groupid";

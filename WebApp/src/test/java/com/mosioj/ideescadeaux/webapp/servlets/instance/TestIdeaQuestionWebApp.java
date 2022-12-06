@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_QUESTION_TO_OWNER;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.IDEA_ADDED_BY_FRIEND;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_TO_OWNER;
 import static org.junit.Assert.assertEquals;
 
 public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {

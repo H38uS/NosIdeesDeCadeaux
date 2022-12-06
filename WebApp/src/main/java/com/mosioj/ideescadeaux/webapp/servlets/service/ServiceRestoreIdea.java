@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_IDEA_BIRTHDAY_SOON;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_IDEA_BIRTHDAY_SOON;
 
 @WebServlet("/protected/service/idee/restore")
 public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {

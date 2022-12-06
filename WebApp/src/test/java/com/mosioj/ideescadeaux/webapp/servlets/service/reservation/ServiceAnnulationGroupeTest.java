@@ -3,7 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -13,8 +13,8 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.Set;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.LEAVE_GROUP;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.GROUP_IDEA_SUGGESTION;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.LEAVE_GROUP;
 import static org.junit.Assert.*;
 
 public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {

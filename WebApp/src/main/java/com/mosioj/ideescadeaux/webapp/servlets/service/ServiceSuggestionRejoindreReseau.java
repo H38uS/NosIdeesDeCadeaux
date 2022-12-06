@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/suggestion_rejoindre_reseau")
 public class ServiceSuggestionRejoindreReseau extends ServicePost<NetworkAccess> {
@@ -48,7 +47,7 @@ public class ServiceSuggestionRejoindreReseau extends ServicePost<NetworkAccess>
                                                .map(UsersRepository::getUser)
                                                .filter(Optional::isPresent)
                                                .map(Optional::get)
-                                               .collect(Collectors.toList());
+                                               .toList();
 
         // Persist suggestions
         selectedOnes.forEach(u -> UserRelationsSuggestionRepository.newSuggestion(thisOne, suggestTo, u));

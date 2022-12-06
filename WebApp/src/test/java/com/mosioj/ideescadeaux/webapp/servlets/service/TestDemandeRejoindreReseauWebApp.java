@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_RELATION_SUGGESTION;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_RELATION_SUGGESTION;
 import static org.junit.Assert.*;
 
 public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp {

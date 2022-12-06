@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.webapp;
 
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

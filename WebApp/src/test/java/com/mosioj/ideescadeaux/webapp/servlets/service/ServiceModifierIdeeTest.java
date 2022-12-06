@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -18,8 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.IS_IDEA_UP_TO_DATE;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.IDEA_ADDED_BY_FRIEND;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.IS_IDEA_UP_TO_DATE;
 import static org.junit.Assert.*;
 
 public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {

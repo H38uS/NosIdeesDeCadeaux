@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;

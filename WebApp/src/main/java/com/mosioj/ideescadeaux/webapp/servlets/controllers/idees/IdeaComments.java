@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
@@ -22,7 +22,6 @@ import java.util.Set;
 @WebServlet("/protected/idee_commentaires")
 public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction> {
 
-    private static final long serialVersionUID = -433226623397937479L;
     public static final String IDEA_ID_PARAM = "idee";
     public static final String VIEW_PAGE_URL = "/protected/idee_commentaires.jsp";
     public static final String WEB_SERVLET = "/protected/idee_commentaires";

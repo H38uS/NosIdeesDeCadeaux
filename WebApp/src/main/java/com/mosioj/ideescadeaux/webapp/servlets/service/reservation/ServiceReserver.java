@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -19,7 +19,6 @@ import java.text.MessageFormat;
 @WebServlet("/protected/service/reserver")
 public class ServiceReserver extends ServicePost<IdeaInteraction> {
 
-    private static final long serialVersionUID = 2642366164643542379L;
     private static final String IDEA_ID_PARAM = "idee";
 
     private static final Logger logger = LogManager.getLogger(ServiceReserver.class);

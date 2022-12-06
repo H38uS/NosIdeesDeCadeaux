@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.core;
 
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;

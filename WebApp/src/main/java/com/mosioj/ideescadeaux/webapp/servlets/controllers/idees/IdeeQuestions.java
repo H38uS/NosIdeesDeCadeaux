@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetAndPostServlet;
@@ -22,15 +22,13 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_QUESTION_ON_IDEA;
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_QUESTION_TO_OWNER;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_ON_IDEA;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_TO_OWNER;
 
 @WebServlet("/protected/idee_questions")
 public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQuestions> {
 
     private static final Logger logger = LogManager.getLogger(IdeeQuestions.class);
-
-    private static final long serialVersionUID = -433226623397937479L;
     public static final String IDEA_ID_PARAM = "idee";
     public static final String VIEW_PAGE_URL = "/protected/idee_questions.jsp";
     public static final String WEB_SERVLET = "/protected/idee_questions";

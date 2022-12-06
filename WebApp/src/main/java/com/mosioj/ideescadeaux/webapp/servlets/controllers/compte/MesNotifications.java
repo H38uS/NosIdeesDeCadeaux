@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.notifications.ChildNotifications;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.ChildNotifications;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @WebServlet("/protected/mes_notifications")
 public class MesNotifications extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = -5988235378202921870L;
     public static final String URL = "/protected/mes_notifications";
     private static final String VIEW_URL = "/protected/mes_notifications.jsp";
 

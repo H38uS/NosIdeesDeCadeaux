@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static com.mosioj.ideescadeaux.core.model.notifications.NType.RECURENT_IDEA_UNBOOK;
+import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.RECURENT_IDEA_UNBOOK;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

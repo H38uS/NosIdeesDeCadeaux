@@ -2,7 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.UserParameter;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NotificationActivation;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
@@ -21,7 +21,6 @@ import java.util.List;
 @WebServlet("/protected/mon_compte")
 public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = -101081965549681889L;
     private static final Logger logger = LogManager.getLogger(MonCompte.class);
 
     public static final String VIEW_PAGE_URL = "/protected/mon_compte.jsp";
