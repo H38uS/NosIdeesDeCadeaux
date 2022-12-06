@@ -13,7 +13,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ServiceSuggestFriendToOtherTest extends AbstractTestServletWebApp {
 
@@ -25,7 +24,7 @@ public class ServiceSuggestFriendToOtherTest extends AbstractTestServletWebApp {
     public void testGetPossibleSuggestions() throws SQLException {
 
         // Given a friend to suggest some others
-        when(request.getParameter(ServiceSuggestFriendToOther.USER_PARAMETER)).thenReturn(String.valueOf(theAdmin.id));
+        bindRequestParam(ServiceSuggestFriendToOther.USER_PARAMETER, String.valueOf(theAdmin.id));
 
         // When doing the get
         PossibleSuggestionResponse resp = doTestServiceGet(PossibleSuggestionResponse.class);
@@ -50,12 +49,10 @@ public class ServiceSuggestFriendToOtherTest extends AbstractTestServletWebApp {
          *
          * @param isOK          True if there is no error.
          * @param message       The JSon response message.
-         * @param isAdmin       Whether the user is an admin.
          * @param connectedUser The connected user or null if none.
          */
         public PossibleSuggestionResponse(boolean isOK,
                                           List<PossibleSuggestion> message,
-                                          boolean isAdmin,
                                           User connectedUser) {
             super(isOK, message, connectedUser);
         }

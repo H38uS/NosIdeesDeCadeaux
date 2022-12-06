@@ -7,6 +7,7 @@ import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +17,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
@@ -39,8 +39,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         IdeesRepository.remove(idee);
 
         // Doing the restore
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("true");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "true");
         StringServiceResponse resp = doTestServicePost();
 
         // The group does exist as well as the idea
@@ -62,8 +62,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         IdeesRepository.remove(idee);
 
         // Doing the restore
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("true");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "true");
         StringServiceResponse resp = doTestServicePost();
 
         // The booking does exist as well as the idea
@@ -83,8 +83,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         IdeesRepository.remove(idee);
 
         // Doing the restore
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("true");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "true");
         StringServiceResponse resp = doTestServicePost();
 
         // The partial booking does exist as well as the idea
@@ -103,7 +103,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
-        deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
 
         // Notifications verifications
@@ -122,8 +122,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                            .hasAny());
 
         // Doing the restore without the booking
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("true");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "true");
         resp = doTestServicePost();
 
         // Notifications
@@ -154,8 +154,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         IdeesRepository.remove(idee);
 
         // Doing the restore
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("false");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "false");
         StringServiceResponse resp = doTestServicePost();
 
         // The idea exist while the group doesn't
@@ -173,8 +173,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         IdeesRepository.remove(idee);
 
         // Doing the restore
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("false");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "false");
         StringServiceResponse resp = doTestServicePost();
         idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
 
@@ -192,8 +192,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         IdeesRepository.remove(idee);
 
         // Doing the restore
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("false");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "false");
         StringServiceResponse resp = doTestServicePost();
 
         // The idea exist while the partial booking doesn't
@@ -209,7 +209,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
-        deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
 
         // Notifications verifications
@@ -228,8 +228,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                            .hasAny());
 
         // Doing the restore without the booking
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("false");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "false");
         resp = doTestServicePost();
 
         // Notifications
@@ -259,7 +259,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
-        deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
 
         // Notifications verifications
@@ -272,8 +272,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         assertTrue(UserRelationsRepository.associationExists(firefox, theAdmin));
 
         // Doing the restore without the booking
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("false");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "false");
         resp = doTestServicePost();
 
         // Notifications
@@ -295,7 +295,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
         IdeesRepository.reserver(idee, friendOfFirefox);
         final TestServiceDeleteIdea deleteService = new TestServiceDeleteIdea();
-        deleteService.registerParameter(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, idee.getId());
         StringServiceResponse resp = deleteService.doTestServicePost();
 
         // Notifications verifications
@@ -313,8 +313,8 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
                                            .hasAny());
 
         // Restore / Delete / Restore
-        when(request.getParameter(ServiceRestoreIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter(ServiceRestoreIdea.RESTORE_BOOKING)).thenReturn("true");
+        bindRequestParam(ServiceRestoreIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindRequestParam(ServiceRestoreIdea.RESTORE_BOOKING, "true");
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         resp = deleteService.doTestServicePost();

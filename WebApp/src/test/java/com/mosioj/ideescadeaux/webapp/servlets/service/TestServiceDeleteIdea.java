@@ -10,6 +10,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -17,7 +18,6 @@ import java.sql.SQLException;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.MODIFIED_IDEA_BIRTHDAY_SOON;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
 
@@ -35,7 +35,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                                                     .withPriority(p));
         assertFalse(IdeesRepository.getDeletedIdea(idee.getId()).isPresent());
 
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -68,7 +68,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                      ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group.getId()));
 
         // Suppression
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Validation que cela supprime tout
@@ -111,7 +111,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertNotifDoesExists(newComment);
         assertNotifDoesExists(newQuestion);
         assertNotifDoesExists(recurentUnbook);/* Suppression*/
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idea.getId()));
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idea.getId()));
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(isUpToDate);
@@ -138,7 +138,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                                                     .withCreatedBy(friendOfFirefox));
 
         // Trying to delete it
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Check
@@ -163,7 +163,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                                                     .withCreatedBy(firefox));
 
         // Trying to delete it
-        when(request.getParameter(ServiceDeleteIdea.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Check

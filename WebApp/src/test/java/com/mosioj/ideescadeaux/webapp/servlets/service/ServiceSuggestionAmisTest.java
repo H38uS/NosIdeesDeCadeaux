@@ -10,12 +10,10 @@ import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ServiceSuggestionAmisTest extends AbstractTestServletWebApp {
 
@@ -50,12 +48,12 @@ public class ServiceSuggestionAmisTest extends AbstractTestServletWebApp {
                                                         UsersRepository.getUser(8).orElseThrow(SQLException::new));
 
         // When processing two suggestions resolution (one accepted one rejected)
-        Map<String, String[]> params = new HashMap<>();
         final String selectedOne = "selected_" + 7;
         final String rejectedOne = "rejected_" + 8;
-        params.put(selectedOne, new String[]{selectedOne, "true"});
-        params.put(rejectedOne, new String[]{rejectedOne, "true"});
-        when(request.getParameterMap()).thenReturn(params);
+        bindRequestParamMap(Map.of(selectedOne,
+                                   new String[]{selectedOne, "true"},
+                                   rejectedOne,
+                                   new String[]{rejectedOne, "true"}));
         ServiceResponse<?> resp = doTestServicePost(ServiceResponse.class);
 
         // Then I have sent a new friendship request and only one new :'(

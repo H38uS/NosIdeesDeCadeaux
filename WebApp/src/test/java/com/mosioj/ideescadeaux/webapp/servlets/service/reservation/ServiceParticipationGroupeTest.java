@@ -9,6 +9,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation.GroupIdeaDetails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +19,6 @@ import java.sql.SQLException;
 
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
@@ -43,8 +43,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
         int groupSuggestion = GROUP_IDEA_SUGGESTION.with(firefox, idee, group).sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
 
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
-        when(request.getParameter("amount")).thenReturn(32 + "");
+        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindRequestParam("amount", 32 + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -74,8 +74,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // -----------------------
         // Participation au groupe
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
-        when(request.getParameter("amount")).thenReturn(String.valueOf(32));
+        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindRequestParam("amount", String.valueOf(32));
         logger.info("[Perf] OK! Envoie de la requête post...");
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
@@ -96,7 +96,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // Annulation de la participation
         ServiceAnnulationGroupeTest annulationService = new ServiceAnnulationGroupeTest();
-        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
+        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         resp = annulationService.doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
@@ -108,8 +108,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // -----------------------
         // Finalement - re - Participation au groupe
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
-        when(request.getParameter("amount")).thenReturn(String.valueOf(32));
+        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindRequestParam("amount", String.valueOf(32));
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
@@ -125,8 +125,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                           .fetch()
                                           .get(0).id;
 
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
-        when(request.getParameter("amount")).thenReturn(35 + "");
+        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindRequestParam("amount", 35 + "");
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
@@ -144,7 +144,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                             .get(0).id);
 
         // Finalement - re - Annulation de la participation
-        annulationService.registerParameter(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
+        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         resp = annulationService.doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,

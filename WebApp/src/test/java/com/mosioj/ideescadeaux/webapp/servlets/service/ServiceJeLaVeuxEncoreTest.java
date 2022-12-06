@@ -7,12 +7,12 @@ import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
 
@@ -36,7 +36,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
                                     .orElseThrow(SQLException::new));
 
         // Appel au service
-        when(request.getParameter(ServiceJeLaVeuxEncore.IDEA_ID_PARAM)).thenReturn(idea.getId() + "");
+        bindRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
         StringServiceResponse resp = doTestServicePost();
 
         // Vérification
@@ -65,7 +65,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
                                     .orElseThrow(SQLException::new));
 
         // Appel au service
-        when(request.getParameter(ServiceJeLaVeuxEncore.IDEA_ID_PARAM)).thenReturn(idea.getId() + "");
+        bindRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
         StringServiceResponse resp = doTestServicePost();
 
         // Vérification
@@ -92,7 +92,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
                                     .orElseThrow(SQLException::new));
 
         // Appel au service
-        when(request.getParameter(ServiceJeLaVeuxEncore.IDEA_ID_PARAM)).thenReturn(idea.getId() + "");
+        bindRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
         StringServiceResponse resp = doTestServicePost();
 
         // Vérification

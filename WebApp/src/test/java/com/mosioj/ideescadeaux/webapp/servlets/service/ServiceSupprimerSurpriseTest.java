@@ -5,12 +5,12 @@ import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
 
@@ -29,7 +29,7 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
                                                     .withPriority(p)
                                                     .withSurpriseOwner(friendOfFirefox)
                                                     .withCreatedBy(friendOfFirefox));
-        when(request.getParameter(ServiceSupprimerSurprise.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
 
         // Act
         StringServiceResponse resp = doTestServicePost();
@@ -52,7 +52,7 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
                                                     .withPriority(p)
                                                     .withSurpriseOwner(firefox)
                                                     .withCreatedBy(firefox));
-        when(request.getParameter(ServiceSupprimerSurprise.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
 
         // Act
         StringServiceResponse resp = doTestServicePost();
@@ -72,7 +72,7 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
                                                     .withText("une surprise")
                                                     .withPriority(p)
                                                     .withCreatedBy(friendOfFirefox));
-        when(request.getParameter(ServiceSupprimerSurprise.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
 
         // Act
         StringServiceResponse resp = doTestServicePost();

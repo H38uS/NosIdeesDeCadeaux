@@ -9,7 +9,6 @@ import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsReposi
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
-import com.mosioj.ideescadeaux.webapp.servlets.controllers.compte.MesNotifications;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.ConfirmationEstAJour;
 import org.junit.Test;
 
@@ -18,7 +17,6 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
 
@@ -45,8 +43,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
         Notification notif = NotificationsRepository.getNotification(notifId).orElseThrow(SQLException::new);
         assertEquals(Optional.of(friendOfFirefox), notif.getUserParameter());
 
-        when(request.getRequestDispatcher(MesNotifications.URL)).thenReturn(dispatcher);
-        when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(idee.getId() + "");
+        bindRequestParam(ConfirmationEstAJour.IDEE_FIELD_PARAMETER, idee.getId());
         doTestGet();
 
         assertNotifDoesNotExists(notifId);
@@ -56,7 +53,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
     @Test
     public void testOnANewIdea() throws SQLException {
 
-        when(session.getAttribute("connected_user")).thenReturn(friendOfFirefox);
+        setConnectedUserTo(friendOfFirefox);
         Priority p = PrioritiesRepository.getPriority(1).orElseThrow(SQLException::new);
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
                                                     .withOwner(friendOfFirefox)
@@ -70,9 +67,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
                                        "nfirmation_est_a_jour?idee=".length(),
                                        text.indexOf("\">Oui !</a></li><li>Non"));
         ideaId = new String(ideaId.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-
-        when(request.getRequestDispatcher(MesNotifications.URL)).thenReturn(dispatcher);
-        when(request.getParameter(ConfirmationEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(ideaId);
+        bindRequestParam(ConfirmationEstAJour.IDEE_FIELD_PARAMETER, ideaId);
 
         doTestGet();
 

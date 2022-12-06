@@ -12,8 +12,6 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static org.mockito.Mockito.when;
-
 public class TestIdeaCommentWebApp extends AbstractTestServletWebApp {
 
     public TestIdeaCommentWebApp() {
@@ -33,8 +31,7 @@ public class TestIdeaCommentWebApp extends AbstractTestServletWebApp {
         int newComment = NType.NEW_COMMENT_ON_IDEA.with(firefox, idea).sendItTo(firefox);
         assertNotifDoesExists(newComment);
 
-        when(request.getRequestDispatcher(IdeaComments.VIEW_PAGE_URL)).thenReturn(dispatcher);
-        when(request.getParameter(IdeaComments.IDEA_ID_PARAM)).thenReturn(String.valueOf(idea.getId()));
+        bindRequestParam(IdeaComments.IDEA_ID_PARAM, idea.getId());
         doTestGet();
 
         assertNotifDoesNotExists(newComment);

@@ -2,14 +2,12 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
 
@@ -18,19 +16,19 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     }
 
     @Before
-    public void initialize() throws SQLException {
+    public void initialize() {
         ParentRelationshipRepository.deleteParents(firefox);
     }
 
     @After
-    public void tearDown() throws SQLException {
+    public void tearDown() {
         ParentRelationshipRepository.deleteParents(firefox);
     }
 
     @Test
     public void testAjoutSucces() {
 
-        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn("tesT@toto.Com");
+        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "tesT@toto.Com");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -41,7 +39,7 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     @Test
     public void testIncorrectEmail() {
 
-        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn("");
+        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -53,7 +51,7 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     @Test
     public void testDejaAjoute() {
 
-        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn("test@toto.com");
+        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "test@toto.com");
 
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
@@ -66,7 +64,7 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     @Test
     public void shouldNotBePossibleToAddOurself() {
 
-        when(request.getParameter(ServiceAjouterParent.NAME_OR_EMAIL)).thenReturn(firefox.getEmail());
+        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, firefox.getEmail());
 
         StringServiceResponse resp = doTestServicePost();
         assertFalse(resp.isOK());

@@ -6,6 +6,9 @@ import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.AfficherListes;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.mobile.device.Device;
+
+import static org.mockito.Mockito.mock;
 
 public class DecoratedWebAppIdeaTest extends AbstractTestServletWebApp {
 
@@ -19,6 +22,7 @@ public class DecoratedWebAppIdeaTest extends AbstractTestServletWebApp {
         BookingInformation bi = BookingInformation.fromASingleUser(friendOfFirefox, null);
         Idee idee = Idee.builder().withId(1).withOwner(firefox).withText("tutu").withBookingInformation(bi).build();
 
+        Device device = mock(Device.class);
         DecoratedWebAppIdea decorated = new DecoratedWebAppIdea(idee, friendOfFirefox, device);
         Assert.assertEquals("booked_by_me_idea", decorated.getDisplayClass());
     }

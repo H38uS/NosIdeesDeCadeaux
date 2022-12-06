@@ -6,6 +6,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification.AjouterIdeeAmi;
 import org.junit.Test;
 
@@ -17,9 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
 
 public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
 
@@ -39,7 +37,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", 2 + "");
         createMultiPartRequest(param);
 
-        when(request.getParameter(ServiceAjouterIdee.USER_PARAMETER)).thenReturn(_FRIEND_ID_ + "");
+        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, _FRIEND_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -59,8 +57,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("est_surprise", "on");
         createMultiPartRequest(param);
 
-        when(request.getRequestDispatcher(AjouterIdeeAmi.VIEW_PAGE_URL)).thenReturn(dispatcher);
-        when(request.getParameter(AjouterIdeeAmi.USER_PARAMETER)).thenReturn(_FRIEND_ID_ + "");
+        bindRequestParam(AjouterIdeeAmi.USER_PARAMETER, _FRIEND_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -77,11 +74,10 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("text", "Ma super idée wouhouuuu");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        when(request.getParameter(ServiceAjouterIdee.USER_PARAMETER)).thenReturn(_OWNER_ID_ + "");
+        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, _OWNER_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        verify(request, never()).setAttribute(eq("errors"), any());
         assertNotifDoesNotExists(noIdea);
     }
 
@@ -93,7 +89,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
                   "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&langue=fra et voilà");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        when(request.getParameter(ServiceAjouterIdee.USER_PARAMETER)).thenReturn(_OWNER_ID_ + "");
+        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, _OWNER_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -110,7 +106,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         // No birthday
         assertFalse(moiAutre.getBirthday().isPresent());
         assertFalse(UserRelationsRepository.getAllUsersInRelation(moiAutre).isEmpty());
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
+        setConnectedUserTo(moiAutre);
         final int nbIdeas = IdeesRepository.getIdeasOf(moiAutre).size();
 
         // Removing previous notifications if any
@@ -125,7 +121,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("text", "Ma super idée wouhouuuu");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        when(request.getParameter(ServiceAjouterIdee.USER_PARAMETER)).thenReturn(String.valueOf(moiAutre.getId()));
+        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, moiAutre.getId());
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());

@@ -3,14 +3,13 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsSuggestionRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ServiceSuggestionRejoindreReseauTest extends AbstractTestServletWebApp {
 
@@ -26,11 +25,9 @@ public class ServiceSuggestionRejoindreReseauTest extends AbstractTestServletWeb
         UserRelationsSuggestionRepository.removeIfExists(theAdmin.id, jo3.id);
 
         // When posting a suggestion request
-        when(request.getParameter(ServiceSuggestFriendToOther.USER_PARAMETER)).thenReturn(String.valueOf(theAdmin.id));
-        Map<String, String[]> params = new HashMap<>();
         final String selectedOne = "selected_" + jo3.id;
-        params.put(selectedOne, new String[]{selectedOne, "true"});
-        when(request.getParameterMap()).thenReturn(params);
+        bindRequestParam(ServiceSuggestFriendToOther.USER_PARAMETER, String.valueOf(theAdmin.id));
+        bindRequestParamMap(Map.of(selectedOne, new String[]{selectedOne, "true"}));
         StringServiceResponse resp = doTestServicePost();
 
         // Then the request is successfully created

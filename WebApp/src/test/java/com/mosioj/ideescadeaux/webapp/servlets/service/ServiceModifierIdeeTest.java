@@ -7,6 +7,7 @@ import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsReposi
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification.ModifyIdea;
 import org.junit.Test;
 
@@ -20,7 +21,6 @@ import java.util.Map;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.IS_IDEA_UP_TO_DATE;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
 
@@ -40,7 +40,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", String.valueOf(idee.getPriority().getId()));
         createMultiPartRequest(param);
 
-        when(request.getParameter(ServiceModifierIdee.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -64,7 +64,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", String.valueOf(idee.getPriority().getId()));
         createMultiPartRequest(param);
 
-        when(request.getParameter(ServiceModifierIdee.IDEE_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
@@ -82,7 +82,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", String.valueOf(2));
         createMultiPartRequest(param);
 
-        when(request.getParameter(ServiceModifierIdee.IDEE_ID_PARAM)).thenReturn(String.valueOf(-42));
+        bindRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(-42));
         StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
@@ -110,7 +110,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("type", "");
         param.put("priority", 2 + "");
         createMultiPartRequest(param);
-        when(request.getParameter(ModifyIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+        bindRequestParam(ModifyIdea.IDEE_ID_PARAM, id + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -142,7 +142,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("text", "test notif when birthday is close");
         param.put("type", "");
         param.put("priority", 2 + "");
-        when(request.getParameter(ModifyIdea.IDEE_ID_PARAM)).thenReturn(id + "");
+        bindRequestParam(ModifyIdea.IDEE_ID_PARAM, id + "");
 
         // Then a first modification creates a notification
         createMultiPartRequest(param);

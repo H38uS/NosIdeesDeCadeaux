@@ -14,8 +14,6 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static org.mockito.Mockito.when;
-
 public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
 
     public TestGroupIdeaDetailsWebApp() {
@@ -37,8 +35,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         int groupSuggestion = notifGroupSuggestion.sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
 
-        when(request.getRequestDispatcher(GroupIdeaDetails.VIEW_PAGE_URL)).thenReturn(dispatcher);
-        when(request.getParameter(GroupIdeaDetails.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
+        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         doTestGet();
         assertNotifDoesNotExists(groupSuggestion);
 

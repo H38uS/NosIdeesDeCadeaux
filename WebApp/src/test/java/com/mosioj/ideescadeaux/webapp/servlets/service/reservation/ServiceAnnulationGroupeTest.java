@@ -5,7 +5,9 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
+import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -14,7 +16,6 @@ import java.util.Set;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.GROUP_IDEA_SUGGESTION;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.LEAVE_GROUP;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
 
@@ -39,7 +40,7 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
                                               .orElse(-1));
 
         // Annulation de la participation de firefox
-        when(request.getParameter(ServiceAnnulationGroupe.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
+        bindRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Le groupe doit avoir été supprimé, ainsi que sa référence dans l'idée
@@ -87,8 +88,8 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         assertNotifDoesExists(groupEvolutionShouldStay);
 
         // Annulation de la participation de _OWNER_ID_ aka friendOfFirefox
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
-        when(request.getParameter(ServiceAnnulationGroupe.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
+        setConnectedUserTo(WebAppTemplateTest.moiAutre);
+        bindRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -115,8 +116,8 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         IdeesRepository.bookByGroup(idee, group);
 
         // Quand on annule notre participation
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
-        when(request.getParameter(ServiceAnnulationGroupe.GROUP_ID_PARAM)).thenReturn(String.valueOf(group.getId()));
+        setConnectedUserTo(WebAppTemplateTest.moiAutre);
+        bindRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Alors uniquement firefox reçoit une notification

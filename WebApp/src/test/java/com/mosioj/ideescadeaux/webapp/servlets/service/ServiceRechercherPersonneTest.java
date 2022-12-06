@@ -12,7 +12,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
 
@@ -24,16 +23,16 @@ public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
     public void nonFriendsShouldAlwaysCome() {
 
         final DecoratedWebAppUser decoratedMoiAutre = new DecoratedWebAppUser(moiAutre, firefox);
-        when(request.getParameter("name")).thenReturn("iautre@toto.co");
+        bindRequestParam("name", "iautre@toto.co");
 
         // We get it when looking in all users
-        when(request.getParameter("only_non_friend")).thenReturn("nop");
+        bindRequestParam("only_non_friend", "nop");
         RechercherPersonneResponse resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
         assertEquals(Collections.singletonList(decoratedMoiAutre), resp.getMessage().getTheContent());
 
         // And also when looking only for friends
-        when(request.getParameter("only_non_friend")).thenReturn("on");
+        bindRequestParam("only_non_friend", "on");
         resp = doTestServiceGet(RechercherPersonneResponse.class);
         System.out.println(resp.getMessage().getTheContent());
         assertEquals(Collections.singletonList(decoratedMoiAutre), resp.getMessage().getTheContent());
@@ -43,16 +42,16 @@ public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
     public void onlyNonFriendShouldFilterFriends() {
 
         final DecoratedWebAppUser decoratedFriend = new DecoratedWebAppUser(friendOfFirefox, firefox);
-        when(request.getParameter("name")).thenReturn("est@toto.co");
+        bindRequestParam("name", "est@toto.co");
 
         // We get it when looking in all users
-        when(request.getParameter("only_non_friend")).thenReturn("nop");
+        bindRequestParam("only_non_friend", "nop");
         RechercherPersonneResponse resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
         assertEquals(Collections.singletonList(decoratedFriend), resp.getMessage().getTheContent());
 
         // And not when filtering on non-friends
-        when(request.getParameter("only_non_friend")).thenReturn("on");
+        bindRequestParam("only_non_friend", "on");
         resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
         assertEquals(Collections.emptyList(), resp.getMessage().getTheContent());

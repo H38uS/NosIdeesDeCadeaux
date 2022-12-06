@@ -13,7 +13,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ServiceRechercherReseauTest extends AbstractTestServletWebApp {
 
@@ -25,8 +24,8 @@ public class ServiceRechercherReseauTest extends AbstractTestServletWebApp {
     public void testMatchingEmail() throws SQLException {
 
         // Given an email to match
-        when(session.getAttribute("connected_user")).thenReturn(UsersRepository.getUser(6).orElse(null));
-        when(request.getParameter(ServiceRechercherReseau.SEARCH_USER_PARAM)).thenReturn("ther@hdzdzdzotmail.fr");
+        setConnectedUserTo(UsersRepository.getUser(6).orElse(null));
+        bindRequestParam(ServiceRechercherReseau.SEARCH_USER_PARAM, "ther@hdzdzdzotmail.fr");
 
         // When doing the fetch
         RechercherReseauResponse resp = doTestServiceGet(RechercherReseauResponse.class);

@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ServiceGetUserNameFromIDTest extends AbstractTestServletWebApp {
 
@@ -18,7 +17,7 @@ public class ServiceGetUserNameFromIDTest extends AbstractTestServletWebApp {
     @Test
     public void testSuccess() {
 
-        when(request.getParameter(ServiceGetUserNameFromID.USER_ID_PARAM)).thenReturn(friendOfFirefox.id + "");
+        bindRequestParam(ServiceGetUserNameFromID.USER_ID_PARAM, friendOfFirefox.id + "");
 
         ThisServiceResp resp = doTestServiceGet(ThisServiceResp.class);
 

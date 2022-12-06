@@ -9,7 +9,6 @@ import java.util.Random;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ChangerMotDePasseDepuisReinitTest extends AbstractTestServletWebApp {
 
@@ -29,11 +28,10 @@ public class ChangerMotDePasseDepuisReinitTest extends AbstractTestServletWebApp
         assertTrue(UserChangePwdRequestRepository.isAValidCombinaison(friendOfFirefox.id, token));
 
         // Do the request
-        when(request.getRequestDispatcher(ChangerMotDePasseDepuisReinit.SUCCES_PAGE_URL)).thenReturn(dispatcher);
-        when(request.getParameter("userIdParam")).thenReturn(String.valueOf(friendOfFirefox.id));
-        when(request.getParameter("tokenId")).thenReturn(String.valueOf(token));
-        when(request.getParameter("pwd1")).thenReturn("thenewmdp12");
-        when(request.getParameter("pwd2")).thenReturn("thenewmdp12");
+        bindRequestParam("userIdParam", friendOfFirefox.id);
+        bindRequestParam("tokenId", token);
+        bindRequestParam("pwd1", "thenewmdp12");
+        bindRequestParam("pwd2", "thenewmdp12");
         doTestPost();
 
         // Verify

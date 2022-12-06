@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.IDEA_ADDED_BY_FRIEND;
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.NEW_QUESTION_TO_OWNER;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
 
@@ -37,8 +36,7 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
         assertNotifDoesExists(addByFriend);
         assertNotifDoesExists(newQuestion);
 
-        when(request.getRequestDispatcher(IdeeQuestions.VIEW_PAGE_URL)).thenReturn(dispatcher);
-        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(String.valueOf(idea.getId()));
+        bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idea.getId());
         doTestGet();
 
         assertNotifDoesNotExists(addByFriend);
@@ -56,8 +54,8 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
                                                     .withPriority(p));
         assertEquals(0, QuestionsRepository.getCommentsOn(idee.getId()).size());
 
-        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter("text")).thenReturn("Voilou voilou");
+        bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idee.getId());
+        bindRequestParam("text", "Voilou voilou");
         doTestPost();
 
         assertEquals(1, QuestionsRepository.getCommentsOn(idee.getId()).size());
@@ -76,8 +74,8 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
                                                     .withCreatedBy(firefox));
         assertEquals(0, QuestionsRepository.getCommentsOn(idee.getId()).size());
 
-        when(request.getParameter(IdeeQuestions.IDEA_ID_PARAM)).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter("text")).thenReturn("Voilou voilou");
+        bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idee.getId());
+        bindRequestParam("text", "Voilou voilou");
         doTestPost();
 
         assertEquals(0,

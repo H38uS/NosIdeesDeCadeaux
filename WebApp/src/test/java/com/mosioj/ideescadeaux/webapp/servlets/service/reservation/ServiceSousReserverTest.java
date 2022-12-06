@@ -4,13 +4,14 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
+import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceSousReserverTest extends AbstractTestServletWebApp {
 
@@ -25,12 +26,12 @@ public class ServiceSousReserverTest extends AbstractTestServletWebApp {
         // Given
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
         IdeesRepository.toutDereserver(idee);
-        when(request.getParameter("idee")).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter("comment")).thenReturn("Un commentaire");
+        bindRequestParam("idee", String.valueOf(idee.getId()));
+        bindRequestParam("comment", "Un commentaire");
 
         // When
         doTestServicePost();
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
+        setConnectedUserTo(WebAppTemplateTest.moiAutre);
         StringServiceResponse resp = doTestServicePost();
 
         // Then
@@ -45,8 +46,8 @@ public class ServiceSousReserverTest extends AbstractTestServletWebApp {
         // Given
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
         IdeesRepository.toutDereserver(idee);
-        when(request.getParameter("idee")).thenReturn(String.valueOf(idee.getId()));
-        when(request.getParameter("comment")).thenReturn("Un commentaire");
+        bindRequestParam("idee", String.valueOf(idee.getId()));
+        bindRequestParam("comment", "Un commentaire");
         doTestServicePost();
 
         // When

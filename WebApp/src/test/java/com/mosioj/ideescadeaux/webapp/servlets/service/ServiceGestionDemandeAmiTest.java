@@ -8,13 +8,11 @@ import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.AfficherReseau;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.mosioj.ideescadeaux.core.model.notifications.NType.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
 
@@ -28,11 +26,8 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
         UserRelationsRepository.deleteAssociation(firefox, moiAutre);
         assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
 
-        when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
-
-        Map<String, String[]> params = new HashMap<>();
-        params.put("choix_" + _MOI_AUTRE_, new String[]{"Accepter"});
-        when(request.getParameterMap()).thenReturn(params);
+        bindRequestParam(AfficherReseau.USER_ID_PARAM, _MOI_AUTRE_ + "");
+        bindRequestParamMap(Map.of("choix_" + _MOI_AUTRE_, new String[]{"Accepter"}));
 
         doTestPost();
 
@@ -62,11 +57,9 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
         // Ajout de la demande d'ami
         HibernateUtil.saveit(new RelationRequest(moiAutre, firefox));
 
-        when(request.getParameter(AfficherReseau.USER_ID_PARAM)).thenReturn(_MOI_AUTRE_ + "");
-        Map<String, String[]> params = new HashMap<>();
         final String accepted = "acc_choix_" + _MOI_AUTRE_;
-        params.put(accepted, new String[]{accepted, "true"});
-        when(request.getParameterMap()).thenReturn(params);
+        bindRequestParam(AfficherReseau.USER_ID_PARAM, _MOI_AUTRE_ + "");
+        bindRequestParamMap(Map.of(accepted, new String[]{accepted, "true"}));
         doTestPost();
 
         assertTrue(UserRelationsRepository.associationExists(firefox, moiAutre));

@@ -24,37 +24,25 @@ public class WebAppTemplateTest {
                                                            .getParentFile();
 
     /** firefox@toto.com aka firefox */
-    protected static final int _OWNER_ID_ = 26;
-    protected User firefox;
+    public static final int _OWNER_ID_ = 26;
+    public static final User firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow();
 
     /** test@toto.com aka friend of Firefox */
-    protected static final int _FRIEND_ID_ = 4;
-    protected User friendOfFirefox;
+    public static final int _FRIEND_ID_ = 4;
+    public static final User friendOfFirefox = UsersRepository.getUser(_FRIEND_ID_).orElseThrow();
 
     /** moiautre@toto.com */
-    protected static final int _MOI_AUTRE_ = 8;
-    protected User moiAutre;
+    public static final int _MOI_AUTRE_ = 8;
+    public static final User moiAutre = UsersRepository.getUser(_MOI_AUTRE_).orElseThrow();
 
     /** The admin user. */
-    protected static final int _ADMIN_ID_ = 1;
-    protected User theAdmin;
+    public static final int _ADMIN_ID_ = 1;
+    public static final User theAdmin = UsersRepository.getUser(_ADMIN_ID_).orElseThrow();
 
     protected static final int _JO3_ = 22;
-    protected User jo3;
+    public static final User jo3 = UsersRepository.getUser(_JO3_).orElseThrow();
 
     protected static DataSourceIdKDo ds;
-
-    public WebAppTemplateTest() {
-        try {
-            friendOfFirefox = UsersRepository.getUser(_FRIEND_ID_).orElseThrow(SQLException::new);
-            firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
-            moiAutre = UsersRepository.getUser(_MOI_AUTRE_).orElseThrow(SQLException::new);
-            theAdmin = UsersRepository.getUser(_ADMIN_ID_).orElseThrow(SQLException::new);
-            jo3 = UsersRepository.getUser(_JO3_).orElseThrow(SQLException::new);
-        } catch (SQLException e) {
-            Assert.fail("Fail to retrieve the friend of Firefox");
-        }
-    }
 
     @Rule
     public TestName name = new TestName();
@@ -66,7 +54,7 @@ public class WebAppTemplateTest {
 
     @BeforeClass
     public static void init() throws SQLException {
-        
+
         ds = new DataSourceIdKDo();
         String email = UsersRepository.getUser(3).map(User::getEmail).orElseThrow(SQLException::new);
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);

@@ -5,13 +5,13 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
 
@@ -28,7 +28,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(i -> !i.isASurprise())
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        when(request.getParameter(ServiceGetIdea.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
+        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         DecoratedWebAppIdeaServiceResponse answer = doTestServiceGet(DecoratedWebAppIdeaServiceResponse.class);
@@ -47,7 +47,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(Idee::isASurprise)
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        when(request.getParameter(ServiceGetIdea.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
+        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         DecoratedWebAppIdeaServiceResponse answer = doTestServiceGet(DecoratedWebAppIdeaServiceResponse.class);
@@ -66,7 +66,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(i -> !i.isASurprise())
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        when(request.getParameter(ServiceGetIdea.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
+        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         DecoratedWebAppIdeaServiceResponse answer = doTestServiceGet(DecoratedWebAppIdeaServiceResponse.class);
@@ -85,7 +85,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(Idee::isASurprise)
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        when(request.getParameter(ServiceGetIdea.IDEA_ID_PARAM)).thenReturn(idee.getId() + "");
+        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         StringServiceResponse answer = doTestServiceGet(StringServiceResponse.class);
@@ -99,11 +99,10 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
         /**
          * Class constructor.
          *
-         * @param isOK    True if there is no error.
-         * @param idea    The JSon response message.
-         * @param isAdmin Whether the user is an admin.
+         * @param isOK True if there is no error.
+         * @param idea The JSon response message.
          */
-        public DecoratedWebAppIdeaServiceResponse(boolean isOK, DecoratedWebAppIdea idea, boolean isAdmin, User connectedUser) {
+        public DecoratedWebAppIdeaServiceResponse(boolean isOK, DecoratedWebAppIdea idea, User connectedUser) {
             super(isOK, idea, connectedUser);
         }
     }

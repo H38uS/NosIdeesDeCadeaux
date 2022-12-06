@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
 
@@ -27,8 +27,8 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
     @Test
     public void shouldBePossibleToViewMyIdeas() {
 
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
-        when(request.getParameter(ServiceAfficherListes.NAME_OR_EMAIL)).thenReturn(moiAutre.getEmail());
+        setConnectedUserTo(WebAppTemplateTest.moiAutre);
+        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getEmail());
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);
@@ -42,8 +42,8 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
     @Test
     public void shouldNotBePossibleToViewMySurprises() {
 
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
-        when(request.getParameter(ServiceAfficherListes.NAME_OR_EMAIL)).thenReturn(moiAutre.getEmail());
+        setConnectedUserTo(WebAppTemplateTest.moiAutre);
+        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getEmail());
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);
@@ -58,15 +58,15 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
                                            .stream()
                                            .map(DecoratedWebAppIdea::getIdee)
                                            .filter(Idee::isASurprise)
-                                           .collect(Collectors.toList());
+                                           .toList();
         assertTrue(surprises.isEmpty());
     }
 
     @Test
     public void shouldBePossibleToSeeFriendIdeasIncludingSurprises() {
 
-        when(session.getAttribute("connected_user")).thenReturn(friendOfFirefox);
-        when(request.getParameter(ServiceAfficherListes.NAME_OR_EMAIL)).thenReturn(moiAutre.getName());
+        setConnectedUserTo(WebAppTemplateTest.friendOfFirefox);
+        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getName());
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);
@@ -81,15 +81,15 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
                                            .stream()
                                            .map(DecoratedWebAppIdea::getIdee)
                                            .filter(Idee::isASurprise)
-                                           .collect(Collectors.toList());
+                                           .toList();
         assertFalse(surprises.isEmpty());
     }
 
     @Test
     public void shouldBeAbleToMatchMultiple() throws SQLException {
 
-        when(session.getAttribute("connected_user")).thenReturn(jo3);
-        when(request.getParameter(ServiceAfficherListes.NAME_OR_EMAIL)).thenReturn("trr");
+        setConnectedUserTo(WebAppTemplateTest.jo3);
+        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, "trr");
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);

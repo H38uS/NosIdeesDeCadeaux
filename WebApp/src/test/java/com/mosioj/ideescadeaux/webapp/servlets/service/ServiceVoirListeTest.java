@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -10,10 +11,8 @@ import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class ServiceVoirListeTest extends AbstractTestServletWebApp {
 
@@ -24,8 +23,8 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
     @Test
     public void shouldBePossibleToViewMyIdeas() {
 
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
-        when(request.getParameter(ServiceVoirListe.USER_ID_PARAM)).thenReturn(moiAutre.id + "");
+        setConnectedUserTo(WebAppTemplateTest.moiAutre);
+        bindRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
 
         // Act
         VoirListeResponse answer = doTestServiceGet(VoirListeResponse.class);
@@ -39,8 +38,8 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
     @Test
     public void shouldNotBePossibleToViewMySurprises() {
 
-        when(session.getAttribute("connected_user")).thenReturn(moiAutre);
-        when(request.getParameter(ServiceVoirListe.USER_ID_PARAM)).thenReturn(moiAutre.id + "");
+        setConnectedUserTo(WebAppTemplateTest.moiAutre);
+        bindRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
 
         // Act
         VoirListeResponse answer = doTestServiceGet(VoirListeResponse.class);
@@ -55,15 +54,15 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
                                            .stream()
                                            .map(DecoratedWebAppIdea::getIdee)
                                            .filter(Idee::isASurprise)
-                                           .collect(Collectors.toList());
+                                           .toList();
         assertTrue(surprises.isEmpty());
     }
 
     @Test
     public void shouldBePossibleToSeeFriendIdeasIncludingSurprises() {
 
-        when(session.getAttribute("connected_user")).thenReturn(friendOfFirefox);
-        when(request.getParameter(ServiceVoirListe.USER_ID_PARAM)).thenReturn(moiAutre.id + "");
+        setConnectedUserTo(WebAppTemplateTest.friendOfFirefox);
+        bindRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
 
         // Act
         VoirListeResponse answer = doTestServiceGet(VoirListeResponse.class);
@@ -78,7 +77,7 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
                                            .stream()
                                            .map(DecoratedWebAppIdea::getIdee)
                                            .filter(Idee::isASurprise)
-                                           .collect(Collectors.toList());
+                                           .toList();
         assertFalse(surprises.isEmpty());
     }
 

@@ -8,13 +8,13 @@ import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
+import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
 
@@ -39,7 +39,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                                                  NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -66,7 +66,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                                                  NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost(); // bloqué par la police, impossible en utilisation classique...
 
         assertFalse(resp.isOK());
@@ -85,7 +85,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                     .withText("reservation")
                                                     .withPriority(p));
 
-        when(request.getParameter(ServiceEstAJour.IDEE_FIELD_PARAMETER)).thenReturn(String.valueOf(idee.getId()));
+        bindRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         resp = doTestServicePost();
