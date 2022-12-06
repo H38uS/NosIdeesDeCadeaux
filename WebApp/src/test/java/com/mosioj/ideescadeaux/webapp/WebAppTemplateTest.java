@@ -3,9 +3,6 @@ package com.mosioj.ideescadeaux.webapp;
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +12,8 @@ import org.junit.rules.TestName;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WebAppTemplateTest {
 
@@ -59,14 +58,10 @@ public class WebAppTemplateTest {
         String email = UsersRepository.getUser(3).map(User::getEmail).orElseThrow(SQLException::new);
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
 
-        for (NType type : NType.values()) {
-            final User firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
-            UserRelationsRepository.getAllUsersInRelation(firefox)
-                                   .forEach(u -> UserParametersRepository.insertUpdateParameter(u,
-                                                                                                type.name(),
-                                                                                                NotificationActivation.SITE.name()));
-            UserParametersRepository.insertUpdateParameter(firefox, type.name(), NotificationActivation.SITE.name());
-        }
+        String values = Stream.of(NType.values()).map(v -> "'" + v + "'").collect(Collectors.joining(","));
+        ds.executeUpdate("update USER_PARAMETERS set parameter_value = 'SITE' where parameter_name in (" +
+                         values +
+                         ")");
     }
 
     @After

@@ -38,7 +38,7 @@ public class UserParametersRepository {
             p.parameterValue = paramValue;
             HibernateUtil.update(p);
         });
-        if (!parameter.isPresent()) {
+        if (parameter.isEmpty()) {
             HibernateUtil.saveit(new UserParameter(user, paramName, paramValue));
         }
     }
@@ -64,9 +64,7 @@ public class UserParametersRepository {
                       .list());
 
         // Remove any unknown parameter
-        definedParameters.removeAll(definedParameters.stream()
-                                                     .filter(p -> !NType.exists(p.parameterName))
-                                                     .collect(Collectors.toList()));
+        definedParameters.removeAll(definedParameters.stream().filter(p -> !NType.exists(p.parameterName)).toList());
 
         // Adding any missing ones
         Set<NType> allTypes = new HashSet<>(Arrays.asList(NType.values()));
@@ -75,9 +73,7 @@ public class UserParametersRepository {
                                             .filter(NType::exists)
                                             .map(NType::valueOf)
                                             .collect(Collectors.toSet()));
-        definedParameters.addAll(allTypes.stream()
-                                         .map(n -> new UserParameter(user, n.name(), "EMAIL_SITE"))
-                                         .collect(Collectors.toList()));
+        definedParameters.addAll(allTypes.stream().map(n -> new UserParameter(user, n.name(), "EMAIL_SITE")).toList());
 
         // Sort by name
         definedParameters.sort(Comparator.comparing(a -> a.parameterName));
