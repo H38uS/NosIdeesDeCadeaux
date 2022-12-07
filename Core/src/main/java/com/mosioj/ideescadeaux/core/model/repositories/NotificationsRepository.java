@@ -339,7 +339,7 @@ public class NotificationsRepository {
          */
         public NotificationFetcher whereRead(boolean isRead) {
             parameters.add(isRead ? "N" : "Y");
-            whereClause.append(" and n.is_unread = ?").append(parameters.size()).append(" ");
+            whereClause.append(" and n.isUnread = ?").append(parameters.size()).append(" ");
             return this;
         }
 
