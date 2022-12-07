@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -24,7 +25,15 @@ public class DataSourceIdKDo {
         return selectInt(query, parameters).orElse(0);
     }
 
-    private static <T> void bindParameters(NativeQuery<T> query, Object... parameters) {
+
+    /**
+     * Bind the query parmeters in the same order.
+     *
+     * @param query      The Hibernate query.
+     * @param parameters The parameters to bind.
+     * @param <T>        The return type of the query.
+     */
+    public static <T> void bindParameters(Query<T> query, Object... parameters) {
         for (int i = 0; i < parameters.length; i++) {
             Object p = parameters[i];
             if (p == null) {
@@ -50,7 +59,7 @@ public class DataSourceIdKDo {
         return HibernateUtil.doQuerySingle(s -> {
             // FIXME : faudra faire autrement
             final NativeQuery<?> sqlQuery = s.createSQLQuery(query);
-            DataSourceIdKDo.bindParameters(sqlQuery, parameters);
+            bindParameters(sqlQuery, parameters);
             return sqlQuery.uniqueResultOptional().map(res -> {
                 if (res instanceof BigInteger)
                     return ((BigInteger) res).intValue();
@@ -69,7 +78,7 @@ public class DataSourceIdKDo {
     public int executeUpdate(String query, Object... parameters) {
         return HibernateUtil.doSomeExecutionWork(s -> {
             final NativeQuery<?> sqlQuery = s.createSQLQuery(query);
-            DataSourceIdKDo.bindParameters(sqlQuery, parameters);
+            bindParameters(sqlQuery, parameters);
             return sqlQuery.executeUpdate();
         });
     }
@@ -79,12 +88,11 @@ public class DataSourceIdKDo {
      *
      * @param query      The SQL query.
      * @param parameters Optional bindable parameters.
-     * @return The number of rows inserted / updated / deleted.
      */
-    public int executeInsert(String query, Object... parameters) {
-        return HibernateUtil.doSomeExecutionWork(s -> {
+    public void executeInsert(String query, Object... parameters) {
+        HibernateUtil.doSomeExecutionWork(s -> {
             final NativeQuery<?> sqlQuery = s.createSQLQuery(query);
-            DataSourceIdKDo.bindParameters(sqlQuery, parameters);
+            bindParameters(sqlQuery, parameters);
             sqlQuery.executeUpdate();
             BigInteger result = (BigInteger) s.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult();
             return result.intValue();

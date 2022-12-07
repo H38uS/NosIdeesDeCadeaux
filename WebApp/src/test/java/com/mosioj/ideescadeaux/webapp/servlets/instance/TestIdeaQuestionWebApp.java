@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.instance;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
@@ -31,8 +32,8 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
                                                     .withPriority(p));
         QuestionsRepository.addComment(_FRIEND_ID_, idea.getId(), "mon pti com'");
 
-        int addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idea).sendItTo(firefox);
-        int newQuestion = NEW_QUESTION_TO_OWNER.with(friendOfFirefox, idea).sendItTo(firefox);
+        Notification addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idea).sendItTo(firefox);
+        Notification newQuestion = NEW_QUESTION_TO_OWNER.with(friendOfFirefox, idea).sendItTo(firefox);
         assertNotifDoesExists(addByFriend);
         assertNotifDoesExists(newQuestion);
 

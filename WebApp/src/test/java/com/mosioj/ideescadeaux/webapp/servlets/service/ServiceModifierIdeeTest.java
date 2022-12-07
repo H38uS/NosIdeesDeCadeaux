@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -98,10 +99,10 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         assertNotEquals(newText, idee.getText());
 
-        int notifId = IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idee).sendItTo(firefox);
+        Notification notifId = IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idee).sendItTo(firefox);
         IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
         assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
-        int addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idee).sendItTo(firefox);
+        Notification addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idee).sendItTo(firefox);
         assertNotifDoesExists(notifId);
         assertNotifDoesExists(addByFriend);
 

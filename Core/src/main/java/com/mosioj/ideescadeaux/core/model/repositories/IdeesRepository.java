@@ -358,7 +358,7 @@ public class IdeesRepository {
      * @return True if the user has at least one idea.
      */
     public static boolean hasIdeas(User user) {
-        return HibernateUtil.doesReturnRows("select 1 from IDEES where owner = ?0", user);
+        return HibernateUtil.doesReturnRows("select 1 from IDEES where owner = ?1", user);
     }
 
     /**

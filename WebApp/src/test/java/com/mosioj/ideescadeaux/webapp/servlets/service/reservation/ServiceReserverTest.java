@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -61,7 +62,7 @@ public class ServiceReserverTest extends AbstractTestServletWebApp {
                                                     .withText("reservation")
                                                     .withPriority(p));
 
-        int recurentUnbook = RECURENT_IDEA_UNBOOK.with(friendOfFirefox, idee).sendItTo(firefox);
+        Notification recurentUnbook = RECURENT_IDEA_UNBOOK.with(friendOfFirefox, idee).sendItTo(firefox);
         assertNotifDoesExists(recurentUnbook);
 
         bindRequestParam(ServiceDereserver.IDEA_ID_PARAM, String.valueOf(idee.getId()));

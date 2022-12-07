@@ -19,7 +19,7 @@ public class UserRelationRequestsRepository {
      * @return True if and only if sent_by has sent a request to sent_to.
      */
     public static boolean associationExists(User sent_by, User sent_to) {
-        final String query = "select 1 from USER_RELATION_REQUESTS where sent_by = ?0 and sent_to = ?1";
+        final String query = "select 1 from USER_RELATION_REQUESTS where sent_by = ?1 and sent_to = ?2";
         return HibernateUtil.doesReturnRows(query, sent_by, sent_to);
     }
 

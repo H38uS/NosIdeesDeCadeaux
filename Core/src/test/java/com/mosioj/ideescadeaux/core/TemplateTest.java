@@ -3,9 +3,6 @@ package com.mosioj.ideescadeaux.core;
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.entities.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.repositories.UserParametersRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +10,8 @@ import org.junit.*;
 import org.junit.rules.TestName;
 
 import java.sql.SQLException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TemplateTest {
 
@@ -53,15 +52,11 @@ public class TemplateTest {
         ds = new DataSourceIdKDo();
         String email = UsersRepository.getUser(3).map(User::getEmail).orElseThrow(SQLException::new);
         Assert.assertEquals("ymosio@wanadzdzdzdoo.fr", email);
-
-        for (NType type : NType.values()) {
-            final User firefox = UsersRepository.getUser(_OWNER_ID_).orElseThrow(SQLException::new);
-            UserRelationsRepository.getAllUsersInRelation(firefox)
-                                   .forEach(u -> UserParametersRepository.insertUpdateParameter(u,
-                                                                                                type.name(),
-                                                                                                NotificationActivation.SITE.name()));
-            UserParametersRepository.insertUpdateParameter(firefox, type.name(), NotificationActivation.SITE.name());
-        }
+        
+        String values = Stream.of(NType.values()).map(v -> "'" + v + "'").collect(Collectors.joining(","));
+        ds.executeUpdate("update USER_PARAMETERS set parameter_value = 'SITE' where parameter_name in (" +
+                         values +
+                         ")");
     }
 
     @Before
@@ -79,11 +74,11 @@ public class TemplateTest {
         System.out.println();
     }
 
-    protected void assertNotifDoesNotExists(int notifId) {
+    protected void assertNotifDoesNotExists(long notifId) {
         Assert.assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 
-    protected void assertNotifDoesExists(int notifId) {
+    protected void assertNotifDoesExists(long notifId) {
         Assert.assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
     }
 }

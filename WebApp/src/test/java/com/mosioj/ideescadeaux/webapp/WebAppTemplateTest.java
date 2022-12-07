@@ -3,6 +3,8 @@ package com.mosioj.ideescadeaux.webapp;
 import com.mosioj.ideescadeaux.core.model.database.DataSourceIdKDo;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,11 +76,11 @@ public class WebAppTemplateTest {
         System.out.println();
     }
 
-    protected void assertNotifDoesNotExists(int notifId) {
-        Assert.assertEquals(0, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+    protected void assertNotifDoesNotExists(Notification notification) {
+        Assert.assertTrue(NotificationsRepository.getNotification(notification.getId()).isEmpty());
     }
 
-    protected void assertNotifDoesExists(int notifId) {
-        Assert.assertEquals(1, ds.selectCountStar("select count(*) from NOTIFICATIONS where id = ?", notifId));
+    protected void assertNotifDoesExists(Notification notification) {
+        Assert.assertFalse(NotificationsRepository.getNotification(notification.getId()).isEmpty());
     }
 }

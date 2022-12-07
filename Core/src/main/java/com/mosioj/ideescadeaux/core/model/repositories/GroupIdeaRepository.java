@@ -131,7 +131,7 @@ public class GroupIdeaRepository {
     public static List<User> getPotentialGroupUser(IdeaGroup group, User connectedUser) {
 
         Optional<User> ideaOwner = IdeesRepository.getIdeaOwnerFromGroup(group);
-        if (!ideaOwner.isPresent()) {
+        if (ideaOwner.isEmpty()) {
             // No owner ?! No potential users
             logger.error("No idea or idea owner corresponding to group {}...", group.getId());
             return Collections.emptyList();
@@ -139,7 +139,7 @@ public class GroupIdeaRepository {
 
         List<User> ideaOwnerFriends = UserRelationsRepository.getAllUsersInRelation(ideaOwner.get());
         List<User> myFriends = UserRelationsRepository.getAllUsersInRelation(connectedUser);
-        List<User> groupMember = group.getShares().stream().map(IdeaGroupContent::getUser).collect(Collectors.toList());
+        List<User> groupMember = group.getShares().stream().map(IdeaGroupContent::getUser).toList();
 
         // Les amis du owner
         return ideaOwnerFriends.stream()

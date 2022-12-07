@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
@@ -28,7 +29,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void testAjouterIdeeAmisSuccess() throws IOException {
 
-        int noIdea = NType.NO_IDEA.buildDefault().sendItTo(friendOfFirefox);
+        Notification noIdea = NType.NO_IDEA.buildDefault().sendItTo(friendOfFirefox);
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();
@@ -47,7 +48,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void testAjouterSurpriseAUnAmisSuccess() throws IOException {
 
-        int noIdea = NType.NO_IDEA.buildDefault().sendItTo(friendOfFirefox);
+        Notification noIdea = NType.NO_IDEA.buildDefault().sendItTo(friendOfFirefox);
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();
@@ -67,7 +68,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void testPostSuccess() throws IOException {
 
-        int noIdea = NType.NO_IDEA.buildDefault().sendItTo(firefox);
+        Notification noIdea = NType.NO_IDEA.buildDefault().sendItTo(firefox);
         assertNotifDoesExists(noIdea);
 
         Map<String, String> param = new HashMap<>();

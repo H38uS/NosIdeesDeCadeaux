@@ -19,7 +19,7 @@ public class UserRelationsSuggestionRepository {
      * @return True if and only if suggestedTo has received a notification for userId.
      */
     public static boolean hasReceivedSuggestionOf(int suggestedTo, int userId) {
-        final String text = "select 1 from USER_RELATIONS_SUGGESTION where suggested_to = ?0 and user_id = ?1";
+        final String text = "select 1 from USER_RELATIONS_SUGGESTION where suggested_to = ?1 and user_id = ?2";
         return HibernateUtil.doesReturnRows(text, suggestedTo, userId);
     }
 

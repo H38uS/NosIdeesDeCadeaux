@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -72,19 +73,19 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
         // Les notifs à vérifier
         // _MOI_AUTRE_ déclenche la requête d'annulation
         // On nous avait suggéré le groupe => la notif disparait
-        int groupSuggestion = GROUP_IDEA_SUGGESTION.with(friendOfFirefox, idee, group).sendItTo(moiAutre);
+        Notification groupSuggestion = GROUP_IDEA_SUGGESTION.with(friendOfFirefox, idee, group).sendItTo(moiAutre);
         assertNotifDoesExists(groupSuggestion);
 
         // On avait notifié un amis quand on a rejoint le groupe => ça disparait
-        int geShouldDisapear1 = NType.JOIN_GROUP.with(moiAutre, idee, group).sendItTo(friendOfFirefox);
+        Notification geShouldDisapear1 = NType.JOIN_GROUP.with(moiAutre, idee, group).sendItTo(friendOfFirefox);
         assertNotifDoesExists(geShouldDisapear1);
 
         // On nous avait notifié => ça disparait
-        int geShouldDisapear2 = NType.JOIN_GROUP.with(friendOfFirefox, idee, group).sendItTo(moiAutre);
+        Notification geShouldDisapear2 = NType.JOIN_GROUP.with(friendOfFirefox, idee, group).sendItTo(moiAutre);
         assertNotifDoesExists(geShouldDisapear2);
 
         // D'autres personnes se sont notifié entre eux => ils s'en foutent qu'on partent : ça reste
-        int groupEvolutionShouldStay = NType.JOIN_GROUP.with(theAdmin, idee, group).sendItTo(friendOfFirefox);
+        Notification groupEvolutionShouldStay = NType.JOIN_GROUP.with(theAdmin, idee, group).sendItTo(friendOfFirefox);
         assertNotifDoesExists(groupEvolutionShouldStay);
 
         // Annulation de la participation de _OWNER_ID_ aka friendOfFirefox

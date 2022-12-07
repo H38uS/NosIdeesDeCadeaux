@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.core.model;
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import org.junit.Test;
 
@@ -21,17 +22,17 @@ public class TestUser extends TemplateTest {
 
         int userId = UsersRepository.addNewPersonne(email, "hihi", "my_new_name");
         User user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
-        int notifId = NType.NO_IDEA.buildDefault().sendItTo(user);
+        Notification notification = NType.NO_IDEA.buildDefault().sendItTo(user);
 
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", user.id));
         assertEquals(1, ds.selectCountStar("select count(*) from USER_ROLES where email = ?", user.email));
-        assertNotifDoesExists(notifId);
+        assertNotifDoesExists(notification.getId());
 
         UsersRepository.deleteUser(user);
 
         assertEquals(0, ds.selectCountStar("select count(*) from USERS where id = ?", user.id));
         assertEquals(0, ds.selectCountStar("select count(*) from USER_ROLES where email = ?", user.email));
-        assertNotifDoesNotExists(notifId);
+        assertNotifDoesNotExists(notification.getId());
     }
 
 }

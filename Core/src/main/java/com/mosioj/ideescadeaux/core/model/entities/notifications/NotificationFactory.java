@@ -4,8 +4,6 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 
-import java.time.Instant;
-
 public class NotificationFactory {
 
     private NotificationFactory() {
@@ -38,26 +36,6 @@ public class NotificationFactory {
         }
 
         /**
-         * @param identifier The notification's internal identifier.
-         * @return The builder's instance.
-         */
-        public NotificationBuilder withAnID(Long identifier) {
-            notification.setId(identifier);
-            return this;
-        }
-
-        /**
-         * Registers a new owner to this notification.
-         *
-         * @param owner The notification's owner.
-         * @return The builder's instance.
-         */
-        public NotificationBuilder belongsTo(User owner) {
-            notification.setOwner(owner);
-            return this;
-        }
-
-        /**
          * @param userParameter The user's parameter value for this notification.
          * @return The builder's instance.
          */
@@ -81,15 +59,6 @@ public class NotificationFactory {
          */
         public NotificationBuilder withGroupParameter(IdeaGroup groupParameter) {
             notification.setGroupParameter(groupParameter);
-            return this;
-        }
-
-        /**
-         * @param creationTime When this notification was created.
-         * @return The builder's instance.
-         */
-        public NotificationBuilder withCreationTime(Instant creationTime) {
-            notification.setCreationTime(creationTime);
             return this;
         }
 

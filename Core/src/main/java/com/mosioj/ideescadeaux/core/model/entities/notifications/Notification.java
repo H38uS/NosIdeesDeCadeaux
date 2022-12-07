@@ -6,34 +6,63 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.Instant;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Entity(name = "NOTIFICATIONS")
 public class Notification {
 
-    /** The notification type, useful for database insertion. Cannot be null. */
-    private final NType type;
-
     /** The notification's unique identifier. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    /** The notification type, useful for database insertion. Cannot be null. */
+    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
+    private NType type;
+
     /** The notification's owner. */
+    @ManyToOne
+    @JoinColumn(name = "owner")
     private User owner;
 
     // Paramètres
 
     /** The optional user parameter for this notification. */
+    @ManyToOne
+    @JoinColumn(name = "user_id_param")
     private User userParameter;
 
     /** The optional idea parameter for this notification. */
+    @ManyToOne
+    @JoinColumn(name = "idea_id_param")
     private Idee ideaParameter;
 
     /** The optional group parameter for this notification. */
+    @ManyToOne
+    @JoinColumn(name = "group_id_param")
     private IdeaGroup groupParameter;
 
     /** The optional creation date for this notification. */
-    private String creationTime;
+    @Column(updatable = false, name = "creation_date")
+    @CreationTimestamp
+    private LocalDateTime creationTime;
+
+    /** Whether this notification is read or not (Y = unread, N = read) */
+    @Column(length = 1, name = "is_unread")
+    public String isUnread = "N";
+
+    /** When it was read, or null */
+    @Column(name = "read_on")
+    public LocalDateTime readOn;
+
+    public Notification() {
+        // For Hibernate
+    }
 
     /**
      * Default constructor for insertion.
@@ -77,15 +106,6 @@ public class Notification {
      */
     public void setGroupParameter(IdeaGroup groupParameter) {
         this.groupParameter = groupParameter;
-    }
-
-    /**
-     * @param creationTime When this notification was created.
-     */
-    public void setCreationTime(Instant creationTime) {
-        this.creationTime = Optional.ofNullable(creationTime)
-                                    .map(MyDateFormatViewer::formatMine)
-                                    .orElse(StringUtils.EMPTY);
     }
 
     /**
@@ -154,7 +174,9 @@ public class Notification {
      * @return The creation time of this notification.
      */
     public String getCreationTime() {
-        return creationTime;
+        return Optional.ofNullable(creationTime)
+                       .map(MyDateFormatViewer::formatMine)
+                       .orElse(StringUtils.EMPTY);
     }
 
     /**
@@ -164,7 +186,6 @@ public class Notification {
         Notification notification = getType().buildDefault();
         notification.setId(getId());
         notification.setOwner(getOwner());
-        notification.creationTime = getCreationTime();
         getUserParameter().ifPresent(notification::setUserParameter);
         getIdeaParameter().ifPresent(notification::setIdeaParameter);
         getGroupParameter().ifPresent(notification::setGroupParameter);
@@ -175,18 +196,15 @@ public class Notification {
      * Creates a row in database and/or sends an email depending on the settings.
      *
      * @param owner The user to send this notification to.
-     * @return The created identifier.
      */
-    public int sendItTo(User owner) {
+    public Notification sendItTo(User owner) {
         return NotificationsRepository.add(duplicates().setOwner(owner));
     }
 
     /**
      * Creates a row in database and/or sends an email depending on the settings.
-     *
-     * @return The created identifier.
      */
-    public int send() {
-        return NotificationsRepository.add(duplicates());
+    public void send() {
+        NotificationsRepository.add(duplicates());
     }
 }

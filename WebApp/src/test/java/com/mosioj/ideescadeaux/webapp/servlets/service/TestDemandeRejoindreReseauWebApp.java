@@ -1,6 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -35,8 +36,8 @@ public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp 
         final User otherNotFriend = UsersRepository.getUser(23).orElseThrow(SQLException::new);
         UserRelationRequestsRepository.cancelRequest(firefox, otherNotFriend);
 
-        int suggestionAndAsk = NEW_RELATION_SUGGESTION.with(otherNotFriend).sendItTo(firefox);
-        int suggestionAndAsked = NEW_RELATION_SUGGESTION.with(firefox).sendItTo(otherNotFriend);
+        Notification suggestionAndAsk = NEW_RELATION_SUGGESTION.with(otherNotFriend).sendItTo(firefox);
+        Notification suggestionAndAsked = NEW_RELATION_SUGGESTION.with(firefox).sendItTo(otherNotFriend);
         assertNotifDoesExists(suggestionAndAsk);
         assertNotifDoesExists(suggestionAndAsked);
 

@@ -7,6 +7,8 @@ import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 
 public class NotificationsRepositoryTest extends TemplateTest {
@@ -16,7 +18,9 @@ public class NotificationsRepositoryTest extends TemplateTest {
 
         // Given this notification
         Idee idee = IdeesRepository.getIdeasOf(firefox).get(0);
-        IdeaGroup group = new IdeaGroup(35, 200);
+        IdeaGroup group = GroupIdeaRepository.getGroupDetails(2740)
+                                             .or(() -> Optional.of(GroupIdeaRepository.createAGroup(300, 50, firefox)))
+                                             .get();
         Notification suggestion = NType.GROUP_IDEA_SUGGESTION.with(firefox, idee, group).setOwner(firefox);
         NotificationsRepository.findNotificationsMatching(suggestion)
                                .forEach(NotificationsRepository::remove);

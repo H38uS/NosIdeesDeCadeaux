@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -40,7 +41,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
         IdeesRepository.bookByGroup(idee, group);
 
-        int groupSuggestion = GROUP_IDEA_SUGGESTION.with(firefox, idee, group).sendItTo(firefox);
+        Notification groupSuggestion = GROUP_IDEA_SUGGESTION.with(firefox, idee, group).sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
 
         bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));

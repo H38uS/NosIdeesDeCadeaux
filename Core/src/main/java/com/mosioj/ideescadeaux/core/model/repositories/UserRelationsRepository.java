@@ -51,7 +51,7 @@ public class UserRelationsRepository {
      * @return True if and only if the two guys are friends. False for the owner.
      */
     public static boolean associationExists(User first, User second) {
-        final String query = "select 1 from USER_RELATIONS where first_user = ?0 and second_user = ?1";
+        final String query = "select 1 from USER_RELATIONS where first_user = ?1 and second_user = ?2";
         return HibernateUtil.doesReturnRows(query, first, second);
     }
 

@@ -98,6 +98,19 @@ public class HibernateUtil {
     }
 
     /**
+     * Bind the query parmeters in the same order.
+     *
+     * @param query      The Hibernate query.
+     * @param parameters The parameters to bind.
+     * @param <T>        The return type of the query.
+     */
+    public static <T> void bindParameters(Query<T> query, Object... parameters) {
+        for (int i = 0; i < parameters.length; i++) {
+            query.setParameter(i + 1, parameters[i]);
+        }
+    }
+
+    /**
      * @param queryText  The query text.
      * @param parameters The query parameters.
      * @return True if the query returns some rows.
@@ -106,9 +119,7 @@ public class HibernateUtil {
         return doQueryOptional(s -> {
             Query<Integer> query = s.createQuery("select 1 from USERS where exists ( " + queryText + " )",
                                                  Integer.class);
-            for (int i = 0; i < parameters.length; i++) {
-                query.setParameter(i, parameters[i]);
-            }
+            bindParameters(query, parameters);
             return query.uniqueResultOptional();
         }).isPresent();
     }

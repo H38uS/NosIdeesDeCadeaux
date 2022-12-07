@@ -6,7 +6,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
-import static com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -25,6 +24,6 @@ public class ServiceNotificationDeleteTest extends AbstractTestServletWebApp {
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
-        assertEquals(0, ds.selectCountStar("select 1 from " + TABLE_NAME + " where id = ?", n.id));
+        assertEquals(0, ds.selectCountStar("select 1 from NOTIFICATIONS where id = ?", n.id));
     }
 }

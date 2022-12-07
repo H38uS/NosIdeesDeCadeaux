@@ -32,7 +32,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         IdeesRepository.bookByGroup(idea, group);
 
         Notification notifGroupSuggestion = NType.GROUP_IDEA_SUGGESTION.with(firefox, idea, group);
-        int groupSuggestion = notifGroupSuggestion.sendItTo(firefox);
+        Notification groupSuggestion = notifGroupSuggestion.sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
 
         bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());

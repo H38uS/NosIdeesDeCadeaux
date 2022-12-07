@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
@@ -9,6 +10,8 @@ import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertEquals;
 
 public class JSPAccessortTest extends TemplateTest {
 
@@ -20,17 +23,23 @@ public class JSPAccessortTest extends TemplateTest {
 
     @Test
     public void testJSPOnlyUserMethods() {
-        Assert.assertEquals(MyDateFormatViewer.formatOrElse(LocalDateTime.of(2017, 5, 21, 20, 42), StringUtils.EMPTY),
-                            u.getCreationDate());
-        Assert.assertEquals("", u.getLastLogin());
+        assertEquals(MyDateFormatViewer.formatOrElse(LocalDateTime.of(2017, 5, 21, 20, 42), StringUtils.EMPTY),
+                     u.getCreationDate());
+        assertEquals("", u.getLastLogin());
         Assert.assertFalse(u.hasSetUpAnAvatar());
-        Assert.assertEquals("large/default.png", u.getAvatarSrcLarge());
+        assertEquals("large/default.png", u.getAvatarSrcLarge());
     }
 
     @Test
     public void testJSPOnlyCommentMethods() {
         Comment c = new Comment(42, "aa", u, 35, TS20191212_0829);
-        Assert.assertEquals("12 décembre 2019 à 08h29", c.getTime());
+        assertEquals("12 décembre 2019 à 08h29", c.getTime());
+    }
+
+    @Test
+    public void testJSPOnlyNotificationsMethod() {
+        Notification n = new Notification();
+        assertEquals("", n.getCreationTime());
     }
 
     @Test
@@ -42,23 +51,23 @@ public class JSPAccessortTest extends TemplateTest {
                      .withPicture("toto.png")
                      .withLastModificationDate(LDT_20191212_0829)
                      .build();
-        Assert.assertEquals("small/toto.png", i.getImageSrcSmall());
+        assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertNull(i.getCategory());
     }
 
     @Test
     public void testJSPOnlySousReservationEntityMethods() {
         SousReservationEntity sre = new SousReservationEntity(56, 14, u, "toto", TS20191212_0829);
-        Assert.assertEquals("12 décembre 2019 à 08h29", sre.getBookedOn());
-        Assert.assertEquals(14, sre.getIdeeId());
+        assertEquals("12 décembre 2019 à 08h29", sre.getBookedOn());
+        assertEquals(14, sre.getIdeeId());
     }
 
     @Test
     public void testJSPOnlyUserParameterMethods() {
         UserParameter up = new UserParameter(firefox, "NO_IDEA", "titi");
-        Assert.assertEquals(NType.NO_IDEA.getDescription(), up.getParameterDescription());
-        Assert.assertEquals("titi", up.getParameterValue());
-        Assert.assertEquals(0, up.getId());
+        assertEquals(NType.NO_IDEA.getDescription(), up.getParameterDescription());
+        assertEquals("titi", up.getParameterValue());
+        assertEquals(0, up.getId());
     }
 
 }

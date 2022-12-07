@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.RelationRequest;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -41,12 +42,12 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
         assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
 
         // Ajout des notifs
-        int n1 = REJECTED_FRIENDSHIP.with(moiAutre).sendItTo(firefox);
-        int n2 = NType.FRIENDSHIP_DROPPED.with(firefox).sendItTo(moiAutre);
-        int newRelationSuggestion = NEW_RELATION_SUGGESTION.with(moiAutre).sendItTo(firefox);
-        int notRemoved = NEW_RELATION_SUGGESTION.with(friendOfFirefox).sendItTo(firefox);
-        int newFriendshipRequest = NEW_FRIENSHIP_REQUEST.with(moiAutre).sendItTo(firefox);
-        int otherWaynewFriendshipRequest = NEW_FRIENSHIP_REQUEST.with(firefox).sendItTo(moiAutre);
+        Notification n1 = REJECTED_FRIENDSHIP.with(moiAutre).sendItTo(firefox);
+        Notification n2 = NType.FRIENDSHIP_DROPPED.with(firefox).sendItTo(moiAutre);
+        Notification newRelationSuggestion = NEW_RELATION_SUGGESTION.with(moiAutre).sendItTo(firefox);
+        Notification notRemoved = NEW_RELATION_SUGGESTION.with(friendOfFirefox).sendItTo(firefox);
+        Notification newFriendshipRequest = NEW_FRIENSHIP_REQUEST.with(moiAutre).sendItTo(firefox);
+        Notification otherWaynewFriendshipRequest = NEW_FRIENSHIP_REQUEST.with(firefox).sendItTo(moiAutre);
         assertNotifDoesExists(n1);
         assertNotifDoesExists(n2);
         assertNotifDoesExists(newRelationSuggestion);

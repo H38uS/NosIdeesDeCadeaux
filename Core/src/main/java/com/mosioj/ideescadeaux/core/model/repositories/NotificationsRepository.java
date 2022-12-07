@@ -7,35 +7,26 @@ import com.mosioj.ideescadeaux.core.model.entities.UserParameter;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NotificationActivation;
-import com.mosioj.ideescadeaux.core.model.entities.notifications.NotificationFactory;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.NotificationsColumns;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.EmailSender;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.MessageFormat;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
-public class NotificationsRepository extends AbstractRepository {
+public class NotificationsRepository {
 
     /** Class logger. */
     private static final Logger logger = LogManager.getLogger(NotificationsRepository.class);
-
-    /** The table name storing notifications. */
-    public static final String TABLE_NAME = "NOTIFICATIONS";
 
     /** Specific type for administration notification. */
     public static final String NOTIF_TYPE_ADMIN_ERROR = "ADMIN_ERROR";
@@ -66,10 +57,8 @@ public class NotificationsRepository extends AbstractRepository {
      * Save and send a notification.
      *
      * @param notification The notification.
-     * @return The id of the notification created, or -1 if none were created.
      */
-    // TODO retourner un optional de Integer voire de Notification
-    public static int add(Notification notification) {
+    public static Notification add(Notification notification) {
 
         logger.info("Creating notification {} for user {}. Parameters: user={}, idea={}, group={}.",
                     notification.getType(),
@@ -77,22 +66,12 @@ public class NotificationsRepository extends AbstractRepository {
                     notification.getUserParameter(),
                     notification.getIdeaParameter(),
                     notification.getGroupParameter());
-        int id = -1;
         try {
             NotificationActivation activation = getActivationType(notification.getOwner().getId(), notification);
 
             // Insertion en base
             if (activation == NotificationActivation.SITE || activation == NotificationActivation.EMAIL_SITE) {
-                final String query = "insert into NOTIFICATIONS " +
-                                     " (owner, type, creation_date, user_id_param, idea_id_param, group_id_param) " +
-                                     " values " +
-                                     " (?,     ?,    now(),         ?,             ?,             ?)";
-                id = getDb().executeInsert(query,
-                                           notification.getOwner().getId(),
-                                           notification.getType().name(),
-                                           notification.getUserParameter().orElse(null),
-                                           notification.getIdeaParameter().orElse(null),
-                                           notification.getGroupParameter().orElse(null));
+                HibernateUtil.saveit(notification);
             }
 
             // Envoie de la notification par email si besoin
@@ -103,7 +82,7 @@ public class NotificationsRepository extends AbstractRepository {
             logger.warn("Exception while trying to add a notification.", e);
         }
 
-        return id;
+        return notification;
     }
 
     /**
@@ -147,7 +126,7 @@ public class NotificationsRepository extends AbstractRepository {
     public static class NotificationTerminator {
 
         /** The internal query. */
-        StringBuilder query = new StringBuilder("delete from ").append(TABLE_NAME).append(" where 1 = 1 ");
+        StringBuilder query = new StringBuilder("delete from NOTIFICATIONS where 1 = 1 ");
 
         /** Parameters list */
         List<Object> parameters = new ArrayList<>();
@@ -159,8 +138,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationTerminator whereId(Long id) {
-            query.append(" and id = ?");
             parameters.add(id);
+            query.append(" and id = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -171,8 +150,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationTerminator whereOwner(User owner) {
-            query.append(" and owner = ? ");
-            parameters.add(owner.getId());
+            parameters.add(owner);
+            query.append(" and owner = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -184,9 +163,12 @@ public class NotificationsRepository extends AbstractRepository {
          */
         public NotificationTerminator whereType(NType... types) {
             List<NType> typesList = Arrays.asList(types);
-            query.append(" and type in (")
-                 .append(typesList.stream().map(t -> "?").collect(Collectors.joining(",")))
-                 .append(")");
+            query.append(" and type in (");
+            for (int i = 0; i < typesList.size(); i++) {
+                query.append("?").append(parameters.size() + i + 1).append(",");
+            }
+            query.deleteCharAt(query.length() - 1);
+            query.append(")");
             parameters.addAll(typesList);
             return this;
         }
@@ -198,8 +180,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationTerminator whereUser(User user) {
-            query.append(" and user_id_param = ? ");
             parameters.add(user.getId());
+            query.append(" and user_id_param = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -210,8 +192,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationTerminator whereIdea(Idee idea) {
-            query.append(" and idea_id_param = ? ");
             parameters.add(idea.getId());
+            query.append(" and idea_id_param = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -222,8 +204,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationTerminator whereGroupIdea(IdeaGroup group) {
-            query.append(" and group_id_param = ? ");
             parameters.add(group.getId());
+            query.append(" and group_id_param = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -231,7 +213,11 @@ public class NotificationsRepository extends AbstractRepository {
          * Runs the query built so far.
          */
         public void terminates() {
-            int nb = getDb().executeUpdate(query.toString(), parameters.toArray());
+            int nb = HibernateUtil.doSomeExecutionWork(s -> {
+                Query<?> sqlQuery = s.createQuery(query.toString());
+                HibernateUtil.bindParameters(sqlQuery, parameters.toArray());
+                return sqlQuery.executeUpdate();
+            });
             logger.debug("{} notifications deleted using {}, and {}.", nb, parameters, query);
         }
     }
@@ -245,9 +231,10 @@ public class NotificationsRepository extends AbstractRepository {
      * @return The number of notification this user has.
      */
     public static int getUserNotificationCount(int userId) {
-        return getDb().selectCountStar(MessageFormat.format("select count(*) from {0} where {1} = ?",
-                                                            TABLE_NAME,
-                                                            NotificationsColumns.OWNER), userId);
+        return HibernateUtil.doQuerySingle(s -> {
+            final String queryText = "select count(*) from NOTIFICATIONS where owner = :owner";
+            return s.createQuery(queryText, Long.class).setParameter("owner", userId).uniqueResult().intValue();
+        });
     }
 
     /**
@@ -259,20 +246,14 @@ public class NotificationsRepository extends AbstractRepository {
 
     public static class NotificationFetcher {
 
-        final String query = "select  n." + NotificationsColumns.ID + "," +
-                             "        n." + NotificationsColumns.TYPE + "," +
-                             "        u." + UsersColumns.ID + " as user_id," +
-                             "        u." + UsersColumns.NAME + "," +
-                             "        u." + UsersColumns.EMAIL + "," +
-                             "        u." + UsersColumns.BIRTHDAY + "," +
-                             "        u." + UsersColumns.AVATAR + "," +
-                             "        n." + NotificationsColumns.CREATION_DATE + "," +
-                             "        n." + NotificationsColumns.USER_ID_PARAM + "," +
-                             "        n." + NotificationsColumns.IDEA_ID_PARAM + "," +
-                             "        n." + NotificationsColumns.GROUP_ID_PARAM +
-                             "  from " + TABLE_NAME + " n " +
-                             "  left join " + UsersRepository.TABLE_NAME + " u " +
-                             "    on u." + UsersColumns.ID + " = " + NotificationsColumns.OWNER;
+        final String query = """
+                select  n
+                  from NOTIFICATIONS n
+                  left join fetch n.owner
+                  left join fetch n.userParameter
+                  left join fetch n.ideaParameter
+                  left join fetch n.groupParameter
+                """;
 
         /** The internal query. */
         StringBuilder whereClause = new StringBuilder(" where 1 = 1 ");
@@ -287,8 +268,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationFetcher whereId(Long id) {
-            whereClause.append(" and n.id = ? ");
             parameters.add(id);
+            whereClause.append(" and n.id = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -299,8 +280,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationFetcher whereOwner(User owner) {
-            whereClause.append(" and n.owner = ? ");
-            parameters.add(owner.getId());
+            parameters.add(owner);
+            whereClause.append(" and n.owner = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -311,8 +292,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationFetcher whereType(NType type) {
-            whereClause.append(" and n.type = ? ");
-            parameters.add(type.name());
+            parameters.add(type);
+            whereClause.append(" and n.type = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -323,8 +304,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationFetcher whereUser(User user) {
-            whereClause.append(" and n.user_id_param = ? ");
-            parameters.add(user.getId());
+            parameters.add(user);
+            whereClause.append(" and n.userParameter = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -335,8 +316,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationFetcher whereIdea(Idee idea) {
-            whereClause.append(" and n.idea_id_param = ? ");
-            parameters.add(idea.getId());
+            parameters.add(idea);
+            whereClause.append(" and n.ideaParameter = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -346,8 +327,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @param group The notification's group idea parameter.
          */
         public void whereGroupIdea(IdeaGroup group) {
-            whereClause.append(" and n.group_id_param = ? ");
-            parameters.add(group.getId());
+            parameters.add(group);
+            whereClause.append(" and n.groupParameter = ?").append(parameters.size()).append(" ");
         }
 
         /**
@@ -357,8 +338,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return The builder instance.
          */
         public NotificationFetcher whereRead(boolean isRead) {
-            whereClause.append(" and n.is_unread = ? ");
             parameters.add(isRead ? "N" : "Y");
+            whereClause.append(" and n.is_unread = ?").append(parameters.size()).append(" ");
             return this;
         }
 
@@ -366,55 +347,8 @@ public class NotificationsRepository extends AbstractRepository {
          * @return True if the filter selection returns at least one row.
          */
         public boolean hasAny() {
-            final String fullQuery = query + whereClause.toString();
-            return getDb().doesReturnRows(fullQuery, parameters.toArray());
-        }
-
-        /**
-         * @param row A single notification as an object array.
-         * @return The new memory notification from the value read from the database.
-         */
-        private static Notification buildIt(Object[] row) {
-            /* Expected columns
-                0 => n.ID,
-                1 => n.TYPE,
-                2 => u.ID as user_id,
-                3 => u.NAME,
-                4 => u.EMAIL,
-                5 => u.BIRTHDAY,
-                6 => u.AVATAR,
-                7 => n.CREATION_DATE,
-                8 => n.USER_ID_PARAM,
-                9 => n.IDEA_ID_PARAM,
-               10 => n.GROUP_ID_PARAM
-             */
-
-            // FIXME : faudra faire un left join pour ne pas faire 18 000 requêtes - quand on passera par Hibernate
-
-            // Récupération des paramètres depuis le ResultSet
-            String type = (String) row[1];
-            long id = Long.valueOf((Integer) row[0]);
-            User owner = new User((Integer) row[2], (String) row[3], (String) row[4], (Date) row[5], (String) row[6]);
-            Instant creation = Optional.ofNullable((Timestamp) row[7]).map(Timestamp::toInstant).orElse(null);
-
-            // Reading the parameters
-            User userParameter = Optional.ofNullable((Integer) row[8]).flatMap(UsersRepository::getUser).orElse(null);
-            final Integer ideaId = (Integer) row[9];
-            Idee ideaParameter = IdeesRepository.getIdea(ideaId)
-                                                .orElse(IdeesRepository.getDeletedIdea(ideaId).orElse(null));
-            final Integer groupId = (Integer) row[10];
-            IdeaGroup groupParameter = Optional.ofNullable(ideaParameter)
-                                               .flatMap(Idee::getGroup)
-                                               .orElse(GroupIdeaRepository.getGroupDetails(groupId).orElse(null));
-
-            return NotificationFactory.builder(NType.valueOf(type))
-                                      .withAnID(id)
-                                      .belongsTo(owner)
-                                      .withUserParameter(userParameter)
-                                      .withIdeaParameter(ideaParameter)
-                                      .withGroupParameter(groupParameter)
-                                      .withCreationTime(creation)
-                                      .build();
+            final String fullQuery = "select n from NOTIFICATIONS n " + whereClause.toString();
+            return HibernateUtil.doesReturnRows(fullQuery, parameters.toArray());
         }
 
         /**
@@ -422,17 +356,14 @@ public class NotificationsRepository extends AbstractRepository {
          */
         public List<Notification> fetch() {
             final String fullQuery = query + whereClause.toString();
-            logger.debug("[Perf] fetch. Query: {}. Parameters: {}", fullQuery, parameters);
-            List<Object[]> rows = HibernateUtil.doQueryFetch(s -> {
-                // FIXME faudra y faire une entité
-                final NativeQuery<Object[]> sqlQuery = s.createSQLQuery(fullQuery);
-                for (int i = 0; i < parameters.size(); i++) {
-                    sqlQuery.setParameter(i + 1, parameters.get(i));
-                }
+            logger.trace("[Perf] fetch. Query: {}. Parameters: {}", fullQuery, parameters);
+            List<Notification> notifications = HibernateUtil.doQueryFetch(s -> {
+                Query<Notification> sqlQuery = s.createQuery(fullQuery, Notification.class);
+                HibernateUtil.bindParameters(sqlQuery, parameters.toArray());
                 return sqlQuery.list();
             });
             logger.trace("[Perf] Execution completed! Building the result...");
-            return rows.stream().map(NotificationFetcher::buildIt).collect(Collectors.toList());
+            return notifications;
         }
     }
 
@@ -561,13 +492,9 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif The notification.
      */
     public static void setRead(Notification notif) {
-        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ?, {2} = now() where {3} = ? ",
-                                                   TABLE_NAME,
-                                                   NotificationsColumns.IS_UNREAD,
-                                                   NotificationsColumns.READ_ON,
-                                                   NotificationsColumns.ID),
-                              "N",
-                              notif.id);
+        notif.isUnread = "N";
+        notif.readOn = LocalDateTime.now();
+        HibernateUtil.update(notif);
     }
 
     /**
@@ -576,12 +503,8 @@ public class NotificationsRepository extends AbstractRepository {
      * @param notif The notification.
      */
     public static void setUnread(Notification notif) {
-        getDb().executeUpdate(MessageFormat.format("update {0} set {1} = ? where {2} = ? ",
-                                                   TABLE_NAME,
-                                                   NotificationsColumns.IS_UNREAD,
-                                                   NotificationsColumns.ID),
-                              "Y",
-                              notif.id);
+        notif.isUnread = "Y";
+        HibernateUtil.update(notif);
     }
 
     static {
