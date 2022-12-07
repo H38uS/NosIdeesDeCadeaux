@@ -137,7 +137,7 @@ public class NotificationsRepository {
          * @param id The notification identifier.
          * @return The builder instance.
          */
-        public NotificationTerminator whereId(Long id) {
+        public NotificationTerminator whereId(int id) {
             parameters.add(id);
             query.append(" and id = ?").append(parameters.size()).append(" ");
             return this;

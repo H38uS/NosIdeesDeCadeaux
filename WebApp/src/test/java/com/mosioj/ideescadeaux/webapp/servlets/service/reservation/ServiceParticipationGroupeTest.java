@@ -119,7 +119,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                             .whereType(NType.JOIN_GROUP)
                                             .whereIdea(idee)
                                             .fetch().size());
-        Long nId = NotificationsRepository.fetcher()
+        int nId = NotificationsRepository.fetcher()
                                           .whereOwner(moiAutre)
                                           .whereType(NType.JOIN_GROUP)
                                           .whereIdea(idee)

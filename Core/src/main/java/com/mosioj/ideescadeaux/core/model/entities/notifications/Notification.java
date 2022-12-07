@@ -18,7 +18,7 @@ public class Notification {
     /** The notification's unique identifier. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    public int id;
 
     /** The notification type, useful for database insertion. Cannot be null. */
     @Column(length = 50)
@@ -75,7 +75,7 @@ public class Notification {
     /**
      * @param id The notification's unique identifier.
      */
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -111,7 +111,7 @@ public class Notification {
     /**
      * @return The notification identifier. Can be null if not persisted yet.
      */
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
