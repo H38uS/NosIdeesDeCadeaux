@@ -267,7 +267,7 @@ public class NotificationsRepository {
          * @param id The notification identifier.
          * @return The builder instance.
          */
-        public NotificationFetcher whereId(Long id) {
+        public NotificationFetcher whereId(int id) {
             parameters.add(id);
             whereClause.append(" and n.id = ?").append(parameters.size()).append(" ");
             return this;
@@ -408,7 +408,7 @@ public class NotificationsRepository {
      * @param notificationId The notification id.
      * @return The notification corresponding to this id.
      */
-    public static Optional<Notification> getNotification(long notificationId) {
+    public static Optional<Notification> getNotification(int notificationId) {
         return fetcher().whereId(notificationId).fetch().stream().findFirst();
     }
 
