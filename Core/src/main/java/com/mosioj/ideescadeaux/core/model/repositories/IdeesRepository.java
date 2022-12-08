@@ -76,26 +76,42 @@ public class IdeesRepository {
      * @return All the ideas where this user has a booking, or belongs to a group or a sub part.
      */
     public static List<Idee> getIdeasWhereIDoParticipateIn(User thisOne) {
+
         long start = System.nanoTime();
+
         // On sélectionne uniquement les idées
+
         // - Qu'on a réservé
-        final String bookedIdeasQuery = getIdeaBaseSelect() +
-                                        " where i.bookedBy = :user";
-        List<Idee> booked = HibernateUtil.doQueryFetch(s -> s.createQuery(bookedIdeasQuery, Idee.class)
+        // - Dont on fait partie d'un groupe
+
+        final String query = """
+                 select i
+                   from IDEES i
+                   left join fetch i.owner
+                   left join fetch i.bookedBy
+                   left join fetch i.surpriseBy
+                   left join fetch i.createdBy
+                   left join fetch i.group g
+                   left join fetch g.ideaGroupContents contents
+                   left join fetch contents.user
+                   left join fetch i.categorie
+                   left join fetch i.priority p
+                  where coalesce(i.status, 'THERE') <> 'DELETED'
+                    and (
+                        i.bookedBy = :user or
+                        contents.user = :user
+                    )
+                """;
+
+        List<Idee> booked = HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
                                                              .setParameter("user", thisOne)
                                                              .list());
+
         // - Qu'on a sous-réservé
         List<Idee> subBooked = SousReservationRepository.getMySubBooking(thisOne);
-        // - Dont on fait partie d'un groupe
-        final List<Idee> groups = GroupIdeaRepository.getParticipationOf(thisOne).stream()
-                                                     .map(IdeesRepository::getIdeaFromGroup)
-                                                     .filter(Optional::isPresent)
-                                                     .map(Optional::get)
-                                                     .toList();
 
         // Combining the three
         booked.addAll(subBooked);
-        booked.addAll(groups);
 
         final List<Idee> ideas = booked.stream().filter(i -> !i.isDeleled()).collect(Collectors.toList());
         long end = System.nanoTime();
