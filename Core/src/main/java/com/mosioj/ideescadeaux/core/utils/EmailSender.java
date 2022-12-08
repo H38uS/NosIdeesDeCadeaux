@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -39,6 +40,10 @@ public class EmailSender {
      * @param htmlText The email body, html formated.
      */
     public static Future<?> sendEmail(String to, String subject, String htmlText) {
+        if (MY_PROPERTIES.getProperty("host").isBlank()) {
+            logger.info("No host info => do not send the email.");
+            return CompletableFuture.completedFuture("Nothing to do!");
+        }
         return executor.submit(() -> {
             try {
                 logger.info(MessageFormat.format("Sending email to {0}...", to));
