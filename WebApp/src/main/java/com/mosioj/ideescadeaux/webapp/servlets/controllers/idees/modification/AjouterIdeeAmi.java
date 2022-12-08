@@ -16,7 +16,6 @@ import java.sql.SQLException;
 @WebServlet("/protected/ajouter_idee_ami")
 public class AjouterIdeeAmi extends IdeesCadeauxGetServlet<NetworkAccess> {
 
-    private static final long serialVersionUID = -7053283110787519597L;
     public static final String USER_PARAMETER = "id";
     public static final String VIEW_PAGE_URL = "/protected/ajouter_idee_ami.jsp";
 

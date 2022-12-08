@@ -74,7 +74,7 @@
 		</div>
         <c:if test="${nb_of_reservations > 0}">
             <div class="alert alert-info mb-2">
-                Vous avez actuellement réservé ${nb_of_reservations} idée(s). <a href="protected/mes_reservations.jsp">Aller les voir</a> toutes.
+                Vous avez actuellement réservé ${nb_of_reservations} idée(s). <a href="protected/mes_reservations">Aller les voir</a> toutes.
             </div>
         </c:if>
 

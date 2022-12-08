@@ -285,7 +285,7 @@ public class Idee {
     /**
      * @return The builder.
      */
-    public static IdeaBuilder builder() { // FIXME à supprimer
+    public static IdeaBuilder builder() {
         return new IdeaBuilder();
     }
 

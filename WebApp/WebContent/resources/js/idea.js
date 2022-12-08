@@ -827,14 +827,14 @@ function getH2UserTitleTooltip(ideaOwner, isDeletedIdeas, connectedUser) {
             content.append(`
                 Aller voir <a href="protected/voir_liste?id=${ideaOwner.id}">ma liste</a>.<br/>
                 Aller voir <a href="protected/afficher_reseau?id=${ideaOwner.id}">mes amis</a>.<br/>
-                Aller voir <a href="protected/mes_reservations.jsp">mes réservations</a>.<br/>
+                Aller voir <a href="protected/mes_reservations">mes réservations</a>.<br/>
                 Je veux plus de <a href="protected/ajouter_idee">cadeaux</a>.<br/>
             `);
         } else {
             content.append(`
                 Aller voir <a href="protected/voir_liste?id=${ideaOwner.id}">ma liste</a>.<br/>
                 Aller voir <a href="protected/afficher_reseau?id=${ideaOwner.id}">mes amis</a>.<br/>
-                Aller voir <a href="protected/mes_reservations.jsp">mes réservations</a>.<br/>
+                Aller voir <a href="protected/mes_reservations">mes réservations</a>.<br/>
                 Je veux plus de <a href="protected/ajouter_idee">cadeaux</a>.<br/>
                 Aller voir mes <a href="protected/idee/historique">anciennes idées</a>.<br/>
             `);

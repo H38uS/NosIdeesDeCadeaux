@@ -51,7 +51,7 @@ function loadReservations(page = 1) {
         $("a.page-link").click(function(e) {
             e.preventDefault();
             var thePage = $(this).attr('href').substring(5);
-            ChangeUrl("protected/mes_reservations.jsp?page=" + thePage);
+            ChangeUrl("protected/mes_reservations?page=" + thePage);
             loadReservations(thePage);
         });
 
