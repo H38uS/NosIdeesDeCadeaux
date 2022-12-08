@@ -100,10 +100,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         if (request.getRemoteUser() != null) {
             try {
                 // Mise à jour du nombre de notifications
-                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisOne.id));
+                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisOne));
                 ParentRelationshipRepository.getChildren(thisOne.id).forEach(c -> {
                     try {
-                        count.add(NotificationsRepository.getUserNotificationCount(c.id));
+                        count.add(NotificationsRepository.getUserNotificationCount(c));
                     } catch (Exception e) {
                         logger.warn(MessageFormat.format(
                                 "Erreur lors de la récupération des notifications de l''enfant {0} ({1})",
@@ -171,10 +171,10 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
             try {
                 // Mise à jour du nombre de notifications
                 User thisUser = thisOne;
-                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisUser.id));
+                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisUser));
                 ParentRelationshipRepository.getChildren(thisUser.id).forEach(c -> {
                     try {
-                        count.add(NotificationsRepository.getUserNotificationCount(c.id));
+                        count.add(NotificationsRepository.getUserNotificationCount(c));
                     } catch (Exception e) {
                         logger.warn(MessageFormat.format(
                                 "Erreur lors de la récupération des notifications de l''enfant {0} ({1})",

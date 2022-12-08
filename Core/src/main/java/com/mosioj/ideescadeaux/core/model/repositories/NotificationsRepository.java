@@ -227,13 +227,13 @@ public class NotificationsRepository {
     // -------------------------------------------------------------------
 
     /**
-     * @param userId The user id.
+     * @param user The user.
      * @return The number of notification this user has.
      */
-    public static int getUserNotificationCount(int userId) {
+    public static int getUserNotificationCount(User user) {
         return HibernateUtil.doQuerySingle(s -> {
             final String queryText = "select count(*) from NOTIFICATIONS where owner = :owner";
-            return s.createQuery(queryText, Long.class).setParameter("owner", userId).uniqueResult().intValue();
+            return s.createQuery(queryText, Long.class).setParameter("owner", user).uniqueResult().intValue();
         });
     }
 
