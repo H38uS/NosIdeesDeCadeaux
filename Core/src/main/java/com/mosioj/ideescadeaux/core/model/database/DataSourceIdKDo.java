@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.core.model.database;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;

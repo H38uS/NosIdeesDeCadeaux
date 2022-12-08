@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;

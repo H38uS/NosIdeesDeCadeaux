@@ -2,9 +2,9 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import org.junit.Test;
 
 import java.util.Optional;

@@ -1,12 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import com.mosioj.ideescadeaux.core.model.entities.Comment;
+import com.mosioj.ideescadeaux.core.model.entities.text.Comment;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.entities;
 
 import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
 

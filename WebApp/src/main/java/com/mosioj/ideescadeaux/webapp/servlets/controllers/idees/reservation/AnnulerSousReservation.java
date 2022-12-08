@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxPostServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
@@ -19,7 +19,6 @@ import java.text.MessageFormat;
 @WebServlet("/protected/annuler_sous_reservation")
 public class AnnulerSousReservation extends IdeesCadeauxPostServlet<IdeaInteraction> {
 
-    private static final long serialVersionUID = 4998191671705040181L;
     private static final Logger logger = LogManager.getLogger(AnnulerSousReservation.class);
     private static final String IDEA_ID_PARAM = "idee";
 

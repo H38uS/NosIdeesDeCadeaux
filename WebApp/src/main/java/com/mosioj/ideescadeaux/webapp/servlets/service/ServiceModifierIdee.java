@@ -1,13 +1,12 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
-import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.IdeaLogic;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
@@ -16,7 +15,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,8 +82,7 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                     logger.debug("Updating image from {} to {}.", old, image);
                 }
 
-                String text = Escaper.escapeIdeaText(StringEscapeUtils.unescapeHtml4(parameters.get("text")));
-                idea.text = Escaper.transformSmileyToCode(text);
+                idea.setText(parameters.get("text"));
                 idea.categorie = CategoriesRepository.getCategory(parameters.get("type")).orElse(null);
                 idea.priority = PrioritiesRepository.getPriority(Integer.parseInt(parameters.get("priority")))
                                                     .orElse(null);

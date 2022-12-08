@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.core.model;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import org.junit.Assert;
 import org.junit.Test;
 

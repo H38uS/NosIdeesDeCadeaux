@@ -1,11 +1,11 @@
-package com.mosioj.ideescadeaux.core.model.entities;
+package com.mosioj.ideescadeaux.core.model.entities.text;
 
 import com.google.gson.annotations.Expose;
+import com.mosioj.ideescadeaux.core.model.entities.*;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.text.StringEscapeUtils;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.text.MessageFormat;
@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Entity(name = "IDEES")
-public class Idee {
+public class Idee extends EntityWithText {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +27,6 @@ public class Idee {
     @JoinColumn(name = "owner")
     @Expose
     public User owner;
-
-    /** Le text tel que rentré par l'utilisateur. N'est pas échappé. */
-    @Column(name = "idee")
-    @Type(type = "text")
-    public String text;
 
     @ManyToOne
     @JoinColumn(name = "reserve")
@@ -88,11 +83,6 @@ public class Idee {
     // +++++++++++++++++++++++++++
     // ===========================
 
-    /** Le text échappé de l'utilisateur, converti en markdown. */
-    @Transient
-    @Expose
-    private String htmlText;
-
     /** La date de modification dans un format lisible. */
     @Transient
     @Expose
@@ -115,8 +105,6 @@ public class Idee {
 
     @PostLoad
     public void postLoad() {
-        this.text = Escaper.transformCodeToSmiley(text);
-        this.htmlText = Escaper.interpreteMarkDown(text);
         this.modificationDate = MyDateFormatViewer.formatOrElse(lastModified, "-- on ne sait pas --");
         this.bookingInformation = BookingInformation.fromAllPossibilities(bookedBy, group, isSubBooked, bookedOn);
         this.hasBeenDeleted = "DELETED".equals(status);
@@ -152,12 +140,12 @@ public class Idee {
     /**
      * @return True if this idea has been deleted.
      */
-    public boolean isDeleled() {
+    public boolean isDeleted() {
         return hasBeenDeleted;
     }
 
     /**
-     * @return The booking type - or NONE is no booking so far.
+     * @return The booking type - or NONE if no booking so far.
      */
     public BookingInformation.BookingType getBookingType() {
         return getBookingInformation().map(BookingInformation::getBookingType)
@@ -200,13 +188,6 @@ public class Idee {
     }
 
     /**
-     * @return The text displayed in textarea, with \n.
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
      * @param maxLength Maximum number of character for the summary.
      * @return The idea text, with a maximum of maxLength characters.
      */
@@ -240,13 +221,6 @@ public class Idee {
         }
 
         return initial;
-    }
-
-    /**
-     * @return The idea text stored in DB, that will be presented to the browser.
-     */
-    public String getHtml() {
-        return htmlText;
     }
 
     public String getImage() {
@@ -404,7 +378,7 @@ public class Idee {
             Idee idee = new Idee();
             idee.id = id;
             idee.owner = owner;
-            idee.text = text;
+            idee.setText(text);
             idee.categorie = categorie;
             idee.image = image;
             idee.priority = priority;

@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;

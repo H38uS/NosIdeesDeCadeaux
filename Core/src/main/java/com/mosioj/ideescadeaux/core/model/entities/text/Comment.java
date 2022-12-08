@@ -1,5 +1,6 @@
-package com.mosioj.ideescadeaux.core.model.entities;
+package com.mosioj.ideescadeaux.core.model.entities.text;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 

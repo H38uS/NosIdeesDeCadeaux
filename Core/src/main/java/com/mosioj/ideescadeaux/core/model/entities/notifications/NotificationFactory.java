@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.core.model.entities.notifications;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 
 public class NotificationFactory {
 

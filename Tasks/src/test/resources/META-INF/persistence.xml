@@ -13,7 +13,7 @@
         <class>com.mosioj.ideescadeaux.core.model.entities.Priority</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.IdeaGroup</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.IdeaGroupContent</class>
-        <class>com.mosioj.ideescadeaux.core.model.entities.Idee</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.text.Idee</class>
         <class>com.mosioj.ideescadeaux.core.model.entities.notifications.Notification</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

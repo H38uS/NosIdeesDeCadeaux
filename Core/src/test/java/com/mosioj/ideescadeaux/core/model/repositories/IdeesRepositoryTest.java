@@ -2,8 +2,8 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.Categorie;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import org.junit.Test;
 
 import java.sql.SQLException;

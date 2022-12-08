@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.core.model.notifications;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import org.junit.Test;
 
 import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_TO_OWNER;

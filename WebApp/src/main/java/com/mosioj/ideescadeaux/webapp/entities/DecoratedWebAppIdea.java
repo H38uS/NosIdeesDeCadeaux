@@ -1,7 +1,11 @@
 package com.mosioj.ideescadeaux.webapp.entities;
 
 import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.core.model.entities.*;
+import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
+import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
+import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;

@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.CanGetFriendsOrOwnNotSurpriseIdea;

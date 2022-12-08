@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import com.mosioj.ideescadeaux.core.model.entities.Comment;
+import com.mosioj.ideescadeaux.core.model.entities.text.Comment;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.CommentSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;

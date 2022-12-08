@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
@@ -19,7 +19,6 @@ import java.util.List;
 @WebServlet("/protected/detail_sous_reservation")
 public class DetailSousReservation extends IdeesCadeauxGetServlet<IdeaInteraction> {
 
-    private static final long serialVersionUID = -2188278918134412556L;
     private static final Logger logger = LogManager.getLogger(DetailSousReservation.class);
 
     private static final String IDEA_ID_PARAM = "idee";

@@ -1,9 +1,9 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -108,12 +108,13 @@ public class IdeesRepository {
                                                              .list());
 
         // - Qu'on a sous-réservé
+        // FIXME continuer à tout mettre dès qu'on a mis ça dans une entité hibernate
         List<Idee> subBooked = SousReservationRepository.getMySubBooking(thisOne);
 
         // Combining the three
         booked.addAll(subBooked);
 
-        final List<Idee> ideas = booked.stream().filter(i -> !i.isDeleled()).collect(Collectors.toList());
+        final List<Idee> ideas = booked.stream().filter(i -> !i.isDeleted()).collect(Collectors.toList());
         long end = System.nanoTime();
         logger.debug(MessageFormat.format("Query executed in {0} ms for user {1}", (end - start) / 1000000L, thisOne));
 

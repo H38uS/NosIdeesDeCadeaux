@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.entities;
 
 import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class OwnerIdeas {
         this.isDeletedIdeas = ideas.stream()
                                    .findAny()
                                    .map(DecoratedWebAppIdea::getIdee)
-                                   .map(Idee::isDeleled)
+                                   .map(Idee::isDeleted)
                                    .orElse(false);
     }
 

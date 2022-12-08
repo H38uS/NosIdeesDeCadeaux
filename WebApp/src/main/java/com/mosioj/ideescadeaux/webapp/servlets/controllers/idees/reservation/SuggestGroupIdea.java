@@ -1,7 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.BookingGroupInteraction;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;

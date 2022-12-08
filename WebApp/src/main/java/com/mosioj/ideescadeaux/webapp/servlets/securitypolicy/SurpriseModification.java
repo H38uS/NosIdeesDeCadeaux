@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
@@ -21,7 +21,7 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
      */
     private final String ideaParameter;
 
-    protected Idee idea;
+    private Idee idea;
 
     /**
      * @param ideaParameter Defines the string used in HttpServletRequest to retrieve the idea id.
@@ -34,7 +34,7 @@ public final class SurpriseModification extends SecurityPolicy implements IdeaSe
      * @param request The http request.
      * @return True if the current user can interact with the idea.
      */
-    protected boolean canInteractWithIdea(HttpServletRequest request) {
+    private boolean canInteractWithIdea(HttpServletRequest request) {
 
         idea = ParametersUtils.readInt(request, ideaParameter)
                               .flatMap(IdeesRepository::getIdea)

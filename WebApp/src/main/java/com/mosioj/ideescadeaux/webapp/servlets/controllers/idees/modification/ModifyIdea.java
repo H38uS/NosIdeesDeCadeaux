@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees.modification;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.CategoriesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
@@ -16,7 +16,6 @@ import java.sql.SQLException;
 @WebServlet("/protected/modifier_idee")
 public class ModifyIdea extends IdeesCadeauxGetServlet<IdeaModification> {
 
-    private static final long serialVersionUID = -1774633803227715931L;
     public static final String IDEE_ID_PARAM = "id";
     public static final String VIEW_PAGE_URL = "/protected/modify_idea.jsp";
 

@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
-import com.mosioj.ideescadeaux.core.model.entities.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServicePost;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.IdeaInteraction;
@@ -18,7 +18,6 @@ import java.text.MessageFormat;
 public class ServiceDereserver extends ServicePost<IdeaInteraction> {
 
     private static final Logger logger = LogManager.getLogger(ServiceDereserver.class);
-    private static final long serialVersionUID = -8244829899125982644L;
     public static final String IDEA_ID_PARAM = "idee";
 
     /**
