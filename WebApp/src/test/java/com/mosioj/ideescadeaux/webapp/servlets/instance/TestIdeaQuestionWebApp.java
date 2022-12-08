@@ -30,7 +30,7 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
                                                     .withOwner(firefox)
                                                     .withText("avec questions")
                                                     .withPriority(p));
-        QuestionsRepository.addComment(_FRIEND_ID_, idea.getId(), "mon pti com'");
+        QuestionsRepository.addQuestion(friendOfFirefox, idea, "mon pti com'");
 
         Notification addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idea).sendItTo(firefox);
         Notification newQuestion = NEW_QUESTION_TO_OWNER.with(friendOfFirefox, idea).sendItTo(firefox);
@@ -53,13 +53,13 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
                                                     .withOwner(friendOfFirefox)
                                                     .withText("sans questions")
                                                     .withPriority(p));
-        assertEquals(0, QuestionsRepository.getCommentsOn(idee.getId()).size());
+        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
 
         bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idee.getId());
         bindRequestParam("text", "Voilou voilou");
         doTestPost();
 
-        assertEquals(1, QuestionsRepository.getCommentsOn(idee.getId()).size());
+        assertEquals(1, QuestionsRepository.getQuestionsOn(idee).size());
         IdeesRepository.remove(idee);
     }
 
@@ -73,14 +73,14 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
                                                     .withPriority(p)
                                                     .withSurpriseOwner(firefox)
                                                     .withCreatedBy(firefox));
-        assertEquals(0, QuestionsRepository.getCommentsOn(idee.getId()).size());
+        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
 
         bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idee.getId());
         bindRequestParam("text", "Voilou voilou");
         doTestPost();
 
         assertEquals(0,
-                     QuestionsRepository.getCommentsOn(idee.getId())
+                     QuestionsRepository.getQuestionsOn(idee)
                                         .size()); // Impossible de poser une question sur une surprise !
         IdeesRepository.remove(idee);
     }

@@ -1,22 +1,22 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
-import com.mosioj.ideescadeaux.core.model.entities.text.Comment;
+import com.mosioj.ideescadeaux.core.model.entities.text.Question;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
-import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.CommentSecurityChecker;
+import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.QuestionSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class QuestionModification extends SecurityPolicy implements CommentSecurityChecker {
+public class QuestionModification extends SecurityPolicy implements QuestionSecurityChecker {
 
     /**
      * Defines the string used in HttpServletRequest to retrieve the comment id.
      */
     private final String questionParameter;
 
-    private Comment comment;
+    private Question question;
 
     /**
      * @param questionParameter Defines the string used in HttpServletRequest to retrieve the comment id.
@@ -31,15 +31,15 @@ public class QuestionModification extends SecurityPolicy implements CommentSecur
      */
     private boolean canModifyQuestion(HttpServletRequest request) {
 
-        comment = ParametersUtils.readInt(request, questionParameter)
-                                 .flatMap(QuestionsRepository::getComment)
-                                 .orElse(null);
-        if (comment == null) {
+        question = ParametersUtils.readInt(request, questionParameter)
+                                  .flatMap(QuestionsRepository::getQuestion)
+                                  .orElse(null);
+        if (question == null) {
             lastReason = "Aucun commentaire trouvé en paramètre.";
             return false;
         }
 
-        boolean res = connectedUser.equals(comment.getWrittenBy());
+        boolean res = connectedUser.equals(question.getWrittenBy());
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos commentaires.";
         }
@@ -59,12 +59,12 @@ public class QuestionModification extends SecurityPolicy implements CommentSecur
     }
 
     @Override
-    public Comment getComment() {
-        return comment;
+    public Question getQuestion() {
+        return question;
     }
 
     @Override
     public void reset() {
-        comment = null;
+        question = null;
     }
 }

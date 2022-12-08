@@ -1,6 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.idees;
 
-import com.mosioj.ideescadeaux.core.model.entities.text.Comment;
+import com.mosioj.ideescadeaux.core.model.entities.text.Question;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.QuestionModification;
@@ -23,13 +23,13 @@ public class SupprimerQuestions extends IdeesCadeauxGetServlet<QuestionModificat
 
     @Override
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-        Comment comment = policy.getComment();
-        QuestionsRepository.delete(comment.getId());
+        Question question = policy.getQuestion();
+        QuestionsRepository.delete(question);
         RootingsUtils.rootToPage(IdeeQuestions.WEB_SERVLET +
                                  "?" +
                                  IdeeQuestions.IDEA_ID_PARAM +
                                  "=" +
-                                 comment.getIdea(), req, resp);
+                                 question.getIdea(), req, resp);
     }
 
 }

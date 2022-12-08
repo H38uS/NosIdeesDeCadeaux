@@ -57,7 +57,7 @@ public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQu
         Idee idea = policy.getIdea();
         request.setAttribute("idee", idea);
         request.setAttribute("isOwner", idea.owner == thisOne);
-        request.setAttribute("comments", QuestionsRepository.getCommentsOn(idea.getId()));
+        request.setAttribute("comments", QuestionsRepository.getQuestionsOn(idea));
         dropNotificationOnView(thisOne, idea);
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }
@@ -70,8 +70,7 @@ public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQu
         logger.info(MessageFormat.format("Ajout d''une question sur l''idée {0}...", idea.getId()));
         String text = ParametersUtils.readAndEscape(request, "text");
 
-        User current = thisOne;
-        QuestionsRepository.addComment(current.id, idea.getId(), text);
+        QuestionsRepository.addQuestion(thisOne, idea, text);
 
         Set<User> toBeNotified = new HashSet<>();
 
@@ -79,18 +78,18 @@ public class IdeeQuestions extends IdeesCadeauxGetAndPostServlet<CanAskReplyToQu
         toBeNotified.addAll(idea.getBookers());
 
         // Notifying at least all people in the thread
-        toBeNotified.addAll(QuestionsRepository.getUserListOnComment(idea.getId()));
+        toBeNotified.addAll(QuestionsRepository.getUserListOnQuestion(idea));
 
         // Faut que le owner soit au courant des questions :)
         toBeNotified.add(idea.owner);
 
         // Removing current user, and notifying others
-        toBeNotified.remove(current);
+        toBeNotified.remove(thisOne);
         logger.debug("Personnes à prévenir : {}.", toBeNotified);
         toBeNotified.stream()
                     .map(u -> idea.owner.equals(u) ?
-                            NEW_QUESTION_TO_OWNER.with(current, idea).setOwner(u) :
-                            NEW_QUESTION_ON_IDEA.with(current, idea).setOwner(u))
+                            NEW_QUESTION_TO_OWNER.with(thisOne, idea).setOwner(u) :
+                            NEW_QUESTION_ON_IDEA.with(thisOne, idea).setOwner(u))
                     .forEach(Notification::send);
 
         dropNotificationOnView(thisOne, idea);

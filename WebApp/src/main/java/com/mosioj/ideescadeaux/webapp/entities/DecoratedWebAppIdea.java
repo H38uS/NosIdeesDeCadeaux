@@ -11,16 +11,9 @@ import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsReposi
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.mobile.device.Device;
 
-import java.sql.SQLException;
-
 public class DecoratedWebAppIdea {
-
-    /** Class logger */
-    private static final Logger logger = LogManager.getLogger(DecoratedWebAppIdea.class);
 
     @Expose
     private final Idee idee;
@@ -47,17 +40,10 @@ public class DecoratedWebAppIdea {
     public DecoratedWebAppIdea(Idee idee, User connectedUser, Device device) {
 
         final boolean isOwnerByConnectedUser = connectedUser.equals(idee.getOwner());
-        boolean tempComment = computeHasComment(isOwnerByConnectedUser, idee);
-        boolean tempQuestion = false;
-        try {
-            tempQuestion = QuestionsRepository.getNbQuestions(idee.getId()) > 0;
-        } catch (SQLException e) {
-            logger.error("Une erreur est survenue...", e);
-        }
 
         this.idee = idee;
-        hasComment = tempComment;
-        hasQuestion = tempQuestion;
+        hasComment = computeHasComment(isOwnerByConnectedUser, idee);
+        hasQuestion = QuestionsRepository.getNbQuestions(idee) > 0;
         hasAskedIfUpToDate = IsUpToDateQuestionsRepository.associationExists(idee, connectedUser);
 
         // calcul de la display class

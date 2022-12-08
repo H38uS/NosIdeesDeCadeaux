@@ -217,7 +217,7 @@ public class UsersRepository {
         ParentRelationshipRepository.deleteAllRelationForUser(userId);
 
         // Suppresion des questions
-        QuestionsRepository.deleteAll(userId);
+        QuestionsRepository.deleteAll(user);
 
         // Suppression des demandes de modifications de mdp
         UserChangePwdRequestRepository.deleteAssociation(userId);
