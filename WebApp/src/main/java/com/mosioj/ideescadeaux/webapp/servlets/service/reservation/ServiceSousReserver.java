@@ -28,7 +28,7 @@ public class ServiceSousReserver extends ServicePost<IdeaInteraction> {
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         Idee idea = policy.getIdea();
-        String comment = ParametersUtils.readAndEscape(request, "comment");
+        String comment = ParametersUtils.readAndEscape(request, "comment", true);
 
         if (StringUtils.isBlank(comment)) {
             final String message = "Le commentaire ne peut pas être vide !";

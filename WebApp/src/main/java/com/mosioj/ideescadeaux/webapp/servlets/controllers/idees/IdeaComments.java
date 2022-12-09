@@ -59,7 +59,7 @@ public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction>
                              HttpServletResponse response) throws ServletException, SQLException {
 
         // TODO faire un service
-        String text = ParametersUtils.readAndEscape(request, "text");
+        String text = ParametersUtils.readAndEscape(request, "text", true);
 
         User current = thisOne;
         Idee idea = policy.getIdea();
