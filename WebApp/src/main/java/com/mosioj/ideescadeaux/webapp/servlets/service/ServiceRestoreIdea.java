@@ -46,7 +46,7 @@ public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         // Parameters
-        boolean restoreBooking = "true".equalsIgnoreCase(ParametersUtils.readAndEscape(request, RESTORE_BOOKING));
+        boolean restoreBooking = "true".equalsIgnoreCase(ParametersUtils.getPOSTParameterAsString(request, RESTORE_BOOKING));
         Idee idea = policy.getIdea();
 
         // On récupère les personnes qui ont réservé avant la restoration (peut les supprimer)

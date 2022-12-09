@@ -167,7 +167,7 @@
         <c:forEach var="notif" items="${notif_types}">
             <div class="border border-info bg-light rounded mb-2 p-2">
                 <div class="row align-items-center py-2">
-                    <form class="form-inline w-100" action="protected/update_notification_parameter" method="post">
+                    <div class="form-inline w-100">
                         <div class="col-12 col-md-5 col-lg-7">
                             <label class="justify-content-start" for="${notif.parameterName}_value">${notif.parameterDescription}</label>
                         </div>
@@ -191,7 +191,7 @@
                         <div class="center col-12 mt-2 col-sm-5 mt-sm-0 col-md-auto">
                             <button class="btn btn-primary notification_form_submit" type="submit">Sauvegarder</button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </c:forEach>

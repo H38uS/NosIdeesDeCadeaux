@@ -37,7 +37,7 @@ public class ServiceAfficherListes extends ServiceGet<AllAccessToPostAndGet> {
 
         // Getting parameters
         int firstRow = PAGES_HELPER.getFirstRow(request);
-        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
+        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL, false);
 
         // Getting the user list
         List<User> users = UserRelationsRepository.getAllUsersInRelation(thisOne,
@@ -66,7 +66,7 @@ public class ServiceAfficherListes extends ServiceGet<AllAccessToPostAndGet> {
      * @return The total number of records that will be produced when fetching the entire list.
      */
     protected int getTotalNumberOfRecords(HttpServletRequest request) {
-        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
+        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL, false);
         int size = UserRelationsRepository.getAllUsersInRelationCount(thisOne, nameOrEmail);
         if (thisOne.matchNameOrEmail(nameOrEmail)) {
             return size + 1;

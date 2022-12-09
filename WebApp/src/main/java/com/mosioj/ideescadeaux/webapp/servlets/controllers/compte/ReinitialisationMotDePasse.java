@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutionException;
 @WebServlet("/public/reinitialiser_mot_de_passe")
 public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = 5998641192324526001L;
     public static final String VIEW_PAGE_URL = "/public/reinitialiser_mot_de_passe.jsp";
     public static final String SUCCES_PAGE_URL = "/public/reinitialiser_mot_de_passe_succes.jsp";
 
@@ -48,8 +47,8 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<Al
 
         CompteInteractions helper = new CompteInteractions();
 
-        String email1 = ParametersUtils.readAndEscape(request, "email1").trim();
-        String email2 = ParametersUtils.readAndEscape(request, "email2").trim();
+        String email1 = ParametersUtils.readAndEscape(request, "email1", true).trim();
+        String email2 = ParametersUtils.readAndEscape(request, "email2", true).trim();
         logger.info(MessageFormat.format("Demande de réinitialisation avec les emails suivants: {0}, {1}.",
                                          email1,
                                          email2));
@@ -70,7 +69,7 @@ public class ReinitialisationMotDePasse extends IdeesCadeauxGetAndPostServlet<Al
         }
 
         Optional<User> userIdOpt = UsersRepository.getUser(email1);
-        if (!userIdOpt.isPresent()) {
+        if (userIdOpt.isEmpty()) {
             // L'email n'existe pas. On affiche la page de base pour éviter plus d'info aux pirates.
             ideesKDoGET(request, response);
             return;

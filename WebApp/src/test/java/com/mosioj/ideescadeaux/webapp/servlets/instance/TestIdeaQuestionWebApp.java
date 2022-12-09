@@ -14,7 +14,6 @@ import java.sql.SQLException;
 
 import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.IDEA_ADDED_BY_FRIEND;
 import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_TO_OWNER;
-import static org.junit.Assert.assertEquals;
 
 public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
 
@@ -37,52 +36,12 @@ public class TestIdeaQuestionWebApp extends AbstractTestServletWebApp {
         assertNotifDoesExists(addByFriend);
         assertNotifDoesExists(newQuestion);
 
-        bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idea.getId());
+        bindGetRequestParam(IdeeQuestions.IDEA_ID_PARAM, idea.getId());
         doTestGet();
 
         assertNotifDoesNotExists(addByFriend);
         assertNotifDoesNotExists(newQuestion);
         IdeesRepository.trueRemove(idea);
-    }
-
-    @Test
-    public void testAjouterQuestion() throws SQLException {
-
-        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
-        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
-                                                    .withOwner(friendOfFirefox)
-                                                    .withText("sans questions")
-                                                    .withPriority(p));
-        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
-
-        bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idee.getId());
-        bindRequestParam("text", "Voilou voilou");
-        doTestPost();
-
-        assertEquals(1, QuestionsRepository.getQuestionsOn(idee).size());
-        IdeesRepository.remove(idee);
-    }
-
-    @Test
-    public void testAjouterQuestionSurUneSurprise() throws SQLException {
-
-        Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
-        Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
-                                                    .withOwner(friendOfFirefox)
-                                                    .withText("sans questions")
-                                                    .withPriority(p)
-                                                    .withSurpriseOwner(firefox)
-                                                    .withCreatedBy(firefox));
-        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
-
-        bindRequestParam(IdeeQuestions.IDEA_ID_PARAM, idee.getId());
-        bindRequestParam("text", "Voilou voilou");
-        doTestPost();
-
-        assertEquals(0,
-                     QuestionsRepository.getQuestionsOn(idee)
-                                        .size()); // Impossible de poser une question sur une surprise !
-        IdeesRepository.remove(idee);
     }
 
 }

@@ -44,8 +44,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
         Notification groupSuggestion = GROUP_IDEA_SUGGESTION.with(firefox, idee, group).sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
 
-        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
-        bindRequestParam("amount", 32 + "");
+        bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindPostRequestParam("amount", 32 + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -75,8 +75,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // -----------------------
         // Participation au groupe
-        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
-        bindRequestParam("amount", String.valueOf(32));
+        bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindPostRequestParam("amount", String.valueOf(32));
         logger.info("[Perf] OK! Envoie de la requête post...");
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
@@ -97,7 +97,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // Annulation de la participation
         ServiceAnnulationGroupeTest annulationService = new ServiceAnnulationGroupeTest();
-        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
+        bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         resp = annulationService.doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
@@ -109,8 +109,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
 
         // -----------------------
         // Finalement - re - Participation au groupe
-        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
-        bindRequestParam("amount", String.valueOf(32));
+        bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindPostRequestParam("amount", String.valueOf(32));
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
@@ -126,8 +126,8 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                           .fetch()
                                           .get(0).id;
 
-        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
-        bindRequestParam("amount", 35 + "");
+        bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindPostRequestParam("amount", 35 + "");
         resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,
@@ -145,7 +145,7 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                             .get(0).id);
 
         // Finalement - re - Annulation de la participation
-        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
+        bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         resp = annulationService.doTestServicePost();
         assertTrue(resp.isOK());
         assertEquals(1,

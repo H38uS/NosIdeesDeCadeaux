@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.service.response.NameAnswer;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +18,7 @@ public class ServiceNameTest extends AbstractTestServletWebApp {
     @Test
     public void testShouldReturnNames() {
 
-        bindRequestParam(ServiceName.NAME_OR_EMAIL, "jord");
+        bindGetRequestParam(ServiceName.NAME_OR_EMAIL, "jord");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -35,7 +36,7 @@ public class ServiceNameTest extends AbstractTestServletWebApp {
     @Test
     public void testSingleSizeMatchesAll() {
 
-        bindRequestParam(ServiceName.NAME_OR_EMAIL, "z");
+        bindGetRequestParam(ServiceName.NAME_OR_EMAIL, "z");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -45,7 +46,7 @@ public class ServiceNameTest extends AbstractTestServletWebApp {
     @Test
     public void testDoubleSizeMatchesAll() {
 
-        bindRequestParam(ServiceName.NAME_OR_EMAIL, "zz");
+        bindGetRequestParam(ServiceName.NAME_OR_EMAIL, "zz");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -55,7 +56,7 @@ public class ServiceNameTest extends AbstractTestServletWebApp {
     @Test
     public void testPriority() {
 
-        bindRequestParam(ServiceName.NAME_OR_EMAIL, "zmail.");
+        bindGetRequestParam(ServiceName.NAME_OR_EMAIL, "zmail.");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -71,7 +72,7 @@ public class ServiceNameTest extends AbstractTestServletWebApp {
     @Test
     public void testAucunResultat() {
 
-        bindRequestParam(ServiceName.NAME_OR_EMAIL, "totoàlaplage");
+        bindGetRequestParam(ServiceName.NAME_OR_EMAIL, "totoàlaplage");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
@@ -81,11 +82,23 @@ public class ServiceNameTest extends AbstractTestServletWebApp {
     @Test
     public void testPasResultatCarPasMemeReseau() {
 
-        bindRequestParam(ServiceName.NAME_OR_EMAIL, "pouet");
+        bindGetRequestParam(ServiceName.NAME_OR_EMAIL, "pouet");
 
         NameAnswers resp = doTestServiceGet(NameAnswers.class);
 
         assertEquals(0, resp.size()); // max size
+    }
+
+    @Test
+    public void testSpecialCharacter() {
+        // Given
+        bindGetRequestParam(ServiceName.NAME_OR_EMAIL, "Djoeîéèôe");
+
+        // When
+        NameAnswers resp = doTestServiceGet(NameAnswers.class);
+
+        // Then
+        assertEquals(List.of(new NameAnswer(jo3)), resp);
     }
 
     public static class NameAnswers extends ArrayList<NameAnswer> {

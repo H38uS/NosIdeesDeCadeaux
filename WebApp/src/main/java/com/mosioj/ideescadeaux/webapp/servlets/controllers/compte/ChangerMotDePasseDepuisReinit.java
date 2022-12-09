@@ -19,7 +19,6 @@ import java.util.List;
 @WebServlet("/public/changer_mot_de_passe_depuis_reinit")
 public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet<PasswordChangeRequest> {
 
-    private static final long serialVersionUID = 5998641192324526001L;
     public static final String VIEW_PAGE_URL = "/public/changer_mot_de_passe_depuis_reinit.jsp";
     public static final String tokenParameter = "tokenId";
     public static final String userIdParameter = "userIdParam";
@@ -31,8 +30,8 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet
 
     @Override
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SQLException {
-        req.setAttribute(tokenParameter, req.getParameter(tokenParameter));
-        req.setAttribute(userIdParameter, req.getParameter(userIdParameter));
+        req.setAttribute(tokenParameter, ParametersUtils.getGETParameterAsString(req, tokenParameter));
+        req.setAttribute(userIdParameter, ParametersUtils.getGETParameterAsString(req, userIdParameter));
         RootingsUtils.rootToPage(VIEW_PAGE_URL, req, resp);
     }
 
@@ -45,8 +44,8 @@ public class ChangerMotDePasseDepuisReinit extends IdeesCadeauxGetAndPostServlet
         request.setAttribute(tokenParameter, policy.getTokenId());
         request.setAttribute(userIdParameter, user.id);
 
-        String pwd1 = ParametersUtils.readAndEscape(request, "pwd1").trim();
-        String pwd2 = ParametersUtils.readAndEscape(request, "pwd2").trim();
+        String pwd1 = ParametersUtils.getPOSTParameterAsString(request, "pwd1").trim();
+        String pwd2 = ParametersUtils.getPOSTParameterAsString(request, "pwd2").trim();
 
         List<String> pwdErrors1 = helper.getValidatorPwd(pwd1).getErrors();
         List<String> pwdErrors2 = helper.getValidatorPwd(pwd2).getErrors();

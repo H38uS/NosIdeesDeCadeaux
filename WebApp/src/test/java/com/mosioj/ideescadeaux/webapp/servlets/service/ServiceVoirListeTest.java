@@ -24,7 +24,7 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
     public void shouldBePossibleToViewMyIdeas() {
 
         setConnectedUserTo(WebAppTemplateTest.moiAutre);
-        bindRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
+        bindGetRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
 
         // Act
         VoirListeResponse answer = doTestServiceGet(VoirListeResponse.class);
@@ -39,7 +39,7 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
     public void shouldNotBePossibleToViewMySurprises() {
 
         setConnectedUserTo(WebAppTemplateTest.moiAutre);
-        bindRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
+        bindGetRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
 
         // Act
         VoirListeResponse answer = doTestServiceGet(VoirListeResponse.class);
@@ -62,7 +62,7 @@ public class ServiceVoirListeTest extends AbstractTestServletWebApp {
     public void shouldBePossibleToSeeFriendIdeasIncludingSurprises() {
 
         setConnectedUserTo(WebAppTemplateTest.friendOfFirefox);
-        bindRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
+        bindGetRequestParam(ServiceVoirListe.USER_ID_PARAM, moiAutre.id + "");
 
         // Act
         VoirListeResponse answer = doTestServiceGet(VoirListeResponse.class);

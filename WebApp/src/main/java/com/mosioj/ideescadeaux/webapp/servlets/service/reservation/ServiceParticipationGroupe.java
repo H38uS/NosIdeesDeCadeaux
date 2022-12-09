@@ -42,7 +42,7 @@ public class ServiceParticipationGroupe extends ServicePost<BookingGroupInteract
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         IdeaGroup group = policy.getGroup();
-        String amount = ParametersUtils.readIt(request, "amount").replaceAll(",", ".");
+        String amount = ParametersUtils.getPOSTParameterAsString(request, "amount").replaceAll(",", ".");
 
         List<String> errorsAmount = ValidatorBuilder.getMascValidator(amount, "montant")
                                                     .checkEmpty()

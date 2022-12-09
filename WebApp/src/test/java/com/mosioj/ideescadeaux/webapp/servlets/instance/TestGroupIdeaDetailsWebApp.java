@@ -35,7 +35,7 @@ public class TestGroupIdeaDetailsWebApp extends AbstractTestServletWebApp {
         Notification groupSuggestion = notifGroupSuggestion.sendItTo(firefox);
         assertNotifDoesExists(groupSuggestion);
 
-        bindRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
+        bindGetRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());
         doTestGet();
         assertNotifDoesNotExists(groupSuggestion);
 

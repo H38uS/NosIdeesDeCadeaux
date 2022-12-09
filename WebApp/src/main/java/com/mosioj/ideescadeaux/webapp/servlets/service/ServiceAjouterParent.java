@@ -20,7 +20,6 @@ import java.util.List;
 @WebServlet("/protected/service/ajouter_parent")
 public class ServiceAjouterParent extends ServicePost<AllAccessToPostAndGet> {
 
-    private static final long serialVersionUID = 7598797241503497392L;
     private static final Logger logger = LogManager.getLogger(ServiceAjouterParent.class);
     public static final String NAME_OR_EMAIL = "name";
 
@@ -31,7 +30,7 @@ public class ServiceAjouterParent extends ServicePost<AllAccessToPostAndGet> {
     @Override
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
+        String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL, true);
         logger.debug(MessageFormat.format("Name or email reçu: {0}.", nameOrEmail));
 
         ServiceResponse<String> resp;

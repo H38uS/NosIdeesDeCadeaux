@@ -17,8 +17,8 @@ public class TestServiceUpdateNotificationParameter extends AbstractTestServletW
     @Test
     public void testInvalidValue() {
 
-        bindRequestParam("name", NType.FRIENDSHIP_DROPPED.toString());
-        bindRequestParam("value", "toto");
+        bindPostRequestParam("name", NType.FRIENDSHIP_DROPPED.toString());
+        bindPostRequestParam("value", "toto");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -29,8 +29,8 @@ public class TestServiceUpdateNotificationParameter extends AbstractTestServletW
     @Test
     public void testInvalidNotificationName() {
 
-        bindRequestParam("name", "toto");
-        bindRequestParam("value", NotificationActivation.SITE.toString());
+        bindPostRequestParam("name", "toto");
+        bindPostRequestParam("value", NotificationActivation.SITE.toString());
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -41,8 +41,8 @@ public class TestServiceUpdateNotificationParameter extends AbstractTestServletW
     @Test
     public void testInvalidParameterAndValue() {
 
-        bindRequestParam("name", "toto");
-        bindRequestParam("value", "toto");
+        bindPostRequestParam("name", "toto");
+        bindPostRequestParam("value", "toto");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -52,8 +52,8 @@ public class TestServiceUpdateNotificationParameter extends AbstractTestServletW
     @Test
     public void testSucces() {
 
-        bindRequestParam("name", NType.FRIENDSHIP_DROPPED.toString());
-        bindRequestParam("value", NotificationActivation.SITE.toString());
+        bindPostRequestParam("name", NType.FRIENDSHIP_DROPPED.toString());
+        bindPostRequestParam("value", NotificationActivation.SITE.toString());
 
         StringServiceResponse resp = doTestServicePost();
 

@@ -18,7 +18,7 @@ public class ServiceDereserverTest extends AbstractTestServletWebApp {
     public void testSuccess() {
 
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
-        bindRequestParam(ServiceDereserver.IDEA_ID_PARAM, idee.getId() + "");
+        bindPostRequestParam(ServiceDereserver.IDEA_ID_PARAM, idee.getId() + "");
 
         StringServiceResponse resp = doTestServicePost();
 

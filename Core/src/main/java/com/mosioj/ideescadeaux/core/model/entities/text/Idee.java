@@ -2,9 +2,7 @@ package com.mosioj.ideescadeaux.core.model.entities.text;
 
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.entities.*;
-import com.mosioj.ideescadeaux.core.utils.Escaper;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
-import org.apache.commons.text.StringEscapeUtils;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -303,9 +301,6 @@ public class Idee extends EntityWithText {
          * @return The idea build.
          */
         public IdeaBuilder withText(String text) {
-            text = StringEscapeUtils.unescapeHtml4(text);
-            text = Escaper.escapeIdeaText(text);
-            text = Escaper.transformSmileyToCode(text);
             this.text = text;
             return this;
         }

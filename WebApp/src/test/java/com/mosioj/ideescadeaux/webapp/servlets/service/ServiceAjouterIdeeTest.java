@@ -38,7 +38,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", 2 + "");
         createMultiPartRequest(param);
 
-        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, _FRIEND_ID_);
+        bindPostRequestParam(ServiceAjouterIdee.USER_PARAMETER, _FRIEND_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -58,7 +58,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("est_surprise", "on");
         createMultiPartRequest(param);
 
-        bindRequestParam(AjouterIdeeAmi.USER_PARAMETER, _FRIEND_ID_);
+        bindPostRequestParam(AjouterIdeeAmi.USER_PARAMETER, _FRIEND_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -75,7 +75,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("text", "Ma super idée wouhouuuu");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, _OWNER_ID_);
+        bindPostRequestParam(ServiceAjouterIdee.USER_PARAMETER, _OWNER_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -90,7 +90,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
                   "un lien https://www.liveffn.com/cgi-bin/resultats.php?competition=62933&langue=fra et voilà");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, _OWNER_ID_);
+        bindPostRequestParam(ServiceAjouterIdee.USER_PARAMETER, _OWNER_ID_);
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -122,7 +122,7 @@ public class ServiceAjouterIdeeTest extends AbstractTestServletWebApp {
         param.put("text", "Ma super idée wouhouuuu");
         param.put("priority", "1");
         createMultiPartRequest(param);
-        bindRequestParam(ServiceAjouterIdee.USER_PARAMETER, moiAutre.getId());
+        bindPostRequestParam(ServiceAjouterIdee.USER_PARAMETER, moiAutre.getId());
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());

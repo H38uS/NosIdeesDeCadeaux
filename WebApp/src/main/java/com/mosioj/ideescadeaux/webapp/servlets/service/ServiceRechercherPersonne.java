@@ -34,8 +34,8 @@ public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet>
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         // Getting parameters
-        String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
-        String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
+        String userNameOrEmail = ParametersUtils.readAndEscape(request, "name", false).trim();
+        String val = ParametersUtils.getGETParameterAsString(request, "only_non_friend").trim();
         boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
 
         // Building result list
@@ -58,8 +58,8 @@ public class ServiceRechercherPersonne extends ServiceGet<AllAccessToPostAndGet>
      */
     private int getTotalNumberOfRecords(HttpServletRequest request) {
         int userId = thisOne.id;
-        String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
-        String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
+        String userNameOrEmail = ParametersUtils.readAndEscape(request, "name", false).trim();
+        String val = ParametersUtils.getGETParameterAsString(request, "only_non_friend").trim();
         boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
         return (int) UsersRepository.getTotalUsers(userNameOrEmail, userId, onlyNonFriend);
     }

@@ -31,7 +31,7 @@ public class ServiceSuggestFriendToOther extends ServiceGet<NetworkAccess> {
 
         // Parameters
         User suggestToUser = policy.getUser();
-        String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
+        String userNameOrEmail = ParametersUtils.readAndEscape(request, "name", false).trim();
 
         // Listing all possible users
         List<User> toBeSuggested = UserRelationsRepository.getAllUsersInRelationNotInOtherNetwork(thisOne,

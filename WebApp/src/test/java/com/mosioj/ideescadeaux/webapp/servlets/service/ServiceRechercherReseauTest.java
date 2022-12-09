@@ -25,7 +25,7 @@ public class ServiceRechercherReseauTest extends AbstractTestServletWebApp {
 
         // Given an email to match
         setConnectedUserTo(UsersRepository.getUser(6).orElse(null));
-        bindRequestParam(ServiceRechercherReseau.SEARCH_USER_PARAM, "ther@hdzdzdzotmail.fr");
+        bindGetRequestParam(ServiceRechercherReseau.SEARCH_USER_PARAM, "ther@hdzdzdzotmail.fr");
 
         // When doing the fetch
         RechercherReseauResponse resp = doTestServiceGet(RechercherReseauResponse.class);
@@ -36,6 +36,19 @@ public class ServiceRechercherReseauTest extends AbstractTestServletWebApp {
         final List<DecoratedWebAppUser> userList = resp.getMessage().getTheContent();
         assertEquals(1, userList.size());
         assertEquals(expected, userList.get(0).getUser());
+    }
+
+    @Test
+    public void testSpecialCharacter() {
+        // Given a name to match
+        bindGetRequestParam(ServiceRechercherReseau.SEARCH_USER_PARAM, "Djoeîéèôe");
+
+        // When doing the fetch
+        RechercherReseauResponse resp = doTestServiceGet(RechercherReseauResponse.class);
+
+        // Then it founds the appropriate person
+        assertTrue(resp.isOK());
+        assertEquals(List.of(new DecoratedWebAppUser(jo3, firefox)), resp.getMessage().getTheContent());
     }
 
     private static class RechercherReseauResponse extends ServiceResponse<PagedResponse<List<DecoratedWebAppUser>>> {

@@ -36,7 +36,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
                                     .orElseThrow(SQLException::new));
 
         // Appel au service
-        bindRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
+        bindPostRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
         StringServiceResponse resp = doTestServicePost();
 
         // Vérification
@@ -65,7 +65,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
                                     .orElseThrow(SQLException::new));
 
         // Appel au service
-        bindRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
+        bindPostRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
         StringServiceResponse resp = doTestServicePost();
 
         // Vérification
@@ -92,7 +92,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
                                     .orElseThrow(SQLException::new));
 
         // Appel au service
-        bindRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
+        bindPostRequestParam(ServiceJeLaVeuxEncore.IDEA_ID_PARAM, idea.getId() + "");
         StringServiceResponse resp = doTestServicePost();
 
         // Vérification

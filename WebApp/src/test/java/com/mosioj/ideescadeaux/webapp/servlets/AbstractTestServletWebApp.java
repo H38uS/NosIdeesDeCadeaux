@@ -94,8 +94,12 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
         TestContext.getInstance().setConnectedUserTo(user);
     }
 
-    public void bindRequestParam(String parameterName, Object value) {
-        TestContext.getInstance().bindRequestParam(parameterName, value);
+    public void bindGetRequestParam(String parameterName, Object value) {
+        TestContext.getInstance().bindGetRequestParam(parameterName, value);
+    }
+
+    public void bindPostRequestParam(String parameterName, Object value) {
+        TestContext.getInstance().bindPostRequestParam(parameterName, value);
     }
 
     public void bindRequestParamMap(Map<String, String[]> parameters) {

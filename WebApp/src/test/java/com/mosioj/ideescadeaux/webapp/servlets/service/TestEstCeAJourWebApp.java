@@ -39,7 +39,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                                                  NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        bindRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -66,7 +66,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                                                  NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
-        bindRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost(); // bloqué par la police, impossible en utilisation classique...
 
         assertFalse(resp.isOK());
@@ -85,7 +85,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                                     .withText("reservation")
                                                     .withPriority(p));
 
-        bindRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         resp = doTestServicePost();

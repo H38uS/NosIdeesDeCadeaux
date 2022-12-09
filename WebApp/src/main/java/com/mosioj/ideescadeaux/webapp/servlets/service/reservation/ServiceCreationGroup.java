@@ -39,7 +39,7 @@ public class ServiceCreationGroup extends ServicePost<IdeaInteraction> {
         Idee idea = policy.getIdea();
         logger.debug("Create a new group for idea : {}", idea.getId());
 
-        final String totalParam = ParametersUtils.readIt(request, "total");
+        final String totalParam = ParametersUtils.getPOSTParameterAsString(request, "total");
         ParameterValidator valTot = ValidatorBuilder.getMascValidator(totalParam, "total")
                                                     .checkEmpty()
                                                     .checkIfAmount()
@@ -47,7 +47,7 @@ public class ServiceCreationGroup extends ServicePost<IdeaInteraction> {
                                                     .build();
         double total = ParametersUtils.readDouble(request, "total").orElse(0d);
 
-        String amountString = ParametersUtils.readIt(request, "amount");
+        String amountString = ParametersUtils.getPOSTParameterAsString(request, "amount");
         ParameterValidator valAmount = ValidatorBuilder.getFemValidator(amountString, "participation")
                                                        .checkEmpty()
                                                        .checkIfAmount()

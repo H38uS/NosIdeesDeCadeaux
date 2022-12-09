@@ -15,8 +15,6 @@ import java.sql.SQLException;
 @WebServlet("/protected/afficher_reseau")
 public class AfficherReseau extends IdeesCadeauxGetServlet<NetworkAccess> {
 
-    private static final long serialVersionUID = 9147880158497428623L;
-
     public static final String USER_ID_PARAM = "id";
     public static final String DISPATCH_URL = "/protected/afficher_reseau.jsp";
 
@@ -33,7 +31,7 @@ public class AfficherReseau extends IdeesCadeauxGetServlet<NetworkAccess> {
 
         request.setAttribute("id", friend.id);
         request.setAttribute("name", friend.getMyDName());
-        request.setAttribute("looking_for", ParametersUtils.readAndEscape(request, "looking_for"));
+        request.setAttribute("looking_for", ParametersUtils.getGETParameterAsString(request, "looking_for"));
 
         RootingsUtils.rootToPage(DISPATCH_URL, request, response);
     }

@@ -23,16 +23,16 @@ public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
     public void nonFriendsShouldAlwaysCome() {
 
         final DecoratedWebAppUser decoratedMoiAutre = new DecoratedWebAppUser(moiAutre, firefox);
-        bindRequestParam("name", "iautre@toto.co");
+        bindGetRequestParam("name", "iautre@toto.co");
 
         // We get it when looking in all users
-        bindRequestParam("only_non_friend", "nop");
+        bindGetRequestParam("only_non_friend", "nop");
         RechercherPersonneResponse resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
         assertEquals(Collections.singletonList(decoratedMoiAutre), resp.getMessage().getTheContent());
 
         // And also when looking only for friends
-        bindRequestParam("only_non_friend", "on");
+        bindGetRequestParam("only_non_friend", "on");
         resp = doTestServiceGet(RechercherPersonneResponse.class);
         System.out.println(resp.getMessage().getTheContent());
         assertEquals(Collections.singletonList(decoratedMoiAutre), resp.getMessage().getTheContent());
@@ -42,19 +42,32 @@ public class ServiceRechercherPersonneTest extends AbstractTestServletWebApp {
     public void onlyNonFriendShouldFilterFriends() {
 
         final DecoratedWebAppUser decoratedFriend = new DecoratedWebAppUser(friendOfFirefox, firefox);
-        bindRequestParam("name", "est@toto.co");
+        bindGetRequestParam("name", "est@toto.co");
 
         // We get it when looking in all users
-        bindRequestParam("only_non_friend", "nop");
+        bindGetRequestParam("only_non_friend", "nop");
         RechercherPersonneResponse resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
         assertEquals(Collections.singletonList(decoratedFriend), resp.getMessage().getTheContent());
 
         // And not when filtering on non-friends
-        bindRequestParam("only_non_friend", "on");
+        bindGetRequestParam("only_non_friend", "on");
         resp = doTestServiceGet(RechercherPersonneResponse.class);
         assertTrue(resp.isOK());
         assertEquals(Collections.emptyList(), resp.getMessage().getTheContent());
+    }
+
+    @Test
+    public void testSpecialCharacter() {
+        // Given
+        bindGetRequestParam("name", "Djoeîéèôe");
+
+        // When
+        RechercherPersonneResponse resp = doTestServiceGet(RechercherPersonneResponse.class);
+
+        // Then
+        assertTrue(resp.isOK());
+        assertEquals(List.of(new DecoratedWebAppUser(jo3, firefox)), resp.getMessage().getTheContent());
     }
 
     private static class RechercherPersonneResponse extends ServiceResponse<PagedResponse<List<DecoratedWebAppUser>>> {

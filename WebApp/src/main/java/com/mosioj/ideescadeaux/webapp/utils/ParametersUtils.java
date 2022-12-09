@@ -42,16 +42,31 @@ public class ParametersUtils {
     private static final File IDEAS_PICTURE_PATH;
 
     /**
-     * Attention: ne surtout pas utiliser dans les redirect post -> get.
-     *
      * @param request The processing request.
      * @param name    The parameter name.
      * @return The parameter value, or empty string if not provided.
      */
-    public static String readIt(HttpServletRequest request, String name) {
+    public static String getGETParameterAsString(HttpServletRequest request, String name) {
+        String res = request.getParameter(name);
+        // https://cwiki.apache.org/confluence/display/TOMCAT/Character+Encoding
+        // Tomcat default encoding value is StandardCharsets.ISO_8859_1
+        // It looks like this is only for POST methods... => so using found String for GET
+        return res == null ? StringUtils.EMPTY : res;
+    }
+
+    /**
+     * @param request The processing request.
+     * @param name    The parameter name.
+     * @return The parameter value, or empty string if not provided.
+     */
+    public static String getPOSTParameterAsString(HttpServletRequest request, String name) {
         String res = request.getParameter(name);
         logger.trace(MessageFormat.format("{0} is:{1}", name, res));
-        return res == null ? "" : new String(res.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        // https://cwiki.apache.org/confluence/display/TOMCAT/Character+Encoding
+        // Tomcat default encoding value is StandardCharsets.ISO_8859_1
+        // It looks like this is only for POST methods...
+        return res == null ? StringUtils.EMPTY : new String(res.getBytes(StandardCharsets.ISO_8859_1),
+                                                            StandardCharsets.UTF_8);
     }
 
     /**
@@ -61,7 +76,7 @@ public class ParametersUtils {
      */
     public static Optional<Integer> readInt(HttpServletRequest request, String name) {
         try {
-            return Optional.of(Integer.parseInt(ParametersUtils.readIt(request, name)
+            return Optional.of(Integer.parseInt(ParametersUtils.getPOSTParameterAsString(request, name)
                                                                .replaceAll("[  ]", "")
                                                                .replaceAll("%C2%A0", "")));
         } catch (NumberFormatException e) {
@@ -72,7 +87,8 @@ public class ParametersUtils {
     public static Optional<Double> readDouble(HttpServletRequest request, String name) {
         double param;
         try {
-            param = Double.parseDouble(readIt(request, name).replaceAll("[  ]", "").replaceAll("%C2%A0", ""));
+            param = Double.parseDouble(getPOSTParameterAsString(request, name).replaceAll("[  ]", "")
+                                                                              .replaceAll("%C2%A0", ""));
         } catch (NumberFormatException e) {
             return Optional.empty();
         }
@@ -84,10 +100,15 @@ public class ParametersUtils {
      *
      * @param request The http request.
      * @param name    The name of the parameter.
+     * @param forPOST Whether this is a POST (true) or a GET (false) request
      * @return The escaped string. Cannot be null.
      */
-    public static String readAndEscape(HttpServletRequest request, String name) {
-        return StringEscapeUtils.escapeHtml4(readIt(request, name));
+    public static String readAndEscape(HttpServletRequest request, String name, boolean forPOST) {
+        if (forPOST) {
+            return StringEscapeUtils.escapeHtml4(getPOSTParameterAsString(request, name));
+        } else {
+            return StringEscapeUtils.escapeHtml4(getGETParameterAsString(request, name));
+        }
     }
 
     /**
@@ -157,7 +178,7 @@ public class ParametersUtils {
                     if (!fileName.trim().isEmpty() && image.isEmpty()) {
 
                         if ("blob".equals(fileName)) {
-                            String inputFileName = StringEscapeUtils.unescapeHtml4(parameters.get("fileName"));
+                            String inputFileName = parameters.get("fileName");
                             fileName = inputFileName == null ? "IMG" : inputFileName;
                         }
                         image = Escaper.computeImageName(fileName);
@@ -178,11 +199,12 @@ public class ParametersUtils {
                         File tmpUploadedFile = new File(largeFolder, "TMP_" + image);
                         logger.debug("Uploading file : " + tmpUploadedFile.getCanonicalPath());
                         fi.write(tmpUploadedFile);
-                        logger.debug(MessageFormat.format("File size: {3} kos. - Memory (free / total): ( {0} Ko / {1} Ko ). Max: {2} Ko.",
-                                                          Runtime.getRuntime().freeMemory() / 1024,
-                                                          Runtime.getRuntime().totalMemory() / 1024,
-                                                          Runtime.getRuntime().maxMemory() / 1024,
-                                                          (tmpUploadedFile.length() / 1024)));
+                        logger.debug(MessageFormat.format(
+                                "File size: {3} kos. - Memory (free / total): ( {0} Ko / {1} Ko ). Max: {2} Ko.",
+                                Runtime.getRuntime().freeMemory() / 1024,
+                                Runtime.getRuntime().totalMemory() / 1024,
+                                Runtime.getRuntime().maxMemory() / 1024,
+                                (tmpUploadedFile.length() / 1024)));
 
                         try {
                             // Creation de la vignette
@@ -218,10 +240,12 @@ public class ParametersUtils {
                         parameters.put("image", image);
                     }
                 } else {
+                    // https://cwiki.apache.org/confluence/display/TOMCAT/Character+Encoding
+                    // Tomcat default encoding value is StandardCharsets.ISO_8859_1 for POST method
                     String val = fi.getString() == null ? "" : new String(fi.getString()
                                                                             .getBytes(StandardCharsets.ISO_8859_1),
                                                                           StandardCharsets.UTF_8);
-                    parameters.put(fi.getFieldName(), StringEscapeUtils.escapeHtml4(val));
+                    parameters.put(fi.getFieldName(), val);
                 }
             }
         } catch (Exception e) {
@@ -235,14 +259,15 @@ public class ParametersUtils {
     /**
      * @param request       The http request.
      * @param parameterName The name of the parameter to read.
+     * @param forPOST       Whether this is a POST (true) or a GET (false) request.
      * @return The String to pass to the database
      */
-    public static String readNameOrEmail(HttpServletRequest request, String parameterName) {
+    public static String readNameOrEmail(HttpServletRequest request, String parameterName, boolean forPOST) {
 
-        String nameOrEmail = readAndEscape(request, parameterName);
+        String nameOrEmail = readAndEscape(request, parameterName, forPOST);
         logger.trace(MessageFormat.format("Receive:{0}", nameOrEmail));
 
-        if (nameOrEmail == null || nameOrEmail.trim().isEmpty()) {
+        if (nameOrEmail.trim().isEmpty()) {
             return nameOrEmail;
         }
 

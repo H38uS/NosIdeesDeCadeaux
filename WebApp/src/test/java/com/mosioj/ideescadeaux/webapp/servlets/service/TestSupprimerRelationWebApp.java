@@ -27,7 +27,7 @@ public class TestSupprimerRelationWebApp extends AbstractTestServletWebApp {
         Notification notification = ACCEPTED_FRIENDSHIP.with(moiAutre).sendItTo(firefox);
         assertNotifDoesExists(notification);
 
-        bindRequestParam(ServiceSupprimerRelation.USER_PARAMETER, _MOI_AUTRE_ + "");
+        bindPostRequestParam(ServiceSupprimerRelation.USER_PARAMETER, _MOI_AUTRE_ + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());

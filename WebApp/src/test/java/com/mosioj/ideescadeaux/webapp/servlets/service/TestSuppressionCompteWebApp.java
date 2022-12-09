@@ -35,7 +35,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
         int userId = UsersRepository.addNewPersonne("to_be_deleted@djizjdz.cekj", "a", "to_be_deleted");
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
 
-        bindRequestParam(ServiceSuppressionCompte.USER_ID_PARAM, String.format("%d", userId));
+        bindPostRequestParam(ServiceSuppressionCompte.USER_ID_PARAM, String.format("%d", userId));
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -59,7 +59,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
         User user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
 
-        bindRequestParam(ServiceSuppressionCompte.USER_ID_PARAM, userId + "");
+        bindPostRequestParam(ServiceSuppressionCompte.USER_ID_PARAM, userId + "");
         doTestPost();
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
         UsersRepository.deleteUser(user);

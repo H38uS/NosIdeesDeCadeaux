@@ -28,7 +28,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(i -> !i.isASurprise())
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
+        bindGetRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         DecoratedWebAppIdeaServiceResponse answer = doTestServiceGet(DecoratedWebAppIdeaServiceResponse.class);
@@ -47,7 +47,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(Idee::isASurprise)
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
+        bindGetRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         DecoratedWebAppIdeaServiceResponse answer = doTestServiceGet(DecoratedWebAppIdeaServiceResponse.class);
@@ -66,7 +66,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(i -> !i.isASurprise())
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
+        bindGetRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         DecoratedWebAppIdeaServiceResponse answer = doTestServiceGet(DecoratedWebAppIdeaServiceResponse.class);
@@ -85,7 +85,7 @@ public class ServiceGetIdeaTest extends AbstractTestServletWebApp {
                                    .filter(Idee::isASurprise)
                                    .findFirst()
                                    .orElseThrow(SQLException::new);
-        bindRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
+        bindGetRequestParam(ServiceGetIdea.IDEA_ID_PARAM, idee.getId() + "");
 
         // Act
         StringServiceResponse answer = doTestServiceGet(StringServiceResponse.class);

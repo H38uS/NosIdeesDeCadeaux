@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -50,9 +49,9 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
         CompteInteractions helper = new CompteInteractions();
 
         // Récupération des paramètres
-        String pwd = ParametersUtils.readIt(request, "pwd");
-        String email = ParametersUtils.readAndEscape(request, "email").trim();
-        String nameParam = ParametersUtils.readAndEscape(request, "pseudo").trim();
+        String pwd = ParametersUtils.getPOSTParameterAsString(request, "pwd");
+        String email = ParametersUtils.readAndEscape(request, "email", true).trim();
+        String nameParam = ParametersUtils.readAndEscape(request, "pseudo", true).trim();
 
         // Validation des paramètres
         List<String> pwdErrors = helper.getValidatorPwd(pwd).getErrors();
@@ -62,14 +61,7 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
         // exist yet
         request.setAttribute("email_errors", emailErrors);
 
-        try {
-            // Do this so we can capture non-Latin chars
-            request.setCharacterEncoding("UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            throw new ServletException(e1.getMessage());
-        }
-
-        String captchaResponse = ParametersUtils.readIt(request, "g-recaptcha-response");
+        String captchaResponse = ParametersUtils.getPOSTParameterAsString(request, "g-recaptcha-response");
         String urlCalled = request.getRequestURL().toString();
         logger.debug(captchaResponse + " / " + request.getRequestURL());
         boolean captchaOk = urlCalled.startsWith(HTTP_LOCALHOST_8080) || CaptchaHandler.resolveIt(captchaResponse);

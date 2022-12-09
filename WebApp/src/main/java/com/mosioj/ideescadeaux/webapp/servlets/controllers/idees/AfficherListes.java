@@ -30,11 +30,9 @@ public class AfficherListes extends IdeesCadeauxGetServlet<AllAccessToPostAndGet
     public void ideesKDoGET(HttpServletRequest request,
                             HttpServletResponse response) throws ServletException, SQLException, IOException {
         request.setAttribute("call_back", AFFICHER_LISTES);
-        final String fullURL = AFFICHER_LISTES +
-                               "?" +
-                               NAME_OR_EMAIL +
-                               "=" +
-                               ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL);
+        // Do not escape it as it is sent by the JS... And so escaped here
+        String nameOrEmail = ParametersUtils.getGETParameterAsString(request, NAME_OR_EMAIL);
+        final String fullURL = AFFICHER_LISTES + "?" + NAME_OR_EMAIL + "=" + nameOrEmail;
         request.setAttribute("identic_call_back", fullURL);
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, response);
     }

@@ -29,7 +29,7 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
                                                     .withPriority(p)
                                                     .withSurpriseOwner(friendOfFirefox)
                                                     .withCreatedBy(friendOfFirefox));
-        bindRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
 
         // Act
         StringServiceResponse resp = doTestServicePost();
@@ -52,7 +52,7 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
                                                     .withPriority(p)
                                                     .withSurpriseOwner(firefox)
                                                     .withCreatedBy(firefox));
-        bindRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
 
         // Act
         StringServiceResponse resp = doTestServicePost();
@@ -72,7 +72,7 @@ public class ServiceSupprimerSurpriseTest extends AbstractTestServletWebApp {
                                                     .withText("une surprise")
                                                     .withPriority(p)
                                                     .withCreatedBy(friendOfFirefox));
-        bindRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceSupprimerSurprise.IDEA_ID_PARAM, String.valueOf(idee.getId()));
 
         // Act
         StringServiceResponse resp = doTestServicePost();

@@ -19,7 +19,7 @@ public class ServiceNotificationDeleteTest extends AbstractTestServletWebApp {
     public void testDeleteSuccess() {
 
         Notification n = NotificationsRepository.fetcher().whereOwner(firefox).fetch().get(0);
-        bindRequestParam(ServiceNotificationDelete.NOTIFICATION_PARAMETER, String.valueOf(n.id));
+        bindPostRequestParam(ServiceNotificationDelete.NOTIFICATION_PARAMETER, String.valueOf(n.id));
 
         StringServiceResponse resp = doTestServicePost();
 

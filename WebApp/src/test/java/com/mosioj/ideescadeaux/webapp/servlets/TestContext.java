@@ -119,8 +119,21 @@ public class TestContext {
      * @param parameterName The parameter to mock
      * @param value         The value to return
      */
-    public void bindRequestParam(String parameterName, Object value) {
+    public void bindGetRequestParam(String parameterName, Object value) {
         when(request.getParameter(parameterName)).thenReturn(value.toString());
+    }
+
+    /**
+     * Set up a request parameter
+     *
+     * @param parameterName The parameter to mock
+     * @param value         The value to return
+     */
+    public void bindPostRequestParam(String parameterName, Object value) {
+        // Emulate the fact that tomcat is using ISO_8859_1 as the default encoding...
+        final String convertedValue = new String(value.toString().getBytes(StandardCharsets.UTF_8),
+                                                 StandardCharsets.ISO_8859_1);
+        when(request.getParameter(parameterName)).thenReturn(convertedValue);
     }
 
     /**

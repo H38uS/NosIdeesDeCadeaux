@@ -32,7 +32,7 @@ public class TestIdeaCommentWebApp extends AbstractTestServletWebApp {
         Notification newComment = NType.NEW_COMMENT_ON_IDEA.with(firefox, idea).sendItTo(firefox);
         assertNotifDoesExists(newComment);
 
-        bindRequestParam(IdeaComments.IDEA_ID_PARAM, idea.getId());
+        bindGetRequestParam(IdeaComments.IDEA_ID_PARAM, idea.getId());
         doTestGet();
 
         assertNotifDoesNotExists(newComment);

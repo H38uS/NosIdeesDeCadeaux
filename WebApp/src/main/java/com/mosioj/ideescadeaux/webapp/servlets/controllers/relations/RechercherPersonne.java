@@ -24,14 +24,9 @@ public class RechercherPersonne extends IdeesCadeauxGetServlet<AllAccessToPostAn
 
     @Override
     public void ideesKDoGET(HttpServletRequest request, HttpServletResponse response) {
-
-        String userNameOrEmail = ParametersUtils.readAndEscape(request, "name").trim();
-        String val = ParametersUtils.readAndEscape(request, "only_non_friend").trim();
+        String val = ParametersUtils.getGETParameterAsString(request, "only_non_friend").trim();
         boolean onlyNonFriend = "on".equals(val) || "true".equals(val);
-
-        request.setAttribute("name", userNameOrEmail);
         request.setAttribute("onlyNonFriend", onlyNonFriend);
-
         RootingsUtils.rootToPage(FORM_URL, request, response);
     }
 

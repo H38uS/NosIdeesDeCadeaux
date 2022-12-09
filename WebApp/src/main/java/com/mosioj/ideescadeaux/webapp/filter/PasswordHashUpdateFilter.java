@@ -3,6 +3,7 @@ package com.mosioj.ideescadeaux.webapp.filter;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.logichelpers.CompteInteractions;
+import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,9 +36,9 @@ public class PasswordHashUpdateFilter extends GenericFilterBean {
 
         if (url.endsWith("/login") && md != null) {
 
-            final String email = request.getParameter("j_username");
-            final String pwd = request.getParameter("j_password");
-            if (email != null && pwd != null) {
+            final String email = ParametersUtils.getPOSTParameterAsString(detailRequest, "j_username");
+            final String pwd = ParametersUtils.getPOSTParameterAsString(detailRequest, "j_password");
+            if (!email.isBlank() && !pwd.isBlank()) {
                 final String trimmedEmail = email.trim();
                 UsersRepository.getUser(trimmedEmail)
                                .filter(u -> !StringUtils.isBlank(pwd))

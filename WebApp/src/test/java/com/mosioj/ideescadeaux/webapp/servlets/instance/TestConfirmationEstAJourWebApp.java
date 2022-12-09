@@ -41,7 +41,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
         // Getting it from the DB to check the parameters insertion
         assertEquals(Optional.of(friendOfFirefox), notification.getUserParameter());
 
-        bindRequestParam(ConfirmationEstAJour.IDEE_FIELD_PARAMETER, idee.getId());
+        bindGetRequestParam(ConfirmationEstAJour.IDEE_FIELD_PARAMETER, idee.getId());
         doTestGet();
 
         assertNotifDoesNotExists(notification);
@@ -63,7 +63,7 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
                                        "nfirmation_est_a_jour?idee=".length(),
                                        text.indexOf("\">Oui !</a></li><li>Non"));
         ideaId = new String(ideaId.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-        bindRequestParam(ConfirmationEstAJour.IDEE_FIELD_PARAMETER, ideaId);
+        bindGetRequestParam(ConfirmationEstAJour.IDEE_FIELD_PARAMETER, ideaId);
 
         doTestGet();
 

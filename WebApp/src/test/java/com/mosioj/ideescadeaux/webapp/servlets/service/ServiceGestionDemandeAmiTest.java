@@ -27,7 +27,7 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
         UserRelationsRepository.deleteAssociation(firefox, moiAutre);
         assertFalse(UserRelationsRepository.associationExists(firefox, moiAutre));
 
-        bindRequestParam(AfficherReseau.USER_ID_PARAM, _MOI_AUTRE_ + "");
+        bindPostRequestParam(AfficherReseau.USER_ID_PARAM, _MOI_AUTRE_ + "");
         bindRequestParamMap(Map.of("choix_" + _MOI_AUTRE_, new String[]{"Accepter"}));
 
         doTestPost();
@@ -59,7 +59,7 @@ public class ServiceGestionDemandeAmiTest extends AbstractTestServletWebApp {
         HibernateUtil.saveit(new RelationRequest(moiAutre, firefox));
 
         final String accepted = "acc_choix_" + _MOI_AUTRE_;
-        bindRequestParam(AfficherReseau.USER_ID_PARAM, _MOI_AUTRE_ + "");
+        bindPostRequestParam(AfficherReseau.USER_ID_PARAM, _MOI_AUTRE_ + "");
         bindRequestParamMap(Map.of(accepted, new String[]{accepted, "true"}));
         doTestPost();
 

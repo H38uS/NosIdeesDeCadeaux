@@ -28,7 +28,7 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     @Test
     public void testAjoutSucces() {
 
-        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "tesT@toto.Com");
+        bindPostRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "tesT@toto.Com");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -39,7 +39,7 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     @Test
     public void testIncorrectEmail() {
 
-        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "");
+        bindPostRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -51,7 +51,7 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     @Test
     public void testDejaAjoute() {
 
-        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "test@toto.com");
+        bindPostRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "test@toto.com");
 
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
@@ -64,11 +64,25 @@ public class ServiceAjouterParentTest extends AbstractTestServletWebApp {
     @Test
     public void shouldNotBePossibleToAddOurself() {
 
-        bindRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, firefox.getEmail());
+        bindPostRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, firefox.getEmail());
 
         StringServiceResponse resp = doTestServicePost();
         assertFalse(resp.isOK());
 
         assertEquals("Vous ne pouvez pas vous ajouter vous-même...", resp.getMessage());
+    }
+
+    @Test
+    public void testSpecialCharacter() {
+        // Given
+        bindPostRequestParam(ServiceAjouterParent.NAME_OR_EMAIL, "Djoeîéèôe");
+
+        // When
+        StringServiceResponse resp = doTestServicePost();
+
+        // Then
+        assertTrue(resp.isOK());
+        assertTrue(ParentRelationshipRepository.getParents(firefox.getId()).contains(jo3));
+        ParentRelationshipRepository.deleteParents(firefox);
     }
 }

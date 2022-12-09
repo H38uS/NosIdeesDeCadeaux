@@ -26,8 +26,8 @@ public class ServiceSousReserverTest extends AbstractTestServletWebApp {
         // Given
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
         IdeesRepository.toutDereserver(idee);
-        bindRequestParam("idee", String.valueOf(idee.getId()));
-        bindRequestParam("comment", "Un commentaire");
+        bindPostRequestParam("idee", String.valueOf(idee.getId()));
+        bindPostRequestParam("comment", "Un commentaire");
 
         // When
         doTestServicePost();
@@ -46,8 +46,8 @@ public class ServiceSousReserverTest extends AbstractTestServletWebApp {
         // Given
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
         IdeesRepository.toutDereserver(idee);
-        bindRequestParam("idee", String.valueOf(idee.getId()));
-        bindRequestParam("comment", "Un commentaire");
+        bindPostRequestParam("idee", String.valueOf(idee.getId()));
+        bindPostRequestParam("comment", "Un commentaire");
         doTestServicePost();
 
         // When

@@ -7,7 +7,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.NameServicePolicy;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.NameAnswer;
 import com.mosioj.ideescadeaux.webapp.utils.GsonFactory;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 public class ServiceName extends ServiceGet<NameServicePolicy> {
 
     private static final Logger logger = LogManager.getLogger(ServiceName.class);
-    private static final long serialVersionUID = 9147880158497428623L;
     public static final String NAME_OR_EMAIL = "term";
     public static final String OF_USER_ID = "userId";
 
@@ -36,12 +34,12 @@ public class ServiceName extends ServiceGet<NameServicePolicy> {
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
 
         User current = policy.getRootNetwork();
-        String param = ParametersUtils.readAndEscape(request, NAME_OR_EMAIL).toLowerCase();
+        String param = ParametersUtils.readAndEscape(request, NAME_OR_EMAIL, false).toLowerCase();
 
         List<User> res = new ArrayList<>();
         int MAX = 5;
         if (current.getEmail().toLowerCase().contains(param)
-            || (StringEscapeUtils.unescapeHtml4(current.getName().toLowerCase()).contains(param))
+            || current.getName().toLowerCase().contains(param)
             || "moi".equalsIgnoreCase(param)) {
             res.add(current);
             MAX--;

@@ -28,10 +28,10 @@ public class ChangerMotDePasseDepuisReinitTest extends AbstractTestServletWebApp
         assertTrue(UserChangePwdRequestRepository.isAValidCombinaison(friendOfFirefox.id, token));
 
         // Do the request
-        bindRequestParam("userIdParam", friendOfFirefox.id);
-        bindRequestParam("tokenId", token);
-        bindRequestParam("pwd1", "thenewmdp12");
-        bindRequestParam("pwd2", "thenewmdp12");
+        bindPostRequestParam("userIdParam", friendOfFirefox.id);
+        bindPostRequestParam("tokenId", token);
+        bindPostRequestParam("pwd1", "thenewmdp12");
+        bindPostRequestParam("pwd2", "thenewmdp12");
         doTestPost();
 
         // Verify

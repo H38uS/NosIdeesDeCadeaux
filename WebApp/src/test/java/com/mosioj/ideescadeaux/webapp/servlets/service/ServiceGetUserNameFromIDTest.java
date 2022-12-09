@@ -17,7 +17,7 @@ public class ServiceGetUserNameFromIDTest extends AbstractTestServletWebApp {
     @Test
     public void testSuccess() {
 
-        bindRequestParam(ServiceGetUserNameFromID.USER_ID_PARAM, friendOfFirefox.id + "");
+        bindGetRequestParam(ServiceGetUserNameFromID.USER_ID_PARAM, friendOfFirefox.id + "");
 
         ThisServiceResp resp = doTestServiceGet(ThisServiceResp.class);
 

@@ -36,8 +36,8 @@ public class TestCreationCompteWebApp extends AbstractTestServletWebApp {
                      ds.selectCountStar("select count(*) from USERS where email = ?",
                                         "tartenpiontoto@hotmaildzndqudn.fr"));
 
-        bindRequestParam("email", "tartenpiontoto@hotmaildzndqudn.fr");
-        bindRequestParam("pwd", "mydummypwd");
+        bindPostRequestParam("email", "tartenpiontoto@hotmaildzndqudn.fr");
+        bindPostRequestParam("pwd", "mydummypwd");
 
         // Should not throw an exception
         doTestPost();

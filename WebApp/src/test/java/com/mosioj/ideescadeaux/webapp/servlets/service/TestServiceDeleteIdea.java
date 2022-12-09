@@ -36,7 +36,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                                                     .withPriority(p));
         assertFalse(IdeesRepository.getDeletedIdea(idee.getId()).isPresent());
 
-        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -69,7 +69,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                      ds.selectCountStar("select count(*) from GROUP_IDEA_CONTENT where group_id = ?", group.getId()));
 
         // Suppression
-        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Validation que cela supprime tout
@@ -112,7 +112,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertNotifDoesExists(newComment);
         assertNotifDoesExists(newQuestion);
         assertNotifDoesExists(recurentUnbook);/* Suppression*/
-        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, idea.getId());
+        bindPostRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, idea.getId());
         StringServiceResponse resp = doTestServicePost();
         assertTrue(resp.isOK());
         assertNotifDoesNotExists(isUpToDate);
@@ -141,7 +141,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                                                     .withCreatedBy(friendOfFirefox));
 
         // Trying to delete it
-        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Check
@@ -166,7 +166,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
                                                     .withCreatedBy(firefox));
 
         // Trying to delete it
-        bindRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceDeleteIdea.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Check

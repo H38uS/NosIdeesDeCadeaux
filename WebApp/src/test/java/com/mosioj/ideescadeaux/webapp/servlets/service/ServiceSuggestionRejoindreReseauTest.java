@@ -26,7 +26,7 @@ public class ServiceSuggestionRejoindreReseauTest extends AbstractTestServletWeb
 
         // When posting a suggestion request
         final String selectedOne = "selected_" + jo3.id;
-        bindRequestParam(ServiceSuggestFriendToOther.USER_PARAMETER, String.valueOf(theAdmin.id));
+        bindPostRequestParam(ServiceSuggestFriendToOther.USER_PARAMETER, String.valueOf(theAdmin.id));
         bindRequestParamMap(Map.of(selectedOne, new String[]{selectedOne, "true"}));
         StringServiceResponse resp = doTestServicePost();
 

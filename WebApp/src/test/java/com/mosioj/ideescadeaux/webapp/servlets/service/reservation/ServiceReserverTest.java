@@ -26,7 +26,7 @@ public class ServiceReserverTest extends AbstractTestServletWebApp {
     public void testSuccess() {
 
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
-        bindRequestParam(ServiceDereserver.IDEA_ID_PARAM, idee.getId() + "");
+        bindPostRequestParam(ServiceDereserver.IDEA_ID_PARAM, idee.getId() + "");
 
         StringServiceResponse resp = doTestServicePost();
 
@@ -45,7 +45,7 @@ public class ServiceReserverTest extends AbstractTestServletWebApp {
                                                     .withCreatedBy(firefox));
         assertFalse(idee.getBookingInformation().map(BookingInformation::isBooked).orElseThrow(SQLException::new));
 
-        bindRequestParam(ServiceDereserver.IDEA_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceDereserver.IDEA_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -65,7 +65,7 @@ public class ServiceReserverTest extends AbstractTestServletWebApp {
         Notification recurentUnbook = RECURENT_IDEA_UNBOOK.with(friendOfFirefox, idee).sendItTo(firefox);
         assertNotifDoesExists(recurentUnbook);
 
-        bindRequestParam(ServiceDereserver.IDEA_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceDereserver.IDEA_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());

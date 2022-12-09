@@ -42,7 +42,7 @@ public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp 
         assertNotifDoesExists(suggestionAndAsked);
 
         // Should not throw an exception
-        bindRequestParam("user_id", "23");
+        bindPostRequestParam("user_id", "23");
         StringServiceResponse resp = doTestServicePost();
 
         assertNotifDoesNotExists(suggestionAndAsk);
@@ -53,7 +53,7 @@ public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp 
     @Test
     public void testAlreadySent() {
 
-        bindRequestParam("user_id", "10");
+        bindPostRequestParam("user_id", "10");
 
         // Should not throw an exception
         StringServiceResponse resp = doTestServicePost();
@@ -65,7 +65,7 @@ public class TestDemandeRejoindreReseauWebApp extends AbstractTestServletWebApp 
     @Test
     public void testGroupAlreadyExist() {
 
-        bindRequestParam("user_id", "1");
+        bindPostRequestParam("user_id", "1");
 
         // Should not throw an exception
         StringServiceResponse resp = doTestServicePost();

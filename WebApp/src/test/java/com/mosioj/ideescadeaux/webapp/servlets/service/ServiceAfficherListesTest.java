@@ -12,7 +12,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
     public void shouldBePossibleToViewMyIdeas() {
 
         setConnectedUserTo(WebAppTemplateTest.moiAutre);
-        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getEmail());
+        bindGetRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getEmail());
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);
@@ -43,7 +42,7 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
     public void shouldNotBePossibleToViewMySurprises() {
 
         setConnectedUserTo(WebAppTemplateTest.moiAutre);
-        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getEmail());
+        bindGetRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getEmail());
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);
@@ -66,7 +65,7 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
     public void shouldBePossibleToSeeFriendIdeasIncludingSurprises() {
 
         setConnectedUserTo(WebAppTemplateTest.friendOfFirefox);
-        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getName());
+        bindGetRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, moiAutre.getName());
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);
@@ -89,7 +88,7 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
     public void shouldBeAbleToMatchMultiple() throws SQLException {
 
         setConnectedUserTo(WebAppTemplateTest.jo3);
-        bindRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, "trr");
+        bindGetRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, "trr");
 
         // Act
         AfficherListeResponse answer = doTestServiceGet(AfficherListeResponse.class);
@@ -101,7 +100,20 @@ public class ServiceAfficherListesTest extends AbstractTestServletWebApp {
                                  .stream()
                                  .map(OwnerIdeas::getOwner)
                                  .collect(Collectors.toList());
-        assertEquals(Arrays.asList(jo3, UsersRepository.getUser(6).orElseThrow(SQLException::new)), users);
+        assertEquals(List.of(jo3, UsersRepository.getUser(6).orElseThrow(SQLException::new)), users);
+    }
+
+    @Test
+    public void testSpecialCharacter() {
+        // Given
+        bindGetRequestParam(ServiceAfficherListes.NAME_OR_EMAIL, "Djoeîéèôe");
+
+        // When
+        AfficherListeResponse resp = doTestServiceGet(AfficherListeResponse.class);
+
+        // Then
+        assertTrue(resp.isOK());
+        assertEquals(List.of(jo3), resp.getMessage().getTheContent().stream().map(OwnerIdeas::getOwner).toList());
     }
 
     private static class AfficherListeResponse extends ServiceResponse<PagedResponse<List<OwnerIdeas>>> {

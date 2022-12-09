@@ -40,7 +40,7 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
 
         // Getting the parameter
-        final String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM).toLowerCase();
+        final String nameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM, false).toLowerCase();
         LOGGER.trace("Received: {}", nameOrEmail);
 
         // Loading the list
@@ -63,7 +63,7 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
      * @return The total number of records that will be produced when fetching the entire list.
      */
     protected int getTotalNumberOfRecords(HttpServletRequest request) {
-        final String userNameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM);
+        final String userNameOrEmail = ParametersUtils.readAndEscape(request, SEARCH_USER_PARAM, false);
         return UserRelationsRepository.getAllUsersInRelationCount(policy.getUser(), userNameOrEmail);
     }
 }

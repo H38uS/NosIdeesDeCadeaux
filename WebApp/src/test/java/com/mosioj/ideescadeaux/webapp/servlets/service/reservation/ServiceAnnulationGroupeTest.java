@@ -41,7 +41,7 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
                                               .orElse(-1));
 
         // Annulation de la participation de firefox
-        bindRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindPostRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Le groupe doit avoir été supprimé, ainsi que sa référence dans l'idée
@@ -90,7 +90,7 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
 
         // Annulation de la participation de _OWNER_ID_ aka friendOfFirefox
         setConnectedUserTo(WebAppTemplateTest.moiAutre);
-        bindRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindPostRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -118,7 +118,7 @@ public class ServiceAnnulationGroupeTest extends AbstractTestServletWebApp {
 
         // Quand on annule notre participation
         setConnectedUserTo(WebAppTemplateTest.moiAutre);
-        bindRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
+        bindPostRequestParam(ServiceAnnulationGroupe.GROUP_ID_PARAM, String.valueOf(group.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         // Alors uniquement firefox reçoit une notification

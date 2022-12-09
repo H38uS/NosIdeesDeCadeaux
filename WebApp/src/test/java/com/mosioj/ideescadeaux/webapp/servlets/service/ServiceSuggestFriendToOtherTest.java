@@ -24,7 +24,7 @@ public class ServiceSuggestFriendToOtherTest extends AbstractTestServletWebApp {
     public void testGetPossibleSuggestions() throws SQLException {
 
         // Given a friend to suggest some others
-        bindRequestParam(ServiceSuggestFriendToOther.USER_PARAMETER, String.valueOf(theAdmin.id));
+        bindGetRequestParam(ServiceSuggestFriendToOther.USER_PARAMETER, String.valueOf(theAdmin.id));
 
         // When doing the get
         PossibleSuggestionResponse resp = doTestServiceGet(PossibleSuggestionResponse.class);
@@ -41,6 +41,22 @@ public class ServiceSuggestFriendToOtherTest extends AbstractTestServletWebApp {
                                    new PossibleSuggestion(friendOfFirefox).withReason(
                                            "Test@toto.com a déjà envoyé une demande à Jordan.mosio@hotmail.fr.")),
                      suggestions);
+    }
+
+    @Test
+    public void testSpecialCharacter() {
+        // Given a friend to suggest some others and a name with special character
+        bindGetRequestParam(ServiceSuggestFriendToOther.USER_PARAMETER, String.valueOf(theAdmin.id));
+        bindGetRequestParam("name", "Djoeîéèôe ");
+
+        // When doing the get
+        PossibleSuggestionResponse resp = doTestServiceGet(PossibleSuggestionResponse.class);
+
+        // Then the response is OK and contains the expected suggestions
+        assertTrue(resp.isOK());
+        assertEquals(List.of(new PossibleSuggestion(jo3).withReason(
+                             "Jordan.mosio@hotmail.fr a déjà reçu une suggestion pour Djoe&icirc;&eacute;&egrave;&ocirc;e.")),
+                     resp.getMessage());
     }
 
     private static class PossibleSuggestionResponse extends ServiceResponse<List<PossibleSuggestion>> {

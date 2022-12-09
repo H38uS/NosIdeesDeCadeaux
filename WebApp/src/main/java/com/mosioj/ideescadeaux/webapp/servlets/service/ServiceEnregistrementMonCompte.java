@@ -11,6 +11,7 @@ import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,8 +72,8 @@ public class ServiceEnregistrementMonCompte extends ServicePost<AllAccessToPostA
 
         if ("true".equals(info)) {
 
-            String email = parameters.get("email").trim();
-            String name = parameters.get("name").trim();
+            String email = StringEscapeUtils.escapeHtml4(parameters.get("email").trim());
+            String name = StringEscapeUtils.escapeHtml4(parameters.get("name").trim());
 
             errors = ci.checkEmail(ci.getValidatorEmail(email), thisOne.id, true);
 

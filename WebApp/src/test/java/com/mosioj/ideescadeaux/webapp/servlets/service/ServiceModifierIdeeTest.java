@@ -41,7 +41,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", String.valueOf(idee.getPriority().getId()));
         createMultiPartRequest(param);
 
-        bindRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -65,7 +65,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", String.valueOf(idee.getPriority().getId()));
         createMultiPartRequest(param);
 
-        bindRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        bindPostRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
@@ -83,7 +83,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("priority", String.valueOf(2));
         createMultiPartRequest(param);
 
-        bindRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(-42));
+        bindPostRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(-42));
         StringServiceResponse resp = doTestServicePost();
 
         assertFalse(resp.isOK());
@@ -111,7 +111,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("type", "");
         param.put("priority", 2 + "");
         createMultiPartRequest(param);
-        bindRequestParam(ModifyIdea.IDEE_ID_PARAM, id + "");
+        bindPostRequestParam(ModifyIdea.IDEE_ID_PARAM, id + "");
         StringServiceResponse resp = doTestServicePost();
 
         assertTrue(resp.isOK());
@@ -143,7 +143,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         param.put("text", "test notif when birthday is close");
         param.put("type", "");
         param.put("priority", 2 + "");
-        bindRequestParam(ModifyIdea.IDEE_ID_PARAM, id + "");
+        bindPostRequestParam(ModifyIdea.IDEE_ID_PARAM, id + "");
 
         // Then a first modification creates a notification
         createMultiPartRequest(param);

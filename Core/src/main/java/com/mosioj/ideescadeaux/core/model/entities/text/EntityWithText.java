@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.core.model.entities.text;
 
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.utils.Escaper;
-import org.apache.commons.text.StringEscapeUtils;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -21,7 +20,7 @@ public abstract class EntityWithText {
     /** Le text échappé de l'utilisateur, converti en markdown. */
     @Transient
     @Expose
-    private String htmlText;
+    protected String htmlText;
 
     @PostLoad
     public void textPostLoad() {
@@ -47,8 +46,6 @@ public abstract class EntityWithText {
      * @param text The raw text value.
      */
     public void setText(String text) {
-        text = StringEscapeUtils.unescapeHtml4(text);
-        text = Escaper.escapeIdeaText(text);
-        this.text = Escaper.transformSmileyToCode(text);
+        this.text = Escaper.transformSmileyToCode(Escaper.escapeIdeaText(text));
     }
 }

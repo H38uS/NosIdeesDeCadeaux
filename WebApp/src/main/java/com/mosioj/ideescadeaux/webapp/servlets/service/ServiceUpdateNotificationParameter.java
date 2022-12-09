@@ -27,8 +27,8 @@ public class ServiceUpdateNotificationParameter extends ServicePost<AllAccessToP
     @Override
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
-        String name = ParametersUtils.readAndEscape(request, "name");
-        String value = ParametersUtils.readAndEscape(request, "value");
+        String name = ParametersUtils.getPOSTParameterAsString(request, "name");
+        String value = ParametersUtils.getPOSTParameterAsString(request, "value");
 
         String message = "";
         try {
