@@ -18,10 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/mes_reservations")
@@ -45,7 +42,7 @@ public class ServiceMesReservations extends ServiceGet<AllAccessToPostAndGet> {
 
         // All ideas for which we do participate
         logger.trace("[Perf] Récupération des idées où je participe...");
-        List<Idee> idees = IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne);
+        Set<Idee> idees = IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne);
 
         // Grouped by owners
         logger.trace("[Perf] OK ! Cela concerne {} idées. Groupage par owner...", idees.size());

@@ -118,7 +118,7 @@ public class IdeaLogic {
     public static List<OwnerIdeas> getPersonsIdeasFromUsers(User connectedUser, List<User> users, Device device) {
         return users.stream()
                     .map(u -> getPersonIdeasFromUser(connectedUser, device, u))
-                    .collect(Collectors.toList());
+                    .toList();
     }
 
     /**

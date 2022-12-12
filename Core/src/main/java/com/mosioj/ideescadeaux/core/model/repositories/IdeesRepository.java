@@ -12,8 +12,10 @@ import org.hibernate.Transaction;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class IdeesRepository {
@@ -48,12 +50,14 @@ public class IdeesRepository {
      * @param owner The person for which we are getting all the ideas.
      * @return The person's ideas list.
      */
-    public static List<Idee> getIdeasOf(User owner) {
+    public static Set<Idee> getIdeasOf(User owner) {
         final String query = getIdeaBaseSelect() +
                              " where i.owner = :owner " +
                              "   and coalesce(i.status, 'THERE') <> 'DELETED' " +
                              " order by p.order desc, i.text, i.lastModified desc, i.id desc";
-        return HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class).setParameter("owner", owner).list());
+        return new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
+                                                              .setParameter("owner", owner)
+                                                              .list()));
     }
 
     /**
@@ -63,19 +67,21 @@ public class IdeesRepository {
      * @param owner The person for which we are getting all the ideas.
      * @return The person's ideas list.
      */
-    public static List<Idee> getDeletedIdeasOf(User owner) {
+    public static Set<Idee> getDeletedIdeasOf(User owner) {
         final String query = getIdeaBaseSelect() +
                              "where i.owner = :owner " +
                              "  and coalesce(i.status, 'THERE') = 'DELETED' " +
                              "order by i.lastModified desc, i.id desc";
-        return HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class).setParameter("owner", owner).list());
+        return new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
+                                                              .setParameter("owner", owner)
+                                                              .list()));
     }
 
     /**
      * @param thisOne The person.
      * @return All the ideas where this user has a booking, or belongs to a group or a sub part.
      */
-    public static List<Idee> getIdeasWhereIDoParticipateIn(User thisOne) {
+    public static Set<Idee> getIdeasWhereIDoParticipateIn(User thisOne) {
 
         long start = System.nanoTime();
 
@@ -103,9 +109,9 @@ public class IdeesRepository {
                     )
                 """;
 
-        List<Idee> booked = HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
-                                                             .setParameter("user", thisOne)
-                                                             .list());
+        Set<Idee> booked = new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
+                                                                          .setParameter("user", thisOne)
+                                                                          .list()));
 
         // - Qu'on a sous-réservé
         // FIXME continuer à tout mettre dès qu'on a mis ça dans une entité hibernate
@@ -114,7 +120,7 @@ public class IdeesRepository {
         // Combining the three
         booked.addAll(subBooked);
 
-        final List<Idee> ideas = booked.stream().filter(i -> !i.isDeleted()).collect(Collectors.toList());
+        final Set<Idee> ideas = booked.stream().filter(i -> !i.isDeleted()).collect(Collectors.toSet());
         long end = System.nanoTime();
         logger.debug(MessageFormat.format("Query executed in {0} ms for user {1}", (end - start) / 1000000L, thisOne));
 

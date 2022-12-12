@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/idee/historique")
@@ -36,7 +37,7 @@ public class ServiceHistoriqueIdee extends ServiceGet<AllAccessToPostAndGet> {
         int firstRow = PAGES_HELPER.getFirstRow(request);
 
         // Building the result
-        final List<Idee> allDeletedIdeas = IdeesRepository.getDeletedIdeasOf(thisOne);
+        final Set<Idee> allDeletedIdeas = IdeesRepository.getDeletedIdeasOf(thisOne);
         final List<DecoratedWebAppIdea> ideas = allDeletedIdeas.stream()
                                                                .map(i -> new DecoratedWebAppIdea(i, thisOne, device))
                                                                .skip(firstRow)

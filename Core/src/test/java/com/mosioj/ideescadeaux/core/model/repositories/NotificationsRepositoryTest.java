@@ -17,7 +17,7 @@ public class NotificationsRepositoryTest extends TemplateTest {
     public void shouldRightlyDetectNotificationAssertion() {
 
         // Given this notification
-        Idee idee = IdeesRepository.getIdeasOf(firefox).get(0);
+        Idee idee = IdeesRepository.getIdeasOf(firefox).stream().findFirst().orElse(null);
         IdeaGroup group = GroupIdeaRepository.getGroupDetails(2740)
                                              .or(() -> Optional.of(GroupIdeaRepository.createAGroup(300, 50, firefox)))
                                              .get();

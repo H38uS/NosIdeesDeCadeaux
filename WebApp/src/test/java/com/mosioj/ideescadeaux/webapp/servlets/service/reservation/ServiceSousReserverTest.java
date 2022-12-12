@@ -24,8 +24,9 @@ public class ServiceSousReserverTest extends AbstractTestServletWebApp {
     public void canSubBookFromTwoUsers() {
 
         // Given
-        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
+        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).stream().findFirst().orElse(null);
         IdeesRepository.toutDereserver(idee);
+        assert idee != null;
         bindPostRequestParam("idee", String.valueOf(idee.getId()));
         bindPostRequestParam("comment", "Un commentaire");
 
@@ -44,8 +45,9 @@ public class ServiceSousReserverTest extends AbstractTestServletWebApp {
     public void cannotSubBookTwice() {
 
         // Given
-        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).get(0);
+        Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox).stream().findFirst().orElse(null);
         IdeesRepository.toutDereserver(idee);
+        assert idee != null;
         bindPostRequestParam("idee", String.valueOf(idee.getId()));
         bindPostRequestParam("comment", "Un commentaire");
         doTestServicePost();

@@ -115,15 +115,6 @@ public class GroupIdeaRepository {
     }
 
     /**
-     * @param user The user that might have participated.
-     * @return All the groups this user participated in.
-     */
-    public static List<IdeaGroup> getParticipationOf(User user) {
-        final String query = getBaseSelect() + " where contents.user = :user ";
-        return HibernateUtil.doQueryFetch(s -> s.createQuery(query, IdeaGroup.class).setParameter("user", user).list());
-    }
-
-    /**
      * @param group         The booking group's id.
      * @param connectedUser The connected user.
      * @return The list of users that can contribute to this group. They must also belong to the user relationship.
