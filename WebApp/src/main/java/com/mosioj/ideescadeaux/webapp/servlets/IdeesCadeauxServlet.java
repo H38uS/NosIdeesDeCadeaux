@@ -100,6 +100,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         if (request.getRemoteUser() != null) {
             try {
                 // Mise à jour du nombre de notifications
+                // FIXME : ne fonctionne pas pour les jsp... Faudrait faire un filtre dédié
                 final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisOne));
                 ParentRelationshipRepository.getChildren(thisOne.id)
                                             .forEach(c -> count.add(NotificationsRepository.getUserNotificationCount(c)));

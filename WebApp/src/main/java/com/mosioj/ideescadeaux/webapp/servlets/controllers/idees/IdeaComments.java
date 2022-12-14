@@ -58,6 +58,7 @@ public class IdeaComments extends IdeesCadeauxGetAndPostServlet<IdeaInteraction>
     public void ideesKDoPOST(HttpServletRequest request,
                              HttpServletResponse response) throws ServletException, SQLException {
 
+        // FIXME : passer directement par EntityWithText
         // TODO faire un service
         String text = ParametersUtils.readAndEscape(request, "text", true);
 

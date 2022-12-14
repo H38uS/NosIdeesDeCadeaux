@@ -27,6 +27,7 @@ public class ServiceSousReserver extends ServicePost<IdeaInteraction> {
     @Override
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
+        // FIXME : ne plus faire ça, faire le markdown
         Idee idea = policy.getIdea();
         String comment = ParametersUtils.readAndEscape(request, "comment", true);
 
