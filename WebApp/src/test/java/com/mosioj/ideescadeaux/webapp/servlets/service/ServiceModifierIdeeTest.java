@@ -1,11 +1,13 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
+import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
@@ -33,13 +35,16 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     public void modifyingOurIdeaIsAllowed() throws SQLException, IOException {
 
         Idee idee = IdeesRepository.getIdeasOf(firefox).stream().findFirst().orElseThrow(SQLException::new);
+        Priority prio = PrioritiesRepository.getPriorities().stream().findFirst().orElse(null);
+        assert prio != null;
         final String initialText = idee.getText();
 
-        Map<String, String> param = new HashMap<>();
-        param.put("text", initialText + "aa");
-        param.put("type", "");
-        param.put("priority", String.valueOf(idee.getPriority().getId()));
-        createMultiPartRequest(param);
+        createMultiPartRequest(Map.of("text",
+                                      initialText + "aa",
+                                      "type",
+                                      "",
+                                      "priority",
+                                      String.valueOf(prio.getId())));
 
         bindPostRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
@@ -94,7 +99,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     @Test
     public void testModifyRemovesCorrectNotification() throws SQLException, IOException {
 
-        int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
+        int id = ds.selectInt("select max(id) from IDEES where owner = ? and status <> 'DELETED'", _OWNER_ID_).orElseThrow(SQLException::new);
         String newText = "Idee modifiee le " + new Date();
         Idee idee = IdeesRepository.getIdea(id).orElseThrow(SQLException::new);
         assertNotEquals(newText, idee.getText());
@@ -138,7 +143,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
                                            .hasAny());
 
         // ... and the user has an idea and a modification form
-        int id = ds.selectInt("select max(id) from IDEES where owner = ?", _OWNER_ID_).orElseThrow(SQLException::new);
+        int id = ds.selectInt("select max(id) from IDEES where owner = ? and status <> 'DELETED'", _OWNER_ID_).orElseThrow(SQLException::new);
         Map<String, String> param = new HashMap<>();
         param.put("text", "test notif when birthday is close");
         param.put("type", "");
