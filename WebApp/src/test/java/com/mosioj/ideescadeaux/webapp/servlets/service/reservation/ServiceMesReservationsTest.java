@@ -2,6 +2,7 @@ package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.EntityWithText;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -35,7 +37,11 @@ public class ServiceMesReservationsTest extends AbstractTestServletWebApp {
         assertEquals("test@toto.com", first.getOwner().email);
         assertEquals("Test@toto.com", first.getOwner().name);
         assertEquals(4, first.getOwner().id);
-        assertEquals("<p>reservation</p>", first.getIdeas().get(0).getIdee().getHtml().trim());
+        assertEquals(Optional.of("<p>reservation</p>"), first.getIdeas().stream().map(DecoratedWebAppIdea::getIdee)
+                                                             .map(EntityWithText::getHtml)
+                                                             .map(String::trim)
+                                                             .filter("<p>reservation</p>"::equals)
+                                                             .findFirst());
     }
 
     @Test

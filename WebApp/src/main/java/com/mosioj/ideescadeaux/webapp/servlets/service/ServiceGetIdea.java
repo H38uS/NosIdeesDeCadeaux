@@ -33,7 +33,7 @@ public class ServiceGetIdea extends ServiceGet<CanGetFriendsOrOwnNotSurpriseIdea
         Idee idee = policy.getIdea();
 
         // Decorated it
-        DecoratedWebAppIdea decorated = new DecoratedWebAppIdea(idee, thisOne, device);
+        DecoratedWebAppIdea decorated = toDecoratedIdea(idee);
 
         // Writing answer
         buildResponse(response, ServiceResponse.ok(decorated, thisOne));

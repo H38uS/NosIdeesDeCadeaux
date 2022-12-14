@@ -3,8 +3,8 @@ package com.mosioj.ideescadeaux.webapp.entities;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationRequestsRepository;
+import com.mosioj.ideescadeaux.webapp.repositories.IdeasWithInfoRepository;
 
 import javax.persistence.Transient;
 import java.util.Objects;
@@ -38,17 +38,17 @@ public class DecoratedWebAppUser {
         isInMyNetwork = associationExists(user, connectedUser);
         readableBirthday = user.getBirthdayAsString();
         hasSentARequest = UserRelationRequestsRepository.associationExists(connectedUser, user);
-        this.hasBookedOneOfItsIdeas = IdeesRepository.getIdeasWhereIDoParticipateIn(connectedUser)
-                                                     .parallelStream()
-                                                     .map(Idee::getOwner)
-                                                     .map(user::equals)
-                                                     .filter(Boolean.TRUE::equals)
-                                                     .findFirst()
-                                                     .orElse(false);
+        this.hasBookedOneOfItsIdeas = IdeasWithInfoRepository.getIdeasWhereIDoParticipateIn(connectedUser)
+                                                             .parallelStream()
+                                                             .map(Idee::getOwner)
+                                                             .map(user::equals)
+                                                             .filter(Boolean.TRUE::equals)
+                                                             .findFirst()
+                                                             .orElse(false);
     }
 
     /**
-     * Used in several JSP, impossible to delete.
+     * Used in several JSP, impossible to delete. FIXME faire un service pour supprimer
      *
      * @return True if the connected user has booked one of this user ideas, or is participating in a group.
      */

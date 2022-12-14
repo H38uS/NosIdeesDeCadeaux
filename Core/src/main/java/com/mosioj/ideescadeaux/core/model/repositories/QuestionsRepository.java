@@ -40,18 +40,6 @@ public class QuestionsRepository {
         return HibernateUtil.doQueryFetch(s -> s.createQuery(query, User.class).setParameter("idea", idea).list());
     }
 
-    public static int getNbQuestions(Idee idea) {
-        final String query = """
-                 select count(*)
-                   from QUESTIONS
-                  where idea = :idea
-                """;
-        return HibernateUtil.doQuerySingle(s -> s.createQuery(query, Long.class)
-                                                 .setParameter("idea", idea)
-                                                 .uniqueResult())
-                            .intValue();
-    }
-
     /**
      * @param idea The idea id.
      * @return The list of comment on this idea.

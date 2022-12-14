@@ -12,7 +12,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 
 public class SousReservationRepository extends AbstractRepository {
 
@@ -46,21 +45,6 @@ public class SousReservationRepository extends AbstractRepository {
                                                    SousReservationColumns.USER_ID),
                               idee,
                               user.id);
-    }
-
-    /**
-     * @param user The user.
-     * @return The list of ideas the user is participating in.
-     */
-    public static List<Idee> getMySubBooking(User user) {
-
-        final String query = "select IDEE_ID from SOUS_RESERVATION where USER_ID = ?";
-        List<Integer> res = HibernateUtil.doQueryFetch(s -> {
-            NativeQuery<Integer> sqlQuery = s.createSQLQuery(query);
-            sqlQuery.setParameter(1, user.id);
-            return sqlQuery.list();
-        });
-        return res.stream().map(IdeesRepository::getIdea).filter(Optional::isPresent).map(Optional::get).toList();
     }
 
     public static void sousReserver(int idea, int userId, String comment) {

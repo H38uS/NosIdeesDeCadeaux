@@ -8,7 +8,6 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.springframework.mobile.device.Device;
@@ -42,12 +41,12 @@ public class DecoratedWebAppIdea {
         final boolean isOwnerByConnectedUser = connectedUser.equals(idee.getOwner());
 
         this.idee = idee;
-        hasComment = computeHasComment(isOwnerByConnectedUser, idee);
-        hasQuestion = QuestionsRepository.getNbQuestions(idee) > 0;
+        hasComment = computeHasComment(isOwnerByConnectedUser);
+        hasQuestion = idee.getQuestions().size() > 0;
         hasAskedIfUpToDate = IsUpToDateQuestionsRepository.associationExists(idee, connectedUser);
 
         // calcul de la display class
-        displayClass = computeDisplayClass(idee, connectedUser);
+        displayClass = computeDisplayClass(connectedUser);
 
         if (isOwnerByConnectedUser) {
             idee.maskBookingInformation();
@@ -64,7 +63,7 @@ public class DecoratedWebAppIdea {
         }
     }
 
-    private boolean computeHasComment(boolean isOwnerByConnectedUser, Idee idee) {
+    private boolean computeHasComment(boolean isOwnerByConnectedUser) {
         if (isOwnerByConnectedUser) {
             return false;
         }
@@ -72,11 +71,10 @@ public class DecoratedWebAppIdea {
     }
 
     /**
-     * @param idee          The idea.
      * @param connectedUser The connected user.
      * @return The computed display class.
      */
-    private String computeDisplayClass(Idee idee, User connectedUser) {
+    private String computeDisplayClass(User connectedUser) {
 
         // S'il s'agit de l'idée de l'utilisateur => pas de display class
         if (connectedUser.equals(idee.getOwner())) {

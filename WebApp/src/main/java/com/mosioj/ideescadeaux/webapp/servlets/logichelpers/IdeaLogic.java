@@ -4,11 +4,11 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.repositories.IdeasWithInfoRepository;
 import com.mosioj.ideescadeaux.webapp.utils.validators.ValidatorBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class IdeaLogic {
 
@@ -130,11 +129,9 @@ public class IdeaLogic {
      * @return Those users as their ideas in a single list.
      */
     private static OwnerIdeas getPersonIdeasFromUser(User connectedUser, Device device, User user) {
-        Stream<DecoratedWebAppIdea> ideas = IdeesRepository.getIdeasOf(user)
-                                                           .parallelStream()
-                                                           .map(i -> new DecoratedWebAppIdea(i,
-                                                                                             connectedUser,
-                                                                                             device));
+        var ideas = IdeasWithInfoRepository.getIdeasOf(user)
+                                           .parallelStream()
+                                           .map(i -> new DecoratedWebAppIdea(i, connectedUser, device));
         if (connectedUser.equals(user)) {
             // Filter out the surprise of the connected user
             ideas = ideas.filter(i -> !i.getIdee().isASurprise());

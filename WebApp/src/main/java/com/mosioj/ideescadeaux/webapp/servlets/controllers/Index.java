@@ -1,10 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.MessagesAccueilRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppUser;
+import com.mosioj.ideescadeaux.webapp.repositories.IdeasWithInfoRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.IdeesCadeauxGetServlet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
 
     public static final int NB_DAYS_MAX_BEFORE_BIRTHDAY = 20;
-    private static final long serialVersionUID = -8386214705432810179L;
     private static final String VIEW_URL = "/protected/index.jsp";
 
     public Index() {
@@ -32,10 +31,11 @@ public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
     public void ideesKDoGET(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
 
         User me = thisOne;
-        req.setAttribute("no_birth_date_set", !me.getBirthday().isPresent());
+        req.setAttribute("no_birth_date_set", me.getBirthday().isEmpty());
 
         // Birthday messages
-        List<DecoratedWebAppUser> friends = UserRelationsRepository.getCloseBirthday(thisOne, NB_DAYS_MAX_BEFORE_BIRTHDAY)
+        List<DecoratedWebAppUser> friends = UserRelationsRepository.getCloseBirthday(thisOne,
+                                                                                     NB_DAYS_MAX_BEFORE_BIRTHDAY)
                                                                    .stream()
                                                                    .map(u -> new DecoratedWebAppUser(u, thisOne))
                                                                    .collect(Collectors.toList());
@@ -56,7 +56,7 @@ public class Index extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
         }
 
         // All ideas for which we do participate
-        req.setAttribute("nb_of_reservations", IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne).size());
+        req.setAttribute("nb_of_reservations", IdeasWithInfoRepository.getIdeasWhereIDoParticipateIn(thisOne).size());
 
         RootingsUtils.rootToPage(VIEW_URL, req, resp);
     }

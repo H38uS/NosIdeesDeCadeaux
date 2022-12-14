@@ -8,10 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Entity(name = "IDEES")
 public class Idee extends EntityWithText {
@@ -75,6 +72,9 @@ public class Idee extends EntityWithText {
     @Column(length = 50)
     public String status;
 
+    @OneToMany(mappedBy = "idea")
+    private Set<Question> questions;
+
     // ===========================
     // +++++++++++++++++++++++++++
     // Other fields, non DB stored
@@ -93,13 +93,6 @@ public class Idee extends EntityWithText {
     @Transient
     @Expose
     public boolean hasBeenDeleted;
-
-    /**
-     * Class constructor.
-     */
-    public Idee() {
-        // For Hibernate
-    }
 
     @PostLoad
     public void postLoad() {
@@ -252,6 +245,13 @@ public class Idee extends EntityWithText {
      */
     public Optional<IdeaGroup> getGroup() {
         return Optional.ofNullable(group);
+    }
+
+    /**
+     * @return The question list on this idea, if any.
+     */
+    public Set<Question> getQuestions() {
+        return questions;
     }
 
     /**

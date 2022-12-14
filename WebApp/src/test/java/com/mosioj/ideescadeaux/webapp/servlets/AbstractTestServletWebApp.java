@@ -4,6 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import org.junit.After;
+import org.springframework.mobile.device.Device;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -104,5 +105,9 @@ public abstract class AbstractTestServletWebApp extends WebAppTemplateTest {
 
     public void bindRequestParamMap(Map<String, String[]> parameters) {
         TestContext.getInstance().bindRequestParamMap(parameters);
+    }
+
+    public Device getDevice() {
+        return TestContext.getInstance().getDevice();
     }
 }

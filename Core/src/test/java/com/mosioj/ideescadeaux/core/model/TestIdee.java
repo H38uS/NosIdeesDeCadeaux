@@ -18,7 +18,7 @@ public class TestIdee extends TemplateTest {
         Assert.assertEquals("totototo", idee.getTextSummary(8));
         Assert.assertEquals("toto...", idee.getTextSummary(7));
 
-        idee = ideaFactory("toto &lt; &quot;6&quot;");
+        idee = ideaFactory("toto < '6'");
         Assert.assertEquals("toto...", idee.getTextSummary(7));
         Assert.assertEquals("toto <...", idee.getTextSummary(9));
 

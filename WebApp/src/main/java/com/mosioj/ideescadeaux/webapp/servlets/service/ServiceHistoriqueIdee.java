@@ -1,9 +1,7 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
-import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.repositories.IdeasWithInfoRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/idee/historique")
@@ -37,12 +34,12 @@ public class ServiceHistoriqueIdee extends ServiceGet<AllAccessToPostAndGet> {
         int firstRow = PAGES_HELPER.getFirstRow(request);
 
         // Building the result
-        final Set<Idee> allDeletedIdeas = IdeesRepository.getDeletedIdeasOf(thisOne);
-        final List<DecoratedWebAppIdea> ideas = allDeletedIdeas.stream()
-                                                               .map(i -> new DecoratedWebAppIdea(i, thisOne, device))
-                                                               .skip(firstRow)
-                                                               .limit(PAGES_HELPER.getMaxNumberOfResults())
-                                                               .collect(Collectors.toList());
+        final var allDeletedIdeas = IdeasWithInfoRepository.getDeletedIdeasOf(thisOne);
+        final var ideas = allDeletedIdeas.stream()
+                                         .map(this::toDecoratedIdea)
+                                         .skip(firstRow)
+                                         .limit(PAGES_HELPER.getMaxNumberOfResults())
+                                         .collect(Collectors.toList());
         final List<OwnerIdeas> ownerIdeas = Collections.singletonList(OwnerIdeas.from(thisOne, ideas));
 
         // Only one page : only fetching the list of one user...

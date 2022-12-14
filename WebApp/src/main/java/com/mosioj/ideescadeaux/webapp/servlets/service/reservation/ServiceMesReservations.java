@@ -1,10 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service.reservation;
 
-import com.mosioj.ideescadeaux.core.model.entities.User;
-import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.entities.OwnerIdeas;
+import com.mosioj.ideescadeaux.webapp.repositories.IdeasWithInfoRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.controllers.relations.Page;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGet;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.generic.AllAccessToPostAndGet;
@@ -18,7 +16,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/mes_reservations")
@@ -42,14 +42,14 @@ public class ServiceMesReservations extends ServiceGet<AllAccessToPostAndGet> {
 
         // All ideas for which we do participate
         logger.trace("[Perf] Récupération des idées où je participe...");
-        Set<Idee> idees = IdeesRepository.getIdeasWhereIDoParticipateIn(thisOne);
+        var idees = IdeasWithInfoRepository.getIdeasWhereIDoParticipateIn(thisOne);
 
         // Grouped by owners
         logger.trace("[Perf] OK ! Cela concerne {} idées. Groupage par owner...", idees.size());
-        Map<User, List<DecoratedWebAppIdea>> userToIdeas = idees.parallelStream()
-                                                                .filter(i -> !thisOne.equals(i.getOwner()))
-                                                                .map(i -> new DecoratedWebAppIdea(i, thisOne, device))
-                                                                .collect(Collectors.groupingBy(DecoratedWebAppIdea::getIdeaOwner));
+        var userToIdeas = idees.parallelStream()
+                               .filter(i -> !thisOne.equals(i.getOwner()))
+                               .map(this::toDecoratedIdea)
+                               .collect(Collectors.groupingBy(DecoratedWebAppIdea::getIdeaOwner));
 
         logger.trace("[Perf] OK ! Ajout des idées par owner...");
         List<OwnerIdeas> ownerIdeas = new ArrayList<>();

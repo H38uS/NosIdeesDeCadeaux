@@ -100,6 +100,12 @@ public class TestContext {
         when(request.getRequestDispatcher("/protected/erreur_parametre_ou_droit.jsp")).thenReturn(dispatcher);
     }
 
+    /**
+     * @return The emulated device.
+     */
+    public Device getDevice() {
+        return device;
+    }
 
     /**
      * @return The only allowed instance.

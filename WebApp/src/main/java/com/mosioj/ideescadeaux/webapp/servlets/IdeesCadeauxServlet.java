@@ -1,8 +1,10 @@
 package com.mosioj.ideescadeaux.webapp.servlets;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
+import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.Compteur;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
@@ -195,5 +197,13 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         if (connectedUser != null) {
             thisOne = (User) connectedUser;
         }
+    }
+
+    /**
+     * @param idee The raw idea.
+     * @return The new decorated idea.
+     */
+    public DecoratedWebAppIdea toDecoratedIdea(Idee idee) {
+        return new DecoratedWebAppIdea(idee, thisOne, device);
     }
 }

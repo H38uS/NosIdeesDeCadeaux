@@ -1,8 +1,8 @@
 package com.mosioj.ideescadeaux.webapp.servlets.securitypolicy;
 
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.webapp.repositories.IdeasWithInfoRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.accessor.IdeaSecurityChecker;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
@@ -36,7 +36,7 @@ public final class CanGetFriendsOrOwnNotSurpriseIdea extends SecurityPolicy impl
     private boolean canInteractWithIdea(HttpServletRequest request) {
 
         idea = ParametersUtils.readInt(request, ideaParameter)
-                              .flatMap(IdeesRepository::getIdea)
+                              .flatMap(IdeasWithInfoRepository::getIdea)
                               .orElse(null);
         if (idea == null) {
             lastReason = "Aucune idée trouvée en paramètre.";
