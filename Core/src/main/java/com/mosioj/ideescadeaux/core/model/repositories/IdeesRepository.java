@@ -11,7 +11,7 @@ import org.hibernate.Transaction;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -55,9 +55,9 @@ public class IdeesRepository {
                              " where i.owner = :owner " +
                              "   and coalesce(i.status, 'THERE') <> 'DELETED' " +
                              " order by p.order desc, i.text, i.lastModified desc, i.id desc";
-        return new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
-                                                              .setParameter("owner", owner)
-                                                              .list()));
+        return new LinkedHashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
+                                                                  .setParameter("owner", owner)
+                                                                  .list()));
     }
 
     /**

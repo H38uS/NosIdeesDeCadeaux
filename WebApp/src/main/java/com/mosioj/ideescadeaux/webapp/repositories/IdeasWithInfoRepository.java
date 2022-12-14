@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.query.NativeQuery;
 
 import java.text.MessageFormat;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -50,9 +50,9 @@ public class IdeasWithInfoRepository {
                              " where i.owner = :owner " +
                              "   and coalesce(i.status, 'THERE') <> 'DELETED' " +
                              " order by p.order desc, i.text, i.lastModified desc, i.id desc";
-        return new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
-                                                              .setParameter("owner", owner)
-                                                              .list()));
+        return new LinkedHashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
+                                                                    .setParameter("owner", owner)
+                                                                    .list()));
     }
 
 
@@ -68,9 +68,9 @@ public class IdeasWithInfoRepository {
                              "where i.owner = :owner " +
                              "  and coalesce(i.status, 'THERE') = 'DELETED' " +
                              "order by i.lastModified desc, i.id desc";
-        return new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
-                                                              .setParameter("owner", owner)
-                                                              .list()));
+        return new LinkedHashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
+                                                                    .setParameter("owner", owner)
+                                                                    .list()));
     }
 
 
@@ -114,9 +114,9 @@ public class IdeasWithInfoRepository {
                     )
                 """;
 
-        Set<Idee> booked = new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
-                                                                          .setParameter("user", thisOne)
-                                                                          .list()));
+        Set<Idee> booked = new LinkedHashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, Idee.class)
+                                                                                .setParameter("user", thisOne)
+                                                                                .list()));
 
         // - Qu'on a sous-réservé
         // FIXME continuer à tout mettre dès qu'on a mis ça dans une entité hibernate
