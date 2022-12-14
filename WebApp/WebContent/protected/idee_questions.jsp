@@ -36,10 +36,6 @@
             </script>
         </div>
 
-        <c:if test="${not empty success}">
-            Votre nouveau commentaire a bien été ajouté.
-        </c:if>
-
         <div>
             <c:choose>
                 <c:when test="${isOwner}">
@@ -50,7 +46,7 @@
                 </c:otherwise>
             </c:choose>
             <div class="container">
-                <form action="protected/idee_questions" method="post">
+                <div>
                     <div class="form-group">
                         <div class="d-none d-md-inline-block">
                             <c:choose>
@@ -62,48 +58,25 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-                        <textarea id="text" class="form-control" name="text" cols="70" rows="6" required="required" placeholder="Votre question / réponse. Visible de tous (y compris le propriétaire de l'idée)."></textarea>
+                        <textarea
+                            id="text"
+                            class="form-control"
+                            name="text"
+                            cols="70"
+                            rows="6"
+                            required="required"
+                            placeholder="Votre question / réponse. Visible de tous (y compris le propriétaire de l'idée)."></textarea>
                     </div>
                     <div class="center">
-                        <button class="btn btn-primary" type="submit" name="submit">Ajouter !</button>
+                        <button id="postMessage" class="btn btn-primary" type="submit" name="submit">Ajouter !</button>
                     </div>
                     <input type="hidden" name="idee" value="${idee.id}" />
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                </form>
+                </div>
             </div>
         </div>
 
         <h3 class="mt-2">Questions / réponses existantes</h3>
-        <div class="container">
-            <c:choose>
-                <c:when test="${empty comments}">
-                    Aucun commentaire sur l'idée pour le moment.
-                </c:when>
-                <c:otherwise>
-                    <c:forEach var="comment" items="${comments}" >
-                        <c:choose>
-                            <c:when test="${connected_user.id == comment.writtenBy.id}">
-                                <div class="comment comment_mine">
-                                    <div class="comment_header_mine">Posté par vous le ${comment.time} - le <a href="protected/supprimer_question?id=${comment.id}">supprimer</a></div>
-                                    <div class="comment_text">${comment.getHtml()}</div>
-                                </div>
-                            </c:when>
-                            <c:when test="${comment.writtenBy.id == idee.owner.id}">
-                                <div class="comment comment_owner">
-                                    <div class="comment_header_owner">Posté par ${idee.owner.name} le ${comment.time}</div>
-                                    <div class="comment_text">${comment.getHtml()}</div>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="comment comment_other">
-                                    <div class="comment_header_other">Posté par quelqu'un le ${comment.time}</div>
-                                    <div class="comment_text">${comment.getHtml()}</div>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
-        </div>
+        <div class="container" id="res_questions"></div>
+        <script src="resources/js/questions.js" type="text/javascript"></script>
     </jsp:body>
 </t:normal_protected>

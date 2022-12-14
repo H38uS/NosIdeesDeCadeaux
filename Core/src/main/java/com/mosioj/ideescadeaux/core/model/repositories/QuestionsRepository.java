@@ -19,9 +19,12 @@ public class QuestionsRepository {
      * @param user The user.
      * @param idea The idea.
      * @param text The comment text.
+     * @return The saved question.
      */
-    public static void addQuestion(User user, Idee idea, String text) {
-        HibernateUtil.saveit(Question.getIt(user, idea, text));
+    public static Question addQuestion(User user, Idee idea, String text) {
+        final Question question = Question.getIt(user, idea, text);
+        HibernateUtil.saveit(question);
+        return question;
     }
 
     /**

@@ -2,11 +2,14 @@ package com.mosioj.ideescadeaux.core.model.entities.text;
 
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity(name = "QUESTIONS")
 public class Question extends EntityWithText {
@@ -14,7 +17,8 @@ public class Question extends EntityWithText {
     /** Internal id */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Expose
+    protected int id;
 
     /** The idea on which this question is written */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,6 +63,20 @@ public class Question extends EntityWithText {
     }
 
     /**
+     * @return When this message was created.
+     */
+    public Optional<LocalDateTime> getCreationDate() {
+        return Optional.ofNullable(creationDate);
+    }
+
+    /**
+     * @return When this message was last updated.
+     */
+    public Optional<LocalDateTime> getUpdatedAt() {
+        return Optional.ofNullable(updatedAt);
+    }
+
+    /**
      * @param user The user who posted a new question/answer.
      * @param idea The idea on which this question is posted.
      * @param text The message text.
@@ -72,4 +90,21 @@ public class Question extends EntityWithText {
         return question;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Question question = (Question) o;
+
+        return new EqualsBuilder().append(id, question.id)
+                                  .append(writtenBy, question.writtenBy)
+                                  .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(writtenBy).toHashCode();
+    }
 }
