@@ -58,7 +58,7 @@ public class EmailSender {
                 logger.info("Sent message successfully....");
 
             } catch (MessagingException | UnsupportedEncodingException mex) {
-                logger.error(mex);
+                logger.warn(mex);
             }
         });
     }
