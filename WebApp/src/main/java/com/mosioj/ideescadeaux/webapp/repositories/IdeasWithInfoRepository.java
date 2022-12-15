@@ -36,6 +36,7 @@ public class IdeasWithInfoRepository {
                    left join fetch i.categorie
                    left join fetch i.priority p
                    left join fetch i.questions
+                   left join fetch i.comments
                 """;
     }
 

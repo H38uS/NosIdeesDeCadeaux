@@ -6,7 +6,6 @@ import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
@@ -41,7 +40,7 @@ public class DecoratedWebAppIdea {
         final boolean isOwnerByConnectedUser = connectedUser.equals(idee.getOwner());
 
         this.idee = idee;
-        hasComment = computeHasComment(isOwnerByConnectedUser);
+        hasComment = !isOwnerByConnectedUser && idee.getComments().size() > 0;
         hasQuestion = idee.getQuestions().size() > 0;
         hasAskedIfUpToDate = IsUpToDateQuestionsRepository.associationExists(idee, connectedUser);
 
@@ -61,13 +60,6 @@ public class DecoratedWebAppIdea {
                                                                 "px\"");
             }
         }
-    }
-
-    private boolean computeHasComment(boolean isOwnerByConnectedUser) {
-        if (isOwnerByConnectedUser) {
-            return false;
-        }
-        return CommentsRepository.getNbComments(idee.getId()) > 0;
     }
 
     /**

@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.UserRole;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.UsersColumns;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -181,22 +180,26 @@ public class UsersRepository {
 
         final String theNameToMatch = HibernateUtil.sanitizeSQLLike(nameToMatch);
 
-        StringBuilder queryText = new StringBuilder();
-        queryText.append("select count(*)");
-        queryText.append("  from USERS u ");
-        queryText.append(MessageFormat.format(" where ({0} like :name ESCAPE ''!''   ", UsersColumns.NAME));
-        queryText.append(MessageFormat.format("    or  {0} like :name ESCAPE ''!'' ) ", UsersColumns.EMAIL));
-        queryText.append(MessageFormat.format("   and {0} <> :id ", UsersColumns.ID));
+        String queryText = """
+                    select count(*)
+                      from USERS u
+                     where (name  like :name ESCAPE ''!'' or  email like :name ESCAPE ''!'' )
+                       and id <> :id
+                """;
         if (selectOnlyNonFriends) {
-            queryText.append("   and not exists ( ");
-            queryText.append(" select 1 from USER_RELATIONS  ");
-            queryText.append("  where first_user = :id   ");
-            queryText.append("    and second_user = u.id ");
-            queryText.append("   ) ");
+            queryText += """
+                       and not exists (
+                         select 1
+                           from USER_RELATIONS
+                          where first_user = :id
+                            and second_user = u.id
+                       )
+                    """;
         }
 
+        final String fullQuery = queryText;
         return HibernateUtil.doQuerySingle(s -> {
-            Query<Long> query = s.createQuery(queryText.toString(), Long.class);
+            Query<Long> query = s.createQuery(fullQuery, Long.class);
             query.setParameter("name", theNameToMatch);
             query.setParameter("id", userIdToSkip);
             return query.getSingleResult();
@@ -208,7 +211,7 @@ public class UsersRepository {
         final int userId = user.id;
 
         // Suppression des commentaires
-        CommentsRepository.deleteAll(userId);
+        CommentsRepository.deleteAll(user);
 
         // Suppression des notifications
         NotificationsRepository.terminator().whereOwner(user).terminates();

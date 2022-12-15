@@ -2,9 +2,11 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.text.Question;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import com.mosioj.ideescadeaux.webapp.servlets.rootservlet.ServiceGetAndPost;
@@ -16,7 +18,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_ON_IDEA;
@@ -37,13 +38,22 @@ public class ServiceQuestions extends ServiceGetAndPost<CanAskReplyToQuestions> 
 
     @Override
     public void serviceGet(HttpServletRequest request, HttpServletResponse response) {
+
+        // Get the questions
         final Idee idea = policy.getIdea();
-        List<QuestionWithFlags> questions = QuestionsRepository.getQuestionsOn(idea)
-                                                               .stream()
-                                                               .map(q -> new QuestionWithFlags(q,
-                                                                                               thisOne,
-                                                                                               idea.getOwner()))
-                                                               .toList();
+        var questions = QuestionsRepository.getQuestionsOn(idea)
+                                           .stream()
+                                           .map(q -> new QuestionWithFlags(q, thisOne, idea.getOwner()))
+                                           .toList();
+
+        // Suppression des notifications
+        NotificationsRepository.terminator()
+                               .whereOwner(thisOne)
+                               .whereType(NType.IDEA_ADDED_BY_FRIEND, NEW_QUESTION_ON_IDEA, NEW_QUESTION_TO_OWNER)
+                               .whereIdea(idea)
+                               .terminates();
+
+        // Sending back the response
         buildResponse(response, ServiceResponse.ok(questions, thisOne));
     }
 

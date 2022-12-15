@@ -98,13 +98,11 @@ public class Question extends EntityWithText {
 
         Question question = (Question) o;
 
-        return new EqualsBuilder().append(id, question.id)
-                                  .append(writtenBy, question.writtenBy)
-                                  .isEquals();
+        return new EqualsBuilder().append(id, question.id).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(writtenBy).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).toHashCode();
     }
 }

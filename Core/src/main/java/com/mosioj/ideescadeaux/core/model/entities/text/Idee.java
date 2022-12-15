@@ -75,6 +75,9 @@ public class Idee extends EntityWithText {
     @OneToMany(mappedBy = "idea")
     private Set<Question> questions;
 
+    @OneToMany(mappedBy = "idea")
+    private Set<Comment> comments;
+
     // ===========================
     // +++++++++++++++++++++++++++
     // Other fields, non DB stored
@@ -252,6 +255,13 @@ public class Idee extends EntityWithText {
      */
     public Set<Question> getQuestions() {
         return questions;
+    }
+
+    /**
+     * @return The comment list on this idea, if any.
+     */
+    public Set<Comment> getComments() {
+        return comments;
     }
 
     /**

@@ -1,41 +1,40 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
+import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.entities.text.Question;
+import com.mosioj.ideescadeaux.core.model.repositories.CommentsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.QuestionsRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.List;
 
-import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.IDEA_ADDED_BY_FRIEND;
-import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.NEW_QUESTION_TO_OWNER;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class ServiceQuestionsTest extends AbstractTestServletWebApp {
+public class ServiceCommentsTest extends AbstractTestServletWebApp {
 
-    public ServiceQuestionsTest() {
-        super(new ServiceQuestions());
+
+    public ServiceCommentsTest() {
+        super(new ServiceComments());
     }
 
     @Test
-    public void testAjouterQuestion() throws SQLException {
+    public void testAjouterComment() throws SQLException {
 
         // Given
         Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
                                                     .withOwner(friendOfFirefox)
-                                                    .withText("sans questions")
+                                                    .withText("sans comments")
                                                     .withPriority(p));
-        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
-        bindPostRequestParam(ServiceQuestions.IDEA_ID_PARAM, idee.getId());
+        assertEquals(0, CommentsRepository.getCommentsOn(idee).size());
+        bindPostRequestParam(ServiceComments.IDEA_ID_PARAM, idee.getId());
         bindPostRequestParam("text", "Voilou voilou");
 
         // When
@@ -43,7 +42,7 @@ public class ServiceQuestionsTest extends AbstractTestServletWebApp {
 
         // Then
         assertTrue(resp.isOK());
-        final List<Question> found = QuestionsRepository.getQuestionsOn(idee);
+        final var found = CommentsRepository.getCommentsOn(idee);
         assertEquals(1, found.size());
         assertEquals("Voilou voilou", found.get(0).getText());
         assertEquals("<p>Voilou voilou</p>\n", found.get(0).getHtml());
@@ -51,27 +50,26 @@ public class ServiceQuestionsTest extends AbstractTestServletWebApp {
     }
 
     @Test
-    public void testAjouterQuestionSurUneSurprise() throws SQLException {
+    public void testAjouterCommentSurUneSurprise() throws SQLException {
 
         // Given
         Priority p = PrioritiesRepository.getPriority(5).orElseThrow(SQLException::new);
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
                                                     .withOwner(friendOfFirefox)
-                                                    .withText("sans questions")
+                                                    .withText("sans comments")
                                                     .withPriority(p)
                                                     .withSurpriseOwner(firefox)
                                                     .withCreatedBy(firefox));
-        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
-        bindPostRequestParam(ServiceQuestions.IDEA_ID_PARAM, idee.getId());
+        assertEquals(0, CommentsRepository.getCommentsOn(idee).size());
+        bindPostRequestParam(ServiceComments.IDEA_ID_PARAM, idee.getId());
         bindPostRequestParam("text", "Voilou voilou");
 
         // When
         StringServiceResponse resp = doTestServicePost();
 
         // Then
-        assertFalse(resp.isOK());
-        // Impossible de poser une question sur une surprise !
-        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
+        assertTrue(resp.isOK());
+        assertEquals(1, CommentsRepository.getCommentsOn(idee).size());
         IdeesRepository.trueRemove(idee);
     }
 
@@ -81,9 +79,9 @@ public class ServiceQuestionsTest extends AbstractTestServletWebApp {
         // Given
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder()
                                                     .withOwner(friendOfFirefox)
-                                                    .withText("sans questions"));
-        assertEquals(0, QuestionsRepository.getQuestionsOn(idee).size());
-        bindPostRequestParam(ServiceQuestions.IDEA_ID_PARAM, idee.getId());
+                                                    .withText("sans comments"));
+        assertEquals(0, CommentsRepository.getCommentsOn(idee).size());
+        bindPostRequestParam(ServiceComments.IDEA_ID_PARAM, idee.getId());
         bindPostRequestParam("text", "Voilou voilou àîôûé\"-'(à'");
 
         // When
@@ -91,7 +89,7 @@ public class ServiceQuestionsTest extends AbstractTestServletWebApp {
 
         // Then
         assertTrue(resp.isOK());
-        final List<Question> found = QuestionsRepository.getQuestionsOn(idee);
+        final var found = CommentsRepository.getCommentsOn(idee);
         assertEquals(1, found.size());
         assertEquals("Voilou voilou àîôûé\"-'(à'", found.get(0).getText());
         assertEquals("<p>Voilou voilou àîôûé&quot;-'(à'</p>\n", found.get(0).getHtml());
@@ -105,24 +103,21 @@ public class ServiceQuestionsTest extends AbstractTestServletWebApp {
         Priority p = PrioritiesRepository.getPriority(5).orElse(null);
         assert p != null;
         Idee idea = IdeesRepository.saveTheIdea(Idee.builder()
-                                                    .withOwner(firefox)
-                                                    .withText("avec questions")
+                                                    .withOwner(friendOfFirefox)
+                                                    .withText("avec comments")
                                                     .withPriority(p));
-        QuestionsRepository.addQuestion(friendOfFirefox, idea, "mon pti com'");
+        CommentsRepository.addComment(jo3, idea, "mon pti com'");
 
-        Notification addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idea).sendItTo(firefox);
-        Notification newQuestion = NEW_QUESTION_TO_OWNER.with(friendOfFirefox, idea).sendItTo(firefox);
-        assertNotifDoesExists(addByFriend);
-        assertNotifDoesExists(newQuestion);
+        Notification newComment = NType.NEW_COMMENT_ON_IDEA.with(firefox, idea).sendItTo(firefox);
+        assertNotifDoesExists(newComment);
 
         // When
-        bindGetRequestParam(ServiceQuestions.IDEA_ID_PARAM, idea.getId());
+        bindGetRequestParam(ServiceComments.IDEA_ID_PARAM, idea.getId());
         ServiceResponse<?> resp = doTestServiceGet(ServiceResponse.class);
 
         // Then
         assertTrue(resp.isOK());
-        assertNotifDoesNotExists(addByFriend);
-        assertNotifDoesNotExists(newQuestion);
+        assertNotifDoesNotExists(newComment);
         IdeesRepository.trueRemove(idea);
     }
 }

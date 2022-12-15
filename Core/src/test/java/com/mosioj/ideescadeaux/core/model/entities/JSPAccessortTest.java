@@ -3,7 +3,6 @@ package com.mosioj.ideescadeaux.core.model.entities;
 import com.mosioj.ideescadeaux.core.TemplateTest;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
-import com.mosioj.ideescadeaux.core.model.entities.text.Comment;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 import org.apache.commons.lang3.StringUtils;
@@ -30,12 +29,6 @@ public class JSPAccessortTest extends TemplateTest {
         assertEquals("", u.getLastLogin());
         Assert.assertFalse(u.hasSetUpAnAvatar());
         assertEquals("large/default.png", u.getAvatarSrcLarge());
-    }
-
-    @Test
-    public void testJSPOnlyCommentMethods() {
-        Comment c = new Comment(42, "aa", u, 35, TS20191212_0829);
-        assertEquals("12 décembre 2019 à 08h29", c.getTime());
     }
 
     @Test
