@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -62,11 +63,17 @@ public class ParametersUtils {
     public static String getPOSTParameterAsString(HttpServletRequest request, String name) {
         String res = request.getParameter(name);
         logger.trace(MessageFormat.format("{0} is:{1}", name, res));
-        // https://cwiki.apache.org/confluence/display/TOMCAT/Character+Encoding
-        // Tomcat default encoding value is StandardCharsets.ISO_8859_1
-        // It looks like this is only for POST methods...
-        return res == null ? StringUtils.EMPTY : new String(res.getBytes(StandardCharsets.ISO_8859_1),
-                                                            StandardCharsets.UTF_8);
+        if (request.getCharacterEncoding() == null) {
+            // https://cwiki.apache.org/confluence/display/TOMCAT/Character+Encoding
+            // Tomcat default encoding value is StandardCharsets.ISO_8859_1
+            // It looks like this is only for POST methods...
+            return res == null ? StringUtils.EMPTY : new String(res.getBytes(StandardCharsets.ISO_8859_1),
+                                                                StandardCharsets.UTF_8);
+        } else {
+            Charset charset = Charset.forName(request.getCharacterEncoding());
+            return res == null ? StringUtils.EMPTY : new String(res.getBytes(charset),
+                                                                StandardCharsets.UTF_8);
+        }
     }
 
     /**
