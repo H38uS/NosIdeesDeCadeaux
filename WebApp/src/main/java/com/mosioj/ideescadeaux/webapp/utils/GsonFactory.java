@@ -3,9 +3,7 @@ package com.mosioj.ideescadeaux.webapp.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mosioj.ideescadeaux.core.utils.date.LocalDateAdapter;
-import com.mosioj.ideescadeaux.core.utils.date.TimestampAdapter;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 public class GsonFactory {
@@ -29,7 +27,6 @@ public class GsonFactory {
             instance = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                                         .setDateFormat(DATE_FORMAT)
                                         .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                                        .registerTypeAdapter(Timestamp.class, new TimestampAdapter())
                                         .create();
         }
         return instance;

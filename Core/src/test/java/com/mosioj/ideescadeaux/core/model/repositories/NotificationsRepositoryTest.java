@@ -5,6 +5,7 @@ import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.GroupIdeaRepository;
 import org.junit.Test;
 
 import java.util.Optional;

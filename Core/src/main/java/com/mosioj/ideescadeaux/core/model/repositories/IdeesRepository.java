@@ -1,9 +1,11 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.GroupIdeaContentRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.SousReservationRepository;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -117,18 +119,6 @@ public class IdeesRepository {
     }
 
     /**
-     * @param idee The idea's id.
-     * @param user The person.
-     * @return True if and only if the user has sub booked the idea.
-     */
-    public static boolean isSubBookBy(Idee idee, User user) {
-        return SousReservationRepository.getSousReservation(idee.getId())
-                                        .stream()
-                                        .map(SousReservationEntity::getUser)
-                                        .anyMatch(user::equals);
-    }
-
-    /**
      * Saves and initialize the new idea.
      *
      * @param builder The idea builder.
@@ -192,21 +182,6 @@ public class IdeesRepository {
     }
 
     /**
-     * Supprime la sous réservation de la personne.
-     *
-     * @param idee The idea.
-     * @param user The person who has previously booked a subpart of the idea.
-     */
-    public static void dereserverSousPartie(Idee idee, User user) {
-        SousReservationRepository.cancel(idee, user);
-        if (SousReservationRepository.getSousReservation(idee.getId()).size() == 0) {
-            idee.isSubBooked = "N";
-            idee.bookedOn = null;
-            HibernateUtil.update(idee);
-        }
-    }
-
-    /**
      * False if :
      * <ul>
      * <li>The idea belongs to the user</li>
@@ -223,20 +198,6 @@ public class IdeesRepository {
                idea.bookedBy == null &&
                idea.group == null &&
                "N".equals(idea.isSubBooked);
-    }
-
-    /**
-     * @param idea The idea's id.
-     * @param user The user id.
-     * @return True if and only if a sub part of the idea can be booked.
-     */
-    public static boolean canSubBook(Idee idea, User user) {
-        return canBook(idea, user) ||
-               ("Y".equals(idea.isSubBooked) &&
-                SousReservationRepository.getSousReservation(idea.getId())
-                                         .stream()
-                                         .map(SousReservationEntity::getUser)
-                                         .noneMatch(user::equals));
     }
 
     /**

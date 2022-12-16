@@ -5,10 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
@@ -30,20 +28,6 @@ public class MyDateFormatViewer extends SimpleDateFormat {
     /** Date Formatter for a day */
     private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("d MMMM")
                                                                             .withLocale(Locale.FRENCH);
-
-    /**
-     * Format the given date using ${DATETIME_DISPLAY_FORMAT}.
-     *
-     * @param pointInTime The date to format.
-     * @return The formatted date or an empty string if the date is null.
-     */
-    public static String formatMine(Instant pointInTime) {
-        // FIXME remove quand tout est passé en LocalDateTime
-        if (pointInTime == null) {
-            return StringUtils.EMPTY;
-        }
-        return formatOrElse(pointInTime.atZone(ZoneId.of("Europe/Paris")).toLocalDateTime(), StringUtils.EMPTY);
-    }
 
     /**
      * Format the given date using ${DATETIME_DISPLAY_FORMAT}.

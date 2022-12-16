@@ -1,7 +1,9 @@
 package com.mosioj.ideescadeaux.core.model.entities;
 
 import com.google.gson.annotations.Expose;
-import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.SousReservation;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.SousReservationRepository;
 import com.mosioj.ideescadeaux.core.utils.date.MyDateFormatViewer;
 
 import java.time.LocalDateTime;
@@ -31,6 +33,8 @@ public class BookingInformation {
     @Expose
     protected final String bookingReadableDate;
 
+
+
     /**
      * Class contructor.
      *
@@ -47,10 +51,10 @@ public class BookingInformation {
     }
 
     /**
-     * @param ideaId The idea identifier.
+     * @param idea The idea.
      * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
      */
-    public List<User> getBookers(int ideaId) {
+    public List<User> getBookers(Idee idea) {
         if (type == BookingType.SINGLE_PERSON) {
             return getBookingOwner().isPresent() ? Collections.singletonList(getBookingOwner().get()) : Collections.emptyList();
         }
@@ -60,9 +64,9 @@ public class BookingInformation {
             return ideaGroupContents.stream().map(IdeaGroupContent::getUser).collect(Collectors.toList());
         }
         if (type == BookingType.PARTIAL) {
-            return SousReservationRepository.getSousReservation(ideaId)
+            return SousReservationRepository.getSousReservation(idea)
                                             .stream()
-                                            .map(SousReservationEntity::getUser)
+                                            .map(SousReservation::getUser)
                                             .collect(Collectors.toList());
         }
         return Collections.emptyList();

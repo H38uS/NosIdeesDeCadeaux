@@ -1,4 +1,4 @@
-package com.mosioj.ideescadeaux.core.model.repositories;
+package com.mosioj.ideescadeaux.core.model.repositories.booking;
 
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroupContent;

@@ -3,11 +3,11 @@ package com.mosioj.ideescadeaux.webapp.entities;
 import com.google.gson.annotations.Expose;
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
-import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
+import com.mosioj.ideescadeaux.core.model.entities.text.SousReservation;
 import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.springframework.mobile.device.Device;
 
@@ -91,9 +91,9 @@ public class DecoratedWebAppIdea {
 
         // Classe lors d'une sous-réservation par au moins une personne
         if (bookingInfo.getBookingType() == BookingInformation.BookingType.PARTIAL) {
-            return SousReservationRepository.getSousReservation(idee.getId())
+            return SousReservationRepository.getSousReservation(idee)
                                             .stream()
-                                            .map(SousReservationEntity::getUser)
+                                            .map(SousReservation::getUser)
                                             .filter(connectedUser::equals)
                                             .map(u -> "booked_by_me_idea")
                                             .findFirst()

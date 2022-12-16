@@ -164,7 +164,7 @@ public class Idee extends EntityWithText {
      * @return All people that have booked this idea. Can be by direct booking, by a group, or by a partial booking.
      */
     public List<User> getBookers() {
-        return getBookingInformation().map(bi -> bi.getBookers(getId())).orElse(Collections.emptyList());
+        return getBookingInformation().map(bi -> bi.getBookers(this)).orElse(Collections.emptyList());
     }
 
     /**

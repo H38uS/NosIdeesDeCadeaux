@@ -271,7 +271,7 @@ function getMobileActionModalBodyAsHTML(connectedUser, jsonIdea) {
                 </div>
                 <div class="row align-items-center">
                     <div class="col-4 text-center pr-0">
-                        <a href="protected/sous_reserver?idee=${jsonIdea.id}" class="img">
+                        <a href="protected/detail_sous_reservation.jsp?idee=${jsonIdea.id}" class="img">
                             <img src="resources/image/sous_partie.png"
                                  class="clickable"
                                  title="Réserver une sous-partie de l'idée"
@@ -451,7 +451,7 @@ function getReservationText(connectedUser, jsonIdea) {
     } else if (jsonIdea.bookingInformation.type === "PARTIAL") {
         return `
             Une sous partie de l'idée est actuellement réservée depuis le ${jsonIdea.bookingInformation.bookingReadableDate}.
-            <a href="protected/detail_sous_reservation?idee=${jsonIdea.id}">Voir le détail.</a>
+            <a href="protected/detail_sous_reservation.jsp?idee=${jsonIdea.id}">Voir le détail.</a>
         `;
     }
     // Dernier cas: pas réservée
@@ -546,7 +546,7 @@ function getBookingIconAsHTML(connectedUser, jsonIdea) {
     } else if (jsonIdea.bookingInformation.type === "PARTIAL") {
         bookingIconDiv.append(`
             <div class="col-auto px-0">
-                <a href="protected/detail_sous_reservation?idee=${jsonIdea.id}" class="img">
+                <a href="protected/detail_sous_reservation.jsp?idee=${jsonIdea.id}" class="img">
                     <img src="resources/image/non-reserve.png"
                          title="Un sous-ensemble de cette idée est réservé. Voyez si vous pouvez compléter !"
                          alt="Sous partie de l'idée réservée"
@@ -644,7 +644,7 @@ function getActionTooltipForNonMobile(jsonIdea) {
                          title="Réserver l'idée"
                          width="${getPictureWidth()}px" />
                 </a>
-                <a href="protected/sous_reserver?idee=${jsonIdea.id}" class="img">
+                <a href="protected/detail_sous_reservation.jsp?idee=${jsonIdea.id}" class="img">
                     <img src="resources/image/sous_partie.png"
                          class="clickable"
                          title="Réserver une sous-partie de l'idée"

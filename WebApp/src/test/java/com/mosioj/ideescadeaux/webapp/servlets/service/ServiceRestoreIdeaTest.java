@@ -2,10 +2,14 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
-import com.mosioj.ideescadeaux.core.model.entities.SousReservationEntity;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.*;
+import com.mosioj.ideescadeaux.core.model.entities.text.SousReservation;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Before;
@@ -79,7 +83,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
         // Given a deleted idea with a partial booking
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
-        SousReservationRepository.sousReserver(idee.getId(), friendOfFirefox.getId(), "Ma sous-rés!");
+        SousReservationRepository.sousReserver(idee, friendOfFirefox, "Ma sous-rés!");
         IdeesRepository.remove(idee);
 
         // Doing the restore
@@ -90,9 +94,9 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         // The partial booking does exist as well as the idea
         assertTrue(resp.isOK());
         assertEquals(Optional.of(friendOfFirefox),
-                     SousReservationRepository.getSousReservation(idee.getId())
+                     SousReservationRepository.getSousReservation(idee)
                                               .stream()
-                                              .map(SousReservationEntity::getUser)
+                                              .map(SousReservation::getUser)
                                               .findAny());
     }
 
@@ -188,7 +192,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
 
         // Given a deleted idea with a partial booking
         Idee idee = IdeesRepository.saveTheIdea(Idee.builder().withText("Une nouvelle idée !").withOwner(firefox));
-        SousReservationRepository.sousReserver(idee.getId(), friendOfFirefox.getId(), "Ma sous-rés!");
+        SousReservationRepository.sousReserver(idee, friendOfFirefox, "Ma sous-rés!");
         IdeesRepository.remove(idee);
 
         // Doing the restore
@@ -199,7 +203,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         // The idea exist while the partial booking doesn't
         assertTrue(resp.isOK());
         assertEquals(Optional.of(idee), IdeesRepository.getIdea(idee.getId()));
-        assertEquals(Collections.EMPTY_LIST, SousReservationRepository.getSousReservation(idee.getId()));
+        assertEquals(Collections.EMPTY_LIST, SousReservationRepository.getSousReservation(idee));
     }
 
     @Test

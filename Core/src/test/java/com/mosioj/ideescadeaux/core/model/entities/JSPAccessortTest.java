@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +18,6 @@ public class JSPAccessortTest extends TemplateTest {
     // TODO : à supprimer lorsque tout sera en JSON
 
     User u = firefox;
-    public static final Timestamp TS20191212_0829 = new Timestamp(1576135793001L);
     public static final LocalDateTime LDT_20191212_0829 = LocalDateTime.of(2019, 12, 12, 8, 29);
 
     @Test
@@ -48,13 +46,6 @@ public class JSPAccessortTest extends TemplateTest {
                      .build();
         assertEquals("small/toto.png", i.getImageSrcSmall());
         Assert.assertNull(i.getCategory());
-    }
-
-    @Test
-    public void testJSPOnlySousReservationEntityMethods() {
-        SousReservationEntity sre = new SousReservationEntity(56, 14, u, "toto", TS20191212_0829);
-        assertEquals("12 décembre 2019 à 08h29", sre.getBookedOn());
-        assertEquals(14, sre.getIdeeId());
     }
 
     @Test

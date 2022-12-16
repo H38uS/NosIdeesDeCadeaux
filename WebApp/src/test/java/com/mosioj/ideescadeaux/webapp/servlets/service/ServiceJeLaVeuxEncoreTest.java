@@ -3,9 +3,9 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 import com.mosioj.ideescadeaux.core.model.entities.BookingInformation;
 import com.mosioj.ideescadeaux.core.model.entities.IdeaGroup;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.GroupIdeaRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.SousReservationRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.GroupIdeaRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.booking.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
@@ -55,10 +55,10 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
         Idee idea = IdeesRepository.getIdeasOf(firefox).stream().findAny().orElseThrow(SQLException::new);
         IdeesRepository.toutDereserver(idea);
         IdeesRepository.sousReserver(idea);
-        SousReservationRepository.sousReserver(idea.getId(), friendOfFirefox.getId(), "voilou");
+        SousReservationRepository.sousReserver(idea, friendOfFirefox, "voilou");
 
         // Vérification que c'est bien réservé en tant que réservation partielle
-        assertTrue(SousReservationRepository.getSousReservation(idea.getId()).size() > 0);
+        assertTrue(SousReservationRepository.getSousReservation(idea).size() > 0);
         assertEquals(BookingInformation.BookingType.PARTIAL,
                      IdeesRepository.getIdea(idea.getId())
                                     .map(Idee::getBookingType)
@@ -70,7 +70,7 @@ public class ServiceJeLaVeuxEncoreTest extends AbstractTestServletWebApp {
 
         // Vérification
         assertTrue(resp.isOK());
-        assertTrue(SousReservationRepository.getSousReservation(idea.getId()).size() > 0);
+        assertTrue(SousReservationRepository.getSousReservation(idea).size() > 0);
         assertEquals(BookingInformation.BookingType.PARTIAL,
                      IdeesRepository.getIdea(idea.getId())
                                     .map(Idee::getBookingType)
