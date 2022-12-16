@@ -24,14 +24,10 @@ public class DeviceResolverFilter implements Filter {
 
     private static final String PICTURE_PC_WIDTH = "36";
 
-    /**
-     * Class logger.
-     */
+    /** Class logger. */
     private static final Logger logger = LogManager.getLogger(DeviceResolverFilter.class);
 
-    /**
-     * Spring device resolver.
-     */
+    /** Spring device resolver. */
     private static final DeviceResolver DEVICE_RESOLVER = new LiteDeviceResolver();
 
     @Override

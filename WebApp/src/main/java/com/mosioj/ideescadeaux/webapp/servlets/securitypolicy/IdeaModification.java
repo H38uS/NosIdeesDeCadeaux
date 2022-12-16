@@ -60,8 +60,8 @@ public final class IdeaModification extends SecurityPolicy implements IdeaSecuri
             }
         }
 
-        int userId = connectedUser.id;
-        boolean res = userId == idea.owner.id || ParentRelationshipRepository.getChildren(userId).contains(idea.owner);
+        boolean res = connectedUser.equals(idea.owner) ||
+                      ParentRelationshipRepository.getChildren(connectedUser).contains(idea.owner);
         if (!res) {
             lastReason = "Vous ne pouvez modifier que vos idées ou celles de vos enfants.";
         }

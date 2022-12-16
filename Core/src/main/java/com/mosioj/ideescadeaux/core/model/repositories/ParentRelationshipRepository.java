@@ -8,6 +8,7 @@ import org.hibernate.query.NativeQuery;
 
 import java.sql.Date;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 
 public class ParentRelationshipRepository extends AbstractRepository {
@@ -19,10 +20,14 @@ public class ParentRelationshipRepository extends AbstractRepository {
     }
 
     /**
-     * @param parentId The parent id.
+     * @param parent The parent id.
      * @return Tous les comptes qui sont gérés par procuration
      */
-    public static List<User> getChildren(int parentId) {
+    public static List<User> getChildren(User parent) {
+
+        if (parent == null) {
+            return Collections.emptyList();
+        }
 
         String query = MessageFormat.format(" select u.{0}, u.{1}, u.{2}, u.{3}, u.{4} ",
                                             ParentRelationshipColumns.ID,
@@ -39,7 +44,7 @@ public class ParentRelationshipRepository extends AbstractRepository {
 
         List<Object[]> res = HibernateUtil.doQueryFetch(s -> {
             NativeQuery<Object[]> sqlQuery = s.createSQLQuery(query);
-            sqlQuery.setParameter(1, parentId);
+            sqlQuery.setParameter(1, parent.getId());
             return sqlQuery.list();
         });
 

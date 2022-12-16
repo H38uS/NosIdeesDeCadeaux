@@ -32,6 +32,15 @@
     </context-param>
 
     <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>loginHelper</filter-name>
         <filter-class>com.mosioj.ideescadeaux.webapp.viewhelper.LoginHelper</filter-class>
     </filter>
@@ -63,10 +72,6 @@
         <url-pattern>/protected/files/*</url-pattern>
     </filter-mapping>
 
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
 <!--    Nécessite de la configuration avec tomcat 8...
         https://stackoverflow.com/questions/37922973/spring-mvc-file-upload-unable-to-process-parts-as-no-multi-part-configuration -->
 <!--    <filter>-->
@@ -77,10 +82,6 @@
 <!--        <filter-name>MultipartFilter</filter-name>-->
 <!--        <url-pattern>/*</url-pattern>-->
 <!--    </filter-mapping>-->
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
     <error-page>
         <error-code>404</error-code>

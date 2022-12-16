@@ -41,7 +41,7 @@ public class MonCompte extends IdeesCadeauxGetServlet<AllAccessToPostAndGet> {
         request.setAttribute("notif_types", userNotificationParameters);
 
         request.setAttribute("parents", ParentRelationshipRepository.getParents(current.id));
-        request.setAttribute("children", ParentRelationshipRepository.getChildren(current.id));
+        request.setAttribute("children", ParentRelationshipRepository.getChildren(current));
 
         request.setAttribute("possible_values", NotificationActivation.values());
         RootingsUtils.rootToPage(VIEW_PAGE_URL, request, resp);

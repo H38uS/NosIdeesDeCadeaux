@@ -2,11 +2,8 @@ package com.mosioj.ideescadeaux.webapp.servlets;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.ParentRelationshipRepository;
 import com.mosioj.ideescadeaux.webapp.entities.DecoratedWebAppIdea;
 import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolicy;
-import com.mosioj.ideescadeaux.webapp.utils.Compteur;
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -99,22 +95,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
         device = (Device) request.getAttribute("device");
 
-        if (request.getRemoteUser() != null) {
-            try {
-                // Mise à jour du nombre de notifications
-                // FIXME : ne fonctionne pas pour les jsp... Faudrait faire un filtre dédié
-                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisOne));
-                ParentRelationshipRepository.getChildren(thisOne.id)
-                                            .forEach(c -> count.add(NotificationsRepository.getUserNotificationCount(c)));
-                request.setAttribute("notif_count", count.getValue());
-            } catch (Exception e) {
-                // Osef
-                logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}",
-                                                 e.getMessage()));
-                logger.warn(Arrays.toString(e.getStackTrace()));
-            }
-        }
-
         try {
             // Security has passed, perform the logic
             ideesKDoGET(request, response);
@@ -161,22 +141,6 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         }
 
         device = (Device) request.getAttribute("device");
-
-        if (request.getRemoteUser() != null) {
-            try {
-                // Mise à jour du nombre de notifications
-                User thisUser = thisOne;
-                final Compteur count = new Compteur(NotificationsRepository.getUserNotificationCount(thisUser));
-                ParentRelationshipRepository.getChildren(thisUser.id)
-                                            .forEach(c -> count.add(NotificationsRepository.getUserNotificationCount(c)));
-                request.setAttribute("notif_count", count.getValue());
-            } catch (Exception e) {
-                // Osef
-                logger.warn(MessageFormat.format("Erreur lors de la récupération du user Id et des notif...{0}",
-                                                 e.getMessage()));
-                logger.warn(Arrays.toString(e.getStackTrace()));
-            }
-        }
 
         try {
             // Security has passed, perform the logic

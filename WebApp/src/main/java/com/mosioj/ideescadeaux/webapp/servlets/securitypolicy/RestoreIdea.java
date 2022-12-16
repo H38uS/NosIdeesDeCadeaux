@@ -60,7 +60,7 @@ public final class RestoreIdea extends SecurityPolicy implements IdeaSecurityChe
         }
 
         boolean res = connectedUser.equals(idea.owner) ||
-                      ParentRelationshipRepository.getChildren(connectedUser.id).contains(idea.owner);
+                      ParentRelationshipRepository.getChildren(connectedUser).contains(idea.owner);
         if (!res) {
             lastReason = "Vous ne pouvez restorer que vos idées ou celles de vos enfants.";
         }

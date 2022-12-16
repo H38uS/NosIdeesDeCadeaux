@@ -16,6 +16,7 @@ import org.hibernate.query.Query;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -230,11 +231,30 @@ public class NotificationsRepository {
      * @param user The user.
      * @return The number of notification this user has.
      */
-    public static int getUserNotificationCount(User user) {
-        return HibernateUtil.doQuerySingle(s -> {
-            final String queryText = "select count(*) from NOTIFICATIONS where owner = :owner";
-            return s.createQuery(queryText, Long.class).setParameter("owner", user).uniqueResult().intValue();
-        });
+    public static int getUserNotificationCountWithChildren(User user) {
+        final String queryText = """
+                select count(*)
+                  from (
+                        select 1
+                          from NOTIFICATIONS
+                         where owner = :owner
+                         union all
+                        select 1
+                          from NOTIFICATIONS n
+                          left join PARENT_RELATIONSHIP p on n.owner = child_id
+                         where p.parent_id = :owner
+                        ) c
+                """;
+        // FIXME revenir avec un Long.class quand PARENT_RELATIONSHIP est une entité hibernate
+        final Optional<Integer> count = HibernateUtil.<Object>doQueryOptional(s -> s.createNativeQuery(queryText)
+                                                                                    .setParameter("owner", user.getId())
+                                                                                    .uniqueResultOptional())
+                                                     .map(res -> {
+                                                         if (res instanceof BigInteger)
+                                                             return ((BigInteger) res).intValue();
+                                                         return (Integer) res;
+                                                     });
+        return count.orElse(0);
     }
 
     /**
