@@ -29,13 +29,13 @@ public class TestConfirmationEstAJourWebApp extends AbstractTestServletWebApp {
         // Getting an idea of Firefox
         Idee idee = IdeesRepository.getIdeasOf(firefox).stream().findFirst().orElseThrow(SQLException::new);
         // Dropping former associations
-        IsUpToDateQuestionsRepository.deleteAssociations(idee.getId());
+        IsUpToDateQuestionsRepository.deleteAssociations(idee);
 
         // His friend is asking if up to date
         final Notification isUpToDate = NType.IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idee);
         Notification notification = isUpToDate.sendItTo(firefox);
         assertNotifDoesExists(notification);
-        IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
+        IsUpToDateQuestionsRepository.addAssociation(idee, friendOfFirefox);
         assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
 
         // Getting it from the DB to check the parameters insertion

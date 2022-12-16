@@ -2,7 +2,6 @@ package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
-import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
@@ -12,7 +11,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -35,8 +33,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                .whereOwner(friendOfFirefox)
                                .whereType(NType.IS_IDEA_UP_TO_DATE)
                                .terminates();
-        List<Notification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox,
-                                                                                 NType.IS_IDEA_UP_TO_DATE);
+        var notifs = NotificationsRepository.getUserNotifications(friendOfFirefox, NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
         bindPostRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));
@@ -62,8 +59,7 @@ public class TestEstCeAJourWebApp extends AbstractTestServletWebApp {
                                .whereOwner(friendOfFirefox)
                                .whereType(NType.IS_IDEA_UP_TO_DATE)
                                .terminates();
-        List<Notification> notifs = NotificationsRepository.getUserNotifications(friendOfFirefox,
-                                                                                 NType.IS_IDEA_UP_TO_DATE);
+        var notifs = NotificationsRepository.getUserNotifications(friendOfFirefox, NType.IS_IDEA_UP_TO_DATE);
         assertEquals(0, notifs.size());
 
         bindPostRequestParam(ServiceEstAJour.IDEE_FIELD_PARAMETER, String.valueOf(idee.getId()));

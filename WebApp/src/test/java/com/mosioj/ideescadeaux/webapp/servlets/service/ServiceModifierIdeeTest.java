@@ -105,7 +105,7 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         assertNotEquals(newText, idee.getText());
 
         Notification notifId = IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idee).sendItTo(firefox);
-        IsUpToDateQuestionsRepository.addAssociation(idee.getId(), friendOfFirefox.getId());
+        IsUpToDateQuestionsRepository.addAssociation(idee, friendOfFirefox);
         assertTrue(IsUpToDateQuestionsRepository.associationExists(idee, friendOfFirefox));
         Notification addByFriend = IDEA_ADDED_BY_FRIEND.with(moiAutre, idee).sendItTo(firefox);
         assertNotifDoesExists(notifId);

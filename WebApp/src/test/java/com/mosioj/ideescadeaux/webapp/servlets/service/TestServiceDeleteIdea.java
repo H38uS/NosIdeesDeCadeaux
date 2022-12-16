@@ -93,7 +93,7 @@ public class TestServiceDeleteIdea extends AbstractTestServletWebApp {
         assertEquals(1, ds.selectCountStar("select count(*) from IDEES where id = ?", idea.getId()));
 
         Notification isUpToDate = NType.IS_IDEA_UP_TO_DATE.with(friendOfFirefox, idea).sendItTo(firefox);
-        IsUpToDateQuestionsRepository.addAssociation(idea.getId(), friendOfFirefox.getId());
+        IsUpToDateQuestionsRepository.addAssociation(idea, friendOfFirefox);
         assertTrue(IsUpToDateQuestionsRepository.associationExists(idea, friendOfFirefox));
         Notification confirmedUpToDate = NType.CONFIRMED_UP_TO_DATE.with(firefox, idea).sendItTo(friendOfFirefox);
         IdeaGroup group = GroupIdeaRepository.createAGroup(100, 50, firefox);

@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,8 @@ public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
     public void servicePost(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 
         // Parameters
-        boolean restoreBooking = "true".equalsIgnoreCase(ParametersUtils.getPOSTParameterAsString(request, RESTORE_BOOKING));
+        boolean restoreBooking = "true".equalsIgnoreCase(ParametersUtils.getPOSTParameterAsString(request,
+                                                                                                  RESTORE_BOOKING));
         Idee idea = policy.getIdea();
 
         // On récupère les personnes qui ont réservé avant la restoration (peut les supprimer)
@@ -58,10 +58,10 @@ public class ServiceRestoreIdea extends ServicePost<RestoreIdea> {
 
         // Suppression des notifications passées de suppression d'idée
         // On va avoir une notification de restoration dans tous les cas
-        List<Notification> bookingRemoveNotifs = NotificationsRepository.fetcher()
-                                                                        .whereType(NType.BOOKED_REMOVE)
-                                                                        .whereIdea(idea)
-                                                                        .fetch();
+        var bookingRemoveNotifs = NotificationsRepository.fetcher()
+                                                         .whereType(NType.BOOKED_REMOVE)
+                                                         .whereIdea(idea)
+                                                         .fetch();
         bookingRemoveNotifs.forEach(NotificationsRepository::remove);
 
         // Si l'anniversaire est proche, on ajoute tous les amis !

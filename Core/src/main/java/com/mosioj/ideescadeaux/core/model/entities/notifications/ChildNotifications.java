@@ -2,18 +2,18 @@ package com.mosioj.ideescadeaux.core.model.entities.notifications;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
 
-import java.util.List;
+import java.util.Set;
 
 public class ChildNotifications {
 
     private final User child;
-    private final List<Notification> notifications;
+    private final Set<Notification> notifications;
 
     /**
      * @param child         The child user
      * @param notifications The child notifications.
      */
-    public ChildNotifications(User child, List<Notification> notifications) {
+    public ChildNotifications(User child, Set<Notification> notifications) {
         this.child = child;
         this.notifications = notifications;
     }
@@ -28,7 +28,7 @@ public class ChildNotifications {
     /**
      * @return The child notifications.
      */
-    public List<Notification> getNotifications() {
+    public Set<Notification> getNotifications() {
         return notifications;
     }
 }

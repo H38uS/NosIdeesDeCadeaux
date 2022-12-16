@@ -272,7 +272,9 @@ public class NotificationsRepository {
                   left join fetch n.owner
                   left join fetch n.userParameter
                   left join fetch n.ideaParameter
-                  left join fetch n.groupParameter
+                  left join fetch n.groupParameter g
+                  left join fetch g.ideaGroupContents contents
+                  left join fetch contents.user
                 """;
 
         /** The internal query. */
@@ -374,7 +376,7 @@ public class NotificationsRepository {
         /**
          * @return The notification list based on previous criteria.
          */
-        public List<Notification> fetch() {
+        public Set<Notification> fetch() {
             final String fullQuery = query + whereClause.toString();
             logger.trace("[Perf] fetch. Query: {}. Parameters: {}", fullQuery, parameters);
             List<Notification> notifications = HibernateUtil.doQueryFetch(s -> {
@@ -383,7 +385,7 @@ public class NotificationsRepository {
                 return sqlQuery.list();
             });
             logger.trace("[Perf] Execution completed! Building the result...");
-            return notifications;
+            return new LinkedHashSet<>(notifications);
         }
     }
 
@@ -391,7 +393,7 @@ public class NotificationsRepository {
      * @param notification The notification.
      * @return The list of corresponding notifications, if any.
      */
-    public static List<Notification> findNotificationsMatching(Notification notification) {
+    public static Set<Notification> findNotificationsMatching(Notification notification) {
         NotificationFetcher fetcher = fetcher().whereOwner(notification.getOwner())
                                                .whereType(notification.getType());
         notification.getUserParameter().ifPresent(fetcher::whereUser);
@@ -404,7 +406,7 @@ public class NotificationsRepository {
      * @param owner The notification owner.
      * @return All notifications for this user.
      */
-    public static List<Notification> getUserNotifications(User owner, NType type) {
+    public static Set<Notification> getUserNotifications(User owner, NType type) {
         return fetcher().whereOwner(owner).whereType(type).fetch();
     }
 
@@ -412,7 +414,7 @@ public class NotificationsRepository {
      * @param user The user.
      * @return All read notifications of this user.
      */
-    public static List<Notification> getUserReadNotifications(User user) {
+    public static Set<Notification> getUserReadNotifications(User user) {
         return fetcher().whereOwner(user).whereRead(true).fetch();
     }
 
@@ -420,7 +422,7 @@ public class NotificationsRepository {
      * @param user The user.
      * @return All unread notifications of this user.
      */
-    public static List<Notification> getUserUnReadNotifications(User user) {
+    public static Set<Notification> getUserUnReadNotifications(User user) {
         return fetcher().whereOwner(user).whereRead(false).fetch();
     }
 

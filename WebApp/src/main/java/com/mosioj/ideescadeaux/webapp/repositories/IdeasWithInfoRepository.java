@@ -5,14 +5,11 @@ import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.NativeQuery;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class IdeasWithInfoRepository {
 
@@ -37,6 +34,7 @@ public class IdeasWithInfoRepository {
                    left join fetch i.priority p
                    left join fetch i.questions
                    left join fetch i.comments
+                   left join fetch i.upToDateRequest
                 """;
     }
 
@@ -74,26 +72,6 @@ public class IdeasWithInfoRepository {
                                                                     .list()));
     }
 
-
-    /**
-     * @param user The user.
-     * @return The list of ideas the user is participating in.
-     */
-    private static List<Idee> getMySubBooking(User user) {
-
-        final String query = "select IDEE_ID from SOUS_RESERVATION where USER_ID = ?";
-        List<Integer> res = HibernateUtil.doQueryFetch(s -> {
-            NativeQuery<Integer> sqlQuery = s.createSQLQuery(query);
-            sqlQuery.setParameter(1, user.id);
-            return sqlQuery.list();
-        });
-        return res.stream()
-                  .map(IdeasWithInfoRepository::getIdea)
-                  .filter(Optional::isPresent)
-                  .map(Optional::get)
-                  .toList();
-    }
-
     /**
      * @param thisOne The person.
      * @return All the ideas where this user has a booking, or belongs to a group or a sub part.
@@ -103,15 +81,17 @@ public class IdeasWithInfoRepository {
         long start = System.nanoTime();
 
         // On sélectionne uniquement les idées
-
-        // - Qu'on a réservé
-        // - Dont on fait partie d'un groupe
+        // 1. Qu'on a réservé
+        // 2. Dont on fait partie d'un groupe
+        // 3. Qu'on a sous-réservé
 
         final String query = getIdeaBaseSelect() + """
+                   left join i.partialBooking pb
                   where coalesce(i.status, 'THERE') <> 'DELETED'
                     and (
                         i.bookedBy = :user or
-                        contents.user = :user
+                        contents.user = :user or
+                        pb.user = :user
                     )
                 """;
 
@@ -119,15 +99,10 @@ public class IdeasWithInfoRepository {
                                                                                 .setParameter("user", thisOne)
                                                                                 .list()));
 
-        // - Qu'on a sous-réservé
-        // FIXME continuer à tout mettre dès qu'on a mis ça dans une entité hibernate
-        booked.addAll(getMySubBooking(thisOne));
-
-        final Set<Idee> ideas = booked.stream().filter(i -> !i.isDeleted()).collect(Collectors.toSet());
         long end = System.nanoTime();
         logger.debug(MessageFormat.format("Query executed in {0} ms for user {1}", (end - start) / 1000000L, thisOne));
 
-        return ideas;
+        return booked;
     }
 
     public static Optional<Idee> getIdea(Integer id) {

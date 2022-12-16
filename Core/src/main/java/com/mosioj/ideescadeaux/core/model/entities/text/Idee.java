@@ -36,7 +36,7 @@ public class Idee extends EntityWithText {
     @JoinColumn(name = "groupe_kdo_id")
     public IdeaGroup group;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "priorite")
     @Expose
     public Priority priority;
@@ -77,6 +77,12 @@ public class Idee extends EntityWithText {
 
     @OneToMany(mappedBy = "idea")
     private Set<Comment> comments;
+
+    @OneToMany(mappedBy = "idea")
+    private Set<IsUpToDate> upToDateRequest;
+
+    @OneToMany(mappedBy = "idea")
+    private Set<SousReservation> partialBooking;
 
     // ===========================
     // +++++++++++++++++++++++++++
@@ -262,6 +268,13 @@ public class Idee extends EntityWithText {
      */
     public Set<Comment> getComments() {
         return comments;
+    }
+
+    /**
+     * @return The up to date requests, if any.
+     */
+    public Set<IsUpToDate> getUpToDateRequest() {
+        return upToDateRequest;
     }
 
     /**

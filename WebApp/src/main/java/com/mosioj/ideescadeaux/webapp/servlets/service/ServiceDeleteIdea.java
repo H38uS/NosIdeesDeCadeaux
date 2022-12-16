@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,7 +39,7 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
         // Reading parameters
         logger.debug(MessageFormat.format("Deleting idea {0}.", idea.getId()));
 
-        List<Notification> notifications = NotificationsRepository.fetcher().whereIdea(idea).fetch();
+        Set<Notification> notifications = NotificationsRepository.fetcher().whereIdea(idea).fetch();
 
         // Pour les notifications qui sont lié à un user (pas le owner)
         // On les ajoute au set à notifier
@@ -60,7 +59,7 @@ public class ServiceDeleteIdea extends ServicePost<IdeaModification> {
         notifications.forEach(NotificationsRepository::remove);
 
         // Deleting previous questions about whether it is up to date...
-        IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
+        IsUpToDateQuestionsRepository.deleteAssociations(idea);
 
         // Suppression de l'idée
         IdeesRepository.remove(idea);

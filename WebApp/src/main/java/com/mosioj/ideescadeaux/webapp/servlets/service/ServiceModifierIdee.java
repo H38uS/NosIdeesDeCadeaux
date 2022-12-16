@@ -93,7 +93,7 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                 IdeaLogic.addModificationNotification(thisOne, policy.getIdea(), false);
 
                 // Suppression des demandes si y'en avait
-                IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
+                IsUpToDateQuestionsRepository.deleteAssociations(idea);
 
                 // Mise à jour des demandes de confirmations si à jour
                 final Notification confirmationUpToDate = CONFIRMED_UP_TO_DATE.with(thisOne, idea);

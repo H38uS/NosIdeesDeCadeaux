@@ -1,42 +1,39 @@
 package com.mosioj.ideescadeaux.core.model.repositories;
 
+import com.mosioj.ideescadeaux.core.model.entities.IsUpToDate;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.columns.IsUpToDateColumns;
+import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
+import org.hibernate.Transaction;
 
-import java.text.MessageFormat;
-
-public class IsUpToDateQuestionsRepository extends AbstractRepository {
-
-    public static final String TABLE_NAME = "IS_UP_TO_DATE";
+public class IsUpToDateQuestionsRepository {
 
     private IsUpToDateQuestionsRepository() {
         // Forbidden
     }
 
     /**
-     * @param ideeId The idea id.
+     * @param idea The idea.
      */
-    public static void deleteAssociations(int ideeId) {
-        getDb().executeUpdate(MessageFormat.format("delete from {0} where {1} = ?",
-                                                   TABLE_NAME,
-                                                   IsUpToDateColumns.IDEE_ID),
-                              ideeId);
+    public static void deleteAssociations(Idee idea) {
+        HibernateUtil.doSomeWork(s -> {
+            Transaction t = s.beginTransaction();
+            s.createQuery("delete from IS_UP_TO_DATE where idea = :idea ")
+             .setParameter("idea", idea)
+             .executeUpdate();
+            t.commit();
+        });
     }
 
     /**
      * userId is asking if this ideaId is up to date.
      *
-     * @param ideeId The idea id.
-     * @param userId The user id.
+     * @param idea The idea id.
+     * @param user The user id.
      */
-    public static void addAssociation(int ideeId, int userId) {
-        getDb().executeInsert(MessageFormat.format("insert into {0} ({1}, {2}) values (?, ?)",
-                                                   TABLE_NAME,
-                                                   IsUpToDateColumns.IDEE_ID,
-                                                   IsUpToDateColumns.USER_ID),
-                              ideeId,
-                              userId);
+    public static void addAssociation(Idee idea, User user) {
+        IsUpToDate request = IsUpToDate.getIt(user, idea);
+        HibernateUtil.saveit(request);
     }
 
     /**
@@ -45,7 +42,13 @@ public class IsUpToDateQuestionsRepository extends AbstractRepository {
      * @return True if this user has already asked if this idea is up to date.
      */
     public static boolean associationExists(Idee idea, User user) {
-        return getDb().doesReturnRows("select 1 from " + TABLE_NAME + " where " + IsUpToDateColumns.IDEE_ID + " = ?"
-                                      + " and " + IsUpToDateColumns.USER_ID + " = ?", idea.getId(), user.id);
+        final String query = """
+                select 1
+                  from IS_UP_TO_DATE
+                 where idea = ?1
+                   and askedBy = ?2
+                """;
+        return HibernateUtil.doesReturnRows(query, idea, user);
     }
+
 }

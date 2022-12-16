@@ -65,9 +65,9 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                                     .withPriority(p));
         logger.info("[Perf] Idée créée ! Création du groupe...");
         IdeaGroup group = GroupIdeaRepository.createAGroup(300, 250, moiAutre);
-        logger.info("[Perf] Groupe créé ! éservation de l'idée par le groupe...");
+        logger.info("[Perf] Groupe créé ! Réservation de l'idée par le groupe...");
         IdeesRepository.bookByGroup(idee, group);
-        logger.info("[Perf] OK! Vérication qu'il n'existe pas de notifications...");
+        logger.info("[Perf] OK! Vérification qu'il n'existe pas de notifications...");
         assertFalse(NotificationsRepository.fetcher()
                                            .whereOwner(moiAutre)
                                            .whereIdea(idee)
@@ -120,11 +120,13 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                             .whereIdea(idee)
                                             .fetch().size());
         int nId = NotificationsRepository.fetcher()
-                                          .whereOwner(moiAutre)
-                                          .whereType(NType.JOIN_GROUP)
-                                          .whereIdea(idee)
-                                          .fetch()
-                                          .get(0).id;
+                                         .whereOwner(moiAutre)
+                                         .whereType(NType.JOIN_GROUP)
+                                         .whereIdea(idee)
+                                         .fetch()
+                                         .stream()
+                                         .findFirst()
+                                         .orElseThrow().id;
 
         bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, String.valueOf(group.getId()));
         bindPostRequestParam("amount", 35 + "");
@@ -142,7 +144,9 @@ public class ServiceParticipationGroupeTest extends AbstractTestServletWebApp {
                                             .whereType(NType.JOIN_GROUP)
                                             .whereIdea(idee)
                                             .fetch()
-                                            .get(0).id);
+                                            .stream()
+                                            .findFirst()
+                                            .orElseThrow().id);
 
         // Finalement - re - Annulation de la participation
         bindPostRequestParam(GroupIdeaDetails.GROUP_ID_PARAM, group.getId());

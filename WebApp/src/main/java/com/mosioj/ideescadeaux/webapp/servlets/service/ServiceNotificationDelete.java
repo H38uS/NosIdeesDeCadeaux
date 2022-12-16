@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 @WebServlet("/protected/service/notification_delete")
 public class ServiceNotificationDelete extends ServicePost<NotificationModification> {
 
-    private static final long serialVersionUID = 2642366164643542379L;
     public static final String NOTIFICATION_PARAMETER = "notif_id";
 
     private static final Logger logger = LogManager.getLogger(ServiceNotificationDelete.class);

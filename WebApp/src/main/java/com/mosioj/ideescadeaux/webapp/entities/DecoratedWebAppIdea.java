@@ -6,7 +6,6 @@ import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
 import com.mosioj.ideescadeaux.core.model.entities.text.SousReservation;
-import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.booking.SousReservationRepository;
 import com.mosioj.ideescadeaux.webapp.utils.ParametersUtils;
 import org.springframework.mobile.device.Device;
@@ -42,7 +41,7 @@ public class DecoratedWebAppIdea {
         this.idee = idee;
         hasComment = !isOwnerByConnectedUser && idee.getComments().size() > 0;
         hasQuestion = idee.getQuestions().size() > 0;
-        hasAskedIfUpToDate = IsUpToDateQuestionsRepository.associationExists(idee, connectedUser);
+        hasAskedIfUpToDate = idee.getUpToDateRequest().size() > 0;
 
         // calcul de la display class
         displayClass = computeDisplayClass(connectedUser);

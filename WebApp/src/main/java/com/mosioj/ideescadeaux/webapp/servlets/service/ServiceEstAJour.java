@@ -50,7 +50,7 @@ public class ServiceEstAJour extends ServicePost<IdeaInteractionBookingUpToDate>
             return false;
         }
 
-        IsUpToDateQuestionsRepository.addAssociation(idea.getId(), thisOne.id);
+        IsUpToDateQuestionsRepository.addAssociation(idea, thisOne);
         final Notification isUpToDate = NType.IS_IDEA_UP_TO_DATE.with(thisOne, idea).setOwner(idea.getOwner());
         if (findNotificationsMatching(isUpToDate).isEmpty()) {
             // seulement si la notification n'existe pas encore

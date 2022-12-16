@@ -16,8 +16,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @WebServlet("/protected/confirmation_est_a_jour")
 public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModification> {
@@ -34,13 +34,13 @@ public class ConfirmationEstAJour extends IdeesCadeauxGetServlet<IdeaModificatio
 
         Idee idea = policy.getIdea();
         IdeesRepository.touch(idea);
-        IsUpToDateQuestionsRepository.deleteAssociations(idea.getId());
+        IsUpToDateQuestionsRepository.deleteAssociations(idea);
 
         // Gets all previous notifications asking if this idea is up to date
-        final List<Notification> asked = NotificationsRepository.fetcher()
-                                                                .whereIdea(idea)
-                                                                .whereType(NType.IS_IDEA_UP_TO_DATE)
-                                                                .fetch();
+        final Set<Notification> asked = NotificationsRepository.fetcher()
+                                                               .whereIdea(idea)
+                                                               .whereType(NType.IS_IDEA_UP_TO_DATE)
+                                                               .fetch();
 
         // Deletes all of them
         asked.forEach(NotificationsRepository::remove);
