@@ -9,11 +9,14 @@ public class IdeesCadeauxTask {
     private static final Logger logger = LogManager.getLogger(IdeesCadeauxTask.class);
 
     public static void main(String[] args) {
-
-        logger.info("Running IdeesCadeauxTasks...");
-        logger.info("Application version: {}", AppVersion.DA_VERSION);
-        sendNotification();
-        logger.info("Run IdeesCadeauxTasks completed successfully !");
+        try {
+            logger.info("Running IdeesCadeauxTasks...");
+            logger.info("Application version: {}", AppVersion.DA_VERSION);
+            sendNotification();
+            logger.info("Run IdeesCadeauxTasks completed successfully !");
+        } catch (Exception e) {
+            logger.error("Something wrong happened", e);
+        }
     }
 
     /**
