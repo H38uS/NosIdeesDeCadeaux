@@ -1,3 +1,7 @@
+// FIXME : gérer les caractères spéciaux dans les mdp ?? au sens ISO windows (type éè)
+// FIXME : ne pas échapper l'email et le pseudo dans le stockage (juste enlever < / >, ou l'échapper dans l'écriture)
+// attention y'a au moins Théo et Solène en PROD
+
 // FIXME : passer en mode hibernate avec les entités, trop chiant là !!
 // FIXME : faire une table dédiée pour les booking information
 
