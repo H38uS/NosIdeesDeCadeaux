@@ -10,9 +10,8 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -125,10 +124,10 @@ public class UserRelationsRepository {
      * @param limit           Maximum number of results.
      * @return The list of users.
      */
-    public static List<User> getAllUsersInRelationWithPossibleTypo(User user,
-                                                                   String userNameOrEmail,
-                                                                   int firstRow,
-                                                                   int limit) {
+    public static Set<User> getAllUsersInRelationWithPossibleTypo(User user,
+                                                                  String userNameOrEmail,
+                                                                  int firstRow,
+                                                                  int limit) {
 
         final String sanitizedToken = HibernateUtil.sanitizeSQLLike(userNameOrEmail);
         int length = sanitizedToken.length() - StringUtils.countMatches(sanitizedToken, "!") - 2;
@@ -206,7 +205,7 @@ public class UserRelationsRepository {
                 return query.list();
             }));
         }
-        return new ArrayList<>(result);
+        return new LinkedHashSet<>(result);
     }
 
     /**
@@ -217,11 +216,11 @@ public class UserRelationsRepository {
      * @param limit           Maximal size of the result.
      * @return All users matching the name/email that are in suggestedBy network, but not in suggestedTo network.
      */
-    public static List<User> getAllUsersInRelationNotInOtherNetwork(User suggestedBy,
-                                                                    User suggestedTo,
-                                                                    String userNameOrEmail,
-                                                                    int firstRow,
-                                                                    int limit) {
+    public static Set<User> getAllUsersInRelationNotInOtherNetwork(User suggestedBy,
+                                                                   User suggestedTo,
+                                                                   String userNameOrEmail,
+                                                                   int firstRow,
+                                                                   int limit) {
 
         logger.debug(suggestedBy + " / " + suggestedTo + " / " + userNameOrEmail);
 
@@ -241,12 +240,12 @@ public class UserRelationsRepository {
                        " order by u.name, u.email, u.id ";
 
         final String theUserNameOrEmail = HibernateUtil.sanitizeSQLLike(userNameOrEmail);
-        return HibernateUtil.doQueryFetch(s -> s.createQuery(query, User.class)
-                                                .setParameter("suggestedBy", suggestedBy)
-                                                .setParameter("suggestedTo", suggestedTo)
-                                                .setParameter("userNameOrEmail", theUserNameOrEmail)
-                                                .setFirstResult(firstRow)
-                                                .setMaxResults(limit).list());
+        return new HashSet<>(HibernateUtil.doQueryFetch(s -> s.createQuery(query, User.class)
+                                                              .setParameter("suggestedBy", suggestedBy)
+                                                              .setParameter("suggestedTo", suggestedTo)
+                                                              .setParameter("userNameOrEmail", theUserNameOrEmail)
+                                                              .setFirstResult(firstRow)
+                                                              .setMaxResults(limit).list()));
     }
 
     /**
@@ -256,7 +255,7 @@ public class UserRelationsRepository {
      * @param limit       The maximum number of row to fetch.
      * @return The number of users belonging to userId network and matching name/email
      */
-    public static List<User> getAllUsersInRelation(User user, String nameOrEmail, int firstRow, int limit) {
+    public static Set<User> getAllUsersInRelation(User user, String nameOrEmail, int firstRow, int limit) {
 
         final boolean shouldFilterWithNameOrEmail = !StringUtils.isBlank(nameOrEmail);
         StringBuilder queryText = new StringBuilder(
@@ -269,7 +268,7 @@ public class UserRelationsRepository {
                              " or lower(u.email) like :nameOrEmail ESCAPE '!') ");
         }
         queryText.append("order by u.name, u.email, u.id");
-        return HibernateUtil.doQueryFetch(s -> {
+        return new HashSet<>(HibernateUtil.doQueryFetch(s -> {
             Query<User> query = s.createQuery(queryText.toString(), User.class).setParameter("id", user);
             if (shouldFilterWithNameOrEmail) {
                 query.setParameter("nameOrEmail", HibernateUtil.sanitizeSQLLike(nameOrEmail));
@@ -281,14 +280,14 @@ public class UserRelationsRepository {
                 query.setMaxResults(limit);
             }
             return query.list();
-        });
+        }));
     }
 
     /**
      * @param user The user.
      * @return All user friends, without him.
      */
-    public static List<User> getAllUsersInRelation(User user) {
+    public static Set<User> getAllUsersInRelation(User user) {
         // Shortcut
         return getAllUsersInRelation(user, StringUtils.EMPTY, -1, -1);
     }
