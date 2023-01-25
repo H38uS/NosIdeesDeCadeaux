@@ -13,6 +13,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserRelationsRepository {
@@ -38,11 +39,11 @@ public class UserRelationsRepository {
      * @param inNbDays Number of days before the birthday.
      * @return The list of users with birthday coming (less than 30 days).
      */
-    public static List<User> getBirthday(int inNbDays) {
+    public static Set<User> getBirthday(int inNbDays) {
         return UsersRepository.getAllUsers()
                               .stream()
                               .filter(u -> u.nbDaysBeforeBirthday == inNbDays)
-                              .collect(Collectors.toList());
+                              .collect(Collectors.toSet());
     }
 
     /**
