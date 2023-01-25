@@ -29,10 +29,10 @@ public class UserRelationsRepository {
      * @param inNbDaysMax The number of days to select the birthday.
      * @return The list of users with birthday coming (less than 30 days).
      */
-    public static List<User> getCloseBirthday(User user, int inNbDaysMax) {
+    public static Set<User> getCloseBirthday(User user, int inNbDaysMax) {
         return getAllUsersInRelation(user).stream()
                                           .filter(u -> u.nbDaysBeforeBirthday <= inNbDaysMax)
-                                          .collect(Collectors.toList());
+                                          .collect(Collectors.toSet());
     }
 
     /**
