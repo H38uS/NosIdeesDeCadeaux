@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/possible_relation_suggestions")
@@ -34,11 +35,11 @@ public class ServiceSuggestFriendToOther extends ServiceGet<NetworkAccess> {
         String userNameOrEmail = ParametersUtils.readAndEscape(request, "name", false).trim();
 
         // Listing all possible users
-        List<User> toBeSuggested = UserRelationsRepository.getAllUsersInRelationNotInOtherNetwork(thisOne,
-                                                                                                  suggestToUser,
-                                                                                                  userNameOrEmail,
-                                                                                                  0,
-                                                                                                  50);
+        Set<User> toBeSuggested = UserRelationsRepository.getAllUsersInRelationNotInOtherNetwork(thisOne,
+                                                                                                 suggestToUser,
+                                                                                                 userNameOrEmail,
+                                                                                                 0,
+                                                                                                 50);
         toBeSuggested.remove(suggestToUser);
 
         // Enriching them

@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/protected/service/afficher_listes")
@@ -40,10 +41,10 @@ public class ServiceAfficherListes extends ServiceGet<AllAccessToPostAndGet> {
         String nameOrEmail = ParametersUtils.readNameOrEmail(request, NAME_OR_EMAIL, false);
 
         // Getting the user list
-        List<User> users = UserRelationsRepository.getAllUsersInRelation(thisOne,
-                                                                         nameOrEmail,
-                                                                         firstRow,
-                                                                         PAGES_HELPER.getMaxNumberOfResults());
+        List<User> users = new ArrayList<>(UserRelationsRepository.getAllUsersInRelation(thisOne,
+                                                                                         nameOrEmail,
+                                                                                         firstRow,
+                                                                                         PAGES_HELPER.getMaxNumberOfResults()));
         if (thisOne.matchNameOrEmail(nameOrEmail)) {
             users.add(0, thisOne);
             if (users.size() > PAGES_HELPER.getMaxNumberOfResults()) {

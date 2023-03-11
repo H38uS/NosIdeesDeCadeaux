@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -66,7 +66,7 @@ public class BirthdayNotifier {
                                          user.getMyDName(),
                                          user.id,
                                          nbDays));
-        List<User> friends = UserRelationsRepository.getAllUsersInRelation(user);
+        Set<User> friends = UserRelationsRepository.getAllUsersInRelation(user);
         logger.info("Envoie d'une notification à {} pour l'anniversaire de {} ({})",
                     friends,
                     user.getMyDName(),

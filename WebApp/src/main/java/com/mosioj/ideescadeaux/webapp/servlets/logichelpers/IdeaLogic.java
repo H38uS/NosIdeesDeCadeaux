@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class IdeaLogic {
@@ -70,7 +71,7 @@ public class IdeaLogic {
     public static void addModificationNotification(User user, Idee idea, boolean isNew) {
         if (user.getNbDaysBeforeBirthday() < User.NB_DAYS_BEFORE_BIRTHDAY) {
             // Send a notification for each user that has no such modification notification yet
-            final List<User> users = UserRelationsRepository.getAllUsersInRelation(user);
+            final Set<User> users = UserRelationsRepository.getAllUsersInRelation(user);
             users.parallelStream()
                  .map(u -> isNew ?
                          NType.NEW_IDEA_BIRTHDAY_SOON.with(user, idea).setOwner(u) :

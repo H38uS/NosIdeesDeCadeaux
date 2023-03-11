@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @WebServlet("/protected/service/rechercher_reseau")
@@ -44,10 +45,10 @@ public class ServiceRechercherReseau extends ServiceGet<NetworkAccess> {
         LOGGER.trace("Received: {}", nameOrEmail);
 
         // Loading the list
-        List<User> raw = UserRelationsRepository.getAllUsersInRelation(policy.getUser(),
-                                                                       nameOrEmail,
-                                                                       PAGES_HELPER.getFirstRow(request),
-                                                                       PAGES_HELPER.getMaxNumberOfResults());
+        Set<User> raw = UserRelationsRepository.getAllUsersInRelation(policy.getUser(),
+                                                                      nameOrEmail,
+                                                                      PAGES_HELPER.getFirstRow(request),
+                                                                      PAGES_HELPER.getMaxNumberOfResults());
 
         List<DecoratedWebAppUser> relations = raw.stream()
                                                  .map(r -> new DecoratedWebAppUser(r, thisOne))

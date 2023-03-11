@@ -131,8 +131,8 @@ public class GroupIdeaRepository {
             return Collections.emptyList();
         }
 
-        List<User> ideaOwnerFriends = UserRelationsRepository.getAllUsersInRelation(ideaOwner.get());
-        List<User> myFriends = UserRelationsRepository.getAllUsersInRelation(connectedUser);
+        Set<User> ideaOwnerFriends = UserRelationsRepository.getAllUsersInRelation(ideaOwner.get());
+        Set<User> myFriends = UserRelationsRepository.getAllUsersInRelation(connectedUser);
         List<User> groupMember = group.getShares().stream().map(IdeaGroupContent::getUser).toList();
 
         // Les amis du owner
