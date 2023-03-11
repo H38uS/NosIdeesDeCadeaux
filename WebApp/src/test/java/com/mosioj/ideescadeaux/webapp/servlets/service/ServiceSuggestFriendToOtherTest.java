@@ -8,7 +8,6 @@ import com.mosioj.ideescadeaux.webapp.servlets.service.response.ServiceResponse;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -32,14 +31,15 @@ public class ServiceSuggestFriendToOtherTest extends AbstractTestServletWebApp {
         // Then the response is OK and contains the expected suggestions
         assertTrue(resp.isOK());
         List<PossibleSuggestion> suggestions = resp.getMessage();
-        assertEquals(Arrays.asList(new PossibleSuggestion(UsersRepository.getUser(6).orElseThrow(SQLException::new)),
-                                   new PossibleSuggestion(jo3).withReason(
-                                           "Jordan.mosio@hotmail.fr a déjà reçu une suggestion pour Djoe&icirc;&eacute;&egrave;&ocirc;e."),
-                                   new PossibleSuggestion(UsersRepository.getUser(13)
-                                                                         .orElseThrow(SQLException::new)).withReason(
-                                           "Jordan.mosio@hotmail.fr a déjà envoyé une demande à Iihi."),
-                                   new PossibleSuggestion(friendOfFirefox).withReason(
-                                           "Test@toto.com a déjà envoyé une demande à Jordan.mosio@hotmail.fr.")),
+        assertEquals(List.of(new PossibleSuggestion(friendOfFirefox).withReason(
+                                     "Test@toto.com a déjà envoyé une demande à Jordan.mosio@hotmail.fr."),
+                             new PossibleSuggestion(UsersRepository.getUser(6).orElseThrow(SQLException::new)),
+                             new PossibleSuggestion(jo3).withReason(
+                                     "Jordan.mosio@hotmail.fr a déjà reçu une suggestion pour Djoe&icirc;&eacute;&egrave;&ocirc;e."),
+                             new PossibleSuggestion(UsersRepository.getUser(13)
+                                                                   .orElseThrow(SQLException::new)).withReason(
+                                     "Jordan.mosio@hotmail.fr a déjà envoyé une demande à Iihi.")
+                     ),
                      suggestions);
     }
 
