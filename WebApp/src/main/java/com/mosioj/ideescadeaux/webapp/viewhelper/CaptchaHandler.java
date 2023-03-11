@@ -77,7 +77,7 @@ public class CaptchaHandler {
             JSONParser parser = new JSONParser();
             JSONObject response = (JSONObject) parser.parse(new InputStreamReader(con.getInputStream()));
             String isSuccess = response.get("success").toString();
-            logger.debug("Success ? " + isSuccess);
+            logger.trace("Success ? " + isSuccess);
             return Boolean.parseBoolean(isSuccess);
         } catch (IOException | ParseException e) {
             logger.error("Error while reading the anwers: " + e.getMessage());

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesCadeauxServlet<P> {
 
@@ -44,8 +46,15 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
         try {
             serviceGet(request, response);
         } catch (Exception e) {
-            logger.error("Error when fetching {}", request.getRequestURL().toString());
-            logger.error("The error: ", e);
+            logger.error("Error when fetching {} with parameters {}. Error: {}",
+                         request.getRequestURL().toString(),
+                         request.getParameterMap()
+                                .keySet()
+                                .stream()
+                                .map(key -> key + " => " + Arrays.toString(request.getParameterValues(key)))
+                                .collect(Collectors.toList()),
+                         e.getMessage());
+            logger.info("The error: ", e);
             buildResponse(response,
                           ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(), thisOne));
         }
@@ -56,8 +65,15 @@ public abstract class ServiceGetAndPost<P extends SecurityPolicy> extends IdeesC
         try {
             servicePost(request, response);
         } catch (Exception e) {
-            logger.error("Error when fetching {}", request.getRequestURL().toString());
-            logger.error("The error: ", e);
+            logger.error("Error when fetching {} with parameters {}. Error {}",
+                         request.getRequestURL().toString(),
+                         request.getParameterMap()
+                                .keySet()
+                                .stream()
+                                .map(key -> key + " => " + Arrays.toString(request.getParameterValues(key)))
+                                .collect(Collectors.toList()),
+                         e.getMessage());
+            logger.info("The error: ", e);
             buildResponse(response,
                           ServiceResponse.ko("Une erreur est survenue... " + e.getMessage(), thisOne));
         }
