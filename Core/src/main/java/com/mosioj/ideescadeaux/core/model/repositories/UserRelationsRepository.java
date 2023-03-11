@@ -268,7 +268,7 @@ public class UserRelationsRepository {
                              " or lower(u.email) like :nameOrEmail ESCAPE '!') ");
         }
         queryText.append("order by u.name, u.email, u.id");
-        return new HashSet<>(HibernateUtil.doQueryFetch(s -> {
+        return new LinkedHashSet<>(HibernateUtil.doQueryFetch(s -> {
             Query<User> query = s.createQuery(queryText.toString(), User.class).setParameter("id", user);
             if (shouldFilterWithNameOrEmail) {
                 query.setParameter("nameOrEmail", HibernateUtil.sanitizeSQLLike(nameOrEmail));
