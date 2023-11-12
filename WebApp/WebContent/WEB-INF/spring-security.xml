@@ -3,8 +3,6 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 
-    <beans:bean id="PasswordHashUpdateFilter" class="com.mosioj.ideescadeaux.webapp.filter.PasswordHashUpdateFilter"/>
-
     <security:http pattern="/public/reinitialiser_mot_de_passe" create-session="never">
         <security:form-login login-page="/public/login.jsp"
                              username-parameter="j_username"
@@ -37,7 +35,6 @@
         <security:remember-me token-validity-seconds="12096000"
                               key="TaFS43L58oOSrE7xPQIyVv+MeqFwB2RIHxtkpPtqY6NhFV5qXfWMyGndvOhzfs2Bfry2E4tWPw9/HmicA7P0NvDqdQzdhDlh9Lwxgpuw64vR4NmDVAuJZPwHRfBllT4Axx5d5kWjGoW7eFXbNwM3oi05xYtQNGbnswyQWwIDAQABAoIBAQCRjPOQI56fHrOsufjbH5fzzMLeowIPU7AscbFlOz9t6z7Xon8zA/LrAnKr/OyF2CpMSEDSDNYWoC8t1TkBdViHUJ+hbU7hsuST121LHWGXmf9QEWQsN+HGT48a60rf6rzBgR9tjGwmHSucqGiirvQtx5VJ4BpdTOYo3757hv1fKExQhYCZ7h6RrJZLrsJsXnQu94T+/sQ5q2WxNGQa1+clIBPp7cWXyka/q0MpDPZIzkI994HmPrniZyKUdPHMfIwoa4qAVlKkAUqH9CF4Ij+iMu1JTryyrP4uYV+h9rFuCHBHnfGEo0EaB5yiWa+fEyjwSdba5w3fEbHkdP+zZ/chAoGBAM4da7NtMBaRBH3XeDnOT6VR7Aen5BQqjLgLww20pmPPYGy0UFLKFe6tNra7k2PTvPHNTiWtNTeerTkTkGSPhA0xF+JEe5pWsurMuOMfQXGwjoNNtYhOl72pBBBba2Pv5lzTfU0PQ4soMlld4N9HKI4NH0ewVvaKCj2kvJkML1nzAoGBAMk5IlSZ95yoFyAcK5LoYFu65Rq3TMeFteIqExHg8HWtaE5z6kNXXMS6WIHfPFfrW+UfMHPEqBO+Xrs/Ik7kko1kcSbPKGbZLOaZEmp79vIiIUkTzCgV9VkykyoZMupuVhQz"/>
         <security:logout logout-success-url="/public/index.jsp"/>
-        <security:custom-filter before="FORM_LOGIN_FILTER" ref="PasswordHashUpdateFilter"/>
     </security:http>
 
     <security:authentication-manager>
