@@ -7,6 +7,7 @@ import com.mosioj.ideescadeaux.webapp.servlets.securitypolicy.root.SecurityPolic
 import com.mosioj.ideescadeaux.webapp.utils.RootingsUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.mobile.device.Device;
 
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * An intermediate servlet for test purpose. Increase the visibility of tested method.
@@ -26,16 +28,24 @@ import java.util.Locale;
  */
 public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends HttpServlet {
 
-    /** Class logger */
+    /**
+     * Class logger
+     */
     private static final Logger logger = LogManager.getLogger(IdeesCadeauxServlet.class);
 
-    /** The security policy defining whether we can interact with the parameters, etc. */
+    /**
+     * The security policy defining whether we can interact with the parameters, etc.
+     */
     protected final P policy;
 
-    /** The connected user, or null if the user is not logged in. */
+    /**
+     * The connected user, or null if the user is not logged in.
+     */
     protected User thisOne = null;
 
-    /** The user device used to perform this http request. */
+    /**
+     * The user device used to perform this http request.
+     */
     protected Device device;
 
     /**
@@ -70,6 +80,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
 
         Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
+        ThreadContext.put("id", UUID.randomUUID().toString());
         fillConnectedUserIfPossible(request);
         policy.setConnectedUser(thisOne);
         policy.reset();
@@ -85,9 +96,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
             request.setAttribute("error_message", policy.getLastReason());
             logger.warn(MessageFormat.format("Inapropriate GET access from user {0} on {1}. Reason: {2}",
-                                             userId,
-                                             request.getRequestURL(),
-                                             policy.getLastReason()));
+                    userId,
+                    request.getRequestURL(),
+                    policy.getLastReason()));
 
             dealWithUnauthorizedPolicyAccess(request, response, policy);
             return;
@@ -117,6 +128,7 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
         Locale.setDefault(Locale.Category.FORMAT, Locale.FRANCE);
+        ThreadContext.put("id", UUID.randomUUID().toString());
         fillConnectedUserIfPossible(request);
         policy.setConnectedUser(thisOne);
         policy.reset();
@@ -132,9 +144,9 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
 
             request.setAttribute("error_message", policy.getLastReason());
             logger.warn(MessageFormat.format("Inapropriate POST access from user {0} on {1}. Reason: {2}",
-                                             userId,
-                                             request.getRequestURL(),
-                                             policy.getLastReason()));
+                    userId,
+                    request.getRequestURL(),
+                    policy.getLastReason()));
 
             dealWithUnauthorizedPolicyAccess(request, response, policy);
             return;
@@ -160,6 +172,8 @@ public abstract class IdeesCadeauxServlet<P extends SecurityPolicy> extends Http
         Object connectedUser = session.getAttribute("connected_user");
         if (connectedUser != null) {
             thisOne = (User) connectedUser;
+            ThreadContext.put("loginId", String.valueOf(thisOne.getId()));
+            ThreadContext.put("loginName", thisOne.getName());
         }
     }
 
