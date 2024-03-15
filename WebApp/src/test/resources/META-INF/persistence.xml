@@ -25,7 +25,7 @@
             <property name="hibernate.connection.url"
                       value="jdbc:mysql://nas-jmo/test_ideeskdos?useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Paris"/>
             <property name="hibernate.connection.username" value="mosioj"/>
-            <property name="hibernate.connection.password" value="tuaD50Kv2jguyX5ncokK"/>
+            <property name="hibernate.connection.password" value="tuaD50Kv2jguyX5ncokK$"/>
             <property name="hibernate.jdbc.time_zone" value="Europe/Paris"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="show_sql" value="true"/>
