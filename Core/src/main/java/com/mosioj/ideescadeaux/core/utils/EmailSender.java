@@ -89,9 +89,9 @@ public class EmailSender {
             logger.error("Une erreur est survenue...", e);
         }
         SYSTEM_PROP.setProperty("mail.smtp.host", MY_PROPERTIES.getProperty("host"));
-        SYSTEM_PROP.setProperty("mail.smtp.socketFactory.port", MY_PROPERTIES.getProperty("port"));
+        SYSTEM_PROP.setProperty("mail.smtp.socketFactory.port", MY_PROPERTIES.getProperty("port", ""));
         SYSTEM_PROP.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         SYSTEM_PROP.setProperty("mail.smtp.auth", "true");
-        SYSTEM_PROP.setProperty("mail.smtp.port", MY_PROPERTIES.getProperty("port"));
+        SYSTEM_PROP.setProperty("mail.smtp.port", MY_PROPERTIES.getProperty("port", ""));
     }
 }
