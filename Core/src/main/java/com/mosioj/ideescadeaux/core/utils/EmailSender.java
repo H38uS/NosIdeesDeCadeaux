@@ -3,10 +3,7 @@ package com.mosioj.ideescadeaux.core.utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -29,7 +26,9 @@ public class EmailSender {
     public static final Properties MY_PROPERTIES = new Properties();
     private static final Properties SYSTEM_PROP = System.getProperties();
 
-    /** Envoie de 4 mails en parrallèle */
+    /**
+     * Envoie de 4 mails en parrallèle
+     */
     private static final ExecutorService executor = Executors.newFixedThreadPool(8);
 
     /**
@@ -47,9 +46,17 @@ public class EmailSender {
         return executor.submit(() -> {
             try {
                 logger.info(MessageFormat.format("Sending email to {0}...", to));
-                Session session = Session.getDefaultInstance(SYSTEM_PROP);
+                final String fromEmail = MY_PROPERTIES.getProperty("from");
+                final String password = MY_PROPERTIES.getProperty("password");
+                Authenticator auth = new Authenticator() {
+                    //override the getPasswordAuthentication method
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(fromEmail, password);
+                    }
+                };
+                Session session = Session.getDefaultInstance(SYSTEM_PROP, auth);
                 MimeMessage message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(MY_PROPERTIES.getProperty("from"), "Nos Idées de Cadeaux"));
+                message.setFrom(new InternetAddress(fromEmail, "Nos Idées de Cadeaux"));
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
                 message.setSubject(subject);
                 message.setContent(htmlText, "text/html; charset=UTF-8");
@@ -66,7 +73,7 @@ public class EmailSender {
     public static Future<?> sendEmailReinitializationPwd(String to, int userId, int tokenId) {
         String body = MY_PROPERTIES.get("body_reinitialization").toString();
         body = body.replaceAll("\\$\\$parameters\\$\\$",
-                               MessageFormat.format("userIdParam={0}&tokenId={1}", userId, tokenId + ""));
+                MessageFormat.format("userIdParam={0}&tokenId={1}", userId, tokenId + ""));
         return sendEmail(to, "Mot de passe oublié - Nos idées de cadeaux", body);
     }
 
@@ -82,5 +89,9 @@ public class EmailSender {
             logger.error("Une erreur est survenue...", e);
         }
         SYSTEM_PROP.setProperty("mail.smtp.host", MY_PROPERTIES.getProperty("host"));
+        SYSTEM_PROP.setProperty("mail.smtp.socketFactory.port", MY_PROPERTIES.getProperty("port"));
+        SYSTEM_PROP.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        SYSTEM_PROP.setProperty("mail.smtp.auth", "true");
+        SYSTEM_PROP.setProperty("mail.smtp.port", MY_PROPERTIES.getProperty("port"));
     }
 }
