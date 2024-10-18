@@ -1,0 +1,43 @@
+<persistence version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+    <persistence-unit name="com.mosioj.ideescadeaux">
+        <description>Nos idees de cadeaux</description>
+        <class>com.mosioj.ideescadeaux.core.model.entities.User</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.UserRole</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.UserParameter</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.Relation</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.RelationSuggestion</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.RelationRequest</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.Categorie</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.Priority</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.IdeaGroup</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.IdeaGroupContent</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.IsUpToDate</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.text.Idee</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.text.Question</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.text.Comment</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.text.SousReservation</class>
+        <class>com.mosioj.ideescadeaux.core.model.entities.notifications.Notification</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="hibernate.connection.url" value="${db.url}"/>
+            <property name="hibernate.connection.username" value="${db.username}"/>
+            <property name="hibernate.connection.password" value="${db.password}"/>
+            <property name="hibernate.jdbc.time_zone" value="Europe/Paris"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <property name="show_sql" value="${db.showSQL}"/>
+            <property name="hibernate.current_session_context_class" value="thread"/>
+            <property name="hibernate.hbm2ddl.auto" value="${ddl-auto-mode}"/>
+            <property name="hibernate.connection.provider_class"
+                      value="org.hibernate.connection.C3P0ConnectionProvider"/>
+            <property name="hibernate.c3p0.min_size" value="1"/>
+            <property name="hibernate.c3p0.max_size" value="53"/>
+            <property name="hibernate.c3p0.timeout" value="100"/>
+            <property name="hibernate.c3p0.max_statements" value="200"/>
+            <property name="hibernate.c3p0.idle_test_period" value="1000"/>
+            <property name="hibernate.c3p0.validate" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
