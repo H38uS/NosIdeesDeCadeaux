@@ -112,6 +112,21 @@
                     <failOnMissingWebXml>true</failOnMissingWebXml>
                     <outputDirectory>C:\Users\JORDAN\Downloads</outputDirectory>
                     <warName>app</warName>
+                    <webResources>
+                        <resource>
+                            <directory>WebContent</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>**/META-INF/context.xml</include>
+                                <include>WEB-INF/web.xml</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <excludes>
+                                <exclude>**/META-INF/context_local.xml</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>
