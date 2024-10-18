@@ -121,12 +121,6 @@
                                 <include>WEB-INF/web.xml</include>
                             </includes>
                         </resource>
-                        <resource>
-                            <directory>WebContent</directory>
-                            <excludes>
-                                <exclude>**/META-INF/context_local.xml</exclude>
-                            </excludes>
-                        </resource>
                     </webResources>
                 </configuration>
             </plugin>
