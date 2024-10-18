@@ -122,6 +122,7 @@
                             </includes>
                         </resource>
                         <resource>
+                            <directory>WebContent</directory>
                             <excludes>
                                 <exclude>**/META-INF/context_local.xml</exclude>
                             </excludes>
