@@ -120,6 +120,10 @@
                                 <include>**/META-INF/context.xml</include>
                                 <include>WEB-INF/web.xml</include>
                             </includes>
+                            <excludes>
+                                <exclude>**/META-INF/context_local.xml</exclude>
+                                <exclude>**/META-INF/MANIFEST.MF</exclude>
+                            </excludes>
                         </resource>
                     </webResources>
                 </configuration>
