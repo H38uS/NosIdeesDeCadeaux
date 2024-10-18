@@ -245,11 +245,11 @@
                             <warName>app</warName>
                             <webResources>
                                 <resource>
-                                    <directory>WebContent</directory>
+                                    <directory>WebApp</directory>
                                     <filtering>true</filtering>
                                     <excludes>
-                                        <exclude>META-INF/context_local.xml</exclude>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>**/META-INF/context_local.xml</exclude>
+                                        <exclude>**/META-INF/MANIFEST.MF</exclude>
                                     </excludes>
                                 </resource>
                             </webResources>
