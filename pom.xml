@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mosioj</groupId>
     <artifactId>NosIdeesDeCadeaux</artifactId>
-    <version>1.1.69</version>
+    <version>1.1.70-SNAPSHOT</version>
 
     <modules>
         <module>Core</module>
@@ -13,7 +13,7 @@
 
     <scm>
         <developerConnection>scm:git:ssh://git@github.com/H38uS/NosIdeesDeCadeaux.git</developerConnection>
-        <tag>NosIdeesDeCadeaux-1.1.69</tag>
+        <tag>NosIdeesDeCadeaux-1.1.45</tag>
     </scm>
 
     <packaging>pom</packaging>
