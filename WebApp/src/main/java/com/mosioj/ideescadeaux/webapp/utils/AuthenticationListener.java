@@ -29,6 +29,7 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
         if (!AbstractAuthenticationEvent.class.isAssignableFrom(clazz) &&
             !AbstractAuthorizationEvent.class.isAssignableFrom(clazz)) {
             // Only interesting into authorization / authentication
+            logger.warn(appEvent);
             return;
         }
 
@@ -38,7 +39,6 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
             appEvent instanceof SessionFixationProtectionEvent ||
             appEvent instanceof InteractiveAuthenticationSuccessEvent) {
             // Nothing special then
-            logger.warn(appEvent);
             return;
         }
 
