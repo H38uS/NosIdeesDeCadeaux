@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
     <Resource  name="jdbc/web-db" auth="Container"  type="javax.sql.DataSource"
-               maxTotal="50"  maxIdle="10"  maxWaitMillis="10000" removeAbandonedOnBorrow="true"
-              username="${db.username}"  password="${db.password}" driverClassName="com.mysql.cj.jdbc.Driver"
+               maxTotal="50"  maxIdle="10"  username="${db.username}"  password="${db.password}" driverClassName="com.mysql.cj.jdbc.Driver"
               url="${db.url}?useLegacyDatetimeCode=false&amp;useUnicode=yes" validationQuery="select 1" testOnBorrow="true" />
 </Context>
