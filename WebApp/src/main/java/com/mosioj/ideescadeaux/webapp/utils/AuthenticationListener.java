@@ -29,7 +29,6 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
         if (!AbstractAuthenticationEvent.class.isAssignableFrom(clazz) &&
             !AbstractAuthorizationEvent.class.isAssignableFrom(clazz)) {
             // Only interesting into authorization / authentication
-            logger.warn(appEvent);
             return;
         }
 
