@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,11 +41,11 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         final String initialText = idee.getText();
 
         createMultiPartRequest(Map.of("text",
-                                      initialText + "aa",
-                                      "type",
-                                      "",
-                                      "priority",
-                                      String.valueOf(prio.getId())));
+                initialText + "aa",
+                "type",
+                "",
+                "priority",
+                String.valueOf(prio.getId())));
 
         bindPostRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
         StringServiceResponse resp = doTestServicePost();
@@ -58,10 +59,10 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
     public void shouldNotBePossibleToModifySomeonesElseIdea() throws SQLException, IOException {
 
         Idee idee = IdeesRepository.getIdeasOf(friendOfFirefox)
-                                   .stream()
-                                   .filter(i -> !i.isASurprise())
-                                   .findFirst()
-                                   .orElseThrow(SQLException::new);
+                .stream()
+                .filter(i -> !i.isASurprise())
+                .findFirst()
+                .orElseThrow(SQLException::new);
         final String initialText = idee.getText();
 
         Map<String, String> param = new HashMap<>();
@@ -137,10 +138,10 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         // ... and the friend has no notifications yet, and notification activated
         NotificationsRepository.terminator().whereOwner(friendOfFirefox).terminates();
         assertFalse(NotificationsRepository.fetcher()
-                                           .whereOwner(friendOfFirefox)
-                                           .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
-                                           .whereUser(firefox)
-                                           .hasAny());
+                .whereOwner(friendOfFirefox)
+                .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
+                .whereUser(firefox)
+                .hasAny());
 
         // ... and the user has an idea and a modification form
         int id = ds.selectInt("select max(id) from IDEES where owner = ? and status <> 'DELETED'", _OWNER_ID_).orElseThrow(SQLException::new);
@@ -156,23 +157,43 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
 
         assertTrue(resp.isOK());
         assertEquals(1,
-                     NotificationsRepository.fetcher()
-                                            .whereOwner(friendOfFirefox)
-                                            .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
-                                            .whereUser(firefox)
-                                            .fetch()
-                                            .size());
+                NotificationsRepository.fetcher()
+                        .whereOwner(friendOfFirefox)
+                        .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
+                        .whereUser(firefox)
+                        .fetch()
+                        .size());
 
         // A second does not
         createMultiPartRequest(param);
         doTestPost();
         assertEquals(1,
-                     NotificationsRepository.fetcher()
-                                            .whereOwner(friendOfFirefox)
-                                            .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
-                                            .whereUser(firefox)
-                                            .fetch()
-                                            .size());
+                NotificationsRepository.fetcher()
+                        .whereOwner(friendOfFirefox)
+                        .whereType(NType.MODIFIED_IDEA_BIRTHDAY_SOON)
+                        .whereUser(firefox)
+                        .fetch()
+                        .size());
+    }
+
+    @Test
+    public void testModifyingOurIdeaChangesTheModificationDate() throws SQLException, IOException, InterruptedException {
+        // Given
+        Idee idee = IdeesRepository.saveTheIdea(new Idee.IdeaBuilder().withOwner(firefox).withText("something"));
+        assertNotNull(idee.lastModified);
+        LocalDateTime previous = idee.lastModified;
+        Thread.sleep(1000);
+
+        // When
+        createMultiPartRequest(Map.of("text", "The new text"));
+        bindPostRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        StringServiceResponse resp = doTestServicePost();
+
+        // Then
+        assertTrue(resp.isOK());
+        idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
+        IdeesRepository.trueRemove(idee);
+        assertTrue(previous + " is not before " + idee.lastModified, previous.isBefore(idee.lastModified));
     }
 
 }

@@ -95,7 +95,7 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
         assertTrue(resp.isOK());
         assertEquals(0, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
         assertNull(IdeesRepository.getIdea(idea.getId()).orElseThrow(SQLException::new).bookedBy);
-        IdeesRepository.remove(idea);
+        IdeesRepository.trueRemove(idea);
     }
 
 }

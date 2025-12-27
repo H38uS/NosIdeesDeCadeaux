@@ -378,6 +378,7 @@ public class ServiceRestoreIdeaTest extends AbstractTestServletWebApp {
         idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
         assertFalse(idee.isDeleted());
         assertEquals(firefox, idee.createdBy);
+        IdeesRepository.trueRemove(idee);
     }
 
 }

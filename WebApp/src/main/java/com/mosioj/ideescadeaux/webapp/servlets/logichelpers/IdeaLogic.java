@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
 
 public class IdeaLogic {
 
-    /** Class logger. */
+    /**
+     * Class logger.
+     */
     private static final Logger logger = LogManager.getLogger(IdeaLogic.class);
 
     private IdeaLogic() {
@@ -42,7 +44,11 @@ public class IdeaLogic {
 
         String text = parameters.get("text");
         String type = parameters.get("type");
-        int priority = Integer.parseInt(parameters.get("priority"));
+        String priorityParam = parameters.get("priority");
+        int priority = -1;
+        if (priorityParam != null) {
+            priority = Integer.parseInt(priorityParam);
+        }
 
         if (text.isEmpty() && type.isEmpty() && priority == -1) {
             logger.debug("All parameters are empty.");
@@ -54,9 +60,9 @@ public class IdeaLogic {
 
         // Priority validation
         errors.addAll(ValidatorBuilder.getFemValidator(priority + "", "priorité")
-                                      .checkEmpty()
-                                      .checkIfInteger()
-                                      .build().getErrors());
+                .checkEmpty()
+                .checkIfInteger()
+                .build().getErrors());
 
         return errors;
     }
@@ -73,11 +79,11 @@ public class IdeaLogic {
             // Send a notification for each user that has no such modification notification yet
             final Set<User> users = UserRelationsRepository.getAllUsersInRelation(user);
             users.parallelStream()
-                 .map(u -> isNew ?
-                         NType.NEW_IDEA_BIRTHDAY_SOON.with(user, idea).setOwner(u) :
-                         NType.MODIFIED_IDEA_BIRTHDAY_SOON.with(user, idea).setOwner(u))
-                 .filter(n -> NotificationsRepository.findNotificationsMatching(n).isEmpty())
-                 .forEach(Notification::send);
+                    .map(u -> isNew ?
+                            NType.NEW_IDEA_BIRTHDAY_SOON.with(user, idea).setOwner(u) :
+                            NType.MODIFIED_IDEA_BIRTHDAY_SOON.with(user, idea).setOwner(u))
+                    .filter(n -> NotificationsRepository.findNotificationsMatching(n).isEmpty())
+                    .forEach(Notification::send);
         }
     }
 
@@ -117,8 +123,8 @@ public class IdeaLogic {
      */
     public static List<OwnerIdeas> getPersonsIdeasFromUsers(User connectedUser, List<User> users, Device device) {
         return users.stream()
-                    .map(u -> getPersonIdeasFromUser(connectedUser, device, u))
-                    .toList();
+                .map(u -> getPersonIdeasFromUser(connectedUser, device, u))
+                .toList();
     }
 
     /**
@@ -131,8 +137,8 @@ public class IdeaLogic {
      */
     private static OwnerIdeas getPersonIdeasFromUser(User connectedUser, Device device, User user) {
         var ideas = IdeasWithInfoRepository.getIdeasOf(user)
-                                           .parallelStream()
-                                           .map(i -> new DecoratedWebAppIdea(i, connectedUser, device));
+                .parallelStream()
+                .map(i -> new DecoratedWebAppIdea(i, connectedUser, device));
         if (connectedUser.equals(user)) {
             // Filter out the surprise of the connected user
             ideas = ideas.filter(i -> !i.getIdee().isASurprise());
