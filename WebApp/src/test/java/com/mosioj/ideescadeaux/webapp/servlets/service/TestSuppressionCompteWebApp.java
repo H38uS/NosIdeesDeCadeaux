@@ -1,6 +1,9 @@
 package com.mosioj.ideescadeaux.webapp.servlets.service;
 
 import com.mosioj.ideescadeaux.core.model.entities.User;
+import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
+import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.UserRelationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import com.mosioj.ideescadeaux.webapp.WebAppTemplateTest;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
@@ -28,7 +31,6 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
             try {
                 UsersRepository.deleteUser(u);
             } catch (SQLException e) {
-                e.printStackTrace();
                 Assert.fail();
             }
         });
@@ -51,7 +53,6 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
             try {
                 UsersRepository.deleteUser(u);
             } catch (SQLException e) {
-                e.printStackTrace();
                 Assert.fail();
             }
         });
@@ -64,6 +65,37 @@ public class TestSuppressionCompteWebApp extends AbstractTestServletWebApp {
         assertEquals(1, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
         UsersRepository.deleteUser(user);
         assertEquals(0, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
+    }
+
+    @Test
+    public void testUserRemovalAlsoRemovesBooking() throws SQLException {
+        // Given
+        String mail = "to_be_deleted@something.cekj";
+        UsersRepository.getUser(mail).ifPresent(u -> {
+            try {
+                UsersRepository.deleteUser(u);
+            } catch (SQLException e) {
+                Assert.fail();
+            }
+        });
+        int userId = UsersRepository.addNewPersonne(mail, "a", "to_be_deleted");
+        User user = UsersRepository.getUser(userId).orElseThrow(SQLException::new);
+        UserRelationsRepository.addAssociation(user, firefox);
+        Idee idea = IdeesRepository.saveTheIdea(new Idee.IdeaBuilder().withText("aa").withOwner(firefox));
+        IdeesRepository.reserver(idea, user);
+        assertNotNull(idea.bookedBy);
+
+        // When
+        bindPostRequestParam(ServiceSuppressionCompte.USER_ID_PARAM, String.format("%d", userId));
+        setConnectedUserTo(WebAppTemplateTest.theAdmin);
+        assertTrue(theAdmin.isAdmin());
+        StringServiceResponse resp = doTestServicePost();
+
+        // Then
+        assertTrue(resp.isOK());
+        assertEquals(0, ds.selectCountStar("select count(*) from USERS where id = ?", userId));
+        assertNull(IdeesRepository.getIdea(idea.getId()).orElseThrow(SQLException::new).bookedBy);
+        IdeesRepository.remove(idea);
     }
 
 }

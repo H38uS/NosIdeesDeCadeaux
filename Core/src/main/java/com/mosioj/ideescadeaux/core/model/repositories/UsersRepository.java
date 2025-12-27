@@ -240,6 +240,10 @@ public class UsersRepository {
              .setParameter("owner", user)
              .executeUpdate();
 
+            s.createQuery("update IDEES set reserve = null, reserve_le = null where reserve = :owner")
+                    .setParameter("owner", user)
+                    .executeUpdate();
+
             // Suppression des relations, des suggestions et des demandes
             s.createQuery(
                      "delete from USER_RELATIONS_SUGGESTION where suggested_by = :id or suggested_to = :id or user_id = :id")
