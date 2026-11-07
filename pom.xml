@@ -189,6 +189,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.3.1</version>
                         <executions>
                             <execution>
                                 <phase>initialize</phase>
@@ -206,6 +207,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>PROD</id>
             <properties>
@@ -219,6 +221,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.3.1</version>
                         <executions>
                             <execution>
                                 <phase>initialize</phase>
@@ -235,6 +238,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
+                        <version>3.4.0</version>
                         <configuration>
                             <warName>app</warName>
                         </configuration>
