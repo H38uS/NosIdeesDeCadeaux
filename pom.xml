@@ -197,7 +197,7 @@
                                 </goals>
                                 <configuration>
                                     <files>
-                                        <file>dev.properties</file>
+                                        <file>${maven.multiModuleProjectDirectory}/dev.properties</file>
                                     </files>
                                 </configuration>
                             </execution>
@@ -227,7 +227,7 @@
                                 </goals>
                                 <configuration>
                                     <files>
-                                        <file>prod.properties</file>
+                                        <file>${maven.multiModuleProjectDirectory}/prod.properties</file>
                                     </files>
                                 </configuration>
                             </execution>
