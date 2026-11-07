@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.mosioj</groupId>
         <artifactId>NosIdeesDeCadeaux</artifactId>
-        <version>1.1.55-SNAPSHOT</version>
+        <version>1.1.80-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -110,11 +110,11 @@
         <plugins>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.4.0</version>
                 <configuration>
                     <warSourceDirectory>WebContent</warSourceDirectory>
                     <failOnMissingWebXml>true</failOnMissingWebXml>
                     <warName>app</warName>
+                    <outputDirectory>C:\Users\JORDAN\Downloads</outputDirectory>
                     <webResources>
                         <resource>
                             <directory>WebContent</directory>
@@ -125,6 +125,16 @@
                             </includes>
                         </resource>
                     </webResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <path>/ideescadeaux</path>
+                    <warSourceDirectory>WebContent</warSourceDirectory>
+                    <contextFile>WebContent/META-INF/context.xml</contextFile>
                 </configuration>
             </plugin>
         </plugins>
