@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,9 @@ import static com.mosioj.ideescadeaux.core.model.entities.notifications.NType.CO
 @WebServlet("/protected/service/modifier_idee")
 public class ServiceModifierIdee extends ServicePost<IdeaModification> {
 
-    /** Class logger. */
+    /**
+     * Class logger.
+     */
     private static final Logger logger = LogManager.getLogger(ServiceModifierIdee.class);
 
     public static final String IDEE_ID_PARAM = "id";
@@ -62,11 +65,11 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                 sr = ServiceResponse.ko(message.toString(), thisOne);
             } else {
                 logger.info("Modifying the idea {} of {}. Parameters: ['{}' / '{}' / '{}']",
-                            idea.getId(),
-                            idea.getOwner(),
-                            parameters.get("text"),
-                            parameters.get("type"),
-                            parameters.get("priority"));
+                        idea.getId(),
+                        idea.getOwner(),
+                        parameters.get("text"),
+                        parameters.get("type"),
+                        parameters.get("priority"));
                 String image = parameters.get("image");
                 String old = idea.getImage();
                 if (StringUtils.isBlank(image) || "null".equals(image)) {
@@ -84,9 +87,14 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
 
                 idea.setText(parameters.get("text"));
                 idea.categorie = CategoriesRepository.getCategory(parameters.get("type")).orElse(null);
-                idea.priority = PrioritiesRepository.getPriority(Integer.parseInt(parameters.get("priority")))
-                                                    .orElse(null);
+                if (parameters.get("priority") != null) {
+                    idea.priority = PrioritiesRepository.getPriority(Integer.parseInt(parameters.get("priority")))
+                            .orElse(null);
+                } else {
+                    idea.priority = null;
+                }
                 idea.image = image;
+                idea.lastModified = LocalDateTime.now();
                 HibernateUtil.update(idea);
 
                 // Ajout de notification aux amis si l'anniversaire approche
@@ -98,13 +106,13 @@ public class ServiceModifierIdee extends ServicePost<IdeaModification> {
                 // Mise à jour des demandes de confirmations si à jour
                 final Notification confirmationUpToDate = CONFIRMED_UP_TO_DATE.with(thisOne, idea);
                 NotificationsRepository.fetcher()
-                                       .whereType(NType.IS_IDEA_UP_TO_DATE)
-                                       .whereIdea(idea)
-                                       .fetch()
-                                       .forEach(n -> {
-                                           n.getUserParameter().ifPresent(confirmationUpToDate::sendItTo);
-                                           NotificationsRepository.remove(n);
-                                       });
+                        .whereType(NType.IS_IDEA_UP_TO_DATE)
+                        .whereIdea(idea)
+                        .fetch()
+                        .forEach(n -> {
+                            n.getUserParameter().ifPresent(confirmationUpToDate::sendItTo);
+                            NotificationsRepository.remove(n);
+                        });
 
                 // Suppression des notifications d'ajout par un amis.
                 NotificationsRepository.terminator().whereType(NType.IDEA_ADDED_BY_FRIEND).whereIdea(idea).terminates();

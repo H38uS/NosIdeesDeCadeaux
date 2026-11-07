@@ -1,8 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.utils;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-
+import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationEvent;
@@ -11,12 +9,12 @@ import org.springframework.security.access.event.AbstractAuthorizationEvent;
 import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.access.event.PublicInvocationEvent;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
-import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionEvent;
 
-import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
+import java.sql.SQLException;
+import java.text.MessageFormat;
 
 public class AuthenticationListener implements ApplicationListener<ApplicationEvent> {
 
@@ -36,9 +34,7 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
 
         // Request for a protected page when not logged in
         // Or about public
-        if (appEvent instanceof AuthorizationFailureEvent ||
-            appEvent instanceof PublicInvocationEvent
-            ||
+        if (appEvent instanceof PublicInvocationEvent ||
             appEvent instanceof SessionFixationProtectionEvent ||
             appEvent instanceof InteractiveAuthenticationSuccessEvent) {
             // Nothing special then
@@ -46,8 +42,7 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
         }
 
         // Connection event
-        if (appEvent instanceof AuthenticationSuccessEvent) {
-            AuthenticationSuccessEvent event = (AuthenticationSuccessEvent) appEvent;
+        if (appEvent instanceof AuthenticationSuccessEvent event) {
             String email = event.getAuthentication().getName();
             logger.info(MessageFormat.format("{0} vient de se connecter. Détails: {1}",
                                              email,
@@ -60,12 +55,13 @@ public class AuthenticationListener implements ApplicationListener<ApplicationEv
         }
 
         // Invalid credentials
-        if (appEvent instanceof AuthenticationFailureBadCredentialsEvent) {
-            AuthenticationFailureBadCredentialsEvent event = (AuthenticationFailureBadCredentialsEvent) appEvent;
+        if (AuthorizationFailureEvent.class.isAssignableFrom(clazz)) {
+            AuthorizationFailureEvent event = (AuthorizationFailureEvent) appEvent;
             logger.warn(MessageFormat.format("Tentative de connexion de {0} (depuis {1}) avec les mauvais login/mdp.",
                                              event.getAuthentication().getName(),
                                              event.getSource()));
             logger.warn(MessageFormat.format("Détails : {0}", event.getAuthentication().getDetails()));
+            logger.warn("Exception: ", event.getAccessDeniedException());
             return;
         }
 

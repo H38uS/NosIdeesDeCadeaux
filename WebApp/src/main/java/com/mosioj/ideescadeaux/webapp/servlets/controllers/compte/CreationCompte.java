@@ -1,5 +1,6 @@
 package com.mosioj.ideescadeaux.webapp.servlets.controllers.compte;
 
+import com.mosioj.ideescadeaux.core.model.entities.User;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
 import com.mosioj.ideescadeaux.core.model.repositories.UsersRepository;
@@ -20,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/public/creation_compte")
@@ -42,8 +42,7 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
     }
 
     @Override
-    public void ideesKDoPOST(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, SQLException {
+    public void ideesKDoPOST(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
         HttpSession session = request.getSession();
         CompteInteractions helper = new CompteInteractions();
@@ -91,7 +90,10 @@ public class CreationCompte extends IdeesCadeauxGetAndPostServlet<AllAccessToPos
         }
 
         NotificationsRepository.notifyAboutANewInscription("A person within the site !! This is " + email + ".");
-        NType.NO_IDEA.buildDefault().sendItTo(thisOne);
+        Object connectedUser = request.getAttribute("connected_user");
+        if (connectedUser instanceof User) {
+            NType.NO_IDEA.buildDefault().sendItTo((User) connectedUser);
+        }
         RootingsUtils.rootToPage(SUCCES_URL, request, response);
     }
 }

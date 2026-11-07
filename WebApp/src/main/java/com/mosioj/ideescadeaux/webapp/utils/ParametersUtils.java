@@ -120,10 +120,9 @@ public class ParametersUtils {
 
     /**
      * @param originalImage The picture received over the network.
-     * @param type          The picture file extension.
      * @return A new picture resized for best rendering.
      */
-    private static BufferedImage resizeImage(BufferedImage originalImage, int type, int maxWidth, int maxHeight) {
+    private static BufferedImage resizeImage(BufferedImage originalImage, int maxWidth, int maxHeight) {
 
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
@@ -142,9 +141,15 @@ public class ParametersUtils {
         }
 
         logger.debug("Resizing picture from (" + width + "x" + height + ") to (" + newWidth + "x" + newHeight + ")...");
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, type);
+
+        // TYPE_INT_RGB évite la plupart des images noires
+        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = resizedImage.createGraphics();
-        g.setComposite(AlphaComposite.Src);
+
+        // Fond blanc au cas où l'image source a de la transparence
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, newWidth, newHeight);
+
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -217,21 +222,28 @@ public class ParametersUtils {
                             // Creation de la vignette
                             BufferedImage originalImage = ImageIO.read(tmpUploadedFile);
 
-                            int originalType = originalImage.getType() ==
-                                               0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
-
-                            BufferedImage resizeImageJpg = resizeImage(originalImage, originalType, MAX_SIZE, MAX_SIZE);
-                            ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
-
-                            // On l'écrit tout le temps pour avoir un PNG
-                            if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
-                                resizeImageJpg = resizeImage(originalImage, originalType, 1920, 1080);
+                            if (originalImage == null) {
+                                // ImageIO n'a pas réussi à lire → on copie brut
+                                logger.warn("ImageIO.read returned null for {}", tmpUploadedFile);
+                                FileUtils.copyFile(tmpUploadedFile, new File(largeFolder, image));
+                                FileUtils.copyFile(tmpUploadedFile, new File(smallFolder, image));
                             } else {
-                                resizeImageJpg = originalImage;
+                                BufferedImage resizeImageJpg = resizeImage(originalImage, MAX_SIZE, MAX_SIZE);
+                                ImageIO.write(resizeImageJpg, "png", new File(smallFolder, image));
+
+                                // On l'écrit tout le temps pour avoir un PNG
+                                if (originalImage.getWidth() > 1920 || originalImage.getHeight() > 1080) {
+                                    resizeImageJpg = resizeImage(originalImage, 1920, 1080);
+                                } else {
+                                    // On force quand même un TYPE_INT_RGB propre même si pas de redimensionnement
+                                    resizeImageJpg = resizeImage(originalImage,
+                                                                 originalImage.getWidth(),
+                                                                 originalImage.getHeight());
+                                }
+                                ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
+                                logger.trace("Releasing the image resources...");
+                                originalImage.flush();
                             }
-                            ImageIO.write(resizeImageJpg, "png", new File(largeFolder, image));
-                            logger.trace("Releasing the image resources...");
-                            originalImage.flush();
 
                         } catch (OutOfMemoryError e) {
                             logger.error("Une erreur est survenue...", e);
