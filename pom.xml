@@ -10,6 +10,11 @@
     <version>1.1.80-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com/H38uS/NosIdeesDeCadeaux.git</developerConnection>
+        <tag>NosIdeesDeCadeaux-1.1.80</tag>
+    </scm>
+
     <modules>
         <module>Core</module>
         <module>WebApp</module>
