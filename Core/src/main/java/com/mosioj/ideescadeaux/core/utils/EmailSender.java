@@ -56,9 +56,9 @@ public class EmailSender {
                 };
                 Session session = Session.getDefaultInstance(SYSTEM_PROP, auth);
                 MimeMessage message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(fromEmail, "Nos Idées de Cadeaux"));
+                message.setFrom(new InternetAddress(fromEmail, "Nos Idées de Cadeaux", "UTF-8"));
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-                message.setSubject(subject);
+                message.setSubject(subject, "UTF-8");
                 message.setContent(htmlText, "text/html; charset=UTF-8");
 
                 Transport.send(message);
@@ -93,5 +93,6 @@ public class EmailSender {
         SYSTEM_PROP.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         SYSTEM_PROP.setProperty("mail.smtp.auth", "true");
         SYSTEM_PROP.setProperty("mail.smtp.port", MY_PROPERTIES.getProperty("port", ""));
+        SYSTEM_PROP.setProperty("mail.mime.charset", "UTF-8");
     }
 }
