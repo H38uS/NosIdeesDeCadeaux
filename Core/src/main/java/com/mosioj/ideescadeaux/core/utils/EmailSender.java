@@ -24,10 +24,10 @@ public class EmailSender {
 
     // Properties
     public static final Properties MY_PROPERTIES = new Properties();
-    private static final Properties SYSTEM_PROP = System.getProperties();
+    private static final Properties SYSTEM_PROP = new Properties();
 
     /**
-     * Envoie de 4 mails en parrallèle
+     * Envoie de mails en parallèle
      */
     private static final ExecutorService executor = Executors.newFixedThreadPool(8);
 
@@ -39,22 +39,25 @@ public class EmailSender {
      * @param htmlText The email body, html formated.
      */
     public static Future<?> sendEmail(String to, String subject, String htmlText) {
-        if (MY_PROPERTIES.getProperty("host").isBlank()) {
+        if (MY_PROPERTIES.getProperty("host") == null || MY_PROPERTIES.getProperty("host").isBlank()) {
             logger.info("No host info => do not send the email.");
             return CompletableFuture.completedFuture("Nothing to do!");
         }
         return executor.submit(() -> {
             try {
                 logger.info(MessageFormat.format("Sending email to {0}...", to));
+
                 final String fromEmail = MY_PROPERTIES.getProperty("from");
                 final String password = MY_PROPERTIES.getProperty("password");
+
                 Authenticator auth = new Authenticator() {
-                    //override the getPasswordAuthentication method
+                    @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(fromEmail, password);
                     }
                 };
-                Session session = Session.getDefaultInstance(SYSTEM_PROP, auth);
+
+                Session session = Session.getInstance(SYSTEM_PROP, auth);
                 MimeMessage message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(fromEmail, "Nos Idées de Cadeaux", "UTF-8"));
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -88,11 +91,13 @@ public class EmailSender {
             e.printStackTrace();
             logger.error("Une erreur est survenue...", e);
         }
-        SYSTEM_PROP.setProperty("mail.smtp.host", MY_PROPERTIES.getProperty("host"));
-        SYSTEM_PROP.setProperty("mail.smtp.socketFactory.port", MY_PROPERTIES.getProperty("port", ""));
-        SYSTEM_PROP.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        SYSTEM_PROP.setProperty("mail.smtp.auth", "true");
-        SYSTEM_PROP.setProperty("mail.smtp.port", MY_PROPERTIES.getProperty("port", ""));
-        SYSTEM_PROP.setProperty("mail.mime.charset", "UTF-8");
+
+        // Configuration SMTP Infomaniak (STARTTLS - port 587)
+        SYSTEM_PROP.put("mail.smtp.host", MY_PROPERTIES.getProperty("host"));
+        SYSTEM_PROP.put("mail.smtp.port", MY_PROPERTIES.getProperty("port", "587"));
+        SYSTEM_PROP.put("mail.smtp.auth", "true");
+        SYSTEM_PROP.put("mail.smtp.starttls.enable", "true");
+        SYSTEM_PROP.put("mail.smtp.starttls.required", "true");
+        SYSTEM_PROP.put("mail.mime.charset", "UTF-8");
     }
 }
