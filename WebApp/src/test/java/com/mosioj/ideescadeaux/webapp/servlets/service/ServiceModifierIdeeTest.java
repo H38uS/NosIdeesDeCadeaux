@@ -4,10 +4,7 @@ import com.mosioj.ideescadeaux.core.model.entities.Priority;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.NType;
 import com.mosioj.ideescadeaux.core.model.entities.notifications.Notification;
 import com.mosioj.ideescadeaux.core.model.entities.text.Idee;
-import com.mosioj.ideescadeaux.core.model.repositories.IdeesRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.IsUpToDateQuestionsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.NotificationsRepository;
-import com.mosioj.ideescadeaux.core.model.repositories.PrioritiesRepository;
+import com.mosioj.ideescadeaux.core.model.repositories.*;
 import com.mosioj.ideescadeaux.core.utils.db.HibernateUtil;
 import com.mosioj.ideescadeaux.webapp.servlets.AbstractTestServletWebApp;
 import com.mosioj.ideescadeaux.webapp.servlets.StringServiceResponse;
@@ -194,6 +191,24 @@ public class ServiceModifierIdeeTest extends AbstractTestServletWebApp {
         idee = IdeesRepository.getIdea(idee.getId()).orElseThrow(SQLException::new);
         IdeesRepository.trueRemove(idee);
         assertTrue(previous + " is not before " + idee.lastModified, previous.isBefore(idee.lastModified));
+    }
+
+    @Test
+    public void testModifyingOurIdeaKeepsComments() throws IOException {
+        // Given
+        Idee idee = IdeesRepository.saveTheIdea(new Idee.IdeaBuilder().withOwner(firefox).withText("something"));
+        CommentsRepository.addComment(friendOfFirefox, idee, "the comment");
+        assertEquals(1, CommentsRepository.getCommentsOn(idee).size());
+
+        // When
+        createMultiPartRequest(Map.of("text", "The new text"));
+        bindPostRequestParam(ServiceModifierIdee.IDEE_ID_PARAM, String.valueOf(idee.getId()));
+        StringServiceResponse resp = doTestServicePost();
+
+        // Then
+        assertTrue(resp.isOK());
+        assertEquals(1, CommentsRepository.getCommentsOn(idee).size());
+        IdeesRepository.trueRemove(idee);
     }
 
 }
