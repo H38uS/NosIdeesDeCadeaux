@@ -2,5 +2,5 @@
 <Context>
     <Resource  name="jdbc/web-db" auth="Container"  type="javax.sql.DataSource"
                maxTotal="50"  maxIdle="10"  username="${db.username}"  password="${db.password}" driverClassName="com.mysql.cj.jdbc.Driver"
-              url="${db.url}?useLegacyDatetimeCode=false&amp;useUnicode=yes" validationQuery="select 1" testOnBorrow="true" />
+              url="${db.url}" validationQuery="select 1" testOnBorrow="true" />
 </Context>
