@@ -206,7 +206,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
-                        <version>3.4.0</version>
+                        <version>3.5.1</version>
                         <configuration>
                             <warName>app</warName>
                         </configuration>
@@ -233,7 +233,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.5.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
